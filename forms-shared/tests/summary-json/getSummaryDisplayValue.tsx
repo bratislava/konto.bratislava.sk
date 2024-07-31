@@ -30,7 +30,7 @@ import { baFormDefaults } from '../../src/form-utils/formDefaults'
  * the values.
  */
 const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
-  const widgetType = uiSchema()['ui:widget'] as BaWidgetType
+  const widgetType = uiSchema['ui:widget'] as BaWidgetType
 
   let retrievedSchema: RJSFSchema
   let retrievedOptions: WidgetProps['options']
@@ -45,7 +45,7 @@ const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
     },
   })
 
-  renderToString(<Form schema={schema()} uiSchema={uiSchema()} {...baFormDefaults} />)
+  renderToString(<Form schema={schema} uiSchema={uiSchema} {...baFormDefaults} />)
 
   // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
   if (!retrievedSchema || !retrievedOptions) {

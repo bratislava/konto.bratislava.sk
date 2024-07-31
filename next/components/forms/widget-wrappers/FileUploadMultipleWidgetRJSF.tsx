@@ -8,8 +8,8 @@ import Upload from '../widget-components/Upload/Upload'
 
 interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions
-  value: string[]
-  onChange: (value?: string[]) => void
+  value: string[] | undefined
+  onChange: (value?: string[] | undefined) => void
 }
 
 const FileUploadMultipleWidgetRJSF = ({

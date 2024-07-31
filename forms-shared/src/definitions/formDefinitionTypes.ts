@@ -13,6 +13,7 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string
+  embedded?: false | 'olo'
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

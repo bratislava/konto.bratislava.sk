@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`tax-form should return correct PDF mapping for example 1 1`] = `
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample1 1`] = `
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
@@ -105,7 +105,7 @@ exports[`tax-form should return correct PDF mapping for example 1 1`] = `
 }
 `;
 
-exports[`tax-form should return correct PDF mapping for example 2 1`] = `
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample2 1`] = `
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
@@ -241,7 +241,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
 }
 `;
 
-exports[`tax-form should return correct PDF mapping for example 3 1`] = `
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample3 1`] = `
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
@@ -345,7 +345,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
 }
 `;
 
-exports[`tax-form should return correct PDF mapping for example 4 1`] = `
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample4 1`] = `
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
@@ -424,7 +424,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
 }
 `;
 
-exports[`tax-form should return correct PDF mapping for example 5 1`] = `
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample5 1`] = `
 {
   "12_Ico": undefined,
   "12_Obec": "Bratislava",
@@ -634,7 +634,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
 }
 `;
 
-exports[`tax-form should return correct XML for example 1 1`] = `
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample1 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
   <Meta>
@@ -823,7 +823,7 @@ exports[`tax-form should return correct XML for example 1 1`] = `
 </E-form>"
 `;
 
-exports[`tax-form should return correct XML for example 2 1`] = `
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample2 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
   <Meta>
@@ -1088,7 +1088,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
 </E-form>"
 `;
 
-exports[`tax-form should return correct XML for example 3 1`] = `
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample3 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
   <Meta>
@@ -1257,7 +1257,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
 </E-form>"
 `;
 
-exports[`tax-form should return correct XML for example 4 1`] = `
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample4 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
   <Meta>
@@ -1374,7 +1374,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
 </E-form>"
 `;
 
-exports[`tax-form should return correct XML for example 5 1`] = `
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample5 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
   <Meta>

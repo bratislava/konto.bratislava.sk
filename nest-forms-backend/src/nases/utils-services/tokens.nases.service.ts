@@ -338,20 +338,8 @@ export default class NasesUtilsService {
           null,
         )
 
-        message = await parser
-          .parseStringPromise(messageXml)
-          .then((result) => {
-            if (typeof result === 'object') {
-              return result as object
-            }
-            return null
-          })
-          .catch((error) => {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `There was an error during converting json form data to xml: ${<string>error}`,
-            )
-          })
+        const response = await parser.parseStringPromise(messageXml)
+        message = typeof response === 'object' ? (response as object) : null
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

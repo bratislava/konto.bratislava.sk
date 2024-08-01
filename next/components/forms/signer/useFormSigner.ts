@@ -81,6 +81,8 @@ export const useFormSigner = ({
     digestAlgUrl = '',
     signaturePolicyIdentifier = '',
   }: SignOptions) => {
+    debugger
+    
     return new Promise<string>((resolve) => {
       const signer = ditec.dSigXadesBpJs
 

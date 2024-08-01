@@ -3,9 +3,12 @@ import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 import * as path from 'node:path'
 import type { Config } from 'tailwindcss/types/config'
+import { get as getAppRootDir } from 'app-root-dir'
+
+const rootDir = getAppRootDir()
 
 const tailwindConfig: Config = {
-  content: [path.join(__dirname, './SummaryPdf.tsx')],
+  content: [path.join(rootDir, './/tests/slovensko-sk-xml/htmlx.ts')],
   theme: {
     extend: {
       fontFamily: {

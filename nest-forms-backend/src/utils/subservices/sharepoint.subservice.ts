@@ -1,6 +1,7 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, Forms, FormState, Prisma } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
 import {
@@ -8,11 +9,12 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
-  SharepointColumnMapValue,
-  SharepointData,
-} from 'forms-shared/definitions/sharepointTypes'
-import { escape, filter, get as lodashGet, List } from 'lodash'
+  getArrayForOneToMany,
+  getValuesForFields,
+} from 'forms-shared/sharepoint/getValuesForSharepoint'
+import { escape, filter, List } from 'lodash'
 
 import {
   FormsErrorsEnum,
@@ -118,16 +120,26 @@ export default class SharepointSubservice {
     }
 
     const accessToken = await this.getAccessToken()
-    const { sharepointData } = formDefinition
-    const valuesForFields = await this.getValuesForFields(
-      sharepointData,
-      form,
-      formDefinition,
+    const { sharepointData, schemas } = formDefinition
+    const formTitle = this.getTitle(form, formDefinition)
+    const fields = await this.mapColumnsToFields(
+      Object.keys(sharepointData.columnMap),
       accessToken,
+      sharepointData.databaseName,
+    )
+    const jsonDataExtraDataOmitted = omitExtraData(
+      schemas.schema,
+      form.formDataJson as GenericObjectType,
+    )
+    const valuesForFields = getValuesForFields(
+      sharepointData,
+      { ...form, title: formTitle },
+      jsonDataExtraDataOmitted,
+      fields,
     )
 
     if (sharepointData.oneToOne) {
-      const fields = await this.mapColumnsToFields(
+      const oneToOneOriginalTableFields = await this.mapColumnsToFields(
         Object.values(sharepointData.oneToOne).map(
           (record) => record.originalTableId,
         ),
@@ -137,11 +149,16 @@ export default class SharepointSubservice {
 
       await Promise.all(
         Object.values(sharepointData.oneToOne).map(async (value) => {
-          const valuesForFieldsOneToOne = await this.getValuesForFields(
-            value,
-            form,
-            formDefinition,
+          const oneToOneFields = await this.mapColumnsToFields(
+            Object.keys(value.columnMap),
             accessToken,
+            value.databaseName,
+          )
+          const valuesForFieldsOneToOne = getValuesForFields(
+            value,
+            { ...form, title: formTitle },
+            jsonDataExtraDataOmitted,
+            oneToOneFields,
           )
 
           const addedId = await this.postDataToSharepoint(
@@ -150,7 +167,9 @@ export default class SharepointSubservice {
             valuesForFieldsOneToOne,
           )
 
-          valuesForFields[`${fields[value.originalTableId]}Id`] = addedId
+          valuesForFields[
+            `${oneToOneOriginalTableFields[value.originalTableId]}Id`
+          ] = addedId
         }),
       )
     }
@@ -164,19 +183,30 @@ export default class SharepointSubservice {
     if (sharepointData.oneToMany) {
       await Promise.all(
         Object.entries(sharepointData.oneToMany).map(async ([key, value]) => {
-          const recordsArray = this.getArrayForOneToMany(form, key)
+          const recordsArray = getArrayForOneToMany(
+            { ...form, jsonDataExtraDataOmitted },
+            key,
+          )
 
           await Promise.all(
             recordsArray.map(async (record) => {
               const foreignFields: Record<string, any> = {}
               foreignFields[value.originalTableId] = baseId
 
-              const valuesForFieldsOneToMany = await this.getValuesForFields(
-                value,
-                form,
-                formDefinition,
+              const oneToManyFields = await this.mapColumnsToFields(
+                [
+                  ...Object.keys(value.columnMap),
+                  ...Object.keys(foreignFields),
+                ],
                 accessToken,
+                value.databaseName,
+              )
+
+              const valuesForFieldsOneToMany = getValuesForFields(
+                value,
+                { ...form, title: formTitle },
                 record,
+                oneToManyFields,
                 foreignFields,
               )
 
@@ -317,111 +347,6 @@ export default class SharepointSubservice {
       })
 
     return result ?? ''
-  }
-
-  /**
-   * Maps columns to their respective fields in SharePoint and fills them with data.
-   * It first creates a mapping from the displayed name of the column in SharePoint to the API name,
-   * then finds and parses the data to be filled.
-   *
-   * @param {SharepointData} sharepointData - Object containing needed information to fill in the SharePoint table.
-   * @param {Forms} form - Form object containing the form data.
-   * @param {FormDefinition} formDefinition - Definition of the form structure.
-   * @param {string} accessToken - Access token received from SharePoint OAuth.
-   * @param {Prisma.JsonValue} [jsonData] - Optional JSON data to use for filling the fields.
-   * @param {Record<string, string>} [foreignFields] - Optional record of foreign fields columns with their values (like oneToOne relation with id of the record as the value).
-   * @returns {Promise<Record<string, any>>} - A promise that resolves to an object mapping API fields to their respective values.
-   */
-  private async getValuesForFields(
-    sharepointData: SharepointData,
-    form: Forms,
-    formDefinition: FormDefinition,
-    accessToken: string,
-    jsonData?: Prisma.JsonValue,
-    foreignFields?: Record<string, string>,
-  ): Promise<Record<string, any>> {
-    const fields = await this.mapColumnsToFields(
-      Object.keys(sharepointData.columnMap).concat(
-        foreignFields ? Object.keys(foreignFields) : [],
-      ),
-      accessToken,
-      sharepointData.databaseName,
-    )
-
-    const result: Record<string, any> = {}
-    Object.keys(fields).forEach((key) => {
-      if (sharepointData.columnMap[key]) {
-        switch (sharepointData.columnMap[key].type) {
-          case 'json_path':
-            const valueAtJsonPath = this.getValueAtJsonPath(
-              jsonData ?? form.formDataJson,
-              sharepointData.columnMap[key],
-            )
-            if (valueAtJsonPath === null) {
-              break
-            }
-
-            result[fields[key]] = valueAtJsonPath
-            break
-
-          case 'mag_number':
-            result[fields[key]] = form.ginisDocumentId ?? ''
-            break
-
-          case 'title':
-            result[fields[key]] = this.getTitle(form, formDefinition)
-            break
-
-          default:
-            throw this.throwerErrorGuard.NotAcceptableException(
-              SharepointErrorsEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA,
-              `${SharepointErrorsResponseEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA}. Type: ${sharepointData.columnMap[key].type}`,
-            )
-        }
-      } else if (foreignFields) {
-        result[`${fields[key]}Id`] = foreignFields[key]
-      } else {
-        throw new Error(
-          `Provided key ${key} not found in column map or extra keys. Slug: ${form.formDefinitionSlug}.`,
-        )
-      }
-    })
-
-    return result
-  }
-
-  private getValueAtJsonPath(
-    jsonFormData: Prisma.JsonValue,
-    columnMapValue: SharepointColumnMapValue,
-  ): string | null {
-    if (columnMapValue.type !== 'json_path') {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
-        `${SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED} There must be an info field for json_path.`,
-      )
-    }
-    let atPath: string | null = lodashGet(
-      jsonFormData,
-      columnMapValue.info,
-      null,
-    )
-    if (Array.isArray(atPath)) {
-      atPath = (atPath as Array<object>).map((x) => x.toString()).join(', ')
-    }
-    return atPath
-  }
-
-  private getArrayForOneToMany(
-    form: Forms,
-    path: string,
-  ): Array<Prisma.JsonValue> {
-    const atPath = lodashGet(form.formDataJson, path, null)
-    if (!Array.isArray(atPath)) {
-      throw new TypeError(
-        `Getting array data for oneToMany in form ${form.id} on path ${path} did not return array. Instead got value: ${atPath}`,
-      )
-    }
-    return atPath
   }
 
   private getTitle(form: Forms, formDefinition: FormDefinition): string {

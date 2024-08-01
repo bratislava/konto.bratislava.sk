@@ -1,9 +1,11 @@
-export type SharepointColumnMapValue = {
-  type: 'json_path'
-  info: string
-} | {
-  type: 'mag_number' | 'title'
-}
+export type SharepointColumnMapValue =
+  | {
+      type: 'json_path'
+      info: string
+    }
+  | {
+      type: 'mag_number' | 'title'
+    }
 
 type SharepointRelationData = {
   databaseName: string

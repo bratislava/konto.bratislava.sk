@@ -191,35 +191,47 @@ describe('NasesUtilsService', () => {
         },
       })
 
+      const senderIdXml =
+        process.env.NASES_SENDER_URI &&
+        process.env.NASES_SENDER_URI.trim() !== ''
+          ? `          <SenderId>${process.env.NASES_SENDER_URI}</SenderId>`
+          : '          <SenderId/>'
+      const recipientIdXml =
+        process.env.NASES_RECIPIENT_URI &&
+        process.env.NASES_RECIPIENT_URI.trim() !== ''
+          ? `          <RecipientId>${process.env.NASES_RECIPIENT_URI}</RecipientId>`
+          : '          <RecipientId/>'
+
       /* eslint-disable no-secrets/no-secrets */
       let xmlExample = builder.buildObject(
         await parser.parseStringPromise(
-          '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n' +
-            '      <EnvelopeVersion>3.0</EnvelopeVersion>\n' +
-            '      <Header>\n' +
-            '        <MessageInfo>\n' +
-            '          <Class>EGOV_APPLICATION</Class>\n' +
-            '          <PospID>esmao.eforms.bratislava.obec_024</PospID>\n' +
-            '          <PospVersion>201501.2</PospVersion>\n' +
-            '          <MessageID>123456678901234567890</MessageID>\n' +
-            '          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n' +
-            '        </MessageInfo>\n' +
-            '      </Header>\n' +
-            '      <Body>\n' +
-            '        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n' +
-            '          <MessageId>123456678901234567890</MessageId>\n' +
-            '          <SenderId>banana</SenderId>\n' +
-            '          <RecipientId>banana</RecipientId>\n' +
-            '          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n' +
-            '          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n' +
-            '          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n' +
-            '          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n' +
-            '          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n' +
-            '          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\tag&gt;liaUWHDL====</Object>\n' +
-            '        </MessageContainer>\n' +
-            '      </Body>\n' +
-            '    </SKTalkMessage>',
+          `<?xml version="1.0" encoding="UTF-8"?>\n` +
+            `    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n` +
+            `      <EnvelopeVersion>3.0</EnvelopeVersion>\n` +
+            `      <Header>\n` +
+            `        <MessageInfo>\n` +
+            `          <Class>EGOV_APPLICATION</Class>\n` +
+            `          <PospID>esmao.eforms.bratislava.obec_024</PospID>\n` +
+            `          <PospVersion>201501.2</PospVersion>\n` +
+            `          <MessageID>123456678901234567890</MessageID>\n` +
+            `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
+            `        </MessageInfo>\n` +
+            `      </Header>\n` +
+            `      <Body>\n` +
+            `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n${
+              senderIdXml
+            }${
+              recipientIdXml
+            }          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
+            `          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n` +
+            `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
+            `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
+            `          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n` +
+            `          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\tag&gt;liaUWHDL====</Object>\n` +
+            `        </MessageContainer>\n` +
+            `      </Body>\n` +
+            `    </SKTalkMessage>`,
         ),
       )
       /* eslint-enable no-secrets/no-secrets */
@@ -256,35 +268,36 @@ describe('NasesUtilsService', () => {
       xmlExample = builder.buildObject(
         // eslint-disable-next-line xss/no-mixed-html
         await parser.parseStringPromise(
-          '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            '    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n' +
-            '      <EnvelopeVersion>3.0</EnvelopeVersion>\n' +
-            '      <Header>\n' +
-            '        <MessageInfo>\n' +
-            '          <Class>EGOV_APPLICATION</Class>\n' +
-            '          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n' +
-            '          <PospVersion>0.8</PospVersion>\n' +
-            '          <MessageID>123456678901234567890</MessageID>\n' +
-            '          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n' +
-            '        </MessageInfo>\n' +
-            '      </Header>\n' +
-            '      <Body>\n' +
-            '        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n' +
-            '          <MessageId>123456678901234567890</MessageId>\n' +
-            '          <SenderId>banana</SenderId>\n' +
-            '          <RecipientId>banana</RecipientId>\n' +
-            '          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n' +
-            '          <MessageSubject>123456678901234567890</MessageSubject>\n' +
-            '          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n' +
-            '            <root>\n' +
-            '              <tag1 attribute="value1"/>\n' +
-            '              <tag2 attribute="value2">Content</tag2>\n' +
-            '              <tag3>Another content</tag3>\n' +
-            '            </root>\n' +
-            '          </Object>\n' +
-            '        </MessageContainer>\n' +
-            '      </Body>\n' +
-            '    </SKTalkMessage>',
+          `<?xml version="1.0" encoding="UTF-8"?>\n` +
+            `    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n` +
+            `      <EnvelopeVersion>3.0</EnvelopeVersion>\n` +
+            `      <Header>\n` +
+            `        <MessageInfo>\n` +
+            `          <Class>EGOV_APPLICATION</Class>\n` +
+            `          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n` +
+            `          <PospVersion>0.8</PospVersion>\n` +
+            `          <MessageID>123456678901234567890</MessageID>\n` +
+            `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
+            `        </MessageInfo>\n` +
+            `      </Header>\n` +
+            `      <Body>\n` +
+            `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n${
+              senderIdXml
+            }${
+              recipientIdXml
+            }          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
+            `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
+            `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
+            `            <root>\n` +
+            `              <tag1 attribute="value1"/>\n` +
+            `              <tag2 attribute="value2">Content</tag2>\n` +
+            `              <tag3>Another content</tag3>\n` +
+            `            </root>\n` +
+            `          </Object>\n` +
+            `        </MessageContainer>\n` +
+            `      </Body>\n` +
+            `    </SKTalkMessage>`,
         ),
       )
       /* eslint-enable no-secrets/no-secrets */

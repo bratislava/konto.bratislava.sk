@@ -338,6 +338,7 @@ export default class NasesUtilsService {
           null,
         )
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const response = await parser.parseStringPromise(messageXml)
         message = typeof response === 'object' ? (response as object) : null
       } catch (error) {

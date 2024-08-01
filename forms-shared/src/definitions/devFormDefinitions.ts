@@ -1,6 +1,6 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, defaultColumnMapNajomneByvanieDruhDruzka, defaultColumnMapNajomneByvanieManzelManzelka } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
+import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
 import ziadostOPridelenieNajomnehoBytu from '../schemas/ziadostOPridelenieNajomnehoBytu'
 import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
 
@@ -36,12 +36,12 @@ export const devFormDefinitions: FormDefinition[] = [
         {
           databaseName: 'dtb_NajomneByvanieManzelTest',
           originalTableId: 'ManzelManzelka',
-          columnMap: defaultColumnMapNajomneByvanieManzelManzelka
+          columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('manzelManzelka')
         },
         {
           databaseName: 'dtb_NajomneByvanieDruh',
           originalTableId: 'DruhDruzka',
-          columnMap: defaultColumnMapNajomneByvanieDruhDruzka
+          columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('druhDruzka')
         }
       ]
     }

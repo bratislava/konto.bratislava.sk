@@ -19,9 +19,9 @@ import PrismaModule from './prisma/prisma.module'
 import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
+import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
 import SharepointSubservice from './utils/subservices/sharepoint.subservice'
-import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
 
 @Module({
   imports: [

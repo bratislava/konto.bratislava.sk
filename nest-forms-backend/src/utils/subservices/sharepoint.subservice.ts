@@ -128,11 +128,11 @@ export default class SharepointSubservice {
 
     if (sharepointData.oneToOne) {
       const fields = await this.mapColumnsToFields(
-        Object.values(sharepointData.oneToOne).map((record) => {
-          return record.originalTableId
-        }),
+        Object.values(sharepointData.oneToOne).map(
+          (record) => record.originalTableId,
+        ),
         accessToken,
-        sharepointData.databaseName
+        sharepointData.databaseName,
       )
 
       await Promise.all(
@@ -150,7 +150,7 @@ export default class SharepointSubservice {
             valuesForFieldsOneToOne,
           )
 
-          valuesForFields[fields[value.originalTableId] + 'Id'] = addedId
+          valuesForFields[`${fields[value.originalTableId]}Id`] = addedId
         }),
       )
     }
@@ -170,22 +170,22 @@ export default class SharepointSubservice {
             recordsArray.map(async (record) => {
               const foreignFields: Record<string, any> = {}
               foreignFields[value.originalTableId] = baseId
-    
+
               const valuesForFieldsOneToMany = await this.getValuesForFields(
                 value,
                 form,
                 formDefinition,
                 accessToken,
                 record,
-                foreignFields
+                foreignFields,
               )
-    
+
               await this.postDataToSharepoint(
                 value.databaseName,
                 accessToken,
                 valuesForFieldsOneToMany,
               )
-            })
+            }),
           )
         }),
       )
@@ -255,7 +255,7 @@ export default class SharepointSubservice {
     const postData = {
       ...fieldValues,
     }
-    
+
     const result = await axios
       .post(url, postData, {
         headers: {
@@ -271,8 +271,8 @@ export default class SharepointSubservice {
           } Error: ${<string>error} when sending to database: ${dtbName}, posted data: ${JSON.stringify(postData)} .`,
         )
       })
-      .then((res: AxiosResponse<{ d: { ID: number } }, object>) =>
-        res.data.d.ID,
+      .then(
+        (res: AxiosResponse<{ d: { ID: number } }, object>) => res.data.d.ID,
       )
 
     return result
@@ -323,7 +323,7 @@ export default class SharepointSubservice {
    * Maps columns to their respective fields in SharePoint and fills them with data.
    * It first creates a mapping from the displayed name of the column in SharePoint to the API name,
    * then finds and parses the data to be filled.
-   * 
+   *
    * @param {SharepointData} sharepointData - Object containing needed information to fill in the SharePoint table.
    * @param {Forms} form - Form object containing the form data.
    * @param {FormDefinition} formDefinition - Definition of the form structure.
@@ -338,10 +338,12 @@ export default class SharepointSubservice {
     formDefinition: FormDefinition,
     accessToken: string,
     jsonData?: Prisma.JsonValue,
-    foreignFields?: Record<string, string>
+    foreignFields?: Record<string, string>,
   ): Promise<Record<string, any>> {
     const fields = await this.mapColumnsToFields(
-      Object.keys(sharepointData.columnMap).concat(foreignFields ? Object.keys(foreignFields) : []),
+      Object.keys(sharepointData.columnMap).concat(
+        foreignFields ? Object.keys(foreignFields) : [],
+      ),
       accessToken,
       sharepointData.databaseName,
     )
@@ -361,15 +363,15 @@ export default class SharepointSubservice {
 
             result[fields[key]] = valueAtJsonPath
             break
-  
+
           case 'mag_number':
             result[fields[key]] = form.ginisDocumentId ?? ''
             break
-  
+
           case 'title':
             result[fields[key]] = this.getTitle(form, formDefinition)
             break
-  
+
           default:
             throw this.throwerErrorGuard.NotAcceptableException(
               SharepointErrorsEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA,
@@ -377,9 +379,11 @@ export default class SharepointSubservice {
             )
         }
       } else if (foreignFields) {
-        result[fields[key] + 'Id'] = foreignFields[key]
+        result[`${fields[key]}Id`] = foreignFields[key]
       } else {
-        throw new Error(`Provided key ${key} not found in column map or extra keys. Slug: ${form.formDefinitionSlug}.`)
+        throw new Error(
+          `Provided key ${key} not found in column map or extra keys. Slug: ${form.formDefinitionSlug}.`,
+        )
       }
     })
 
@@ -396,7 +400,11 @@ export default class SharepointSubservice {
         `${SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED} There must be an info field for json_path.`,
       )
     }
-    let atPath: string | null = lodashGet(jsonFormData, columnMapValue.info, null)
+    let atPath: string | null = lodashGet(
+      jsonFormData,
+      columnMapValue.info,
+      null,
+    )
     if (Array.isArray(atPath)) {
       atPath = (atPath as Array<object>).map((x) => x.toString()).join(', ')
     }
@@ -405,11 +413,13 @@ export default class SharepointSubservice {
 
   private getArrayForOneToMany(
     form: Forms,
-    path: string
+    path: string,
   ): Array<Prisma.JsonValue> {
     const atPath = lodashGet(form.formDataJson, path, null)
     if (!Array.isArray(atPath)) {
-      throw new Error(`Getting array data for oneToMany in form ${form.id} on path ${path} did not return array. Instead got value: ${atPath}`)
+      throw new TypeError(
+        `Getting array data for oneToMany in form ${form.id} on path ${path} did not return array. Instead got value: ${atPath}`,
+      )
     }
     return atPath
   }

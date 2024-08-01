@@ -34,7 +34,7 @@ import {
   NasesSendResponse,
   ResponseGdprDataDto,
 } from '../dtos/responses.dto'
-import { NasesAttachementXmlObject } from '../dtos/xml.dto'
+import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
@@ -50,7 +50,7 @@ export default class NasesUtilsService {
     private readonly convertService: ConvertService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private minioClientSubervice: MinioClientSubservice,
+    private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
   ) {
     this.logger = new Logger('NasesUtilsService')
@@ -94,8 +94,8 @@ export default class NasesUtilsService {
   private async createAttachmentsIfExists(
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
-  ): Promise<NasesAttachementXmlObject[]> {
-    const result: NasesAttachementXmlObject[] = []
+  ): Promise<NasesAttachmentXmlObject[]> {
+    const result: NasesAttachmentXmlObject[] = []
     const files = await this.prismaService.files.findMany({
       where: {
         formId: form.id,
@@ -105,7 +105,7 @@ export default class NasesUtilsService {
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
-      const fileStream = await this.minioClientSubervice.loadFileStream(
+      const fileStream = await this.minioClientSubservice.loadFileStream(
         process.env.MINIO_SAFE_BUCKET!,
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
@@ -173,10 +173,10 @@ export default class NasesUtilsService {
       'base64url',
     )
     const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
+    const signature = crypto
       .sign('sha256', buffer, { key: privateKey })
       .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   createTechnicalAccountJwtToken(): string {
@@ -199,10 +199,10 @@ export default class NasesUtilsService {
       'base64url',
     )
     const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
+    const signature = crypto
       .sign('sha256', buffer, { key: privateKey })
       .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   createAdministrationJwtToken(): string {
@@ -223,10 +223,10 @@ export default class NasesUtilsService {
       'base64url',
     )
     const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
+    const signature = crypto
       .sign('sha256', buffer, { key: privateKey })
       .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   async getUserInfo(bearerToken: string): Promise<ResponseGdprDataDto> {
@@ -319,7 +319,7 @@ export default class NasesUtilsService {
   private async getFormMessage(
     form: Forms,
     isSigned: boolean,
-  ): Promise<string | object | null> {
+  ): Promise<string | object> {
     let message: string | object | null = null
     const parser = new Parser({ normalize: true, trim: true })
 
@@ -338,7 +338,7 @@ export default class NasesUtilsService {
           null,
         )
 
-        message = parser
+        message = await parser
           .parseStringPromise(messageXml)
           .then((result) => {
             if (typeof result === 'object') {
@@ -405,44 +405,13 @@ export default class NasesUtilsService {
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
     const message = await this.getFormMessage(form, isSigned)
-    // message = Buffer.from(message, 'binary').toString('base64');
-    // envelope = `
-    // <?xml version="1.0" encoding="utf-8"?>
-    // <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    //   <EnvelopeVersion>3.0</EnvelopeVersion>
-    //   <Header>
-    //     <MessageInfo>
-    //       <Class>EGOV_APPLICATION</Class>
-    //       <PospID>App.GeneralAgenda</PospID>
-    //       <PospVersion>1.9</PospVersion>
-    //       <MessageID>0d83aadc-edba-4d1d-9a2f-d62eae985c51</MessageID>
-    //       <CorrelationID>0d83aadc-edba-4d1d-9a2f-d62eae985c51</CorrelationID>
 
-    //     </MessageInfo>
-    //   </Header>
-    //   <Body>
-    //     <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">
-    //       <MessageId>0d83aadc-edba-4d1d-9a2f-d62eae985c51</MessageId>
-    //       <SenderId>e264cea1-acdc-4db0-8901-275d15b1f48a</SenderId>
-    //       <RecipientId>e264cea1-acdc-4db0-8901-275d15b1f48a</RecipientId>
-    //       <MessageType>App.GeneralAgenda</MessageType>
-    //       <MessageSubject>Podanie</MessageSubject>
-    //       <Object Id="0d83aadc-edba-4d1d-9a2f-d62eae985c51" IsSigned="false" Name="Všeobecná agenda" Description="Všeobecná agenda" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">
-    //         <GeneralAgenda xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    //   <subject>predmet</subject>
-    //   <text>popis</text>
-    // </GeneralAgenda>
-    //       </Object>
-    //     </MessageContainer>
-    //   </Body>
-    // </SKTalkMessage>
-    // `
     const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
     const correlationId = uuidv4()
     let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'
-    let attachments: NasesAttachementXmlObject[] = []
+    let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
@@ -507,8 +476,6 @@ export default class NasesUtilsService {
         },
       },
     }
-    // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">
-    // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">
 
     const builder = new Builder({
       // eslint-disable-next-line unicorn/text-encoding-identifier-case

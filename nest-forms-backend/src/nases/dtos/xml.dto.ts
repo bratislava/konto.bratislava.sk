@@ -1,4 +1,4 @@
-export type NasesAttachementXmlObject = {
+export type NasesAttachmentXmlObject = {
   $: {
     Id?: string
     IsSigned: string

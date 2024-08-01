@@ -11,8 +11,14 @@ function assertEnv<T>(variable: string, value: T) {
   return value
 }
 
-function getOriginsArray<T>(variable: string, value: T) {
-  assertEnv(variable, value)
+function getOriginsArray<T>(variable: string, value: T, required = true) {
+  if (required) {
+    assertEnv(variable, value)
+  }
+
+  if (!value) {
+    return []
+  }
 
   const array = (value as string).split(',')
   array.forEach((origin) => {
@@ -79,6 +85,12 @@ export const environment = {
     'NEXT_PUBLIC_AUTH_APPROVED_ORIGINS',
     process.env.NEXT_PUBLIC_AUTH_APPROVED_ORIGINS,
   ),
+  embeddedFormsOloOrigins: getOriginsArray(
+    'NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS',
+    process.env.NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS,
+    false,
+  ),
+
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
   featureToggles: {
     developmentForms:

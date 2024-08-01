@@ -30,5 +30,6 @@ export const devFormDefinitions: FormDefinition[] = [
     email: '',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
+    embedded: 'olo',
   },
 ]

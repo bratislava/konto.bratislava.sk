@@ -10,11 +10,13 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { SharepointData } from 'forms-shared/definitions/sharepointTypes'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
+import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 import { escape } from 'lodash'
 
 import {
@@ -32,8 +34,6 @@ import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
 } from './dtos/sharepoint.errors.enum'
-import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
-import { SharepointData } from 'forms-shared/definitions/sharepointTypes'
 
 @Injectable()
 @Processor('sharepoint')
@@ -181,8 +181,6 @@ export default class SharepointSubservice {
               const foreignFields: Record<string, any> = {}
               foreignFields[value.originalTableId] = id
 
-              
-
               const valuesForFieldsOneToMany = getValuesForFields(
                 value,
                 { ...form, title: formTitle },
@@ -252,7 +250,10 @@ export default class SharepointSubservice {
     return result
   }
 
-  private async getAllFieldsMappings(sharepointData: SharepointData, accessToken: string): Promise<SharepointDataAllColumnMappingsToFields> {
+  private async getAllFieldsMappings(
+    sharepointData: SharepointData,
+    accessToken: string,
+  ): Promise<SharepointDataAllColumnMappingsToFields> {
     const fieldMapBasic = await this.mapColumnsToFields(
       Object.keys(sharepointData.columnMap),
       accessToken,
@@ -263,34 +264,32 @@ export default class SharepointSubservice {
       oneToMany: {},
       oneToOne: {
         fieldMaps: {},
-        oneToOneOriginalTableFields: {}
-      }
+        oneToOneOriginalTableFields: {},
+      },
     }
 
     if (sharepointData.oneToMany) {
       await Promise.all(
         Object.values(sharepointData.oneToMany).map(async (value) => {
           const oneToManyFields = await this.mapColumnsToFields(
-            [
-              ...Object.keys(value.columnMap),
-              value.originalTableId,
-            ],
+            [...Object.keys(value.columnMap), value.originalTableId],
             accessToken,
             value.databaseName,
           )
-          result.oneToMany[value.databaseName] = {fieldMap: oneToManyFields}
-        })
+          result.oneToMany[value.databaseName] = { fieldMap: oneToManyFields }
+        }),
       )
     }
 
     if (sharepointData.oneToOne) {
-      result.oneToOne.oneToOneOriginalTableFields = await this.mapColumnsToFields(
-        Object.values(sharepointData.oneToOne).map(
-          (record) => record.originalTableId,
-        ),
-        accessToken,
-        sharepointData.databaseName,
-      )
+      result.oneToOne.oneToOneOriginalTableFields =
+        await this.mapColumnsToFields(
+          Object.values(sharepointData.oneToOne).map(
+            (record) => record.originalTableId,
+          ),
+          accessToken,
+          sharepointData.databaseName,
+        )
 
       await Promise.all(
         Object.values(sharepointData.oneToOne).map(async (value) => {
@@ -299,9 +298,9 @@ export default class SharepointSubservice {
               Object.keys(value.columnMap),
               accessToken,
               value.databaseName,
-            )
+            ),
           }
-        })
+        }),
       )
     }
 

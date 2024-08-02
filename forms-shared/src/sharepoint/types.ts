@@ -11,5 +11,8 @@ type SharepointRelationMappingColumnsToFields = {
 export type SharepointDataAllColumnMappingsToFields = {
   fieldMap: Record<string, string>
   oneToMany: Record<string, SharepointRelationMappingColumnsToFields>
-  oneToOne: {fieldMaps: Record<string, SharepointRelationMappingColumnsToFields>, oneToOneOriginalTableFields: Record<string, string>}
+  oneToOne: {
+    fieldMaps: Record<string, SharepointRelationMappingColumnsToFields>
+    oneToOneOriginalTableFields: Record<string, string>
+  }
 }

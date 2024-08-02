@@ -1,6 +1,6 @@
 import { SharepointColumnMapValue } from '../../definitions/sharepointTypes'
 
-export const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> = {
+const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> = {
   GinisID: {
     type: 'mag_number',
   },
@@ -162,7 +162,7 @@ export const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapV
   },
 }
 
-export const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
+const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
   Meno: {
     type: 'json_path',
     info: 'menoPriezvisko.meno',
@@ -273,7 +273,7 @@ export const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColum
   },
 }
 
-export const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
+const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   prefix: 'druhDruzka' | 'manzelManzelka',
 ): Record<string, SharepointColumnMapValue> => {
   return {
@@ -426,4 +426,28 @@ export const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
       info: `${prefix}.rizikoveFaktoryWrapper.vek`,
     },
   }
+}
+
+export const ziadostOPridelenieNajomnehoBytuSharepointData = {
+  databaseName: 'dtb_NajomneByvanieTest',
+  columnMap: defaultColumnMapNajomneByvanie,
+  oneToMany: {
+    'deti.zoznamDeti': {
+      databaseName: 'dtb_NajomneByvanieDieta',
+      originalTableId: 'Ziadatel',
+      columnMap: defaultColumnMapNajomneByvanieDieta,
+    },
+  },
+  oneToOne: [
+    {
+      databaseName: 'dtb_NajomneByvanieManzelTest',
+      originalTableId: 'ManzelManzelka',
+      columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('manzelManzelka'),
+    },
+    {
+      databaseName: 'dtb_NajomneByvanieDruh',
+      originalTableId: 'DruhDruzka',
+      columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('druhDruzka'),
+    },
+  ],
 }

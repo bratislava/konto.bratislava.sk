@@ -1,10 +1,6 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import {
-  defaultColumnMapNajomneByvanie,
-  defaultColumnMapNajomneByvanieDieta,
-  getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka,
-} from '../sharepoint/mappings/ziadost-o-pridelenie-najomneho-bytu'
+import { ziadostOPridelenieNajomnehoBytuSharepointData } from '../sharepoint/mappings/ziadostOPridelenieNajomnehoBytu'
 import ziadostOPridelenieNajomnehoBytu from '../schemas/ziadostOPridelenieNajomnehoBytu'
 import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
 
@@ -26,29 +22,7 @@ export const devFormDefinitions: FormDefinition[] = [
       ginisPersonName: '',
     },
     isSigned: false,
-    sharepointData: {
-      databaseName: 'dtb_NajomneByvanieTest',
-      columnMap: defaultColumnMapNajomneByvanie,
-      oneToMany: {
-        'deti.zoznamDeti': {
-          databaseName: 'dtb_NajomneByvanieDieta',
-          originalTableId: 'Ziadatel',
-          columnMap: defaultColumnMapNajomneByvanieDieta,
-        },
-      },
-      oneToOne: [
-        {
-          databaseName: 'dtb_NajomneByvanieManzelTest',
-          originalTableId: 'ManzelManzelka',
-          columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('manzelManzelka'),
-        },
-        {
-          databaseName: 'dtb_NajomneByvanieDruh',
-          originalTableId: 'DruhDruzka',
-          columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('druhDruzka'),
-        },
-      ],
-    },
+    sharepointData: ziadostOPridelenieNajomnehoBytuSharepointData,
   },
   {
     type: FormDefinitionType.Email,

@@ -1,5 +1,5 @@
 import { SharepointData } from '../definitions/sharepointTypes'
-import { get as lodashGet } from 'lodash'
+import { get as lodashGet, isObject, isArray } from 'lodash'
 import { JsonValue } from './types'
 
 /**
@@ -60,10 +60,18 @@ export const getValuesForFields = (
   return result
 }
 
-const getValueAtJsonPath = (jsonFormData: JsonValue, info: string): string | null => {
-  let atPath: string | null = lodashGet(jsonFormData, info, null)
-  if (Array.isArray(atPath)) {
-    atPath = (atPath as Array<object>).map((x) => x.toString()).join(', ')
+const getValueAtJsonPath = (jsonFormData: JsonValue, info: string): JsonValue => {
+  let atPath: JsonValue = lodashGet(jsonFormData, info, null) as JsonValue
+
+  if (isObject(atPath) && !isArray(atPath)) {
+    throw new TypeError('TODO')
+  }
+
+  if (isArray(atPath)) {
+    if (atPath.some((item) => isObject(item))) {
+      throw new Error('TODO')
+    }
+    atPath = atPath.map(String).join(', ')
   }
   return atPath
 }

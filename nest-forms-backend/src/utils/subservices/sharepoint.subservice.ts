@@ -1,5 +1,6 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
@@ -14,7 +15,7 @@ import {
   getArrayForOneToMany,
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
-import { escape, filter, List } from 'lodash'
+import { escape } from 'lodash'
 
 import {
   FormsErrorsEnum,
@@ -31,6 +32,8 @@ import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
 } from './dtos/sharepoint.errors.enum'
+import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
+import { SharepointData } from 'forms-shared/definitions/sharepointTypes'
 
 @Injectable()
 @Processor('sharepoint')
@@ -40,15 +43,16 @@ export default class SharepointSubservice {
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
+    private configService: ConfigService,
   ) {
     this.logger = new Logger('SharepointSubservice')
 
     if (
-      !process.env.SHAREPOINT_TENANT_ID ||
-      !process.env.SHAREPOINT_CLIENT_ID ||
-      !process.env.SHAREPOINT_CLIENT_SECRET ||
-      !process.env.SHAREPOINT_DOMAIN ||
-      !process.env.SHAREPOINT_URL
+      !this.configService.get<string>('SHAREPOINT_TENANT_ID') ||
+      !this.configService.get<string>('SHAREPOINT_CLIENT_ID') ||
+      !this.configService.get<string>('SHAREPOINT_CLIENT_SECRET') ||
+      !this.configService.get<string>('SHAREPOINT_DOMAIN') ||
+      !this.configService.get<string>('SHAREPOINT_URL')
     ) {
       throw new Error(
         'Missing Sharepoint .env values, one of: SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL',
@@ -122,11 +126,8 @@ export default class SharepointSubservice {
     const accessToken = await this.getAccessToken()
     const { sharepointData, schemas } = formDefinition
     const formTitle = this.getTitle(form, formDefinition)
-    const fields = await this.mapColumnsToFields(
-      Object.keys(sharepointData.columnMap),
-      accessToken,
-      sharepointData.databaseName,
-    )
+    const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
+
     const jsonDataExtraDataOmitted = omitExtraData(
       schemas.schema,
       form.formDataJson as GenericObjectType,
@@ -135,46 +136,33 @@ export default class SharepointSubservice {
       sharepointData,
       { ...form, title: formTitle },
       jsonDataExtraDataOmitted,
-      fields,
+      fields.fieldMap,
     )
 
     if (sharepointData.oneToOne) {
-      const oneToOneOriginalTableFields = await this.mapColumnsToFields(
-        Object.values(sharepointData.oneToOne).map(
-          (record) => record.originalTableId,
-        ),
-        accessToken,
-        sharepointData.databaseName,
-      )
-
       await Promise.all(
         Object.values(sharepointData.oneToOne).map(async (value) => {
-          const oneToOneFields = await this.mapColumnsToFields(
-            Object.keys(value.columnMap),
-            accessToken,
-            value.databaseName,
-          )
           const valuesForFieldsOneToOne = getValuesForFields(
             value,
             { ...form, title: formTitle },
             jsonDataExtraDataOmitted,
-            oneToOneFields,
+            fields.oneToOne.fieldMaps[value.databaseName].fieldMap,
           )
 
-          const addedId = await this.postDataToSharepoint(
+          const { id } = await this.postDataToSharepoint(
             value.databaseName,
             accessToken,
             valuesForFieldsOneToOne,
           )
 
           valuesForFields[
-            `${oneToOneOriginalTableFields[value.originalTableId]}Id`
-          ] = addedId
+            `${fields.oneToOne.oneToOneOriginalTableFields[value.originalTableId]}Id`
+          ] = id
         }),
       )
     }
 
-    const baseId = await this.postDataToSharepoint(
+    const { id } = await this.postDataToSharepoint(
       sharepointData.databaseName,
       accessToken,
       valuesForFields,
@@ -191,22 +179,15 @@ export default class SharepointSubservice {
           await Promise.all(
             recordsArray.map(async (record) => {
               const foreignFields: Record<string, any> = {}
-              foreignFields[value.originalTableId] = baseId
+              foreignFields[value.originalTableId] = id
 
-              const oneToManyFields = await this.mapColumnsToFields(
-                [
-                  ...Object.keys(value.columnMap),
-                  ...Object.keys(foreignFields),
-                ],
-                accessToken,
-                value.databaseName,
-              )
+              
 
               const valuesForFieldsOneToMany = getValuesForFields(
                 value,
                 { ...form, title: formTitle },
                 record,
-                oneToManyFields,
+                fields.oneToMany[value.databaseName].fieldMap,
                 foreignFields,
               )
 
@@ -233,13 +214,12 @@ export default class SharepointSubservice {
   }
 
   private async mapColumnsToFields(
-    columns: Array<string>,
+    columns: string[],
     accessToken: string,
-    dtbName: string,
+    dbName: string,
   ): Promise<Record<string, string>> {
     const result: Record<string, string> = {}
-    const { SHAREPOINT_URL } = process.env
-    const url = `${escape(SHAREPOINT_URL)}/lists/getbytitle('${dtbName}')/fields`
+    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/fields`
 
     const fields = await axios
       .get(url, {
@@ -252,36 +232,88 @@ export default class SharepointSubservice {
       .then(
         (
           response: AxiosResponse<
-            { d: { results: List<Record<string, string>> } },
+            { d: { results: Array<Record<string, string>> } },
             object
           >,
         ) => response.data.d.results,
       )
 
     columns.forEach((col) => {
-      const filtered = filter<Record<string, string>>(
-        fields,
-        (field) => field.Title === col,
-      )
-      if (filtered.length === 0) {
+      const filtered = fields.find((field) => field.Title === col)
+      if (!filtered) {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.UNKNOWN_COLUMN,
-          `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dtbName}.`,
+          `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dbName}.`,
         )
       }
-      result[col] = filtered[0].StaticName
+      result[col] = filtered.StaticName
     })
 
     return result
   }
 
+  private async getAllFieldsMappings(sharepointData: SharepointData, accessToken: string): Promise<SharepointDataAllColumnMappingsToFields> {
+    const fieldMapBasic = await this.mapColumnsToFields(
+      Object.keys(sharepointData.columnMap),
+      accessToken,
+      sharepointData.databaseName,
+    )
+    const result: SharepointDataAllColumnMappingsToFields = {
+      fieldMap: fieldMapBasic,
+      oneToMany: {},
+      oneToOne: {
+        fieldMaps: {},
+        oneToOneOriginalTableFields: {}
+      }
+    }
+
+    if (sharepointData.oneToMany) {
+      await Promise.all(
+        Object.values(sharepointData.oneToMany).map(async (value) => {
+          const oneToManyFields = await this.mapColumnsToFields(
+            [
+              ...Object.keys(value.columnMap),
+              value.originalTableId,
+            ],
+            accessToken,
+            value.databaseName,
+          )
+          result.oneToMany[value.databaseName] = {fieldMap: oneToManyFields}
+        })
+      )
+    }
+
+    if (sharepointData.oneToOne) {
+      result.oneToOne.oneToOneOriginalTableFields = await this.mapColumnsToFields(
+        Object.values(sharepointData.oneToOne).map(
+          (record) => record.originalTableId,
+        ),
+        accessToken,
+        sharepointData.databaseName,
+      )
+
+      await Promise.all(
+        Object.values(sharepointData.oneToOne).map(async (value) => {
+          result.oneToOne.fieldMaps[value.databaseName] = {
+            fieldMap: await this.mapColumnsToFields(
+              Object.keys(value.columnMap),
+              accessToken,
+              value.databaseName,
+            )
+          }
+        })
+      )
+    }
+
+    return result
+  }
+
   private async postDataToSharepoint(
-    dtbName: string,
+    dbName: string,
     accessToken: string,
     fieldValues: Record<string, string>,
-  ): Promise<number> {
-    const { SHAREPOINT_URL } = process.env
-    const url = `${escape(SHAREPOINT_URL)}/lists/getbytitle('${dtbName}')/items`
+  ): Promise<{ id: number }> {
+    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/items`
     const postData = {
       ...fieldValues,
     }
@@ -298,38 +330,34 @@ export default class SharepointSubservice {
           SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
           `${
             SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR
-          } Error: ${<string>error} when sending to database: ${dtbName}, posted data: ${JSON.stringify(postData)} .`,
+          } Error: ${<string>error} when sending to database: ${dbName}, posted data: ${JSON.stringify(postData)} .`,
         )
       })
       .then(
         (res: AxiosResponse<{ d: { ID: number } }, object>) => res.data.d.ID,
       )
 
-    return result
+    return { id: result }
   }
 
   private async getAccessToken(): Promise<string> {
-    const {
-      SHAREPOINT_TENANT_ID,
-      SHAREPOINT_CLIENT_ID,
-      SHAREPOINT_CLIENT_SECRET,
-      SHAREPOINT_DOMAIN,
-    } = process.env
     const url = `https://accounts.accesscontrol.windows.net/${escape(
-      SHAREPOINT_TENANT_ID,
+      this.configService.get<string>('SHAREPOINT_TENANT_ID'),
     )}/tokens/OAuth/2`
     const result = await axios
       .post(
         url,
         {
           grant_type: 'client_credentials',
-          client_id: `${escape(SHAREPOINT_CLIENT_ID)}@${escape(
-            SHAREPOINT_TENANT_ID,
+          client_id: `${escape(this.configService.get<string>('SHAREPOINT_CLIENT_ID'))}@${escape(
+            this.configService.get<string>('SHAREPOINT_TENANT_ID'),
           )}`,
-          client_secret: SHAREPOINT_CLIENT_SECRET,
+          client_secret: this.configService.get<string>(
+            'SHAREPOINT_CLIENT_SECRET',
+          ),
           resource: `00000003-0000-0ff1-ce00-000000000000/${
-            SHAREPOINT_DOMAIN ?? ''
-          }@${SHAREPOINT_TENANT_ID ?? ''}`,
+            this.configService.get<string>('SHAREPOINT_DOMAIN') ?? ''
+          }@${this.configService.get<string>('SHAREPOINT_TENANT_ID') ?? ''}`,
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       )
@@ -346,7 +374,7 @@ export default class SharepointSubservice {
         )
       })
 
-    return result ?? ''
+    return result
   }
 
   private getTitle(form: Forms, formDefinition: FormDefinition): string {

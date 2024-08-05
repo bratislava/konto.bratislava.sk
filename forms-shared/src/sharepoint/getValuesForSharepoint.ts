@@ -48,7 +48,7 @@ export const getValuesForFields = (
         default:
           throw new TypeError(`Type provided in columnMap in sharepoint data is unknown.`)
       }
-    } else if (foreignFields) {
+    } else if (foreignFields && key in foreignFields) {
       result[`${fields[key]}Id`] = foreignFields[key]
     } else {
       throw new Error(
@@ -60,16 +60,20 @@ export const getValuesForFields = (
   return result
 }
 
-const getValueAtJsonPath = (jsonFormData: JsonValue, info: string): JsonValue => {
+export const getValueAtJsonPath = (jsonFormData: JsonValue, info: string): JsonValue => {
   let atPath: JsonValue = lodashGet(jsonFormData, info, null) as JsonValue
 
   if (isObject(atPath) && !isArray(atPath)) {
-    throw new TypeError('TODO')
+    throw new TypeError(
+      `Only primitive types, and arrays of them can be retrieved. Retrieved: json object at path: ${info}.`,
+    )
   }
 
   if (isArray(atPath)) {
     if (atPath.some((item) => isObject(item))) {
-      throw new Error('TODO')
+      throw new TypeError(
+        `Only primitive types, and arrays of them can be retrieved. Retrieved: array of non-primitives at path: ${info}.`,
+      )
     }
     atPath = atPath.map(String).join(', ')
   }

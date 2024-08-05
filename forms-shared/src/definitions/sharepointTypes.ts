@@ -7,7 +7,7 @@ export type SharepointColumnMapValue =
       type: 'mag_number' | 'title'
     }
 
-type SharepointRelationData = {
+export type SharepointRelationData = {
   databaseName: string
   originalTableId: string
   columnMap: Record<string, SharepointColumnMapValue>

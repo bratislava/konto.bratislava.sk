@@ -1,7 +1,7 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, Forms, FormState } from '@prisma/client'
+import { FormError, Forms, FormState, Prisma } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
@@ -10,7 +10,10 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { SharepointData } from 'forms-shared/definitions/sharepointTypes'
+import {
+  SharepointData,
+  SharepointRelationData,
+} from 'forms-shared/definitions/sharepointTypes'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
@@ -91,6 +94,76 @@ export default class SharepointSubservice {
       })
   }
 
+  private async handleOneToOne(
+    sharepointDataOneToOne: SharepointRelationData[],
+    form: Forms,
+    formTitle: string,
+    jsonDataExtraDataOmitted: Prisma.JsonValue,
+    accessToken: string,
+    fields: SharepointDataAllColumnMappingsToFields,
+  ): Promise<Record<string, number>> {
+    const result: Record<string, number> = {}
+    await Promise.all(
+      Object.values(sharepointDataOneToOne).map(async (value) => {
+        const valuesForFieldsOneToOne = getValuesForFields(
+          value,
+          { ...form, title: formTitle },
+          jsonDataExtraDataOmitted,
+          fields.oneToOne.fieldMaps[value.databaseName].fieldMap,
+        )
+
+        const { id } = await this.postDataToSharepoint(
+          value.databaseName,
+          accessToken,
+          valuesForFieldsOneToOne,
+        )
+        result[value.originalTableId] = id
+      }),
+    )
+
+    return result
+  }
+
+  private async handleOneToMany(
+    sharepointDataOneToMany: Record<string, SharepointRelationData>,
+    form: Forms,
+    formTitle: string,
+    jsonDataExtraDataOmitted: Prisma.JsonValue,
+    accessToken: string,
+    fields: SharepointDataAllColumnMappingsToFields,
+    originalRecordId: number,
+  ): Promise<void> {
+    await Promise.all(
+      Object.entries(sharepointDataOneToMany).map(async ([key, value]) => {
+        const recordsArray = getArrayForOneToMany(
+          { ...form, jsonDataExtraDataOmitted },
+          key,
+        )
+
+        await Promise.all(
+          recordsArray.map(async (record) => {
+            const foreignFields: Record<string, any> = {}
+            foreignFields[value.originalTableId] = originalRecordId
+
+            const valuesForFieldsOneToMany = getValuesForFields(
+              value,
+              { ...form, title: formTitle },
+              record,
+              fields.oneToMany[value.databaseName].fieldMap,
+              foreignFields,
+            )
+
+            await this.postDataToSharepoint(
+              value.databaseName,
+              accessToken,
+              valuesForFieldsOneToMany,
+            )
+          }),
+        )
+      }),
+    )
+  }
+
   public async postNewRecord(formId: string): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -140,26 +213,19 @@ export default class SharepointSubservice {
     )
 
     if (sharepointData.oneToOne) {
-      await Promise.all(
-        Object.values(sharepointData.oneToOne).map(async (value) => {
-          const valuesForFieldsOneToOne = getValuesForFields(
-            value,
-            { ...form, title: formTitle },
-            jsonDataExtraDataOmitted,
-            fields.oneToOne.fieldMaps[value.databaseName].fieldMap,
-          )
-
-          const { id } = await this.postDataToSharepoint(
-            value.databaseName,
-            accessToken,
-            valuesForFieldsOneToOne,
-          )
-
-          valuesForFields[
-            `${fields.oneToOne.oneToOneOriginalTableFields[value.originalTableId]}Id`
-          ] = id
-        }),
+      const oneToOneAdded = await this.handleOneToOne(
+        sharepointData.oneToOne,
+        form,
+        formTitle,
+        jsonDataExtraDataOmitted,
+        accessToken,
+        fields,
       )
+      Object.entries(oneToOneAdded).forEach(([key, id]) => {
+        valuesForFields[
+          `${fields.oneToOne.oneToOneOriginalTableFields[key]}Id`
+        ] = id
+      })
     }
 
     const { id } = await this.postDataToSharepoint(
@@ -169,34 +235,14 @@ export default class SharepointSubservice {
     )
 
     if (sharepointData.oneToMany) {
-      await Promise.all(
-        Object.entries(sharepointData.oneToMany).map(async ([key, value]) => {
-          const recordsArray = getArrayForOneToMany(
-            { ...form, jsonDataExtraDataOmitted },
-            key,
-          )
-
-          await Promise.all(
-            recordsArray.map(async (record) => {
-              const foreignFields: Record<string, any> = {}
-              foreignFields[value.originalTableId] = id
-
-              const valuesForFieldsOneToMany = getValuesForFields(
-                value,
-                { ...form, title: formTitle },
-                record,
-                fields.oneToMany[value.databaseName].fieldMap,
-                foreignFields,
-              )
-
-              await this.postDataToSharepoint(
-                value.databaseName,
-                accessToken,
-                valuesForFieldsOneToMany,
-              )
-            }),
-          )
-        }),
+      await this.handleOneToMany(
+        sharepointData.oneToMany,
+        form,
+        formTitle,
+        jsonDataExtraDataOmitted,
+        accessToken,
+        fields,
+        id,
       )
     }
 
@@ -313,12 +359,9 @@ export default class SharepointSubservice {
     fieldValues: Record<string, string>,
   ): Promise<{ id: number }> {
     const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/items`
-    const postData = {
-      ...fieldValues,
-    }
 
     const result = await axios
-      .post(url, postData, {
+      .post(url, fieldValues, {
         headers: {
           Accept: 'application/json;odata=verbose',
           Authorization: `Bearer ${accessToken}`,
@@ -329,7 +372,7 @@ export default class SharepointSubservice {
           SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
           `${
             SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR
-          } Error: ${<string>error} when sending to database: ${dbName}, posted data: ${JSON.stringify(postData)} .`,
+          } Error: ${<string>error} when sending to database: ${dbName}, posted data: ${JSON.stringify(fieldValues)} .`,
         )
       })
       .then(
@@ -377,8 +420,10 @@ export default class SharepointSubservice {
   }
 
   private getTitle(form: Forms, formDefinition: FormDefinition): string {
-    const messageSubject = getSubjectTextFromForm(form, formDefinition)
     // fallback to messageSubject if title can't be parsed
-    return getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
+    return (
+      getFrontendFormTitleFromForm(form, formDefinition) ||
+      getSubjectTextFromForm(form, formDefinition)
+    )
   }
 }

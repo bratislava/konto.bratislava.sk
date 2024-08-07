@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull'
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
@@ -24,6 +25,9 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     RabbitmqClientModule,
     ConvertPdfModule,
     TaxModule,
+    BullModule.registerQueue({
+      name: 'sharepoint',
+    }),
   ],
   providers: [
     GinisService,

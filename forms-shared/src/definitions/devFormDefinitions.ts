@@ -1,5 +1,6 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
+import { ziadostONajomnyBytSharepointData } from '../sharepoint/mappings/ziadostONajomnyByt'
 import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
 import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
 
@@ -21,6 +22,7 @@ export const devFormDefinitions: FormDefinition[] = [
       ginisPersonName: '',
     },
     isSigned: false,
+    sharepointData: ziadostONajomnyBytSharepointData,
   },
   {
     type: FormDefinitionType.Email,

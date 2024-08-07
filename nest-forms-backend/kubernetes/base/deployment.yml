@@ -87,6 +87,8 @@ spec:
             name: ${BUILD_REPOSITORY_NAME}-mailgun-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-admin-secret
+        - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-sharepoint-secret
         - configMapRef:
             name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:

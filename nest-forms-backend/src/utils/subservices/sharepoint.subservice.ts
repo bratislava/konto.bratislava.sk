@@ -72,7 +72,7 @@ export default class SharepointSubservice {
   @OnQueueFailed()
   handler(job: Job<{ formId: string }>, err: Error): void {
     alertError(
-      `Sending form ${job.data.formId} to Sharepoint has failed. Number of tries for this form so far: ${job.attemptsMade}`,
+      `Sending form ${job.data.formId} to Sharepoint has failed.`,
       this.logger,
       JSON.stringify(err),
     )

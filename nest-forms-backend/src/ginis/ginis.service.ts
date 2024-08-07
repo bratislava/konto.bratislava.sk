@@ -595,10 +595,7 @@ export default class GinisService {
       },
       {
         removeOnComplete: true,
-        backoff: {
-          type: 'fixed',
-          delay: 10_800_000, // 3 hours
-        },
+        removeOnFail: true,
       },
     )
   }

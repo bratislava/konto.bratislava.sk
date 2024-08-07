@@ -14,15 +14,15 @@ type ExampleFormPair = {
 
 export function getExampleFormPairs({
   formDefinitionFilterFn = () => true,
-  devForms = false,
+  includeDevForms = false,
 }: {
   formDefinitionFilterFn?: (formDefinition: FormDefinition) => boolean
-  devForms?: boolean
+  includeDevForms?: boolean
 } = {}): ExampleFormPair[] {
-  const getFormDefinitionBySlugLocal = devForms
+  const getFormDefinitionBySlugLocal = includeDevForms
     ? getFormDefinitionBySlugDev
     : getFormDefinitionBySlug
-  const exampleFormsLocal = devForms ? exampleDevForms : exampleForms
+  const exampleFormsLocal = includeDevForms ? {...exampleForms, ...exampleDevForms} : exampleForms
 
   const slugs = Object.keys(exampleFormsLocal)
   const formDefinitions = slugs

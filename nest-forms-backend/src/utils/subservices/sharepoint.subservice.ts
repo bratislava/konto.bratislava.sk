@@ -134,35 +134,35 @@ export default class SharepointSubservice {
     fields: SharepointDataAllColumnMappingsToFields,
     originalRecordId: number,
   ): Promise<void> {
-    await Promise.all(
-      Object.entries(sharepointDataOneToMany).map(async ([key, value]) => {
+    const allPromises = Object.entries(sharepointDataOneToMany).flatMap(
+      async ([key, value]) => {
         const recordsArray = getArrayForOneToMany(
           { ...form, jsonDataExtraDataOmitted },
           key,
         )
 
-        await Promise.all(
-          recordsArray.map(async (record) => {
-            const foreignFields: Record<string, any> = {}
-            foreignFields[value.originalTableId] = originalRecordId
+        return recordsArray.map(async (record) => {
+          const foreignFields: Record<string, any> = {}
+          foreignFields[value.originalTableId] = originalRecordId
 
-            const valuesForFieldsOneToMany = getValuesForFields(
-              value,
-              { ...form, title: formTitle },
-              record,
-              fields.oneToMany[value.databaseName].fieldMap,
-              foreignFields,
-            )
+          const valuesForFieldsOneToMany = getValuesForFields(
+            value,
+            { ...form, title: formTitle },
+            record,
+            fields.oneToMany[value.databaseName].fieldMap,
+            foreignFields,
+          )
 
-            await this.postDataToSharepoint(
-              value.databaseName,
-              accessToken,
-              valuesForFieldsOneToMany,
-            )
-          }),
-        )
-      }),
+          await this.postDataToSharepoint(
+            value.databaseName,
+            accessToken,
+            valuesForFieldsOneToMany,
+          )
+        })
+      },
     )
+
+    await Promise.all(allPromises)
   }
 
   public async postNewRecord(formId: string): Promise<void> {

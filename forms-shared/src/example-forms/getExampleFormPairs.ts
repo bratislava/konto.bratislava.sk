@@ -22,7 +22,7 @@ export function getExampleFormPairs({
   const getFormDefinitionBySlugLocal = includeDevForms
     ? getFormDefinitionBySlugDev
     : getFormDefinitionBySlug
-  const exampleFormsLocal = includeDevForms ? {...exampleForms, ...exampleDevForms} : exampleForms
+  const exampleFormsLocal = includeDevForms ? { ...exampleForms, ...exampleDevForms } : exampleForms
 
   const slugs = Object.keys(exampleFormsLocal)
   const formDefinitions = slugs

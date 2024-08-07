@@ -372,11 +372,20 @@ describe('SharepointSubservice', () => {
         .spyOn(getValuesForSharepoint, 'getValuesForFields')
         .mockReturnValue({})
       const updateFormSpy = jest.spyOn(service['prismaService'].forms, 'update')
-      jest.spyOn(omitExtraData, 'omitExtraData').mockReturnValue({})
+      jest
+        .spyOn(omitExtraData, 'omitExtraData')
+        .mockReturnValue({ omitted: true })
 
       await service.postNewRecord('formId')
 
       // TOOD more checks for calls etc.
+
+      expect(getValuesSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        { omitted: true },
+        expect.anything(),
+      )
 
       expect(updateFormSpy).toHaveBeenCalledWith({
         where: {

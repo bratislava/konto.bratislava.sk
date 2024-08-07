@@ -65,6 +65,7 @@ export default class SharepointSubservice {
 
   @Process()
   async transcode(job: Job<{ formId: string }>): Promise<void> {
+    this.logger.log(`Sending form ${job.data.formId} to sharepoint`)
     await this.postNewRecord(job.data.formId)
   }
 

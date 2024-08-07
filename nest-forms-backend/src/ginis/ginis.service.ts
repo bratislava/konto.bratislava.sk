@@ -588,6 +588,7 @@ export default class GinisService {
   }
 
   private async sendToSharepoint(formId: string): Promise<void> {
+    this.logger.log(`Adding form ${formId} to sharepoint queue.`)
     await this.sharepointQueue.add(
       {
         formId,

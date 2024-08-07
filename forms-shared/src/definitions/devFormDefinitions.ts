@@ -1,18 +1,18 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import ziadostOPridelenieNajomnehoBytu from '../schemas/ziadostOPridelenieNajomnehoBytu'
+import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
 import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
 
 export const devFormDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slovenskoSkUrl: '',
-    slug: 'ziadost-o-pridelenie-najomneho-bytu',
-    title: 'Žiadosť o pridelenie nájomného bytu',
-    schemas: ziadostOPridelenieNajomnehoBytu,
-    pospID: '',
-    pospVersion: '',
-    gestor: 'Martin Pinter',
+    slug: 'ziadost-o-najomny-byt',
+    title: 'Žiadosť o nájomný byt',
+    schemas: ziadostONajomnyByt,
+    pospID: '00603481.ziadostONajomnyByt',
+    pospVersion: '1.0',
+    gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     messageSubjectFormat: '',

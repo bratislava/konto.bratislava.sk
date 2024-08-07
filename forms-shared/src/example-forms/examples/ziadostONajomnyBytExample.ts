@@ -187,7 +187,7 @@ const exampleForm: ExampleForm = {
       manzelManzelkaSucastouDomacnosti: true,
     },
     ziadatelZiadatelka: {
-      email: 'erik.rehulka@gmail.com',
+      email: 'email.email@gmail.com',
       prijem: {
         vyzivne: true,
         dochodok: true,
@@ -213,8 +213,8 @@ const exampleForm: ExampleForm = {
         },
         bezbarierovyBytWrapper: { invalidita: true, mieraPoklesu: 29, bezbarierovyByt: true },
       },
-      datumNarodenia: '2001-03-30',
-      menoPriezvisko: { meno: 'Erik', priezvisko: 'Rehulka' },
+      datumNarodenia: '2001-01-30',
+      menoPriezvisko: { meno: 'Test', priezvisko: 'Testovaci' },
       sucasneByvanie: {
         bytovaNudza: true,
         nakladyNaByvanie: 134,
@@ -225,12 +225,12 @@ const exampleForm: ExampleForm = {
           'Domáce násilie zaznamenané políciou/štátnym úradom',
         ],
       },
-      telefonneCislo: '+421948102810',
-      rodnePriezvisko: 'RodneRehulka',
+      telefonneCislo: '+421948102111',
+      rodnePriezvisko: 'RodneTest',
       statnaPrislusnost: 'Slovenská',
       adresaTrvalehoPobytu: {
         mestoPsc: { psc: '83103', mesto: 'Bratislava' },
-        ulicaACislo: 'Moravská 3',
+        ulicaACislo: 'Morava 10',
         pobytMenejAkoRok: true,
         vlastnikNehnutelnosti: true,
         adresaSkutocnehoPobytu: {

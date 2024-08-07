@@ -1,0 +1,1815 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample1 1`] = `
+{
+  "12_Ico": undefined,
+  "12_Obec": "Bratislava",
+  "12_Priloha": "2",
+  "12_RodneCislo1": "920314",
+  "12_RodneCislo2": "6326",
+  "12_chb1": false,
+  "12_chb10": false,
+  "12_chb11": true,
+  "12_chb12": false,
+  "12_chb13": false,
+  "12_chb14": false,
+  "12_chb2": false,
+  "12_chb3": true,
+  "12_chb4": false,
+  "12_chb5": false,
+  "12_chb6": false,
+  "12_chb7": false,
+  "12_chb8": false,
+  "12_chb9": false,
+  "13_Poznamka": undefined,
+  "13_chb1": false,
+  "13_chb2": false,
+  "13_chb3": false,
+  "13_chb4": false,
+  "13_chb5": false,
+  "13_chb6": false,
+  "13_chb7": false,
+  "13_chb8": false,
+  "13_chb9": false,
+  "2_Datum1": "01",
+  "2_Datum2": "01",
+  "2_Datum4": "24",
+  "2_Poznamka": "Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Priloha1": "1",
+  "2_Priloha2": undefined,
+  "2_Priloha3": undefined,
+  "2_Priloha7": "1",
+  "3_CisloParcely1": "2567/0",
+  "3_DatumVzniku1": undefined,
+  "3_DatumZaniku1": undefined,
+  "3_DruhPozemku1": "E",
+  "3_Ico": undefined,
+  "3_NazovKat1": "Nové Mesto",
+  "3_Obec": "Bratislava",
+  "3_Pc1": "1.",
+  "3_PocetSpol": undefined,
+  "3_Poznamka": "č. 1 LV: 0000",
+  "3_Priloha": "1",
+  "3_RodneCislo1": "920314",
+  "3_RodneCislo1Man": undefined,
+  "3_RodneCislo2": "6326",
+  "3_RodneCislo2Man": undefined,
+  "3_VymeraPozemku1": "34,74",
+  "3_VyuzitiePozemku1": undefined,
+  "3_chbDohodaSpolAno": false,
+  "3_chbDohodaSpolNie": false,
+  "3_chbHodnotaAno": false,
+  "3_chbHodnotaNie": true,
+  "3_chbNajomca": false,
+  "3_chbSpolBezpodiel": false,
+  "3_chbSpolPodiel": false,
+  "3_chbSpravca": false,
+  "3_chbUzivatel": false,
+  "3_chbVlastnik": true,
+  "Cislo": "6",
+  "Cislo1": undefined,
+  "Email": "meno@gmail.com",
+  "Email1": undefined,
+  "Ico": undefined,
+  "Meno": "Peter",
+  "Meno1": undefined,
+  "ObchodnyNazov": undefined,
+  "Obec": "Bratislava",
+  "Obec1": undefined,
+  "PSC": "83103",
+  "PSC1": undefined,
+  "PravnaForma": undefined,
+  "Priezvisko": "AAA Skúšobné s r .o",
+  "Priezvisko1": undefined,
+  "RodneCislo1": "920314",
+  "RodneCislo2": "6326",
+  "Rok2": "24",
+  "Stat": "Slovenská republika",
+  "Stat1": undefined,
+  "TelefonneCislo": "+421948111111",
+  "TelefonneCislo1": undefined,
+  "Titul": undefined,
+  "Titul1": undefined,
+  "Ulica": "Robotnícka",
+  "Ulica1": undefined,
+  "chbFO": true,
+  "chbPO": false,
+  "chbPriznanie1": true,
+  "chbPriznanie2": false,
+  "chbPriznanie3": false,
+  "chbPriznanie4": false,
+  "chbPriznanie5": false,
+  "chbVztah1": undefined,
+  "chbVztah2": undefined,
+  "chbVztah3": undefined,
+}
+`;
+
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample2 1`] = `
+{
+  "12_Ico": undefined,
+  "12_Obec": "Bratislava",
+  "12_RodneCislo1": undefined,
+  "12_RodneCislo2": undefined,
+  "12_chb1": false,
+  "12_chb10": false,
+  "12_chb11": false,
+  "12_chb12": false,
+  "12_chb13": false,
+  "12_chb14": false,
+  "12_chb2": false,
+  "12_chb3": false,
+  "12_chb4": false,
+  "12_chb5": false,
+  "12_chb6": false,
+  "12_chb7": false,
+  "12_chb8": false,
+  "12_chb9": false,
+  "13_Poznamka": undefined,
+  "13_chb1": false,
+  "13_chb2": false,
+  "13_chb3": false,
+  "13_chb4": false,
+  "13_chb5": false,
+  "13_chb6": false,
+  "13_chb7": false,
+  "13_chb8": false,
+  "13_chb9": false,
+  "2_Datum1": "01",
+  "2_Datum2": "01",
+  "2_Datum4": "24",
+  "2_Poznamka": "Rodné číslo: 1.1.1993
+
+Údaje o manželovi/manželke:
+Rodné číslo: 123232/1234 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Priloha1": "2",
+  "2_Priloha2": undefined,
+  "2_Priloha3": undefined,
+  "2_Priloha7": undefined,
+  "3_CisloParcely1": "730/2",
+  "3_CisloParcely1_Copy1": "755/4",
+  "3_DatumVzniku1": undefined,
+  "3_DatumVzniku1_Copy1": undefined,
+  "3_DatumZaniku1": undefined,
+  "3_DatumZaniku1_Copy1": undefined,
+  "3_DruhPozemku1": "F",
+  "3_DruhPozemku1_Copy1": "C",
+  "3_Ico": undefined,
+  "3_Ico_Copy1": undefined,
+  "3_NazovKat1": "Záhorská Bystrica",
+  "3_NazovKat1_Copy1": "Záhorská Bystrica",
+  "3_Obec": "Bratislava",
+  "3_Obec_Copy1": "Bratislava",
+  "3_Pc1": "1.",
+  "3_Pc1_Copy1": "1.",
+  "3_PocetSpol": undefined,
+  "3_PocetSpol_Copy1": undefined,
+  "3_Poznamka": "č. 1 LV: 1111",
+  "3_Poznamka_Copy1": "č. 1 LV: 1111",
+  "3_Priloha": "1",
+  "3_Priloha_Copy1": "2",
+  "3_RodneCislo1": undefined,
+  "3_RodneCislo1Man": undefined,
+  "3_RodneCislo1Man_Copy1": undefined,
+  "3_RodneCislo1_Copy1": undefined,
+  "3_RodneCislo2": undefined,
+  "3_RodneCislo2Man": undefined,
+  "3_RodneCislo2Man_Copy1": undefined,
+  "3_RodneCislo2_Copy1": undefined,
+  "3_VymeraPozemku1": "2",
+  "3_VymeraPozemku1_Copy1": "24",
+  "3_VyuzitiePozemku1": undefined,
+  "3_VyuzitiePozemku1_Copy1": undefined,
+  "3_chbDohodaSpolAno": false,
+  "3_chbDohodaSpolAno_Copy1": false,
+  "3_chbDohodaSpolNie": false,
+  "3_chbDohodaSpolNie_Copy1": false,
+  "3_chbHodnotaAno": false,
+  "3_chbHodnotaAno_Copy1": false,
+  "3_chbHodnotaNie": true,
+  "3_chbHodnotaNie_Copy1": true,
+  "3_chbNajomca": false,
+  "3_chbNajomca_Copy1": false,
+  "3_chbSpolBezpodiel": true,
+  "3_chbSpolBezpodiel_Copy1": true,
+  "3_chbSpolPodiel": false,
+  "3_chbSpolPodiel_Copy1": false,
+  "3_chbSpravca": false,
+  "3_chbSpravca_Copy1": false,
+  "3_chbUzivatel": false,
+  "3_chbUzivatel_Copy1": false,
+  "3_chbVlastnik": true,
+  "3_chbVlastnik_Copy1": true,
+  "Cislo": "15A",
+  "Cislo1": undefined,
+  "Email": "test@test.ts",
+  "Email1": undefined,
+  "Ico": undefined,
+  "Meno": "Test",
+  "Meno1": undefined,
+  "ObchodnyNazov": undefined,
+  "Obec": "Bratislava",
+  "Obec1": undefined,
+  "PSC": "84106",
+  "PSC1": undefined,
+  "PravnaForma": undefined,
+  "Priezvisko": "Test",
+  "Priezvisko1": undefined,
+  "RodneCislo1": undefined,
+  "RodneCislo2": undefined,
+  "Rok2": "24",
+  "Stat": "Slovenská republika",
+  "Stat1": undefined,
+  "TelefonneCislo": "+42191111111",
+  "TelefonneCislo1": undefined,
+  "Titul": undefined,
+  "Titul1": undefined,
+  "Ulica": "Ulica ",
+  "Ulica1": undefined,
+  "chbFO": true,
+  "chbPO": false,
+  "chbPriznanie1": false,
+  "chbPriznanie2": true,
+  "chbPriznanie3": false,
+  "chbPriznanie4": false,
+  "chbPriznanie5": false,
+  "chbVztah1": undefined,
+  "chbVztah2": undefined,
+  "chbVztah3": undefined,
+}
+`;
+
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample3 1`] = `
+{
+  "12_Ico": undefined,
+  "12_Obec": "Bratislava",
+  "12_RodneCislo1": undefined,
+  "12_RodneCislo2": undefined,
+  "12_chb1": false,
+  "12_chb10": false,
+  "12_chb11": false,
+  "12_chb12": false,
+  "12_chb13": false,
+  "12_chb14": false,
+  "12_chb2": false,
+  "12_chb3": false,
+  "12_chb4": false,
+  "12_chb5": false,
+  "12_chb6": false,
+  "12_chb7": false,
+  "12_chb8": false,
+  "12_chb9": false,
+  "13_Poznamka": undefined,
+  "13_chb1": false,
+  "13_chb2": false,
+  "13_chb3": false,
+  "13_chb4": false,
+  "13_chb5": false,
+  "13_chb6": false,
+  "13_chb7": false,
+  "13_chb8": false,
+  "13_chb9": false,
+  "2_Datum1": "01",
+  "2_Datum2": "01",
+  "2_Datum4": "24",
+  "2_Poznamka": "Rodné číslo: 910101/1111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Priloha1": undefined,
+  "2_Priloha2": undefined,
+  "2_Priloha3": "1",
+  "2_Priloha7": undefined,
+  "6_CisloBytu": "23",
+  "6_CisloParcely": "1234/10",
+  "6_CisloSupisne": "1",
+  "6_DatumVzniku": undefined,
+  "6_DatumZaniku": undefined,
+  "6_Ico": undefined,
+  "6_NazovUzemia": "Devínska Nová Ves",
+  "6_Obec": "Bratislava",
+  "6_PocetSpol": "2",
+  "6_PopisBytu": undefined,
+  "6_Poznamka": "Číslo LV: 3385",
+  "6_Priloha": "1",
+  "6_RodneCislo1": undefined,
+  "6_RodneCislo2": undefined,
+  "6_RodneCislo3": undefined,
+  "6_RodneCislo4": undefined,
+  "6_Ulica": "Jána Smreka 1",
+  "6_Vymera": undefined,
+  "6_ZDBytu": "18",
+  "6_chbDohodaSpolAno": true,
+  "6_chbDohodaSpolNie": false,
+  "6_chbSpolBezpodiel": false,
+  "6_chbSpolPodiel": true,
+  "6_chbSpravca": false,
+  "6_chbVlastnik": true,
+  "Cislo": "1",
+  "Cislo1": undefined,
+  "Email": "test@mail.com",
+  "Email1": undefined,
+  "Ico": undefined,
+  "Meno": "Test",
+  "Meno1": undefined,
+  "ObchodnyNazov": undefined,
+  "Obec": "Bratislava",
+  "Obec1": undefined,
+  "PSC": "85103",
+  "PSC1": undefined,
+  "PravnaForma": undefined,
+  "Priezvisko": "Test",
+  "Priezvisko1": undefined,
+  "RodneCislo1": undefined,
+  "RodneCislo2": undefined,
+  "Rok2": "24",
+  "Stat": "Slovenská republika",
+  "Stat1": undefined,
+  "TelefonneCislo": "+421901111111",
+  "TelefonneCislo1": undefined,
+  "Titul": "Ing.",
+  "Titul1": undefined,
+  "Ulica": "Test",
+  "Ulica1": undefined,
+  "chbFO": true,
+  "chbPO": false,
+  "chbPriznanie1": true,
+  "chbPriznanie2": false,
+  "chbPriznanie3": false,
+  "chbPriznanie4": false,
+  "chbPriznanie5": false,
+  "chbVztah1": undefined,
+  "chbVztah2": undefined,
+  "chbVztah3": undefined,
+}
+`;
+
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample4 1`] = `
+{
+  "12_Ico": undefined,
+  "12_Obec": "Bratislava",
+  "12_RodneCislo1": undefined,
+  "12_RodneCislo2": undefined,
+  "12_chb1": false,
+  "12_chb10": false,
+  "12_chb11": false,
+  "12_chb12": false,
+  "12_chb13": false,
+  "12_chb14": false,
+  "12_chb2": false,
+  "12_chb3": false,
+  "12_chb4": false,
+  "12_chb5": false,
+  "12_chb6": false,
+  "12_chb7": false,
+  "12_chb8": false,
+  "12_chb9": false,
+  "13_Poznamka": undefined,
+  "13_chb1": false,
+  "13_chb2": false,
+  "13_chb3": false,
+  "13_chb4": false,
+  "13_chb5": false,
+  "13_chb6": false,
+  "13_chb7": false,
+  "13_chb8": false,
+  "13_chb9": false,
+  "2_Datum1": "01",
+  "2_Datum2": "01",
+  "2_Datum4": "24",
+  "2_Poznamka": "Rodné číslo: 93823741111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Priloha1": undefined,
+  "2_Priloha2": undefined,
+  "2_Priloha3": undefined,
+  "2_Priloha7": undefined,
+  "Cislo": "1111/61",
+  "Cislo1": undefined,
+  "Email": "test@test.sk",
+  "Email1": undefined,
+  "Ico": undefined,
+  "Meno": "Test",
+  "Meno1": undefined,
+  "ObchodnyNazov": undefined,
+  "Obec": "Trnava",
+  "Obec1": undefined,
+  "PSC": "91701",
+  "PSC1": undefined,
+  "PravnaForma": undefined,
+  "Priezvisko": "Test ",
+  "Priezvisko1": undefined,
+  "RodneCislo1": undefined,
+  "RodneCislo2": undefined,
+  "Rok2": "24",
+  "Stat": "Slovenská republika",
+  "Stat1": undefined,
+  "TelefonneCislo": "+421911111111",
+  "TelefonneCislo1": undefined,
+  "Titul": undefined,
+  "Titul1": undefined,
+  "Ulica": "Test",
+  "Ulica1": undefined,
+  "chbFO": true,
+  "chbPO": false,
+  "chbPriznanie1": false,
+  "chbPriznanie2": false,
+  "chbPriznanie3": true,
+  "chbPriznanie4": false,
+  "chbPriznanie5": false,
+  "chbVztah1": undefined,
+  "chbVztah2": undefined,
+  "chbVztah3": undefined,
+}
+`;
+
+exports[`tax-form should return correct PDF mapping for priznanieKDaniZNehnutelnostiExample5 1`] = `
+{
+  "12_Ico": undefined,
+  "12_Obec": "Bratislava",
+  "12_Priloha": "5",
+  "12_RodneCislo1": "920314",
+  "12_RodneCislo2": "6326",
+  "12_chb1": false,
+  "12_chb10": false,
+  "12_chb11": true,
+  "12_chb12": false,
+  "12_chb13": false,
+  "12_chb14": true,
+  "12_chb2": true,
+  "12_chb3": true,
+  "12_chb4": false,
+  "12_chb5": true,
+  "12_chb6": false,
+  "12_chb7": false,
+  "12_chb8": false,
+  "12_chb9": false,
+  "13_Poznamka": "Príkladná 35",
+  "13_chb1": false,
+  "13_chb2": true,
+  "13_chb3": true,
+  "13_chb4": false,
+  "13_chb5": false,
+  "13_chb6": false,
+  "13_chb7": false,
+  "13_chb8": true,
+  "13_chb9": true,
+  "2_Datum1": "01",
+  "2_Datum2": "01",
+  "2_Datum4": "24",
+  "2_Poznamka": "Korespondenčná adresa:
+Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
+
+Údaje o manželovi/manželke:
+Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
+  "2_Priloha1": "1",
+  "2_Priloha2": "2",
+  "2_Priloha3": "1",
+  "2_Priloha7": "1",
+  "3_CisloParcely1": "7986/1",
+  "3_DatumVzniku1": "13.01.2024",
+  "3_DatumZaniku1": "04.01.2024",
+  "3_DruhPozemku1": "B",
+  "3_Ico": undefined,
+  "3_NazovKat1": "Devínska Nová Ves",
+  "3_Obec": "Bratislava",
+  "3_Pc1": "1.",
+  "3_PocetSpol": undefined,
+  "3_Poznamka": "č. 1 LV: 4589",
+  "3_Priloha": "1",
+  "3_RodneCislo1": "920314",
+  "3_RodneCislo1Man": undefined,
+  "3_RodneCislo2": "6326",
+  "3_RodneCislo2Man": undefined,
+  "3_VymeraPozemku1": "18,52",
+  "3_VyuzitiePozemku1": "Ložisko",
+  "3_chbDohodaSpolAno": false,
+  "3_chbDohodaSpolNie": false,
+  "3_chbHodnotaAno": false,
+  "3_chbHodnotaNie": true,
+  "3_chbNajomca": false,
+  "3_chbSpolBezpodiel": false,
+  "3_chbSpolPodiel": false,
+  "3_chbSpravca": false,
+  "3_chbUzivatel": false,
+  "3_chbVlastnik": true,
+  "4_CelkovaVymera": "26",
+  "4_CisloParcely": "7859/1",
+  "4_CisloSupisne": "2526",
+  "4_DatumVzniku": "04.01.2024",
+  "4_DatumZaniku": "06.01.2024",
+  "4_Ico": undefined,
+  "4_NazovUzemia": "Jarovce",
+  "4_Obec": "Bratislava",
+  "4_PocetPodlazi": "5",
+  "4_PocetSpol": "2",
+  "4_Poznamka": "Číslo LV: 4597",
+  "4_Priloha": "2",
+  "4_RodneCislo1": "920314",
+  "4_RodneCislo2": "6326",
+  "4_RodneCislo3": undefined,
+  "4_RodneCislo4": undefined,
+  "4_Ulica": "Príkladná 35",
+  "4_VymeraPloch": "89",
+  "4_ZakladDane": "1330",
+  "4_chbDohodaSpolAno": true,
+  "4_chbDohodaSpolNie": false,
+  "4_chbNajomca": false,
+  "4_chbPredmetDane1": true,
+  "4_chbPredmetDane2": false,
+  "4_chbPredmetDane3": false,
+  "4_chbPredmetDane4": false,
+  "4_chbPredmetDane5": false,
+  "4_chbPredmetDane6": false,
+  "4_chbPredmetDane7": false,
+  "4_chbPredmetDane8": false,
+  "4_chbPredmetDane9": false,
+  "4_chbSpolBezpodiel": false,
+  "4_chbSpolPodiel": true,
+  "4_chbSpravca": false,
+  "4_chbUzivatel": false,
+  "4_chbVlastnik": true,
+  "5_CelkovaVymera": "46",
+  "5_CisloParcely": "5697/1",
+  "5_CisloSupisne": "35",
+  "5_DatumVzniku": "05.01.2024",
+  "5_DatumZaniku": "04.01.2024",
+  "5_Ico": undefined,
+  "5_NazovUzemia": "Devín",
+  "5_Obec": "Bratislava",
+  "5_PocetPodlazi": "4",
+  "5_PocetSpol": undefined,
+  "5_PopisStavby": "Príkladná stavba",
+  "5_Poznamka": "Príkladná 35
+Číslo LV: 4597",
+  "5_Priloha": "3",
+  "5_RodneCislo1": "920314",
+  "5_RodneCislo2": "6326",
+  "5_RodneCislo3": undefined,
+  "5_RodneCislo4": undefined,
+  "5_Ulica": "Príkladná 35",
+  "5_VymeraOslobodena": "26",
+  "5_VymeraPloch2": "45",
+  "5_VymeraPlochK2": "98",
+  "5_ZakladDane": "4435",
+  "5_chbDohodaSpolAno": false,
+  "5_chbDohodaSpolNie": false,
+  "5_chbNajomca": true,
+  "5_chbSpolBezpodiel": true,
+  "5_chbSpolPodiel": false,
+  "5_chbSpravca": false,
+  "5_chbUzivatel": false,
+  "5_chbVlastnik": false,
+  "6_Cislo Priest1": "G05",
+  "6_CisloBytu": "3",
+  "6_CisloParcely": "6975/2",
+  "6_CisloSupisne": "3694",
+  "6_DatumVzniku": "16.01.2024",
+  "6_DatumVzniku1": "05.01.2024",
+  "6_DatumZaniku": "07.01.2024",
+  "6_DatumZaniku1": "12.01.2024",
+  "6_Ico": undefined,
+  "6_NazovUzemia": "Karlova Ves",
+  "6_Obec": "Bratislava",
+  "6_Pc1": "1.",
+  "6_PocetSpol": "3",
+  "6_PopisBytu": "Dvojizbak",
+  "6_Poznamka": "Príkladná 35
+Číslo LV: 2648",
+  "6_Priloha": "4",
+  "6_RodneCislo1": "920314",
+  "6_RodneCislo2": "6326",
+  "6_RodneCislo3": undefined,
+  "6_RodneCislo4": undefined,
+  "6_UcelVyuzitia1": "Garáž",
+  "6_Ulica": "Príkladná 35",
+  "6_Vymera": "18",
+  "6_VymeraPozemku1": "6",
+  "6_ZDBytu": "27",
+  "6_chbDohodaSpolAno": false,
+  "6_chbDohodaSpolNie": true,
+  "6_chbSpolBezpodiel": false,
+  "6_chbSpolPodiel": true,
+  "6_chbSpravca": true,
+  "6_chbVlastnik": false,
+  "Cislo": "6",
+  "Cislo1": undefined,
+  "Email": "test@test.com",
+  "Email1": undefined,
+  "Ico": undefined,
+  "Meno": "Lincoln",
+  "Meno1": undefined,
+  "ObchodnyNazov": undefined,
+  "Obec": "Bratislava",
+  "Obec1": undefined,
+  "PSC": "83103",
+  "PSC1": undefined,
+  "PravnaForma": undefined,
+  "Priezvisko": "Abraham",
+  "Priezvisko1": undefined,
+  "RodneCislo1": "920314",
+  "RodneCislo2": "6326",
+  "Rok2": "24",
+  "Stat": "Senegalská republika",
+  "Stat1": undefined,
+  "TelefonneCislo": "+421948417711",
+  "TelefonneCislo1": undefined,
+  "Titul": "Mgr.",
+  "Titul1": undefined,
+  "Ulica": "Robotnícka",
+  "Ulica1": undefined,
+  "chbFO": true,
+  "chbPO": false,
+  "chbPriznanie1": false,
+  "chbPriznanie2": false,
+  "chbPriznanie3": false,
+  "chbPriznanie4": true,
+  "chbPriznanie5": false,
+  "chbVztah1": undefined,
+  "chbVztah2": undefined,
+  "chbVztah3": undefined,
+}
+`;
+
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample1 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
+  <Meta>
+    <ID>esmao.eforms.bratislava.obec_024</ID>
+    <Name>Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností</Name>
+    <Gestor>ESMaO</Gestor>
+    <RecipientId>ico://sk/00603481</RecipientId>
+    <Version>201501.2</Version>
+    <ZepRequired>false</ZepRequired>
+  </Meta>
+  <Body>
+    <DruhPriznania>
+      <Code>0</Code>
+      <Name>Priznanie</Name>
+      <WsEnumCode>ICL0020</WsEnumCode>
+    </DruhPriznania>
+    <NaRok>2024</NaRok>
+    <Danovnik>
+      <TypOsoby>
+        <Code>FO</Code>
+        <Name>fyzická osoba</Name>
+        <WsEnumCode>ICL0096</WsEnumCode>
+      </TypOsoby>
+      <IdentifikaciaOsoby>
+        <Meno>Peter</Meno>
+        <Priezvisko>AAA Skúšobné s r .o</Priezvisko>
+        <DatumNarodenia>1992-03-14+01:00</DatumNarodenia>
+        <RodneCislo>9203146326</RodneCislo>
+      </IdentifikaciaOsoby>
+    </Danovnik>
+    <AdresaDanovnika>
+      <Meno>Peter</Meno>
+      <Priezvisko>AAA Skúšobné s r .o</Priezvisko>
+      <UlicaACislo>
+        <Ulica>Robotnícka</Ulica>
+        <OrientacneCislo>6</OrientacneCislo>
+      </UlicaACislo>
+      <PSC>83103</PSC>
+      <Obec>
+        <Name>Bratislava</Name>
+      </Obec>
+      <Stat>
+        <Code>703</Code>
+        <Name>Slovenská republika</Name>
+        <WsEnumCode>0086</WsEnumCode>
+      </Stat>
+    </AdresaDanovnika>
+    <KontaktneUdajeDanovnika>
+      <TelefonneCislo>
+        <MedzinarodneVolacieCislo>+421</MedzinarodneVolacieCislo>
+        <Predvolba>948</Predvolba>
+        <Cislo>111111</Cislo>
+      </TelefonneCislo>
+      <Email>meno@gmail.com</Email>
+    </KontaktneUdajeDanovnika>
+    <DanZPozemkov>
+      <DanZPozemkovZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9203146326</RodneCislo>
+        <Obec>Bratislava</Obec>
+        <DruhyZmien>
+          <DruhZmeny>
+            <Code>A</Code>
+            <Name>Orná pôda, vinice, chmelnice, ovocné sady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>B</Code>
+            <Name>Trvalé trávnaté porasty</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>C</Code>
+            <Name>Záhrady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>D</Code>
+            <Name>Lesné pozemky, na ktorých sú hospodárske lesy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>E</Code>
+            <Name>Rybníky s chovom rýb a ostatné hospodárske vzužívané vodné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>F</Code>
+            <Name>Zastavné plochy a nádvoria</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>G</Code>
+            <Name>Stavebné pozemky</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>H</Code>
+            <Name>Ostatné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+        </DruhyZmien>
+        <HodnotaPozemkuUrcenaZnalcom>false</HodnotaPozemkuUrcenaZnalcom>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Pozemky>
+          <Pozemok>
+            <PoradoveCislo>1</PoradoveCislo>
+            <NazovKatastralnehoUzemia>
+              <Code>804690</Code>
+              <Name>Nové Mesto</Name>
+              <WsEnumCode>ICL0079</WsEnumCode>
+            </NazovKatastralnehoUzemia>
+            <CisloParcely>2567/0</CisloParcely>
+            <Vymera>34.74</Vymera>
+            <DruhPozemku>
+              <Code>E</Code>
+              <Name>Rybníky s chovom rýb a ostatné hospodárske vzužívané vodné plochy</Name>
+              <WsEnumCode>ICL0098</WsEnumCode>
+            </DruhPozemku>
+          </Pozemok>
+        </Pozemky>
+      </DanZPozemkovZaznam>
+    </DanZPozemkov>
+    <Priloha>
+      <Obec>Bratislava</Obec>
+      <PozemkyA>false</PozemkyA>
+      <PozemkyB>false</PozemkyB>
+      <PozemkyC>true</PozemkyC>
+      <PozemkyD>false</PozemkyD>
+      <PozemkyE>false</PozemkyE>
+      <PozemkyF>false</PozemkyF>
+      <PozemkyG>false</PozemkyG>
+      <PozemkyH>false</PozemkyH>
+      <PozemkyI>false</PozemkyI>
+      <PozemkyJ>false</PozemkyJ>
+      <PozemkyK>true</PozemkyK>
+      <PozemkyL>false</PozemkyL>
+      <StavbyA>false</StavbyA>
+      <StavbyB>false</StavbyB>
+      <StavbyC>false</StavbyC>
+      <StavbyD>false</StavbyD>
+      <StavbyE>false</StavbyE>
+      <StavbyF>false</StavbyF>
+      <BytyA>false</BytyA>
+      <BytyB>false</BytyB>
+      <BytyC>false</BytyC>
+      <BytyD>false</BytyD>
+      <BytyE>false</BytyE>
+    </Priloha>
+    <SuhrnPriloh>
+      <PocetOddielovII>1</PocetOddielovII>
+      <PocetOddielovIII>0</PocetOddielovIII>
+      <PocetOddielovIV>0</PocetOddielovIV>
+      <PocetOddielovV>0</PocetOddielovV>
+      <PocetOddielovVI>0</PocetOddielovVI>
+      <PocetOddielovVII>0</PocetOddielovVII>
+      <PocetInych>1</PocetInych>
+      <Poznamka>Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+    </SuhrnPriloh>
+    <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
+    <ZakladneVyhlasenie>
+      <SpravnostUdajovText>Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov</SpravnostUdajovText>
+      <SuhlasSoSpracovanimText>Týmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.</SuhlasSoSpracovanimText>
+      <PoskytujemSuhlas>true</PoskytujemSuhlas>
+      <PoskytujemSuhlasText>Poskytujem súhlas na spracovanie osobných údajov</PoskytujemSuhlasText>
+      <NeposkytujemSuhlas>false</NeposkytujemSuhlas>
+      <NeposkytujemSuhlasText>Neposkytujem súhlas na spracovanie osobných údajov</NeposkytujemSuhlasText>
+    </ZakladneVyhlasenie>
+    <Dorucenie>
+      <AdresatPodania>
+        <AdresatPodania>Mesto</AdresatPodania>
+      </AdresatPodania>
+      <Checkbox>
+        <Notifikacia>true</Notifikacia>
+      </Checkbox>
+      <FormaOdoslaniaZiadosti>Elektronicky</FormaOdoslaniaZiadosti>
+      <FormaDoruceniaRozhodnutia>
+        <TypSposobuDorucenia>Elektronická schránka</TypSposobuDorucenia>
+      </FormaDoruceniaRozhodnutia>
+    </Dorucenie>
+  </Body>
+</E-form>"
+`;
+
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample2 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
+  <Meta>
+    <ID>esmao.eforms.bratislava.obec_024</ID>
+    <Name>Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností</Name>
+    <Gestor>ESMaO</Gestor>
+    <RecipientId>ico://sk/00603481</RecipientId>
+    <Version>201501.2</Version>
+    <ZepRequired>false</ZepRequired>
+  </Meta>
+  <Body>
+    <DruhPriznania>
+      <Code>1</Code>
+      <Name>Čiastkové priznanie</Name>
+      <WsEnumCode>ICL0020</WsEnumCode>
+    </DruhPriznania>
+    <NaRok>2024</NaRok>
+    <Danovnik>
+      <TypOsoby>
+        <Code>FO</Code>
+        <Name>fyzická osoba</Name>
+        <WsEnumCode>ICL0096</WsEnumCode>
+      </TypOsoby>
+      <IdentifikaciaOsoby>
+        <Meno>Test</Meno>
+        <Priezvisko>Test</Priezvisko>
+      </IdentifikaciaOsoby>
+    </Danovnik>
+    <AdresaDanovnika>
+      <Meno>Test</Meno>
+      <Priezvisko>Test</Priezvisko>
+      <UlicaACislo>
+        <Ulica>Ulica </Ulica>
+        <OrientacneCislo>15A</OrientacneCislo>
+      </UlicaACislo>
+      <PSC>84106</PSC>
+      <Obec>
+        <Name>Bratislava</Name>
+      </Obec>
+      <Stat>
+        <Code>703</Code>
+        <Name>Slovenská republika</Name>
+        <WsEnumCode>0086</WsEnumCode>
+      </Stat>
+    </AdresaDanovnika>
+    <KontaktneUdajeDanovnika>
+      <Email>test@test.ts</Email>
+    </KontaktneUdajeDanovnika>
+    <DanZPozemkov>
+      <DanZPozemkovZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <Obec>Bratislava</Obec>
+        <DruhyZmien>
+          <DruhZmeny>
+            <Code>A</Code>
+            <Name>Orná pôda, vinice, chmelnice, ovocné sady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>B</Code>
+            <Name>Trvalé trávnaté porasty</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>C</Code>
+            <Name>Záhrady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>D</Code>
+            <Name>Lesné pozemky, na ktorých sú hospodárske lesy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>E</Code>
+            <Name>Rybníky s chovom rýb a ostatné hospodárske vzužívané vodné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>F</Code>
+            <Name>Zastavné plochy a nádvoria</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>G</Code>
+            <Name>Stavebné pozemky</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>H</Code>
+            <Name>Ostatné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+        </DruhyZmien>
+        <HodnotaPozemkuUrcenaZnalcom>false</HodnotaPozemkuUrcenaZnalcom>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>1</Code>
+          <Name>Bezpodielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <Pozemky>
+          <Pozemok>
+            <PoradoveCislo>1</PoradoveCislo>
+            <NazovKatastralnehoUzemia>
+              <Code>871796</Code>
+              <Name>Záhorská Bystrica</Name>
+              <WsEnumCode>ICL0079</WsEnumCode>
+            </NazovKatastralnehoUzemia>
+            <CisloParcely>730/2</CisloParcely>
+            <Vymera>2.00</Vymera>
+            <DruhPozemku>
+              <Code>F</Code>
+              <Name>Zastavné plochy a nádvoria</Name>
+              <WsEnumCode>ICL0098</WsEnumCode>
+            </DruhPozemku>
+          </Pozemok>
+        </Pozemky>
+      </DanZPozemkovZaznam>
+      <DanZPozemkovZaznam>
+        <PoradoveCislo>2</PoradoveCislo>
+        <Obec>Bratislava</Obec>
+        <DruhyZmien>
+          <DruhZmeny>
+            <Code>A</Code>
+            <Name>Orná pôda, vinice, chmelnice, ovocné sady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>B</Code>
+            <Name>Trvalé trávnaté porasty</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>C</Code>
+            <Name>Záhrady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>D</Code>
+            <Name>Lesné pozemky, na ktorých sú hospodárske lesy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>E</Code>
+            <Name>Rybníky s chovom rýb a ostatné hospodárske vzužívané vodné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>F</Code>
+            <Name>Zastavné plochy a nádvoria</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>G</Code>
+            <Name>Stavebné pozemky</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>H</Code>
+            <Name>Ostatné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+        </DruhyZmien>
+        <HodnotaPozemkuUrcenaZnalcom>false</HodnotaPozemkuUrcenaZnalcom>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>1</Code>
+          <Name>Bezpodielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <Pozemky>
+          <Pozemok>
+            <PoradoveCislo>1</PoradoveCislo>
+            <NazovKatastralnehoUzemia>
+              <Code>871796</Code>
+              <Name>Záhorská Bystrica</Name>
+              <WsEnumCode>ICL0079</WsEnumCode>
+            </NazovKatastralnehoUzemia>
+            <CisloParcely>755/4</CisloParcely>
+            <Vymera>24.00</Vymera>
+            <DruhPozemku>
+              <Code>C</Code>
+              <Name>Záhrady</Name>
+              <WsEnumCode>ICL0098</WsEnumCode>
+            </DruhPozemku>
+          </Pozemok>
+        </Pozemky>
+      </DanZPozemkovZaznam>
+    </DanZPozemkov>
+    <Priloha>
+      <Obec>Bratislava</Obec>
+      <PozemkyA>false</PozemkyA>
+      <PozemkyB>false</PozemkyB>
+      <PozemkyC>false</PozemkyC>
+      <PozemkyD>false</PozemkyD>
+      <PozemkyE>false</PozemkyE>
+      <PozemkyF>false</PozemkyF>
+      <PozemkyG>false</PozemkyG>
+      <PozemkyH>false</PozemkyH>
+      <PozemkyI>false</PozemkyI>
+      <PozemkyJ>false</PozemkyJ>
+      <PozemkyK>false</PozemkyK>
+      <PozemkyL>false</PozemkyL>
+      <StavbyA>false</StavbyA>
+      <StavbyB>false</StavbyB>
+      <StavbyC>false</StavbyC>
+      <StavbyD>false</StavbyD>
+      <StavbyE>false</StavbyE>
+      <StavbyF>false</StavbyF>
+      <BytyA>false</BytyA>
+      <BytyB>false</BytyB>
+      <BytyC>false</BytyC>
+      <BytyD>false</BytyD>
+      <BytyE>false</BytyE>
+    </Priloha>
+    <SuhrnPriloh>
+      <PocetOddielovII>2</PocetOddielovII>
+      <PocetOddielovIII>0</PocetOddielovIII>
+      <PocetOddielovIV>0</PocetOddielovIV>
+      <PocetOddielovV>0</PocetOddielovV>
+      <PocetOddielovVI>0</PocetOddielovVI>
+      <PocetOddielovVII>0</PocetOddielovVII>
+      <PocetInych>0</PocetInych>
+      <Poznamka>Rodné číslo: 1.1.1993
+
+Údaje o manželovi/manželke:
+Rodné číslo: 123232/1234 | Titul: Ing | Meno: Test | Priezvisko: Test | Má trvalé bydlisko na rovnakej adrese ako žiadateľ?: Áno | E-mail: test@test.ts | Telefón: +42191111111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+    </SuhrnPriloh>
+    <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
+    <ZakladneVyhlasenie>
+      <SpravnostUdajovText>Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov</SpravnostUdajovText>
+      <SuhlasSoSpracovanimText>Týmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.</SuhlasSoSpracovanimText>
+      <PoskytujemSuhlas>true</PoskytujemSuhlas>
+      <PoskytujemSuhlasText>Poskytujem súhlas na spracovanie osobných údajov</PoskytujemSuhlasText>
+      <NeposkytujemSuhlas>false</NeposkytujemSuhlas>
+      <NeposkytujemSuhlasText>Neposkytujem súhlas na spracovanie osobných údajov</NeposkytujemSuhlasText>
+    </ZakladneVyhlasenie>
+    <Dorucenie>
+      <AdresatPodania>
+        <AdresatPodania>Mesto</AdresatPodania>
+      </AdresatPodania>
+      <Checkbox>
+        <Notifikacia>true</Notifikacia>
+      </Checkbox>
+      <FormaOdoslaniaZiadosti>Elektronicky</FormaOdoslaniaZiadosti>
+      <FormaDoruceniaRozhodnutia>
+        <TypSposobuDorucenia>Elektronická schránka</TypSposobuDorucenia>
+      </FormaDoruceniaRozhodnutia>
+    </Dorucenie>
+  </Body>
+</E-form>"
+`;
+
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample3 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
+  <Meta>
+    <ID>esmao.eforms.bratislava.obec_024</ID>
+    <Name>Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností</Name>
+    <Gestor>ESMaO</Gestor>
+    <RecipientId>ico://sk/00603481</RecipientId>
+    <Version>201501.2</Version>
+    <ZepRequired>false</ZepRequired>
+  </Meta>
+  <Body>
+    <DruhPriznania>
+      <Code>0</Code>
+      <Name>Priznanie</Name>
+      <WsEnumCode>ICL0020</WsEnumCode>
+    </DruhPriznania>
+    <NaRok>2024</NaRok>
+    <Danovnik>
+      <TypOsoby>
+        <Code>FO</Code>
+        <Name>fyzická osoba</Name>
+        <WsEnumCode>ICL0096</WsEnumCode>
+      </TypOsoby>
+      <IdentifikaciaOsoby>
+        <TitulyPredMenom>
+          <TitulPredMenom>
+            <Code>01</Code>
+            <Name>Ing.</Name>
+            <WsEnumCode>0062</WsEnumCode>
+          </TitulPredMenom>
+        </TitulyPredMenom>
+        <Meno>Test</Meno>
+        <Priezvisko>Test</Priezvisko>
+      </IdentifikaciaOsoby>
+    </Danovnik>
+    <AdresaDanovnika>
+      <Meno>Test</Meno>
+      <Priezvisko>Test</Priezvisko>
+      <UlicaACislo>
+        <Ulica>Test</Ulica>
+        <OrientacneCislo>1</OrientacneCislo>
+      </UlicaACislo>
+      <PSC>85103</PSC>
+      <Obec>
+        <Name>Bratislava</Name>
+      </Obec>
+      <Stat>
+        <Code>703</Code>
+        <Name>Slovenská republika</Name>
+        <WsEnumCode>0086</WsEnumCode>
+      </Stat>
+    </AdresaDanovnika>
+    <KontaktneUdajeDanovnika>
+      <TelefonneCislo>
+        <MedzinarodneVolacieCislo>+421</MedzinarodneVolacieCislo>
+        <Predvolba>901</Predvolba>
+        <Cislo>111111</Cislo>
+      </TelefonneCislo>
+      <Email>test@mail.com</Email>
+    </KontaktneUdajeDanovnika>
+    <DanZBytovANebytovychPriestorov>
+      <DanZBytovANebytovychPriestorovZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <AdresaBytu>
+          <UlicaACislo>
+            <Ulica>Jána Smreka</Ulica>
+            <SupisneCislo>1</SupisneCislo>
+            <OrientacneCislo>1</OrientacneCislo>
+          </UlicaACislo>
+          <Obec>
+            <Code>SK0104529371</Code>
+            <Name>Bratislava - mestská časť Devínska Nová Ves</Name>
+            <WsEnumCode>0025</WsEnumCode>
+          </Obec>
+          <Stat>
+            <Code>703</Code>
+            <Name>Slovenská republika</Name>
+            <WsEnumCode>0086</WsEnumCode>
+          </Stat>
+        </AdresaBytu>
+        <NazovKatastralnehoUzemia>
+          <Code>810649</Code>
+          <Name>Devínska Nová Ves</Name>
+          <WsEnumCode>ICL0079</WsEnumCode>
+        </NazovKatastralnehoUzemia>
+        <CisloParcely>1234/10</CisloParcely>
+        <CisloBytu>23</CisloBytu>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>0</Code>
+          <Name>Podielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <PocetSpoluvlastnikov>2</PocetSpoluvlastnikov>
+        <SpoluvlastnikUrcenyDohodou>true</SpoluvlastnikUrcenyDohodou>
+        <ZakladDane>
+          <Byt>18</Byt>
+        </ZakladDane>
+        <Poznamka>Číslo LV: 3385</Poznamka>
+      </DanZBytovANebytovychPriestorovZaznam>
+    </DanZBytovANebytovychPriestorov>
+    <Priloha>
+      <Obec>Bratislava</Obec>
+      <PozemkyA>false</PozemkyA>
+      <PozemkyB>false</PozemkyB>
+      <PozemkyC>false</PozemkyC>
+      <PozemkyD>false</PozemkyD>
+      <PozemkyE>false</PozemkyE>
+      <PozemkyF>false</PozemkyF>
+      <PozemkyG>false</PozemkyG>
+      <PozemkyH>false</PozemkyH>
+      <PozemkyI>false</PozemkyI>
+      <PozemkyJ>false</PozemkyJ>
+      <PozemkyK>false</PozemkyK>
+      <PozemkyL>false</PozemkyL>
+      <StavbyA>false</StavbyA>
+      <StavbyB>false</StavbyB>
+      <StavbyC>false</StavbyC>
+      <StavbyD>false</StavbyD>
+      <StavbyE>false</StavbyE>
+      <StavbyF>false</StavbyF>
+      <BytyA>false</BytyA>
+      <BytyB>false</BytyB>
+      <BytyC>false</BytyC>
+      <BytyD>false</BytyD>
+      <BytyE>false</BytyE>
+    </Priloha>
+    <SuhrnPriloh>
+      <PocetOddielovII>0</PocetOddielovII>
+      <PocetOddielovIII>0</PocetOddielovIII>
+      <PocetOddielovIV>1</PocetOddielovIV>
+      <PocetOddielovV>0</PocetOddielovV>
+      <PocetOddielovVI>0</PocetOddielovVI>
+      <PocetOddielovVII>0</PocetOddielovVII>
+      <PocetInych>0</PocetInych>
+      <Poznamka>Rodné číslo: 910101/1111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+    </SuhrnPriloh>
+    <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
+    <ZakladneVyhlasenie>
+      <SpravnostUdajovText>Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov</SpravnostUdajovText>
+      <SuhlasSoSpracovanimText>Týmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.</SuhlasSoSpracovanimText>
+      <PoskytujemSuhlas>true</PoskytujemSuhlas>
+      <PoskytujemSuhlasText>Poskytujem súhlas na spracovanie osobných údajov</PoskytujemSuhlasText>
+      <NeposkytujemSuhlas>false</NeposkytujemSuhlas>
+      <NeposkytujemSuhlasText>Neposkytujem súhlas na spracovanie osobných údajov</NeposkytujemSuhlasText>
+    </ZakladneVyhlasenie>
+    <Dorucenie>
+      <AdresatPodania>
+        <AdresatPodania>Mesto</AdresatPodania>
+      </AdresatPodania>
+      <Checkbox>
+        <Notifikacia>true</Notifikacia>
+      </Checkbox>
+      <FormaOdoslaniaZiadosti>Elektronicky</FormaOdoslaniaZiadosti>
+      <FormaDoruceniaRozhodnutia>
+        <TypSposobuDorucenia>Elektronická schránka</TypSposobuDorucenia>
+      </FormaDoruceniaRozhodnutia>
+    </Dorucenie>
+  </Body>
+</E-form>"
+`;
+
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample4 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
+  <Meta>
+    <ID>esmao.eforms.bratislava.obec_024</ID>
+    <Name>Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností</Name>
+    <Gestor>ESMaO</Gestor>
+    <RecipientId>ico://sk/00603481</RecipientId>
+    <Version>201501.2</Version>
+    <ZepRequired>false</ZepRequired>
+  </Meta>
+  <Body>
+    <DruhPriznania>
+      <Code>2</Code>
+      <Name>Čiastkové priznanie na zánik daňovej povinnosti</Name>
+      <WsEnumCode>ICL0020</WsEnumCode>
+    </DruhPriznania>
+    <NaRok>2024</NaRok>
+    <Danovnik>
+      <TypOsoby>
+        <Code>FO</Code>
+        <Name>fyzická osoba</Name>
+        <WsEnumCode>ICL0096</WsEnumCode>
+      </TypOsoby>
+      <IdentifikaciaOsoby>
+        <Meno>Test</Meno>
+        <Priezvisko>Test </Priezvisko>
+      </IdentifikaciaOsoby>
+    </Danovnik>
+    <AdresaDanovnika>
+      <Meno>Test</Meno>
+      <Priezvisko>Test </Priezvisko>
+      <UlicaACislo>
+        <Ulica>Test</Ulica>
+        <OrientacneCislo>1111/61</OrientacneCislo>
+      </UlicaACislo>
+      <PSC>91701</PSC>
+      <Obec>
+        <Name>Trnava</Name>
+      </Obec>
+      <Stat>
+        <Code>703</Code>
+        <Name>Slovenská republika</Name>
+        <WsEnumCode>0086</WsEnumCode>
+      </Stat>
+    </AdresaDanovnika>
+    <KontaktneUdajeDanovnika>
+      <TelefonneCislo>
+        <MedzinarodneVolacieCislo>+421</MedzinarodneVolacieCislo>
+        <Predvolba>911</Predvolba>
+        <Cislo>111111</Cislo>
+      </TelefonneCislo>
+      <Email>test@test.sk</Email>
+    </KontaktneUdajeDanovnika>
+    <Priloha>
+      <Obec>Bratislava</Obec>
+      <PozemkyA>false</PozemkyA>
+      <PozemkyB>false</PozemkyB>
+      <PozemkyC>false</PozemkyC>
+      <PozemkyD>false</PozemkyD>
+      <PozemkyE>false</PozemkyE>
+      <PozemkyF>false</PozemkyF>
+      <PozemkyG>false</PozemkyG>
+      <PozemkyH>false</PozemkyH>
+      <PozemkyI>false</PozemkyI>
+      <PozemkyJ>false</PozemkyJ>
+      <PozemkyK>false</PozemkyK>
+      <PozemkyL>false</PozemkyL>
+      <StavbyA>false</StavbyA>
+      <StavbyB>false</StavbyB>
+      <StavbyC>false</StavbyC>
+      <StavbyD>false</StavbyD>
+      <StavbyE>false</StavbyE>
+      <StavbyF>false</StavbyF>
+      <BytyA>false</BytyA>
+      <BytyB>false</BytyB>
+      <BytyC>false</BytyC>
+      <BytyD>false</BytyD>
+      <BytyE>false</BytyE>
+    </Priloha>
+    <SuhrnPriloh>
+      <PocetOddielovII>0</PocetOddielovII>
+      <PocetOddielovIII>0</PocetOddielovIII>
+      <PocetOddielovIV>0</PocetOddielovIV>
+      <PocetOddielovV>0</PocetOddielovV>
+      <PocetOddielovVI>0</PocetOddielovVI>
+      <PocetOddielovVII>0</PocetOddielovVII>
+      <PocetInych>0</PocetInych>
+      <Poznamka>Rodné číslo: 93823741111
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+    </SuhrnPriloh>
+    <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
+    <ZakladneVyhlasenie>
+      <SpravnostUdajovText>Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov</SpravnostUdajovText>
+      <SuhlasSoSpracovanimText>Týmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.</SuhlasSoSpracovanimText>
+      <PoskytujemSuhlas>true</PoskytujemSuhlas>
+      <PoskytujemSuhlasText>Poskytujem súhlas na spracovanie osobných údajov</PoskytujemSuhlasText>
+      <NeposkytujemSuhlas>false</NeposkytujemSuhlas>
+      <NeposkytujemSuhlasText>Neposkytujem súhlas na spracovanie osobných údajov</NeposkytujemSuhlasText>
+    </ZakladneVyhlasenie>
+    <Dorucenie>
+      <AdresatPodania>
+        <AdresatPodania>Mesto</AdresatPodania>
+      </AdresatPodania>
+      <Checkbox>
+        <Notifikacia>true</Notifikacia>
+      </Checkbox>
+      <FormaOdoslaniaZiadosti>Elektronicky</FormaOdoslaniaZiadosti>
+      <FormaDoruceniaRozhodnutia>
+        <TypSposobuDorucenia>Elektronická schránka</TypSposobuDorucenia>
+      </FormaDoruceniaRozhodnutia>
+    </Dorucenie>
+  </Body>
+</E-form>"
+`;
+
+exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExample5 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<E-form xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2">
+  <Meta>
+    <ID>esmao.eforms.bratislava.obec_024</ID>
+    <Name>Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností</Name>
+    <Gestor>ESMaO</Gestor>
+    <RecipientId>ico://sk/00603481</RecipientId>
+    <Version>201501.2</Version>
+    <ZepRequired>false</ZepRequired>
+  </Meta>
+  <Body>
+    <DruhPriznania>
+      <Code>3</Code>
+      <Name>Opravné priznanie</Name>
+      <WsEnumCode>ICL0020</WsEnumCode>
+    </DruhPriznania>
+    <NaRok>2024</NaRok>
+    <Danovnik>
+      <TypOsoby>
+        <Code>FO</Code>
+        <Name>fyzická osoba</Name>
+        <WsEnumCode>ICL0096</WsEnumCode>
+      </TypOsoby>
+      <IdentifikaciaOsoby>
+        <TitulyPredMenom>
+          <TitulPredMenom>
+            <Code>16</Code>
+            <Name>Mgr.</Name>
+            <WsEnumCode>0062</WsEnumCode>
+          </TitulPredMenom>
+        </TitulyPredMenom>
+        <Meno>Lincoln</Meno>
+        <Priezvisko>Abraham</Priezvisko>
+        <DatumNarodenia>1992-03-14+01:00</DatumNarodenia>
+        <RodneCislo>9203146326</RodneCislo>
+      </IdentifikaciaOsoby>
+    </Danovnik>
+    <AdresaDanovnika>
+      <Meno>Lincoln</Meno>
+      <Priezvisko>Abraham</Priezvisko>
+      <UlicaACislo>
+        <Ulica>Robotnícka</Ulica>
+        <OrientacneCislo>6</OrientacneCislo>
+      </UlicaACislo>
+      <PSC>83103</PSC>
+      <Obec>
+        <Name>Bratislava</Name>
+      </Obec>
+      <Stat>
+        <Code>686</Code>
+        <Name>Senegalská republika</Name>
+        <WsEnumCode>0086</WsEnumCode>
+      </Stat>
+    </AdresaDanovnika>
+    <KontaktneUdajeDanovnika>
+      <TelefonneCislo>
+        <MedzinarodneVolacieCislo>+421</MedzinarodneVolacieCislo>
+        <Predvolba>948</Predvolba>
+        <Cislo>417711</Cislo>
+      </TelefonneCislo>
+      <Email>test@test.com</Email>
+    </KontaktneUdajeDanovnika>
+    <DanZPozemkov>
+      <DanZPozemkovZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9203146326</RodneCislo>
+        <Obec>Bratislava</Obec>
+        <DruhyZmien>
+          <DruhZmeny>
+            <Code>A</Code>
+            <Name>Orná pôda, vinice, chmelnice, ovocné sady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>B</Code>
+            <Name>Trvalé trávnaté porasty</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>C</Code>
+            <Name>Záhrady</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>D</Code>
+            <Name>Lesné pozemky, na ktorých sú hospodárske lesy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>E</Code>
+            <Name>Rybníky s chovom rýb a ostatné hospodárske vzužívané vodné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>F</Code>
+            <Name>Zastavné plochy a nádvoria</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>G</Code>
+            <Name>Stavebné pozemky</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+          <DruhZmeny>
+            <Code>H</Code>
+            <Name>Ostatné plochy</Name>
+            <WsEnumCode>ICL0098</WsEnumCode>
+          </DruhZmeny>
+        </DruhyZmien>
+        <HodnotaPozemkuUrcenaZnalcom>false</HodnotaPozemkuUrcenaZnalcom>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Pozemky>
+          <Pozemok>
+            <PoradoveCislo>1</PoradoveCislo>
+            <NazovKatastralnehoUzemia>
+              <Code>810649</Code>
+              <Name>Devínska Nová Ves</Name>
+              <WsEnumCode>ICL0079</WsEnumCode>
+            </NazovKatastralnehoUzemia>
+            <CisloParcely>7986/1</CisloParcely>
+            <Vymera>18.52</Vymera>
+            <DruhPozemku>
+              <Code>B</Code>
+              <Name>Trvalé trávnaté porasty</Name>
+              <WsEnumCode>ICL0098</WsEnumCode>
+            </DruhPozemku>
+            <DatumVznikuDanovejPovinnosti>2024-01-13+01:00</DatumVznikuDanovejPovinnosti>
+            <DatumZanikuDanovejPovinnosti>2024-01-04+01:00</DatumZanikuDanovejPovinnosti>
+          </Pozemok>
+        </Pozemky>
+      </DanZPozemkovZaznam>
+    </DanZPozemkov>
+    <DanZoStaviebJedenUcel>
+      <DanZoStaviebJedenUcelZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9203146326</RodneCislo>
+        <AdresaStavby>
+          <UlicaACislo>
+            <Ulica>Príkladná</Ulica>
+            <SupisneCislo>2526</SupisneCislo>
+            <OrientacneCislo>35</OrientacneCislo>
+          </UlicaACislo>
+          <Obec>
+            <Code>SK0105529443</Code>
+            <Name>Bratislava - mestská časť Jarovce</Name>
+            <WsEnumCode>0025</WsEnumCode>
+          </Obec>
+          <Stat>
+            <Code>703</Code>
+            <Name>Slovenská republika</Name>
+            <WsEnumCode>0086</WsEnumCode>
+          </Stat>
+        </AdresaStavby>
+        <NazovKatastralnehoUzemia>
+          <Code>822256</Code>
+          <Name>Jarovce</Name>
+          <WsEnumCode>ICL0079</WsEnumCode>
+        </NazovKatastralnehoUzemia>
+        <CisloParcely>7859/1</CisloParcely>
+        <PravnyVztah>
+          <Code>0</Code>
+          <Name>Vlastník</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>0</Code>
+          <Name>Podielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <PocetSpoluvlastnikov>2</PocetSpoluvlastnikov>
+        <SpoluvlastnikUrcenyDohodou>true</SpoluvlastnikUrcenyDohodou>
+        <DatumVznikuDanovejPovinnosti>2024-01-04+01:00</DatumVznikuDanovejPovinnosti>
+        <DatumZanikuDanovejPovinnosti>2024-01-06+01:00</DatumZanikuDanovejPovinnosti>
+        <PredmetDane>
+          <Code>0</Code>
+          <Name>Stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu</Name>
+          <WsEnumCode>ICL0041</WsEnumCode>
+        </PredmetDane>
+        <ZakladDane>1330</ZakladDane>
+        <PocetPodlazi>5</PocetPodlazi>
+        <CelkovaVymeraPodlahovychPloch>26</CelkovaVymeraPodlahovychPloch>
+        <Poznamka>Číslo LV: 4597</Poznamka>
+      </DanZoStaviebJedenUcelZaznam>
+    </DanZoStaviebJedenUcel>
+    <DanZoStaviebViacereUcely>
+      <DanZoStaviebViacereUcelyZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9203146326</RodneCislo>
+        <AdresaStavby>
+          <UlicaACislo>
+            <Ulica>Príkladná</Ulica>
+            <SupisneCislo>35</SupisneCislo>
+            <OrientacneCislo>35</OrientacneCislo>
+          </UlicaACislo>
+          <Obec>
+            <Code>SK0104529401</Code>
+            <Name>Bratislava - mestská časť Devín</Name>
+            <WsEnumCode>0025</WsEnumCode>
+          </Obec>
+          <Stat>
+            <Code>703</Code>
+            <Name>Slovenská republika</Name>
+            <WsEnumCode>0086</WsEnumCode>
+          </Stat>
+        </AdresaStavby>
+        <NazovKatastralnehoUzemia>
+          <Code>805301</Code>
+          <Name>Devín</Name>
+          <WsEnumCode>ICL0079</WsEnumCode>
+        </NazovKatastralnehoUzemia>
+        <CisloParcely>5697/1</CisloParcely>
+        <PravnyVztah>
+          <Code>2</Code>
+          <Name>Nájomca</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>1</Code>
+          <Name>Bezpodielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <PopisStavby>Príkladná stavba</PopisStavby>
+        <DatumVznikuDanovejPovinnosti>2024-01-05+01:00</DatumVznikuDanovejPovinnosti>
+        <DatumZanikuDanovejPovinnosti>2024-01-04+01:00</DatumZanikuDanovejPovinnosti>
+        <ZakladDane>4435</ZakladDane>
+        <CelkovaVymeraPodlahovychPloch>46</CelkovaVymeraPodlahovychPloch>
+        <VymeraPlochOslobodenychOdDane>26</VymeraPlochOslobodenychOdDane>
+        <VymeraPlochNaJednotliveUcely>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>0</Code>
+              <Name>Stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>1</Code>
+              <Name>Stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>45.98</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>2</Code>
+              <Name>Chaty a stavby na individuálnu rekreáciu</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>3</Code>
+              <Name>Samostatne stojace garáže</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>4</Code>
+              <Name>Stavby hromadných garáží</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>5</Code>
+              <Name>Stavby hromadných garáží umiestnené pod zemou</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>6</Code>
+              <Name>Priemyselné stavby, stavby slúžiace energetike, stavby slúžiace stavebníctvu, stavby využívané na skladovanie vlastnej produkcie vrátane stavieb na vlastnú administratívu</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>7</Code>
+              <Name>Stavby na ostatné podnikanie a na zárobkovú činnosť, skladovanie a administratívu súvisiacu s ostatným podnikaním a so zárobkovou činnosťou</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+          <VymeraPlochNaJednotlivyUcel>
+            <Ucel>
+              <Code>8</Code>
+              <Name>Ostatné stavby</Name>
+              <WsEnumCode>ICL0041</WsEnumCode>
+            </Ucel>
+            <Vymera>0.00</Vymera>
+          </VymeraPlochNaJednotlivyUcel>
+        </VymeraPlochNaJednotliveUcely>
+        <PocetPodlazi>4</PocetPodlazi>
+        <Poznamka>Príkladná 35
+Číslo LV: 4597</Poznamka>
+      </DanZoStaviebViacereUcelyZaznam>
+    </DanZoStaviebViacereUcely>
+    <DanZBytovANebytovychPriestorov>
+      <DanZBytovANebytovychPriestorovZaznam>
+        <PoradoveCislo>1</PoradoveCislo>
+        <RodneCislo>9203146326</RodneCislo>
+        <AdresaBytu>
+          <UlicaACislo>
+            <Ulica>Príkladná</Ulica>
+            <SupisneCislo>3694</SupisneCislo>
+            <OrientacneCislo>35</OrientacneCislo>
+          </UlicaACislo>
+          <Obec>
+            <Code>SK0104529397</Code>
+            <Name>Bratislava - mestská časť Karlova Ves</Name>
+            <WsEnumCode>0025</WsEnumCode>
+          </Obec>
+          <Stat>
+            <Code>703</Code>
+            <Name>Slovenská republika</Name>
+            <WsEnumCode>0086</WsEnumCode>
+          </Stat>
+        </AdresaBytu>
+        <NazovKatastralnehoUzemia>
+          <Code>805211</Code>
+          <Name>Karlova Ves</Name>
+          <WsEnumCode>ICL0079</WsEnumCode>
+        </NazovKatastralnehoUzemia>
+        <CisloParcely>6975/2</CisloParcely>
+        <CisloBytu>3</CisloBytu>
+        <PravnyVztah>
+          <Code>1</Code>
+          <Name>Správca</Name>
+          <WsEnumCode>ICL0038</WsEnumCode>
+        </PravnyVztah>
+        <Spoluvlastnictvo>
+          <Code>0</Code>
+          <Name>Podielové</Name>
+          <WsEnumCode>ICL0042</WsEnumCode>
+        </Spoluvlastnictvo>
+        <PocetSpoluvlastnikov>3</PocetSpoluvlastnikov>
+        <SpoluvlastnikUrcenyDohodou>false</SpoluvlastnikUrcenyDohodou>
+        <PopisBytu>Dvojizbak</PopisBytu>
+        <DatumVznikuDanovejPovinnosti>2024-01-16+01:00</DatumVznikuDanovejPovinnosti>
+        <DatumZanikuDanovejPovinnosti>2024-01-07+01:00</DatumZanikuDanovejPovinnosti>
+        <NebytovePriestory>
+          <NebytovyPriestor>
+            <PoradoveCislo>1</PoradoveCislo>
+            <CisloVBytovomDome>G05</CisloVBytovomDome>
+            <UcelVyuzitiaVBytovomDome>Garáž</UcelVyuzitiaVBytovomDome>
+            <VymeraPodlahovychPloch>6</VymeraPodlahovychPloch>
+            <DatumVznikuDanovejPovinnosti>2024-01-05+01:00</DatumVznikuDanovejPovinnosti>
+            <DatumZanikuDanovejPovinnosti>2024-01-12+01:00</DatumZanikuDanovejPovinnosti>
+          </NebytovyPriestor>
+        </NebytovePriestory>
+        <ZakladDane>
+          <Byt>27</Byt>
+        </ZakladDane>
+        <VymeraPodlahovejPlochyVyuzivanejNaIneUcely>18</VymeraPodlahovejPlochyVyuzivanejNaIneUcely>
+        <Poznamka>Príkladná 35
+Číslo LV: 2648</Poznamka>
+      </DanZBytovANebytovychPriestorovZaznam>
+    </DanZBytovANebytovychPriestorov>
+    <Priloha>
+      <Obec>Bratislava</Obec>
+      <PozemkyA>false</PozemkyA>
+      <PozemkyB>true</PozemkyB>
+      <PozemkyC>true</PozemkyC>
+      <PozemkyD>false</PozemkyD>
+      <PozemkyE>true</PozemkyE>
+      <PozemkyF>false</PozemkyF>
+      <PozemkyG>false</PozemkyG>
+      <PozemkyH>false</PozemkyH>
+      <PozemkyI>false</PozemkyI>
+      <PozemkyJ>false</PozemkyJ>
+      <PozemkyK>true</PozemkyK>
+      <PozemkyL>false</PozemkyL>
+      <StavbyA>false</StavbyA>
+      <StavbyB>true</StavbyB>
+      <StavbyC>false</StavbyC>
+      <StavbyD>true</StavbyD>
+      <StavbyE>true</StavbyE>
+      <StavbyF>false</StavbyF>
+      <BytyA>false</BytyA>
+      <BytyB>false</BytyB>
+      <BytyC>false</BytyC>
+      <BytyD>true</BytyD>
+      <BytyE>true</BytyE>
+      <Poznamka>Príkladná 35</Poznamka>
+    </Priloha>
+    <SuhrnPriloh>
+      <PocetOddielovII>1</PocetOddielovII>
+      <PocetOddielovIII>2</PocetOddielovIII>
+      <PocetOddielovIV>1</PocetOddielovIV>
+      <PocetOddielovV>0</PocetOddielovV>
+      <PocetOddielovVI>0</PocetOddielovVI>
+      <PocetOddielovVII>0</PocetOddielovVII>
+      <PocetInych>1</PocetInych>
+      <Poznamka>Korespondenčná adresa:
+Ulica: Prašivá | Číslo: 7 | Obec: Bratislava | PSČ: 83106 | Štát: Slovenská republika
+
+Údaje o manželovi/manželke:
+Rodné číslo: 920314/2634 | Titul: Bsc | Meno: Petra | Priezvisko: Príkladná | Ulica: Príkladná 35 | Číslo: 25 | Obec: Abelova | PSČ: 83106 | Štát: Slovenská republika | E-mail: test@test.com | Telefón: +421948417711
+
+Tento dokument bol vygenerovaný pomocou Bratislavského konta.</Poznamka>
+    </SuhrnPriloh>
+    <DatumZadaniaPodania>2024-01-01T01:00:00.000+01:00</DatumZadaniaPodania>
+    <ZakladneVyhlasenie>
+      <SpravnostUdajovText>Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov</SpravnostUdajovText>
+      <SuhlasSoSpracovanimText>Týmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.</SuhlasSoSpracovanimText>
+      <PoskytujemSuhlas>true</PoskytujemSuhlas>
+      <PoskytujemSuhlasText>Poskytujem súhlas na spracovanie osobných údajov</PoskytujemSuhlasText>
+      <NeposkytujemSuhlas>false</NeposkytujemSuhlas>
+      <NeposkytujemSuhlasText>Neposkytujem súhlas na spracovanie osobných údajov</NeposkytujemSuhlasText>
+    </ZakladneVyhlasenie>
+    <Dorucenie>
+      <AdresatPodania>
+        <AdresatPodania>Mesto</AdresatPodania>
+      </AdresatPodania>
+      <Checkbox>
+        <Notifikacia>true</Notifikacia>
+      </Checkbox>
+      <FormaOdoslaniaZiadosti>Elektronicky</FormaOdoslaniaZiadosti>
+      <FormaDoruceniaRozhodnutia>
+        <TypSposobuDorucenia>Elektronická schránka</TypSposobuDorucenia>
+      </FormaDoruceniaRozhodnutia>
+    </Dorucenie>
+  </Body>
+</E-form>"
+`;

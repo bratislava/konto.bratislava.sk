@@ -1,71 +1,40 @@
-import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
 import { createParser, useQueryState } from 'nuqs'
 import { useMemo, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import {
-  getFirstNonEmptyStepIndex,
-  getStepProperty,
-  SUMMARY_HASH,
-} from '../../frontend/utils/formState'
-import { FormStepIndex } from './types/Steps'
-
-/**
- * Retrieves the query param of a step from provided schema.
- */
-const getStepQueryParam = (stepSchema: BAJSONSchema7 | null) => {
-  if (!stepSchema) {
-    return null
-  }
-
-  const stepProperty = getStepProperty(stepSchema)
-  if (!stepProperty) {
-    return null
-  }
-
-  const step = stepSchema?.properties?.[stepProperty] as BAJSONSchema7 & { hash?: string }
-  return step.hash
-}
+import { isDefined } from '../../frontend/utils/general'
+import { FormStepIndex, FormStepperStep } from './types/Steps'
 
 const getStepIndexByQueryParam = (
-  stepSchemas: (BAJSONSchema7 | null)[],
+  steps: FormStepperStep[],
   queryParam: string | null | undefined,
 ) => {
-  if (!queryParam) {
+  if (!isDefined(queryParam)) {
     return null
   }
 
-  if (queryParam === SUMMARY_HASH) {
-    return 'summary' as const
-  }
-
-  const stepIndex = stepSchemas.findIndex((schema) => getStepQueryParam(schema) === queryParam)
-
-  return stepIndex === -1 ? null : stepIndex
+  const step = steps.find((stepInner) => stepInner.queryParam === queryParam)
+  return step?.index ?? null
 }
 
-const getQueryParamByStepIndex = (
-  stepSchemas: (BAJSONSchema7 | null)[],
-  stepIndex: FormStepIndex,
-) => {
-  if (stepIndex === null || stepIndex === undefined) {
+const getQueryParamByStepIndex = (steps: FormStepperStep[], stepIndex: FormStepIndex) => {
+  if (stepIndex == null) {
     return null
   }
 
-  if (stepIndex === 'summary') {
-    return SUMMARY_HASH
-  }
-
-  return getStepQueryParam(stepSchemas[stepIndex])
+  const step = steps.find((stepInner) => stepInner.index === stepIndex)
+  return step?.queryParam ?? null
 }
+
+const STEP_QUERY_PARAM = 'krok'
 
 /**
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.
  */
-export const useFormCurrentStepIndex = (stepSchemas: (BAJSONSchema7 | null)[]) => {
+export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
   // `nuqs` takes only the initial value of the parser, so we need to use a ref to access `stepSchemas` inside the parser
-  const stepSchemasRef = useRef(stepSchemas)
-  stepSchemasRef.current = stepSchemas
+  const stepSchemasRef = useRef(stepperData)
+  stepSchemasRef.current = stepperData
   const getCurrentStepSchemas = () => stepSchemasRef.current
 
   const parser = useMemo(
@@ -80,11 +49,11 @@ export const useFormCurrentStepIndex = (stepSchemas: (BAJSONSchema7 | null)[]) =
         },
       })
         .withOptions({ history: 'push' })
-        .withDefault(getFirstNonEmptyStepIndex(getCurrentStepSchemas())),
+        .withDefault(getCurrentStepSchemas()[0].index),
     [],
   )
 
-  const [currentStepIndex, setCurrentStepIndex] = useQueryState('krok', parser)
+  const [currentStepIndex, setCurrentStepIndex] = useQueryState(STEP_QUERY_PARAM, parser)
 
   useEffectOnce(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)

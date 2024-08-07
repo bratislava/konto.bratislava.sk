@@ -54,9 +54,9 @@ function formatNonZeroInteger(value: number) {
   return value === 0 ? undefined : formatIntegerPdf(value)
 }
 
-export const prilohy = (data: TaxFormData, currentDate?: Date) => {
+export const prilohy = (data: TaxFormData) => {
   const mapping = prilohyShared(data)
-  const currentDateInner = currentDate ?? new Date()
+  const currentDate = new Date()
   const prilohaCisloFields = getPrilohaCisloFields(data)
 
   return {
@@ -64,9 +64,9 @@ export const prilohy = (data: TaxFormData, currentDate?: Date) => {
     '2_Priloha2': formatNonZeroInteger(mapping.oddiel3),
     '2_Priloha3': formatNonZeroInteger(mapping.oddiel4),
     '2_Priloha7': mapping.zobrazitOslobodenie ? '1' : undefined,
-    '2_Datum1': currentDateInner.getDate().toString().padStart(2, '0'),
-    '2_Datum2': (currentDateInner.getMonth() + 1).toString().padStart(2, '0'),
-    '2_Datum4': currentDateInner.getFullYear().toString().slice(-2),
+    '2_Datum1': currentDate.getDate().toString().padStart(2, '0'),
+    '2_Datum2': (currentDate.getMonth() + 1).toString().padStart(2, '0'),
+    '2_Datum4': currentDate.getFullYear().toString().slice(-2),
     ...prilohaCisloFields,
   }
 }

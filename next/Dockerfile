@@ -22,7 +22,7 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 # used for build-base for building only
 FROM base AS build-base
 WORKDIR /forms-shared
-COPY --from=shared . ./
+COPY --from=shared /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 
@@ -51,4 +51,3 @@ COPY --chown=node:node --from=build /build/.next/standalone ./
 COPY --chown=node:node --from=build /build/public ./public
 COPY --chown=node:node --from=build /build/.next/static ./.next/static
 CMD [ "node", "server.js" ]
-

@@ -23,7 +23,6 @@ import taxPdfFont from '../generated-assets/taxPdfFont'
 export type GenerateTaxPdfPayload = {
   formData: TaxFormData
   formId?: string
-  currentDate?: Date
 }
 
 const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: number) => {
@@ -65,7 +64,7 @@ const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: numb
 /**
  * @returns Base64 encoded PDF
  */
-export async function generateTaxPdf({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
+export async function generateTaxPdf({ formData, formId }: GenerateTaxPdfPayload) {
   const pdfDoc = await PDFDocument.load(taxPdf, {
     parseSpeed: ParseSpeeds.Fastest,
   })
@@ -108,7 +107,7 @@ export async function generateTaxPdf({ formData, formId, currentDate }: Generate
   pdfDoc.registerFontkit(fontkit)
   const liberationSansFont = await pdfDoc.embedFont(taxPdfFont)
 
-  const mapping = getTaxFormPdfMapping(formData, formId, currentDate)
+  const mapping = getTaxFormPdfMapping(formData, formId)
 
   const fields = pdfDoc.getForm().getFields()
   fields.forEach((field) => {

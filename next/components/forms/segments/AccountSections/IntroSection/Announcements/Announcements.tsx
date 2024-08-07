@@ -1,35 +1,38 @@
-import BannerTax from '@assets/images/banner-dane.png'
+import BannerSwimmingPools from '@assets/images/banner-kupaliska.png'
+import BannerGardens from '@assets/images/banner-zahrady.png'
 import { ArrowRightIcon } from '@assets/ui-icons'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ROUTES } from '../../../../../../frontend/api/constants'
 import { AnchorProps } from '../../../../simple-components/ButtonNew'
 
-type AnnouncementsProps = {
-  displayTaxToPayBanner: boolean
-}
-
-const Announcements = ({ displayTaxToPayBanner }: AnnouncementsProps) => {
+const Announcements = () => {
   const { t } = useTranslation('account')
 
-  const announcementContentFirst = displayTaxToPayBanner
-    ? `<h3>Daň z nehnuteľností je pripravená na zaplatenie</h3><span>Vygenerovali sme vašu daň z nehnuteľností za rok 2024. Zaplaťte ju jednoducho, digitálne, priamo v konte.</span>`
-    : `<h3>${t('account_section_intro.announcement_card_title_first')}</h3><span>${t(
-        'account_section_intro.announcement_card_text_first',
-      )}</span>`
+  const announcementContentFirst = `<h3>${t('account_section_intro.announcement_card_title_first')}</h3><span>${t(
+    'account_section_intro.announcement_card_text_first',
+  )}</span>`
+  const announcementContentSecond = `<h3>${t('account_section_intro.announcement_card_title_second')}</h3><span>${t(
+    'account_section_intro.announcement_card_text_second',
+  )}</span>`
 
-  const buttons: AnchorProps[] = displayTaxToPayBanner
-    ? [
-        {
-          children: 'Zaplatiť daň z nehnuteľností',
-          href: ROUTES.TAXES_AND_FEES_YEAR(2024),
-          variant: 'category-solid',
-          endIcon: <ArrowRightIcon className="size-6" />,
-        },
-      ]
-    : []
+  const buttonsFirst: AnchorProps[] = [
+    {
+      children: t('account_section_intro.announcement_card_button_first'),
+      href: 'https://kupaliska.bratislava.sk',
+      variant: 'category-solid',
+      endIcon: <ArrowRightIcon className="size-6" />,
+    },
+  ]
+  const buttonsSecond: AnchorProps[] = [
+    {
+      children: t('account_section_intro.announcement_card_button_second'),
+      href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady',
+      variant: 'category-solid',
+      endIcon: <ArrowRightIcon className="size-6" />,
+    },
+  ]
 
   return (
     <div className="flex flex-col gap-4 px-4 py-6 lg:gap-6 lg:px-0 lg:py-16">
@@ -37,8 +40,14 @@ const Announcements = ({ displayTaxToPayBanner }: AnnouncementsProps) => {
 
       <AnnouncementBlock
         announcementContent={announcementContentFirst}
-        imagePath={BannerTax}
-        buttons={buttons}
+        imagePath={BannerSwimmingPools}
+        buttons={buttonsFirst}
+      />
+      <AnnouncementBlock
+        announcementContent={announcementContentSecond}
+        imagePath={BannerGardens}
+        buttons={buttonsSecond}
+        reversed
       />
     </div>
   )

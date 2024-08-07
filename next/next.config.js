@@ -1,5 +1,7 @@
 const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const { join } = require('node:path')
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -113,6 +115,17 @@ const nextConfig = {
         },
       },
     })
+
+    config.plugins.push(
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js'),
+            to: join(__dirname, './public/scripts/iframe-resizer-child.js'),
+          },
+        ],
+      }),
+    )
 
     if (!isServer) {
       // Prevents `getSummaryJsonNode` from being included, see function description for more info

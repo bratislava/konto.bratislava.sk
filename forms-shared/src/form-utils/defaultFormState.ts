@@ -7,6 +7,7 @@ import {
 } from '@rjsf/utils'
 
 import { baRjsfValidator } from './validators'
+import { isEqual } from 'lodash'
 
 /**
  * Detects schema of `fileUpload` with `multiple: true`.
@@ -74,3 +75,36 @@ export const baGetDefaultFormState = (
     undefined,
     baDefaultFormStateBehavior,
   )
+
+/**
+ * `getDefaultFormState` adds only properties that can be immediately resolved, e.g. when there's a property that
+ * relies on another property which is not yet present in the data, it won't be added. This function repeatedly calls
+ * `getDefaultFormState` until the form state is stable.
+ *
+ * @remarks
+ *
+ * `maxIterations` is a safety measure to prevent infinite loops.
+ */
+export const baGetDefaultFormStateStable = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+  rootSchema?: RJSFSchema,
+  customValidator?: ValidatorType,
+  maxIterations: number = 10,
+) => {
+  let currentFormData = formData
+  let iteration = 0
+
+  while (iteration < maxIterations) {
+    const newFormData = baGetDefaultFormState(schema, currentFormData, rootSchema, customValidator)
+
+    if (isEqual(currentFormData, newFormData)) {
+      return newFormData
+    }
+
+    currentFormData = newFormData
+    iteration++
+  }
+
+  return currentFormData
+}

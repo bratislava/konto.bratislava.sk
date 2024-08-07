@@ -4,19 +4,25 @@ on:
     branches:
       - master
 jobs:
+  test-forms-shared:
+    name: Run tests on forms-shared
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@stable
+    with:
+      directory: forms-shared/
+
   build-forms-shared:
-    name: Build and push forms shared image
+    name: Build image of forms-shared and push it to harbor
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=${{ github.head_ref || github.ref_name }}'
+      tag: '--tag=${{ github.sha }}'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   conditions:
     name: Check for conditions
-    needs: build-forms-shared
+    needs: [test-forms-shared, build-forms-shared]
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@stable
     permissions: write-all
 
@@ -33,7 +39,7 @@ jobs:
   validate-next:
     name: validate next
     needs: conditions
-    if: needs.conditions.outputs.next == 'true'
+    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
     with:
       directory: next/
@@ -42,11 +48,11 @@ jobs:
   build-next:
     name: build next
     needs: [conditions, validate-next]
-    if: needs.conditions.outputs.next == 'true'
+    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.head_ref || github.ref_name }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       debug: --debug
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -55,7 +61,7 @@ jobs:
   validate-nest-forms-backend:
     name: validate nest-forms-backend
     needs: conditions
-    if: needs.conditions.outputs.nest-forms-backend == 'true'
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
     with:
       directory: nest-forms-backend/
@@ -64,11 +70,11 @@ jobs:
   build-nest-forms-backend:
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
-    if: needs.conditions.outputs.nest-forms-backend == 'true'
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.head_ref || github.ref_name }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

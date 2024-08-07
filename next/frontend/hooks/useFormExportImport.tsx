@@ -7,15 +7,7 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { usePlausible } from 'next-plausible'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import { useIsClient } from 'usehooks-ts'
+import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from '../../components/forms/signer/useFormSignature'
@@ -24,17 +16,10 @@ import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
-import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
 import { useSsrAuth } from './useSsrAuth'
-
-declare global {
-  interface Window {
-    __DEV_SHOW_IMPORT_EXPORT_JSON?: () => void
-  }
-}
 
 export const useGetContext = () => {
   const { isSignedIn } = useSsrAuth()
@@ -61,17 +46,6 @@ export const useGetContext = () => {
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
-
-  const [showImportExportJson, setShowImportExportJson] = useState(false)
-  const isClient = useIsClient()
-
-  useEffect(() => {
-    // Dev only debugging feature
-    if (isClient) {
-      // eslint-disable-next-line no-underscore-dangle
-      window.__DEV_SHOW_IMPORT_EXPORT_JSON = () => setShowImportExportJson(true)
-    }
-  }, [isClient, setShowImportExportJson])
 
   const { mutate: saveConceptMutate, isPending: saveConceptIsPending } = useMutation<
     AxiosResponse<GetFormResponseDto>,
@@ -208,16 +182,14 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdfv2(
+    const response = await formsApi.convertControllerConvertToPdf(
       {
         formId,
         jsonData: formData,
-        additionalMetadata: {
-          clientFiles: clientFiles.map((fileInfo) => ({
-            ...fileInfo,
-            file: createSerializableFile(fileInfo.file),
-          })),
-        } satisfies PdfPreviewDataAdditionalMetadata,
+        clientFiles: clientFiles.map((fileInfo) => ({
+          ...fileInfo,
+          file: createSerializableFile(fileInfo.file),
+        })),
       },
       {
         accessToken: 'onlyAuthenticated',
@@ -278,7 +250,6 @@ export const useGetContext = () => {
   const deleteConcept = async () => {
     openSnackbarInfo(t('info_messages.concept_delete'))
     try {
-      if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
@@ -306,7 +277,6 @@ export const useGetContext = () => {
     handleImportXml,
     handleImportJson,
     deleteConcept,
-    showImportExportJson,
   }
 }
 

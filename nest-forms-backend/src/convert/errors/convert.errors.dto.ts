@@ -1,52 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import {
-  BadRequestErrorDto,
-  UnprocessableEntityErrorDto,
-} from '../../utils/global-dtos/errors.dto'
+import { BadRequestErrorDto } from '../../utils/global-dtos/errors.dto'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from './convert.errors.enum'
 
-export class PuppeteerPageFailedLoadErrorDto extends BadRequestErrorDto {
+export class PdfGenerationFailedErrorDto extends BadRequestErrorDto {
   @ApiProperty({
-    example: ConvertErrorsEnum.PUPPETEER_PAGE_FAILED_LOAD,
-    default: ConvertErrorsEnum.PUPPETEER_PAGE_FAILED_LOAD,
+    example: ConvertErrorsEnum.PDF_GENERATION_FAILED,
+    default: ConvertErrorsEnum.PDF_GENERATION_FAILED,
   })
   declare errorName: string
 
   @ApiProperty({
-    example: ConvertErrorsResponseEnum.PUPPETEER_PAGE_FAILED_LOAD,
-    default: ConvertErrorsResponseEnum.PUPPETEER_PAGE_FAILED_LOAD,
-  })
-  declare message: string
-}
-
-export class InvalidJwtTokenErrorDto extends UnprocessableEntityErrorDto {
-  @ApiProperty({
-    example: ConvertErrorsEnum.INVALID_JWT_TOKEN,
-    default: ConvertErrorsEnum.INVALID_JWT_TOKEN,
-  })
-  declare errorName: string
-
-  @ApiProperty({
-    example: ConvertErrorsResponseEnum.INVALID_JWT_TOKEN,
-    default: ConvertErrorsResponseEnum.INVALID_JWT_TOKEN,
-  })
-  declare message: string
-}
-
-export class InvalidUuidErrorDto extends UnprocessableEntityErrorDto {
-  @ApiProperty({
-    example: ConvertErrorsEnum.INVALID_UUID,
-    default: ConvertErrorsEnum.INVALID_UUID,
-  })
-  declare errorName: string
-
-  @ApiProperty({
-    example: ConvertErrorsResponseEnum.INVALID_UUID,
-    default: ConvertErrorsResponseEnum.INVALID_UUID,
+    example: ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
+    default: ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
   })
   declare message: string
 }

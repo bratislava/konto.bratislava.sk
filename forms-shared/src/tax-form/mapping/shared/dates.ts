@@ -43,7 +43,7 @@ export function formatDatePdf(date: Date | undefined) {
     return
   }
 
-  return dayjs(date).format('DD.MM.YYYY')
+  return dayjs(date).tz(bratislavaTimezone).format('DD.MM.YYYY')
 }
 
 // TODO comment

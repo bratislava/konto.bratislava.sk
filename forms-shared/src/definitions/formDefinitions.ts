@@ -20,10 +20,10 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
     messageSubjectFormat:
-      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
   },
@@ -41,10 +41,10 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
     messageSubjectFormat:
-      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
   },
@@ -64,7 +64,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
   },
   {
@@ -83,7 +83,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
   },
   {

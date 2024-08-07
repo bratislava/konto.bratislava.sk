@@ -1,9 +1,16 @@
-import { baAjvValidator } from '../../src/form-utils/validators'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
+import { baRjsfValidator } from '../../src/form-utils/validators'
 
-describe('validators', () => {
-  it('baAjvValidator is extracted correctly', () => {
-    // TODO: `instanceof` stopped working
-    // expect(baAjvValidator instanceof Ajv).toBe(true)
-    expect(baAjvValidator.constructor.name).toBe('Ajv')
+describe('Validators', () => {
+  getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
+    it(`${exampleForm.name} validate correctly`, () => {
+      expect(
+        baRjsfValidator.isValid(
+          formDefinition.schemas.schema,
+          exampleForm.formData,
+          formDefinition.schemas.schema,
+        ),
+      ).toBe(true)
+    })
   })
 })

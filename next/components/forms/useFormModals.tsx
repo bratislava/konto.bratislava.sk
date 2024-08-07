@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
@@ -16,29 +15,50 @@ type ModalWithSendCallback =
       sendCallback: (() => void) | (() => Promise<void>)
     }
 
-const useGetContext = () => {
-  const { formMigrationRequired, isTaxForm } = useFormContext()
+enum InitialModal {
+  Registration = 'Registration',
+  MigrationRequired = 'MigrationRequired',
+  IdentityVerification = 'IdentityVerification',
+}
+
+const useInitialModal = () => {
+  const { formMigrationRequired, signInMissing, verificationMissing } = useFormContext()
   const router = useRouter()
-  const { isSignedIn, tierStatus } = useSsrAuth()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
-  const displayInitialWarningModals = !router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+  const hasFormSendEidToken = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+  if (hasFormSendEidToken) {
+    return null
+  }
 
-  const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
-  const [migrationRequiredModal, setMigrationRequiredModal] = useState<boolean>(
-    displayInitialWarningModals && formMigrationRequired,
+  if (formMigrationRequired) {
+    return InitialModal.MigrationRequired
+  }
+
+  if (signInMissing) {
+    return InitialModal.Registration
+  }
+
+  if (verificationMissing) {
+    return InitialModal.IdentityVerification
+  }
+
+  return null
+}
+
+const useGetContext = () => {
+  const initialModal = useInitialModal()
+  const [migrationRequiredModal, setMigrationRequiredModal] = useState(
+    initialModal === InitialModal.MigrationRequired,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals && !isSignedIn && !isTaxForm ? RegistrationModalType.Initial : null,
+    initialModal === InitialModal.Registration ? RegistrationModalType.Initial : null,
   )
   const [identityVerificationModal, setIdentityVerificationModal] = useState(
-    displayInitialWarningModals &&
-      !migrationRequiredModal &&
-      isSignedIn &&
-      !isTaxForm &&
-      !tierStatus.isIdentityVerified,
+    initialModal === InitialModal.IdentityVerification,
   )
 
+  const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
   const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>(
     { isOpen: false },
   )

@@ -7,7 +7,7 @@ const exampleForm: ExampleForm<TaxFormData> = {
     druhPriznania: { rok: 2024, druh: DruhPriznaniaEnum.OpravnePriznanie },
     udajeODanovnikovi: {
       stat: '686',
-      email: 'test@test.com',
+      email: `<Form></Form>&&;"';"><<<`,
       obecPsc: { psc: '83103', obec: 'Bratislava' },
       telefon: '+421948417711',
       priznanieAko: PriznanieAko.FyzickaOsoba,

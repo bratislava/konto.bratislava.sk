@@ -597,7 +597,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "6_chbVlastnik": false,
   "Cislo": "6",
   "Cislo1": undefined,
-  "Email": "test@test.com",
+  "Email": "<Form></Form>&&;"';"><<<",
   "Email1": undefined,
   "Ico": undefined,
   "Meno": "Lincoln",
@@ -1435,7 +1435,7 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
         <Predvolba>948</Predvolba>
         <Cislo>417711</Cislo>
       </TelefonneCislo>
-      <Email>test@test.com</Email>
+      <Email>&lt;Form&gt;&lt;/Form&gt;&amp;&amp;;"';"&gt;&lt;&lt;&lt;</Email>
     </KontaktneUdajeDanovnika>
     <DanZPozemkov>
       <DanZPozemkovZaznam>

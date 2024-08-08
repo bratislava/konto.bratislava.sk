@@ -3098,13 +3098,13 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample5 summary JSON should
           "displayValues": [
             {
               "type": "String",
-              "value": "test@test.com",
+              "value": "<Form></Form>&&;"';"><<<",
             },
           ],
           "id": "root_udajeODanovnikovi_email",
           "label": "E-mail",
           "type": "Field",
-          "value": "test@test.com",
+          "value": "<Form></Form>&&;"';"><<<",
         },
         {
           "displayValues": [

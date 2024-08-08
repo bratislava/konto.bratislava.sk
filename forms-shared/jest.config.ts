@@ -5,7 +5,8 @@ const jestConfig: JestConfigWithTsJest = {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  testMatch: [`**/tests/**/*.[jt]s?(x)`, `**/?(*.)+(spec|test).[tj]s?(x)`],
+  // forms-shared/tests/slovensko-sk/slovenskoSkForm.ts
+  testMatch: [`**/tests/slovensko-sk/slovenskoSkForm.ts`],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',

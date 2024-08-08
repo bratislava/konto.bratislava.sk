@@ -545,6 +545,19 @@ export default class FilesService {
         )
       }
 
+      /* delete file form scanner if contains scannerId */
+      if (file.scannerId) {
+        const deleteScannerStatus =
+          // eslint-disable-next-line no-await-in-loop
+          await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
+        if (deleteScannerStatus === undefined) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+            FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+          )
+        }
+      }
+
       const formInfo = this.filesHelper.fileDto2formInfo(file)
       const filePath = this.filesHelper.getPath(formInfo)
       const pathWithMinioFileName = filePath + file.minioFileName

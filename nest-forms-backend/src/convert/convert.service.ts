@@ -7,6 +7,7 @@ import * as cheerio from 'cheerio'
 import { Response } from 'express'
 import {
   FormDefinition,
+  FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -61,32 +62,25 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(data.slug)
-    if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
-      )
-    }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,
-      )
-    }
-
-    if (data.formId === undefined) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ConvertErrorsEnum.FORM_ID_MISSING,
-        ConvertErrorsResponseEnum.FORM_ID_MISSING,
-      )
-    }
-
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
       user?.sub ?? null,
       ico,
     )
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (formDefinition === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+      )
+    }
     const jsonFormData = data.jsonData ?? form.formDataJson
 
     const xmlTemplate = createXmlTemplate(formDefinition)

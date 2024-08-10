@@ -99,14 +99,14 @@ export const formDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-najomny-byt',
-    title: 'Žiadosť o nájomný byt',
+    title: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
     schemas: ziadostONajomnyByt,
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.0',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o nájomný byt',
+    messageSubjectDefault: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
     // TODO
     ginisAssignment: {
       ginisOrganizationName: 'SX',

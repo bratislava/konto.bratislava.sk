@@ -17,7 +17,6 @@ type FormDefinitionBase = {
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
-  slovenskoSkUrl: string
   pospID: string
   pospVersion: string
   publisher: string

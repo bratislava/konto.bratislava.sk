@@ -42,7 +42,7 @@ describe('Form definitions', () => {
 
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     it(`should match Slovensko.sk data for ${formDefinition.title}`, async () => {
-      const metadata = await fetchSlovenskoSkFormMetadata(formDefinition.slovenskoSkUrl)
+      const metadata = await fetchSlovenskoSkFormMetadata(formDefinition)
 
       expect(metadata['dc:identifier']).toEqual([
         `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,

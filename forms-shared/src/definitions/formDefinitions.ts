@@ -9,8 +9,6 @@ import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 export const formDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl:
-      'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.stanoviskoKInvesticnemuZameru&vh=0&vl=8',
     slug: 'stanovisko-k-investicnemu-zameru',
     title: 'Žiadosť o stanovisko k investičnému zámeru',
     schemas: stanoviskoKInvesticnemuZameru,
@@ -30,8 +28,6 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl:
-      'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.zavazneStanoviskoKInvesticnejCinnosti&vh=0&vl=7',
     slug: 'zavazne-stanovisko-k-investicnej-cinnosti',
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
     schemas: zavazneStanoviskoKInvesticnejCinnosti,
@@ -52,8 +48,6 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl:
-      'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.predzahradky&vh=1&vl=0',
     slug: 'predzahradky',
     title: 'Predzáhradky',
     schemas: predzahradky,
@@ -72,8 +66,6 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl:
-      'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.komunitneZahrady&vh=1&vl=0',
     slug: 'komunitne-zahrady',
     title: 'Komunitné záhrady',
     schemas: komunitneZahrady,
@@ -92,8 +84,6 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,
-    slovenskoSkUrl:
-      'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=esmao.eforms.bratislava.obec_024&vh=201501&vl=2',
     title: 'Priznanie k dani z nehnuteľností',
     slug: 'priznanie-k-dani-z-nehnutelnosti',
     schemas: priznanieKDaniZNehnutelnosti,

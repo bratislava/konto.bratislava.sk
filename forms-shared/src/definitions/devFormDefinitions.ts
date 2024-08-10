@@ -6,7 +6,6 @@ import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALik
 export const devFormDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl: '',
     slug: 'ziadost-o-najomny-byt',
     title: 'Žiadosť o nájomný byt',
     schemas: ziadostONajomnyByt,

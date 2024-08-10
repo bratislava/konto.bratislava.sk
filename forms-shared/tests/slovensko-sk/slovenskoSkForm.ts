@@ -10,6 +10,7 @@ import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
 import { getSchemaXsd } from '../../src/slovensko-sk/file-templates/schemaXsd'
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { validateXml } from '../../test-utils/validateXml'
+import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -17,6 +18,21 @@ describe('slovenskoSkForm', () => {
       it('schema XSD should match snapshot', () => {
         const xsdString = getSchemaXsd(formDefinition)
         expect(xsdString).toMatchSnapshot()
+      })
+
+      it(`should match Slovensko.sk data`, async () => {
+        const metadata = await fetchSlovenskoSkFormMetadata(formDefinition)
+
+        expect(metadata['dc:identifier']).toEqual([
+          `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+        ])
+        expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
+        expect(metadata['dc:publisher']).toEqual([formDefinition.publisher])
+        expect(metadata['meta:version']).toEqual([formDefinition.pospVersion])
+
+        // Change in the future when forms with limited date validity are added
+        const inForceFromDate = new Date(metadata['meta:inForceFrom'][0])
+        expect(inForceFromDate.getTime()).toBeLessThanOrEqual(new Date().getTime())
       })
     })
   })

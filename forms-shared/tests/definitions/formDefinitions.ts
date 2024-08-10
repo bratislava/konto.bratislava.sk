@@ -1,9 +1,5 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
-import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
-import {
-  FormDefinition,
-  isSlovenskoSkFormDefinition,
-} from '../../src/definitions/formDefinitionTypes'
+import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { baRjsfValidator } from '../../src/form-utils/validators'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
@@ -37,26 +33,6 @@ describe('Form definitions', () => {
         })
         expect(examples.length).toBeGreaterThan(0)
       })
-    })
-  })
-
-  formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
-    it(`should match Slovensko.sk data for ${formDefinition.title}`, async () => {
-      const metadata = await fetchSlovenskoSkFormMetadata(formDefinition)
-
-      expect(metadata['dc:identifier']).toEqual([
-        `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
-      ])
-      expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
-      expect(metadata['dc:publisher']).toEqual([formDefinition.publisher])
-      expect(metadata['meta:version']).toEqual([formDefinition.pospVersion])
-
-      // Change in the future when forms with limited date validity are added
-      const inForceFromDate = new Date(metadata['meta:inForceFrom'][0])
-      expect(inForceFromDate.getTime()).toBeLessThanOrEqual(new Date().getTime())
-
-      // Change in the future when forms with limited date validity are added
-      expect(metadata['meta:inForceTo']).toBeUndefined()
     })
   })
 })

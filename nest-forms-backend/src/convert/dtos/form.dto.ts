@@ -30,13 +30,6 @@ export class JsonToXmlV2RequestDto {
   @IsUUID()
   formId: string
 
-  @ApiProperty({
-    description: 'Slug of the form definition',
-    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
-  })
-  @IsString()
-  slug: string
-
   @IsObject()
   @ApiPropertyOptional({
     description:

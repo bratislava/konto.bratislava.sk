@@ -12,6 +12,7 @@ export const devFormDefinitions: FormDefinition[] = [
     schemas: ziadostONajomnyByt,
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.0',
+    publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',

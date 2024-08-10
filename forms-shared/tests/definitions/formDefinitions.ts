@@ -1,6 +1,9 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
-import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from '../../src/definitions/formDefinitionTypes'
 import { baRjsfValidator } from '../../src/form-utils/validators'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
@@ -29,7 +32,7 @@ describe('Form definitions', () => {
 
       it('has at least one example form', () => {
         const examples = getExampleFormPairs({
-          formDefinitionFilterFn: (formDefinitionInner) =>
+          formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
             formDefinitionInner.slug === formDefinition.slug,
         })
         expect(examples.length).toBeGreaterThan(0)
@@ -44,8 +47,8 @@ describe('Form definitions', () => {
       expect(metadata['dc:identifier']).toEqual([
         `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       ])
-      // Examine "Martin Pinter" vs "Pinter Martin"
-      // expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
+      expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
+      expect(metadata['dc:publisher']).toEqual([formDefinition.publisher])
       expect(metadata['meta:version']).toEqual([formDefinition.pospVersion])
 
       // Change in the future when forms with limited date validity are added

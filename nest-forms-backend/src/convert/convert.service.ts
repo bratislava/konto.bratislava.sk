@@ -75,22 +75,19 @@ export default class ConvertService {
       )
     }
 
-    let jsonFormData = data.jsonData
-    if (jsonFormData === undefined) {
-      if (data.formId === undefined) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.FORM_ID_MISSING,
-          ConvertErrorsResponseEnum.FORM_ID_MISSING,
-        )
-      }
-
-      const form = await this.formsService.getFormWithAccessCheck(
-        data.formId,
-        user?.sub ?? null,
-        ico,
+    if (data.formId === undefined) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ConvertErrorsEnum.FORM_ID_MISSING,
+        ConvertErrorsResponseEnum.FORM_ID_MISSING,
       )
-      jsonFormData = form.formDataJson
     }
+
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user?.sub ?? null,
+      ico,
+    )
+    const jsonFormData = data.jsonData ?? form.formDataJson
 
     const xmlTemplate = createXmlTemplate(formDefinition)
     const $ = cheerio.load(xmlTemplate, {

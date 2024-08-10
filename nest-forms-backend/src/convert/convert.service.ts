@@ -13,6 +13,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { generateSlovenskoSkXml } from 'forms-shared/slovensko-sk/generateXml'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 import { parseStringPromise } from 'xml2js'
@@ -57,9 +58,43 @@ export default class ConvertService {
     this.logger = new Logger('ConvertService')
   }
 
+  /**
+   * Temporary function to convert forms with new government XMLs, will be deleted when all the forms are migrated.
+   */
+  private async convertJsonToXmlNewGovernment(
+    jsonForm: Prisma.JsonValue,
+    formId: string,
+    formDefinition: FormDefinitionSlovenskoSk,
+    headless: boolean,
+  ): Promise<string> {
+    // TODO: Find a better way how to get form files
+    const form = await this.prismaService.forms.findUnique({
+      where: {
+        id: formId,
+      },
+      include: {
+        files: true,
+      },
+    })
+    if (form === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
+      )
+    }
+
+    return generateSlovenskoSkXml(
+      formDefinition,
+      jsonForm as GenericObjectType,
+      form.files,
+      headless,
+    )
+  }
+
   async convertJsonToXmlV2(
     data: JsonToXmlV2RequestDto,
     ico: string | null,
+    headless: boolean,
     user?: CognitoGetUserData,
   ): Promise<string> {
     const form = await this.formsService.getFormWithAccessCheck(
@@ -82,6 +117,15 @@ export default class ConvertService {
       )
     }
     const jsonFormData = data.jsonData ?? form.formDataJson
+
+    if (formDefinition.newGovernmentXml) {
+      return this.convertJsonToXmlNewGovernment(
+        jsonFormData,
+        data.formId,
+        formDefinition,
+        headless,
+      )
+    }
 
     const xmlTemplate = createXmlTemplate(formDefinition)
     const $ = cheerio.load(xmlTemplate, {

@@ -65,7 +65,7 @@ describe('slovenskoSkForm', () => {
           const pdfBuffer = await renderApacheFopPdf(xmlString, xsltString)
 
           await expectPdfToMatchSnapshot(pdfBuffer)
-        }, /* The PDFs take a while to generate, so they need an increased timeout. */ 10000)
+        }, /* The PDFs take a while to generate, so they need an increased timeout. */ 15000)
 
         describe(`HTML`, () => {
           let htmlString: string

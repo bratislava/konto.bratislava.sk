@@ -113,5 +113,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Pinter Martin',
     },
     isSigned: false,
+    newGovernmentXml: true,
   },
 ]

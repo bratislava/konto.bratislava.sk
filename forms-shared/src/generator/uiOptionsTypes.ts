@@ -23,6 +23,11 @@ export type CustomComponentPropertyCalculator = {
   dataContextLevelsUp?: number
 }
 
+export type CustomComponentAlertProps = {
+  type: 'info' | 'warning' | 'error' | 'success'
+  message: string
+}
+
 export type CustomComponentPropertyCalculatorProps = {
   label?: string
   variant: 'white' | 'black'
@@ -41,6 +46,10 @@ export type CustomComponentType =
   | {
       type: 'propertyTaxCalculator'
       props: CustomComponentPropertyCalculatorProps
+    }
+  | {
+      type: 'alert'
+      props: CustomComponentAlertProps
     }
 
 export type LabelSize = 'default' | 'h5' | 'h4' | 'h3'
@@ -75,11 +84,13 @@ export type CheckboxUiOptions = {
 export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptions = {
-  type?: 'text' | 'password' | 'email' | 'tel' | 'number'
+  type?: 'text' | 'password' | 'email' | 'tel'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
   placeholder?: string
 } & WidgetUiOptions
+
+export type NumberUiOptions = Omit<InputUiOptions, 'type'>
 
 type RadioOption = {
   value: string
@@ -153,6 +164,11 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
       }
   ))
 
+export type StepUiOptions = {
+  stepQueryParam?: string
+  stepperTitle?: string
+}
+
 export type SchemaUiOptions = {
   moreInformationUrl?: string
   titlePath?: string
@@ -166,12 +182,15 @@ export const markdownTextPrefix = `markdown_gKgflRNwdS:`
 
 export enum BaWidgetType {
   Select = 'Select',
+  SelectMultiple = 'SelectMultiple',
   Input = 'Input',
+  Number = 'Number',
   RadioGroup = 'RadioGroup',
   TextArea = 'TextArea',
   Checkbox = 'Checkbox',
   CheckboxGroup = 'CheckboxGroup',
   FileUpload = 'FileUpload',
+  FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
   CustomComponents = 'CustomComponents',

@@ -4,7 +4,10 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { useBeforeunload } from 'react-beforeunload'
 
+import { useFormContext } from './useFormContext'
+
 const useGetContext = () => {
+  const { isDevRoute } = useFormContext()
   const { t } = useTranslation('forms')
   const router = useRouter()
   const enabledRef = useRef(false)
@@ -15,6 +18,11 @@ const useGetContext = () => {
   }
 
   const turnOnLeaveProtection = () => {
+    // Leave protection is annoying in development.
+    if (isDevRoute) {
+      return
+    }
+
     enabledRef.current = true
   }
 

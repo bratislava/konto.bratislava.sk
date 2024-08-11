@@ -1,6 +1,5 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { AuthError } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
@@ -10,6 +9,7 @@ import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logi
 import { ROUTES } from '../api/constants'
 import { assertContextSpecAndIdToken } from './amplifyAssert'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
+import { AmplifyServerContextSpec } from './amplifyTypes'
 import logger from './logger'
 import {
   getRedirectUrl,
@@ -19,7 +19,7 @@ import {
   shouldRemoveRedirectQueryParam,
 } from './queryParamRedirect'
 
-const getIsSignedIn = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
+const getIsSignedIn = async (amplifyContextSpec: AmplifyServerContextSpec) => {
   try {
     const { userId } = await getCurrentUser(amplifyContextSpec)
     return Boolean(userId)
@@ -31,7 +31,7 @@ const getIsSignedIn = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
   }
 }
 
-const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
+const getAccessToken = async (amplifyContextSpec: AmplifyServerContextSpec) => {
   const authSession = await fetchAuthSession(amplifyContextSpec)
   return authSession.tokens?.accessToken.toString() ?? null
 }
@@ -62,7 +62,7 @@ export const amplifyGetServerSideProps = <
 >(
   getServerSidePropsFn: (args: {
     context: GetServerSidePropsContext<Params, Preview>
-    amplifyContextSpec: AmplifyServer.ContextSpec
+    amplifyContextSpec: AmplifyServerContextSpec
     getAccessToken: () => Promise<string | null>
     isSignedIn: boolean
   }) => Promise<GetServerSidePropsResult<Props>>,

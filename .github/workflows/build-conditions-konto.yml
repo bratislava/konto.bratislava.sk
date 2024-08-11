@@ -22,6 +22,7 @@ jobs:
       strapi: ${{ steps.filter.outputs.strapi }}
       next: ${{ steps.filter.outputs.next }}
       nest-forms-backend: ${{ steps.filter.outputs.nest-forms-backend }}
+      forms-shared: ${{ steps.filter.outputs.forms-shared }}
       nest-city-account: ${{ steps.filter.outputs.nest-city-account }}
     steps:
       - name: Checkout code
@@ -43,6 +44,8 @@ jobs:
               - 'next/**'
             nest-forms-backend:
               - 'nest-forms-backend/**'
+            forms-shared:
+              - 'forms-shared/**'
             nest-city-account:
               - 'nest-city-account/**'
   conditions:
@@ -55,6 +58,7 @@ jobs:
       strapi: ${{ steps.strapi.outputs.condition }}
       next: ${{ steps.next.outputs.condition }}
       nest-forms-backend: ${{ steps.nest-forms-backend.outputs.condition }}
+      forms-shared: ${{ steps.forms-shared.outputs.condition }}
       nest-city-account: ${{steps.nest-city-account.outputs.condition}}
     steps:
       - name: Print pipeline comment
@@ -66,11 +70,28 @@ jobs:
           message: |
             <b> Test build pipeline info :rocket: </b><br/>
             Changes in the code and tag info: <br/>
+            :arrow_right: Changes in forms-shared: <b>${{ needs.changes.outputs.forms-shared }}</b><br/>
             :arrow_right: Changes in strapi: <b>${{ needs.changes.outputs.strapi }}</b><br/>
             :arrow_right: Changes in next: <b>${{ needs.changes.outputs.next }}</b><br/>
             :arrow_right: Changes in nest-forms-backend: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
             :arrow_right: Changes in nest-city-account: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
             We are going to build :ship:
+
+      - id: forms-shared
+        name: Check for build forms-shared
+        if: needs.changes.outputs.forms-shared == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.forms-shared == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>forms-shared together with nest-forms-backend and next as those needs to be rebuild when forms-shared are changed<b><br/>
 
       - id: nest-city-account
         name: Check for build nest-city-account

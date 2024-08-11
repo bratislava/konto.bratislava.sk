@@ -3,15 +3,15 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
+import { Injectable, Logger } from '@nestjs/common'
+import { Forms } from '@prisma/client'
+import axios, { AxiosResponse } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
-} from '@forms-shared/definitions/formDefinitionTypes'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
-import { Injectable, Logger } from '@nestjs/common'
-import { Forms } from '@prisma/client'
-import axios, { AxiosResponse } from 'axios'
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 

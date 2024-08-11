@@ -1,12 +1,13 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { isAxiosError } from 'axios'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
@@ -59,11 +60,14 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           formContext: {
             formDefinition,
             formId,
-            initialFormDataJson: form.formDataJson ?? {},
+            initialFormDataJson:
+              form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition),
             initialServerFiles: files,
             initialSignature,
             formSent,
             formMigrationRequired,
+            // TODO: To be implemented.
+            isEmbedded: false,
           },
           ...(await slovakServerSideTranslations()),
         } satisfies FormPageWrapperProps,

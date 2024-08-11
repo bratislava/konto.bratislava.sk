@@ -1,21 +1,19 @@
 import { PassThrough, Readable } from 'node:stream'
 
-import {
-  FormDefinition,
-  isSlovenskoSkFormDefinition,
-  isSlovenskoSkTaxFormDefinition,
-} from '@forms-shared/definitions/formDefinitionTypes'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
-import { Inject, Injectable, StreamableFile } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { Injectable, Logger, StreamableFile } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
-import * as jwt from 'jsonwebtoken'
-import puppeteer from 'puppeteer'
-import { v4 as uuidv4 } from 'uuid'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+  isSlovenskoSkTaxFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
+import { chromium } from 'playwright'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
@@ -30,11 +28,10 @@ import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { JsonSchema, PdfPreviewJwtPayload } from '../utils/types/global'
+import { JsonSchema } from '../utils/types/global'
 import {
-  ConvertToPdfV2RequestDto,
+  ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
-  PdfPreviewDataResponseDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
 import {
@@ -46,19 +43,17 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()
 export default class ConvertService {
-  private readonly jwtSecret: string
+  private readonly logger: Logger
 
   constructor(
     private readonly jsonXmlService: JsonXmlConvertService,
     private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly configService: ConfigService,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
-    this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
+    this.logger = new Logger('ConvertService')
   }
 
   async convertJsonToXmlV2(
@@ -167,101 +162,11 @@ export default class ConvertService {
     }
   }
 
-  private async generatePuppeteerPdf(jwtToken: string): Promise<Buffer> {
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      // Using no sandbox is a minor security issue, but OK if we trust the content we are rendering.
-      // https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
-      // TODO: Must be fixed in Dockerfile to run as a non-root user.
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    })
-
-    const frontendUrl = (this.configService.get('FRONTEND_URL') as string) ?? ''
-    // In development Next.js, the server renders the page using JavaScript. For production, to speed things up, we
-    // disable the JavaScript execution (when it is on, it also displays cookie consent banner).
-    const isLocalhost = frontendUrl.includes('localhost')
-
-    try {
-      const page = await browser.newPage()
-      if (!isLocalhost) {
-        await page.setJavaScriptEnabled(false)
-      }
-
-      const response = await page.goto(
-        `${frontendUrl}/pdf-preview?jwtToken=${jwtToken}`,
-      )
-
-      if (!response || response.status() !== 200) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.PUPPETEER_PAGE_FAILED_LOAD,
-          ConvertErrorsResponseEnum.PUPPETEER_PAGE_FAILED_LOAD,
-        )
-      }
-
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '1cm',
-          bottom: '1cm',
-          left: '1cm',
-          right: '1cm',
-        },
-      })
-
-      await browser.close()
-      return pdfBuffer
-    } catch (error) {
-      await browser.close()
-      throw error
-    }
-  }
-
-  async getPdfPreviewData(
-    jwtToken: string,
-  ): Promise<PdfPreviewDataResponseDto> {
-    const decoded = jwt.verify(jwtToken, this.jwtSecret)
-    if (
-      typeof decoded !== 'object' ||
-      !(decoded as PdfPreviewJwtPayload).uuid
-    ) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ConvertErrorsEnum.INVALID_JWT_TOKEN,
-        ConvertErrorsResponseEnum.INVALID_JWT_TOKEN,
-      )
-    }
-
-    const data = await this.cacheManager.get(
-      (decoded as PdfPreviewJwtPayload).uuid,
-    )
-    if (!data) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ConvertErrorsEnum.INVALID_UUID,
-        ConvertErrorsResponseEnum.INVALID_UUID,
-      )
-    }
-
-    return data as PdfPreviewDataResponseDto
-  }
-
-  /**
-   * Ordinary (non-tax) PDF is generated by visiting "/pdf-preview" page in Next.js app and converting it to PDF using
-   * Puppeteer. It is not possible to pass large data directly in the page request, so it is done in the following way:
-   * 1. This function receives the payload.
-   * 2. It generates a UUID and stores the payload in the cache.
-   * 3. As it contains sensitive data, the UUID is signed using JWT.
-   * 4. In `generatePuppeteerPdf`, Puppeteer visits the page and passes the JWT token as a query parameter.
-   * 5. The page fetches the data using `getPdfPreviewData` (which verifies the token and retrieves the data from the
-   * cache) and renders it.
-   * 6. Puppeteer converts the page to PDF and returns it.
-   *
-   * The cache/JWT token is short-lived because it is set and retrieved in the same request.
-   */
-  public async generatePdfV2(
+  public async generatePdf(
     jsonForm: Prisma.JsonValue,
     formId: string,
     formDefinition: FormDefinition,
-    additionalMetadata?: Prisma.JsonObject,
+    clientFiles?: ClientFileInfo[],
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -282,30 +187,30 @@ export default class ConvertService {
       return this.generateTaxPdf(jsonForm, formId)
     }
 
-    const pdfData: PdfPreviewDataResponseDto = {
-      formDefinitionSlug: formDefinition.slug,
-      jsonForm,
-      serverFiles: form.files,
-      additionalMetadata,
+    let pdfBuffer: Buffer
+    try {
+      pdfBuffer = await renderSummaryPdf({
+        jsonSchema: formDefinition.schemas.schema,
+        uiSchema: formDefinition.schemas.uiSchema,
+        formData: jsonForm as GenericObjectType,
+        launchBrowser: () => chromium.launch(),
+        clientFiles,
+        serverFiles: form.files,
+      })
+    } catch (error) {
+      this.logger.error(`Error during generating PDF: ${<string>error}`)
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ConvertErrorsEnum.PDF_GENERATION_FAILED,
+        ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
+      )
     }
 
-    const generatedUuid = uuidv4()
-    await this.cacheManager.set(generatedUuid, pdfData, 30_000)
-
-    const jwtToken = jwt.sign(
-      { uuid: generatedUuid } satisfies PdfPreviewJwtPayload,
-      this.jwtSecret,
-      {
-        expiresIn: '30s',
-      },
-    )
-
-    const pdfBuffer = await this.generatePuppeteerPdf(jwtToken)
     return Readable.from(pdfBuffer)
   }
 
-  async convertToPdfV2(
-    data: ConvertToPdfV2RequestDto,
+  async convertToPdf(
+    data: ConvertToPdfRequestDto,
     ico: string | null,
     res: Response,
     user?: CognitoGetUserData,
@@ -330,10 +235,7 @@ export default class ConvertService {
       )
     }
 
-    let formJsonData = data.jsonData
-    if (formJsonData === undefined) {
-      formJsonData = form.formDataJson
-    }
+    const formJsonData = data.jsonData ?? form.formDataJson
 
     // common init for both json and pdf debug storage
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
@@ -366,11 +268,11 @@ export default class ConvertService {
         })
     }
 
-    const file = await this.generatePdfV2(
+    const file = await this.generatePdf(
       formJsonData,
       data.formId,
       formDefinition,
-      data.additionalMetadata,
+      data.clientFiles as ClientFileInfo[],
     )
 
     // we need two separate streams to read from - reading just from the file stream above would empty it and no data would be left for response

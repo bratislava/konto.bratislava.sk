@@ -1,87 +1,27 @@
-import {
-  BinIcon,
-  ConnectionIcon,
-  DiscIcon,
-  DownloadIcon,
-  EllipsisVerticalIcon,
-  PdfIcon,
-} from '@assets/ui-icons'
-import { SchemaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
+import { DiscIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
 import { getUiOptions } from '@rjsf/utils'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
-import MenuDropdown, {
-  MenuItemBase,
-} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import MenuDropdown from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
+import { SchemaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormContext } from '../useFormContext'
-import { useFormModals } from '../useFormModals'
+import { useFormMenuItems } from '../useFormMenuItems'
 
 const FormHeader = () => {
   const {
     formDefinition: {
       schemas: { schema, uiSchema },
     },
-    isTaxForm,
     isReadonly,
-    isDeletable,
   } = useFormContext()
-  const {
-    exportXml,
-    exportPdf,
-    importXml,
-    saveConcept,
-    deleteConcept,
-    showImportExportJson,
-    importJson,
-    exportJson,
-  } = useFormExportImport()
+  const { saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
-  const { setDeleteConceptModal } = useFormModals()
-
-  const formHeaderMenuContent = [
-    {
-      title: t('menu_list.download_xml'),
-      icon: <DownloadIcon className="size-6" />,
-      onPress: exportXml,
-    },
-    isTaxForm
-      ? null
-      : { title: t('menu_list.pdf'), icon: <PdfIcon className="size-6" />, onPress: exportPdf },
-    isReadonly
-      ? null
-      : {
-          title: t('menu_list.upload_xml'),
-          icon: <ConnectionIcon className="size-6" />,
-          onPress: importXml,
-        },
-    showImportExportJson
-      ? {
-          title: t('menu_list.download_json'),
-          icon: <DownloadIcon className="size-6" />,
-          onPress: exportJson,
-        }
-      : null,
-    showImportExportJson
-      ? {
-          title: t('menu_list.upload_json'),
-          icon: <ConnectionIcon className="size-6" />,
-          onPress: importJson,
-        }
-      : null,
-    isDeletable
-      ? null
-      : {
-          title: t('menu_list.delete'),
-          icon: <BinIcon className="size-6" />,
-          onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
-          itemClassName: 'text-negative-700',
-        },
-  ].filter(Boolean) as MenuItemBase[]
+  const menuItems = useFormMenuItems()
 
   const uiOptions = getUiOptions(uiSchema) as SchemaUiOptions
 
@@ -121,7 +61,7 @@ const FormHeader = () => {
                   aria-label="Menu"
                 />
               }
-              items={formHeaderMenuContent}
+              items={menuItems}
             />
           </div>
         </div>

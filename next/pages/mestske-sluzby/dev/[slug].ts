@@ -1,9 +1,11 @@
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { getEmbeddedFormsAllowedOrigins } from '../../../frontend/utils/embeddedFormsAllowedOrigins'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
@@ -20,9 +22,23 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
     }
 
     const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
+    const formDefinition = getFormDefinitionBySlugDev(slug)
     if (!formDefinition) {
       return { notFound: true }
+    }
+
+    const isEmbeddedQueryParam = context.query['externa-sluzba'] === 'true'
+
+    if (isEmbeddedQueryParam) {
+      const allowedOrigins = getEmbeddedFormsAllowedOrigins(formDefinition)
+      if (!allowedOrigins) {
+        return { notFound: true }
+      }
+
+      context.res.setHeader(
+        'Content-Security-Policy',
+        `frame-ancestors ${allowedOrigins.join(' ')}`,
+      )
     }
 
     return {
@@ -30,10 +46,12 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
         formContext: {
           formDefinition,
           formId: '',
-          initialFormDataJson: {},
+          initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
+          isEmbedded: isEmbeddedQueryParam,
+          isDevRoute: true,
         },
         ...(await slovakServerSideTranslations()),
       } satisfies FormPageWrapperProps,

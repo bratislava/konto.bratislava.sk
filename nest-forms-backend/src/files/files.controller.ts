@@ -146,7 +146,7 @@ export default class FilesController {
   @ApiResponse({
     status: 200,
     description: 'List of files and their statuses',
-    type: GetFileResponseDto,
+    type: GetFileResponseReducedDto,
     isArray: true,
   })
   @ApiNotFoundResponse({

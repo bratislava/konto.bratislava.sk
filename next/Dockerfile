@@ -1,5 +1,6 @@
+ARG FORMS_SHARED_TAG=latest
+FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9-alpine AS base
-FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 
 # used as app-base in prodution and development image
 FROM base AS app-base
@@ -21,7 +22,7 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 # used for build-base for building only
 FROM base AS build-base
 WORKDIR /forms-shared
-COPY --from=shared . ./
+COPY --from=shared /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 
@@ -50,4 +51,3 @@ COPY --chown=node:node --from=build /build/.next/standalone ./
 COPY --chown=node:node --from=build /build/public ./public
 COPY --chown=node:node --from=build /build/.next/static ./.next/static
 CMD [ "node", "server.js" ]
-

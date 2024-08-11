@@ -170,12 +170,15 @@ const theme: ThemeProps = {
   },
   widgets: {
     [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
+    [BaWidgetType.SelectMultiple]: wrapWidget(BaWidgetType.SelectMultiple),
     [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
+    [BaWidgetType.Number]: wrapWidget(BaWidgetType.Number),
     [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
     [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),
     [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),
     [BaWidgetType.CheckboxGroup]: wrapWidget(BaWidgetType.CheckboxGroup),
     [BaWidgetType.FileUpload]: wrapWidget(BaWidgetType.FileUpload),
+    [BaWidgetType.FileUploadMultiple]: wrapWidget(BaWidgetType.FileUploadMultiple),
     [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
     [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
     [BaWidgetType.CustomComponents]: () => {
@@ -211,7 +214,7 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
@@ -228,5 +231,3 @@ const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => 
     </ThemedForm>
   )
 }
-
-export default SummaryXmlForm

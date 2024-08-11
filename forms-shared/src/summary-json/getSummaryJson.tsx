@@ -11,7 +11,7 @@ import {
   SummaryJsonStep,
   SummaryJsonType,
 } from './summaryJsonTypes'
-import SummaryXmlForm, { SummaryXmlFormTag } from './SummaryXmlForm'
+import { SummaryXmlForm, SummaryXmlFormTag } from './SummaryXmlForm'
 
 const allowedChildren: Record<SummaryXmlFormTag, SummaryXmlFormTag[]> = {
   [SummaryXmlFormTag.Form]: [SummaryXmlFormTag.Step],

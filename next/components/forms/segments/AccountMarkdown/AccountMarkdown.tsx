@@ -2,12 +2,12 @@ import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
-import type { PluggableList } from 'react-markdown/lib'
 import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
+import { isDefined } from '../../../../frontend/utils/general'
 // eslint-disable-next-line import/no-cycle
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 
@@ -36,16 +36,11 @@ const AccountMarkdown = ({
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
-  const remarkPlugins: PluggableList = []
-  if (!disableRemarkGfm) {
-    remarkPlugins.push(remarkGfm)
-  }
-  if (!disableRemarkDirective) {
-    remarkPlugins.push(remarkDirective)
-  }
-  if (!disableRemarkDirectiveRehype) {
-    remarkPlugins.push(remarkDirectiveRehype)
-  }
+  const remarkPlugins = [
+    disableRemarkGfm ? null : remarkGfm,
+    disableRemarkDirective ? null : remarkDirective,
+    disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
+  ].filter(isDefined)
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
     h2: ({ children }: ChildrenParent) => <h2 className="text-h2">{children}</h2>,

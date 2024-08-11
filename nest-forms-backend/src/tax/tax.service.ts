@@ -4,13 +4,14 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
 import { Job, JobId, Queue } from 'bull'
+import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
+import { generateTaxXml } from 'forms-shared/tax-form/generateTaxXml'
+import { TaxFormData } from 'forms-shared/tax-form/types'
 import validateSchema from 'xsd-validator'
 
 import { TAX_XSD, TAX_XSLT } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { GenerateTaxPdfPayload } from '../utils/tax/tax-pdf-mapping/generateTaxPdf'
-import { generateTaxXml } from '../utils/tax/tax-xml-mapping/xml'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 
 @Injectable()
@@ -62,7 +63,7 @@ export default class TaxService {
   }
 
   async getFilledInPdfBase64(
-    formData: Prisma.JsonValue | null | undefined,
+    formData: Prisma.JsonValue,
     formId?: string,
   ): Promise<string> {
     // NestJS adapter for Bull doesn't implement `enableOfflineQueue`, therefore if we are not connected to Redis,
@@ -83,7 +84,7 @@ export default class TaxService {
     const job = (await this.taxQueue.add(
       'generate_pdf',
       {
-        formData,
+        formData: formData as TaxFormData,
         formId,
       } satisfies GenerateTaxPdfPayload,
       {

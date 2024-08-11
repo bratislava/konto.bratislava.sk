@@ -1,12 +1,13 @@
-import { BAJSONSchema7 } from '@forms-shared/form-utils/ajvKeywords'
-import { baRjsfValidator } from '@forms-shared/form-utils/validators'
-import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
+import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
+import { baRjsfValidator } from 'forms-shared/form-utils/validators'
+import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
-import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
+import { FormStepperStep } from '../../components/forms/types/Steps'
 import { isDefined } from './general'
 
-export const SUMMARY_HASH = 'sumar'
+export const SUMMARY_QUERY_PARAM = 'sumar'
 
 /**
  * Evaluates each step with current form data and returns an array of schemas.
@@ -43,8 +44,7 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
 
 export const getStepperData = (
   stepsSchemas: (BAJSONSchema7 | null)[],
-  submittedSteps: Set<FormStepIndex>,
-  summaryTitle: string,
+  uiSchema: UiSchema,
 ): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
@@ -60,9 +60,18 @@ export const getStepperData = (
       }
 
       const stepProperty = getStepProperty(step)!
-      const { title, hash, stepperTitle, description } = step.properties[
-        stepProperty
-      ] as BAJSONSchema7
+      const stepUiSchema = uiSchema[stepProperty]
+      if (!stepUiSchema) {
+        throw new Error(`Step UI schema not found for step ${stepProperty}`)
+      }
+
+      const { stepperTitle, stepQueryParam: queryParam } = getUiOptions(
+        stepUiSchema,
+      ) as StepUiOptions
+      const { title, description } = step.properties[stepProperty] as BAJSONSchema7
+      if (!title || !queryParam) {
+        throw new Error(`Title or queryParam not found for step ${stepProperty}`)
+      }
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -72,10 +81,8 @@ export const getStepperData = (
         title,
         stepperTitle,
         description,
-        isSubmitted: submittedSteps.has(index),
-        isSummary: false,
-        hash,
-      } as FormStepperStep
+        queryParam,
+      } satisfies FormStepperStep
     })
     .filter(isDefined)
 
@@ -84,11 +91,8 @@ export const getStepperData = (
     {
       index: 'summary',
       displayIndex: displayIndex + 1,
-      title: summaryTitle,
-      isSubmitted: submittedSteps.has(steps.length),
-      isSummary: true,
-      hash: SUMMARY_HASH,
-    } as FormStepperStep,
+      queryParam: SUMMARY_QUERY_PARAM,
+    } satisfies FormStepperStep,
   ]
 }
 
@@ -108,14 +112,6 @@ export const parseStepFromFieldId = (fieldId: string) => {
     return arr[1]
   }
   return null
-}
-
-/**
- * Returns a first non-empty step index.
- */
-export const getFirstNonEmptyStepIndex = (stepSchemas: (BAJSONSchema7 | null)[]) => {
-  const firstStep = stepSchemas.findIndex((step) => step !== null)
-  return firstStep === -1 ? ('summary' as const) : firstStep
 }
 
 /**

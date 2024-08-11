@@ -1,9 +1,9 @@
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import { SchemaValidateFunction } from 'ajv'
 import traverse from 'traverse'
-import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { getFileValidatorBaRjsf } from './validators'
+import { validateBaFileUuid } from './ajvFormats'
 
 /**
  * Extracts used file UUIDs from form data.
@@ -13,12 +13,7 @@ import { getFileValidatorBaRjsf } from './validators'
  */
 export const getFileUuidsNaive = (formData: GenericObjectType) => {
   return traverse(formData).reduce(function traverseFn(acc: string[], value) {
-    if (
-      this.isLeaf &&
-      typeof value === 'string' &&
-      validateUuid(value) &&
-      uuidVersion(value) === 4
-    ) {
+    if (this.isLeaf && validateBaFileUuid(value)) {
       acc.push(value)
     }
     return acc

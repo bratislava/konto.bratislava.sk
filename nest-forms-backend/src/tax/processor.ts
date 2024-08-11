@@ -1,8 +1,8 @@
 import { DoneCallback, Job } from 'bull'
-
-import generateTaxPdf, {
+import {
+  generateTaxPdf,
   GenerateTaxPdfPayload,
-} from '../utils/tax/tax-pdf-mapping/generateTaxPdf'
+} from 'forms-shared/tax-form/generateTaxPdf'
 
 export default async function processor(
   job: Job<GenerateTaxPdfPayload>,

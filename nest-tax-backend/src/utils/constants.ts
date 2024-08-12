@@ -1,0 +1,1 @@
+export const MAX_NORIS_BATCH_SELECT = 1000

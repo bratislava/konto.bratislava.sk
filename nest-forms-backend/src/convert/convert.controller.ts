@@ -39,7 +39,10 @@ import {
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
-import { PdfGenerationFailedErrorDto } from './errors/convert.errors.dto'
+import {
+  FormIdMissingErrorDto,
+  PdfGenerationFailedErrorDto,
+} from './errors/convert.errors.dto'
 
 @ApiTags('convert')
 @ApiBearerAuth()
@@ -48,9 +51,9 @@ export default class ConvertController {
   constructor(private readonly convertService: ConvertService) {}
 
   @ApiOperation({
-    summary: 'Convert JSON to XML',
+    summary: '',
     description:
-      'Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.',
+      'Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.',
   })
   @ApiResponse({
     status: 200,
@@ -61,6 +64,11 @@ export default class ConvertController {
     status: HttpStatusCode.NotFound,
     description: 'Form definition was not found',
     type: FormDefinitionNotFoundErrorDto,
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatusCode.BadRequest,
+    description: 'If there is no form data, form id must be provided.',
+    type: FormIdMissingErrorDto,
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,
@@ -82,7 +90,6 @@ export default class ConvertController {
     return this.convertService.convertJsonToXmlV2(
       data,
       userInfo?.ico ?? null,
-      false,
       user,
     )
   }

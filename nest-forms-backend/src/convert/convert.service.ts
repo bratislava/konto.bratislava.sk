@@ -7,13 +7,11 @@ import * as cheerio from 'cheerio'
 import { Response } from 'express'
 import {
   FormDefinition,
-  FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
-import { generateSlovenskoSkXml } from 'forms-shared/slovensko-sk/generateXml'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 import { parseStringPromise } from 'xml2js'
@@ -58,73 +56,40 @@ export default class ConvertService {
     this.logger = new Logger('ConvertService')
   }
 
-  /**
-   * Temporary function to convert forms with new government XMLs, will be deleted when all the forms are migrated.
-   */
-  private async convertJsonToXmlNewGovernment(
-    jsonForm: Prisma.JsonValue,
-    formId: string,
-    formDefinition: FormDefinitionSlovenskoSk,
-    headless: boolean,
-  ): Promise<string> {
-    // TODO: Find a better way how to get form files
-    const form = await this.prismaService.forms.findUnique({
-      where: {
-        id: formId,
-      },
-      include: {
-        files: true,
-      },
-    })
-    if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
-        FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
-      )
-    }
-
-    return generateSlovenskoSkXml(
-      formDefinition,
-      jsonForm as GenericObjectType,
-      form.files,
-      headless,
-    )
-  }
-
   async convertJsonToXmlV2(
     data: JsonToXmlV2RequestDto,
     ico: string | null,
-    headless: boolean,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const form = await this.formsService.getFormWithAccessCheck(
-      data.formId,
-      user?.sub ?? null,
-      ico,
-    )
-
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    const formDefinition = getFormDefinitionBySlug(data.slug)
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
       )
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,
       )
     }
-    const jsonFormData = data.jsonData ?? form.formDataJson
 
-    if (formDefinition.newGovernmentXml) {
-      return this.convertJsonToXmlNewGovernment(
-        jsonFormData,
+    let jsonFormData = data.jsonData
+    if (jsonFormData === undefined) {
+      if (data.formId === undefined) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ConvertErrorsEnum.FORM_ID_MISSING,
+          ConvertErrorsResponseEnum.FORM_ID_MISSING,
+        )
+      }
+
+      const form = await this.formsService.getFormWithAccessCheck(
         data.formId,
-        formDefinition,
-        headless,
+        user?.sub ?? null,
+        ico,
       )
+      jsonFormData = form.formDataJson
     }
 
     const xmlTemplate = createXmlTemplate(formDefinition)

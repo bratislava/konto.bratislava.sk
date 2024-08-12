@@ -48,8 +48,6 @@ FROM base AS prod
 
 USER node
 
-RUN npx playwright install chromium
-
 # When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
 # to be present.
 # TODO: Find a way how to use --install-links flag in npm install to avoid this.
@@ -62,6 +60,8 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
 COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
+# Playwright must be installed after node_modules are copied (installs the same version as in package.json)
+RUN npx playwright install chromium
 RUN npm prune --production
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist

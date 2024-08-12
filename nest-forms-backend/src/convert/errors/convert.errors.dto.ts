@@ -19,17 +19,3 @@ export class PdfGenerationFailedErrorDto extends BadRequestErrorDto {
   })
   declare message: string
 }
-
-export class FormIdMissingErrorDto extends BadRequestErrorDto {
-  @ApiProperty({
-    example: ConvertErrorsEnum.FORM_ID_MISSING,
-    default: ConvertErrorsEnum.FORM_ID_MISSING,
-  })
-  declare errorName: string
-
-  @ApiProperty({
-    example: ConvertErrorsResponseEnum.FORM_ID_MISSING,
-    default: ConvertErrorsResponseEnum.FORM_ID_MISSING,
-  })
-  declare message: string
-}

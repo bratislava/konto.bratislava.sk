@@ -3,7 +3,7 @@ on:
   workflow_call:
     outputs:
       dev:
-        description: "Returns true if dev-nest-forms-backend, nest-tax-backend, dev-strapi and dev-next can be deployed"
+        description: "Returns true if dev-nest-forms-backend, dev-nest-tax-backend, dev-strapi and dev-next can be deployed"
         value: ${{ jobs.conditions.outputs.dev }}
       dev-nest-forms-backend:
         description: "Returns true if dev-nest-forms-backend: can be deployed"
@@ -21,7 +21,7 @@ on:
         description: "Returns true if staging-nest-forms-backend, staging-nest-tax-backend, staging-strapi and staging-next can be deployed"
         value: ${{ jobs.conditions.outputs.staging }}
       staging-nest-forms-backend:
-        description: "Returns true if staging-strapi can be deployed"
+        description: "Returns true if staging-nest-forms-backend can be deployed"
         value: ${{ jobs.conditions.outputs.staging-nest-forms-backend }}
       staging-nest-tax-backend:
         description: "Returns true if nest-tax-backend can be deployed"
@@ -48,39 +48,8 @@ on:
         description: "Returns true if prod-next can be deployed"
         value: ${{ jobs.conditions.outputs.prod-next }}
 jobs:
-  changes:
-    name: Checking for directory changes in repository
-    runs-on: ubuntu-latest
-    outputs:
-      nest-forms-backend: ${{ steps.filter.outputs.nest-forms-backend }}
-      nest-tax-backend: ${{ steps.filter.outputs.nest-tax-backend }}
-      strapi: ${{ steps.filter.outputs.strapi }}
-      next: ${{ steps.filter.outputs.next }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Pipelines Version
-        run: |
-          echo "Pipelines version: 2.2.1"    
-
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            nest-forms-backend:
-              - 'nest-forms-backend/**'
-            nest-tax-backend:
-              - 'nest-tax-backend/**'
-            strapi:
-              - 'strapi/**'
-            next:
-              - 'next/**'
   conditions:
     name: Checking konto deployment conditions
-    needs: changes
     runs-on: ubuntu-latest
     env:
       COUNT: 0
@@ -104,11 +73,6 @@ jobs:
       - name: Print pipeline summary
         run: |
           echo "## Pipeline info :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "### Changes in the code and tag info :information_source:" >> $GITHUB_STEP_SUMMARY
-          echo ":arrow_right: Changes in next: **${{ needs.changes.outputs.next }}**" >> $GITHUB_STEP_SUMMARY
-          echo ":arrow_right: Changes in strapi: **${{ needs.changes.outputs.strapi }}**" >> $GITHUB_STEP_SUMMARY
-          echo ":arrow_right: Changes in nest-forms-backend: **${{ needs.changes.outputs.nest-forms-backend }}**" >> $GITHUB_STEP_SUMMARY
-          echo ":arrow_right: Changes in nest-tax-backend: **${{ needs.changes.outputs.nest-tax-backend }}**" >> $GITHUB_STEP_SUMMARY
           echo ":arrow_right: Tag value: **${{ github.ref }}**" >> $GITHUB_STEP_SUMMARY
           echo "### We are going to deploy :ship:" >> $GITHUB_STEP_SUMMARY
 
@@ -127,7 +91,7 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
-          
+
       - id: dev-nest-tax-backend
         name: Check for dev nest-forms-backend
         if: startsWith(github.ref, 'refs/tags/dev-nest-tax-backend') || steps.dev.outputs.condition == 'true'
@@ -167,7 +131,7 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **staging-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
-          
+
       - id: staging-nest-tax-backend
         name: Check for staging nest-tax-backend
         if: startsWith(github.ref, 'refs/tags/staging-nest-tax-backend') || steps.staging.outputs.condition == 'true'
@@ -207,7 +171,7 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod-nest-forms-backend** " >> $GITHUB_STEP_SUMMARY
-          
+
       - id: prod-nest-tax-backend
         name: Check for prod nest-tax-backend
         if: startsWith(github.ref, 'refs/tags/prod-nest-tax-backend') || steps.prod.outputs.condition == 'true'

@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-forms-shared:
-    name: Build and push forms-shared image
+    name: Build and push specific forms-shared image
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
@@ -133,7 +133,7 @@ jobs:
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      
+
   deploy-staging-nest-tax-backend:
     name: staging nest-tax-backend
     needs: conditions

@@ -4,7 +4,7 @@ import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { getSlovenskoSkXmlns } from './urls'
-import { slovenskoSkXmlBuilder, slovenskoSkXmlBuilderHeadless } from './xmlBuilder'
+import { slovenskoSkXmlBuilder } from './xmlBuilder'
 
 function getSlovenskoSkXmlBase(formDefinition: FormDefinitionSlovenskoSk, body: GenericObjectType) {
   return {
@@ -38,7 +38,6 @@ export async function generateSlovenskoSkXml(
   formDefinition: FormDefinitionSlovenskoSk,
   formData: GenericObjectType,
   serverFiles?: FormsBackendFile[],
-  headless = false,
 ) {
   const xml = getSlovenskoSkXmlBase(formDefinition, {
     Json: JSON.stringify(formData),
@@ -46,6 +45,5 @@ export async function generateSlovenskoSkXml(
     TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
   })
 
-  const builder = headless ? slovenskoSkXmlBuilderHeadless : slovenskoSkXmlBuilder
-  return builder.buildObject(xml)
+  return slovenskoSkXmlBuilder.buildObject(xml)
 }

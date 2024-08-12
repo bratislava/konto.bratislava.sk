@@ -1,0 +1,76 @@
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.nestjs_repl_history
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+.vscode/launch.json
+!.vscode/extensions.json
+
+/coverage-e2e
+/test-suites
+test-report.xml
+eslint-report.json
+.env
+.env.test
+.env.local
+.scannerwork
+
+# Postgres data
+postgres/
+pgdata/
+
+kubernetes/base/secrets/cognito.yml
+kubernetes/base/secrets/magproxy.yml
+kubernetes/envs/Dev/secrets/azure.yml
+kubernetes/envs/Prod/secrets/azure-magproxy.yml
+kubernetes/envs/Prod/secrets/cognito.yml
+kubernetes/envs/Prod/secrets/database.yml
+kubernetes/envs/Staging/secrets/azure-magproxy.yml
+kubernetes/envs/Staging/secrets/cognito.yml
+kubernetes/envs/Staging/secrets/database.yml
+
+# bratiska-cli manifest files
+manifest-*.y?ml
+kubernetes/envs/Prod/secrets/mailgun.yml
+kubernetes/envs/Dev/secrets/apikey.yml
+kubernetes/envs/Prod/secrets/apikey.yml
+kubernetes/envs/Staging/secrets/apikey.yml
+
+# local files
+docker-compose-postgres.yml
+api-responses.json
+kubernetes/envs/Staging/secrets/nases.yml
+kubernetes/envs/Dev/secrets/nases.yml
+kubernetes/envs/Prod/secrets/nases.yml
+kubernetes/envs/Dev/secrets/bloomreach.yml
+kubernetes/envs/Prod/secrets/bloomreach.yml
+kubernetes/envs/Staging/secrets/bloomreach.yml

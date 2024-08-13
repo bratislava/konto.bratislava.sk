@@ -2,14 +2,17 @@ name: Workflow which determines, what should be built on konto.bratislava.sk pro
 on:
   workflow_call:
     outputs:
+      forms-shared:
+        description: "Returns true if forms-shared should be built"
+        value: ${{ jobs.conditions.outputs.forms-shared }}
       strapi:
-        description: "Returns true if strapi can be built"
+        description: "Returns true if strapi should be built"
         value: ${{ jobs.conditions.outputs.strapi }}
       next:
-        description: "Returns true if next can be built"
+        description: "Returns true if next should be built"
         value: ${{ jobs.conditions.outputs.next }}
       nest-forms-backend:
-        description: "Returns true if nest-forms-backend can be built"
+        description: "Returns true if nest-forms-backend should be built"
         value: ${{ jobs.conditions.outputs.nest-forms-backend }}
 jobs:
   changes:

@@ -97,10 +97,15 @@ const MyApplicationsCard = ({
   const exportXml = async () => {
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
-      if (!formId) throw new Error('No form id provided for exportXml')
+      if (!formSlug || !formId)
+        throw new Error(
+          // eslint-disable-next-line sonarjs/no-nested-template-literals
+          `No formSlug or form id ${formId && `for form id: ${formId}`}`,
+        )
       const response = await formsApi.convertControllerConvertJsonToXmlV2(
         {
           formId,
+          slug: formSlug,
         },
         { accessToken: 'onlyAuthenticated' },
       )

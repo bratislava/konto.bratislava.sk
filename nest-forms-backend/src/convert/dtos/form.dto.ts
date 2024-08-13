@@ -24,16 +24,23 @@ export class JsonConvertRequestDto {
 
 export class JsonToXmlV2RequestDto {
   @ApiPropertyOptional({
-    description: 'Form id',
+    description: 'Form id. If jsonData is not provided, this is required.',
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
   })
   @IsUUID()
-  formId: string
+  @IsOptional()
+  formId?: string
+
+  @ApiProperty({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsString()
+  slug: string
 
   @IsObject()
   @ApiPropertyOptional({
-    description:
-      'JSON form values, if not provided the form data from the database will be used.',
+    description: 'Form values in JSON',
     example: JSON_FORM_EXAMPLE,
   })
   @IsNotEmpty()

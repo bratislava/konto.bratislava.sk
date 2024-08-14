@@ -127,7 +127,7 @@ describe('NasesUtilsService', () => {
       ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
       ;(v1 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
       // eslint-disable-next-line xss/no-mixed-html
-      service['convertService'].convertJsonToXmlV2 = jest
+      service['convertService'].convertJsonToXmlForForm = jest
         .fn()
         .mockResolvedValue(xml)
 

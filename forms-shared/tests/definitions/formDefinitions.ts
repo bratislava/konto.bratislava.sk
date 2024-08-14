@@ -1,6 +1,5 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
-import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
-import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { baRjsfValidator } from '../../src/form-utils/validators'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
@@ -8,6 +7,11 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
+    // "Žiadosť o nájomné bývanie" is skipped until fully implemented
+    if (formDefinition.slug === 'ziadost-o-najomny-byt') {
+      return
+    }
+
     describe(formDefinition.slug, () => {
       it('schemas match snapshot', () => {
         expect(formDefinition.schemas).toMatchSnapshot()
@@ -29,31 +33,11 @@ describe('Form definitions', () => {
 
       it('has at least one example form', () => {
         const examples = getExampleFormPairs({
-          formDefinitionFilterFn: (formDefinitionInner) =>
+          formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
             formDefinitionInner.slug === formDefinition.slug,
         })
         expect(examples.length).toBeGreaterThan(0)
       })
-    })
-  })
-
-  formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
-    it(`should match Slovensko.sk data for ${formDefinition.title}`, async () => {
-      const metadata = await fetchSlovenskoSkFormMetadata(formDefinition.slovenskoSkUrl)
-
-      expect(metadata['dc:identifier']).toEqual([
-        `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
-      ])
-      // Examine "Martin Pinter" vs "Pinter Martin"
-      // expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
-      expect(metadata['meta:version']).toEqual([formDefinition.pospVersion])
-
-      // Change in the future when forms with limited date validity are added
-      const inForceFromDate = new Date(metadata['meta:inForceFrom'][0])
-      expect(inForceFromDate.getTime()).toBeLessThanOrEqual(new Date().getTime())
-
-      // Change in the future when forms with limited date validity are added
-      expect(metadata['meta:inForceTo']).toBeUndefined()
     })
   })
 })

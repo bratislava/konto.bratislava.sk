@@ -6,6 +6,7 @@ import {
   ConvertErrorsResponseEnum,
 } from './convert.errors.enum'
 
+// eslint-disable-next-line import/prefer-default-export
 export class PdfGenerationFailedErrorDto extends BadRequestErrorDto {
   @ApiProperty({
     example: ConvertErrorsEnum.PDF_GENERATION_FAILED,

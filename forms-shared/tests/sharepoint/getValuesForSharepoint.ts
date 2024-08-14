@@ -34,6 +34,11 @@ describe('getArrayForOneToMany', () => {
     const result = getArrayForOneToMany({ jsonDataExtraDataOmitted: data, id: 'id' }, 'val1.val2')
     expect(result).toEqual(array)
   })
+
+  it('should return empty array for non-existing path', () => {
+    const result = getArrayForOneToMany({ jsonDataExtraDataOmitted: {}, id: 'id' }, 'val1.val2')
+    expect(result).toEqual([])
+  })
 })
 
 describe('getValueAtJsonPath', () => {

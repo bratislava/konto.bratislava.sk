@@ -438,16 +438,16 @@ export const ziadostONajomnyBytSharepointData = {
       columnMap: defaultColumnMapNajomneByvanieDieta,
     },
   },
-  oneToOne: [
-    {
+  oneToOne: {
+    'manzelManzelka.manzelManzelkaSucastouDomacnosti': {
       databaseName: 'dtb_NajomneByvanieManzelTest',
       originalTableId: 'ManzelManzelka',
       columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('manzelManzelka'),
     },
-    {
+    'druhDruzka.druhDruzkaSucastouDomacnosti': {
       databaseName: 'dtb_NajomneByvanieDruh',
       originalTableId: 'DruhDruzka',
       columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('druhDruzka'),
     },
-  ],
+  },
 }

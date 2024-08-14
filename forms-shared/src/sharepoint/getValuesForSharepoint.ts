@@ -87,7 +87,7 @@ export const getArrayForOneToMany = (
   },
   path: string,
 ): Array<JsonValue> => {
-  const atPath = lodashGet(form.jsonDataExtraDataOmitted, path, null)
+  const atPath = lodashGet(form.jsonDataExtraDataOmitted, path, [])
   if (!Array.isArray(atPath)) {
     throw new TypeError(
       `Getting array data for oneToMany in form ${form.id} on path ${path} did not return array. Instead got value: ${atPath}`,

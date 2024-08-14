@@ -6,6 +6,7 @@ import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoK
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
+import { ziadostONajomnyBytSharepointData } from '../sharepoint/mappings/ziadostONajomnyByt'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -107,6 +108,7 @@ export const formDefinitions: FormDefinition[] = [
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
+    sharepointData: ziadostONajomnyBytSharepointData,
     // TODO
     ginisAssignment: {
       ginisOrganizationName: 'SX',

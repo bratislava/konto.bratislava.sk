@@ -20,7 +20,7 @@ import {
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
-import { escape } from 'lodash'
+import { escape, get as lodashGet } from 'lodash'
 
 import {
   FormsErrorsEnum,
@@ -96,7 +96,7 @@ export default class SharepointSubservice {
   }
 
   private async handleOneToOne(
-    sharepointDataOneToOne: SharepointRelationData[],
+    sharepointDataOneToOne: Record<string, SharepointRelationData>,
     form: Forms,
     formTitle: string,
     jsonDataExtraDataOmitted: Prisma.JsonValue,
@@ -105,7 +105,11 @@ export default class SharepointSubservice {
   ): Promise<Record<string, number>> {
     const result: Record<string, number> = {}
     await Promise.all(
-      Object.values(sharepointDataOneToOne).map(async (value) => {
+      Object.entries(sharepointDataOneToOne).map(async ([path, value]) => {
+        if (!lodashGet(jsonDataExtraDataOmitted, path, false)) {
+          return
+        }
+
         const valuesForFieldsOneToOne = getValuesForFields(
           value,
           { ...form, title: formTitle },

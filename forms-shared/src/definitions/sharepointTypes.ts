@@ -17,5 +17,5 @@ export type SharepointData = {
   databaseName: string
   columnMap: Record<string, SharepointColumnMapValue>
   oneToMany?: Record<string, SharepointRelationData>
-  oneToOne?: Array<SharepointRelationData>
+  oneToOne?: Record<string, SharepointRelationData>
 }

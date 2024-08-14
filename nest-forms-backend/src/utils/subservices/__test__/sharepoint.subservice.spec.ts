@@ -231,13 +231,13 @@ describe('SharepointSubservice', () => {
               columnMap: { otm2: { type: 'title' } },
             },
           },
-          oneToOne: [
-            {
+          oneToOne: {
+            someMapping: {
               databaseName: 'otodb1',
               originalTableId: 'otoOriginalId1',
               columnMap: { oto1: { type: 'title' } },
             },
-          ],
+          },
         },
         'acc_token',
       )

@@ -130,7 +130,7 @@ export default class NasesUtilsService {
   }
 
   createUserJwtToken(oboToken: string): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
+    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '').split(String.raw`\n`).join('\n')
     const header = {
       alg: 'RS256',
       cty: 'JWT',
@@ -156,7 +156,7 @@ export default class NasesUtilsService {
   }
 
   createTechnicalAccountJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
+    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '').split(String.raw`\n`).join('\n')
     const header = {
       alg: 'RS256',
     }
@@ -182,7 +182,7 @@ export default class NasesUtilsService {
   }
 
   createAdministrationJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
+    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '').split(String.raw`\n`).join('\n')
     const header = {
       alg: 'RS256',
     }

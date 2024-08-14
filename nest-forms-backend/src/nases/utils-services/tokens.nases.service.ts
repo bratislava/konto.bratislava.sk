@@ -350,10 +350,10 @@ export default class NasesUtilsService {
         message = await this.convertService.convertJsonToXmlV2(
           {
             formId: form.id,
-            slug: form.formDefinitionSlug,
             jsonData: form.formDataJson,
           },
           null,
+          true,
         )
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(

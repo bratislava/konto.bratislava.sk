@@ -329,13 +329,9 @@ export default class NasesUtilsService {
 
     if (!isSigned) {
       try {
-        const messageXml = await this.convertService.convertJsonToXmlV2(
-          {
-            formId: form.id,
-            slug: form.formDefinitionSlug,
-            jsonData: form.formDataJson,
-          },
-          null,
+        const messageXml = await this.convertService.convertJsonToXmlForForm(
+          form,
+          true,
         )
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

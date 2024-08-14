@@ -22,3 +22,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
     priznanieKDaniZNehnutelnostiExample5,
   ],
 }
+
+export const exampleDevForms: Record<string, ExampleForm[]> = {
+  'ziadost-o-najomny-byt': [],
+}

@@ -7,12 +7,12 @@ import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALik
 export const devFormDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slovenskoSkUrl: '',
     slug: 'ziadost-o-najomny-byt',
     title: 'Žiadosť o nájomný byt',
     schemas: ziadostONajomnyByt,
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.0',
+    publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',

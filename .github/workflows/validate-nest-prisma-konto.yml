@@ -49,7 +49,7 @@ jobs:
           cd ..
 
       # move to directory
-      - name: Instal dependencies
+      - name: Install dependencies
         working-directory: ${{ inputs.directory }}
         run: | 
           pwd

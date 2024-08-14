@@ -1,5 +1,6 @@
 import { JSDOM } from 'jsdom'
 import { parseStringPromise } from 'xml2js'
+import { FormDefinitionSlovenskoSk } from '../src/definitions/formDefinitionTypes'
 
 interface SlovenskoSkMetadataXml {
   'meta:metadata': {
@@ -27,11 +28,24 @@ interface SlovenskoSkMetadataXml {
   }
 }
 
+const getSlovenskoSkUrl = (formDefinition: FormDefinitionSlovenskoSk) => {
+  const versionRegex = /^\d+\.\d+$/
+  if (!versionRegex.test(formDefinition.pospVersion)) {
+    throw new Error(
+      'Invalid pospVersion format. Expected format: "x.y" where x and y are integers.',
+    )
+  }
+  const [vh, vl] = formDefinition.pospVersion.split('.').map(Number)
+
+  return `https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=${formDefinition.pospID}&vh=${vh}&vl=${vl}`
+}
+
 /**
  * Fetches the form metadata XML and converts it to JSON, e.g.:
  * https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.predzahradky&vh=1&vl=0
  */
-export async function fetchSlovenskoSkFormMetadata(url: string) {
+export async function fetchSlovenskoSkFormMetadata(formDefintion: FormDefinitionSlovenskoSk) {
+  const url = getSlovenskoSkUrl(formDefintion)
   const response = await fetch(url)
   if (!response.ok) {
     throw new Error(`Failed to fetch the URL: ${response.statusText}`)

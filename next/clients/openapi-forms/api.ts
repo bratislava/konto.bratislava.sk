@@ -105,10 +105,10 @@ export interface ConvertToPdfRequestDto {
   jsonData?: object
   /**
    * Used only in the FE requests to display files not yet uploaded to the server.
-   * @type {Array<object>}
+   * @type {Array<SimplifiedClientFileInfoDto>}
    * @memberof ConvertToPdfRequestDto
    */
-  clientFiles?: Array<object>
+  clientFiles?: Array<SimplifiedClientFileInfoDto>
 }
 /**
  *
@@ -1637,56 +1637,6 @@ export type FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FormIdMissingErrorDto
- */
-export interface FormIdMissingErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FormIdMissingErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  errorName: FormIdMissingErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FormIdMissingErrorDto
-   */
-  object?: object
-}
-
-export const FormIdMissingErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FormIdMissingErrorDtoErrorNameEnum =
-  (typeof FormIdMissingErrorDtoErrorNameEnum)[keyof typeof FormIdMissingErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
  * @interface FormIsOwnedBySomeoneElseErrorDto
  */
 export interface FormIsOwnedBySomeoneElseErrorDto {
@@ -2573,19 +2523,13 @@ export interface JsonConvertRequestDto {
  */
 export interface JsonToXmlV2RequestDto {
   /**
-   * Form id. If jsonData is not provided, this is required.
+   * Form id
    * @type {string}
    * @memberof JsonToXmlV2RequestDto
    */
   formId?: string
   /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof JsonToXmlV2RequestDto
-   */
-  slug: string
-  /**
-   * Form values in JSON
+   * JSON form values, if not provided the form data from the database will be used.
    * @type {object}
    * @memberof JsonToXmlV2RequestDto
    */
@@ -3221,6 +3165,31 @@ export interface SimpleBadRequestErrorDto {
    * @memberof SimpleBadRequestErrorDto
    */
   message: string
+}
+/**
+ *
+ * @export
+ * @interface SimplifiedClientFileInfoDto
+ */
+export interface SimplifiedClientFileInfoDto {
+  /**
+   *
+   * @type {string}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  id: string
+  /**
+   *
+   * @type {object}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  file: object
+  /**
+   *
+   * @type {object}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  status: object
 }
 /**
  *
@@ -3957,8 +3926,8 @@ export class ADMINApi extends BaseAPI {
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4133,8 +4102,8 @@ export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4234,8 +4203,8 @@ export const ConvertApiFactory = function (
   const localVarFp = ConvertApiFp(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4291,8 +4260,8 @@ export const ConvertApiFactory = function (
  */
 export class ConvertApi extends BaseAPI {
   /**
-   * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-   * @summary
+   * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+   * @summary Convert JSON to XML
    * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

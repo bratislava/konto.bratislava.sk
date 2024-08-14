@@ -5,6 +5,7 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndCond
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
+import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -94,5 +95,24 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+  },
+  {
+    type: FormDefinitionType.SlovenskoSkGeneric,
+    slug: 'ziadost-o-najomny-byt',
+    title: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
+    schemas: ziadostONajomnyByt,
+    pospID: '00603481.ziadostONajomnyByt',
+    pospVersion: '1.0',
+    publisher: 'ico://sk/00603481',
+    gestor: 'Pinter Martin',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
+    // TODO
+    ginisAssignment: {
+      ginisOrganizationName: 'SX',
+      ginisPersonName: 'Pinter Martin',
+    },
+    isSigned: false,
+    newGovernmentXml: true,
   },
 ]

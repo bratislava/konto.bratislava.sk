@@ -1,6 +1,6 @@
 import { Builder } from 'xml2js'
 
-export const slovenskoSkXmlBuilder = new Builder({
+const builderOptionsBase = {
   xmldec: {
     version: '1.0',
     encoding: 'UTF-8',
@@ -8,4 +8,8 @@ export const slovenskoSkXmlBuilder = new Builder({
   renderOpts: {
     pretty: true,
   },
-})
+}
+
+export const slovenskoSkXmlBuilder = new Builder(builderOptionsBase)
+
+export const slovenskoSkXmlBuilderHeadless = new Builder({ ...builderOptionsBase, headless: true })

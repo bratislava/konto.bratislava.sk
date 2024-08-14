@@ -1091,7 +1091,7 @@ const getFieldsForStep = (stepType: StepType) => {
 
 export default schema(
   {
-    title: 'Žiadosť o nájomný byt',
+    title: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
   },
   {},
   [

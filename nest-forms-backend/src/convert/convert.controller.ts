@@ -82,7 +82,6 @@ export default class ConvertController {
     return this.convertService.convertJsonToXmlV2(
       data,
       userInfo?.ico ?? null,
-      false,
       user,
     )
   }

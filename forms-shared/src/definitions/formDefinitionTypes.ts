@@ -23,6 +23,8 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   publisher: string
   gestor: string
   isSigned: boolean
+  // Temporary flag until all forms are converted to new government XMLs
+  newGovernmentXml?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

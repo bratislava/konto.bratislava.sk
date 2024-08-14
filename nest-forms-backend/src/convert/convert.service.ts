@@ -1,17 +1,19 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, Logger, StreamableFile } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Forms, Prisma } from '@prisma/client'
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
 import {
   FormDefinition,
+  FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { generateSlovenskoSkXml } from 'forms-shared/slovensko-sk/generateXml'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 import { parseStringPromise } from 'xml2js'
@@ -29,6 +31,7 @@ import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { JsonSchema } from '../utils/types/global'
+import { FormWithFiles } from '../utils/types/prisma'
 import {
   ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
@@ -56,42 +59,37 @@ export default class ConvertService {
     this.logger = new Logger('ConvertService')
   }
 
-  async convertJsonToXmlV2(
-    data: JsonToXmlV2RequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+  /**
+   * Temporary function to convert forms with new government XMLs, will be deleted when all the forms are migrated.
+   */
+  private async convertJsonToXmlNewGovernment(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
+    formDataJson: Prisma.JsonValue,
+    headless: boolean,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(data.slug)
-    if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
-      )
-    }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,
-      )
-    }
+    // Find a better way how to get the form with files
+    const formWithFiles = (await this.prismaService.forms.findUnique({
+      where: {
+        id: form.id,
+      },
+      include: {
+        files: true,
+      },
+    })) as FormWithFiles
 
-    let jsonFormData = data.jsonData
-    if (jsonFormData === undefined) {
-      if (data.formId === undefined) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.FORM_ID_MISSING,
-          ConvertErrorsResponseEnum.FORM_ID_MISSING,
-        )
-      }
+    return generateSlovenskoSkXml(
+      formDefinition,
+      formDataJson as GenericObjectType,
+      formWithFiles.files,
+      headless,
+    )
+  }
 
-      const form = await this.formsService.getFormWithAccessCheck(
-        data.formId,
-        user?.sub ?? null,
-        ico,
-      )
-      jsonFormData = form.formDataJson
-    }
-
+  private async convertJsonToXmlLegacy(
+    formDefinition: FormDefinitionSlovenskoSk,
+    formDataJson: Prisma.JsonValue,
+  ): Promise<string> {
     const xmlTemplate = createXmlTemplate(formDefinition)
     const $ = cheerio.load(xmlTemplate, {
       xmlMode: true,
@@ -100,10 +98,61 @@ export default class ConvertService {
     this.jsonXmlService.buildXmlRecursive(
       ['E-form', 'Body'],
       $,
-      jsonFormData,
+      formDataJson,
       formDefinition.schemas.schema as JsonSchema,
     )
     return $('E-form').prop('outerHTML') ?? ''
+  }
+
+  /**
+   * Do not use directly for user facing endpoints as this bypasses the access check in `convertJsonToXmlNewGovernment`.
+   *
+   * TODO: Pass files to the function instead
+   */
+  async convertJsonToXmlForForm(
+    form: Forms,
+    headless: boolean,
+    formDataJsonOverride?: Prisma.JsonValue,
+  ): Promise<string> {
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (formDefinition === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+      )
+    }
+    const formDataJson = formDataJsonOverride ?? form.formDataJson
+
+    if (formDefinition.newGovernmentXml) {
+      return this.convertJsonToXmlNewGovernment(
+        form,
+        formDefinition,
+        formDataJson,
+        headless,
+      )
+    }
+
+    return this.convertJsonToXmlLegacy(formDefinition, formDataJson)
+  }
+
+  async convertJsonToXmlV2(
+    data: JsonToXmlV2RequestDto,
+    ico: string | null,
+    user?: CognitoGetUserData,
+  ): Promise<string> {
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user?.sub ?? null,
+      ico,
+    )
+
+    return this.convertJsonToXmlForForm(form, false, data.jsonData)
   }
 
   async convertXmlToJson(

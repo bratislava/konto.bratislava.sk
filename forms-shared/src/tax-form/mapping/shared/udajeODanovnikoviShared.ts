@@ -5,7 +5,8 @@ import {
   SplonomocnenecTyp,
   TaxFormData,
 } from '../../types'
-import { parseBirthDate, parseRodneCislo, safeBoolean, safeNumber, safeString } from './functions'
+import { parseBirthDate, parseRodneCislo } from './functions'
+import { safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 
 export const udajeODanovnikoviShared = (data: TaxFormData) => {
   const { udajeODanovnikovi: oddiel, druhPriznania } = data

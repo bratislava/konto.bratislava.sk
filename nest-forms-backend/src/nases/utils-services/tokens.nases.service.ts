@@ -321,7 +321,7 @@ export default class NasesUtilsService {
     isSigned: boolean,
   ): Promise<string | object> {
     let message: string | object | null = null
-    const parser = new Parser({ normalize: true, trim: true })
+    const parser = new Parser()
 
     if (form.formDataBase64) {
       message = form.formDataBase64

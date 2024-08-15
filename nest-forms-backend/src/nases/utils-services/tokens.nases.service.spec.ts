@@ -292,7 +292,8 @@ describe('NasesUtilsService', () => {
             `            <root>\n` +
             `              <tag1 attribute="value1"/>\n` +
             `              <tag2 attribute="value2">Content</tag2>\n` +
-            `              <tag3>Another content</tag3>\n` +
+            `              <tag3>Another content    
+               </tag3>\n` +
             `            </root>\n` +
             `          </Object>\n` +
             `        </MessageContainer>\n` +

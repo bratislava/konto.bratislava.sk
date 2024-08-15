@@ -12,11 +12,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --include=dev --frozen-lockfile
-
 
 FROM base as prod
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev --frozen-lockfile
 COPY . ./
 RUN npm run build
 
@@ -53,7 +52,9 @@ RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip 
 
 ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev --frozen-lockfile
 RUN npx playwright install chromium --with-deps
-# COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./
+
 CMD [ "npm", "run", "test" ]

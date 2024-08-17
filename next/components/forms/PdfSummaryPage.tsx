@@ -4,10 +4,10 @@ import FormProviders from './FormProviders'
 import SummaryDetails from './steps/Summary/SummaryDetails'
 import SummaryFormLegalText from './steps/Summary/SummaryFormLegalText'
 import { FormSummaryProvider } from './steps/Summary/useFormSummary'
-import { FormContext } from './useFormContext'
+import { FormServerContext } from './useFormContext'
 
 export type PdfSummaryPageProps = {
-  formContext: FormContext
+  formContext: FormServerContext
 }
 
 /**
@@ -15,7 +15,7 @@ export type PdfSummaryPageProps = {
  */
 const PdfSummaryPage = ({ formContext }: PdfSummaryPageProps) => {
   return (
-    <FormProviders formContext={formContext}>
+    <FormProviders formServerContext={formContext}>
       <FormSummaryProvider>
         <div className="flex flex-col gap-4">
           <h1 className="text-h1-form">{formContext.formDefinition.schemas.schema.title}</h1>

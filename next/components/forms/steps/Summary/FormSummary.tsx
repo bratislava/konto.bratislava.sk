@@ -1,5 +1,6 @@
 import { useFormContext } from '../../useFormContext'
 import SummaryHeader from '../SummaryHeader'
+import SummaryAdditionalInfo from './SummaryAdditionalInfo'
 import SummaryDetails from './SummaryDetails'
 import SummaryFormControls from './SummaryFormControls'
 import SummaryFormLegalText from './SummaryFormLegalText'
@@ -13,6 +14,7 @@ const FormSummary = () => {
       <SummaryHeader />
       <SummaryDetails />
       {isSigned && <SummaryFormSignature />}
+      <SummaryAdditionalInfo />
       <SummaryFormLegalText />
       <SummaryFormControls />
     </div>

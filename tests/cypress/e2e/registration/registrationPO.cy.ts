@@ -2,8 +2,7 @@
 
 describe('RF02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
-  const errorBorderFields =
-    '[data-cy=input-email], [data-cy=input-name], [data-cy=input-password]'
+  const errorBorderFields = '[data-cy=input-email], [data-cy=input-name], [data-cy=input-password]'
   const password = `P@9${Date.now().toString(36)}`
 
   before(() => {
@@ -34,7 +33,7 @@ describe('RF02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('registration-container').should('be.visible')//.matchImage({maxDiffThreshold: 0.17})
+          cy.dataCy('registration-container').should('be.visible') //.matchImage({maxDiffThreshold: 0.17})
         })
 
         it('3. Filling out the registration form.', () => {

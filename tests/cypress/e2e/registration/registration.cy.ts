@@ -73,8 +73,8 @@ describe('RF01 -', { testIsolation: false }, () => {
         describe('A02 - change email and password', { testIsolation: false }, () => {
           it('1. Logging in.', () => {
             cy.logInUser(device, emailHash, password)
-            cy.get("[data-cy=add-phone-number]", {timeout: 10000})
-            cy.get("[data-cy=close-modal]").click({multiple: true})
+            cy.get('[data-cy=add-phone-number]', { timeout: 10000 })
+            cy.get('[data-cy=close-modal]').click({ multiple: true })
           })
 
           it('2. Changing email.', () => {
@@ -104,25 +104,24 @@ describe('RF01 -', { testIsolation: false }, () => {
           })
 
           it('4. Changing password.', () => {
-            cy.visit("/moj-profil")
+            cy.visit('/moj-profil')
             cy.get('[data-cy=change-password-button]').click()
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/zmena-hesla');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.dataCy('change-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-oldPassword]', form)).clear().type(password)
               cy.wrap(Cypress.$('[data-cy=input-password]', form)).clear().type(password)
-              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).clear().type(password)
+              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form))
+                .clear()
+                .type(password)
               cy.get('[data-cy=change-password-submit]').click()
             })
           })
-  
+
           it('5. Validating saved information', () => {
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/zmena-hesla');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.get('[data-cy=success-alert]').should('be.visible')
             cy.get('[data-cy=pokračovať-do-konta-button]').click()
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/')
             cy.logOutUser()
           })
         })

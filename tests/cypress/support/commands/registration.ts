@@ -31,20 +31,17 @@ declare namespace Cypress {
 
 Cypress.Commands.add('checkFormFieldsNotInErrorState', (form, errorBorderFields) => {
   cy.dataCy(form).then((form) => {
-    cy.wrap(Cypress.$(errorBorderFields, form)).should(
-      'not.have.class',
-      'border-negative-700',
-    )
+    cy.wrap(Cypress.$(errorBorderFields, form)).should('not.have.class', 'border-negative-700')
   })
 })
 
 Cypress.Commands.add('submitForm', (form) => {
   cy.dataCy(form).then((form) => {
-    cy.wrap(Cypress.$('button[type=submit]', form)).should("be.visible").dblclick()
+    cy.wrap(Cypress.$('button[type=submit]', form)).should('be.visible').dblclick()
   })
 })
 
 Cypress.Commands.add('check2FAPage', (emailHash) => {
-  cy.get('[data-cy=success-alert]', {timeout: 15000}).find("p").contains(emailHash)
-  cy.dataCy("pokračovať-do-konta-button").contains("Pokračovať do konta")
+  cy.get('[data-cy=success-alert]', { timeout: 15000 }).find('p').contains(emailHash)
+  cy.dataCy('pokračovať-do-konta-button').contains('Pokračovať do konta')
 })

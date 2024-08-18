@@ -29,25 +29,25 @@ declare namespace Cypress {
 
 Cypress.Commands.add('logInUser', (device, email, password) => {
   cy.visit('/prihlasenie')
-  cy.location('pathname', {timeout: 20000})
-  .should('eq', '/prihlasenie');
+  cy.location('pathname', { timeout: 20000 }).should('eq', '/prihlasenie')
   cy.dataCy('login-container').then((form) => {
     cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(email)
     cy.wrap(Cypress.$('[data-cy=input-password]', form)).type(password)
     cy.wrap(Cypress.$('[data-cy=login-button]', form)).click()
   })
-  cy.location('pathname', {timeout:20000})
-  .should('eq', '/');
+  cy.location('pathname', { timeout: 20000 }).should('eq', '/')
 })
 
 Cypress.Commands.add('logOutUser', () => {
   cy.visit('/odhlasenie')
   cy.get('[data-cy=odhlásiť-sa-button]').click()
-  cy.location('pathname', {timeout: 4000})
-  .should('eq', '/prihlasenie');
+  cy.location('pathname', { timeout: 4000 }).should('eq', '/prihlasenie')
 })
 
 Cypress.Commands.add('checkSuccessSnackbar', () => {
   cy.get('[class^="Snackbar_snackbar-wrapper"]').should('be.visible')
-  cy.get('*[class^="Snackbar_snackbar-wrapper"]').find('*[class^="Snackbar_snackbar"]').eq(0).should('have.attr', 'style', 'background-color: rgb(var(--color-success-700));')
+  cy.get('*[class^="Snackbar_snackbar-wrapper"]')
+    .find('*[class^="Snackbar_snackbar"]')
+    .eq(0)
+    .should('have.attr', 'style', 'background-color: rgb(var(--color-success-700));')
 })

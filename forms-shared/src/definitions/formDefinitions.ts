@@ -114,5 +114,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     newGovernmentXml: true,
+    additionalInfoTemplate: `**Doplňujúce informácie test**<br>Počet detí: <%= it.helpers.safeArray(it.formData.deti.zoznamDeti).length %>`,
   },
 ]

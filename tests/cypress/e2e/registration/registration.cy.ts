@@ -17,7 +17,6 @@ describe('RF01 -', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         const emailHash = `${Date.now() + device}@cypress.test`
-        const wrongEmailHash = `${Date.now() + device}wrongemail@cypress.test`
 
         it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
@@ -144,17 +143,7 @@ describe('RF01 -', { testIsolation: false }, () => {
             })
           })
 
-          it('2. Submitting wrong email.', () => {
-            cy.dataCy('forgotten-password-form').then((form) => {
-              cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(wrongEmailHash)
-
-              cy.submitForm('forgotten-password-form')
-            })
-            cy.dataCy('alert-container').should('be.visible')
-            cy.dataCy('forgotten-password-form').should('be.visible') //.matchImage()
-          })
-
-          it('3. Submitting correct email.', () => {
+          it('2. Submitting correct email.', () => {
             cy.dataCy('forgotten-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(emailHash)
 

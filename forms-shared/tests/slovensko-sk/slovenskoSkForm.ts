@@ -11,6 +11,7 @@ import { getSchemaXsd } from '../../src/slovensko-sk/file-templates/schemaXsd'
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { validateXml } from '../../test-utils/validateXml'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
+import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -58,6 +59,12 @@ describe('slovenskoSkForm', () => {
           const isValid = validateXml(xmlString, xsdString)
 
           expect(isValid).toBe(true)
+        })
+
+        it('extractJsonFromSlovenskoSkXml should extract the same JSON from XML', async () => {
+          const extractedJson = await extractJsonFromSlovenskoSkXml(formDefinition, xmlString)
+
+          expect(extractedJson).toEqual(exampleForm.formData)
         })
 
         it('PDF should match snapshot', async () => {

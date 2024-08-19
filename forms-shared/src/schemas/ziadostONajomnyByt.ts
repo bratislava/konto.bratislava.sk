@@ -134,7 +134,7 @@ const getOsobneUdajeFields = (stepType: StepType) => {
     stepType === StepType.Ziadatel
       ? input(
           'telefonneCislo',
-          { title: 'Telefónne číslo', required: true, type: 'tel' },
+          { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
           {
             size: 'medium',
             placeholder: '+421',
@@ -173,8 +173,8 @@ const adresaSharedFields = [
       columnsRatio: '3/1',
     },
     [
-      input('mesto', { title: 'Mesto', required: true }, {}),
-      input('psc', { title: 'PSČ', required: true, format: 'ba-slovak-zip' }, {}),
+      input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
+      input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
     ],
   ),
 ]

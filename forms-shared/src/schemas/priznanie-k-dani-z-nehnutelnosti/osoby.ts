@@ -13,14 +13,18 @@ enum UlicaCisloTyp {
 
 const rodneCisloField = input(
   'rodneCislo',
-  { title: 'Rodné číslo', required: true },
+  { type: 'text', title: 'Rodné číslo', required: true },
   {
     helptext:
       'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.',
   },
 )
 
-const priezviskoField = input('priezvisko', { title: 'Priezvisko', required: true }, {})
+const priezviskoField = input(
+  'priezvisko',
+  { type: 'text', title: 'Priezvisko', required: true },
+  {},
+)
 
 const menoTitulField = object(
   'menoTitul',
@@ -29,7 +33,10 @@ const menoTitulField = object(
     columns: true,
     columnsRatio: '3/1',
   },
-  [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
+  [
+    input('meno', { type: 'text', title: 'Meno', required: true }, {}),
+    input('titul', { type: 'text', title: 'Titul' }, {}),
+  ],
 )
 
 const ulicaCisloFields = (type: UlicaCisloTyp) =>
@@ -43,7 +50,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
     [
       input(
         'ulica',
-        { title: 'Ulica', required: true },
+        { type: 'text', title: 'Ulica', required: true },
         {
           helptext: {
             [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
@@ -56,7 +63,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
           }[type],
         },
       ),
-      input('cislo', { title: 'Čislo', required: true }, {}),
+      input('cislo', { type: 'text', title: 'Čislo', required: true }, {}),
     ],
   )
 
@@ -68,8 +75,8 @@ const obecPscField = object(
     columnsRatio: '3/1',
   },
   [
-    input('obec', { title: 'Obec', required: true }, {}),
-    input('psc', { title: 'PSČ', required: true }, {}),
+    input('obec', { type: 'text', title: 'Obec', required: true }, {}),
+    input('psc', { type: 'text', title: 'PSČ', required: true }, {}),
   ],
 )
 
@@ -101,7 +108,7 @@ const telefonField = (required = true) =>
     'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
   )
 
-const icoField = input('ico', { title: 'IČO', required: true, format: 'ba-ico' }, {})
+const icoField = input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {})
 
 const pravnaFormaField = select(
   'pravnaForma',
@@ -228,7 +235,7 @@ const pravnaFormaField = select(
 
 const obchodneMenoAleboNazovField = input(
   'obchodneMenoAleboNazov',
-  { title: 'Obchodné meno alebo názov', required: true },
+  { type: 'text', title: 'Obchodné meno alebo názov', required: true },
   {},
 )
 

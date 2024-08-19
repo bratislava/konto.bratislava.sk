@@ -62,7 +62,6 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
                 "type": "object",
               },
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -493,14 +492,14 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -524,7 +523,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -532,15 +531,15 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "ico": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
       "nazovObcianskehoZdruzenia": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -548,14 +547,14 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
         "menoStatutara": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "priezviskoStatutara": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -583,7 +582,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "adresaPozemku": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -650,8 +649,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
         "ui:label": false,
         "ui:options": {
           "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).",
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -873,14 +872,14 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -904,7 +903,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -912,7 +911,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
@@ -920,14 +919,14 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
         "meno": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "priezvisko": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -943,9 +942,9 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -1018,7 +1017,6 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
                 "type": "object",
               },
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -1238,14 +1236,14 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       "adresa": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "dobaStarostlivosti": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -1320,8 +1318,8 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
         "ui:label": false,
         "ui:options": {
           "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.",
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -1408,14 +1406,14 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -1439,7 +1437,7 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -1447,7 +1445,7 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
@@ -1455,14 +1453,14 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
         "meno": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "priezvisko": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -1478,9 +1476,9 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -1718,7 +1716,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                       ],
                       "properties": {
                         "email": {
-                          "format": "email",
                           "title": "E-mail",
                           "type": "string",
                         },
@@ -2392,7 +2389,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "udajeOOpravnenejOsobeNaPodaniePriznania": {
                       "properties": {
                         "email": {
-                          "format": "email",
                           "title": "E-mail",
                           "type": "string",
                         },
@@ -3110,7 +3106,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             ],
             "properties": {
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -7223,7 +7218,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               ],
               "properties": {
                 "email": {
-                  "format": "email",
                   "title": "E-mail",
                   "type": "string",
                 },
@@ -7382,7 +7376,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "ui:label": false,
         "ui:options": {
           "helptext": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
@@ -7390,14 +7384,14 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "meno": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "titul": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -7414,14 +7408,14 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "obec": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "psc": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -7437,7 +7431,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
       "priezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -7445,7 +7439,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "ui:label": false,
         "ui:options": {
           "helptext": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -8227,9 +8221,9 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "ui:label": false,
         "ui:options": {
           "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -8251,7 +8245,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "cislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -8267,7 +8261,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
           "ui:label": false,
           "ui:options": {
             "helptext": "Zadajte ulicu trvalého pobytu manžela/manželky.",
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -8296,9 +8290,9 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
           "cisloListuVlastnictva": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Napr. 4567",
               "size": "medium",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -8321,8 +8315,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
           "poznamka": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Tu môžete napísať doplnkové informácie",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -8344,7 +8338,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "cisloBytu": {
               "ui:label": false,
               "ui:options": {
-                "type": "text",
+                "inputType": "text",
               },
               "ui:widget": "Input",
             },
@@ -8400,8 +8394,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "ui:label": false,
               "ui:options": {
                 "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}",
+                "inputType": "text",
                 "placeholder": "Napr. 4827/624441",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -8409,8 +8403,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "ui:label": false,
               "ui:options": {
                 "helptext": "Stručný popis bytu.",
+                "inputType": "text",
                 "placeholder": "Napr. dvojizbový byt",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -8427,8 +8421,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "ui:label": false,
               "ui:options": {
                 "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}",
+                "inputType": "text",
                 "placeholder": "Napr. 1/150",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -8524,8 +8518,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}",
+                    "inputType": "text",
                     "placeholder": "Napr. 124827/624441",
-                    "type": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -8534,7 +8528,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "ui:label": false,
                     "ui:options": {
                       "helptext": "markdown_gKgflRNwdS:Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}",
-                      "type": "text",
+                      "inputType": "text",
                     },
                     "ui:widget": "Input",
                   },
@@ -8542,7 +8536,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "ui:label": false,
                     "ui:options": {
                       "helptext": "Napr. garážovanie, skladovanie, podnikanie alebo iné.",
-                      "type": "text",
+                      "inputType": "text",
                     },
                     "ui:widget": "Input",
                   },
@@ -8559,8 +8553,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}",
+                    "inputType": "text",
                     "placeholder": "Napr. 1/150",
-                    "type": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -8624,7 +8618,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "ulicaACisloDomu": {
               "ui:label": false,
               "ui:options": {
-                "type": "text",
+                "inputType": "text",
               },
               "ui:widget": "Input",
             },
@@ -8634,8 +8628,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "ui:label": false,
               "ui:options": {
                 "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}",
+                "inputType": "text",
                 "placeholder": "Napr. 7986/1",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -8855,9 +8849,9 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "cisloListuVlastnictva": {
                 "ui:label": false,
                 "ui:options": {
+                  "inputType": "text",
                   "placeholder": "Napr. 4567",
                   "size": "medium",
-                  "type": "text",
                 },
                 "ui:widget": "Input",
               },
@@ -9019,8 +9013,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}",
+                    "inputType": "text",
                     "placeholder": "Napr. 7986/1",
-                    "type": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -9028,7 +9022,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "Vyplňte, ak na pozemok bolo vydané povolenie na dobývanie ložiska nevyhradeného nerastu alebo sa na pozemku nachádza zariadenie na výrobu elektriny zo slnečnej energie, transformačná stanica alebo predajný stánok slúžiaci k predaju tovaru a poskytovaniu služieb.",
-                    "type": "text",
+                    "inputType": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -9045,8 +9039,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "ui:label": false,
                 "ui:options": {
                   "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}",
+                  "inputType": "text",
                   "placeholder": "Napr. 4827/624441",
-                  "type": "text",
                 },
                 "ui:widget": "Input",
               },
@@ -9054,8 +9048,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "ui:label": false,
                 "ui:options": {
                   "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}",
+                  "inputType": "text",
                   "placeholder": "Napr. 1/1 alebo 1/105",
-                  "type": "text",
                 },
                 "ui:widget": "Input",
               },
@@ -9102,8 +9096,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
           "poznamka": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Tu môžete napísať doplnkové informácie",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9264,9 +9258,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "cisloListuVlastnictva": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Napr. 4567",
               "size": "medium",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9341,8 +9335,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "poznamka": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Tu môžete napísať doplnkové informácie",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9405,7 +9399,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "ulicaACisloDomu": {
               "ui:label": false,
               "ui:options": {
-                "type": "text",
+                "inputType": "text",
               },
               "ui:widget": "Input",
             },
@@ -9415,8 +9409,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "ui:label": false,
               "ui:options": {
                 "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}",
+                "inputType": "text",
                 "placeholder": "Napr. 7986/1",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -9520,8 +9514,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "ui:label": false,
             "ui:options": {
               "helptext": "markdown_gKgflRNwdS:Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}",
+              "inputType": "text",
               "placeholder": "Napr. 1/1",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9649,9 +9643,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "cisloListuVlastnictva": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Napr. 4567",
               "size": "medium",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9748,8 +9742,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}",
+                    "inputType": "text",
                     "placeholder": "Napr. 4827/624441",
-                    "type": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -9757,8 +9751,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "ui:label": false,
                   "ui:options": {
                     "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}",
+                    "inputType": "text",
                     "placeholder": "Napr. 1/1 alebo 1/105",
-                    "type": "text",
                   },
                   "ui:widget": "Input",
                 },
@@ -9870,16 +9864,16 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "ui:label": false,
             "ui:options": {
               "helptext": "Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV).",
+              "inputType": "text",
               "placeholder": "Napr. polyfunkčná budova",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
           "poznamka": {
             "ui:label": false,
             "ui:options": {
+              "inputType": "text",
               "placeholder": "Tu môžete napísať doplnkové informácie",
-              "type": "text",
             },
             "ui:widget": "Input",
           },
@@ -9907,7 +9901,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "ulicaACisloDomu": {
               "ui:label": false,
               "ui:options": {
-                "type": "text",
+                "inputType": "text",
               },
               "ui:widget": "Input",
             },
@@ -9917,8 +9911,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               "ui:label": false,
               "ui:options": {
                 "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}",
+                "inputType": "text",
                 "placeholder": "Napr. 7986/1",
-                "type": "text",
               },
               "ui:widget": "Input",
             },
@@ -10156,14 +10150,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "ui:label": false,
         "ui:options": {
           "helptext": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "ico": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -10181,14 +10175,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "obec": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -10980,7 +10974,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "cislo": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -10995,7 +10989,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ulica": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11005,14 +10999,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "meno": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "titul": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -11028,7 +11022,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
       "obchodneMenoAleboNazov": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -11036,14 +11030,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "obec": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
         "psc": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -11061,7 +11055,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
-            "type": "email",
+            "inputType": "email",
           },
           "ui:widget": "Input",
         },
@@ -11069,14 +11063,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "meno": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "titul": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11092,7 +11086,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "obchodneMenoAleboNazov": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -11100,14 +11094,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "obec": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11123,7 +11117,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "priezvisko": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -11920,9 +11914,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+            "inputType": "tel",
             "placeholder": "+421",
             "size": "medium",
-            "type": "tel",
           },
           "ui:widget": "Input",
         },
@@ -11947,7 +11941,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "cislo": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11963,7 +11957,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
             "ui:label": false,
             "ui:options": {
               "helptext": "Zadajte ulicu svojho trvalého pobytu.",
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11972,7 +11966,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "cislo": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -11988,7 +11982,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
             "ui:label": false,
             "ui:options": {
               "helptext": "Zadajte ulicu sídla.",
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -12104,7 +12098,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
       "priezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -12132,7 +12126,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "ui:label": false,
         "ui:options": {
           "helptext": "Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.",
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -12906,9 +12900,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "ui:label": false,
         "ui:options": {
           "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -12917,7 +12911,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.",
-            "type": "email",
+            "inputType": "email",
           },
           "ui:widget": "Input",
         },
@@ -12925,14 +12919,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "meno": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "titul": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -12949,14 +12943,14 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "obec": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -12988,7 +12982,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "priezvisko": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13762,9 +13756,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+            "inputType": "tel",
             "placeholder": "+421",
             "size": "medium",
-            "type": "tel",
           },
           "ui:widget": "Input",
         },
@@ -13786,7 +13780,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "cislo": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -13802,7 +13796,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
             "ui:label": false,
             "ui:options": {
               "helptext": "Zadajte ulicu svojho trvalého pobytu.",
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -13836,7 +13830,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "cislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13852,7 +13846,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Zadajte ulicu svojho trvalého pobytu.",
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13861,7 +13855,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "cislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13877,7 +13871,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Zadajte ulicu miesta podnikania podľa živnostenského registra.",
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13886,7 +13880,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "cislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -13902,7 +13896,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Zadajte ulicu sídla.",
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -14199,7 +14193,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
             ],
             "properties": {
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -14466,7 +14459,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
                   ],
                   "properties": {
                     "email": {
-                      "format": "email",
                       "title": "E-mail",
                       "type": "string",
                     },
@@ -14554,7 +14546,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
                 "type": "string",
               },
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -14722,14 +14713,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -14753,7 +14744,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -14763,14 +14754,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -14794,7 +14785,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -14802,14 +14793,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "ico": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -14824,14 +14815,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "kontaktnaOsoba": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -14840,14 +14831,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -14871,7 +14862,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -14879,7 +14870,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "obchodneMeno": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -14893,9 +14884,9 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -15032,23 +15023,23 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "nazov": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "parcelneCislo": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
       "supisneCislo": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -15066,8 +15057,8 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "ulica": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -15084,14 +15075,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -15115,7 +15106,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -15125,14 +15116,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -15156,7 +15147,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -15164,28 +15155,28 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "ico": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "kontaktnaOsoba": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -15194,14 +15185,14 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -15225,7 +15216,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -15233,16 +15224,16 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "obchodneMeno": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -15274,8 +15265,8 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "ui:label": false,
         "ui:options": {
           "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.",
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -15288,23 +15279,23 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "projektantTelefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -15559,7 +15550,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
             ],
             "properties": {
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -15826,7 +15816,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
                   ],
                   "properties": {
                     "email": {
-                      "format": "email",
                       "title": "E-mail",
                       "type": "string",
                     },
@@ -15914,7 +15903,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
                 "type": "string",
               },
               "email": {
-                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -16208,14 +16196,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16239,7 +16227,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16249,14 +16237,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16280,7 +16268,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16288,14 +16276,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "ico": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -16310,14 +16298,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "kontaktnaOsoba": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -16326,14 +16314,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16357,7 +16345,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16365,7 +16353,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "obchodneMeno": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -16379,9 +16367,9 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -16556,23 +16544,23 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "nazov": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "parcelneCislo": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
       "supisneCislo": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -16590,8 +16578,8 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "ulica": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -16608,14 +16596,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16639,7 +16627,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16649,14 +16637,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16680,7 +16668,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16688,28 +16676,28 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "ico": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "kontaktnaOsoba": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
@@ -16718,14 +16706,14 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
           "mesto": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
           "psc": {
             "ui:label": false,
             "ui:options": {
-              "type": "text",
+              "inputType": "text",
             },
             "ui:widget": "Input",
           },
@@ -16749,7 +16737,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ulicaACislo": {
           "ui:label": false,
           "ui:options": {
-            "type": "text",
+            "inputType": "text",
           },
           "ui:widget": "Input",
         },
@@ -16757,16 +16745,16 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "obchodneMeno": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },
@@ -16798,8 +16786,8 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
         "ui:label": false,
         "ui:options": {
           "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.",
+          "inputType": "text",
           "size": "medium",
-          "type": "text",
         },
         "ui:widget": "Input",
       },
@@ -16812,23 +16800,23 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
       "email": {
         "ui:label": false,
         "ui:options": {
-          "type": "email",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
       "menoPriezvisko": {
         "ui:label": false,
         "ui:options": {
-          "type": "text",
+          "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "projektantTelefon": {
         "ui:label": false,
         "ui:options": {
+          "inputType": "tel",
           "placeholder": "+421",
           "size": "medium",
-          "type": "tel",
         },
         "ui:widget": "Input",
       },

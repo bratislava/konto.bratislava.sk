@@ -53,9 +53,9 @@ const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
   {
+    type: 'ba-ratio',
     title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
     required: true,
-    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 4827/624441',
@@ -67,7 +67,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
 
 const spoluvlastnickyPodiel = input(
   'spoluvlastnickyPodiel',
-  { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
+  { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
     helptext: markdownText(
@@ -158,7 +158,7 @@ const innerArray = (kalkulacka: boolean) =>
       ...stavbyBase(StepEnum.DanZoStaviebViacereUcely),
       input(
         'popisStavby',
-        { title: 'Popis stavby', required: true },
+        { type: 'text', title: 'Popis stavby', required: true },
         {
           placeholder: 'Napr. polyfunkčná budova',
           helptext:
@@ -323,7 +323,7 @@ const innerArray = (kalkulacka: boolean) =>
       ]),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],

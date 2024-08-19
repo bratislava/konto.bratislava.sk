@@ -5,3 +5,18 @@ export const getSlovenskoSkXmlns = (formDefinition: FormDefinitionSlovenskoSk) =
 
 export const getSlovenskoSkMetaIdentifier = (formDefinition: FormDefinitionSlovenskoSk) =>
   `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`
+
+export function parseSlovenskoSkXmlnsString(xmlnsString: string) {
+  const regex = /^http:\/\/schemas\.gov\.sk\/form\/([^/]+)\/([^/]+)$/
+
+  const match = xmlnsString.match(regex)
+  if (!match) {
+    return null
+  }
+
+  const [, pospID, pospVersion] = match
+  return {
+    pospID,
+    pospVersion,
+  }
+}

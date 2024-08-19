@@ -1,34 +1,44 @@
 # nest-forms-backend
 
 ## Run locally
+1. Run from docker-compose:
 
-Run from docker-compose:
+   - RabbitMQ
+   - Postgresql
 
-- RabbitMQ
-- Postgresql
+2. Install dependencies in `/forms-shared`:
+    ```bash
+    npm i
+    ```
+   (`forms-shared` as a build package is used in `nest-forms-backend` and therefore it needs to have installed dependencies and is build after dependencies are installed)
 
-Install dependencies using npm:
+2. Build `/forms-shared`:
+    ```bash
+    npm run build
+    ```
 
-```bash
-npm i
-```
+4. Install dependencies in `/nest-forms-backend`:
 
-copy and adjust .env from .env.example
+    ```bash
+    npm i
+    ```
 
-if you are using different database or different posgres with user, adjust `DATABASE_*` env vars
+5. copy and adjust .env from .env.example
 
-Migrate database and generate prisma files
+6. if you are using a different database or different posgres with user, adjust `DATABASE_*` env vars
 
-```
-npx prisma migrate dev
-prisma generate
-```
+7. Migrate database and generate prisma files
 
-Start dev server
+    ```
+    npx prisma migrate dev
+    prisma generate
+    ```
 
-```
-npm run start:dev
-```
+8. Start dev server
+
+    ```
+    npm run start:dev
+    ```
 
 ## Test
 

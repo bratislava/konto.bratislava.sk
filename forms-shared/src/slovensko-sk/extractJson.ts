@@ -37,7 +37,7 @@ const baseFormXmlSchema = {
   required: ['eform'],
 }
 
-type BaseFormXmlSchema = {
+type BaseFormXml = {
   eform: {
     $: {
       xmlns: string
@@ -49,7 +49,7 @@ type BaseFormXmlSchema = {
 
 const parser = new Parser({ explicitArray: true })
 
-const isBaseFormXmlSchema = (data: any): data is BaseFormXmlSchema => {
+const isBaseFormXml = (data: any): data is BaseFormXml => {
   const ajv = new Ajv()
   return ajv.validate(baseFormXmlSchema, data)
 }
@@ -77,7 +77,7 @@ export async function extractJsonFromSlovenskoSkXml(
     throw ExtractJsonFromSlovenskoSkXmlError.InvalidXml
   }
 
-  if (!isBaseFormXmlSchema(parsedXml)) {
+  if (!isBaseFormXml(parsedXml)) {
     throw ExtractJsonFromSlovenskoSkXmlError.XmlDoesntMatchSchema
   }
 

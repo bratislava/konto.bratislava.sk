@@ -165,13 +165,13 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-  deploy-staging-nest-clamav-scanenr:
-    name: staging nest-clamav-scanenr
+  deploy-staging-nest-clamav-scanner:
+    name: staging nest-clamav-scanner
     needs: conditions
-    if: needs.conditions.outputs.staging-nest-clamav-scanenr == 'true'
+    if: needs.conditions.outputs.staging-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
-      directory: nest-clamav-scanenr/
+      directory: nest-clamav-scanner/
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug

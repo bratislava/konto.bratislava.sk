@@ -36,7 +36,7 @@
     "ibantools": "^4.5.1",
     "jsdom": "^24.1.0",
     "json-schema": "^0.4.0",
-    "libphonenumber-js": "^1.10.58",
+    "libphonenumber-js": "^1.11.7",
     "lodash": "^4.17.21",
     "pdf-lib": "^1.17.1",
     "react": "^18.3.1",

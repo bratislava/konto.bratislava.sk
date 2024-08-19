@@ -1,0 +1,18 @@
+resources:
+  - ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: ${BUILD_REPOSITORY_NAME}-env
+    namespace: ${NAMESPACE}
+    behavior: merge
+    envs:
+      - .env
+
+  - name: ${BUILD_REPOSITORY_NAME}-clamav
+    namespace: ${NAMESPACE}
+    behavior: merge
+    envs:
+      - .clamav.env

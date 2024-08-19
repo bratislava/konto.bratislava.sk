@@ -13,6 +13,7 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string
+  additionalInfoTemplate?: string
   embedded?: false | 'olo'
 }
 

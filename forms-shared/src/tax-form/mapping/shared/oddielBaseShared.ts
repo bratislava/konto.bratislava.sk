@@ -7,7 +7,8 @@ import {
   Spoluvlastnictvo,
   TaxFormData,
 } from '../../types'
-import { parseRodneCislo, safeBoolean, safeNumber } from './functions'
+import { parseRodneCislo } from './functions'
+import { safeBoolean, safeNumber } from '../../../form-utils/safeData'
 
 export const oddielBaseShared = (
   data: TaxFormData,

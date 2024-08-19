@@ -62,6 +62,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
                 "type": "object",
               },
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -1017,6 +1018,7 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
                 "type": "object",
               },
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -1716,6 +1718,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                       ],
                       "properties": {
                         "email": {
+                          "format": "email",
                           "title": "E-mail",
                           "type": "string",
                         },
@@ -2389,6 +2392,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "udajeOOpravnenejOsobeNaPodaniePriznania": {
                       "properties": {
                         "email": {
+                          "format": "email",
                           "title": "E-mail",
                           "type": "string",
                         },
@@ -3106,6 +3110,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             ],
             "properties": {
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -7218,6 +7223,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               ],
               "properties": {
                 "email": {
+                  "format": "email",
                   "title": "E-mail",
                   "type": "string",
                 },
@@ -14193,6 +14199,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
             ],
             "properties": {
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -14459,6 +14466,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
                   ],
                   "properties": {
                     "email": {
+                      "format": "email",
                       "title": "E-mail",
                       "type": "string",
                     },
@@ -14546,6 +14554,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
                 "type": "string",
               },
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -15550,6 +15559,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
             ],
             "properties": {
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },
@@ -15816,6 +15826,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
                   ],
                   "properties": {
                     "email": {
+                      "format": "email",
                       "title": "E-mail",
                       "type": "string",
                     },
@@ -15903,6 +15914,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
                 "type": "string",
               },
               "email": {
+                "format": "email",
                 "title": "E-mail",
                 "type": "string",
               },

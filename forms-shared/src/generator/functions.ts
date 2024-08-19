@@ -157,7 +157,14 @@ export const input = (
   uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): Field => {
   const { inputType, format } = (() => {
-    if (options.type === 'text' || options.type === 'password' || options.type === 'email') {
+    if (options.type === 'email') {
+      return {
+        inputType: 'email',
+        format: 'email',
+      }
+    }
+
+    if (options.type === 'text' || options.type === 'password') {
       return {
         inputType: options.type,
         format: undefined,

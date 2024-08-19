@@ -47,7 +47,7 @@
     "amqplib": "^0.10.4",
     "aws-sdk": "^2.1655.0",
     "axios": "^1.6.8",
-    "bull": "^4.12.2",
+    "bull": "^4.16.0",
     "cache-manager": "^5.5.2",
     "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",

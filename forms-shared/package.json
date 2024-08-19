@@ -14,7 +14,8 @@
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
     "generate-assets": "ts-node scripts/assets/generate.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
-    "build:watch": "tsc --project tsconfig.build.json --watch"
+    "build:watch": "tsc --project tsconfig.build.json --watch",
+    "sandbox": "ts-node scripts/sandbox.ts"
   },
   "exports": {
     "./*": "./dist/*.js",

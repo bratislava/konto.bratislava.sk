@@ -113,6 +113,7 @@
     "vop_agreement_title": "Ochrana osobných údajov",
     "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
+    "additional_info": "Doplňujúce informácie",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
     "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
     "uploading_files": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania. Nahrávané súbory: {{files}}",

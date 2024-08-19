@@ -347,14 +347,7 @@ export default class NasesUtilsService {
     }
     if (!isSigned) {
       try {
-        message = await this.convertService.convertJsonToXmlV2(
-          {
-            formId: form.id,
-            slug: form.formDefinitionSlug,
-            jsonData: form.formDataJson,
-          },
-          null,
-        )
+        message = await this.convertService.convertJsonToXmlForForm(form, true)
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

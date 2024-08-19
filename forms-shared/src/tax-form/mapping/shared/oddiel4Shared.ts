@@ -1,7 +1,8 @@
 import { DanZBytovANebytovychPriestorovPriznanie, TaxFormData } from '../../types'
-import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
+import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
 import { calculateTaxCalculatorFormula } from '../../calculators'
+import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 
 const zakladDaneFormula = `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
                       highestPowerOf10 = pow(10, floor(log10 denominator));

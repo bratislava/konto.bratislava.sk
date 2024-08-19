@@ -1,0 +1,27 @@
+resources:
+  - deployment.yml
+  - service-app.yml
+  - ingress.yml
+  - service-database.yml
+  - stateful-set.yml
+configurations:
+  - configuration.yml
+
+# Keep as is
+commonLabels:
+  app: ${BUILD_REPOSITORY_NAME}
+  source: ${BUILD_REPOSITORY_NAME}
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: ${BUILD_REPOSITORY_NAME}-env
+    namespace: ${NAMESPACE}
+    envs:
+      - .env
+
+  - name: ${BUILD_REPOSITORY_NAME}-clamav
+    namespace: ${NAMESPACE}
+    envs:
+      - .clamav.env

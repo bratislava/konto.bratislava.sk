@@ -27,6 +27,7 @@ async function replaceOptionsType(filePath: string) {
 
 const validTypes = ['forms', 'tax', 'city-account']
 
+// To generate client from locally running backend, use 'http://host.docker.internal:3000/api-json'
 const endpoints = {
   forms: 'https://nest-forms-backend.staging.bratislava.sk/api-json',
   tax: 'https://nest-tax-backend.staging.bratislava.sk/api-json',

@@ -13,6 +13,7 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string
+  additionalInfoTemplate?: string
   embedded?: false | 'olo'
 }
 
@@ -22,6 +23,8 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   publisher: string
   gestor: string
   isSigned: boolean
+  // Temporary flag until all forms are converted to new government XMLs
+  newGovernmentXml?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

@@ -5,8 +5,12 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/next' # Location of package manifests
+  - package-ecosystem: 'npm'
+    directory: '/forms-shared'
+    schedule:
+      interval: 'weekly'
+  - package-ecosystem: 'npm'
+    directory: '/next'
     schedule:
       interval: 'weekly'
   - package-ecosystem: 'npm'
@@ -14,6 +18,6 @@ updates:
     schedule:
       interval: 'weekly'
   - package-ecosystem: 'npm'
-    directory: '/forms-shared'
+    directory: '/nest-clamav-scanner'
     schedule:
       interval: 'weekly'

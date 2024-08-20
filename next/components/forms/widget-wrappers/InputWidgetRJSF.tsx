@@ -32,7 +32,7 @@ const InputWidgetRJSF = ({
     className,
     resetIcon,
     leftIcon,
-    type,
+    inputType,
     size,
     labelSize,
   } = options
@@ -52,7 +52,7 @@ const InputWidgetRJSF = ({
           <InputField
             name={name}
             label={label}
-            type={type}
+            type={inputType}
             placeholder={placeholder}
             value={wrapperValue ?? undefined}
             errorMessage={rawErrors}

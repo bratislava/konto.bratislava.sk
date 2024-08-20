@@ -3,7 +3,7 @@ import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
 
-import { removeUndefinedValues } from './helpers'
+import { getInputTypeForAjvFormat, removeUndefinedValues } from './helpers'
 import {
   ArrayFieldUiOptions,
   BaWidgetType,
@@ -24,6 +24,7 @@ import {
   TextAreaUiOptions,
   TimePickerUiOptions,
 } from './uiOptionsTypes'
+import { BaAjvInputFormat } from '../form-utils/ajvFormats'
 
 export type Schemas = {
   schema: RJSFSchema
@@ -149,63 +150,45 @@ export const selectMultiple = (
 
 export const input = (
   property: string,
-  options: BaseOptions &
-    (
-      | {
-          type?: 'text'
-          format?: 'ba-slovak-zip' | 'ba-ratio' | 'ba-ico' | 'ba-iban'
-          pattern?: RegExp
-        }
-      | {
-          type: 'password' | 'email' | 'tel'
-        }
-    ) & { default?: string },
-  uiOptions: Omit<InputUiOptions, 'type'>,
+  options: BaseOptions & {
+    type: 'text' | 'password' | 'email' | BaAjvInputFormat
+    default?: string
+  },
+  uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): Field => {
-  if ('pattern' in options && 'format' in options) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `Input: ${property} has both pattern and format, only one of them can be provided`,
-    )
-  }
-
-  const getFormat = () => {
-    if (options.type == null || options.type === 'text') {
-      return options.format
-    }
+  const { inputType, format } = (() => {
     if (options.type === 'email') {
-      return 'email'
-    }
-    if (options.type === 'tel') {
-      return 'ba-phone-number'
-    }
-
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    return undefined
-  }
-
-  const getPattern = () => {
-    if (options.type == null || options.type === 'text') {
-      return options.pattern?.source
+      return {
+        inputType: 'email',
+        format: 'email',
+      }
     }
 
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    return undefined
-  }
+    if (options.type === 'text' || options.type === 'password') {
+      return {
+        inputType: options.type,
+        format: undefined,
+      }
+    }
+
+    return {
+      inputType: getInputTypeForAjvFormat(options.type),
+      format: options.type,
+    }
+  })()
 
   return {
     property,
     schema: removeUndefinedValues({
       type: 'string',
       title: options.title,
-      format: getFormat(),
-      pattern: getPattern(),
+      format,
       default: options.default,
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Input,
       'ui:label': false,
-      'ui:options': { ...uiOptions, type: options.type ?? 'text' },
+      'ui:options': { ...uiOptions, inputType },
     }),
     required: Boolean(options.required),
   }

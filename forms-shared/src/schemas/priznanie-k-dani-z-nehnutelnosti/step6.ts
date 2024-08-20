@@ -98,9 +98,9 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
   input(
     'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
     {
+      type: 'ba-ratio',
       title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
       required: true,
-      format: 'ba-ratio',
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
@@ -115,7 +115,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
 const spoluvlastnickyPodiel = (typ: Typ) =>
   input(
     'spoluvlastnickyPodiel',
-    { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
+    { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
     {
       placeholder: 'Napr. 1/150',
       helptext: markdownText(
@@ -179,10 +179,10 @@ const innerArray = (kalkulacka: boolean) =>
             },
           ),
           conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
-            input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+            input('cisloBytu', { type: 'text', title: 'Číslo bytu', required: true }, {}),
             input(
               'popisBytu',
-              { title: 'Popis bytu' },
+              { type: 'text', title: 'Popis bytu' },
               { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
             ),
             kalkulacka
@@ -288,6 +288,7 @@ const innerArray = (kalkulacka: boolean) =>
                     input(
                       'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
                       {
+                        type: 'text',
                         title: 'Účel využitia nebytového priestoru v bytovom dome',
                         required: true,
                       },
@@ -297,7 +298,11 @@ const innerArray = (kalkulacka: boolean) =>
                     ),
                     input(
                       'cisloNebytovehoPriestoruVBytovomDome',
-                      { title: 'Číslo nebytového priestoru v bytovom dome', required: true },
+                      {
+                        type: 'text',
+                        title: 'Číslo nebytového priestoru v bytovom dome',
+                        required: true,
+                      },
                       {
                         helptext: markdownText(
                           'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
@@ -356,7 +361,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],

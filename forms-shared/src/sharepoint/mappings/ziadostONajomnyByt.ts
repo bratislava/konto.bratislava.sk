@@ -213,6 +213,81 @@ const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapVal
   },
 }
 
+const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumnMapValue> = {
+  Meno: {
+    type: 'json_path',
+    info: 'osobneUdaje.menoPriezvisko.meno',
+  },
+  Priezvisko: {
+    type: 'json_path',
+    info: 'osobneUdaje.menoPriezvisko.priezvisko',
+  },
+  DatumNarodenia: {
+    type: 'json_path',
+    info: 'osobneUdaje.datumNarodenia',
+  },
+  StatnaPrislusnost: {
+    type: 'json_path',
+    info: 'osobneUdaje.statnaPrislusnost',
+  },
+  SucasneByvanieRovnakeAkoVase: {
+    type: 'json_path',
+    info: 'sucasneByvanie.situaciaRovnakaAkoVasa',
+  },
+  BytovaNudza: {
+    type: 'json_path',
+    info: 'sucasneByvanie.bytovaNudza',
+  },
+  TypByvania: {
+    type: 'json_path',
+    info: 'sucasneByvanie.typByvania',
+  },
+  DlzkaBytovejNudze: {
+    type: 'json_path',
+    info: 'sucasneByvanie.dlzkaBytovejNudze',
+  },
+  ZamestnaniePrijem: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.zamestnaniePrijem',
+  },
+  SamostatnaZarobkovaCinnostPrijem: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.samostatnaZarobkovaCinnostPrijem',
+  },
+  DochodokVyska: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.dochodokVyska',
+  },
+  VyzivneVyska: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.vyzivneVyska',
+  },
+  DavkaVNezamestnanostiVyska: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.davkaVNezamestnanostiVyska',
+  },
+  InePrijmyVyska: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.prijem.inePrijmyVyska',
+  },
+  TzpPreukaz: {
+    type: 'json_path',
+    info: 'zdravotnyStav.tzpPreukaz',
+  },
+  MieraFunkcnejPoruchy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.mieraFunkcnejPoruchy',
+  },
+  ChronickeOchorenie: {
+    type: 'json_path',
+    info: 'zdravotnyStav.chronickeOchorenie',
+  },
+  ExistujuceDiagnozy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.existujuceDiagnozy',
+  },
+}
+
 const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   prefix: 'druhDruzka' | 'manzelManzelka',
 ): Record<string, SharepointColumnMapValue> => {
@@ -325,6 +400,11 @@ export const ziadostONajomnyBytSharepointData = {
       originalTableId: 'Ziadatel',
       columnMap: defaultColumnMapNajomneByvanieDieta,
     },
+    'inyClenoviaClenkyDomacnosti.zoznamInychClenov': {
+      databaseName: 'dtb_NajomneByvanieIniClenovia',
+      originalTableId: 'Ziadatel',
+      columnMap: defaultColumnMapNajomneByvanieIniClenovia,
+    }
   },
   oneToOne: {
     'manzelManzelka.manzelManzelkaSucastouDomacnosti': {

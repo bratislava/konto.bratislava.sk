@@ -5,7 +5,9 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndCond
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
-import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
+import ziadostONajomnyByt, {
+  ziadostONajomnyBytAdditionalInfoTemplate,
+} from '../schemas/ziadostONajomnyByt'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -114,6 +116,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     newGovernmentXml: true,
-    additionalInfoTemplate: `**Doplňujúce informácie test**<br>Počet detí: <%= it.helpers.safeArray(it.formData.deti.zoznamDeti).length %>`,
+    additionalInfoTemplate: ziadostONajomnyBytAdditionalInfoTemplate,
   },
 ]

@@ -43,7 +43,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
 
     return {
       props: {
-        formContext: {
+        formServerContext: {
           formDefinition,
           formId: '',
           initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),

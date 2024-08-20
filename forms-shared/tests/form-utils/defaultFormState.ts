@@ -79,13 +79,13 @@ describe('defaultFormState', () => {
         {},
       ),
       arrayField('arrayField', { title: 'Array field' }, {} as ArrayFieldUiOptions, [
-        input('placeholderField', { title: 'Placeholder field' }, {}),
+        input('placeholderField', { type: 'text', title: 'Placeholder field' }, {}),
       ]),
       arrayField(
         'arrayFieldRequired',
         { title: 'Array field required', required: true },
         {} as ArrayFieldUiOptions,
-        [input('placeholderField', { title: 'Placeholder field' }, {})],
+        [input('placeholderField', { type: 'text', title: 'Placeholder field' }, {})],
       ),
     ])
 
@@ -108,9 +108,9 @@ describe('defaultFormState', () => {
 
 describe('baGetDefaultFormStateStable', () => {
   const { schema } = object('wrapper', { required: true }, {}, [
-    input('input1', { title: 'Input 1', default: 'value1', required: true }, {}),
+    input('input1', { type: 'text', title: 'Input 1', default: 'value1', required: true }, {}),
     conditionalFields(createCondition([[['input1'], { const: 'value1' }]]), [
-      input('input2', { title: 'Input 2', default: 'value2', required: true }, {}),
+      input('input2', { type: 'text', title: 'Input 2', default: 'value2', required: true }, {}),
     ]),
   ])
 

@@ -25,7 +25,7 @@ const SummaryAdditionalInfo = () => {
       <AccountMarkdown
         content={additionalInfo}
         // TODO: Replace variant statusBar
-        variant="statusBar"
+        variant="sm"
         className="rounded-10 bg-gray-50 p-8"
       />
     </div>

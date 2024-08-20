@@ -16,7 +16,11 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import {
+  createCamelCaseOptionsV2,
+  createCondition,
+  createStringOptions,
+} from '../generator/helpers'
 
 enum StepType {
   Ziadatel,
@@ -24,143 +28,6 @@ enum StepType {
   DruhDruzka,
   Dieta,
   InyClen,
-}
-
-const getOsobneUdajeFields = (stepType: StepType) => {
-  const menoPriezviskoField = object(
-    'menoPriezvisko',
-    { required: true },
-    {
-      columns: true,
-      columnsRatio: '1/1',
-    },
-    [
-      input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-      input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-    ],
-  )
-  const rodnePriezviskoField =
-    stepType !== StepType.Dieta
-      ? input(
-          'rodnePriezvisko',
-          { title: 'Rodné priezvisko', type: 'text' },
-          {
-            helptextHeader:
-              stepType === StepType.Ziadatel
-                ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.'
-                : 'Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.',
-          },
-        )
-      : null
-
-  const datumNarodeniaField = datePicker(
-    'datumNarodenia',
-    { title: 'Dátum narodenia', required: true },
-    {
-      size: 'medium',
-      belowComponents: [
-        {
-          type: 'alert',
-          props: {
-            type: 'info',
-            message: {
-              [StepType.Ziadatel]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte váš občiansky preukaz.',
-              [StepType.ManzelManzelka]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte kópiu občianskeho preukazu manžela/manželky.',
-              [StepType.DruhDruzka]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte kópiu občianskeho preukazu druha/družky.',
-              [StepType.Dieta]:
-                'V prípade, že by vám bolo pridelené nájomné bývanie, k podpisu zmluvy si na nahliadnutie pripravte kópiu rodného listu dieťaťa, resp. kópiu občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov.',
-              [StepType.InyClen]:
-                'V prípade, že by vám bolo pridelené nájomné bývanie, k podpisu zmluvy si na nahliadnutie pripravte kópiu občianskeho preukazu člena/členky domácnosti.',
-            }[stepType],
-          },
-        },
-      ],
-    },
-  )
-  const statnaPrislusnostField = radioGroup(
-    'statnaPrislusnost',
-    {
-      type: 'string',
-      title: 'Štátna príslušnosť',
-      required: true,
-      options: createStringOptions(['Slovenská', 'Iná']),
-    },
-    { variant: 'boxed', orientations: 'row' },
-  )
-
-  const rodinnyStavField = select(
-    'rodinnyStav',
-    {
-      title: 'Rodinný stav',
-      required: true,
-      options: createStringOptions(
-        ['Slobodný/slobodná', 'Ženatý/vydatá', 'Rozvedený/rozvedená', 'Vdovec/vdova', 'Iné'],
-        false,
-      ),
-    },
-    {
-      belowComponents: [
-        {
-          type: 'alert',
-          props: {
-            type: 'info',
-            message: {
-              [StepType.Ziadatel]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.',
-              [StepType.ManzelManzelka]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav manžela/manželky.',
-              [StepType.DruhDruzka]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.',
-              [StepType.Dieta]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav dieťaťa.',
-              [StepType.InyClen]:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.',
-            }[stepType],
-          },
-        },
-      ],
-    },
-  )
-
-  const emailField =
-    stepType === StepType.Ziadatel
-      ? input('email', { title: 'Email', required: true, type: 'email' }, {})
-      : null
-
-  const telefonneCisloField =
-    stepType === StepType.Ziadatel
-      ? input(
-          'telefonneCislo',
-          { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
-          {
-            size: 'medium',
-            placeholder: '+421',
-            belowComponents: [
-              {
-                type: 'alert',
-                props: {
-                  type: 'info',
-                  message:
-                    'V prípade, že nemáte email alebo telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu, cez ktorú sa s vami vieme spojiť.',
-                },
-              },
-            ],
-          },
-        )
-      : null
-
-  return [
-    menoPriezviskoField,
-    rodnePriezviskoField,
-    datumNarodeniaField,
-    statnaPrislusnostField,
-    rodinnyStavField,
-    emailField,
-    telefonneCisloField,
-  ]
 }
 
 const adresaSharedFields = [
@@ -179,7 +46,97 @@ const adresaSharedFields = [
   ),
 ]
 
+const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
+  return [
+    radioGroup(
+      'vlastnikNehnutelnosti',
+      {
+        type: 'boolean',
+        title: {
+          [StepType.Ziadatel]:
+            'Ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
+          [StepType.ManzelManzelka]:
+            'Je váš manžel/manželka vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
+          [StepType.Dieta]:
+            'Je vaše dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
+          [StepType.DruhDruzka]:
+            'Je váš druh/družka vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
+          [StepType.InyClen]:
+            'Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
+        }[stepType],
+        required: true,
+        options: [
+          { value: true, title: 'Áno' },
+          { value: false, title: 'Nie', isDefault: true },
+        ],
+      },
+      {
+        variant: 'boxed',
+        orientations: 'row',
+        helptextHeader:
+          stepType === StepType.Ziadatel
+            ? 'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.'
+            : 'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.',
+      },
+    ),
+    conditionalFields(createCondition([[['vlastnikNehnutelnosti'], { const: true }]]), [
+      input(
+        'vlastnikNehnutelnostiDovody',
+        {
+          title: 'Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie',
+          required: true,
+          type: 'text',
+        },
+        {
+          belowComponents: [
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message:
+                  'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, k nahliadnutiu si pripravte list vlastníctva.',
+              },
+            },
+          ],
+        },
+      ),
+    ]),
+  ]
+}
+
+const getAdresaSkutocnehoPobytuFields = (stepType: StepType) => {
+  if (stepType === StepType.Dieta || stepType === StepType.InyClen) {
+    return null
+  }
+
+  return object(
+    'adresaSkutocnehoPobytu',
+    { required: true },
+    {
+      title: 'Adresa skutočného pobytu',
+      description: {
+        [StepType.Ziadatel]: undefined,
+        [StepType.ManzelManzelka]:
+          'Ak má váš manžel/manželka v občianskom preukaze uvedenú Mestskú časť, uveďte adresu príslušného mestského úradu.',
+        [StepType.DruhDruzka]:
+          'Ak má váš druh/družka v občianskom preukaze uvedenú Mestskú časť, uveďte adresu príslušného mestského úradu. ',
+      }[stepType],
+      objectDisplay: stepType === StepType.Ziadatel ? 'wrapper' : 'boxed',
+    },
+    [
+      ...adresaSharedFields,
+      ...(stepType === StepType.ManzelManzelka || stepType === StepType.DruhDruzka
+        ? getVlastnikNehnutelnostiFields(stepType)
+        : []),
+    ],
+  )
+}
+
 const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
+  if (stepType !== StepType.Ziadatel) {
+    return null
+  }
+
   const adresaFields = [
     ...adresaSharedFields,
     customComponentsField(
@@ -187,137 +144,63 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
         type: 'alert',
         props: {
           type: 'info',
-          message: {
-            [StepType.Ziadatel]:
-              'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-            [StepType.ManzelManzelka]:
-              'V prípade, že má váš manžel/manželka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-            [StepType.DruhDruzka]:
-              'V prípade, že má váš druh/družka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-            [StepType.Dieta]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci trvalý pobyt dieťaťa.',
-            [StepType.InyClen]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci trvalý pobyt člena/členky domácnosti.',
-          }[stepType],
+          message:
+            'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
         },
       },
       {},
     ),
   ]
 
-  const adresaWrappedFields =
-    stepType === StepType.Ziadatel
-      ? adresaFields
-      : [
-          radioGroup(
-            'adresaTrvalehoPobytuRovnaka',
-            {
-              type: 'boolean',
-              title: {
-                [StepType.ManzelManzelka]:
-                  'Je adresa trvalého pobytu manžela/manželky rovnaká ako adresa vášho trvalého pobytu?',
-                [StepType.DruhDruzka]:
-                  'Je adresa trvalého pobytu druha/družky rovnaká ako adresa vášho trvalého pobytu?',
-                [StepType.Dieta]: 'Je adresa trvalého pobytu dieťaťa rovnaká ako vaša?',
-                [StepType.InyClen]:
-                  'Je adresa trvalého pobytu člena/členky domácnosti rovnaká ako vaša?',
-              }[stepType],
-              required: true,
-              options: [
-                {
-                  value: true,
-                  title: 'Áno',
-                  isDefault: true,
-                },
-                {
-                  value: false,
-                  title: 'Nie',
-                },
-              ],
-            },
-            { variant: 'boxed', orientations: 'row' },
-          ),
-          conditionalFields(
-            createCondition([[['adresaTrvalehoPobytuRovnaka'], { const: false }]]),
-            adresaFields,
-          ),
-        ]
+  const byvanieVMestskomNajomnomByteField = radioGroup(
+    'byvanieVMestskomNajomnomByte',
+    {
+      type: 'boolean',
+      title: 'Bývate v mestskom nájomnom byte v Bratislave?',
+      required: true,
+      options: [
+        { value: true, title: 'Áno' },
+        { value: false, title: 'Nie', isDefault: true },
+      ],
+    },
+    {
+      variant: 'boxed',
+      orientations: 'row',
+    },
+  )
 
-  const vlastnikNehnutelnostiFields =
-    stepType === StepType.Ziadatel ||
-    stepType === StepType.ManzelManzelka ||
-    stepType === StepType.DruhDruzka
-      ? [
-          radioGroup(
-            'vlastnikNehnutelnosti',
-            {
-              type: 'boolean',
-              title: {
-                [StepType.Ziadatel]:
-                  'Ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
-                [StepType.ManzelManzelka]:
-                  'Je váš manžel/manželka vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
-                [StepType.DruhDruzka]:
-                  'Je váš druh/družka vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
-              }[stepType],
-              required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
-              ],
-            },
-            {
-              variant: 'boxed',
-              orientations: 'row',
-            },
-          ),
-          conditionalFields(createCondition([[['vlastnikNehnutelnosti'], { const: true }]]), [
-            customComponentsField(
-              {
-                type: 'alert',
-                props: {
-                  type: 'info',
-                  message: {
-                    [StepType.Ziadatel]:
-                      'Ak ste vlastníkom/vlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným a hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, uveďte túto skutočnosť v časti formulára Iné okolnosti a k nahliadnutiu si pripravte List vlastníctva.',
-                    [StepType.ManzelManzelka]:
-                      'Ak je vlastníkom/vlastníčkou nehnuteľnosti, ale nemôže v nej bývať, napr. kvôli stavebným a hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, uveďte túto skutočnosť v časti formulára Iné okolnosti a k nahliadnutiu si pripravte List vlastníctva.',
-                    [StepType.DruhDruzka]:
-                      'Ak je vlastníkom/vlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným a hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, uveďte túto skutočnosť v časti formulára Iné okolnosti a \n' +
-                      'k nahliadnutiu si pripravte List vlastníctva.',
-                  }[stepType],
-                },
-              },
-              {},
-            ),
-          ]),
-        ]
-      : []
+  const pobytVBratislaveMenejAkoRokField = radioGroup(
+    'pobytVBratislaveMenejAkoRok',
+    {
+      type: 'boolean',
+      title: 'Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)',
+      required: true,
+      options: [
+        { value: true, title: 'Áno' },
+        { value: false, title: 'Nie', isDefault: true },
+      ],
+    },
+    {
+      variant: 'boxed',
+      orientations: 'row',
+    },
+  )
 
-  const pobytMenejAkoRokField =
-    stepType === StepType.Ziadatel
-      ? radioGroup(
-          'pobytMenejAkoRok',
-          {
-            type: 'boolean',
-            title:
-              'Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)',
-            required: true,
-            options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
-            ],
-          },
-          {
-            variant: 'boxed',
-            orientations: 'row',
-          },
-        )
-      : null
+  const pobytVBratislaveAlertField = customComponentsField(
+    {
+      type: 'alert',
+      props: {
+        type: 'info',
+        message:
+          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
+      },
+    },
+    {},
+  )
 
-  const adresaSkutcnehoPobytuRovnakaFields = [
+  const adresaSkutocnehoPobytuRovnakaFields = [
     radioGroup(
-      'adresaSkutcnehoPobytuRovnaka',
+      'adresaSkutocnehoPobytuRovnaka',
       {
         type: 'boolean',
         title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
@@ -329,48 +212,168 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
       },
       { variant: 'boxed', orientations: 'row' },
     ),
-    conditionalFields(createCondition([[['adresaSkutcnehoPobytuRovnaka'], { const: false }]]), [
-      object(
-        'adresaSkutocnehoPobytu',
-        { required: true },
-        {
-          title: 'Adresa skutočného pobytu',
-        },
-        adresaSharedFields,
-      ),
+    conditionalFields(createCondition([[['adresaSkutocnehoPobytuRovnaka'], { const: false }]]), [
+      getAdresaSkutocnehoPobytuFields(stepType),
     ]),
   ]
-
-  const pobytVBratislaveAlertField =
-    stepType === StepType.Ziadatel
-      ? customComponentsField(
-          {
-            type: 'alert',
-            props: {
-              type: 'info',
-              message:
-                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
-            },
-          },
-          {},
-        )
-      : null
 
   return object(
     'adresaTrvalehoPobytu',
     { required: true },
-    { objectDisplay: 'boxed', title: 'Adresa trvalého pobytu' },
+    {
+      objectDisplay: 'boxed',
+      title: 'Adresa trvalého pobytu',
+      description:
+        'Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.',
+    },
     [
-      ...adresaWrappedFields,
-      ...vlastnikNehnutelnostiFields,
-      pobytMenejAkoRokField,
-      ...adresaSkutcnehoPobytuRovnakaFields,
+      ...adresaFields,
+      ...getVlastnikNehnutelnostiFields(stepType),
+      byvanieVMestskomNajomnomByteField,
+      pobytVBratislaveMenejAkoRokField,
       pobytVBratislaveAlertField,
+      ...adresaSkutocnehoPobytuRovnakaFields,
     ],
   )
 }
 
-const getPrijemFields = (stepType: StepType) => {
+const getOsobneUdajeSection = (stepType: StepType) => {
+  return object(
+    'osobneUdaje',
+    { required: true },
+    { objectDisplay: 'boxed', title: 'Osobné údaje' },
+    [
+      object(
+        'menoPriezvisko',
+        { required: true },
+        {
+          columns: true,
+          columnsRatio: '1/1',
+        },
+        [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
+          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+        ],
+      ),
+      stepType !== StepType.Dieta
+        ? input(
+            'rodnePriezvisko',
+            { title: 'Rodné priezvisko', type: 'text' },
+            {
+              helptextHeader:
+                stepType === StepType.Ziadatel
+                  ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.'
+                  : 'Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.',
+            },
+          )
+        : null,
+      datePicker(
+        'datumNarodenia',
+        { title: 'Dátum narodenia', required: true },
+        {
+          size: 'medium',
+          belowComponents: [
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message: {
+                  [StepType.Ziadatel]:
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte váš občiansky preukaz.',
+                  [StepType.ManzelManzelka]:
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte kópiu občianskeho preukazu manžela/manželky.',
+                  [StepType.DruhDruzka]:
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte kópiu občianskeho preukazu druha/družky.',
+                  [StepType.Dieta]:
+                    'V prípade, že by vám bolo pridelené nájomné bývanie, k podpisu zmluvy si na nahliadnutie pripravte kópiu rodného listu dieťaťa, resp. kópiu občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov.',
+                  [StepType.InyClen]:
+                    'V prípade, že by vám bolo pridelené nájomné bývanie, k podpisu zmluvy si na nahliadnutie pripravte kópiu občianskeho preukazu člena/členky domácnosti.',
+                }[stepType],
+              },
+            },
+          ],
+        },
+      ),
+      radioGroup(
+        'statnaPrislusnost',
+        {
+          type: 'string',
+          title: 'Štátna príslušnosť',
+          required: true,
+          options: createStringOptions(['Slovenská', 'Iná']),
+        },
+        { variant: 'boxed', orientations: 'row' },
+      ),
+      stepType !== StepType.Dieta
+        ? select(
+            'rodinnyStav',
+            {
+              title: 'Rodinný stav',
+              required: true,
+              options: createStringOptions(
+                [
+                  'Slobodný/slobodná',
+                  'Ženatý/vydatá',
+                  'Rozvedený/rozvedená',
+                  'Vdovec/vdova',
+                  'Iné',
+                ],
+                false,
+              ),
+            },
+            {
+              belowComponents: [
+                {
+                  type: 'alert',
+                  props: {
+                    type: 'info',
+                    message: {
+                      [StepType.Ziadatel]:
+                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.',
+                      [StepType.ManzelManzelka]:
+                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav manžela/manželky.',
+                      [StepType.DruhDruzka]:
+                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.',
+                      [StepType.InyClen]:
+                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.',
+                    }[stepType],
+                  },
+                },
+              ],
+            },
+          )
+        : null,
+      stepType === StepType.Ziadatel
+        ? input(
+            'email',
+            { title: 'Email', required: true, type: 'email' },
+            {
+              helptextHeader:
+                'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
+            },
+          )
+        : null,
+      stepType === StepType.Ziadatel
+        ? input(
+            'telefonneCislo',
+            { type: 'ba-slovak-phone-number', title: 'Telefónne číslo', required: true },
+            {
+              size: 'medium',
+              placeholder: '+421',
+              helptextHeader:
+                'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.',
+            },
+          )
+        : null,
+      stepType === StepType.Ziadatel
+        ? getAdresaTrvalehoPobytuFields(stepType)
+        : getAdresaSkutocnehoPobytuFields(stepType),
+      ...(stepType === StepType.Dieta ? getVlastnikNehnutelnostiFields(stepType) : []),
+    ],
+  )
+}
+
+const getPrijemSection = (stepType: StepType) => {
   const wrapper = (fields: (FieldType | null)[]) =>
     object(
       'prijem',
@@ -378,6 +381,17 @@ const getPrijemFields = (stepType: StepType) => {
       {
         objectDisplay: 'boxed',
         title: 'Príjem',
+        description: {
+          [StepType.Ziadatel]:
+            'Ak máte nepravidelný príjem, uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.',
+          [StepType.ManzelManzelka]:
+            'Ak má váš manžel/manželka nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.',
+          [StepType.DruhDruzka]:
+            'Ak má váš druh/družka nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.',
+          [StepType.Dieta]: undefined,
+          [StepType.InyClen]:
+            'Ak má člen/členka domácnosti nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.',
+        }[stepType],
       },
       fields,
     )
@@ -414,7 +428,7 @@ const getPrijemFields = (stepType: StepType) => {
         ),
       ]),
       radioGroup(
-        'prijem',
+        'maPrijem',
         {
           type: 'boolean',
           title:
@@ -430,39 +444,29 @@ const getPrijemFields = (stepType: StepType) => {
           orientations: 'row',
         },
       ),
-      conditionalFields(createCondition([[['prijem'], { const: true }]]), [
+      conditionalFields(createCondition([[['maPrijem'], { const: true }]]), [
         number(
           'prijemVyska',
           { title: 'Čistý mesačný príjem dieťaťa', required: true, minimum: 0 },
-          { size: 'medium' },
+          {
+            size: 'medium',
+            belowComponents: [
+              {
+                type: 'alert',
+                props: {
+                  type: 'info',
+                  message:
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte potvrdenie o príjme dieťaťa.',
+                },
+              },
+            ],
+          },
         ),
       ]),
     ])
   }
 
-  const prijemAlertField =
-    // TODO why
-    stepType !== StepType.InyClen
-      ? customComponentsField(
-          {
-            type: 'alert',
-            props: {
-              type: 'info',
-              message: {
-                [StepType.Ziadatel]:
-                  'Ak máte nepravidelný príjem, uveďte prosím Váš priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.',
-                [StepType.ManzelManzelka]:
-                  'Ak má váš manžel/manželka nepravidelný príjem, uveďte priemerný čistý mesačný príjem za posledných 12 mesiacov.',
-                [StepType.DruhDruzka]:
-                  'Ak má váš druh/družka nepravidelný príjem, uveďte priemerný čistý mesačný príjem za posledných 12 mesiacov.',
-              }[stepType],
-            },
-          },
-          {},
-        )
-      : null
-
-  const all = [
+  const fields = [
     radioGroup(
       'zamestnanie',
       {
@@ -642,13 +646,13 @@ const getPrijemFields = (stepType: StepType) => {
           type: 'info',
           message: {
             [StepType.Ziadatel]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte  dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.ManzelManzelka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte  dokumenty dokazujúce všetky spomínané príjmy manžela/manželky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.DruhDruzka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte  dokumenty dokazujúce všetky spomínané príjmy druha/družky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.InyClen]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte  dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
           }[stepType],
         },
       },
@@ -656,18 +660,10 @@ const getPrijemFields = (stepType: StepType) => {
     ),
   ]
 
-  return wrapper([prijemAlertField, ...all])
+  return wrapper(fields)
 }
 
-const getZdravotnyStavFields = (stepType: StepType) => {
-  const wrapper = (fields: FieldType[]) =>
-    object(
-      'zdravotnyStav',
-      { required: true },
-      { objectDisplay: 'boxed', title: 'Zdravotný stav' },
-      fields,
-    )
-
+const getZdravotnyStavSection = (stepType: StepType) => {
   const textHelper = ({
     ziadatel,
     dieta,
@@ -686,16 +682,33 @@ const getZdravotnyStavFields = (stepType: StepType) => {
     return other
   }
 
-  const all = [
-    object('funkcnaPoruchaWrapper', { required: true }, { objectDisplay: 'boxed' }, [
+  return object(
+    'zdravotnyStav',
+    { required: true },
+    {
+      objectDisplay: 'boxed',
+      title: 'Zdravotný stav',
+      description: {
+        [StepType.Ziadatel]:
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom.',
+        [StepType.ManzelManzelka]:
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky.',
+        [StepType.DruhDruzka]:
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky.',
+        [StepType.Dieta]:
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa.',
+        [StepType.InyClen]:
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom člena/členky domácnosti.',
+      }[stepType],
+    },
+    [
       radioGroup(
-        'funkcnaPorucha',
+        'tzpPreukaz',
         {
           type: 'boolean',
           title: textHelper({
-            ziadatel: 'Máte určenú mieru funkčnej poruchy posudkovým lekárom?',
-            dieta: 'Má dieťa funkčnú poruchu, stupeň odkázanosti alebo mu bola uznaná invalidita?',
-            other: 'Má určenú mieru funkčnej poruchy posudkovým lekárom?',
+            ziadatel: 'Ste držiteľom preukazu ŤZP?',
+            other: 'Je držiteľom preukazu ŤZP?',
           }),
           required: true,
           options: [
@@ -706,150 +719,163 @@ const getZdravotnyStavFields = (stepType: StepType) => {
         {
           variant: 'boxed',
           orientations: 'row',
-          helptextHeader: markdownText(
-            'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-          ),
-          labelSize: 'h4',
         },
       ),
-      conditionalFields(createCondition([[['funkcnaPorucha'], { const: true }]]), [
-        number(
+      conditionalFields(createCondition([[['tzpPreukaz'], { const: true }]]), [
+        select(
           'mieraFunkcnejPoruchy',
-          { title: 'Uveďte mieru od 10 do 100', required: true, minimum: 10, maximum: 100 },
-          {},
-        ),
-        input(
-          'diagnozy',
           {
             title: textHelper({
-              ziadatel: 'Uveďte diagnózy, ktoré sa vás týkajú',
-              dieta: 'Má dieťa niektorú z týchto diagnóz?',
-              other: 'Uveďte diagnózy, ktoré sa jeho/jej týkajú',
+              ziadatel: 'Máte uznanú mieru funkčnej poruchy?',
+              other: 'Má uznanú mieru funkčnej poruchy?',
             }),
             required: true,
-            type: 'text',
-          },
-          {},
-        ),
-        selectMultiple(
-          'existujuceDiagnozy',
-          {
-            title: textHelper({
-              ziadatel: 'Máte niektorú z týchto diagnóz?',
-              dieta: 'Má dieťa niektorú z týchto diagnóz?',
-              other: 'Má niektorú z týchto diagnóz?',
-            }),
-            required: true,
-            options: createStringOptions(['todo']),
+            options: createStringOptions(['Od 50 % do 74 %', 'Od 75 % do 100 %'], false),
           },
           {},
         ),
       ]),
-    ]),
-    object('odkazanostWrapper', { required: true }, { objectDisplay: 'boxed' }, [
-      radioGroup(
-        'odkazanost',
-        {
-          type: 'boolean',
-          title: textHelper({
-            ziadatel: 'Bola vám uznaná odkázanosť?',
-            other: 'Bola mu/jej uznaná odkázanosť?',
-          }),
-          required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
-          ],
-        },
-        { variant: 'boxed', orientations: 'row', labelSize: 'h4' },
-      ),
-      conditionalFields(createCondition([[['odkazanost'], { const: true }]]), [
-        input(
-          'stupenOdkazanosti',
-          { title: 'Uveďte stupeň odkázanosti od I. do VI.', required: true, type: 'text' },
-          {},
+      conditionalFields(createCondition([[['tzpPreukaz'], { const: false }]]), [
+        radioGroup(
+          'chronickeOchorenie',
+          {
+            type: 'boolean',
+            title: textHelper({
+              ziadatel: 'Trpíte chronickým ochorením?',
+              other: 'Trpí chronickým ochorením?',
+            }),
+            required: true,
+            options: [
+              { value: true, title: 'Áno' },
+              { value: false, title: 'Nie', isDefault: true },
+            ],
+          },
+          { variant: 'boxed', orientations: 'row' },
         ),
+        conditionalFields(createCondition([[['chronickeOchorenie'], { const: true }]]), [
+          selectMultiple(
+            'existujuceDiagnozy',
+            {
+              title: textHelper({
+                ziadatel: 'Máte niektorú z týchto diagnóz?',
+                dieta: 'Má dieťa niektorú z týchto diagnóz?',
+                other: 'Má niektorú z týchto diagnóz?',
+              }),
+              required: true,
+              options: createStringOptions(
+                [
+                  'Alzheimerova choroba',
+                  'Anorexia/Bulímia',
+                  'Arteriálna hypertenzia (chronický zvýšený tlak)',
+                  'Astma',
+                  'Autizmus',
+                  'Bipolárna porucha',
+                  'Chronická obštrukčná choroba pľúc (Symptomatická)',
+                  'Chronická paradentóza',
+                  'Chronické gastroenterologické ochorenia (Crohnova choroba, Ulcerózna kolitída, Chronická gastritída a podobné)',
+                  'Chronické muskuloskeletálne choroby (obmedzený pohyb, chýbajúca končatina)',
+                  'Chronické následky cievnej mozgovej príhody',
+                  'Chronické ochorenie obličiek v dôsledku nasledovných chorôb: Cukrovka, Glomerulonefritída, Hypertenzia, prípadne iných ochorení',
+                  'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
+                  'Chronické rozsiahle ochorenia kože s komplikáciami (chronický ekzém, chronické formy parapsoriázy)',
+                  'Chronický zápal stredného ucha (strata sluchu, vertigo)',
+                  'Demencia',
+                  'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
+                  'Diabetes mellitus 1 a 2 typu (Cukrovka) so závažnými komplikáciami (diabetická noha, neuropatia, retinopatia)',
+                  'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
+                  'Downov syndróm',
+                  'Dystýmia + Úzkostná porucha',
+                  'Encefalokéla (vady mozgu)',
+                  'Epilepsia',
+                  'Guillainov-Barrého syndróm',
+                  'Hepatitída C',
+                  'HIV/AIDS',
+                  'Hluchota (bez posudku)',
+                  'Iné chronické ochorenia srdca',
+                  'Ischemická choroba srdca',
+                  'Klinefelterov syndróm',
+                  'Metastatická fáza rakoviny (všetky typy rakoviny)',
+                  'Očné ochorenia (glaukoma, katarakta a podobné)',
+                  'Ochorenie motorických neurónov',
+                  'Osteoatróza (artróza)',
+                  'Parkinsonova choroba',
+                  'Rakovina vo fáze remisie (všetky typy rakoviny)',
+                  'Reumatické ochorenie srdca',
+                  'Reumatoidná artritída',
+                  'Sarkoidóza',
+                  'Schistosomóza (krvné motolice)',
+                  'Schizofrénia',
+                  'Slepota (bez posudku)',
+                  'Silikóza, Azbestóza, Pneumokonióza',
+                  'Skleróza multiplex (roztrúsená)',
+                  'Spina bifida (rázštep chrbtice)',
+                  'Spinóza a/alebo atrézia traviacého traktu',
+                  'Struma (zväčšená štítna žľaza)',
+                  'Syfilis',
+                  'Tetanus',
+                  'Terminálna fáza rakoviny (všetky typy rakoviny)',
+                  'Tuberkulóza',
+                  'Turnerov syndróm',
+                  'Vrodená chýba bránice (CDH)',
+                  'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
+                  'Vrodené poruchy a abnormality pohybového aparátu',
+                  'Vrodené srdcové chyby (CHD)',
+                ],
+                false,
+              ),
+            },
+            {},
+          ),
+        ]),
       ]),
-    ]),
-    object('bezbarierovyBytWrapper', { required: true }, { objectDisplay: 'boxed' }, [
-      stepType !== StepType.Dieta
+
+      stepType === StepType.Ziadatel
         ? radioGroup(
             'bezbarierovyByt',
             {
               type: 'boolean',
-              title: textHelper({
-                ziadatel: 'Uchádzate sa o pridelenie bezbariérového bytu?',
-                other: 'Uchádza sa o pridelenie bezbariérového bytu?',
-              }),
+              title: 'Uchádzate sa o pridelenie bezbariérového bytu?',
               required: true,
               options: [
                 { value: true, title: 'Áno' },
                 { value: false, title: 'Nie', isDefault: true },
               ],
             },
-            { variant: 'boxed', orientations: 'row', labelSize: 'h4' },
+            {
+              variant: 'boxed',
+              orientations: 'row',
+              helptextHeader: markdownText(
+                `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle prílohy č. 2 (https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy)[zákona 443/2010 Z. z.]`,
+              ),
+            },
           )
         : null,
-      radioGroup(
-        'invalidita',
+      customComponentsField(
         {
-          type: 'boolean',
-          title: textHelper({
-            ziadatel: 'Bola vám uznaná invalidita (miera poklesu schopnosti pracovať)?',
-            other: 'Bola mu/jej uznaná invalidita (miera poklesu schopnosti pracovať)?',
-          }),
-          required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
-          ],
-        },
-        {
-          variant: 'boxed',
-          orientations: 'row',
-          labelSize: stepType === StepType.Dieta ? 'h4' : undefined,
-        },
-      ),
-      conditionalFields(createCondition([[['invalidita'], { const: true }]]), [
-        number(
-          'mieraPoklesu',
-          {
-            title: 'Uveďte mieru poklesu od 10 do 100',
-            type: 'integer',
-            minimum: 10,
-            maximum: 100,
+          type: 'alert',
+          props: {
+            type: 'info',
+            message: {
+              [StepType.Ziadatel]:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
+              [StepType.ManzelManzelka]:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav manžela/manželky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
+              [StepType.DruhDruzka]:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav druha/družky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
+              [StepType.Dieta]:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav dieťaťa (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
+              [StepType.InyClen]:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav člena/členky domácnosti (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
+            }[stepType],
           },
-          {},
-        ),
-      ]),
-    ]),
-    customComponentsField(
-      {
-        type: 'alert',
-        props: {
-          type: 'info',
-          message: {
-            [StepType.Ziadatel]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-            [StepType.ManzelManzelka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav manžela/manželky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-            [StepType.DruhDruzka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav druha/družky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-            [StepType.Dieta]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav dieťaťa (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-            [StepType.InyClen]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav člena/členky domácnosti (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).',
-          }[stepType],
         },
-      },
-      {},
-    ),
-  ]
-
-  return wrapper(all)
+        {},
+      ),
+    ],
+  )
 }
 
-const getSucasneByvanieFields = (stepType: StepType) => {
+const getSucasneByvanieSection = (stepType: StepType) => {
   const wrapper = (fields: (FieldType | null)[]) =>
     object(
       'sucasneByvanie',
@@ -883,19 +909,6 @@ const getSucasneByvanieFields = (stepType: StepType) => {
         )
       : null
 
-  if (stepType === StepType.Dieta) {
-    return wrapper([
-      situaciaRovnakaAkoVasaField,
-      conditionalFields(createCondition([[['situaciaRovnakaAkoVasa'], { const: false }]]), [
-        input(
-          'sucasneByvanieDietata',
-          { title: 'Aké je súčasné bývanie vášho dieťaťa?', type: 'text', required: true },
-          {},
-        ),
-      ]),
-    ])
-  }
-
   const innerFields = [
     radioGroup(
       'bytovaNudza',
@@ -915,19 +928,43 @@ const getSucasneByvanieFields = (stepType: StepType) => {
     ),
     conditionalFields(createCondition([[['bytovaNudza'], { const: true }]]), [
       radioGroup(
-        'typSkutocnehoByvania',
+        'typByvania',
         {
           type: 'string',
-          title: 'Typ skutočného bývania',
+          title: 'Typ bývania',
           required: true,
-          options: createStringOptions([
-            'Bývanie na ulici',
-            'Bývanie v krízovom ubytovaní za účelom prenocovania (nocľaháreň)',
-            'Bývanie v zariadení určenom pre ľudí bez domova',
-            'Bývanie v mestskej ubytovni (Ubytovňa Fortuna, Ubytovňa Kopčany)',
-            'Bývanie v komerčnej ubytovni',
-            'Ľudia v inštitucionálnej starostlivosti',
-            'Bývanie v neistých a nevyhovujúcich podmienkach',
+          options: createCamelCaseOptionsV2([
+            {
+              title: 'Bývanie na ulici',
+            },
+            {
+              title: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
+            },
+            {
+              title: 'Bývanie v zariadení určenom pre ľudí v núdzi',
+              description: 'Útulok, azylový dom, Domov na pol ceste',
+            },
+            {
+              title: 'Bývanie v neštandardnom obydlí',
+              description: 'Mobilné obydlia, chatky, búdy, provizórne stavby',
+            },
+            {
+              title: 'Bývanie v mestskej ubytovni',
+              description: 'Ubytovňa Fortuna, Ubytovňa Kopčany',
+            },
+            {
+              title: 'Bývanie v komerčnej ubytovni',
+            },
+            {
+              title: 'Bývanie v inštitucionálnej starostlivosti',
+              description:
+                'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr',
+            },
+            {
+              title: 'Bývanie v neistých/nevyhovujúcich podmienkach',
+              description:
+                'Strata vlastníckych práv, výpoveď z nájmu, obydlie bez elektriny, vody, možnosti kúrenia, bez WC, extrémne preľudnene obydlie, nájom/podnájom bez zmluvy, bývanie u príbuzných/známych, neudržateľnosť nájomnej zmluvy (napr. náhly pokles príjmu)',
+            },
           ]),
         },
         { variant: 'boxed' },
@@ -939,47 +976,12 @@ const getSucasneByvanieFields = (stepType: StepType) => {
             [StepType.Ziadatel]: 'Uveďte, ako dlho trvá vaša bytová núdza',
             [StepType.ManzelManzelka]: 'Uveďte, ako dlho trvá bytová núdza manžela/manželky',
             [StepType.DruhDruzka]: 'Uveďte, ako dlho trvá bytová núdza druha/družky',
+            [StepType.Dieta]: 'Uveďte, ako dlho trvá bytová núdza dieťaťa',
             [StepType.InyClen]: 'Uveďte, ako dlho trvá bytová núdza člena/členky domácnosti',
           }[stepType],
           required: true,
           options: createStringOptions(
             ['Menej ako 1 rok', '1 - 2 roky', '3 - 5 rokov', '6 - 9 rokov', '10 a viac rokov'],
-            false,
-          ),
-        },
-        {},
-      ),
-      number(
-        'nakladyNaByvanie',
-        {
-          title:
-            stepType === StepType.Ziadatel
-              ? 'Aké vysoké sú vaše celkové náklady na bývanie?'
-              : 'Aké vysoké sú jeho/jej celkové náklady na bývanie?',
-          required: true,
-          minimum: 0,
-        },
-        { size: 'medium' },
-      ),
-      selectMultiple(
-        'dovodNevyhovujucehoByvania',
-        {
-          title:
-            stepType === StepType.Ziadatel
-              ? 'Vyberte dôvody, prečo je vaše súčasné bývanie nevyhovujúce alebo ohrozené a pod.'
-              : 'Vyberte dôvody, prečo je jeho/jej súčasné bývanie nevyhovujúce alebo ohrozené a pod.',
-          required: true,
-          options: createStringOptions(
-            [
-              'Výpoveď z nájmu – ukončený nájomný/podnájomný vzťah (prebieha výpovedná lehota)',
-              'Strata vlastníckych práv – povinnosť vysťahovať sa v dôsledku straty vlastníctva',
-              'Domáce násilie zaznamenané políciou/štátnym úradom',
-              'Mobilné obydlie (maringotka, karavan, osobné auto)',
-              'Neštandardné obydlie (chatka, chatrč)',
-              'Provizórne/dočasné stavby (búdy, strážne domčeky)',
-              'Obydlie nespôsobilé na bývanie podľa stavebno-technických alebo hygienických predpisov (Napr. bez elektriny, vody, možnosti kúrenia, napojenia na odpad, bez WC)',
-              'Extrémne preľudnené obydlie',
-            ],
             false,
           ),
         },
@@ -1001,91 +1003,89 @@ const getSucasneByvanieFields = (stepType: StepType) => {
   ])
 }
 
-const getRizikoveFaktoryFields = (stepType: StepType) => {
-  const wrapper = (fields: (FieldType | null)[]) =>
-    object(
-      'rizikoveFaktoryWrapper',
-      { required: true },
-      { title: 'Rizikové faktory', objectDisplay: 'boxed' },
-      fields,
-    )
+const getRizikoveFaktorySection = (stepType: StepType) => {
+  if (stepType !== StepType.Ziadatel) {
+    return null
+  }
 
-  const fields = [
-    radioGroup(
-      'rizikoveFaktory',
-      {
-        type: 'boolean',
-        title:
-          stepType === StepType.Ziadatel
-            ? 'Týkajú sa vás rizikové faktory, ktoré zvyšujú vašu sociálno-ekonomickú zraniteľnosť?'
-            : 'Týkajú sa ho/jej rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
-        required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
-        ],
-      },
-      { variant: 'boxed', orientations: 'row' },
-    ),
-    conditionalFields(createCondition([[['rizikoveFaktory'], { const: true }]]), [
-      checkboxGroup(
-        'zoznamRizikovychFaktorov',
+  return object(
+    'rizikoveFaktoryWrapper',
+    { required: true },
+    { title: 'Rizikové faktory', objectDisplay: 'boxed' },
+    [
+      radioGroup(
+        'rizikoveFaktory',
         {
-          title: 'Označte rizikové faktory',
-          options: createStringOptions(
-            [
-              'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
-              'Rodič na rodičovskej/materskej/otcovskej dovolenke',
-              'Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa',
-              'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
-              'Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením',
-              'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
-              'Iné',
-            ],
-            false,
-          ),
+          type: 'boolean',
+          title:
+            'Týkajú sa vás rizikové faktory, ktoré zvyšujú vašu sociálno-ekonomickú zraniteľnosť?',
           required: true,
-        },
-        {
-          helptextHeader: 'Môžete označiť viac možností.',
-          variant: 'boxed',
-          belowComponents: [
-            {
-              type: 'alert',
-              props: {
-                type: 'info',
-                message:
-                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť. (Napr. rozhodnutie súdu/trestné oznámenie a pod.)',
-              },
-            },
+          options: [
+            { value: true, title: 'Áno' },
+            { value: false, title: 'Nie', isDefault: true },
           ],
         },
+        { variant: 'boxed', orientations: 'row' },
       ),
-      stepType !== StepType.Dieta
-        ? radioGroup(
-            'vek',
-            {
-              type: 'string',
-              title: 'Vek',
-              options: createStringOptions(['63-70 rokov', '71-80 rokov', '81 rokov a viac']),
-            },
-            { variant: 'boxed' },
-          )
-        : null,
-    ]),
-  ]
-
-  return wrapper(fields)
+      conditionalFields(createCondition([[['rizikoveFaktory'], { const: true }]]), [
+        checkboxGroup(
+          'zoznamRizikovychFaktorov',
+          {
+            title: 'Označte rizikové faktory',
+            options: createStringOptions(
+              [
+                'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
+                'Rodič na rodičovskej/materskej/otcovskej dovolenke',
+                'Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa',
+                'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
+                'Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením',
+                'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
+                'Iné',
+              ],
+              false,
+            ),
+            required: true,
+          },
+          {
+            helptextHeader: 'Môžete označiť viac možností.',
+            variant: 'boxed',
+            belowComponents: [
+              {
+                type: 'alert',
+                props: {
+                  type: 'info',
+                  message:
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť. (Napr. rozhodnutie súdu/trestné oznámenie a pod.)',
+                },
+              },
+            ],
+          },
+        ),
+        radioGroup(
+          'vekNajstarsiehoClena',
+          {
+            type: 'string',
+            title: 'Zvoľte vek najstaršieho člena domácnosti',
+            required: true,
+            options: createStringOptions(
+              ['menej ako 63 rokov', '63 - 70 rokov', '71 - 80 rokov', '81 a viac rokov'],
+              false,
+            ),
+          },
+          { variant: 'boxed' },
+        ),
+      ]),
+    ],
+  )
 }
 
 const getFieldsForStep = (stepType: StepType) => {
   return [
-    ...getOsobneUdajeFields(stepType),
-    getAdresaTrvalehoPobytuFields(stepType),
-    getPrijemFields(stepType),
-    getZdravotnyStavFields(stepType),
-    getSucasneByvanieFields(stepType),
-    getRizikoveFaktoryFields(stepType),
+    getOsobneUdajeSection(stepType),
+    getSucasneByvanieSection(stepType),
+    getPrijemSection(stepType),
+    getZdravotnyStavSection(stepType),
+    getRizikoveFaktorySection(stepType),
   ]
 }
 
@@ -1220,21 +1220,187 @@ export default schema(
     ]),
     step('ineOkolnosti', { title: 'Iné okolnosti' }, [
       textArea(
-        'ineOkolnosti',
+        'dovodyPodaniaZiadosti',
         { title: 'Prečo si podávate žiadosť?' },
         {
           helptextHeader:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
         },
       ),
-      textArea(
-        'preferovanaVelkostALokalita',
-        { title: 'Preferovaná veľkosť a lokalita bývania' },
+      select(
+        'preferovanaVelkost',
         {
-          helptextHeader:
-            'Špecifikácia, o aký typ bytu má žiadateľ záujem - najmä z pohľadu cenovej kategórie bytu (výška nájomného), veľkosti bytu (počet izieb), lokality bytu (mestská časť).',
+          title: 'Akú veľkosť nájomného bytu preferujete?',
+          required: true,
+          options: createStringOptions(
+            ['garsónka/1-izbový byt', '2-izbový byt', '3-izbový byt', '4-izbový byt'],
+            false,
+          ),
         },
+        {},
+      ),
+      selectMultiple(
+        'preferovanaLokalita',
+        {
+          title: 'Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?',
+          required: true,
+          options: createStringOptions(
+            [
+              'Staré Mesto',
+              'Ružinov',
+              'Vrakuňa',
+              'Podunajské Biskupice',
+              'Nové Mesto',
+              'Karlova Ves',
+              'Dúbravka',
+              'Petržalka',
+            ],
+            false,
+          ),
+        },
+        {},
+      ),
+      number(
+        'maximalnaVyskaNajomneho',
+        {
+          title:
+            'Prosím uveďte maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
+          required: true,
+          minimum: 0,
+        },
+        { size: 'medium' },
       ),
     ]),
   ],
 )
+
+export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
+
+#### Žiadateľ/žiadateľka
+
+- Občiansky preukaz
+<% if (it.formData.ziadatelZiadatelka?.osobneUdaje?.rodinnyStav) { %>
+- Doklad o rodinnom stave (rozsudok o rozvode, sobášny list, alebo iný relevantný doklad)
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.pobytVBratislaveMenejAkoRok) { %>
+- Doklady potvrdzujúce pôsobenie v Bratislave (pracovná zmluva, nájomná zmluva, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom)
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.zamestnanie) { %>
+- Potvrdenie o príjme od zamestnávateľa
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.samostatnaZarobkovaCinnost) { %>
+- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.dochodok) { %>
+- Potvrdenie o výške dôchodku
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.vyzivne) { %>
+- Doklad o určení výšky výživného
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.davkaVNezamestnanosti) { %>
+- Potvrdenie o poberaní dávky v nezamestnanosti
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.prijem?.inePrijmy) { %>
+- Doklady o iných príjmoch (napr. potvrdenie o poberaní prídavkov na deti, materského, rodičovského príspevku)
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) { %>
+- Preukaz ŤZP
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie) { %>
+- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% } %>
+<% if (it.formData.ziadatelZiadatelka?.rizikoveFaktoryWrapper?.rizikoveFaktory) { %>
+- Doklady potvrdzujúce rizikové faktory (napr. rozhodnutie súdu, trestné oznámenie)
+<% } %>
+
+<% if (it.formData.druhDruzka?.druhDruzkaSucastouDomacnosti) { %>
+#### Druh/Družka
+
+- Kópia občianskeho preukazu
+<% if (it.formData.druhDruzka?.osobneUdaje?.rodinnyStav) { %>
+- Doklad o rodinnom stave
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.zamestnanie) { %>
+- Potvrdenie o príjme od zamestnávateľa
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.samostatnaZarobkovaCinnost) { %>
+- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.dochodok) { %>
+- Potvrdenie o výške dôchodku
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.vyzivne) { %>
+- Doklad o určení výšky výživného
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.davkaVNezamestnanosti) { %>
+- Potvrdenie o poberaní dávky v nezamestnanosti
+<% } %>
+<% if (it.formData.druhDruzka?.prijem?.inePrijmy) { %>
+- Doklady o iných príjmoch
+<% } %>
+<% if (it.formData.druhDruzka?.zdravotnyStav?.tzpPreukaz) { %>
+- Preukaz ŤZP
+<% } %>
+<% if (it.formData.druhDruzka?.zdravotnyStav?.chronickeOchorenie) { %>
+- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% } %>
+<% } %>
+
+<% if (it.formData.deti?.detiSucastouDomacnosti) { %>
+#### Deti
+
+<% it.formData.deti.zoznamDeti.forEach(function(dieta, index) { %>
+##### Dieťa <%= index + 1 %>
+
+- Rodný list (do 15 rokov) alebo kópia občianskeho preukazu
+<% if (dieta.prijem?.student) { %>
+- Potvrdenie o návšteve školy
+<% } %>
+<% if (dieta.prijem?.maPrijem) { %>
+- Doklady o príjme dieťaťa
+<% } %>
+<% if (dieta.zdravotnyStav?.tzpPreukaz) { %>
+- Preukaz ŤZP
+<% } %>
+<% if (dieta.zdravotnyStav?.chronickeOchorenie) { %>
+- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% } %>
+<% }) %>
+<% } %>
+
+<% if (it.formData.inyClenoviaClenkyDomacnosti?.inyClenoviaClenkySucastouDomacnosti) { %>
+#### Iní členovia/členky domácnosti
+
+<% it.formData.inyClenoviaClenkyDomacnosti.zoznamInychClenov.forEach(function(clen, index) { %>
+##### Člen <%= index + 1 %>
+
+- Kópia občianskeho preukazu
+<% if (clen.osobneUdaje?.rodinnyStav) { %>
+- Doklad o rodinnom stave
+<% } %>
+<% if (clen.prijem?.zamestnanie) { %>
+- Potvrdenie o príjme od zamestnávateľa
+<% } %>
+<% if (clen.prijem?.samostatnaZarobkovaCinnost) { %>
+- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% } %>
+<% if (clen.prijem?.dochodok) { %>
+- Potvrdenie o výške dôchodku
+<% } %>
+<% if (clen.prijem?.vyzivne) { %>
+- Doklad o určení výšky výživného
+<% } %>
+<% if (clen.prijem?.davkaVNezamestnanosti) { %>
+- Potvrdenie o poberaní dávky v nezamestnanosti
+<% } %>
+<% if (clen.prijem?.inePrijmy) { %>
+- Doklady o iných príjmoch
+<% } %>
+<% if (clen.zdravotnyStav?.tzpPreukaz) { %>
+- Preukaz ŤZP
+<% } %>
+<% if (clen.zdravotnyStav?.chronickeOchorenie) { %>
+- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% } %>
+<% }) %>
+<% } %>`

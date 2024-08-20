@@ -450,6 +450,7 @@ const getPrijemSection = (stepType: StepType) => {
           { title: 'Čistý mesačný príjem dieťaťa', required: true, minimum: 0 },
           {
             size: 'medium',
+            leftIcon: 'euro',
             belowComponents: [
               {
                 type: 'alert',
@@ -502,7 +503,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'zamestnaniePrijem',
         { title: 'Čistý mesačný príjem zo zamestnania', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -538,7 +539,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'samostatnaZarobkovaCinnostPrijem',
         { title: 'Mesačný príjem z podnikania', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -565,7 +566,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'dochodokVyska',
         { title: 'Výška mesačného dôchodku', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -588,7 +589,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'vyzivneVyska',
         { title: 'Celková výška výživného na deti', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -611,7 +612,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'davkaVNezamestnanostiVyska',
         { title: 'Výška príspevku z úradu práce', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -636,7 +637,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'inePrijmyVyska',
         { title: 'Iné pravidelné príjmy', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     customComponentsField(
@@ -1221,7 +1222,7 @@ export default schema(
     step('ineOkolnosti', { title: 'Iné okolnosti' }, [
       textArea(
         'dovodyPodaniaZiadosti',
-        { title: 'Prečo si podávate žiadosť?' },
+        { title: 'Prečo si podávate žiadosť?', required: true },
         {
           helptextHeader:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
@@ -1268,7 +1269,7 @@ export default schema(
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
   ],

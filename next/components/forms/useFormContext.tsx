@@ -19,7 +19,7 @@ declare global {
   }
 }
 
-export type FormContext = {
+export type FormServerContext = {
   formDefinition: FormDefinition
   formId: string
   initialFormDataJson: GenericObjectType
@@ -32,29 +32,12 @@ export type FormContext = {
   isDevRoute?: boolean
 }
 
-const FormContextContext = createContext<FormContext | undefined>(undefined)
-
-type FormContextProviderProps = {
-  formContext: FormContext
-}
-export const FormContextProvider = ({
-  formContext,
-  children,
-}: PropsWithChildren<FormContextProviderProps>) => {
-  return <FormContextContext.Provider value={formContext}>{children}</FormContextContext.Provider>
-}
-
-export const useFormContext = () => {
-  const context = useContext(FormContextContext)
-  if (!context) {
-    throw new Error('useFormContext must be used within a FormContextProvider')
-  }
-
+const useGetContext = (formServerContext: FormServerContext) => {
   const isClient = useIsClient()
   const { isSignedIn, tierStatus } = useSsrAuth()
   const { eIdTaxFormAllowed } = useSsrAuth()
 
-  const { formDefinition, formMigrationRequired, formSent, isEmbedded } = context
+  const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
 
   const requiresVerification = isSlovenskoSkGenericFormDefinition(formDefinition)
   const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
@@ -83,7 +66,7 @@ export const useFormContext = () => {
   const isReadonly = formMigrationRequired || formSent
   const isDeletable = formMigrationRequired && !formSent
 
-  const isTaxForm = isSlovenskoSkTaxFormDefinition(context.formDefinition)
+  const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
 
   const isSigned =
     isSlovenskoSkFormDefinition(formDefinition) &&
@@ -92,7 +75,7 @@ export const useFormContext = () => {
     eIdTaxFormAllowed
 
   return {
-    ...context,
+    ...formServerContext,
     verificationMissing,
     signInMissing,
     displayHeaderAndMenu,
@@ -104,4 +87,26 @@ export const useFormContext = () => {
     isReadonly,
     isDeletable,
   }
+}
+
+const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+
+type FormContextProviderProps = {
+  formServerContext: FormServerContext
+}
+export const FormContextProvider = ({
+  formServerContext,
+  children,
+}: PropsWithChildren<FormContextProviderProps>) => {
+  const context = useGetContext(formServerContext)
+  return <FormContextContext.Provider value={context}>{children}</FormContextContext.Provider>
+}
+
+export const useFormContext = () => {
+  const context = useContext(FormContextContext)
+  if (!context) {
+    throw new Error('useFormContext must be used within a FormContextProvider')
+  }
+
+  return context
 }

@@ -31,9 +31,9 @@ const celkovaZastavanaPlocha = number(
 const spoluvlastnickyPodiel = input(
   'spoluvlastnickyPodiel',
   {
+    type: 'ba-ratio',
     title: 'Spoluvlastnícky podiel',
     required: true,
-    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 1/1',
@@ -238,7 +238,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],

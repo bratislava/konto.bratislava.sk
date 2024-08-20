@@ -29,20 +29,20 @@ const ziadatelInvestorFields = [
   conditionalFields(
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
-      input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
       sharedAddressField('adresa', 'Korešpondenčná adresa', true),
     ],
-    [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
+    [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
     sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    input('ico', { title: 'IČO', required: true }, {}),
+    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
     sharedAddressField('adresaSidla', 'Adresa sídla', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
+    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
   sharedPhoneNumberField('telefon', true),
@@ -94,12 +94,12 @@ export const getSurSchema = (zavazne: boolean) =>
         ]),
       ]),
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-        input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+        input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
         sharedPhoneNumberField('projektantTelefon', true),
         input(
           'autorizacneOsvedcenie',
-          { title: 'Číslo autorizačného osvedčenia', required: true },
+          { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
           {
             helptext:
               'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.',
@@ -113,7 +113,7 @@ export const getSurSchema = (zavazne: boolean) =>
         ),
       ]),
       step('stavba', { title: 'Informácie o stavbe' }, [
-        input('nazov', { title: 'Názov stavby/projektu', required: true }, {}),
+        input('nazov', { type: 'text', title: 'Názov stavby/projektu', required: true }, {}),
         radioGroup(
           'druhStavby',
           {
@@ -131,9 +131,13 @@ export const getSurSchema = (zavazne: boolean) =>
           },
           { variant: 'boxed' },
         ),
-        input('ulica', { title: 'Ulica', required: true }, { size: 'medium' }),
-        input('supisneCislo', { title: 'Súpisné číslo' }, { size: 'medium' }),
-        input('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'medium' }),
+        input('ulica', { type: 'text', title: 'Ulica', required: true }, { size: 'medium' }),
+        input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, { size: 'medium' }),
+        input(
+          'parcelneCislo',
+          { type: 'text', title: 'Parcelné číslo', required: true },
+          { size: 'medium' },
+        ),
         selectMultiple(
           'kataster',
           {

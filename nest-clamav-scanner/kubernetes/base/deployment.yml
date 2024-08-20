@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${BUILD_REPOSITORY_NAME}-app
+  namespace: ${NAMESPACE}
+  labels:
+    service: app
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
+spec:
+  selector:
+    matchLabels:
+      service: app
+  template:
+    metadata:
+      labels:
+        service: app
+    spec:
+      containers:
+        - image: ${IMAGE_TAG}
+          name: app
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          env:
+            - name: DATABASE_URL
+              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public
+          envFrom:
+            - configMapRef:
+                name: ${BUILD_REPOSITORY_NAME}-env
+            - configMapRef:
+                name: ${BUILD_REPOSITORY_NAME}-clamav
+            - secretRef:
+                name: ${BUILD_REPOSITORY_NAME}-database-secret
+            - secretRef:
+                name: ${BUILD_REPOSITORY_NAME}-forms-secret
+            - secretRef:
+                name: ${BUILD_REPOSITORY_NAME}-scanner-secret
+            - secretRef:
+                name: s3-minio-forms-secret
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: ${INTERNAL_APP_PORT}
+      imagePullSecrets:
+        - name: ${IMAGE_PULL_SECRET}

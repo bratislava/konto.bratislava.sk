@@ -6,7 +6,7 @@ import { input, object } from '../../generator/functions'
 export const sharedPhoneNumberField = (property: string, required: boolean, helptext?: string) =>
   input(
     property,
-    { title: 'Telefónne číslo', required, type: 'tel' },
+    { type: 'ba-phone-number', title: 'Telefónne číslo', required },
     { size: 'medium', placeholder: '+421', helptext },
   )
 
@@ -24,8 +24,8 @@ export const sharedAddressField = (property: string, title: string, required: bo
         columnsRatio: '3/1',
       },
       [
-        input('mesto', { title: 'Mesto', required: true }, {}),
-        input('psc', { title: 'PSČ', required: true, format: 'ba-slovak-zip' }, {}),
+        input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
+        input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
       ],
     ),
   ])

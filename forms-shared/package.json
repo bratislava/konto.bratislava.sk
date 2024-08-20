@@ -14,7 +14,8 @@
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
     "generate-assets": "ts-node scripts/assets/generate.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
-    "build:watch": "tsc --project tsconfig.build.json --watch"
+    "build:watch": "tsc --project tsconfig.build.json --watch",
+    "sandbox": "ts-node scripts/sandbox.ts"
   },
   "exports": {
     "./*": "./dist/*.js",
@@ -31,6 +32,7 @@
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "dayjs": "^1.11.10",
+    "eta": "^3.5.0",
     "expr-eval": "^2.0.2",
     "ibantools": "^4.5.1",
     "jsdom": "^24.1.0",
@@ -68,7 +70,7 @@
     "@types/xml2js": "^0.4.14",
     "app-root-dir": "^1.0.2",
     "archiver": "^7.0.1",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "classnames": "^2.5.1",
     "inquirer": "^10.1.8",
     "jest": "^29.7.0",

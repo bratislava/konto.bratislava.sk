@@ -4,7 +4,7 @@ import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImpo
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
 import { FormSummaryProvider } from './steps/Summary/useFormSummary'
-import { FormContext, FormContextProvider } from './useFormContext'
+import { FormContextProvider, FormServerContext } from './useFormContext'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -13,12 +13,12 @@ import { FormSendProvider } from './useFormSend'
 import { FormStateProvider } from './useFormState'
 
 type FormProvidersProps = {
-  formContext: FormContext
+  formServerContext: FormServerContext
 }
 
-const FormProviders = ({ formContext, children }: PropsWithChildren<FormProvidersProps>) => {
+const FormProviders = ({ formServerContext, children }: PropsWithChildren<FormProvidersProps>) => {
   return (
-    <FormContextProvider formContext={formContext}>
+    <FormContextProvider formServerContext={formServerContext}>
       <FormFileUploadProvider>
         <FormLeaveProtectionProvider>
           <FormModalsProvider>

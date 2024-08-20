@@ -8,6 +8,7 @@ import { ExampleForm } from './types'
 import zavazneStanoviskoKInvesticnejCinnostiExample from './examples/zavazneStanoviskoKInvesticnejCinnostiExample'
 import komunitneZahradyExample from './examples/komunitneZahradyExample'
 import stanoviskoKInvesticnemuZameruExample from './examples/stanoviskoKInvesticnemuZameruExample'
+import ziadostONajomnyBytExample from './examples/ziadostONajomnyBytExample'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -21,8 +22,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
     priznanieKDaniZNehnutelnostiExample4,
     priznanieKDaniZNehnutelnostiExample5,
   ],
+  'ziadost-o-najomny-byt': [ziadostONajomnyBytExample],
 }
 
-export const exampleDevForms: Record<string, ExampleForm[]> = {
-  'ziadost-o-najomny-byt': [],
-}
+export const exampleDevForms: Record<string, ExampleForm[]> = {}

@@ -5,8 +5,10 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndCond
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
-import ziadostONajomnyByt from '../schemas/ziadostONajomnyByt'
 import { ziadostONajomnyBytSharepointData } from '../sharepoint/mappings/ziadostONajomnyByt'
+import ziadostONajomnyByt, {
+  ziadostONajomnyBytAdditionalInfoTemplate,
+} from '../schemas/ziadostONajomnyByt'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -116,5 +118,6 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     newGovernmentXml: true,
+    additionalInfoTemplate: ziadostONajomnyBytAdditionalInfoTemplate,
   },
 ]

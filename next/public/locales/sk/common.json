@@ -124,7 +124,7 @@
   "menu.show_less": "Zobraziť menej",
   "menu.show_more": "Zobraziť viac",
   "skipNavigation": "Preskočiť navigáciu",
-  "statusBarContent": "Pri niektorých používateľoch evidujeme opakované problémy s prihlásením. V prípade chýb, prosím <strong>zmažte súbory cookies vo svojom prehliadači alebo použite iný</strong>. Na odstránení problému pracujeme. Ďakujeme za pochopenie.",
+  "statusBarContent": "Momentálne evidujeme čiastočné výpadky s online úhradou služieb: PAAS aplikácia (parkovacie lístky), kúpaliská, a Bratislavské konto z dôvodu technických príčin na strane dodávateľa platobnej brány. Niektoré platby sa nepodarí dokončiť. Ďakujeme za trpezlivosť.",
   "modal_close_aria": "Zavrieť",
   "ariaCloseStatusBar": "Zavrieť upozornenie",
   "NavMenu": {

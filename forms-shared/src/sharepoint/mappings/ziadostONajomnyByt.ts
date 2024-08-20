@@ -6,71 +6,75 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   Meno: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.menoPriezvisko.meno',
+    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.meno',
   },
   Priezvisko: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.menoPriezvisko.priezvisko',
+    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.priezvisko',
   },
   RodnePriezvisko: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rodnePriezvisko',
+    info: 'ziadatelZiadatelka.osobneUdaje.rodnePriezvisko',
   },
   DatumNarodenia: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.datumNarodenia',
+    info: 'ziadatelZiadatelka.osobneUdaje.datumNarodenia',
   },
   StatnaPrislusnost: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.statnaPrislusnost',
+    info: 'ziadatelZiadatelka.osobneUdaje.statnaPrislusnost',
   },
   RodinnyStav: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rodinnyStav',
+    info: 'ziadatelZiadatelka.osobneUdaje.rodinnyStav',
   },
   Email: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.email',
+    info: 'ziadatelZiadatelka.osobneUdaje.email',
   },
   TelefonneCislo: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.telefonneCislo',
+    info: 'ziadatelZiadatelka.osobneUdaje.telefonneCislo',
   },
   TrvalyPobytUlicaACislo: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.ulicaACislo',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.ulicaACislo',
   },
   TrvalyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.mesto',
   },
   TrvalyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.psc',
   },
   TrvalyPobytVlastnikNehnutelnosti: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.vlastnikNehnutelnosti',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.vlastnikNehnutelnosti',
   },
-  TrvalyPobytPobytMenejAkoRok: {
+  ByvanieVMestskomNajomnomByte: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.pobytMenejAkoRok',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.byvanieVMestskomNajomnomByte',
+  },
+  PobytVBratislaveMenejAkoRok: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.pobytVBratislaveMenejAkoRok',
   },
   SkutocnyPobytRovnakyAkoTrvaly: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytuRovnaka',
   },
   SkutocnyPobytUlica: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo',
   },
   SkutocnyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
   },
   SkutocnyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
   },
   ZamestnaniePrijem: {
     type: 'json_path',
@@ -96,57 +100,37 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ziadatelZiadatelka.prijem.inePrijmyVyska',
   },
-  FunkcnaPorucha: {
+  TzpPreukaz: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.funkcnaPoruchaWrapper.funkcnaPorucha',
+    info: 'ziadatelZiadatelka.zdravotnyStav.tzpPreukaz',
   },
   MieraFunkcnejPoruchy: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.funkcnaPoruchaWrapper.mieraFunkcnejPoruchy',
+    info: 'ziadatelZiadatelka.zdravotnyStav.mieraFunkcnejPoruchy',
   },
-  Diagnozy: {
+  ChronickeOchorenie: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.funkcnaPoruchaWrapper.diagnozy',
+    info: 'ziadatelZiadatelka.zdravotnyStav.chronickeOchorenie',
   },
   ExistujuceDiagnozy: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.funkcnaPoruchaWrapper.existujuceDiagnozy',
-  },
-  StupenOdkazanosti: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.odkazanostWrapper.stupenOdkazanosti',
+    info: 'ziadatelZiadatelka.zdravotnyStav.existujuceDiagnozy',
   },
   BezbarierovyByt: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.bezbarierovyBytWrapper.bezbarierovyByt',
-  },
-  Invalidita: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.bezbarierovyBytWrapper.invalidita',
-  },
-  MieraPoklesu: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.bezbarierovyBytWrapper.mieraPoklesu',
+    info: 'ziadatelZiadatelka.zdravotnyStav.bezbarierovyByt',
   },
   BytovaNudza: {
     type: 'json_path',
     info: 'ziadatelZiadatelka.sucasneByvanie.bytovaNudza',
   },
-  TypSkutocnehoByvania: {
+  TypByvania: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.sucasneByvanie.typSkutocnehoByvania',
+    info: 'ziadatelZiadatelka.sucasneByvanie.typByvania',
   },
   DlzkaBytovejNudze: {
     type: 'json_path',
     info: 'ziadatelZiadatelka.sucasneByvanie.dlzkaBytovejNudze',
-  },
-  NakladyNaByvanie: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.sucasneByvanie.nakladyNaByvanie',
-  },
-  DovodNevyhovujucehoByvania: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.sucasneByvanie.dovodNevyhovujucehoByvania',
   },
   RizikoveFaktory: {
     type: 'json_path',
@@ -156,120 +140,76 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.zoznamRizikovychFaktorov',
   },
-  Vek: {
+  VekNajstarsiehoClena: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.vek',
+    info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.vekNajstarsiehoClena',
   },
 }
 
 const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
   Meno: {
     type: 'json_path',
-    info: 'menoPriezvisko.meno',
+    info: 'osobneUdaje.menoPriezvisko.meno',
   },
   Priezvisko: {
     type: 'json_path',
-    info: 'menoPriezvisko.priezvisko',
-  },
-  RodnePriezvisko: {
-    type: 'json_path',
-    info: 'rodnePriezvisko',
+    info: 'osobneUdaje.menoPriezvisko.priezvisko',
   },
   DatumNarodenia: {
     type: 'json_path',
-    info: 'datumNarodenia',
+    info: 'osobneUdaje.datumNarodenia',
   },
   StatnaPrislusnost: {
     type: 'json_path',
-    info: 'statnaPrislusnost',
+    info: 'osobneUdaje.statnaPrislusnost',
   },
-  RodinnyStav: {
+  VlastnikNehnutelnosti: {
     type: 'json_path',
-    info: 'rodinnyStav',
-  },
-  TrvalyPobytRovnaky: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.adresaTrvalehoPobytuRovnaka',
-  },
-  TrvalyPobytUlicaACislo: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.ulicaACislo',
-  },
-  TrvalyPobytMesto: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.mesto',
-  },
-  TrvalyPobytPsc: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.psc',
-  },
-  SkutocnyPobytRovnakyAkoTrvaly: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka',
-  },
-  SkutocnyPobytUlica: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo',
-  },
-  SkutocnyPobytMesto: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
-  },
-  SkutocnyPobytPsc: {
-    type: 'json_path',
-    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
-  },
-  PrijemVyska: {
-    type: 'json_path',
-    info: 'prijem.prijemVyska',
-  },
-  Student: {
-    type: 'json_path',
-    info: 'prijem.student',
-  },
-  FunkcnaPorucha: {
-    type: 'json_path',
-    info: 'zdravotnyStav.funkcnaPoruchaWrapper.funkcnaPorucha',
-  },
-  MieraFunkcnejPoruchy: {
-    type: 'json_path',
-    info: 'zdravotnyStav.funkcnaPoruchaWrapper.mieraFunkcnejPoruchy',
-  },
-  Diagnozy: {
-    type: 'json_path',
-    info: 'zdravotnyStav.funkcnaPoruchaWrapper.diagnozy',
-  },
-  ExistujuceDiagnozy: {
-    type: 'json_path',
-    info: 'zdravotnyStav.funkcnaPoruchaWrapper.existujuceDiagnozy',
-  },
-  StupenOdkazanosti: {
-    type: 'json_path',
-    info: 'zdravotnyStav.odkazanostWrapper.stupenOdkazanosti',
-  },
-  Invalidita: {
-    type: 'json_path',
-    info: 'zdravotnyStav.bezbarierovyBytWrapper.invalidita',
-  },
-  MieraPoklesu: {
-    type: 'json_path',
-    info: 'zdravotnyStav.bezbarierovyBytWrapper.mieraPoklesu',
-  },
-  RizikoveFaktory: {
-    type: 'json_path',
-    info: 'rizikoveFaktoryWrapper.rizikoveFaktory',
-  },
-  ZoznamRizikovychFaktorov: {
-    type: 'json_path',
-    info: 'rizikoveFaktoryWrapper.zoznamRizikovychFaktorov',
+    info: 'osobneUdaje.vlastnikNehnutelnosti',
   },
   SucasneByvanieRovnakeAkoVase: {
     type: 'json_path',
     info: 'sucasneByvanie.situaciaRovnakaAkoVasa',
   },
-  SucasneByvanieDietata: {
+  BytovaNudza: {
     type: 'json_path',
-    info: 'sucasneByvanie.sucasneByvanieDietata',
+    info: 'sucasneByvanie.bytovaNudza',
+  },
+  TypByvania: {
+    type: 'json_path',
+    info: 'sucasneByvanie.typByvania',
+  },
+  DlzkaBytovejNudze: {
+    type: 'json_path',
+    info: 'sucasneByvanie.dlzkaBytovejNudze',
+  },
+  Student: {
+    type: 'json_path',
+    info: 'prijem.student',
+  },
+  MaPrijem: {
+    type: 'json_path',
+    info: 'prijem.maPrijem',
+  },
+  PrijemVyska: {
+    type: 'json_path',
+    info: 'prijem.prijemVyska',
+  },
+  TzpPreukaz: {
+    type: 'json_path',
+    info: 'zdravotnyStav.tzpPreukaz',
+  },
+  MieraFunkcnejPoruchy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.mieraFunkcnejPoruchy',
+  },
+  ChronickeOchorenie: {
+    type: 'json_path',
+    info: 'zdravotnyStav.chronickeOchorenie',
+  },
+  ExistujuceDiagnozy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.existujuceDiagnozy',
   },
 }
 
@@ -279,59 +219,43 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   return {
     Meno: {
       type: 'json_path',
-      info: `${prefix}.menoPriezvisko.meno`,
+      info: `${prefix}.osobneUdaje.menoPriezvisko.meno`,
     },
     Priezvisko: {
       type: 'json_path',
-      info: `${prefix}.menoPriezvisko.priezvisko`,
+      info: `${prefix}.osobneUdaje.menoPriezvisko.priezvisko`,
     },
     RodnePriezvisko: {
       type: 'json_path',
-      info: `${prefix}.rodnePriezvisko`,
+      info: `${prefix}.osobneUdaje.rodnePriezvisko`,
     },
     DatumNarodenia: {
       type: 'json_path',
-      info: `${prefix}.datumNarodenia`,
+      info: `${prefix}.osobneUdaje.datumNarodenia`,
     },
     StatnaPrislusnost: {
       type: 'json_path',
-      info: `${prefix}.statnaPrislusnost`,
+      info: `${prefix}.osobneUdaje.statnaPrislusnost`,
     },
     RodinnyStav: {
       type: 'json_path',
-      info: `${prefix}.rodinnyStav`,
-    },
-    TrvalyPobytUlicaACislo: {
-      type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.ulicaACislo`,
-    },
-    TrvalyPobytMesto: {
-      type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.mestoPsc.mesto`,
-    },
-    TrvalyPobytPsc: {
-      type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.mestoPsc.psc`,
-    },
-    TrvalyPobytVlastnikNehnutelnosti: {
-      type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.vlastnikNehnutelnosti`,
-    },
-    SkutocnyPobytRovnakyAkoTrvaly: {
-      type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka`,
+      info: `${prefix}.osobneUdaje.rodinnyStav`,
     },
     SkutocnyPobytUlica: {
       type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo`,
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.ulicaACislo`,
     },
     SkutocnyPobytMesto: {
       type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto`,
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.mestoPsc.mesto`,
     },
     SkutocnyPobytPsc: {
       type: 'json_path',
-      info: `${prefix}.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc`,
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.mestoPsc.psc`,
+    },
+    VlastnikNehnutelnosti: {
+      type: 'json_path',
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.vlastnikNehnutelnosti`,
     },
     ZamestnaniePrijem: {
       type: 'json_path',
@@ -357,73 +281,37 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
       type: 'json_path',
       info: `${prefix}.prijem.inePrijmyVyska`,
     },
-    FunkcnaPorucha: {
+    TzpPreukaz: {
       type: 'json_path',
-      info: `${prefix}.zdravotnyStav.funkcnaPoruchaWrapper.funkcnaPorucha`,
+      info: `${prefix}.zdravotnyStav.tzpPreukaz`,
     },
     MieraFunkcnejPoruchy: {
       type: 'json_path',
-      info: `${prefix}.zdravotnyStav.funkcnaPoruchaWrapper.mieraFunkcnejPoruchy`,
+      info: `${prefix}.zdravotnyStav.mieraFunkcnejPoruchy`,
     },
-    Diagnozy: {
+    ChronickeOchorenie: {
       type: 'json_path',
-      info: `${prefix}.zdravotnyStav.funkcnaPoruchaWrapper.diagnozy`,
+      info: `${prefix}.zdravotnyStav.chronickeOchorenie`,
     },
     ExistujuceDiagnozy: {
       type: 'json_path',
-      info: `${prefix}.zdravotnyStav.funkcnaPoruchaWrapper.existujuceDiagnozy`,
+      info: `${prefix}.zdravotnyStav.existujuceDiagnozy`,
     },
-    StupenOdkazanosti: {
+    SucasneByvanieRovnakeAkoVase: {
       type: 'json_path',
-      info: `${prefix}.zdravotnyStav.odkazanostWrapper.stupenOdkazanosti`,
-    },
-    BezbarierovyByt: {
-      type: 'json_path',
-      info: `${prefix}.zdravotnyStav.bezbarierovyBytWrapper.bezbarierovyByt`,
-    },
-    Invalidita: {
-      type: 'json_path',
-      info: `${prefix}.zdravotnyStav.bezbarierovyBytWrapper.invalidita`,
-    },
-    MieraPoklesu: {
-      type: 'json_path',
-      info: `${prefix}.zdravotnyStav.bezbarierovyBytWrapper.mieraPoklesu`,
+      info: `${prefix}.sucasneByvanie.situaciaRovnakaAkoVasa`,
     },
     BytovaNudza: {
       type: 'json_path',
       info: `${prefix}.sucasneByvanie.bytovaNudza`,
     },
-    SucasneByvaniaRovnakaSituacia: {
+    TypByvania: {
       type: 'json_path',
-      info: `${prefix}.sucasneByvanie.situaciaRovnakaAkoVasa`,
-    },
-    TypSkutocnehoByvania: {
-      type: 'json_path',
-      info: `${prefix}.sucasneByvanie.typSkutocnehoByvania`,
+      info: `${prefix}.sucasneByvanie.typByvania`,
     },
     DlzkaBytovejNudze: {
       type: 'json_path',
       info: `${prefix}.sucasneByvanie.dlzkaBytovejNudze`,
-    },
-    NakladyNaByvanie: {
-      type: 'json_path',
-      info: `${prefix}.sucasneByvanie.nakladyNaByvanie`,
-    },
-    DovodNevyhovujucehoByvania: {
-      type: 'json_path',
-      info: `${prefix}.sucasneByvanie.dovodNevyhovujucehoByvania`,
-    },
-    RizikoveFaktory: {
-      type: 'json_path',
-      info: `${prefix}.rizikoveFaktoryWrapper.rizikoveFaktory`,
-    },
-    ZoznamRizikovychFaktorov: {
-      type: 'json_path',
-      info: `${prefix}.rizikoveFaktoryWrapper.zoznamRizikovychFaktorov`,
-    },
-    Vek: {
-      type: 'json_path',
-      info: `${prefix}.rizikoveFaktoryWrapper.vek`,
     },
   }
 }

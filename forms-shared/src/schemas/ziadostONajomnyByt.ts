@@ -1,5 +1,6 @@
 import {
   arrayField,
+  checkbox,
   checkboxGroup,
   conditionalFields,
   customComponentsField,
@@ -117,9 +118,9 @@ const getAdresaSkutocnehoPobytuFields = (stepType: StepType) => {
       description: {
         [StepType.Ziadatel]: undefined,
         [StepType.ManzelManzelka]:
-          'Ak má váš manžel/manželka v občianskom preukaze uvedenú Mestskú časť, uveďte adresu príslušného mestského úradu.',
+          'Ak má váš manžel/manželka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
         [StepType.DruhDruzka]:
-          'Ak má váš druh/družka v občianskom preukaze uvedenú Mestskú časť, uveďte adresu príslušného mestského úradu. ',
+          'Ak má váš druh/družka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu. ',
       }[stepType],
       objectDisplay: stepType === StepType.Ziadatel ? 'wrapper' : 'boxed',
     },
@@ -405,8 +406,8 @@ const getPrijemSection = (stepType: StepType) => {
           title: 'Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?',
           required: true,
           options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+            { value: true, title: 'Áno' },
+            { value: false, title: 'Nie', isDefault: true },
           ],
         },
         {
@@ -846,7 +847,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               variant: 'boxed',
               orientations: 'row',
               helptextHeader: markdownText(
-                `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle prílohy č. 2 (https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy)[zákona 443/2010 Z. z.]`,
+                `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle prílohy č. 2 [zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy)`,
               ),
             },
           )
@@ -881,7 +882,14 @@ const getSucasneByvanieSection = (stepType: StepType) => {
     object(
       'sucasneByvanie',
       { required: true },
-      { objectDisplay: 'boxed', title: 'Súčasné bývanie' },
+      {
+        objectDisplay: 'boxed',
+        title: 'Súčasné bývanie',
+        description:
+          stepType === StepType.Ziadatel
+            ? 'Ak označíte odpoveď  "Áno" zobrazia sa vám konkrétne možnosti bývania. Ak sa vás žiadna z nich nebude týkať, označte odpoveď "Nie".'
+            : undefined,
+      },
       fields,
     )
 
@@ -925,7 +933,21 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           { value: false, title: 'Nie', isDefault: true },
         ],
       },
-      { variant: 'boxed', orientations: 'row' },
+      {
+        variant: 'boxed',
+        orientations: 'row',
+        helptextHeader: {
+          [StepType.Ziadatel]: undefined,
+          [StepType.ManzelManzelka]:
+            'Ak označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa manžela/manželky žiadna z nich nebude týkať, označte odpoveď "Nie".',
+          [StepType.DruhDruzka]:
+            'Ak označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa druha/družky žiadna z nich nebude týkať, označte odpoveď "Nie".',
+          [StepType.Dieta]:
+            'Ak označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa nezaopatreného dieťaťa žiadna z nich nebude týkať, označte odpoveď "Nie".',
+          [StepType.InyClen]:
+            'Ak pri otázke Nachádza sa v bytovej núdzi označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa člena/členky domácnosti žiadna z nich nebude týkať, označte odpoveď "Nie".',
+        }[stepType],
+      },
     ),
     conditionalFields(createCondition([[['bytovaNudza'], { const: true }]]), [
       radioGroup(
@@ -1019,7 +1041,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
         {
           type: 'boolean',
           title:
-            'Týkajú sa vás rizikové faktory, ktoré zvyšujú vašu sociálno-ekonomickú zraniteľnosť?',
+            'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
           required: true,
           options: [
             { value: true, title: 'Áno' },
@@ -1056,7 +1078,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
                 props: {
                   type: 'info',
                   message:
-                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť. (Napr. rozhodnutie súdu/trestné oznámenie a pod.)',
+                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
                 },
               },
             ],
@@ -1141,7 +1163,12 @@ export default schema(
     ]),
     step(
       'deti',
-      { title: 'Nezaopatrené deti do 25 rokov', stepperTitle: 'Nezaopatrené dieťa/deti' },
+      {
+        title: 'Nezaopatrené deti do 25 rokov',
+        stepperTitle: 'Nezaopatrené dieťa/deti',
+        description:
+          'Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10 ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.',
+      },
       [
         radioGroup(
           'detiSucastouDomacnosti',
@@ -1157,16 +1184,6 @@ export default schema(
           {
             variant: 'boxed',
             orientations: 'row',
-            belowComponents: [
-              {
-                type: 'alert',
-                props: {
-                  type: 'info',
-                  message:
-                    'Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10 ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.',
-                },
-              },
-            ],
           },
         ),
         conditionalFields(createCondition([[['detiSucastouDomacnosti'], { const: true }]]), [
@@ -1270,6 +1287,31 @@ export default schema(
           minimum: 0,
         },
         { leftIcon: 'euro', size: 'medium' },
+      ),
+    ]),
+    step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
+      customComponentsField(
+        {
+          type: 'alert',
+          props: {
+            type: 'info',
+            message: 'Súčeť príjmov TODO',
+          },
+        },
+        {},
+      ),
+      checkbox(
+        'cestneVyhlasenie',
+        {
+          title: 'Čestné vyhlásenie',
+          required: true,
+          constValue: true,
+        },
+        {
+          checkboxLabel:
+            'Čestne vyhlasujem, že všetky údaje, uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.',
+          variant: 'boxed',
+        },
       ),
     ]),
   ],

@@ -16,9 +16,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
         datumNarodenia: '1985-03-15',
         email: 'jana.novakova@email.com',
         menoPriezvisko: { meno: 'Jana', priezvisko: 'Nováková' },
-        rodinnyStav: 'Rozvedený/rozvedená',
+        rodinnyStav: 'rozvedeny',
         rodnePriezvisko: 'Kováčová',
-        statnaPrislusnost: 'Slovenská',
+        statnaPrislusnost: 'slovenska',
         telefonneCislo: '+421901234567',
       },
       prijem: {
@@ -34,16 +34,14 @@ const ziadostONajomnyBytExample: ExampleForm = {
       },
       rizikoveFaktoryWrapper: {
         rizikoveFaktory: true,
-        vekNajstarsiehoClena: 'menej ako 63 rokov',
-        zoznamRizikovychFaktorov: [
-          'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
-        ],
+        vekNajstarsiehoClena: 'menejAko63',
+        zoznamRizikovychFaktorov: ['osamelyRodic'],
       },
       sucasneByvanie: { bytovaNudza: false },
       zdravotnyStav: {
         bezbarierovyByt: false,
         chronickeOchorenie: true,
-        existujuceDiagnozy: ['Astma', 'Chronická paradentóza'],
+        existujuceDiagnozy: ['astma', 'chronickaParadentoza'],
         tzpPreukaz: false,
       },
     },
@@ -58,9 +56,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
         },
         datumNarodenia: '1982-07-22',
         menoPriezvisko: { meno: 'Peter', priezvisko: 'Horváth' },
-        rodinnyStav: 'Slobodný/slobodná',
+        rodinnyStav: 'slobodny',
         rodnePriezvisko: 'Horváth',
-        statnaPrislusnost: 'Slovenská',
+        statnaPrislusnost: 'slovenska',
       },
       prijem: {
         davkaVNezamestnanosti: false,
@@ -73,7 +71,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         zamestnaniePrijem: 1500,
       },
       sucasneByvanie: { situaciaRovnakaAkoVasa: true },
-      zdravotnyStav: { mieraFunkcnejPoruchy: 'Od 50 % do 74 %', tzpPreukaz: true },
+      zdravotnyStav: { mieraFunkcnejPoruchy: '50az74', tzpPreukaz: true },
     },
     deti: {
       detiSucastouDomacnosti: true,
@@ -81,7 +79,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         {
           osobneUdaje: {
             menoPriezvisko: { meno: 'Lucia', priezvisko: 'Nováková' },
-            statnaPrislusnost: 'Slovenská',
+            statnaPrislusnost: 'slovenska',
             vlastnikNehnutelnosti: false,
             datumNarodenia: '2010-11-30',
           },
@@ -92,13 +90,13 @@ const ziadostONajomnyBytExample: ExampleForm = {
         {
           osobneUdaje: {
             menoPriezvisko: { meno: 'Michal', priezvisko: 'Novák' },
-            statnaPrislusnost: 'Slovenská',
+            statnaPrislusnost: 'slovenska',
             vlastnikNehnutelnosti: false,
             datumNarodenia: '2005-04-18',
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
           prijem: { student: true, maPrijem: true, prijemVyska: 200 },
-          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: 'Od 75 % do 100 %' },
+          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: '75az100' },
         },
       ],
     },
@@ -108,9 +106,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
         {
           osobneUdaje: {
             menoPriezvisko: { meno: 'Mária', priezvisko: 'Kováčová' },
-            statnaPrislusnost: 'Slovenská',
+            statnaPrislusnost: 'slovenska',
             datumNarodenia: '1960-09-05',
-            rodinnyStav: 'Vdovec/vdova',
+            rodinnyStav: 'vdovec',
             rodnePriezvisko: 'Hrušková',
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
@@ -123,7 +121,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
             inePrijmy: false,
             dochodokVyska: 550,
           },
-          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: 'Od 50 % do 74 %' },
+          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: '50az74' },
         },
       ],
     },
@@ -131,8 +129,8 @@ const ziadostONajomnyBytExample: ExampleForm = {
       dovodyPodaniaZiadosti:
         'Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.',
       maximalnaVyskaNajomneho: 700,
-      preferovanaLokalita: ['Ružinov', 'Nové Mesto'],
-      preferovanaVelkost: '3-izbový byt',
+      preferovanaLokalita: ['ruzinov', 'noveMesto'],
+      preferovanaVelkost: '3izbovy',
     },
   },
 }

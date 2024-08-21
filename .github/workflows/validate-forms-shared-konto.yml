@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Docker image on test target
         run: |
-          docker buildx build --cache-from=/tmp/.buildx-cache --cache-to=/tmp/.buildx-cache -t test .
+          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache -t test .
 
       - name: Run tests
         run: |

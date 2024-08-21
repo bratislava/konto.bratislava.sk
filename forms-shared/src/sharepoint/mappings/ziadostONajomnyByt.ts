@@ -144,6 +144,22 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.vekNajstarsiehoClena',
   },
+  PreferovanaVelkost: {
+    type: 'json_path',
+    info: 'ineOkolnosti.preferovanaVelkost',
+  },
+  PreferovanaLokalita: {
+    type: 'json_path',
+    info: 'ineOkolnosti.preferovanaLokalita',
+  },
+  DovodyPodaniaZiadosti: {
+    type: 'json_path',
+    info: 'ineOkolnosti.dovodyPodaniaZiadosti',
+  },
+  MaximalnaVyskaNajomneho: {
+    type: 'json_path',
+    info: 'ineOkolnosti.maximalnaVyskaNajomneho',
+  },
 }
 
 const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
@@ -392,7 +408,7 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
 }
 
 export const ziadostONajomnyBytSharepointData = {
-  databaseName: 'dtb_NajomneByvanieTest',
+  databaseName: 'dtb_NajomneByvanieZiadatel',
   columnMap: defaultColumnMapNajomneByvanie,
   oneToMany: {
     'deti.zoznamDeti': {
@@ -408,7 +424,7 @@ export const ziadostONajomnyBytSharepointData = {
   },
   oneToOne: {
     'manzelManzelka.manzelManzelkaSucastouDomacnosti': {
-      databaseName: 'dtb_NajomneByvanieManzelTest',
+      databaseName: 'dtb_NajomneByvanieManzel',
       originalTableId: 'ManzelManzelka',
       columnMap: getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka('manzelManzelka'),
     },

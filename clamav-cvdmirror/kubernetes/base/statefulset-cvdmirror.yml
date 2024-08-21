@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: database
+  namespace: ${NAMESPACE}
+  labels:
+    service: database
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
+spec:
+  serviceName: database
+  selector:
+    matchLabels:
+      service: database
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: database
+    spec:
+      containers:
+        - image: ${IMAGE_TAG}
+          name: cvdmirror
+          imagePullPolicy: IfNotPresent
+          command: ["./entrypoint.sh"]
+          args: ["serve"]
+          resources:
+            limits:
+              cpu: 500m
+              memory: 8Gi
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          volumeMounts:
+            - name: database
+              mountPath: /mnt/cvdupdate
+              subPath: database
+          envFrom:
+            - configMapRef:
+                name: env
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            httpGet:
+              path: /
+              port: 8080
+        - image: ${IMAGE_TAG}
+          name: cron
+          imagePullPolicy: IfNotPresent
+          command: [ "/usr/sbin/crond" ]
+          args: [ "-f" ]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 1Gi
+          volumeMounts:
+            - name: database
+              mountPath: /mnt/cvdupdate/
+              subPath: database
+          envFrom:
+            - configMapRef:
+                name: env
+      imagePullSecrets:
+        - name: ${IMAGE_PULL_SECRET}
+
+  # Volume Claim
+  volumeClaimTemplates:
+    - metadata:
+        name: database
+        labels:
+          service: database
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi

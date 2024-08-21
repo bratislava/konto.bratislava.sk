@@ -1,0 +1,6 @@
+{
+  "name": "clamav-cvdmirror",
+  "description": "ClamAV CVDMirror database for local usage",
+  "version": "0.0.1",
+  "author": "Bratislava city innovation"
+}

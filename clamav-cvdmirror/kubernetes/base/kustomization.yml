@@ -1,0 +1,20 @@
+resources:
+  - statefulset-cvdmirror.yml
+  - service-cvdmirror.yml
+configurations:
+  - configuration.yml
+
+# Keep as is
+namePrefix: ${BUILD_REPOSITORY_NAME}-
+commonLabels:
+  app: ${BUILD_REPOSITORY_NAME}
+  source: ${BUILD_REPOSITORY_NAME}
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: env
+  namespace: ${NAMESPACE}
+  envs:
+  - .env

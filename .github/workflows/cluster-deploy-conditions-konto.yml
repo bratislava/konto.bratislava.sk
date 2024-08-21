@@ -14,6 +14,9 @@ on:
       dev-nest-forms-backend:
         description: "Returns true if dev-nest-forms-backend: can be deployed"
         value: ${{ jobs.conditions.outputs.dev-nest-forms-backend }}
+      dev-clamav-cvdmirror:
+        description: "Returns true if dev-clamav-cvdmirror can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-clamav-cvdmirror }}
       dev-clamav:
         description: "Returns true if dev-clamav can be deployed"
         value: ${{ jobs.conditions.outputs.dev-clamav }}
@@ -35,6 +38,9 @@ on:
       staging-clamav:
         description: "Returns true if staging-clamav can be deployed"
         value: ${{ jobs.conditions.outputs.staging-clamav }}
+      staging-clamav:
+        description: "Returns true if staging-clamav can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-clamav }}
       staging-nest-clamav-scanner:
         description: "Returns true if staging-nest-clamav-scanner can be deployed"
         value: ${{ jobs.conditions.outputs.staging-nest-clamav-scanner }}
@@ -50,6 +56,9 @@ on:
       prod-nest-forms-backend:
         description: "Returns true if prod-nest-forms-backend can be deployed"
         value: ${{ jobs.conditions.outputs.prod-nest-forms-backend }}
+      prod-clamav:
+        description: "Returns true if prod-clamav can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-clamav }}
       prod-clamav:
         description: "Returns true if prod-clamav can be deployed"
         value: ${{ jobs.conditions.outputs.prod-clamav }}
@@ -69,17 +78,20 @@ jobs:
       dev-strapi: ${{ steps.dev-strapi.outputs.condition }}
       dev-nest-forms-backend: ${{ steps.dev-nest-forms-backend.outputs.condition }}
       dev-clamav: ${{ steps.dev-clamav.outputs.condition }}
+      dev-clamav: ${{ steps.dev-clamav.outputs.condition }}
       dev-nest-clamav-scanner: ${{ steps.dev-nest-clamav-scanner.outputs.condition }}
       staging: ${{ steps.staging.outputs.condition }}
       staging-next: ${{ steps.staging-next.outputs.condition }}
       staging-strapi: ${{ steps.staging-strapi.outputs.condition }}
       staging-nest-forms-backend: ${{ steps.staging-nest-forms-backend.outputs.condition }}
       staging-clamav: ${{ steps.staging-clamav.outputs.condition }}
+      staging-clamav: ${{ steps.staging-clamav.outputs.condition }}
       staging-nest-clamav-scanner: ${{ steps.staging-nest-clamav-scanner.outputs.condition }}
       prod: ${{ steps.prod.outputs.condition }}
       prod-next: ${{ steps.prod-next.outputs.condition }}
       prod-strapi: ${{ steps.prod-strapi.outputs.condition }}
       prod-nest-forms-backend: ${{ steps.prod-nest-forms-backend.outputs.condition }}
+      prod-clamav: ${{ steps.prod-clamav.outputs.condition }}
       prod-clamav: ${{ steps.prod-clamav.outputs.condition }}
       prod-nest-clamav-scanner: ${{ steps.prod-nest-clamav-scanner.outputs.condition }}
     steps:

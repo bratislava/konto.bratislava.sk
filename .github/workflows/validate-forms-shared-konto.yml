@@ -28,9 +28,17 @@ jobs:
         run: |
           echo "Pipelines version: 2.3.0"
 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
       - name: Build Docker image on test target
         run: |
-          docker build -t test .
+          docker buildx build --cache-from=/tmp/.buildx-cache --cache-to=/tmp/.buildx-cache -t test .
 
       - name: Run tests
         run: |

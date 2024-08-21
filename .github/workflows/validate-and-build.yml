@@ -6,17 +6,18 @@ on:
 jobs:
   test-forms-shared:
     name: Run tests on forms-shared
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@beta
     with:
       directory: forms-shared/
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@beta
     with:
       directory: forms-shared/
       build_image_no_registry: ''
       tag: '--tag=${{ github.sha }}'
+      build_arg: '--cache-from=/tmp/.buildx-cache --cache-to=/tmp/.buildx-cache'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 

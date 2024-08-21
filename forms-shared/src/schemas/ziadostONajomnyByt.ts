@@ -16,11 +16,7 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import {
-  createCamelCaseOptionsV2,
-  createCondition,
-  createStringOptions,
-} from '../generator/helpers'
+import { createCondition } from '../generator/helpers'
 
 enum StepType {
   Ziadatel,
@@ -300,7 +296,10 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           type: 'string',
           title: 'Štátna príslušnosť',
           required: true,
-          options: createStringOptions(['Slovenská', 'Iná']),
+          options: [
+            { value: 'slovenska', title: 'Slovenská' },
+            { value: 'ina', title: 'Iná' },
+          ],
         },
         { variant: 'boxed', orientations: 'row' },
       ),
@@ -310,16 +309,13 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             {
               title: 'Rodinný stav',
               required: true,
-              options: createStringOptions(
-                [
-                  'Slobodný/slobodná',
-                  'Ženatý/vydatá',
-                  'Rozvedený/rozvedená',
-                  'Vdovec/vdova',
-                  'Iné',
-                ],
-                false,
-              ),
+              options: [
+                { value: 'slobodny', title: 'Slobodný/slobodná' },
+                { value: 'zenaty', title: 'Ženatý/vydatá' },
+                { value: 'rozvedeny', title: 'Rozvedený/rozvedená' },
+                { value: 'vdovec', title: 'Vdovec/vdova' },
+                { value: 'ine', title: 'Iné' },
+              ],
             },
             {
               belowComponents: [
@@ -450,6 +446,7 @@ const getPrijemSection = (stepType: StepType) => {
           { title: 'Čistý mesačný príjem dieťaťa', required: true, minimum: 0 },
           {
             size: 'medium',
+            leftIcon: 'euro',
             belowComponents: [
               {
                 type: 'alert',
@@ -502,7 +499,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'zamestnaniePrijem',
         { title: 'Čistý mesačný príjem zo zamestnania', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -538,7 +535,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'samostatnaZarobkovaCinnostPrijem',
         { title: 'Mesačný príjem z podnikania', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -565,7 +562,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'dochodokVyska',
         { title: 'Výška mesačného dôchodku', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -588,7 +585,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'vyzivneVyska',
         { title: 'Celková výška výživného na deti', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -611,7 +608,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'davkaVNezamestnanostiVyska',
         { title: 'Výška príspevku z úradu práce', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     radioGroup(
@@ -636,7 +633,7 @@ const getPrijemSection = (stepType: StepType) => {
       number(
         'inePrijmyVyska',
         { title: 'Iné pravidelné príjmy', required: true, minimum: 0 },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
     customComponentsField(
@@ -730,7 +727,10 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               other: 'Má uznanú mieru funkčnej poruchy?',
             }),
             required: true,
-            options: createStringOptions(['Od 50 % do 74 %', 'Od 75 % do 100 %'], false),
+            options: [
+              { value: '50az74', title: 'Od 50 % do 74 %' },
+              { value: '75az100', title: 'Od 75 % do 100 %' },
+            ],
           },
           {},
         ),
@@ -762,67 +762,123 @@ const getZdravotnyStavSection = (stepType: StepType) => {
                 other: 'Má niektorú z týchto diagnóz?',
               }),
               required: true,
-              options: createStringOptions(
-                [
-                  'Alzheimerova choroba',
-                  'Anorexia/Bulímia',
-                  'Arteriálna hypertenzia (chronický zvýšený tlak)',
-                  'Astma',
-                  'Autizmus',
-                  'Bipolárna porucha',
-                  'Chronická obštrukčná choroba pľúc (Symptomatická)',
-                  'Chronická paradentóza',
-                  'Chronické gastroenterologické ochorenia (Crohnova choroba, Ulcerózna kolitída, Chronická gastritída a podobné)',
-                  'Chronické muskuloskeletálne choroby (obmedzený pohyb, chýbajúca končatina)',
-                  'Chronické následky cievnej mozgovej príhody',
-                  'Chronické ochorenie obličiek v dôsledku nasledovných chorôb: Cukrovka, Glomerulonefritída, Hypertenzia, prípadne iných ochorení',
-                  'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
-                  'Chronické rozsiahle ochorenia kože s komplikáciami (chronický ekzém, chronické formy parapsoriázy)',
-                  'Chronický zápal stredného ucha (strata sluchu, vertigo)',
-                  'Demencia',
-                  'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
-                  'Diabetes mellitus 1 a 2 typu (Cukrovka) so závažnými komplikáciami (diabetická noha, neuropatia, retinopatia)',
-                  'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
-                  'Downov syndróm',
-                  'Dystýmia + Úzkostná porucha',
-                  'Encefalokéla (vady mozgu)',
-                  'Epilepsia',
-                  'Guillainov-Barrého syndróm',
-                  'Hepatitída C',
-                  'HIV/AIDS',
-                  'Hluchota (bez posudku)',
-                  'Iné chronické ochorenia srdca',
-                  'Ischemická choroba srdca',
-                  'Klinefelterov syndróm',
-                  'Metastatická fáza rakoviny (všetky typy rakoviny)',
-                  'Očné ochorenia (glaukoma, katarakta a podobné)',
-                  'Ochorenie motorických neurónov',
-                  'Osteoatróza (artróza)',
-                  'Parkinsonova choroba',
-                  'Rakovina vo fáze remisie (všetky typy rakoviny)',
-                  'Reumatické ochorenie srdca',
-                  'Reumatoidná artritída',
-                  'Sarkoidóza',
-                  'Schistosomóza (krvné motolice)',
-                  'Schizofrénia',
-                  'Slepota (bez posudku)',
-                  'Silikóza, Azbestóza, Pneumokonióza',
-                  'Skleróza multiplex (roztrúsená)',
-                  'Spina bifida (rázštep chrbtice)',
-                  'Spinóza a/alebo atrézia traviacého traktu',
-                  'Struma (zväčšená štítna žľaza)',
-                  'Syfilis',
-                  'Tetanus',
-                  'Terminálna fáza rakoviny (všetky typy rakoviny)',
-                  'Tuberkulóza',
-                  'Turnerov syndróm',
-                  'Vrodená chýba bránice (CDH)',
-                  'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
-                  'Vrodené poruchy a abnormality pohybového aparátu',
-                  'Vrodené srdcové chyby (CHD)',
-                ],
-                false,
-              ),
+              options: [
+                { value: 'alzheimer', title: 'Alzheimerova choroba' },
+                { value: 'anorexiaBulimia', title: 'Anorexia/Bulímia' },
+                {
+                  value: 'arterialnaHypertenzia',
+                  title: 'Arteriálna hypertenzia (chronický zvýšený tlak)',
+                },
+                { value: 'astma', title: 'Astma' },
+                { value: 'autizmus', title: 'Autizmus' },
+                { value: 'bipolarnaPorucha', title: 'Bipolárna porucha' },
+                {
+                  value: 'chronickaObstrukcnaChorobaPluc',
+                  title: 'Chronická obštrukčná choroba pľúc (Symptomatická)',
+                },
+                { value: 'chronickaParadentoza', title: 'Chronická paradentóza' },
+                {
+                  value: 'chronickeGastroenterologickeOchorenia',
+                  title:
+                    'Chronické gastroenterologické ochorenia (Crohnova choroba, Ulcerózna kolitída, Chronická gastritída a podobné)',
+                },
+                {
+                  value: 'chronickeMuskuloskeletalneChoroby',
+                  title:
+                    'Chronické muskuloskeletálne choroby (obmedzený pohyb, chýbajúca končatina)',
+                },
+                {
+                  value: 'chronickeNasledkyCMP',
+                  title: 'Chronické následky cievnej mozgovej príhody',
+                },
+                {
+                  value: 'chronickeOchorenieObliciek',
+                  title:
+                    'Chronické ochorenie obličiek v dôsledku nasledovných chorôb: Cukrovka, Glomerulonefritída, Hypertenzia, prípadne iných ochorení',
+                },
+                {
+                  value: 'chronickeOchoreniePecene',
+                  title: 'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
+                },
+                {
+                  value: 'chronickeOchoreniaKoze',
+                  title:
+                    'Chronické rozsiahle ochorenia kože s komplikáciami (chronický ekzém, chronické formy parapsoriázy)',
+                },
+                {
+                  value: 'chronickyZapalStrednhoUcha',
+                  title: 'Chronický zápal stredného ucha (strata sluchu, vertigo)',
+                },
+                { value: 'demencia', title: 'Demencia' },
+                {
+                  value: 'diabetesBezKomplikacii',
+                  title: 'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
+                },
+                {
+                  value: 'diabetesSKomplikaciami',
+                  title:
+                    'Diabetes mellitus 1 a 2 typu (Cukrovka) so závažnými komplikáciami (diabetická noha, neuropatia, retinopatia)',
+                },
+                {
+                  value: 'rakovinaSLiecbou',
+                  title: 'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
+                },
+                { value: 'downovSyndrom', title: 'Downov syndróm' },
+                { value: 'dystymiaUzkost', title: 'Dystýmia + Úzkostná porucha' },
+                { value: 'encefalokela', title: 'Encefalokéla (vady mozgu)' },
+                { value: 'epilepsia', title: 'Epilepsia' },
+                { value: 'guillainBarrehoSyndrom', title: 'Guillainov-Barrého syndróm' },
+                { value: 'hepatitidaC', title: 'Hepatitída C' },
+                { value: 'hivAids', title: 'HIV/AIDS' },
+                { value: 'hluchota', title: 'Hluchota (bez posudku)' },
+                { value: 'ineChronickeOchoreniaSrdca', title: 'Iné chronické ochorenia srdca' },
+                { value: 'ischemickaChorobaSrdca', title: 'Ischemická choroba srdca' },
+                { value: 'klinefelterovSyndrom', title: 'Klinefelterov syndróm' },
+                {
+                  value: 'metastatickaRakovina',
+                  title: 'Metastatická fáza rakoviny (všetky typy rakoviny)',
+                },
+                { value: 'ocneOchorenia', title: 'Očné ochorenia (glaukoma, katarakta a podobné)' },
+                { value: 'ochorenieMotorickychNeuronov', title: 'Ochorenie motorických neurónov' },
+                { value: 'osteoatroza', title: 'Osteoatróza (artróza)' },
+                { value: 'parkinson', title: 'Parkinsonova choroba' },
+                {
+                  value: 'rakovinaVRemisii',
+                  title: 'Rakovina vo fáze remisie (všetky typy rakoviny)',
+                },
+                { value: 'reumatickeOchorenieSrdca', title: 'Reumatické ochorenie srdca' },
+                { value: 'reumatoidnaArtritida', title: 'Reumatoidná artritída' },
+                { value: 'sarkoidoza', title: 'Sarkoidóza' },
+                { value: 'schistosomoza', title: 'Schistosomóza (krvné motolice)' },
+                { value: 'schizofrenia', title: 'Schizofrénia' },
+                { value: 'slepota', title: 'Slepota (bez posudku)' },
+                {
+                  value: 'silikozaAzbestozaPneumokonioza',
+                  title: 'Silikóza, Azbestóza, Pneumokonióza',
+                },
+                { value: 'sklerozaMultiplex', title: 'Skleróza multiplex (roztrúsená)' },
+                { value: 'spinaBifida', title: 'Spina bifida (rázštep chrbtice)' },
+                { value: 'spinozaAtrezia', title: 'Spinóza a/alebo atrézia traviacého traktu' },
+                { value: 'struma', title: 'Struma (zväčšená štítna žľaza)' },
+                { value: 'syfilis', title: 'Syfilis' },
+                { value: 'tetanus', title: 'Tetanus' },
+                {
+                  value: 'terminalnaFazaRakoviny',
+                  title: 'Terminálna fáza rakoviny (všetky typy rakoviny)',
+                },
+                { value: 'tuberkuloza', title: 'Tuberkulóza' },
+                { value: 'turnerovSyndrom', title: 'Turnerov syndróm' },
+                { value: 'vrodenaChybaBranice', title: 'Vrodená chyba bránice (CDH)' },
+                {
+                  value: 'vrodeneChybyBrusnejSteny',
+                  title: 'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
+                },
+                {
+                  value: 'vrodenePoruchyPohybovehoAparatu',
+                  title: 'Vrodené poruchy a abnormality pohybového aparátu',
+                },
+                { value: 'vrodeneSrdcoveChyby', title: 'Vrodené srdcové chyby (CHD)' },
+              ],
             },
             {},
           ),
@@ -933,39 +989,41 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           type: 'string',
           title: 'Typ bývania',
           required: true,
-          options: createCamelCaseOptionsV2([
+          options: [
+            { value: 'ulica', title: 'Bývanie na ulici' },
             {
-              title: 'Bývanie na ulici',
-            },
-            {
+              value: 'krizoveUbytovanie',
               title: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
             },
             {
+              value: 'zariadeniePreLudiVNudzi',
               title: 'Bývanie v zariadení určenom pre ľudí v núdzi',
               description: 'Útulok, azylový dom, Domov na pol ceste',
             },
             {
+              value: 'nestatnardneObydlie',
               title: 'Bývanie v neštandardnom obydlí',
               description: 'Mobilné obydlia, chatky, búdy, provizórne stavby',
             },
             {
+              value: 'mestskaUbytovna',
               title: 'Bývanie v mestskej ubytovni',
               description: 'Ubytovňa Fortuna, Ubytovňa Kopčany',
             },
+            { value: 'komercnaUbytovna', title: 'Bývanie v komerčnej ubytovni' },
             {
-              title: 'Bývanie v komerčnej ubytovni',
-            },
-            {
+              value: 'institucionalnaStarostlivost',
               title: 'Bývanie v inštitucionálnej starostlivosti',
               description:
                 'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr',
             },
             {
+              value: 'neistePodmienky',
               title: 'Bývanie v neistých/nevyhovujúcich podmienkach',
               description:
                 'Strata vlastníckych práv, výpoveď z nájmu, obydlie bez elektriny, vody, možnosti kúrenia, bez WC, extrémne preľudnene obydlie, nájom/podnájom bez zmluvy, bývanie u príbuzných/známych, neudržateľnosť nájomnej zmluvy (napr. náhly pokles príjmu)',
             },
-          ]),
+          ],
         },
         { variant: 'boxed' },
       ),
@@ -980,10 +1038,13 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             [StepType.InyClen]: 'Uveďte, ako dlho trvá bytová núdza člena/členky domácnosti',
           }[stepType],
           required: true,
-          options: createStringOptions(
-            ['Menej ako 1 rok', '1 - 2 roky', '3 - 5 rokov', '6 - 9 rokov', '10 a viac rokov'],
-            false,
-          ),
+          options: [
+            { value: 'menejAko1', title: 'Menej ako 1 rok' },
+            { value: '1az2', title: '1 - 2 roky' },
+            { value: '3az5', title: '3 - 5 rokov' },
+            { value: '6az9', title: '6 - 9 rokov' },
+            { value: '10aViac', title: '10 a viac rokov' },
+          ],
         },
         {},
       ),
@@ -1032,18 +1093,38 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           'zoznamRizikovychFaktorov',
           {
             title: 'Označte rizikové faktory',
-            options: createStringOptions(
-              [
-                'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
-                'Rodič na rodičovskej/materskej/otcovskej dovolenke',
-                'Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa',
-                'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
-                'Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením',
-                'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
-                'Iné',
-              ],
-              false,
-            ),
+            options: [
+              {
+                value: 'osamelyRodic',
+                title:
+                  'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
+              },
+              {
+                value: 'rodicNaDovolenke',
+                title: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
+              },
+              {
+                value: 'hrozbaOdobratiaDeti',
+                title:
+                  'Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa',
+              },
+              {
+                value: 'opustenieUstavnejStarostlivosti',
+                title:
+                  'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
+              },
+              {
+                value: 'opustenieVazby',
+                title:
+                  'Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením',
+              },
+              {
+                value: 'opustenieSpecialnehoZariadenia',
+                title:
+                  'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
+              },
+              { value: 'ine', title: 'Iné' },
+            ],
             required: true,
           },
           {
@@ -1067,10 +1148,12 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             type: 'string',
             title: 'Zvoľte vek najstaršieho člena domácnosti',
             required: true,
-            options: createStringOptions(
-              ['menej ako 63 rokov', '63 - 70 rokov', '71 - 80 rokov', '81 a viac rokov'],
-              false,
-            ),
+            options: [
+              { value: 'menejAko63', title: 'menej ako 63 rokov' },
+              { value: '63az70', title: '63 - 70 rokov' },
+              { value: '71az80', title: '71 - 80 rokov' },
+              { value: '81aViac', title: '81 a viac rokov' },
+            ],
           },
           { variant: 'boxed' },
         ),
@@ -1221,7 +1304,7 @@ export default schema(
     step('ineOkolnosti', { title: 'Iné okolnosti' }, [
       textArea(
         'dovodyPodaniaZiadosti',
-        { title: 'Prečo si podávate žiadosť?' },
+        { title: 'Prečo si podávate žiadosť?', required: true },
         {
           helptextHeader:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
@@ -1232,10 +1315,12 @@ export default schema(
         {
           title: 'Akú veľkosť nájomného bytu preferujete?',
           required: true,
-          options: createStringOptions(
-            ['garsónka/1-izbový byt', '2-izbový byt', '3-izbový byt', '4-izbový byt'],
-            false,
-          ),
+          options: [
+            { value: 'garsonka1izbovy', title: 'garsónka/1-izbový byt' },
+            { value: '2izbovy', title: '2-izbový byt' },
+            { value: '3izbovy', title: '3-izbový byt' },
+            { value: '4izbovy', title: '4-izbový byt' },
+          ],
         },
         {},
       ),
@@ -1244,19 +1329,16 @@ export default schema(
         {
           title: 'Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?',
           required: true,
-          options: createStringOptions(
-            [
-              'Staré Mesto',
-              'Ružinov',
-              'Vrakuňa',
-              'Podunajské Biskupice',
-              'Nové Mesto',
-              'Karlova Ves',
-              'Dúbravka',
-              'Petržalka',
-            ],
-            false,
-          ),
+          options: [
+            { value: 'stareMesto', title: 'Staré Mesto' },
+            { value: 'ruzinov', title: 'Ružinov' },
+            { value: 'vrakuna', title: 'Vrakuňa' },
+            { value: 'podunajskeBiskupice', title: 'Podunajské Biskupice' },
+            { value: 'noveMesto', title: 'Nové Mesto' },
+            { value: 'karlovaVes', title: 'Karlova Ves' },
+            { value: 'dubravka', title: 'Dúbravka' },
+            { value: 'petrzalka', title: 'Petržalka' },
+          ],
         },
         {},
       ),
@@ -1268,7 +1350,7 @@ export default schema(
           required: true,
           minimum: 0,
         },
-        { size: 'medium' },
+        { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
   ],

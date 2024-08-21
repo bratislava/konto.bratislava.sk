@@ -288,7 +288,7 @@ export const textArea = (
 
 export const checkbox = (
   property: string,
-  options: BaseOptions & { default?: boolean },
+  options: BaseOptions & { default?: boolean; constValue?: boolean },
   uiOptions: CheckboxUiOptions,
 ): Field => {
   return {
@@ -297,6 +297,7 @@ export const checkbox = (
       type: 'boolean',
       title: options.title,
       default: options.default,
+      const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Checkbox,

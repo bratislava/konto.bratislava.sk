@@ -132,6 +132,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
       preferovanaLokalita: ['ruzinov', 'noveMesto'],
       preferovanaVelkost: '3izbovy',
     },
+    sucetPrijmovCestneVyhlasenie: {
+      cestneVyhlasenie: true,
+    },
   },
 }
 

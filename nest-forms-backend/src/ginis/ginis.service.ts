@@ -564,7 +564,6 @@ export default class GinisService {
         await this.sendToSharepoint(form.id)
       }
 
-      // TODO do we want to send the mail now? Or after sharepoint delivery
       if (data.userData.email) {
         // fallback to messageSubject if title can't be parsed
         const formTitle =

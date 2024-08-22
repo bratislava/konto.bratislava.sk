@@ -3,6 +3,7 @@ import {
   renderFormTemplate,
 } from '../../src/string-templates/renderTemplate'
 import { FormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 
 describe('renderFormTemplate', () => {
   it('should render a simple template', () => {
@@ -58,5 +59,15 @@ describe('renderFormAdditionalInfo', () => {
     const formData = { info: 'Some extra information' }
     const result = renderFormAdditionalInfo(formDefinition, formData)
     expect(result).toBe('Additional info: Some extra information')
+  })
+
+  getExampleFormPairs({
+    formDefinitionFilterFn: (formDefinition): formDefinition is FormDefinition =>
+      formDefinition.additionalInfoTemplate != null,
+  }).forEach(({ formDefinition, exampleForm }) => {
+    it(`${exampleForm.name} rendered template should match snapshot`, async () => {
+      const result = renderFormAdditionalInfo(formDefinition, exampleForm.formData)
+      expect(result).toMatchSnapshot()
+    })
   })
 })

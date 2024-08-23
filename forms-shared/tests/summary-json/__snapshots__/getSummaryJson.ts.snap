@@ -6425,6 +6425,18 @@ exports[`getSummaryJson ziadostONajomnyBytExample summary JSON should match snap
                   "displayValues": [
                     {
                       "type": "String",
+                      "value": "Nie",
+                    },
+                  ],
+                  "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_vlastnikNehnutelnosti",
+                  "label": "Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?",
+                  "type": "Field",
+                  "value": false,
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
                       "value": "Áno",
                     },
                   ],

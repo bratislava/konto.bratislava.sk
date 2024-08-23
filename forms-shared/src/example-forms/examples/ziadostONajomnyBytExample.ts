@@ -110,6 +110,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
             datumNarodenia: '1960-09-05',
             rodinnyStav: 'vdovec',
             rodnePriezvisko: 'Hrušková',
+            vlastnikNehnutelnosti: false,
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
           prijem: {

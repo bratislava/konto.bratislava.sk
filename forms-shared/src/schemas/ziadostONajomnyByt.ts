@@ -365,7 +365,9 @@ const getOsobneUdajeSection = (stepType: StepType) => {
       stepType === StepType.Ziadatel
         ? getAdresaTrvalehoPobytuFields(stepType)
         : getAdresaSkutocnehoPobytuFields(stepType),
-      ...(stepType === StepType.Dieta ? getVlastnikNehnutelnostiFields(stepType) : []),
+      ...(stepType === StepType.Dieta || stepType === StepType.InyClen
+        ? getVlastnikNehnutelnostiFields(stepType)
+        : []),
     ],
   )
 }
@@ -1321,7 +1323,7 @@ export default schema(
     step('ineOkolnosti', { title: 'Iné okolnosti' }, [
       textArea(
         'dovodyPodaniaZiadosti',
-        { title: 'Prečo si podávate žiadosť?', required: true },
+        { title: 'Prečo si podávate žiadosť?' },
         {
           helptextHeader:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
@@ -1399,132 +1401,107 @@ export default schema(
 )
 
 export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
+<% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>
+<% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && osobneUdaje?.rodinnyStav !== "slobodny" %>
 
 #### Žiadateľ/žiadateľka
 
-- Občiansky preukaz
-<% if (it.formData.ziadatelZiadatelka?.osobneUdaje?.rodinnyStav) { %>
-- Doklad o rodinnom stave (rozsudok o rozvode, sobášny list, alebo iný relevantný doklad)
+- Osobné údaje - občiansky preukaz
+<% if (dokladRodinnyStav(it.formData.ziadatelZiadatelka?.osobneUdaje)) { %>
+- Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
 <% } %>
-<% if (it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.pobytVBratislaveMenejAkoRok) { %>
-- Doklady potvrdzujúce pôsobenie v Bratislave (pracovná zmluva, nájomná zmluva, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom)
+- Adresa - dokumenty potvrdujúce pôsobenie v Bratislave, napr. pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom a pod.
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.vlastnikNehnutelnosti)) { %>
+- Adresa - list vlastníctva
 <% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.zamestnanie) { %>
-- Potvrdenie o príjme od zamestnávateľa
+<% if (maPrijem(it.formData.ziadatelZiadatelka?.prijem)) { %>
+- Príjem - dokumenty dokazujúce všetky príjmy, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.samostatnaZarobkovaCinnost) { %>
-- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie)) { %>
+- Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.dochodok) { %>
-- Potvrdenie o výške dôchodku
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.vyzivne) { %>
-- Doklad o určení výšky výživného
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.davkaVNezamestnanosti) { %>
-- Potvrdenie o poberaní dávky v nezamestnanosti
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.prijem?.inePrijmy) { %>
-- Doklady o iných príjmoch (napr. potvrdenie o poberaní prídavkov na deti, materského, rodičovského príspevku)
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) { %>
-- Preukaz ŤZP
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie) { %>
-- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
-<% } %>
-<% if (it.formData.ziadatelZiadatelka?.rizikoveFaktoryWrapper?.rizikoveFaktory) { %>
-- Doklady potvrdzujúce rizikové faktory (napr. rozhodnutie súdu, trestné oznámenie)
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.rizikoveFaktoryWrapper?.rizikoveFaktory)) { %>
+- Rizikové faktory - dokumenty dokazujúce rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti, napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.
 <% } %>
 
-<% if (it.formData.druhDruzka?.druhDruzkaSucastouDomacnosti) { %>
-#### Druh/Družka
+<% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.manzelManzelkaSucastouDomacnosti)) { %>
+#### Manžel/manželka
 
-- Kópia občianskeho preukazu
-<% if (it.formData.druhDruzka?.osobneUdaje?.rodinnyStav) { %>
-- Doklad o rodinnom stave
+- Osobné údaje - kópia občianskeho preukazu
+<% if (dokladRodinnyStav(it.formData.manzelManzelka?.osobneUdaje)) { %>
+- Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
 <% } %>
-<% if (it.formData.druhDruzka?.prijem?.zamestnanie) { %>
-- Potvrdenie o príjme od zamestnávateľa
+<% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
+- Adresa - list vlastníctva
 <% } %>
-<% if (it.formData.druhDruzka?.prijem?.samostatnaZarobkovaCinnost) { %>
-- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% if (maPrijem(it.formData.manzelManzelka?.prijem)) { %>
+- Príjem - dokumenty dokazujúce všetky príjmy manžela/manželky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
-<% if (it.formData.druhDruzka?.prijem?.dochodok) { %>
-- Potvrdenie o výške dôchodku
-<% } %>
-<% if (it.formData.druhDruzka?.prijem?.vyzivne) { %>
-- Doklad o určení výšky výživného
-<% } %>
-<% if (it.formData.druhDruzka?.prijem?.davkaVNezamestnanosti) { %>
-- Potvrdenie o poberaní dávky v nezamestnanosti
-<% } %>
-<% if (it.formData.druhDruzka?.prijem?.inePrijmy) { %>
-- Doklady o iných príjmoch
-<% } %>
-<% if (it.formData.druhDruzka?.zdravotnyStav?.tzpPreukaz) { %>
-- Preukaz ŤZP
-<% } %>
-<% if (it.formData.druhDruzka?.zdravotnyStav?.chronickeOchorenie) { %>
-- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.manzelManzelka?.zdravotnyStav?.chronickeOchorenie)) { %>
+- Zdravotný stav - dokumenty dokazujúce zdravotný stav manžela/manželky, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
 <% } %>
 
-<% if (it.formData.deti?.detiSucastouDomacnosti) { %>
-#### Deti
+<% if (it.helpers.safeBoolean(it.formData.druhDruzka?.druhDruzkaSucastouDomacnosti)) { %>
+#### Druh/družka
 
-<% it.formData.deti.zoznamDeti.forEach(function(dieta, index) { %>
-##### Dieťa <%= index + 1 %>
+- Osobné údaje - kópia občianskeho preukazu
+<% if (dokladRodinnyStav(it.formData.druhDruzka?.osobneUdaje)) { %>
+- Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
+<% } %>
+<% if (it.helpers.safeBoolean(it.formData.druhDruzka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
+- Adresa - list vlastníctva
+<% } %>
+<% if (maPrijem(it.formData.druhDruzka?.prijem)) { %>
+- Príjem - dokumenty dokazujúce všetky príjmy druha/družky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
+<% } %>
+<% if (it.helpers.safeBoolean(it.formData.druhDruzka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.druhDruzka?.zdravotnyStav?.chronickeOchorenie)) { %>
+- Zdravotný stav - dokumenty dokazujúce zdravotný stav druha/družky, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% } %>
+<% } %>
 
-- Rodný list (do 15 rokov) alebo kópia občianskeho preukazu
-<% if (dieta.prijem?.student) { %>
-- Potvrdenie o návšteve školy
+<% if (it.helpers.safeBoolean(it.formData.deti?.detiSucastouDomacnosti)) { %>
+#### Nezaopatrené deti do 25 rokov
+
+<% it.helpers.safeArray(it.formData.deti.zoznamDeti).forEach(function(dieta, index) { %>
+<% let dietaName = [dieta.osobneUdaje?.menoPriezvisko?.meno, dieta.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
+##### Dieťa <%= index + 1 %><% if (dietaName) { %> (<%= dietaName %>)<% } %>
+
+- Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
+<% if (it.helpers.safeBoolean(dieta.osobneUdaje?.vlastnikNehnutelnosti)) { %>
+- Adresa - list vlastníctva
 <% } %>
-<% if (dieta.prijem?.maPrijem) { %>
-- Doklady o príjme dieťaťa
+<% if (it.helpers.safeBoolean(dieta.prijem?.student)) { %>
+- Príjem - potvrdenie o návšteve školy
 <% } %>
-<% if (dieta.zdravotnyStav?.tzpPreukaz) { %>
-- Preukaz ŤZP
+<% if (it.helpers.safeBoolean(dieta.prijem?.maPrijem)) { %>
+- Príjem - potvrdenie o príjme dieťaťa
 <% } %>
-<% if (dieta.zdravotnyStav?.chronickeOchorenie) { %>
-- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% if (it.helpers.safeBoolean(dieta.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(dieta.zdravotnyStav?.chronickeOchorenie)) { %>
+- Zdravotný stav - dokumenty dokazujúce uvedený zdravotný stav dieťaťa, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
 <% }) %>
 <% } %>
 
-<% if (it.formData.inyClenoviaClenkyDomacnosti?.inyClenoviaClenkySucastouDomacnosti) { %>
+<% if (it.helpers.safeBoolean(it.formData.inyClenoviaClenkyDomacnosti?.inyClenoviaClenkySucastouDomacnosti)) { %>
 #### Iní členovia/členky domácnosti
 
-<% it.formData.inyClenoviaClenkyDomacnosti.zoznamInychClenov.forEach(function(clen, index) { %>
-##### Člen <%= index + 1 %>
+<% it.helpers.safeArray(it.formData.inyClenoviaClenkyDomacnosti.zoznamInychClenov).forEach(function(clen, index) { %>
+<% let clenName = [clen.osobneUdaje?.menoPriezvisko?.meno, clen.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
+##### Člen/členka domácnosti <%= index + 1 %><% if (clenName) { %> (<%= clenName %>)<% } %>
 
-- Kópia občianskeho preukazu
-<% if (clen.osobneUdaje?.rodinnyStav) { %>
-- Doklad o rodinnom stave
+- Osobné údaje - kópia občianskeho preukazu
+<% if (dokladRodinnyStav(clen.osobneUdaje)) { %>
+- Osobné údaje - doklad dokazujúci rodinný stav člena/členky domácnosti
 <% } %>
-<% if (clen.prijem?.zamestnanie) { %>
-- Potvrdenie o príjme od zamestnávateľa
+<% if (it.helpers.safeBoolean(clen.osobneUdaje?.vlastnikNehnutelnosti)) { %>
+- Adresa - list vlastníctva
 <% } %>
-<% if (clen.prijem?.samostatnaZarobkovaCinnost) { %>
-- Daňové priznanie alebo potvrdenie o príjme z daňového úradu
+<% if (maPrijem(clen.prijem)) { %>
+- Príjem - dokumenty dokazujúce všetky príjmy člena/členky domácnosti, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
-<% if (clen.prijem?.dochodok) { %>
-- Potvrdenie o výške dôchodku
-<% } %>
-<% if (clen.prijem?.vyzivne) { %>
-- Doklad o určení výšky výživného
-<% } %>
-<% if (clen.prijem?.davkaVNezamestnanosti) { %>
-- Potvrdenie o poberaní dávky v nezamestnanosti
-<% } %>
-<% if (clen.prijem?.inePrijmy) { %>
-- Doklady o iných príjmoch
-<% } %>
-<% if (clen.zdravotnyStav?.tzpPreukaz) { %>
-- Preukaz ŤZP
-<% } %>
-<% if (clen.zdravotnyStav?.chronickeOchorenie) { %>
-- Potvrdenie o chronickom ochorení od ošetrujúceho lekára
+<% if (it.helpers.safeBoolean(clen.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(clen.zdravotnyStav?.chronickeOchorenie)) { %>
+- Zdravotný stav - dokumenty dokazujúce zdravotný stav člena/členky domácnosti, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
 <% }) %>
 <% } %>`

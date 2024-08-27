@@ -293,7 +293,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
         },
         { variant: 'boxed', orientations: 'row' },
       ),
-      ...(stepType !== StepType.Dieta
+      ...(stepType !== StepType.Dieta && stepType !== StepType.ManzelManzelka
         ? [
             select(
               'rodinnyStav',
@@ -1426,9 +1426,7 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 #### Manžel/manželka
 
 - Osobné údaje - kópia občianskeho preukazu
-<% if (dokladRodinnyStav(it.formData.manzelManzelka?.osobneUdaje)) { %>
-- Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
-<% } %>
+- Osobné údaje - sobášny list
 <% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>

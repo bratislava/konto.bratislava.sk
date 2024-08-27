@@ -17925,37 +17925,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                 "then": {
                   "properties": {
                     "osobneUdaje": {
-                      "allOf": [
-                        {
-                          "if": {
-                            "properties": {
-                              "rodinnyStav": {
-                                "enum": [
-                                  "zenaty",
-                                  "rozvedeny",
-                                  "vdovec",
-                                  "ine",
-                                ],
-                              },
-                            },
-                            "required": [
-                              "rodinnyStav",
-                            ],
-                            "type": "object",
-                          },
-                          "then": {
-                            "properties": {
-                              "customComponent11_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
-                            },
-                            "required": [],
-                            "type": "object",
-                          },
-                        },
-                      ],
                       "properties": {
                         "adresaSkutocnehoPobytu": {
                           "allOf": [
@@ -18053,17 +18022,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                           ],
                           "type": "object",
                         },
-                        "rodinnyStav": {
-                          "enum": [
-                            "slobodny",
-                            "zenaty",
-                            "rozvedeny",
-                            "vdovec",
-                            "ine",
-                          ],
-                          "title": "Rodinný stav",
-                          "type": "string",
-                        },
                         "rodnePriezvisko": {
                           "title": "Rodné priezvisko",
                           "type": "string",
@@ -18088,7 +18046,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         "menoPriezvisko",
                         "datumNarodenia",
                         "statnaPrislusnost",
-                        "rodinnyStav",
                         "adresaSkutocnehoPobytu",
                       ],
                       "type": "object",
@@ -18253,7 +18210,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent12_gRbYIKNcAF": {
+                        "customComponent11_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -18653,7 +18610,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent13_gRbYIKNcAF": {
+                        "customComponent12_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -18758,7 +18715,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                           },
                           "then": {
                             "properties": {
-                              "customComponent14_gRbYIKNcAF": {
+                              "customComponent13_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -19066,7 +19023,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent15_gRbYIKNcAF": {
+                        "customComponent14_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -19466,7 +19423,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent16_gRbYIKNcAF": {
+                        "customComponent15_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -19659,7 +19616,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent17_gRbYIKNcAF": {
+                                    "customComponent16_gRbYIKNcAF": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -20028,7 +19985,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent18_gRbYIKNcAF": {
+                              "customComponent17_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20147,7 +20104,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent19_gRbYIKNcAF": {
+                                    "customComponent18_gRbYIKNcAF": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -20421,7 +20378,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent20_gRbYIKNcAF": {
+                              "customComponent19_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20821,7 +20778,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent21_gRbYIKNcAF": {
+                              "customComponent20_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20964,7 +20921,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                 "title": "Čestné vyhlásenie",
                 "type": "boolean",
               },
-              "customComponent22_gRbYIKNcAF": {
+              "customComponent21_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
@@ -21091,7 +21048,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
           },
           "prijem": {
-            "customComponent17_gRbYIKNcAF": {
+            "customComponent16_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -21144,7 +21101,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
             "ui:order": [
               "student",
-              "customComponent17_gRbYIKNcAF",
+              "customComponent16_gRbYIKNcAF",
               "maPrijem",
               "prijemVyska",
             ],
@@ -21244,7 +21201,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               },
               "ui:widget": "RadioGroup",
             },
-            "customComponent18_gRbYIKNcAF": {
+            "customComponent17_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -21464,7 +21421,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent18_gRbYIKNcAF",
+              "customComponent17_gRbYIKNcAF",
             ],
           },
         },
@@ -21555,7 +21512,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "ui:widget": "Input",
           },
         },
-        "customComponent14_gRbYIKNcAF": {
+        "customComponent13_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -21656,12 +21613,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "datumNarodenia",
           "statnaPrislusnost",
           "rodinnyStav",
-          "customComponent14_gRbYIKNcAF",
+          "customComponent13_gRbYIKNcAF",
           "adresaSkutocnehoPobytu",
         ],
       },
       "prijem": {
-        "customComponent15_gRbYIKNcAF": {
+        "customComponent14_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -21760,7 +21717,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent15_gRbYIKNcAF",
+          "customComponent14_gRbYIKNcAF",
         ],
         "vyzivne": {
           "ui:options": {
@@ -21894,7 +21851,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent16_gRbYIKNcAF": {
+        "customComponent15_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -22114,7 +22071,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent16_gRbYIKNcAF",
+          "customComponent15_gRbYIKNcAF",
         ],
       },
     },
@@ -22213,7 +22170,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
       "zoznamInychClenov": {
         "items": {
           "osobneUdaje": {
-            "customComponent19_gRbYIKNcAF": {
+            "customComponent18_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22314,7 +22271,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "datumNarodenia",
               "statnaPrislusnost",
               "rodinnyStav",
-              "customComponent19_gRbYIKNcAF",
+              "customComponent18_gRbYIKNcAF",
               "vlastnikNehnutelnosti",
               "vlastnikNehnutelnostiDovody",
             ],
@@ -22345,7 +22302,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
           },
           "prijem": {
-            "customComponent20_gRbYIKNcAF": {
+            "customComponent19_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22444,7 +22401,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "davkaVNezamestnanostiVyska",
               "inePrijmy",
               "inePrijmyVyska",
-              "customComponent20_gRbYIKNcAF",
+              "customComponent19_gRbYIKNcAF",
             ],
             "vyzivne": {
               "ui:options": {
@@ -22575,7 +22532,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               },
               "ui:widget": "RadioGroup",
             },
-            "customComponent21_gRbYIKNcAF": {
+            "customComponent20_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22795,7 +22752,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent21_gRbYIKNcAF",
+              "customComponent20_gRbYIKNcAF",
             ],
           },
         },
@@ -22886,20 +22843,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "ui:widget": "Input",
           },
         },
-        "customComponent11_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav manžela/manželky.",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "datumNarodenia": {
           "ui:options": {
             "belowComponents": [
@@ -22939,28 +22882,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "priezvisko",
           ],
         },
-        "rodinnyStav": {
-          "ui:options": {
-            "selectOptions": {
-              "ine": {
-                "title": "Iné",
-              },
-              "rozvedeny": {
-                "title": "Rozvedený/rozvedená",
-              },
-              "slobodny": {
-                "title": "Slobodný/slobodná",
-              },
-              "vdovec": {
-                "title": "Vdovec/vdova",
-              },
-              "zenaty": {
-                "title": "Ženatý/vydatá",
-              },
-            },
-          },
-          "ui:widget": "Select",
-        },
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
@@ -22986,13 +22907,11 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "rodnePriezvisko",
           "datumNarodenia",
           "statnaPrislusnost",
-          "rodinnyStav",
-          "customComponent11_gRbYIKNcAF",
           "adresaSkutocnehoPobytu",
         ],
       },
       "prijem": {
-        "customComponent12_gRbYIKNcAF": {
+        "customComponent11_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -23091,7 +23010,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent12_gRbYIKNcAF",
+          "customComponent11_gRbYIKNcAF",
         ],
         "vyzivne": {
           "ui:options": {
@@ -23225,7 +23144,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent13_gRbYIKNcAF": {
+        "customComponent12_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -23445,7 +23364,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent13_gRbYIKNcAF",
+          "customComponent12_gRbYIKNcAF",
         ],
       },
     },
@@ -23457,7 +23376,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         },
         "ui:widget": "Checkbox",
       },
-      "customComponent22_gRbYIKNcAF": {
+      "customComponent21_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
@@ -23475,7 +23394,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         "stepQueryParam": "sucet-prijmov-a-cestne-vyhlasenie",
       },
       "ui:order": [
-        "customComponent22_gRbYIKNcAF",
+        "customComponent21_gRbYIKNcAF",
         "cestneVyhlasenie",
       ],
     },

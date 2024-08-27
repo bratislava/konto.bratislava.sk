@@ -298,7 +298,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           title: 'Štátna príslušnosť',
           required: true,
           options: [
-            { value: 'slovenska', title: 'Slovenská' },
+            { value: 'slovenska', title: 'Slovenská', isDefault: true },
             { value: 'ina', title: 'Iná' },
           ],
         },

@@ -7,4 +7,5 @@ export type ExampleForm<FormData = GenericObjectType> = {
   formData: FormData
   serverFiles?: FormsBackendFile[]
   clientFiles?: ClientFileInfo[]
+  sharepointFieldMap?: Record<string, string>
 }

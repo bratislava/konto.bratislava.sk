@@ -221,56 +221,17 @@ describe('getValuesForFields', () => {
         isSlovenskoSkGenericFormDefinition(formDefinition) &&
         formDefinition.sharepointData !== undefined,
     }).forEach(({ formDefinition, exampleForm }) => {
+      if (!exampleForm.sharepointFieldMap) {
+        throw new Error('Missing sharepointFieldMap')
+      }
+
       const result = getValuesForFields(
         formDefinition.sharepointData,
         { ginisDocumentId: 'MAG123', formDefinitionSlug: formDefinition.slug, title: 'FormTitle' },
         exampleForm.formData,
-        fieldMap,
+        exampleForm.sharepointFieldMap,
       )
       expect(result).toMatchSnapshot()
     })
   })
 })
-
-const fieldMap = {
-  GinisID: 'GinisID',
-  Meno: 'ZiadatelMeno',
-  Priezvisko: 'ZiadatelPriezvisko',
-  RodnePriezvisko: 'ZiadatelRodnePriezvisko',
-  DatumNarodenia: 'ZiadatelDatumNarodenia',
-  StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
-  RodinnyStav: 'ZiadatelRodinnyStav',
-  Email: 'ZiadatelEmail',
-  TelefonneCislo: 'ZiadatelTelefonneCislo',
-  TrvalyPobytUlicaACislo: 'ZiadatelTrvalyPobytUlicaACislo',
-  TrvalyPobytMesto: 'ZiadatelTrvalyPobytMesto',
-  TrvalyPobytPsc: 'ZiadatelTrvalyPobytPsc',
-  TrvalyPobytVlastnikNehnutelnosti: 'ZiadatelTrvalyPobytVlastnikNehnu',
-  ByvanieVMestskomNajomnomByte: 'ByvanieVMestskomNajomnomByte',
-  PobytVBratislaveMenejAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
-  SkutocnyPobytRovnakyAkoTrvaly: 'ZiadatelSkutocnyPobytRovnakyAkoT',
-  SkutocnyPobytUlica: 'ZiadatelSkutocnyPobytUlica',
-  SkutocnyPobytMesto: 'ZiadatelSkutocnyPobytMesto',
-  SkutocnyPobytPsc: 'ZiadatelSkutocnyPobytPsc',
-  ZamestnaniePrijem: 'ZiadatelZamestnaniePrijem',
-  SamostatnaZarobkovaCinnostPrijem: 'ZiadatelSamostatnaZarobkovaCinno',
-  DochodokVyska: 'ZiadatelDochodokVyska',
-  VyzivneVyska: 'ZiadatelVyzivneVyska',
-  DavkaVNezamestnanostiVyska: 'ZiadatelDavkaVNezamestnanostiVys',
-  InePrijmyVyska: 'ZiadatelInePrijmyVyska',
-  TzpPreukaz: 'ZiadatelFunkcnaPorucha',
-  MieraFunkcnejPoruchy: 'ZiadatelMieraFunkcnejPoruchy',
-  ChronickeOchorenie: 'ChronickeOchorenie',
-  ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
-  BezbarierovyByt: 'ZiadatelBezbarierovyByt',
-  BytovaNudza: 'ZiadatelBytovaNudza',
-  TypByvania: 'ZiadatelTypSkutocnehoByvania',
-  DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
-  RizikoveFaktory: 'RizikoveFaktory',
-  ZoznamRizikovychFaktorov: 'ZoznamRizikovychFaktorov',
-  VekNajstarsiehoClena: 'Vek',
-  PreferovanaVelkost: 'PreferovanaVelkost',
-  PreferovanaLokalita: 'PreferovanaLokalita',
-  DovodyPodaniaZiadosti: 'DovodyPodaniaZiadosti',
-  MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
-}

@@ -190,17 +190,19 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           orientations: 'row',
         },
       ),
-      customComponentsField(
-        {
-          type: 'alert',
-          props: {
-            type: 'info',
-            message:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
+      conditionalFields(createCondition([[['pobytVBratislaveMenejAkoRok'], { const: true }]]), [
+        customComponentsField(
+          {
+            type: 'alert',
+            props: {
+              type: 'info',
+              message:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
+            },
           },
-        },
-        {},
-      ),
+          {},
+        ),
+      ]),
       radioGroup(
         'adresaSkutocnehoPobytuRovnaka',
         {
@@ -291,42 +293,51 @@ const getOsobneUdajeSection = (stepType: StepType) => {
         },
         { variant: 'boxed', orientations: 'row' },
       ),
-      stepType !== StepType.Dieta
-        ? select(
-            'rodinnyStav',
-            {
-              title: 'Rodinný stav',
-              required: true,
-              options: [
-                { value: 'slobodny', title: 'Slobodný/slobodná' },
-                { value: 'zenaty', title: 'Ženatý/vydatá' },
-                { value: 'rozvedeny', title: 'Rozvedený/rozvedená' },
-                { value: 'vdovec', title: 'Vdovec/vdova' },
-                { value: 'ine', title: 'Iné' },
-              ],
-            },
-            {
-              belowComponents: [
-                {
-                  type: 'alert',
-                  props: {
-                    type: 'info',
-                    message: {
-                      [StepType.Ziadatel]:
-                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.',
-                      [StepType.ManzelManzelka]:
-                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav manžela/manželky.',
-                      [StepType.DruhDruzka]:
-                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.',
-                      [StepType.InyClen]:
-                        'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.',
-                    }[stepType],
+      ...(stepType !== StepType.Dieta
+        ? [
+            select(
+              'rodinnyStav',
+              {
+                title: 'Rodinný stav',
+                required: true,
+                options: [
+                  { value: 'slobodny', title: 'Slobodný/slobodná' },
+                  { value: 'zenaty', title: 'Ženatý/vydatá' },
+                  { value: 'rozvedeny', title: 'Rozvedený/rozvedená' },
+                  { value: 'vdovec', title: 'Vdovec/vdova' },
+                  { value: 'ine', title: 'Iné' },
+                ],
+              },
+              {},
+            ),
+            conditionalFields(
+              createCondition([
+                [['rodinnyStav'], { enum: ['zenaty', 'rozvedeny', 'vdovec', 'ine'] }],
+              ]),
+              [
+                customComponentsField(
+                  {
+                    type: 'alert',
+                    props: {
+                      type: 'info',
+                      message: {
+                        [StepType.Ziadatel]:
+                          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.',
+                        [StepType.ManzelManzelka]:
+                          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav manžela/manželky.',
+                        [StepType.DruhDruzka]:
+                          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.',
+                        [StepType.InyClen]:
+                          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.',
+                      }[stepType],
+                    },
                   },
-                },
+                  {},
+                ),
               ],
-            },
-          )
-        : null,
+            ),
+          ]
+        : []),
       stepType === StepType.Ziadatel
         ? input(
             'email',

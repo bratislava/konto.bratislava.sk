@@ -1,7 +1,6 @@
 import {
-  FormDefinition,
   FormDefinitionSlovenskoSkGeneric,
-  FormDefinitionType,
+  isSlovenskoSkGenericFormDefinition,
 } from '../../src/definitions/formDefinitionTypes'
 import { SharepointColumnMapValue } from '../../src/definitions/sharepointTypes'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
@@ -215,12 +214,15 @@ describe('getValuesForFields', () => {
 
   it('should match snapshots', () => {
     getExampleFormPairs({
-      formDefinitionFilterFn: (formDefinition): formDefinition is FormDefinition =>
-        formDefinition.type === FormDefinitionType.SlovenskoSkGeneric &&
+      formDefinitionFilterFn: (
+        formDefinition,
+      ): formDefinition is Omit<FormDefinitionSlovenskoSkGeneric, 'sharepointData'> &
+        Required<Pick<FormDefinitionSlovenskoSkGeneric, 'sharepointData'>> =>
+        isSlovenskoSkGenericFormDefinition(formDefinition) &&
         formDefinition.sharepointData !== undefined,
     }).forEach(({ formDefinition, exampleForm }) => {
       const result = getValuesForFields(
-        (formDefinition as FormDefinitionSlovenskoSkGeneric).sharepointData!,
+        formDefinition.sharepointData,
         { ginisDocumentId: 'MAG123', formDefinitionSlug: formDefinition.slug, title: 'FormTitle' },
         exampleForm.formData,
         fieldMap,

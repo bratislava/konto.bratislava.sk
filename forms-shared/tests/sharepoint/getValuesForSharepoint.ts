@@ -9,6 +9,7 @@ import {
   getValueAtJsonPath,
   getValuesForFields,
 } from '../../src/sharepoint/getValuesForSharepoint'
+import { get as lodashGet } from 'lodash'
 
 describe('getArrayForOneToMany', () => {
   it('should throw error if at the path there is no array', () => {
@@ -229,9 +230,57 @@ describe('getValuesForFields', () => {
         formDefinition.sharepointData,
         { ginisDocumentId: 'MAG123', formDefinitionSlug: formDefinition.slug, title: 'FormTitle' },
         exampleForm.formData,
-        exampleForm.sharepointFieldMap,
+        exampleForm.sharepointFieldMap.fieldMap,
       )
       expect(result).toMatchSnapshot()
+
+      Object.entries(formDefinition.sharepointData.oneToOne ?? {}).forEach(([path, value]) => {
+        if (!exampleForm.sharepointFieldMap) {
+          throw new Error('Missing sharepointFieldMap')
+        }
+        if (!lodashGet(exampleForm.formData, path, false)) {
+          return
+        }
+
+        const valuesForFieldsOneToOne = getValuesForFields(
+          value,
+          {
+            ginisDocumentId: 'MAG123',
+            formDefinitionSlug: formDefinition.slug,
+            title: 'FormTitle',
+          },
+          exampleForm.formData,
+          exampleForm.sharepointFieldMap.oneToOne.fieldMaps[value.databaseName].fieldMap,
+        )
+        expect(valuesForFieldsOneToOne).toMatchSnapshot()
+      })
+
+      Object.entries(formDefinition.sharepointData.oneToMany ?? {}).forEach(([key, value]) => {
+        const recordsArray = getArrayForOneToMany(
+          { id: '123', jsonDataExtraDataOmitted: exampleForm.formData },
+          key,
+        )
+        recordsArray.forEach((record) => {
+          if (!exampleForm.sharepointFieldMap) {
+            throw new Error('Missing sharepointFieldMap')
+          }
+          const foreignFields: Record<string, any> = {}
+          foreignFields[value.originalTableId] = '456'
+
+          const valuesForFieldsOneToMany = getValuesForFields(
+            value,
+            {
+              ginisDocumentId: 'MAG123',
+              formDefinitionSlug: formDefinition.slug,
+              title: 'FormTitle',
+            },
+            record,
+            exampleForm.sharepointFieldMap.oneToMany[value.databaseName].fieldMap,
+            foreignFields,
+          )
+          expect(valuesForFieldsOneToMany).toMatchSnapshot()
+        })
+      })
     })
   })
 })

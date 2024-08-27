@@ -35,3 +35,69 @@ exports[`getValuesForFields should match snapshots 1`] = `
   "ZoznamRizikovychFaktorov": "osamelyRodic",
 }
 `;
+
+exports[`getValuesForFields should match snapshots 2`] = `
+{
+  "SucasneByvaniaRovnakaSituacia": true,
+  "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "1982-07-22",
+  "ZiadatelMeno": "Peter",
+  "ZiadatelMieraFunkcnejPoruchy": "50az74",
+  "ZiadatelPriezvisko": "Horváth",
+  "ZiadatelRodinnyStav": "slobodny",
+  "ZiadatelRodnePriezvisko": "Horváth",
+  "ZiadatelSamostatnaZarobkovaCinno": 300,
+  "ZiadatelSkutocnyPobytMesto": "Bratislava",
+  "ZiadatelSkutocnyPobytPsc": "82105",
+  "ZiadatelSkutocnyPobytUlica": "Nová 456",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelZamestnaniePrijem": 1500,
+}
+`;
+
+exports[`getValuesForFields should match snapshots 3`] = `
+{
+  "ChronickeOchorenie": false,
+  "MaPrijem": false,
+  "Student": true,
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": false,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "2010-11-30",
+  "ZiadatelIDId": "456",
+  "ZiadatelMeno": "Lucia",
+  "ZiadatelPriezvisko": "Nováková",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+}
+`;
+
+exports[`getValuesForFields should match snapshots 4`] = `
+{
+  "MaPrijem": true,
+  "MieraFunkcnejPoruchy": "75az100",
+  "Student": true,
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "2005-04-18",
+  "ZiadatelIDId": "456",
+  "ZiadatelMeno": "Michal",
+  "ZiadatelPriezvisko": "Novák",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelZamestnaniePrijem": 200,
+}
+`;
+
+exports[`getValuesForFields should match snapshots 5`] = `
+{
+  "MieraFunkcnejPoruchy": "50az74",
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": true,
+  "ZiadatelDatumNarodenia": "1960-09-05",
+  "ZiadatelIDId": "456",
+  "ZiadatelMeno": "Mária",
+  "ZiadatelPriezvisko": "Kováčová",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+}
+`;

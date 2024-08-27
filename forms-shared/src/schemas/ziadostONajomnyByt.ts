@@ -1112,12 +1112,12 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
   }
 
   return object(
-    'rizikoveFaktoryWrapper',
+    'rizikoveFaktory',
     { required: true },
     { title: 'Rizikové faktory', objectDisplay: 'boxed' },
     [
       radioGroup(
-        'rizikoveFaktory',
+        'rizikoveFaktoryPritomne',
         {
           type: 'boolean',
           title:
@@ -1130,7 +1130,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
         },
         { variant: 'boxed', orientations: 'row' },
       ),
-      conditionalFields(createCondition([[['rizikoveFaktory'], { const: true }]]), [
+      conditionalFields(createCondition([[['rizikoveFaktoryPritomne'], { const: true }]]), [
         checkboxGroup(
           'zoznamRizikovychFaktorov',
           {
@@ -1440,7 +1440,7 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie)) { %>
 - Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
-<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.rizikoveFaktoryWrapper?.rizikoveFaktory)) { %>
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.rizikoveFaktory?.rizikoveFaktoryPritomne)) { %>
 - Rizikové faktory - dokumenty dokazujúce rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti, napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.
 <% } %>
 

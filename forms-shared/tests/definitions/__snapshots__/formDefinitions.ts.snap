@@ -16885,8 +16885,8 @@ exports[`Form definitions ziadost-o-najomny-byt default form state should match 
       "vyzivne": false,
       "zamestnanie": false,
     },
-    "rizikoveFaktoryWrapper": {
-      "rizikoveFaktory": false,
+    "rizikoveFaktory": {
+      "rizikoveFaktoryPritomne": false,
     },
     "sucasneByvanie": {
       "bytovaNudza": false,
@@ -17518,17 +17518,17 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                 ],
                 "type": "object",
               },
-              "rizikoveFaktoryWrapper": {
+              "rizikoveFaktory": {
                 "allOf": [
                   {
                     "if": {
                       "properties": {
-                        "rizikoveFaktory": {
+                        "rizikoveFaktoryPritomne": {
                           "const": true,
                         },
                       },
                       "required": [
-                        "rizikoveFaktory",
+                        "rizikoveFaktoryPritomne",
                       ],
                       "type": "object",
                     },
@@ -17605,7 +17605,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                   },
                 ],
                 "properties": {
-                  "rizikoveFaktory": {
+                  "rizikoveFaktoryPritomne": {
                     "default": false,
                     "oneOf": [
                       {
@@ -17622,7 +17622,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                   },
                 },
                 "required": [
-                  "rizikoveFaktory",
+                  "rizikoveFaktoryPritomne",
                 ],
                 "type": "object",
               },
@@ -17930,7 +17930,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "sucasneByvanie",
               "prijem",
               "zdravotnyStav",
-              "rizikoveFaktoryWrapper",
+              "rizikoveFaktory",
             ],
             "title": "Žiadateľ/žiadateľka",
             "type": "object",
@@ -23874,8 +23874,8 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "ui:widget": "Number",
         },
       },
-      "rizikoveFaktoryWrapper": {
-        "rizikoveFaktory": {
+      "rizikoveFaktory": {
+        "rizikoveFaktoryPritomne": {
           "ui:options": {
             "orientations": "row",
             "radioOptions": [],
@@ -23888,7 +23888,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "title": "Rizikové faktory",
         },
         "ui:order": [
-          "rizikoveFaktory",
+          "rizikoveFaktoryPritomne",
           "zoznamRizikovychFaktorov",
           "vekNajstarsiehoClena",
         ],
@@ -23994,7 +23994,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         "sucasneByvanie",
         "prijem",
         "zdravotnyStav",
-        "rizikoveFaktoryWrapper",
+        "rizikoveFaktory",
       ],
       "zdravotnyStav": {
         "bezbarierovyByt": {

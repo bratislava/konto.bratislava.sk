@@ -33,8 +33,8 @@ const ziadostONajomnyBytExample: ExampleForm = {
         zamestnanie: true,
         zamestnaniePrijem: 1200,
       },
-      rizikoveFaktoryWrapper: {
-        rizikoveFaktory: true,
+      rizikoveFaktory: {
+        rizikoveFaktoryPritomne: true,
         vekNajstarsiehoClena: 'menejAko63',
         zoznamRizikovychFaktorov: ['osamelyRodic'],
       },

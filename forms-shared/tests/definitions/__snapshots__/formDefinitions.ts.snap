@@ -17534,28 +17534,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                     },
                     "then": {
                       "properties": {
-                        "vekNajstarsiehoClena": {
-                          "oneOf": [
-                            {
-                              "const": "menejAko63",
-                              "title": "menej ako 63 rokov",
-                            },
-                            {
-                              "const": "63az70",
-                              "title": "63 - 70 rokov",
-                            },
-                            {
-                              "const": "71az80",
-                              "title": "71 - 80 rokov",
-                            },
-                            {
-                              "const": "81aViac",
-                              "title": "81 a viac rokov",
-                            },
-                          ],
-                          "title": "Zvoľte vek najstaršieho člena domácnosti",
-                          "type": "string",
-                        },
                         "zoznamRizikovychFaktorov": {
                           "default": [],
                           "items": {
@@ -17598,7 +17576,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       },
                       "required": [
                         "zoznamRizikovychFaktorov",
-                        "vekNajstarsiehoClena",
                       ],
                       "type": "object",
                     },
@@ -17620,9 +17597,32 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                     "title": "Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?",
                     "type": "boolean",
                   },
+                  "vekNajstarsiehoClena": {
+                    "oneOf": [
+                      {
+                        "const": "menejAko63",
+                        "title": "menej ako 63 rokov",
+                      },
+                      {
+                        "const": "63az70",
+                        "title": "63 - 70 rokov",
+                      },
+                      {
+                        "const": "71az80",
+                        "title": "71 - 80 rokov",
+                      },
+                      {
+                        "const": "81aViac",
+                        "title": "81 a viac rokov",
+                      },
+                    ],
+                    "title": "Zvoľte vek najstaršieho člena domácnosti",
+                    "type": "string",
+                  },
                 },
                 "required": [
                   "rizikoveFaktoryPritomne",
+                  "vekNajstarsiehoClena",
                 ],
                 "type": "object",
               },

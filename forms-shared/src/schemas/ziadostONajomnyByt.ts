@@ -1184,22 +1184,22 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             ],
           },
         ),
-        radioGroup(
-          'vekNajstarsiehoClena',
-          {
-            type: 'string',
-            title: 'Zvoľte vek najstaršieho člena domácnosti',
-            required: true,
-            options: [
-              { value: 'menejAko63', title: 'menej ako 63 rokov' },
-              { value: '63az70', title: '63 - 70 rokov' },
-              { value: '71az80', title: '71 - 80 rokov' },
-              { value: '81aViac', title: '81 a viac rokov' },
-            ],
-          },
-          { variant: 'boxed' },
-        ),
       ]),
+      radioGroup(
+        'vekNajstarsiehoClena',
+        {
+          type: 'string',
+          title: 'Zvoľte vek najstaršieho člena domácnosti',
+          required: true,
+          options: [
+            { value: 'menejAko63', title: 'menej ako 63 rokov' },
+            { value: '63az70', title: '63 - 70 rokov' },
+            { value: '71az80', title: '71 - 80 rokov' },
+            { value: '81aViac', title: '81 a viac rokov' },
+          ],
+        },
+        { variant: 'boxed' },
+      ),
     ],
   )
 }

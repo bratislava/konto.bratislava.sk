@@ -16938,6 +16938,42 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       "type": "object",
                     },
                   },
+                  {
+                    "if": {
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "email",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "kontaktovanyEmailom": {
+                          "default": true,
+                          "oneOf": [
+                            {
+                              "const": true,
+                              "title": "Áno",
+                            },
+                            {
+                              "const": false,
+                              "title": "Nie",
+                            },
+                          ],
+                          "title": "Chcem byť kontaktovaný/á emailom?",
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [
+                        "kontaktovanyEmailom",
+                      ],
+                      "type": "object",
+                    },
+                  },
                 ],
                 "properties": {
                   "adresaTrvalehoPobytu": {
@@ -17211,7 +17247,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                   "datumNarodenia",
                   "statnaPrislusnost",
                   "rodinnyStav",
-                  "email",
                   "telefonneCislo",
                   "adresaTrvalehoPobytu",
                 ],
@@ -23607,6 +23642,14 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "Input",
         },
+        "kontaktovanyEmailom": {
+          "ui:options": {
+            "orientations": "row",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
         "menoPriezvisko": {
           "meno": {
             "ui:label": false,
@@ -23691,6 +23734,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "rodinnyStav",
           "customComponent6_gRbYIKNcAF",
           "email",
+          "kontaktovanyEmailom",
           "telefonneCislo",
           "adresaTrvalehoPobytu",
         ],

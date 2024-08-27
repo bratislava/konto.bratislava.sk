@@ -5438,6 +5438,18 @@ exports[`getSummaryJson ziadostONajomnyBytExample summary JSON should match snap
           "displayValues": [
             {
               "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom",
+          "label": "Chcem byť kontaktovaný/á emailom?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
               "value": "+421901234567",
             },
           ],

@@ -338,16 +338,36 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             ),
           ]
         : []),
-      stepType === StepType.Ziadatel
-        ? input(
-            'email',
-            { title: 'Email', required: true, type: 'email' },
-            {
-              helptextHeader:
-                'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
-            },
-          )
-        : null,
+      ...(stepType === StepType.Ziadatel
+        ? [
+            input(
+              'email',
+              { title: 'Email', type: 'email' },
+              {
+                helptextHeader:
+                  'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
+              },
+            ),
+            conditionalFields(createCondition([[['email'], { type: 'string' }]]), [
+              radioGroup(
+                'kontaktovanyEmailom',
+                {
+                  type: 'boolean',
+                  title: 'Chcem byť kontaktovaný/á emailom?',
+                  required: true,
+                  options: [
+                    { value: true, title: 'Áno', isDefault: true },
+                    { value: false, title: 'Nie' },
+                  ],
+                },
+                {
+                  variant: 'boxed',
+                  orientations: 'row',
+                },
+              ),
+            ]),
+          ]
+        : []),
       stepType === StepType.Ziadatel
         ? input(
             'telefonneCislo',

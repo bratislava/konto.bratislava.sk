@@ -15,6 +15,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         },
         datumNarodenia: '1985-03-15',
         email: 'jana.novakova@email.com',
+        kontaktovanyEmailom: true,
         menoPriezvisko: { meno: 'Jana', priezvisko: 'Nováková' },
         rodinnyStav: 'rozvedeny',
         rodnePriezvisko: 'Kováčová',

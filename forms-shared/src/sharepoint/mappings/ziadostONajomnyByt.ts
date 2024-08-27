@@ -420,7 +420,7 @@ export const ziadostONajomnyBytSharepointData = {
       databaseName: 'dtb_NajomneByvanieIniClenovia',
       originalTableId: 'Ziadatel',
       columnMap: defaultColumnMapNajomneByvanieIniClenovia,
-    }
+    },
   },
   oneToOne: {
     'manzelManzelka.manzelManzelkaSucastouDomacnosti': {

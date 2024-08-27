@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getValuesForFields should match snapshots 1`] = `
+{
+  "ByvanieVMestskomNajomnomByte": false,
+  "ChronickeOchorenie": true,
+  "DovodyPodaniaZiadosti": "Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.",
+  "GinisID": "MAG123",
+  "MaximalnaVyskaNajomneho": 700,
+  "PreferovanaLokalita": "ruzinov, noveMesto",
+  "PreferovanaVelkost": "3izbovy",
+  "RizikoveFaktory": true,
+  "Vek": "menejAko63",
+  "ZiadatelBezbarierovyByt": false,
+  "ZiadatelBytovaNudza": false,
+  "ZiadatelDatumNarodenia": "1985-03-15",
+  "ZiadatelEmail": "jana.novakova@email.com",
+  "ZiadatelExistujuceDiagnozy": "astma, chronickaParadentoza",
+  "ZiadatelFunkcnaPorucha": false,
+  "ZiadatelInePrijmyVyska": 150,
+  "ZiadatelMeno": "Jana",
+  "ZiadatelPriezvisko": "Nováková",
+  "ZiadatelRodinnyStav": "rozvedeny",
+  "ZiadatelRodnePriezvisko": "Kováčová",
+  "ZiadatelSkutocnyPobytRovnakyAkoT": true,
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelTelefonneCislo": "+421901234567",
+  "ZiadatelTrvalyPobytMesto": "Bratislava",
+  "ZiadatelTrvalyPobytPobytMenejAko": false,
+  "ZiadatelTrvalyPobytPsc": "81101",
+  "ZiadatelTrvalyPobytUlicaACislo": "Hlavná 123",
+  "ZiadatelTrvalyPobytVlastnikNehnu": false,
+  "ZiadatelVyzivneVyska": 200,
+  "ZiadatelZamestnaniePrijem": 1200,
+  "ZoznamRizikovychFaktorov": "osamelyRodic",
+}
+`;

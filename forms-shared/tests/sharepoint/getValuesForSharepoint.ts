@@ -1,4 +1,10 @@
+import {
+  FormDefinition,
+  FormDefinitionSlovenskoSkGeneric,
+  FormDefinitionType,
+} from '../../src/definitions/formDefinitionTypes'
 import { SharepointColumnMapValue } from '../../src/definitions/sharepointTypes'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import {
   getArrayForOneToMany,
   getValueAtJsonPath,
@@ -206,6 +212,63 @@ describe('getValuesForFields', () => {
       expect(true).toBeFalsy()
     } catch (error) {}
   })
+
+  it('should match snapshots', () => {
+    getExampleFormPairs({
+      formDefinitionFilterFn: (formDefinition): formDefinition is FormDefinition =>
+        formDefinition.type === FormDefinitionType.SlovenskoSkGeneric &&
+        formDefinition.sharepointData !== undefined,
+    }).forEach(({ formDefinition, exampleForm }) => {
+      const result = getValuesForFields(
+        (formDefinition as FormDefinitionSlovenskoSkGeneric).sharepointData!,
+        { ginisDocumentId: 'MAG123', formDefinitionSlug: formDefinition.slug, title: 'FormTitle' },
+        exampleForm.formData,
+        fieldMap,
+      )
+      expect(result).toMatchSnapshot()
+    })
+  })
 })
 
-// TODO snapshot tests
+const fieldMap = {
+  GinisID: 'GinisID',
+  Meno: 'ZiadatelMeno',
+  Priezvisko: 'ZiadatelPriezvisko',
+  RodnePriezvisko: 'ZiadatelRodnePriezvisko',
+  DatumNarodenia: 'ZiadatelDatumNarodenia',
+  StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
+  RodinnyStav: 'ZiadatelRodinnyStav',
+  Email: 'ZiadatelEmail',
+  TelefonneCislo: 'ZiadatelTelefonneCislo',
+  TrvalyPobytUlicaACislo: 'ZiadatelTrvalyPobytUlicaACislo',
+  TrvalyPobytMesto: 'ZiadatelTrvalyPobytMesto',
+  TrvalyPobytPsc: 'ZiadatelTrvalyPobytPsc',
+  TrvalyPobytVlastnikNehnutelnosti: 'ZiadatelTrvalyPobytVlastnikNehnu',
+  ByvanieVMestskomNajomnomByte: 'ByvanieVMestskomNajomnomByte',
+  PobytVBratislaveMenejAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
+  SkutocnyPobytRovnakyAkoTrvaly: 'ZiadatelSkutocnyPobytRovnakyAkoT',
+  SkutocnyPobytUlica: 'ZiadatelSkutocnyPobytUlica',
+  SkutocnyPobytMesto: 'ZiadatelSkutocnyPobytMesto',
+  SkutocnyPobytPsc: 'ZiadatelSkutocnyPobytPsc',
+  ZamestnaniePrijem: 'ZiadatelZamestnaniePrijem',
+  SamostatnaZarobkovaCinnostPrijem: 'ZiadatelSamostatnaZarobkovaCinno',
+  DochodokVyska: 'ZiadatelDochodokVyska',
+  VyzivneVyska: 'ZiadatelVyzivneVyska',
+  DavkaVNezamestnanostiVyska: 'ZiadatelDavkaVNezamestnanostiVys',
+  InePrijmyVyska: 'ZiadatelInePrijmyVyska',
+  TzpPreukaz: 'ZiadatelFunkcnaPorucha',
+  MieraFunkcnejPoruchy: 'ZiadatelMieraFunkcnejPoruchy',
+  ChronickeOchorenie: 'ChronickeOchorenie',
+  ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
+  BezbarierovyByt: 'ZiadatelBezbarierovyByt',
+  BytovaNudza: 'ZiadatelBytovaNudza',
+  TypByvania: 'ZiadatelTypSkutocnehoByvania',
+  DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
+  RizikoveFaktory: 'RizikoveFaktory',
+  ZoznamRizikovychFaktorov: 'ZoznamRizikovychFaktorov',
+  VekNajstarsiehoClena: 'Vek',
+  PreferovanaVelkost: 'PreferovanaVelkost',
+  PreferovanaLokalita: 'PreferovanaLokalita',
+  DovodyPodaniaZiadosti: 'DovodyPodaniaZiadosti',
+  MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
+}

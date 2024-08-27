@@ -110,6 +110,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
             datumNarodenia: '1960-09-05',
             rodinnyStav: 'vdovec',
             rodnePriezvisko: 'Hrušková',
+            vlastnikNehnutelnosti: false,
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
           prijem: {
@@ -131,6 +132,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
       maximalnaVyskaNajomneho: 700,
       preferovanaLokalita: ['ruzinov', 'noveMesto'],
       preferovanaVelkost: '3izbovy',
+    },
+    sucetPrijmovCestneVyhlasenie: {
+      cestneVyhlasenie: true,
     },
   },
 }

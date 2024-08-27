@@ -1420,7 +1420,7 @@ export default schema(
 
 export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
 <% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>
-<% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && osobneUdaje?.rodinnyStav !== "slobodny" %>
+<% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && ['zenaty', 'rozvedeny', 'vdovec', 'ine'].includes(osobneUdaje?.rodinnyStav) %>
 
 #### Žiadateľ/žiadateľka
 
@@ -1428,7 +1428,9 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 <% if (dokladRodinnyStav(it.formData.ziadatelZiadatelka?.osobneUdaje)) { %>
 - Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
 <% } %>
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.pobytVBratislaveMenejAkoRok)) { %>
 - Adresa - dokumenty potvrdujúce pôsobenie v Bratislave, napr. pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom a pod.
+<% } %>
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>
@@ -1481,7 +1483,7 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 
 <% it.helpers.safeArray(it.formData.deti.zoznamDeti).forEach(function(dieta, index) { %>
 <% let dietaName = [dieta.osobneUdaje?.menoPriezvisko?.meno, dieta.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
-##### Dieťa <%= index + 1 %><% if (dietaName) { %> (<%= dietaName %>)<% } %>
+##### Dieťa č. <%= index + 1 %><% if (dietaName) { %> (<%= dietaName %>)<% } %>
 
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
 <% if (it.helpers.safeBoolean(dieta.osobneUdaje?.vlastnikNehnutelnosti)) { %>
@@ -1504,7 +1506,7 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 
 <% it.helpers.safeArray(it.formData.inyClenoviaClenkyDomacnosti.zoznamInychClenov).forEach(function(clen, index) { %>
 <% let clenName = [clen.osobneUdaje?.menoPriezvisko?.meno, clen.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
-##### Člen/členka domácnosti <%= index + 1 %><% if (clenName) { %> (<%= clenName %>)<% } %>
+##### Člen/členka domácnosti č. <%= index + 1 %><% if (clenName) { %> (<%= clenName %>)<% } %>
 
 - Osobné údaje - kópia občianskeho preukazu
 <% if (dokladRodinnyStav(clen.osobneUdaje)) { %>

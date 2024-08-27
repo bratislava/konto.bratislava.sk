@@ -134,86 +134,6 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
     return null
   }
 
-  const adresaFields = [
-    ...adresaSharedFields,
-    customComponentsField(
-      {
-        type: 'alert',
-        props: {
-          type: 'info',
-          message:
-            'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-        },
-      },
-      {},
-    ),
-  ]
-
-  const byvanieVMestskomNajomnomByteField = radioGroup(
-    'byvanieVMestskomNajomnomByte',
-    {
-      type: 'boolean',
-      title: 'Bývate v mestskom nájomnom byte v Bratislave?',
-      required: true,
-      options: [
-        { value: true, title: 'Áno' },
-        { value: false, title: 'Nie', isDefault: true },
-      ],
-    },
-    {
-      variant: 'boxed',
-      orientations: 'row',
-    },
-  )
-
-  const pobytVBratislaveMenejAkoRokField = radioGroup(
-    'pobytVBratislaveMenejAkoRok',
-    {
-      type: 'boolean',
-      title: 'Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)',
-      required: true,
-      options: [
-        { value: true, title: 'Áno' },
-        { value: false, title: 'Nie', isDefault: true },
-      ],
-    },
-    {
-      variant: 'boxed',
-      orientations: 'row',
-    },
-  )
-
-  const pobytVBratislaveAlertField = customComponentsField(
-    {
-      type: 'alert',
-      props: {
-        type: 'info',
-        message:
-          'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
-      },
-    },
-    {},
-  )
-
-  const adresaSkutocnehoPobytuRovnakaFields = [
-    radioGroup(
-      'adresaSkutocnehoPobytuRovnaka',
-      {
-        type: 'boolean',
-        title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
-        required: true,
-        options: [
-          { value: true, title: 'Áno', isDefault: true },
-          { value: false, title: 'Nie' },
-        ],
-      },
-      { variant: 'boxed', orientations: 'row' },
-    ),
-    conditionalFields(createCondition([[['adresaSkutocnehoPobytuRovnaka'], { const: false }]]), [
-      getAdresaSkutocnehoPobytuFields(stepType),
-    ]),
-  ]
-
   return object(
     'adresaTrvalehoPobytu',
     { required: true },
@@ -224,12 +144,79 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
         'Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.',
     },
     [
-      ...adresaFields,
+      ...adresaSharedFields,
+      customComponentsField(
+        {
+          type: 'alert',
+          props: {
+            type: 'info',
+            message:
+              'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
+          },
+        },
+        {},
+      ),
       ...getVlastnikNehnutelnostiFields(stepType),
-      byvanieVMestskomNajomnomByteField,
-      pobytVBratislaveMenejAkoRokField,
-      pobytVBratislaveAlertField,
-      ...adresaSkutocnehoPobytuRovnakaFields,
+      radioGroup(
+        'byvanieVMestskomNajomnomByte',
+        {
+          type: 'boolean',
+          title: 'Bývate v mestskom nájomnom byte v Bratislave?',
+          required: true,
+          options: [
+            { value: true, title: 'Áno' },
+            { value: false, title: 'Nie', isDefault: true },
+          ],
+        },
+        {
+          variant: 'boxed',
+          orientations: 'row',
+        },
+      ),
+      radioGroup(
+        'pobytVBratislaveMenejAkoRok',
+        {
+          type: 'boolean',
+          title:
+            'Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)',
+          required: true,
+          options: [
+            { value: true, title: 'Áno' },
+            { value: false, title: 'Nie', isDefault: true },
+          ],
+        },
+        {
+          variant: 'boxed',
+          orientations: 'row',
+        },
+      ),
+      customComponentsField(
+        {
+          type: 'alert',
+          props: {
+            type: 'info',
+            message:
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.',
+          },
+        },
+        {},
+      ),
+      radioGroup(
+        'adresaSkutocnehoPobytuRovnaka',
+        {
+          type: 'boolean',
+          title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
+          required: true,
+          options: [
+            { value: true, title: 'Áno', isDefault: true },
+            { value: false, title: 'Nie' },
+          ],
+        },
+        { variant: 'boxed', orientations: 'row' },
+      ),
+      conditionalFields(createCondition([[['adresaSkutocnehoPobytuRovnaka'], { const: false }]]), [
+        getAdresaSkutocnehoPobytuFields(stepType),
+      ]),
     ],
   )
 }

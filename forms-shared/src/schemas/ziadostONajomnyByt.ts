@@ -140,8 +140,6 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
     {
       objectDisplay: 'boxed',
       title: 'Adresa trvalého pobytu',
-      description:
-        'Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.',
     },
     [
       ...adresaSharedFields,

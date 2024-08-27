@@ -23556,7 +23556,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "ui:widget": "RadioGroup",
           },
           "ui:options": {
-            "description": "Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.",
             "objectDisplay": "boxed",
             "title": "Adresa trvalého pobytu",
           },

@@ -11,7 +11,7 @@ const SummaryAdditionalInfo = () => {
   const { formDefinition } = useFormContext()
   const { formData } = useFormState()
   const additionalInfo = useMemo(
-    () => renderFormAdditionalInfo(formDefinition, formData),
+    () => renderFormAdditionalInfo(formDefinition, formData, true),
     [formDefinition, formData],
   )
 
@@ -24,8 +24,7 @@ const SummaryAdditionalInfo = () => {
       <h3 className="text-h3 mb-4">{t('summary.additional_info')}</h3>
       <AccountMarkdown
         content={additionalInfo}
-        // TODO: Replace variant statusBar
-        variant="statusBar"
+        variant="sm"
         className="rounded-10 bg-gray-50 p-8"
       />
     </div>

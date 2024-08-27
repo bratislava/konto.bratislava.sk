@@ -19,6 +19,11 @@ function compareBaTime(s1: string, s2: string): number | undefined {
 // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
 export const baPhoneNumberRegex = /^\+[1-9]\d{10,14}$/
 
+// https://github.com/mnestorov/regex-patterns?tab=readme-ov-file#slovakia
+// But `libphonenumber` contains stricter validation rules:
+// https://github.com/google/libphonenumber/blob/e3dbc4bde172a49d06e86b8305a7ca624e95cae8/resources/PhoneNumberMetadata.xml#L27018
+export const baSlovakPhoneNumberRegex = /^\+421[1-9][0-9]{8}$/
+
 export const parseRatio = (value: string) => {
   const ratioRegex = /^(0|[1-9]\d*)\/([1-9]\d*)$/
   if (!ratioRegex.test(value)) {
@@ -40,21 +45,14 @@ export const validateBaFileUuid = (value: unknown): value is string => {
   return typeof value === 'string' && validateUuid(value) && uuidVersion(value) === 4
 }
 
-export const baAjvFormats = {
+const baAjvInputFormats = {
   'ba-slovak-zip': /\b\d{5}\b/,
   'ba-phone-number': baPhoneNumberRegex,
-  'ba-time': {
-    // https://stackoverflow.com/a/51177696
-    validate: baTimeRegex,
-    compare: compareBaTime,
-  },
+  'ba-slovak-phone-number': baSlovakPhoneNumberRegex,
   'ba-ratio': {
     validate: (value: string) => parseRatio(value).isValid,
   },
   'ba-ico': /^\d{6,8}$/,
-  'ba-file-uuid': {
-    validate: validateBaFileUuid,
-  },
   'ba-iban': {
     validate: (value: string) => {
       const electronicFormat = electronicFormatIBAN(value)
@@ -64,4 +62,22 @@ export const baAjvFormats = {
       return validateIBAN(electronicFormat).valid
     },
   },
+}
+
+export type BaAjvInputFormat = keyof typeof baAjvInputFormats
+
+const baAjvOtherFormats = {
+  'ba-time': {
+    // https://stackoverflow.com/a/51177696
+    validate: baTimeRegex,
+    compare: compareBaTime,
+  },
+  'ba-file-uuid': {
+    validate: validateBaFileUuid,
+  },
+}
+
+export const baAjvFormats = {
+  ...baAjvInputFormats,
+  ...baAjvOtherFormats,
 }

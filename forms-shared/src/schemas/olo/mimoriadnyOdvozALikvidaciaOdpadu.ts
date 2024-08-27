@@ -16,7 +16,7 @@ import { createCondition, createStringOptions } from '../../generator/helpers'
 const infoOOdpadeFields = [
   input(
     'miestoDodania',
-    { title: 'Miesto dodania / výkonu služby', required: true },
+    { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
     { helptext: 'Presná adresa' },
   ),
   radioGroup(
@@ -203,25 +203,25 @@ export default schema(
           [['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }],
         ]),
         [
-          input('nazov', { title: 'Názov organizácie', required: true }, {}),
+          input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
           sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla', true),
-          input('ico', { title: 'IČO', required: true }, {}),
-          input('dic', { title: 'DIČ', required: true }, {}),
+          input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+          input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
           checkbox(
             'platcaDph',
             { title: 'Som platca DPH?', required: true },
             { checkboxLabel: 'Som platca DPH?', variant: 'boxed' },
           ),
           conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
-            input('icDph', { title: 'IČ DPH', required: true }, {}),
+            input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
           ]),
         ],
       ),
       conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
-        input('konatel', { title: 'Konateľ (meno, priezvisko)', required: true }, {}),
+        input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
         input(
           'zastupeny',
-          { title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)' },
+          { type: 'text', title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)' },
           {},
         ),
       ]),
@@ -229,7 +229,13 @@ export default schema(
         createCondition([
           [['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }],
         ]),
-        [input('kontaktnaOsoba', { title: 'Meno kontaktnej osoby', required: true }, {})],
+        [
+          input(
+            'kontaktnaOsoba',
+            { type: 'text', title: 'Meno kontaktnej osoby', required: true },
+            {},
+          ),
+        ],
       ),
       sharedPhoneNumberField('telefon', true),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
@@ -243,7 +249,7 @@ export default schema(
             { required: true },
             { objectDisplay: 'boxed', title: 'Fakturácia' },
             [
-              input('iban', { title: 'IBAN', required: true, format: 'ba-iban' }, {}),
+              input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
               checkbox(
                 'elektronickaFaktura',
                 {
@@ -260,7 +266,11 @@ export default schema(
               conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
                 input(
                   'emailPreFaktury',
-                  { title: 'E-mail pre zasielanie elektronických faktúr', required: true },
+                  {
+                    type: 'text',
+                    title: 'E-mail pre zasielanie elektronických faktúr',
+                    required: true,
+                  },
                   {},
                 ),
               ]),

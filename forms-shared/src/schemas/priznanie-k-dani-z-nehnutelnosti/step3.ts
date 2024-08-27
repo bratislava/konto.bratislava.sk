@@ -32,9 +32,9 @@ const celkovaVymeraPozemku = number(
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
   {
+    type: 'ba-ratio',
     title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
     required: true,
-    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 4827/624441',
@@ -46,7 +46,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
 
 const spoluvlastnickyPodiel = input(
   'spoluvlastnickyPodiel',
-  { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
+  { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
     helptext: markdownText(
@@ -118,7 +118,7 @@ const innerArray = (kalkulacka: boolean) =>
         [
           input(
             'cisloListuVlastnictva',
-            { title: 'Číslo listu vlastníctva' },
+            { type: 'text', title: 'Číslo listu vlastníctva' },
             { size: 'medium', placeholder: 'Napr. 4567' },
           ),
           select(
@@ -164,7 +164,7 @@ const innerArray = (kalkulacka: boolean) =>
             [
               input(
                 'cisloParcely',
-                { title: 'Číslo parcely', required: true },
+                { type: 'text', title: 'Číslo parcely', required: true },
                 {
                   placeholder: 'Napr. 7986/1',
                   helptext: markdownText(
@@ -174,7 +174,7 @@ const innerArray = (kalkulacka: boolean) =>
               ),
               input(
                 'sposobVyuzitiaPozemku',
-                { title: 'Spôsob využitia pozemku' },
+                { type: 'text', title: 'Spôsob využitia pozemku' },
                 {
                   helptext:
                     'Vyplňte, ak na pozemok bolo vydané povolenie na dobývanie ložiska nevyhradeného nerastu alebo sa na pozemku nachádza zariadenie na výrobu elektriny zo slnečnej energie, transformačná stanica alebo predajný stánok slúžiaci k predaju tovaru a poskytovaniu služieb.',
@@ -305,7 +305,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],

@@ -21162,7 +21162,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                     "value": "mestskaUbytovna",
                   },
                   {
-                    "description": "Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr",
+                    "description": "Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr, Špeciálne výchovné zariadenie",
                     "value": "institucionalnaStarostlivost",
                   },
                   {

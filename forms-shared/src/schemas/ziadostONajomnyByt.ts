@@ -1037,7 +1037,9 @@ const getSucasneByvanieSection = (stepType: StepType) => {
               value: 'institucionalnaStarostlivost',
               title: 'Bývanie v inštitucionálnej starostlivosti',
               description:
-                'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr',
+                stepType === StepType.Dieta
+                  ? 'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr, Špeciálne výchovné zariadenie'
+                  : 'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr',
             },
             {
               value: 'neistePodmienky',

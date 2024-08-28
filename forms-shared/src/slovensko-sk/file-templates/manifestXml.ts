@@ -45,7 +45,6 @@ export const manifestXml = `<?xml version="1.0" encoding="UTF-8"?>
   />
   <manifest:file-entry 
     media-type="text/xml" 
-    media-destination="x-xsd-nat"
     media-language="SK" 
     full-path="schema.xsd" 
     filename="schema.xsd" 
@@ -53,7 +52,6 @@ export const manifestXml = `<?xml version="1.0" encoding="UTF-8"?>
   />
   <manifest:file-entry 
     media-type="text/xml" 
-    media-destination="x-xml-nat"
     media-language="SK" 
     full-path="data.xml" 
     filename="data.xml" 

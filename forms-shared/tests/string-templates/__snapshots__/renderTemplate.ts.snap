@@ -7,7 +7,6 @@ exports[`renderFormAdditionalInfo ziadostONajomnyBytExample rendered template sh
 
 - Osobné údaje - občiansky preukaz
 - Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
-- Adresa - dokumenty potvrdujúce pôsobenie v Bratislave, napr. pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom a pod.
 - Príjem - dokumenty dokazujúce všetky príjmy, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 - Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 - Rizikové faktory - dokumenty dokazujúce rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti, napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.
@@ -21,10 +20,10 @@ exports[`renderFormAdditionalInfo ziadostONajomnyBytExample rendered template sh
 
 #### Nezaopatrené deti do 25 rokov
 
-##### Dieťa 1 (Lucia Nováková)
+##### Dieťa č. 1 (Lucia Nováková)
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
 - Príjem - potvrdenie o návšteve školy
-##### Dieťa 2 (Michal Novák)
+##### Dieťa č. 2 (Michal Novák)
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
 - Príjem - potvrdenie o návšteve školy
 - Príjem - potvrdenie o príjme dieťaťa
@@ -32,7 +31,7 @@ exports[`renderFormAdditionalInfo ziadostONajomnyBytExample rendered template sh
 
 #### Iní členovia/členky domácnosti
 
-##### Člen/členka domácnosti 1 (Mária Kováčová)
+##### Člen/členka domácnosti č. 1 (Mária Kováčová)
 - Osobné údaje - kópia občianskeho preukazu
 - Osobné údaje - doklad dokazujúci rodinný stav člena/členky domácnosti
 - Príjem - dokumenty dokazujúce všetky príjmy člena/členky domácnosti, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.

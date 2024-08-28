@@ -26,7 +26,7 @@ const CalendarGrid = ({ state, offset = {}, ...rest }: CalendarGridBase) => {
 
   const weekDaysCustom = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne']
   const weekDaysCustomEn = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
-  const weekDays = locale === 'sk' ? weekDaysCustom : weekDaysCustomEn
+  const weekDays = locale === 'sk-SK' ? weekDaysCustom : weekDaysCustomEn
 
   return (
     <div {...gridProps} className="flex flex-col items-center">

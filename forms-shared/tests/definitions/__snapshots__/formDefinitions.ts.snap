@@ -16871,7 +16871,7 @@ exports[`Form definitions ziadost-o-najomny-byt default form state should match 
         "adresaSkutocnehoPobytuRovnaka": true,
         "byvanieVMestskomNajomnomByte": false,
         "mestoPsc": {},
-        "pobytVBratislaveMenejAkoRok": false,
+        "pobytVBratislaveViacAkoRok": false,
         "vlastnikNehnutelnosti": false,
       },
       "menoPriezvisko": {},
@@ -17006,12 +17006,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       {
                         "if": {
                           "properties": {
-                            "pobytVBratislaveMenejAkoRok": {
+                            "pobytVBratislaveViacAkoRok": {
                               "const": true,
                             },
                           },
                           "required": [
-                            "pobytVBratislaveMenejAkoRok",
+                            "pobytVBratislaveViacAkoRok",
                           ],
                           "type": "object",
                         },
@@ -17134,7 +17134,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         ],
                         "type": "object",
                       },
-                      "pobytVBratislaveMenejAkoRok": {
+                      "pobytVBratislaveViacAkoRok": {
                         "default": false,
                         "oneOf": [
                           {
@@ -17146,7 +17146,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                             "title": "Nie",
                           },
                         ],
-                        "title": "Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)",
+                        "title": "Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)",
                         "type": "boolean",
                       },
                       "ulicaACislo": {
@@ -17174,7 +17174,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       "mestoPsc",
                       "vlastnikNehnutelnosti",
                       "byvanieVMestskomNajomnomByte",
-                      "pobytVBratislaveMenejAkoRok",
+                      "pobytVBratislaveViacAkoRok",
                       "adresaSkutocnehoPobytuRovnaka",
                     ],
                     "type": "object",
@@ -23547,7 +23547,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "psc",
             ],
           },
-          "pobytVBratislaveMenejAkoRok": {
+          "pobytVBratislaveViacAkoRok": {
             "ui:options": {
               "orientations": "row",
               "radioOptions": [],
@@ -23566,7 +23566,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "vlastnikNehnutelnosti",
             "vlastnikNehnutelnostiDovody",
             "byvanieVMestskomNajomnomByte",
-            "pobytVBratislaveMenejAkoRok",
+            "pobytVBratislaveViacAkoRok",
             "customComponent8_gRbYIKNcAF",
             "adresaSkutocnehoPobytuRovnaka",
             "adresaSkutocnehoPobytu",

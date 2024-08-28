@@ -15,6 +15,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         },
         datumNarodenia: '1985-03-15',
         email: 'jana.novakova@email.com',
+        kontaktovanyEmailom: true,
         menoPriezvisko: { meno: 'Jana', priezvisko: 'Nováková' },
         rodinnyStav: 'rozvedeny',
         rodnePriezvisko: 'Kováčová',
@@ -32,8 +33,8 @@ const ziadostONajomnyBytExample: ExampleForm = {
         zamestnanie: true,
         zamestnaniePrijem: 1200,
       },
-      rizikoveFaktoryWrapper: {
-        rizikoveFaktory: true,
+      rizikoveFaktory: {
+        rizikoveFaktoryPritomne: true,
         vekNajstarsiehoClena: 'menejAko63',
         zoznamRizikovychFaktorov: ['osamelyRodic'],
       },

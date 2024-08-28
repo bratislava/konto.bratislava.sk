@@ -4,6 +4,10 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   GinisID: {
     type: 'mag_number',
   },
+  KontaktovanyEmailom: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom'
+  },
   Meno: {
     type: 'json_path',
     info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.meno',
@@ -134,15 +138,15 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   RizikoveFaktory: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.rizikoveFaktory',
+    info: 'ziadatelZiadatelka.rizikoveFaktory.rizikoveFaktoryPritomne',
   },
   ZoznamRizikovychFaktorov: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.zoznamRizikovychFaktorov',
+    info: 'ziadatelZiadatelka.rizikoveFaktory.zoznamRizikovychFaktorov',
   },
   VekNajstarsiehoClena: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.rizikoveFaktoryWrapper.vekNajstarsiehoClena',
+    info: 'ziadatelZiadatelka.rizikoveFaktory.vekNajstarsiehoClena',
   },
   PreferovanaVelkost: {
     type: 'json_path',

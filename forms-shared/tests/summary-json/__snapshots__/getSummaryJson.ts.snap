@@ -5522,13 +5522,13 @@ exports[`getSummaryJson ziadostONajomnyBytExample summary JSON should match snap
           "displayValues": [
             {
               "type": "String",
-              "value": "Nie",
+              "value": "Áno",
             },
           ],
-          "id": "root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_pobytVBratislaveMenejAkoRok",
-          "label": "Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)",
+          "id": "root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_pobytVBratislaveViacAkoRok",
+          "label": "Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)",
           "type": "Field",
-          "value": false,
+          "value": true,
         },
         {
           "displayValues": [

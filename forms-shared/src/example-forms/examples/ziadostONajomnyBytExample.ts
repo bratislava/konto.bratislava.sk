@@ -141,6 +141,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
   sharepointFieldMap: {
     fieldMap: {
       GinisID: 'GinisID',
+      KontaktovanyEmailom: 'KontaktovanyEmailom',
       Meno: 'ZiadatelMeno',
       Priezvisko: 'ZiadatelPriezvisko',
       RodnePriezvisko: 'ZiadatelRodnePriezvisko',
@@ -154,7 +155,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
       TrvalyPobytPsc: 'ZiadatelTrvalyPobytPsc',
       TrvalyPobytVlastnikNehnutelnosti: 'ZiadatelTrvalyPobytVlastnikNehnu',
       ByvanieVMestskomNajomnomByte: 'ByvanieVMestskomNajomnomByte',
-      PobytVBratislaveMenejAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
+      PobytVBratislaveViacAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
       SkutocnyPobytRovnakyAkoTrvaly: 'ZiadatelSkutocnyPobytRovnakyAkoT',
       SkutocnyPobytUlica: 'ZiadatelSkutocnyPobytUlica',
       SkutocnyPobytMesto: 'ZiadatelSkutocnyPobytMesto',
@@ -182,6 +183,27 @@ const ziadostONajomnyBytExample: ExampleForm = {
       MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
     },
     oneToMany: {
+      dtb_NajomneByvanieDieta: {
+        fieldMap: {
+          Meno: 'ZiadatelMeno',
+          Priezvisko: 'ZiadatelPriezvisko',
+          DatumNarodenia: 'ZiadatelDatumNarodenia',
+          StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
+          VlastnikNehnutelnosti: 'VlastnikNehnutelnosti',
+          SucasneByvanieRovnakeAkoVase: 'SucasneByvanieRovnakeAkoVase',
+          BytovaNudza: 'BytovaNudza',
+          TypByvania: 'TypByvania',
+          DlzkaBytovejNudze: 'DlzkaBytovejNudze',
+          Student: 'Student',
+          MaPrijem: 'MaPrijem',
+          PrijemVyska: 'ZiadatelZamestnaniePrijem',
+          TzpPreukaz: 'TzpPreukaz',
+          MieraFunkcnejPoruchy: 'MieraFunkcnejPoruchy',
+          ChronickeOchorenie: 'ChronickeOchorenie',
+          ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
+          Ziadatel: 'ZiadatelID',
+        },
+      },
       dtb_NajomneByvanieIniClenovia: {
         fieldMap: {
           Meno: 'ZiadatelMeno',
@@ -205,31 +227,10 @@ const ziadostONajomnyBytExample: ExampleForm = {
           Ziadatel: 'ZiadatelID',
         },
       },
-      dtb_NajomneByvanieDieta: {
-        fieldMap: {
-          Meno: 'ZiadatelMeno',
-          Priezvisko: 'ZiadatelPriezvisko',
-          DatumNarodenia: 'ZiadatelDatumNarodenia',
-          StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
-          VlastnikNehnutelnosti: 'VlastnikNehnutelnosti',
-          SucasneByvanieRovnakeAkoVase: 'SucasneByvanieRovnakeAkoVase',
-          BytovaNudza: 'BytovaNudza',
-          TypByvania: 'TypByvania',
-          DlzkaBytovejNudze: 'DlzkaBytovejNudze',
-          Student: 'Student',
-          MaPrijem: 'MaPrijem',
-          PrijemVyska: 'ZiadatelZamestnaniePrijem',
-          TzpPreukaz: 'TzpPreukaz',
-          MieraFunkcnejPoruchy: 'MieraFunkcnejPoruchy',
-          ChronickeOchorenie: 'ChronickeOchorenie',
-          ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
-          Ziadatel: 'ZiadatelID',
-        },
-      },
     },
     oneToOne: {
       fieldMaps: {
-        dtb_NajomneByvanieDruh: {
+        dtb_NajomneByvanieManzel: {
           fieldMap: {
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',
@@ -257,7 +258,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
             DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
           },
         },
-        dtb_NajomneByvanieManzel: {
+        dtb_NajomneByvanieDruh: {
           fieldMap: {
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',

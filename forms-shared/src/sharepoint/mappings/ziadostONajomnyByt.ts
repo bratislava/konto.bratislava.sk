@@ -6,7 +6,7 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   KontaktovanyEmailom: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom'
+    info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom',
   },
   Meno: {
     type: 'json_path',
@@ -60,9 +60,9 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.byvanieVMestskomNajomnomByte',
   },
-  PobytVBratislaveMenejAkoRok: {
+  PobytVBratislaveViacAkoRok: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.pobytVBratislaveMenejAkoRok',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.pobytVBratislaveViacAkoRok',
   },
   SkutocnyPobytRovnakyAkoTrvaly: {
     type: 'json_path',

@@ -130,6 +130,7 @@ export default class NasesUtilsService {
   }
 
   createUserJwtToken(oboToken: string): string {
+    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
     const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
       .split(String.raw`\n`)
       .join('\n')
@@ -158,6 +159,7 @@ export default class NasesUtilsService {
   }
 
   createTechnicalAccountJwtToken(): string {
+    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
     const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
       .split(String.raw`\n`)
       .join('\n')
@@ -186,6 +188,7 @@ export default class NasesUtilsService {
   }
 
   createAdministrationJwtToken(): string {
+    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
     const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
       .split(String.raw`\n`)
       .join('\n')

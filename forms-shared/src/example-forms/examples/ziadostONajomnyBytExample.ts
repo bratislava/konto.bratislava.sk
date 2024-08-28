@@ -9,7 +9,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
           adresaSkutocnehoPobytuRovnaka: true,
           byvanieVMestskomNajomnomByte: false,
           mestoPsc: { mesto: 'Bratislava', psc: '81101' },
-          pobytVBratislaveMenejAkoRok: false,
+          pobytVBratislaveViacAkoRok: true,
           ulicaACislo: 'Hlavná 123',
           vlastnikNehnutelnosti: false,
         },

@@ -140,20 +140,11 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
     {
       objectDisplay: 'boxed',
       title: 'Adresa trvalého pobytu',
+      description:
+        'Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.',
     },
     [
       ...adresaSharedFields,
-      customComponentsField(
-        {
-          type: 'alert',
-          props: {
-            type: 'info',
-            message:
-              'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-          },
-        },
-        {},
-      ),
       ...getVlastnikNehnutelnostiFields(stepType),
       radioGroup(
         'byvanieVMestskomNajomnomByte',
@@ -172,11 +163,11 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
         },
       ),
       radioGroup(
-        'pobytVBratislaveMenejAkoRok',
+        'pobytVBratislaveViacAkoRok',
         {
           type: 'boolean',
           title:
-            'Žijete na území Bratislavy menej ako 1 rok? (vrátane trvalého a skutočného pobytu)',
+            'Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)',
           required: true,
           options: [
             { value: true, title: 'Áno' },
@@ -188,7 +179,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           orientations: 'row',
         },
       ),
-      conditionalFields(createCondition([[['pobytVBratislaveMenejAkoRok'], { const: true }]]), [
+      conditionalFields(createCondition([[['pobytVBratislaveViacAkoRok'], { const: true }]]), [
         customComponentsField(
           {
             type: 'alert',
@@ -1428,7 +1419,7 @@ export const ziadostONajomnyBytAdditionalInfoTemplate = `### Zoznam potrebných 
 <% if (dokladRodinnyStav(it.formData.ziadatelZiadatelka?.osobneUdaje)) { %>
 - Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
 <% } %>
-<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.pobytVBratislaveMenejAkoRok)) { %>
+<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.pobytVBratislaveViacAkoRok)) { %>
 - Adresa - dokumenty potvrdujúce pôsobenie v Bratislave, napr. pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom a pod.
 <% } %>
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.vlastnikNehnutelnosti)) { %>

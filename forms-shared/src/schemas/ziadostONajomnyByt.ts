@@ -140,20 +140,11 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
     {
       objectDisplay: 'boxed',
       title: 'Adresa trvalého pobytu',
+      description:
+        'Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.',
     },
     [
       ...adresaSharedFields,
-      customComponentsField(
-        {
-          type: 'alert',
-          props: {
-            type: 'info',
-            message:
-              'V prípade, že máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.',
-          },
-        },
-        {},
-      ),
       ...getVlastnikNehnutelnostiFields(stepType),
       radioGroup(
         'byvanieVMestskomNajomnomByte',

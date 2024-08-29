@@ -17,12 +17,20 @@ import {
   shouldRemoveRedirectQueryParam,
 } from './queryParamRedirect'
 
+console.log('[DEBUG] Starting file execution')
+
 const getIsSignedIn = async (amplifyContextSpec: AmplifyServerContextSpec) => {
+  console.log('[DEBUG] Entering getIsSignedIn function')
   try {
     const { userId } = await getCurrentUser(amplifyContextSpec)
-    return Boolean(userId)
+    console.log(`[DEBUG] User ID: ${userId}`)
+    const isSignedIn = Boolean(userId)
+    console.log(`[DEBUG] Is signed in: ${isSignedIn}`)
+    return isSignedIn
   } catch (error) {
+    console.error('[DEBUG] Error in getIsSignedIn:', error)
     if (error instanceof AuthError && error.name === 'UserUnAuthenticatedException') {
+      console.log('[DEBUG] User is not authenticated')
       return false
     }
     throw error
@@ -30,8 +38,12 @@ const getIsSignedIn = async (amplifyContextSpec: AmplifyServerContextSpec) => {
 }
 
 const getAccessToken = async (amplifyContextSpec: AmplifyServerContextSpec) => {
+  console.log('[DEBUG] Entering getAccessToken function')
   const authSession = await fetchAuthSession(amplifyContextSpec)
-  return authSession.tokens?.accessToken.toString() ?? null
+  console.log('[DEBUG] Auth session:', JSON.stringify(authSession, null, 2))
+  const accessToken = authSession.tokens?.accessToken.toString() ?? null
+  console.log(`[DEBUG] Access token: ${accessToken ? 'Present' : 'Null'}`)
+  return accessToken
 }
 
 /**
@@ -71,22 +83,32 @@ export const amplifyGetServerSideProps = <
     redirectQueryParam?: boolean
   },
 ) => {
-  const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
-    baRunWithAmplifyServerContext({
+  console.log('[DEBUG] Entering amplifyGetServerSideProps function')
+  console.log('[DEBUG] Options:', JSON.stringify(options, null, 2))
+
+  const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) => {
+    console.log('[DEBUG] Entering wrapped function', context)
+    return baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
+        console.log('[DEBUG] Entering baRunWithAmplifyServerContext operation', contextSpec)
         const isSignedIn = await getIsSignedIn(contextSpec)
+        console.log(`[DEBUG] Is signed in: ${isSignedIn}`)
         const getAccessTokenFn = isSignedIn
           ? () => getAccessToken(contextSpec)
           : () => Promise.resolve(null)
 
+        console.log(`[DEBUG] Redirect query param: ${context.query[redirectQueryParam]}`)
         if (
           options?.redirectQueryParam &&
           shouldRemoveRedirectQueryParam(context.query[redirectQueryParam])
         ) {
+          console.log('[DEBUG] Removing redirect query param')
+          const newDestination = removeRedirectQueryParamFromUrl(context.resolvedUrl)
+          console.log(`[DEBUG] New destination: ${newDestination}`)
           return {
             redirect: {
-              destination: removeRedirectQueryParamFromUrl(context.resolvedUrl),
+              destination: newDestination,
               permanent: false,
             },
           }
@@ -94,11 +116,16 @@ export const amplifyGetServerSideProps = <
 
         const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
         const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
+        console.log(`[DEBUG] Should redirect not signed in: ${shouldRedirectNotSignedIn}`)
+        console.log(`[DEBUG] Should redirect not signed out: ${shouldRedirectNotSignedOut}`)
 
         if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
           if (options?.redirectQueryParam) {
+            console.log('[DEBUG] Handling redirect with query param')
             const safeRedirect = getSafeRedirect(context.query[redirectQueryParam])
+            console.log(`[DEBUG] Safe redirect: ${safeRedirect}`)
             const destination = await getRedirectUrl(safeRedirect, getAccessTokenFn)
+            console.log(`[DEBUG] Redirect destination: ${destination}`)
 
             return {
               redirect: {
@@ -108,17 +135,21 @@ export const amplifyGetServerSideProps = <
             }
           }
 
+          console.log('[DEBUG] Handling redirect without query param')
+          const redirectDestination = shouldRedirectNotSignedIn
+            ? `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(context.resolvedUrl)}`
+            : ROUTES.HOME
+          console.log(`[DEBUG] Redirect destination: ${redirectDestination}`)
           return {
             redirect: {
-              destination: shouldRedirectNotSignedIn
-                ? `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(context.resolvedUrl)}`
-                : ROUTES.HOME,
+              destination: redirectDestination,
               permanent: false,
             },
           }
         }
 
         const shouldFetchUserAttributes = isSignedIn && !options?.skipSsrAuthContext
+        console.log(`[DEBUG] Should fetch user attributes: ${shouldFetchUserAttributes}`)
         const [userAttributes, getServerSidePropsResult] = await Promise.all([
           shouldFetchUserAttributes ? fetchUserAttributes(contextSpec) : Promise.resolve(null),
           getServerSidePropsFn({
@@ -129,21 +160,33 @@ export const amplifyGetServerSideProps = <
           }),
         ])
 
+        console.log('[DEBUG] User attributes:', JSON.stringify(userAttributes, null, 2))
+        console.log(
+          '[DEBUG] Get server side props result:',
+          JSON.stringify(getServerSidePropsResult, null, 2),
+        )
+
         if ('props' in getServerSidePropsResult && !options?.skipSsrAuthContext) {
+          console.log('[DEBUG] Returning props with SSR auth context')
+          const finalProps = {
+            ...(await getServerSidePropsResult.props),
+            [ssrAuthContextPropKey]: { isSignedIn, userAttributes },
+          }
+          console.log('[DEBUG] Final props:', JSON.stringify(finalProps, null, 2))
           return {
-            props: {
-              // props could be a promise, so we need to await it, if it is not a promise, it will be resolved immediately
-              ...(await getServerSidePropsResult.props),
-              [ssrAuthContextPropKey]: { isSignedIn, userAttributes },
-            },
+            props: finalProps,
           } satisfies GetServerSidePropsResult<
             Props & { [ssrAuthContextPropKey]: SsrAuthContextType }
           >
         }
 
+        console.log('[DEBUG] Returning original get server side props result')
         return getServerSidePropsResult
       },
     })
+  }
 
   return wrappedFn
 }
+
+console.log('[DEBUG] File execution completed')

@@ -4,7 +4,6 @@ import React from 'react'
 import ClipboardCopy from '../components/forms/simple-components/ClipboardCopy'
 // import { resetRcApi } from '../frontend/api/api'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 type GetJwtProps = {
   accessToken: string | null
@@ -12,9 +11,10 @@ type GetJwtProps = {
 
 export const getServerSideProps = amplifyGetServerSideProps<GetJwtProps>(
   async ({ getAccessToken }) => {
+    console.log('get-jwt')
+
     return {
       props: {
-        ...(await slovakServerSideTranslations()),
         accessToken: await getAccessToken(),
       },
     }

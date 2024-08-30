@@ -4,7 +4,7 @@ import { clone } from 'lodash'
 
 import { parseRatio } from '../form-utils/ajvFormats'
 
-export function getTaxCalculatorExpression(formula: string) {
+export function getFormCalculatorExpression(formula: string) {
   const parser = new Parser()
 
   // Ratio (e.g. "5/13") is a string that needs to be evaluated.
@@ -36,7 +36,7 @@ export function getTaxCalculatorExpression(formula: string) {
   }
 }
 
-export function calculateTaxCalculatorExpression(
+export function calculateFormCalculatorExpression(
   expression: Expression | null,
   data: GenericObjectType,
 ) {
@@ -55,7 +55,7 @@ export function calculateTaxCalculatorExpression(
   }
 }
 
-export function calculateTaxCalculatorFormula(formula: string, data: GenericObjectType) {
-  const expression = getTaxCalculatorExpression(formula)
-  return calculateTaxCalculatorExpression(expression, data)
+export function calculateFormCalculatorFormula(formula: string, data: GenericObjectType) {
+  const expression = getFormCalculatorExpression(formula)
+  return calculateFormCalculatorExpression(expression, data)
 }

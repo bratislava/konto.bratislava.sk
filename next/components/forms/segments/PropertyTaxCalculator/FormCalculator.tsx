@@ -5,8 +5,8 @@ import {
   CustomComponentPropertyCalculatorProps,
 } from 'forms-shared/generator/uiOptionsTypes'
 import {
-  calculateTaxCalculatorExpression,
-  getTaxCalculatorExpression,
+  calculateFormCalculatorExpression,
+  getFormCalculatorExpression,
 } from 'forms-shared/tax-form/calculators'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
@@ -58,7 +58,7 @@ const Calculator = ({
   const { formData } = useFormState()
   const { widget } = useFormWidget()
 
-  const expression = useMemo(() => getTaxCalculatorExpression(formula), [formula])
+  const expression = useMemo(() => getFormCalculatorExpression(formula), [formula])
 
   const value = useMemo(() => {
     const path = getPath(widget?.id ?? '', dataContextLevelsUp)
@@ -67,7 +67,7 @@ const Calculator = ({
       return null
     }
 
-    return calculateTaxCalculatorExpression(expression, dataAtPath)
+    return calculateFormCalculatorExpression(expression, dataAtPath)
   }, [expression, formData, dataContextLevelsUp, widget?.id])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {

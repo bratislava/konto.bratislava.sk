@@ -65,8 +65,13 @@ export default class ConvertController {
   })
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
-    description: 'Form definition was not found',
-    type: FormDefinitionNotFoundErrorDto,
+    description: 'Form or form definition was not found',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(FormNotFoundErrorDto) },
+        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
+      ],
+    },
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,

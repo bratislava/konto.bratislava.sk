@@ -5,8 +5,8 @@ import {
   getFormCalculatorExpression,
 } from 'forms-shared/form-calculators/calculators'
 import {
-  CustomComponentPropertyCalculator,
-  CustomComponentPropertyCalculatorProps,
+  CustomComponentCalculator,
+  CustomComponentCalculatorProps,
 } from 'forms-shared/generator/uiOptionsTypes'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
@@ -50,9 +50,9 @@ const Calculator = ({
   variant,
   missingFieldsMessage,
   unit,
-}: CustomComponentPropertyCalculator & {
+}: CustomComponentCalculator & {
   isLast: boolean
-  variant: CustomComponentPropertyCalculatorProps['variant']
+  variant: CustomComponentCalculatorProps['variant']
 }) => {
   const formatter = useNumberFormatter()
   const { formData } = useFormState()
@@ -102,11 +102,7 @@ const Calculator = ({
   )
 }
 
-const FormCalculator = ({
-  variant,
-  label,
-  calculators = [],
-}: CustomComponentPropertyCalculatorProps) => {
+const FormCalculator = ({ variant, label, calculators = [] }: CustomComponentCalculatorProps) => {
   const labelClassName = cx('text-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',

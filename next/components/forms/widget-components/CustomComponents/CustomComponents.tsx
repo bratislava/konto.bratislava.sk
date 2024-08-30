@@ -1,9 +1,9 @@
+import FormCalculator from 'components/forms/segments/FormCalculator/FormCalculator'
 import { CustomComponentType } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import Alert from '../../info-components/Alert'
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
-import FormCalculator from '../../segments/PropertyTaxCalculator/FormCalculator'
 import AccordionV2 from '../../simple-components/AccordionV2'
 import Button from '../../simple-components/ButtonNew'
 
@@ -28,7 +28,7 @@ const CustomComponent = ({ component }: { component: CustomComponentType }) => {
     )
   }
 
-  if (component.type === 'propertyTaxCalculator') {
+  if (component.type === 'calculator') {
     return <FormCalculator {...component.props} />
   }
 

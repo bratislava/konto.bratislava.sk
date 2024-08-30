@@ -3,7 +3,7 @@ import React from 'react'
 
 import Alert from '../../info-components/Alert'
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
-import PropertyTaxCalculator from '../../segments/PropertyTaxCalculator/PropertyTaxCalculator'
+import FormCalculator from '../../segments/PropertyTaxCalculator/FormCalculator'
 import AccordionV2 from '../../simple-components/AccordionV2'
 import Button from '../../simple-components/ButtonNew'
 
@@ -29,7 +29,7 @@ const CustomComponent = ({ component }: { component: CustomComponentType }) => {
   }
 
   if (component.type === 'propertyTaxCalculator') {
-    return <PropertyTaxCalculator {...component.props} />
+    return <FormCalculator {...component.props} />
   }
 
   if (component.type === 'alert') {

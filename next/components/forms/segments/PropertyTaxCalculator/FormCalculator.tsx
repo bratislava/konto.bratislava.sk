@@ -102,7 +102,7 @@ const Calculator = ({
   )
 }
 
-const PropertyTaxCalculator = ({
+const FormCalculator = ({
   variant,
   label,
   calculators = [],
@@ -140,4 +140,4 @@ const PropertyTaxCalculator = ({
   )
 }
 
-export default PropertyTaxCalculator
+export default FormCalculator

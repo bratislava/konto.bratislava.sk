@@ -146,11 +146,11 @@ export const useGetContext = () => {
 
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
-      const xmlData = await file.text()
+      const xmlForm = await file.text()
       const response = await formsApi.convertControllerConvertXmlToJson(
-        slug,
         {
-          xmlForm: xmlData,
+          formId,
+          xmlForm,
         },
         { accessToken: 'onlyAuthenticated' },
       )

@@ -42,6 +42,18 @@ function getPath(inputString: string, levelsUp = 0) {
   return withoutRoot
 }
 
+const getDataAtPath = (formData: GenericObjectType, path: string[] | null) => {
+  if (path == null) {
+    return null
+  }
+  // Lodash's get function does not handle empty paths
+  if (path.length === 0) {
+    return formData
+  }
+
+  return get(formData, path) as GenericObjectType
+}
+
 const Calculator = ({
   label,
   formula,
@@ -62,7 +74,7 @@ const Calculator = ({
 
   const value = useMemo(() => {
     const path = getPath(widget?.id ?? '', dataContextLevelsUp)
-    const dataAtPath = path ? (get(formData, path) as GenericObjectType) : null
+    const dataAtPath = getDataAtPath(formData, path)
     if (dataAtPath == null) {
       return null
     }

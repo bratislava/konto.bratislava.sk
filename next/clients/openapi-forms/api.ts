@@ -2527,7 +2527,7 @@ export interface JsonToXmlV2RequestDto {
    * @type {string}
    * @memberof JsonToXmlV2RequestDto
    */
-  formId?: string
+  formId: string
   /**
    * JSON form values, if not provided the form data from the database will be used.
    * @type {object}

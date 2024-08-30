@@ -1,13 +1,13 @@
 import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
 import {
+  calculateFormCalculatorExpression,
+  getFormCalculatorExpression,
+} from 'forms-shared/form-calculators/calculators'
+import {
   CustomComponentPropertyCalculator,
   CustomComponentPropertyCalculatorProps,
 } from 'forms-shared/generator/uiOptionsTypes'
-import {
-  calculateFormCalculatorExpression,
-  getFormCalculatorExpression,
-} from 'forms-shared/tax-form/calculators'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'

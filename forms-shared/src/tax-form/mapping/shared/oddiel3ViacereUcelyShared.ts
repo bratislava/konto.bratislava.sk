@@ -1,7 +1,7 @@
 import { DanZoStaviebViacereUcelyPriznania, TaxFormData, UcelVyuzitiaStavby } from '../../types'
 import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
-import { calculateFormCalculatorFormula } from '../../calculators'
+import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
 
 const getVymeryStaviebPodlaTypu = (

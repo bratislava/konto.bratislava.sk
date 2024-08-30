@@ -70,7 +70,7 @@ const Calculator = ({
   const { formData } = useFormState()
   const { widget } = useFormWidget()
 
-  const expression = useMemo(() => getFormCalculatorExpression(formula), [formula])
+  const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])
 
   const value = useMemo(() => {
     const path = getPath(widget?.id ?? '', dataContextLevelsUp)
@@ -79,7 +79,7 @@ const Calculator = ({
       return null
     }
 
-    return calculateFormCalculatorExpression(expression, dataAtPath)
+    return calculateFormCalculatorExpression(expression, dataAtPath, true)
   }, [expression, formData, dataContextLevelsUp, widget?.id])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {

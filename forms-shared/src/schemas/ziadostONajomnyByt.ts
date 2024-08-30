@@ -470,6 +470,24 @@ const getPrijemSection = (stepType: StepType) => {
           },
         ),
       ]),
+      customComponentsField(
+        {
+          type: 'calculator',
+          props: {
+            variant: 'white',
+            calculators: [
+              {
+                label: 'Súčet všetkých čistých mesačných príjmov dieťaťa',
+                formula: 'maPrijem ? prijemVyska : 0',
+                missingFieldsMessage:
+                  'Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.',
+                unit: '€',
+              },
+            ],
+          },
+        },
+        {},
+      ),
     ])
   }
 
@@ -661,6 +679,39 @@ const getPrijemSection = (stepType: StepType) => {
             [StepType.InyClen]:
               'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
           }[stepType],
+        },
+      },
+      {},
+    ),
+    customComponentsField(
+      {
+        type: 'calculator',
+        props: {
+          variant: 'white',
+          calculators: [
+            {
+              label: {
+                [StepType.Ziadatel]:
+                  'Súčet všetkých čistých mesačných príjmov žiadateľa/žiadateľky',
+                [StepType.ManzelManzelka]:
+                  'Súčet všetkých čistých mesačných príjmov manžela/manželky',
+                [StepType.DruhDruzka]: 'Súčet všetkých čistých mesačných príjmov druha/družky',
+                [StepType.InyClen]:
+                  'Súčet všetkých čistých mesačných príjmov člena/členky domácnosti',
+              }[stepType],
+              formula:
+                'zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;\n' +
+                'samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;\n' +
+                'dochodokSum = dochodok ? dochodokVyska : 0;\n' +
+                'vyzivneSum = vyzivne ? vyzivneVyska : 0;\n' +
+                'davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;\n' +
+                'inePrijmySum = inePrijmy ? inePrijmyVyska : 0;\n' +
+                'zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum',
+              missingFieldsMessage:
+                'Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.',
+              unit: '€',
+            },
+          ],
         },
       },
       {},
@@ -1384,10 +1435,41 @@ export default schema(
     step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
       customComponentsField(
         {
-          type: 'alert',
+          type: 'calculator',
           props: {
-            type: 'info',
-            message: 'Súčeť príjmov TODO',
+            variant: 'white',
+            calculators: [
+              {
+                label: 'Celkový čistý mesačný príjem budúcej domácnosti',
+                formula: `calculateZamestnaniePrijemSum(prijem) = prijem.zamestnanie ? prijem.zamestnaniePrijem : 0;
+calculateSamostatnaZarobkovaCinnostPrijemSum(prijem) = prijem.samostatnaZarobkovaCinnost ? prijem.samostatnaZarobkovaCinnostPrijem : 0;
+calculateDochodokSum(prijem) = prijem.dochodok ? prijem.dochodokVyska : 0;
+calculateVyzivneSum(prijem) = prijem.vyzivne ? prijem.vyzivneVyska : 0;
+calculateDavkaVNezamestnanostiSum(prijem) = prijem.davkaVNezamestnanosti ? prijem.davkaVNezamestnanostiVyska : 0;
+calculateInePrijmySum(prijem) = prijem.inePrijmy ? prijem.inePrijmyVyska : 0;
+
+calculatePrijem(prijem) = calculateZamestnaniePrijemSum(prijem) + calculateSamostatnaZarobkovaCinnostPrijemSum(prijem) + calculateDochodokSum(prijem) + calculateVyzivneSum(prijem) + calculateDavkaVNezamestnanostiSum(prijem) + calculateInePrijmySum(prijem);
+
+calculateDietaPrijem(dieta) = dieta.prijem.maPrijem ? dieta.prijem.prijemVyska : 0;
+sum(a, b) = a + b;
+calculateDetiPrijem(deti) = deti.detiSucastouDomacnosti ? fold(sum, 0, map(calculateDietaPrijem, deti.zoznamDeti)) : 0;
+
+calculateClenPrijem(clen) = calculatePrijem(clen.prijem);
+calculateInychClenovPrijmy(inyClenoviaClenkyDomacnosti) = inyClenoviaClenkyDomacnosti.inyClenoviaClenkySucastouDomacnosti ? fold(sum, 0, map(calculateClenPrijem, inyClenoviaClenkyDomacnosti.zoznamInychClenov)) : 0;
+
+ziadatelPrijem = calculatePrijem(ziadatelZiadatelka.prijem);
+manzelManzelkaPrijem = manzelManzelka.manzelManzelkaSucastouDomacnosti ? calculatePrijem(manzelManzelka.prijem) : 0;
+druhDruzkaPrijem = druhDruzka.druhDruzkaSucastouDomacnosti ? calculatePrijem(druhDruzka.prijem) : 0;
+detiPrijmy = calculateDetiPrijem(deti);
+inyClenoviaPrijmy = calculateInychClenovPrijmy(inyClenoviaClenkyDomacnosti);
+
+ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyClenoviaPrijmy`,
+                missingFieldsMessage:
+                  'Pre zobrazenie celkového čistého mesačného príjmu budúcej domácnosti je potrebné vyplniť správne všetky príjmy.',
+                unit: '€',
+                dataContextLevelsUp: 1,
+              },
+            ],
           },
         },
         {},

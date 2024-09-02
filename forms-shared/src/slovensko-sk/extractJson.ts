@@ -2,6 +2,7 @@ import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
 import { Parser } from 'xml2js'
 import Ajv from 'ajv'
 import { parseSlovenskoSkXmlnsString } from './urls'
+import { GenericObjectType } from '@rjsf/utils'
 
 const baseFormXmlSchema = {
   type: 'object',
@@ -54,11 +55,18 @@ const isBaseFormXml = (data: any): data is BaseFormXml => {
   return ajv.validate(baseFormXmlSchema, data)
 }
 
-export enum ExtractJsonFromSlovenskoSkXmlError {
-  InvalidXml,
-  XmlDoesntMatchSchema,
-  WrongPospId,
-  InvalidJson,
+export class ExtractJsonFromSlovenskoSkXmlError extends Error {
+  constructor(public type: ExtractJsonFromSlovenskoSkXmlErrorType) {
+    super(type)
+    this.name = 'ExtractJsonFromSlovenskoSkXmlError'
+  }
+}
+
+export enum ExtractJsonFromSlovenskoSkXmlErrorType {
+  InvalidXml = 'InvalidXml',
+  XmlDoesntMatchSchema = 'XmlDoesntMatchSchema',
+  WrongPospId = 'WrongPospId',
+  InvalidJson = 'InvalidJson',
 }
 
 /**
@@ -74,25 +82,29 @@ export async function extractJsonFromSlovenskoSkXml(
   try {
     parsedXml = await parser.parseStringPromise(xmlString)
   } catch {
-    throw ExtractJsonFromSlovenskoSkXmlError.InvalidXml
+    throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml)
   }
 
   if (!isBaseFormXml(parsedXml)) {
-    throw ExtractJsonFromSlovenskoSkXmlError.XmlDoesntMatchSchema
+    throw new ExtractJsonFromSlovenskoSkXmlError(
+      ExtractJsonFromSlovenskoSkXmlErrorType.XmlDoesntMatchSchema,
+    )
   }
 
   const parsedXmlnsString = parseSlovenskoSkXmlnsString(parsedXml.eform.$.xmlns)
   if (!parsedXmlnsString) {
-    throw ExtractJsonFromSlovenskoSkXmlError.XmlDoesntMatchSchema
+    throw new ExtractJsonFromSlovenskoSkXmlError(
+      ExtractJsonFromSlovenskoSkXmlErrorType.XmlDoesntMatchSchema,
+    )
   }
 
   if (parsedXmlnsString.pospID !== formDefinition.pospID) {
-    throw ExtractJsonFromSlovenskoSkXmlError.WrongPospId
+    throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.WrongPospId)
   }
 
   try {
-    return JSON.parse(parsedXml.eform.Json[0])
+    return JSON.parse(parsedXml.eform.Json[0]) as GenericObjectType
   } catch {
-    throw ExtractJsonFromSlovenskoSkXmlError.InvalidJson
+    throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidJson)
   }
 }

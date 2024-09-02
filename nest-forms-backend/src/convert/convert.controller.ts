@@ -63,6 +63,8 @@ export default class ConvertController {
     description: 'Return XML form',
     type: String,
   })
+  @ApiExtraModels(FormNotFoundErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',

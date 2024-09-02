@@ -87,7 +87,6 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('5. Check that required inputs are not in error state.', () => {
-          cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
           cy.wait(500)

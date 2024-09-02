@@ -104,7 +104,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
     schemas: ziadostONajomnyByt,
     pospID: '00603481.ziadostONajomnyByt',
-    pospVersion: '1.0',
+    pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,

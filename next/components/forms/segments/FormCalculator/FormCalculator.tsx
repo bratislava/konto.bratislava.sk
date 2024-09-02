@@ -1,13 +1,13 @@
 import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
 import {
-  CustomComponentPropertyCalculator,
-  CustomComponentPropertyCalculatorProps,
-} from 'forms-shared/generator/uiOptionsTypes'
+  calculateFormCalculatorExpression,
+  getFormCalculatorExpression,
+} from 'forms-shared/form-calculators/calculators'
 import {
-  calculateTaxCalculatorExpression,
-  getTaxCalculatorExpression,
-} from 'forms-shared/tax-form/calculators'
+  CustomComponentCalculator,
+  CustomComponentCalculatorProps,
+} from 'forms-shared/generator/uiOptionsTypes'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
@@ -42,6 +42,18 @@ function getPath(inputString: string, levelsUp = 0) {
   return withoutRoot
 }
 
+const getDataAtPath = (formData: GenericObjectType, path: string[] | null) => {
+  if (path == null) {
+    return null
+  }
+  // Lodash's get function does not handle empty paths
+  if (path.length === 0) {
+    return formData
+  }
+
+  return get(formData, path) as GenericObjectType
+}
+
 const Calculator = ({
   label,
   formula,
@@ -50,24 +62,24 @@ const Calculator = ({
   variant,
   missingFieldsMessage,
   unit,
-}: CustomComponentPropertyCalculator & {
+}: CustomComponentCalculator & {
   isLast: boolean
-  variant: CustomComponentPropertyCalculatorProps['variant']
+  variant: CustomComponentCalculatorProps['variant']
 }) => {
   const formatter = useNumberFormatter()
   const { formData } = useFormState()
   const { widget } = useFormWidget()
 
-  const expression = useMemo(() => getTaxCalculatorExpression(formula), [formula])
+  const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])
 
   const value = useMemo(() => {
     const path = getPath(widget?.id ?? '', dataContextLevelsUp)
-    const dataAtPath = path ? (get(formData, path) as GenericObjectType) : null
+    const dataAtPath = getDataAtPath(formData, path)
     if (dataAtPath == null) {
       return null
     }
 
-    return calculateTaxCalculatorExpression(expression, dataAtPath)
+    return calculateFormCalculatorExpression(expression, dataAtPath, true)
   }, [expression, formData, dataContextLevelsUp, widget?.id])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {
@@ -102,11 +114,7 @@ const Calculator = ({
   )
 }
 
-const PropertyTaxCalculator = ({
-  variant,
-  label,
-  calculators = [],
-}: CustomComponentPropertyCalculatorProps) => {
+const FormCalculator = ({ variant, label, calculators = [] }: CustomComponentCalculatorProps) => {
   const labelClassName = cx('text-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',
@@ -140,4 +148,4 @@ const PropertyTaxCalculator = ({
   )
 }
 
-export default PropertyTaxCalculator
+export default FormCalculator

@@ -30,7 +30,7 @@ const vymeraPodlahovejPlochy = number(
 
 const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       variant: 'black',
       calculators: [
@@ -109,7 +109,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
 
 const sumarKalkulacka = customComponentsField(
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       label: 'Sumár',
       variant: 'white',

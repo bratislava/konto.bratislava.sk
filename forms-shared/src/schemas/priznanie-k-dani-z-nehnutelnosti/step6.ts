@@ -71,7 +71,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
 
 const vymeraKalkulacka = customComponentsField(
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       variant: 'black',
       calculators: [

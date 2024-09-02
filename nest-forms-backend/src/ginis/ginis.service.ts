@@ -1,9 +1,11 @@
 import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
+import { InjectQueue } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
+import { Queue } from 'bull'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -62,6 +64,7 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private prismaService: PrismaService,
     private readonly rabbitMqClientService: RabbitmqClientService,
+    @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new Logger('GinisService')
 
@@ -549,11 +552,18 @@ export default class GinisService {
       await this.prismaService.forms.update({
         where: { id: form.id },
         data: {
-          state: FormState.PROCESSING,
+          state: formDefinition.sharepointData
+            ? FormState.SENDING_TO_SHAREPOINT
+            : FormState.PROCESSING,
           ginisState: GinisState.FINISHED,
           error: FormError.NONE,
         },
       })
+
+      if (formDefinition.sharepointData) {
+        await this.sendToSharepoint(form.id)
+      }
+
       if (data.userData.email) {
         // fallback to messageSubject if title can't be parsed
         const formTitle =
@@ -574,5 +584,18 @@ export default class GinisService {
       return new Nack(false)
     }
     return this.nackTrueWithWait(20_000)
+  }
+
+  private async sendToSharepoint(formId: string): Promise<void> {
+    this.logger.log(`Adding form ${formId} to sharepoint queue.`)
+    await this.sharepointQueue.add(
+      {
+        formId,
+      },
+      {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    )
   }
 }

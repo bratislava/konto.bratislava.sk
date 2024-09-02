@@ -9,7 +9,7 @@ import { baDefaultFormStateBehavior } from './defaultFormState'
  * Until https://github.com/rjsf-team/react-jsonschema-form/issues/4081 is resolved this is the only way how to omit
  * extra data from form data.
  */
-export function omitExtraData(schema: RJSFSchema, formData: GenericObjectType) {
+export function omitExtraData(schema: RJSFSchema, formData: GenericObjectType): GenericObjectType {
   const schemaUtils = createSchemaUtils(baRjsfValidator, schema, baDefaultFormStateBehavior)
   const formInstance = new Form({ schema, validator: baRjsfValidator })
 

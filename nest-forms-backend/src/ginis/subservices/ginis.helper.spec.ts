@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, Forms } from '@prisma/client'
+import { Forms } from '@prisma/client'
 
 import {
   FormFilesWithMinio,
@@ -128,24 +128,6 @@ describe('GinisHelper', () => {
       // No exception here - the result is ignored, just logged
 
       expect(spy).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe('isFormInGinisError', () => {
-    it('should return true', async () => {
-      helper['formsService'].getUniqueForm = jest
-        .fn()
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce({ error: FormError.GINIS_SEND_ERROR } as Forms)
-      expect(await helper.isFormInGinisError('xx')).toBeTruthy()
-      expect(await helper.isFormInGinisError('xx')).toBeTruthy()
-    })
-
-    it('should return false', async () => {
-      helper['formsService'].getUniqueForm = jest.fn().mockResolvedValueOnce({
-        error: FormError.FILES_NOT_YET_SCANNED,
-      } as Forms)
-      expect(await helper.isFormInGinisError('xx')).toBeFalsy()
     })
   })
 

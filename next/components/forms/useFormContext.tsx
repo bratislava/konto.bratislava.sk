@@ -1,3 +1,4 @@
+import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import {
@@ -30,6 +31,7 @@ export type FormServerContext = {
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
+  strapiForm: FormBaseFragment | null | undefined
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {

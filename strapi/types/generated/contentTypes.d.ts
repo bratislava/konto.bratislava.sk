@@ -667,7 +667,7 @@ export interface ApiFormForm extends Schema.CollectionType {
   attributes: {
     slug: Attribute.UID & Attribute.Required
     moreInformationUrl: Attribute.String
-    landingPage: Attribute.Component<'blocks.form-landing-page'> & Attribute.Required
+    landingPage: Attribute.Component<'blocks.form-landing-page'>
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::form.form', 'oneToOne', 'admin::user'> & Attribute.Private

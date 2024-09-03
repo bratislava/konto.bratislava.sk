@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, forwardRef, ReactNode, useContext, useState } from 'react'
 import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
 
+import { environment } from '../../../environment'
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
@@ -73,8 +74,16 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
   )
 
   const { statusBarConfiguration } = useStatusBarContext()
-  return statusBarTextDissmissed !== statusBarConfiguration.content &&
-    statusBarConfiguration.content ? (
+
+  const displayStatusBar =
+    statusBarConfiguration.content &&
+    statusBarTextDissmissed !== statusBarConfiguration.content &&
+    !environment.featureToggles.hideStatusbar
+  if (!displayStatusBar) {
+    return null
+  }
+
+  return (
     <div
       ref={forwardedRef}
       className={cx('w-full text-white', {
@@ -82,7 +91,6 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
         'bg-gray-700': statusBarConfiguration.variant === 'info',
       })}
-      data-cy="info-bar"
     >
       <SectionContainer>
         <div className="flex justify-between py-4">
@@ -104,5 +112,5 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
         </div>
       </SectionContainer>
     </div>
-  ) : null
+  )
 })

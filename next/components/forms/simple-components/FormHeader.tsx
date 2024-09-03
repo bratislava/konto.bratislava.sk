@@ -28,7 +28,7 @@ const FormHeader = () => {
         <div className="mx-auto flex max-w-screen-lg justify-between">
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
-            {strapiForm?.moreInformationUrl && (
+            {strapiForm?.moreInformationUrl ? (
               <Link
                 className="text-p1-underline w-max"
                 href={strapiForm.moreInformationUrl}
@@ -36,7 +36,7 @@ const FormHeader = () => {
               >
                 {t('form_header.services_link')}
               </Link>
-            )}
+            ) : null}
           </div>
           <div className="hidden h-full shrink-0 gap-3 lg:flex">
             {!isReadonly && (

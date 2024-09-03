@@ -65,7 +65,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           <div className="mx-auto flex max-w-screen-lg justify-between">
             <div className="flex flex-col gap-2 lg:gap-4">
               <h1 className="text-h1-form">{formDefinition.title}</h1>
-              {strapiForm.moreInformationUrl && (
+              {strapiForm.moreInformationUrl ? (
                 <Link
                   className="text-p1-underline w-max"
                   href={strapiForm.moreInformationUrl}
@@ -73,7 +73,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
                 >
                   {t('form_header.services_link')}
                 </Link>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

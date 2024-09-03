@@ -25,7 +25,11 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
         })
 
-        it('1. Checking "Applicant" step validation.', () => {
+        it('1. Press fill form button.', () => {
+          cy.dataCy('form-landing-page-fill-form-button').click()
+        })
+
+        it('2. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
@@ -36,7 +40,7 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('2. Filling out the "Applicant" step.', () => {
+        it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
@@ -59,14 +63,14 @@ describe('F04 -', { testIsolation: false }, () => {
           })
         })
 
-        it('3. Going to registration.', () => {
+        it('4. Going to registration.', () => {
           cy.get('[data-cy=mobile-account-button]').click()
           cy.dataCy('Registrácia-menu-item').click()
           cy.url().should('include', '/registracia')
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
 
-        it('4. Filling out the registration form.', () => {
+        it('5. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
@@ -86,18 +90,18 @@ describe('F04 -', { testIsolation: false }, () => {
           })
         })
 
-        it('5. Check that required inputs are not in error state.', () => {
+        it('6. Check that required inputs are not in error state.', () => {
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible') //.matchImage()
           cy.wait(500)
           cy.submitForm('register-form')
         })
 
-        it('6. Submitting the form and checking the redirection to original form.', () => {
+        it('7. Submitting the form and checking the redirection to original form.', () => {
           cy.check2FAPage(emailHash)
         })
 
-        it('7. Logout user.', () => {
+        it('8. Logout user.', () => {
           cy.logOutUser()
         })
       })

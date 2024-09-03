@@ -30,6 +30,7 @@ const FormLandingPageButton = (props: FormLandingPageCardProps) => {
         onPress={props.onPress}
         isLoading={props.isLoading}
         fullWidthMobile
+        data-cy="form-landing-page-fill-form-button"
       >
         {props.buttonLabel}
       </ButtonNew>

@@ -23,7 +23,7 @@
       "type": "component",
       "repeatable": false,
       "component": "blocks.form-landing-page",
-      "required": true
+      "required": false
     }
   }
 }

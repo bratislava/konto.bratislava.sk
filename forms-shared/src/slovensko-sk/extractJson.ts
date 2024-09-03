@@ -16,12 +16,8 @@ const baseFormXmlSchema = {
             xmlns: {
               type: 'string',
             },
-            'xmlns:xsi': {
-              type: 'string',
-              const: 'http://www.w3.org/2001/XMLSchema-instance',
-            },
           },
-          required: ['xmlns', 'xmlns:xsi'],
+          required: ['xmlns'],
         },
         Json: {
           type: 'array',
@@ -42,7 +38,6 @@ type BaseFormXml = {
   eform: {
     $: {
       xmlns: string
-      'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
     }
     Json: [string]
   }

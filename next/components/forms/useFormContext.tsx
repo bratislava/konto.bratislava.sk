@@ -31,7 +31,7 @@ export type FormServerContext = {
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
-  strapiForm: FormBaseFragment | null | undefined
+  strapiForm: FormBaseFragment | null
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {

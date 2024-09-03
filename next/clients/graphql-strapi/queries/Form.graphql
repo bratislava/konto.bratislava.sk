@@ -1,0 +1,59 @@
+fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
+    __typename
+    id
+    title
+    text
+    buttonLabel
+    url
+}
+
+fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
+    __typename
+    title
+    text
+    buttonLabel
+}
+
+fragment FormLandingPage on ComponentBlocksFormLandingPage {
+    text
+    linkCtas {
+        ...FormLandingPageLinkCta
+    }
+    formCta {
+        ...FormLandingPageFormCta
+    }
+}
+
+fragment FormBase on Form {
+    slug
+    moreInformationUrl
+}
+
+fragment FormWithLandingPage on Form {
+    ...FormBase
+    landingPage {
+        ...FormLandingPage
+    }
+}
+
+query FormBaseBySlug($slug: String!) {
+    forms(filters: { slug: { eq: $slug } }) {
+        data {
+            id
+            attributes {
+                ...FormBase
+            }
+        }
+    }
+}
+
+query FormWithLandingPageBySlug($slug: String!) {
+    forms(filters: { slug: { eq: $slug } }) {
+        data {
+            id
+            attributes {
+                ...FormWithLandingPage
+            }
+        }
+    }
+}

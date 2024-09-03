@@ -804,9 +804,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       },
     },
     "ui:hideError": true,
-    "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady",
-    },
+    "ui:options": {},
     "zahrada": {
       "dovodyZalozenia": {
         "ui:label": false,
@@ -1399,9 +1397,7 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       ],
     },
     "ui:hideError": true,
-    "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/predzahradky",
-    },
+    "ui:options": {},
     "ziadatel": {
       "adresa": {
         "mestoPsc": {
@@ -15074,7 +15070,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
     },
     "ui:hideError": true,
     "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru",
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
     },
@@ -16598,7 +16593,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
     },
     "ui:hideError": true,
     "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti",
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
     },

@@ -55,7 +55,7 @@ const zakladDane = number(
 
 const zakladDaneKalkulacka = customComponentsField(
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       variant: 'black',
       calculators: [

@@ -17,10 +17,7 @@ export default schema(
   {
     title: 'Predzáhradky',
   },
-  {
-    moreInformationUrl:
-      'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/predzahradky',
-  },
+  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       object(

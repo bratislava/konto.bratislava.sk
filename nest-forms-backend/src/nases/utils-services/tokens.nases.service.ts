@@ -12,6 +12,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
@@ -44,6 +45,8 @@ import {
 export default class NasesUtilsService {
   private readonly logger: Logger
 
+  private readonly privateKey: string
+
   constructor(
     private readonly convertService: ConvertService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -52,6 +55,11 @@ export default class NasesUtilsService {
     private taxService: TaxService,
   ) {
     this.logger = new Logger('NasesUtilsService')
+
+    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
+    this.privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
+      .split(String.raw`\n`)
+      .join('\n')
   }
 
   private tokenValidation(
@@ -130,88 +138,48 @@ export default class NasesUtilsService {
   }
 
   createUserJwtToken(oboToken: string): string {
-    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
-    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
-      .split(String.raw`\n`)
-      .join('\n')
-    const header = {
-      alg: 'RS256',
-      cty: 'JWT',
-    }
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
-    const jti = uuidv1()
     const payload = {
-      exp,
-      jti,
+      jti: uuidv1(),
       obo: oboToken,
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
-    )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+      header: {
+        alg: 'RS256',
+        cty: 'JWT',
+      },
+    }
+
+    return jwt.sign(payload, this.privateKey, options)
   }
 
   createTechnicalAccountJwtToken(): string {
-    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
-    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
-      .split(String.raw`\n`)
-      .join('\n')
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
     const payload = {
       sub: process.env.SUB_NASES_TECHNICAL_ACCOUNT,
-      exp,
-      jti,
+      jti: uuidv1(),
       obo: null,
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
-    )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+    }
+
+    return jwt.sign(payload, this.privateKey, options)
   }
 
   createAdministrationJwtToken(): string {
-    // https://stackoverflow.com/questions/74131595/error-error1e08010cdecoder-routinesunsupported-with-google-auth-library
-    const privateKey = (process.env.API_TOKEN_PRIVATE ?? '')
-      .split(String.raw`\n`)
-      .join('\n')
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
     const payload = {
-      exp,
-      jti,
+      jti: uuidv1(),
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
-    )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const singature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${singature}`
+
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+    }
+
+    return jwt.sign(payload, this.privateKey, options)
   }
 
   async getUserInfo(bearerToken: string): Promise<ResponseGdprDataDto> {
@@ -473,7 +441,7 @@ export default class NasesUtilsService {
   }
 
   async sendMessageNases(
-    jwt: string,
+    jwtToken: string,
     data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
@@ -488,7 +456,7 @@ export default class NasesUtilsService {
         },
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         },
       )
@@ -529,7 +497,7 @@ export default class NasesUtilsService {
   }
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
-    const jwt = this.createTechnicalAccountJwtToken()
+    const jwtToken = this.createTechnicalAccountJwtToken()
     const result = await axios
       .get(
         `${
@@ -537,7 +505,7 @@ export default class NasesUtilsService {
         }/api/edesk/messages/search?correlation_id=${formId}`,
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         },
       )

@@ -1,29 +1,11 @@
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import cx from 'classnames'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren } from 'react'
 
 import FormMarkdown from '../info-components/FormMarkdown'
 import { WidgetSpacingContextProvider } from './useWidgetSpacingContext'
 import WidgetWrapper from './WidgetWrapper'
-
-/* TODO: Remove when all schemas on server are replaced */
-type LegacyObjectFieldUiOptions = {
-  objectDisplay?: 'columns'
-  objectColumnRatio?: string
-}
-
-/* TODO: Remove when all schemas on server are replaced */
-const convertLegacyUiOptions = (uiOptions: ObjectFieldUiOptions | LegacyObjectFieldUiOptions) => {
-  if (uiOptions.objectDisplay === 'columns' && typeof uiOptions.objectColumnRatio === 'string') {
-    return {
-      columns: true,
-      columnsRatio: uiOptions.objectColumnRatio,
-    } satisfies ObjectFieldUiOptions
-  }
-
-  return uiOptions as ObjectFieldUiOptions
-}
 
 const getPropertySpacing = (isInColumnObject: boolean, isFirst: boolean, isLast: boolean) => {
   // The column object itself has spacing, therefore its children should not have one
@@ -66,12 +48,13 @@ const ColumnDisplay = ({
  * This implementation removes `TitleFieldTemplate` and `DescriptionFieldTemplate` from the
  * implementation and displays them directly.
  */
-const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
-  const options = useMemo(() => {
-    const uiOptions = getUiOptions(uiSchema) as ObjectFieldUiOptions
-    return convertLegacyUiOptions(uiOptions)
-  }, [uiSchema])
-
+const BAObjectFieldTemplate = ({
+  idSchema,
+  properties,
+  schema,
+  uiSchema,
+}: ObjectFieldTemplateProps) => {
+  const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
   const defaultSpacing = {
     wrapper: {},
     boxed: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
@@ -84,6 +67,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
   return (
     <WidgetWrapper id={idSchema.$id} options={options} defaultSpacing={defaultSpacing}>
       <fieldset className={fieldsetClassname} data-cy={`fieldset-${idSchema.$id}`}>
+        {schema.title && <h2 className="text-h2 mb-3">{schema.title}</h2>}
         {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
         {options.description && (
           <div className="text-p2 mb-3 whitespace-pre-wrap">

@@ -167,6 +167,9 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
 }
 
 const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
+  GinisID: {
+    type: 'mag_number',
+  },
   Meno: {
     type: 'json_path',
     info: 'osobneUdaje.menoPriezvisko.meno',
@@ -234,6 +237,9 @@ const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapVal
 }
 
 const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumnMapValue> = {
+  GinisID: {
+    type: 'mag_number',
+  },
   Meno: {
     type: 'json_path',
     info: 'osobneUdaje.menoPriezvisko.meno',
@@ -312,6 +318,9 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   prefix: 'druhDruzka' | 'manzelManzelka',
 ): Record<string, SharepointColumnMapValue> => {
   return {
+    GinisID: {
+      type: 'mag_number',
+    },
     Meno: {
       type: 'json_path',
       info: `${prefix}.osobneUdaje.menoPriezvisko.meno`,

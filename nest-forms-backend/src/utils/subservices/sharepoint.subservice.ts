@@ -367,7 +367,6 @@ export default class SharepointSubservice {
       )
     }
 
-    this.logger.log(result)
     return result
   }
 

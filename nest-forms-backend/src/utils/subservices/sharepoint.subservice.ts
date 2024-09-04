@@ -136,37 +136,38 @@ export default class SharepointSubservice {
     jsonDataExtraDataOmitted: Prisma.JsonValue,
     accessToken: string,
     fields: SharepointDataAllColumnMappingsToFields,
-    originalRecordId: number,
-  ): Promise<void> {
-    const allPromises = Object.entries(sharepointDataOneToMany).flatMap(
+  ): Promise<Record<string, number[]>> {
+    const result: Record<string, number[]> = {}
+    const allPromises = Object.entries(sharepointDataOneToMany).map(
       async ([key, value]) => {
+        result[value.originalTableId] = []
+
         const recordsArray = getArrayForOneToMany(
           { ...form, jsonDataExtraDataOmitted },
           key,
         )
 
-        return recordsArray.map(async (record) => {
-          const foreignFields: Record<string, any> = {}
-          foreignFields[value.originalTableId] = originalRecordId
-
+        const recordPromises = recordsArray.map(async (record) => {
           const valuesForFieldsOneToMany = getValuesForFields(
             value,
             { ...form, title: formTitle },
             record,
-            fields.oneToMany[value.databaseName].fieldMap,
-            foreignFields,
+            fields.oneToMany.fieldMaps[value.databaseName].fieldMap,
           )
 
-          await this.postDataToSharepoint(
+          const { id } = await this.postDataToSharepoint(
             value.databaseName,
             accessToken,
             valuesForFieldsOneToMany,
           )
+          result[value.originalTableId].push(id)
         })
+        await Promise.all(recordPromises)
       },
     )
 
     await Promise.all(allPromises)
+    return result
   }
 
   public async postNewRecord(formId: string): Promise<void> {
@@ -227,29 +228,29 @@ export default class SharepointSubservice {
         fields,
       )
       Object.entries(oneToOneAdded).forEach(([key, id]) => {
-        valuesForFields[
-          `${fields.oneToOne.oneToOneOriginalTableFields[key]}Id`
-        ] = id
+        valuesForFields[`${fields.oneToOne.originalTableFields[key]}Id`] = id
       })
     }
 
-    const { id } = await this.postDataToSharepoint(
-      sharepointData.databaseName,
-      accessToken,
-      valuesForFields,
-    )
-
     if (sharepointData.oneToMany) {
-      await this.handleOneToMany(
+      const oneToManyAdded = await this.handleOneToMany(
         sharepointData.oneToMany,
         form,
         formTitle,
         jsonDataExtraDataOmitted,
         accessToken,
         fields,
-        id,
       )
+      Object.entries(oneToManyAdded).forEach(([key, ids]) => {
+        valuesForFields[`${fields.oneToMany.originalTableFields[key]}Id`] = ids
+      })
     }
+
+    await this.postDataToSharepoint(
+      sharepointData.databaseName,
+      accessToken,
+      valuesForFields,
+    )
 
     await this.prismaService.forms.update({
       where: {
@@ -312,35 +313,46 @@ export default class SharepointSubservice {
     )
     const result: SharepointDataAllColumnMappingsToFields = {
       fieldMap: fieldMapBasic,
-      oneToMany: {},
+      oneToMany: {
+        fieldMaps: {},
+        originalTableFields: {},
+      },
       oneToOne: {
         fieldMaps: {},
-        oneToOneOriginalTableFields: {},
+        originalTableFields: {},
       },
     }
 
     if (sharepointData.oneToMany) {
+      result.oneToMany.originalTableFields = await this.mapColumnsToFields(
+        Object.values(sharepointData.oneToMany).map(
+          (record) => record.originalTableId,
+        ),
+        accessToken,
+        sharepointData.databaseName,
+      )
+
       await Promise.all(
         Object.values(sharepointData.oneToMany).map(async (value) => {
-          const oneToManyFields = await this.mapColumnsToFields(
-            [...Object.keys(value.columnMap), value.originalTableId],
-            accessToken,
-            value.databaseName,
-          )
-          result.oneToMany[value.databaseName] = { fieldMap: oneToManyFields }
+          result.oneToMany.fieldMaps[value.databaseName] = {
+            fieldMap: await this.mapColumnsToFields(
+              Object.keys(value.columnMap),
+              accessToken,
+              value.databaseName,
+            ),
+          }
         }),
       )
     }
 
     if (sharepointData.oneToOne) {
-      result.oneToOne.oneToOneOriginalTableFields =
-        await this.mapColumnsToFields(
-          Object.values(sharepointData.oneToOne).map(
-            (record) => record.originalTableId,
-          ),
-          accessToken,
-          sharepointData.databaseName,
-        )
+      result.oneToOne.originalTableFields = await this.mapColumnsToFields(
+        Object.values(sharepointData.oneToOne).map(
+          (record) => record.originalTableId,
+        ),
+        accessToken,
+        sharepointData.databaseName,
+      )
 
       await Promise.all(
         Object.values(sharepointData.oneToOne).map(async (value) => {
@@ -355,6 +367,7 @@ export default class SharepointSubservice {
       )
     }
 
+    this.logger.log(result)
     return result
   }
 

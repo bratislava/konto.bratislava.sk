@@ -124,9 +124,7 @@ describe('getValuesForFields', () => {
         field3: 'field3_col',
         field4: 'field4_col',
         field5: 'field5_col',
-        field6: 'field6_col',
       },
-      { field6: 'field6Val' },
     )
 
     expect(result).toEqual({
@@ -134,7 +132,6 @@ describe('getValuesForFields', () => {
       field2_col: true,
       field3_col: 'formTitle',
       field4_col: 'ginisIdValue',
-      field6_colId: 'field6Val',
     })
   })
 
@@ -180,7 +177,6 @@ describe('getValuesForFields', () => {
           field5: 'field5_col',
           field6: 'field6_col',
         },
-        { field6: 'field6Val' },
       )
       expect(true).toBeFalsy()
     } catch (error) {
@@ -264,8 +260,6 @@ describe('getValuesForFields', () => {
           if (!exampleForm.sharepointFieldMap) {
             throw new Error('Missing sharepointFieldMap')
           }
-          const foreignFields: Record<string, any> = {}
-          foreignFields[value.originalTableId] = '456'
 
           const valuesForFieldsOneToMany = getValuesForFields(
             value,
@@ -275,8 +269,7 @@ describe('getValuesForFields', () => {
               title: 'FormTitle',
             },
             record,
-            exampleForm.sharepointFieldMap.oneToMany[value.databaseName].fieldMap,
-            foreignFields,
+            exampleForm.sharepointFieldMap.oneToMany.fieldMaps[value.databaseName].fieldMap,
           )
           expect(valuesForFieldsOneToMany).toMatchSnapshot()
         })

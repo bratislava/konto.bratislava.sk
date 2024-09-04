@@ -417,12 +417,12 @@ export const ziadostONajomnyBytSharepointData = {
   oneToMany: {
     'deti.zoznamDeti': {
       databaseName: 'dtb_NajomneByvanieDieta',
-      originalTableId: 'Ziadatel',
+      originalTableId: 'Deti',
       columnMap: defaultColumnMapNajomneByvanieDieta,
     },
     'inyClenoviaClenkyDomacnosti.zoznamInychClenov': {
       databaseName: 'dtb_NajomneByvanieIniClenovia',
-      originalTableId: 'Ziadatel',
+      originalTableId: 'IniClenovia',
       columnMap: defaultColumnMapNajomneByvanieIniClenovia,
     },
   },

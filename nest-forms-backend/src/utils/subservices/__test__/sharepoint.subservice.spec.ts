@@ -197,10 +197,13 @@ describe('SharepointSubservice', () => {
 
       expect(result).toEqual({
         fieldMap: { Col1: 'Field1' },
-        oneToMany: {},
+        oneToMany: {
+          fieldMaps: {},
+          originalTableFields: {},
+        },
         oneToOne: {
           fieldMaps: {},
-          oneToOneOriginalTableFields: {},
+          originalTableFields: {},
         },
       })
     })
@@ -244,24 +247,28 @@ describe('SharepointSubservice', () => {
       const expected: SharepointDataAllColumnMappingsToFields = {
         fieldMap: { original1: 'original1_val' },
         oneToMany: {
-          otmdb1: {
-            fieldMap: {
-              otm1: 'otm1_val',
-              otmOriginalId1: 'otmOriginalId1_val',
+          fieldMaps: {
+            otmdb1: {
+              fieldMap: {
+                otm1: 'otm1_val',
+              },
+            },
+            otmdb2: {
+              fieldMap: {
+                otm2: 'otm2_val',
+              },
             },
           },
-          otmdb2: {
-            fieldMap: {
-              otm2: 'otm2_val',
-              otmOriginalId2: 'otmOriginalId2_val',
-            },
+          originalTableFields: {
+            otmOriginalId1: 'otmOriginalId1_val',
+            otmOriginalId2: 'otmOriginalId2_val',
           },
         },
         oneToOne: {
           fieldMaps: {
             otodb1: { fieldMap: { oto1: 'oto1_val' } },
           },
-          oneToOneOriginalTableFields: { otoOriginalId1: 'otoOriginalId1_val' },
+          originalTableFields: { otoOriginalId1: 'otoOriginalId1_val' },
         },
       }
       expect(result).toEqual(expected)
@@ -351,7 +358,9 @@ describe('SharepointSubservice', () => {
           schemas: {},
         } as unknown as FormDefinition)
       service['postDataToSharepoint'] = jest.fn().mockResolvedValue({ id: 123 })
-      service['handleOneToMany'] = jest.fn()
+      service['handleOneToMany'] = jest
+        .fn()
+        .mockResolvedValue({ otm1: 1, otm2: 2 })
       service['handleOneToOne'] = jest
         .fn()
         .mockResolvedValue({ oto1: 1, oto2: 2 })

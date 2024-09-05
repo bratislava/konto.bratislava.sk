@@ -172,7 +172,6 @@ export type StepUiOptions = {
 }
 
 export type SchemaUiOptions = {
-  moreInformationUrl?: string
   titlePath?: string
   titleFallback?: string
 }

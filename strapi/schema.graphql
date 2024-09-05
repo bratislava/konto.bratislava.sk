@@ -363,7 +363,7 @@ input FloatFilterInput {
 
 type Form {
   createdAt: DateTime
-  landingPage: ComponentBlocksFormLandingPage!
+  landingPage: ComponentBlocksFormLandingPage
   moreInformationUrl: String
   slug: String!
   updatedAt: DateTime

@@ -10,6 +10,7 @@ describe('RF03 -', { testIsolation: false }, () => {
         beforeEach(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
           cy.hideNavbar(device)
+          cy.dataCy('form-landing-page-fill-form-button').click()
         })
 
         it('1. Registration modal is redirecting to registration page.', () => {

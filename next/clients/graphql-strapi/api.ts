@@ -49,6 +49,87 @@ export type BooleanFilterInput = {
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type ComponentBlocksFormLandingPage = {
+  __typename?: 'ComponentBlocksFormLandingPage'
+  formCta: ComponentBlocksFormLandingPageFormCta
+  id: Scalars['ID']['output']
+  linkCtas?: Maybe<Array<Maybe<ComponentBlocksFormLandingPageLinkCta>>>
+  text?: Maybe<Scalars['String']['output']>
+}
+
+export type ComponentBlocksFormLandingPageLinkCtasArgs = {
+  filters?: InputMaybe<ComponentBlocksFormLandingPageLinkCtaFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksFormLandingPageFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageFiltersInput>>>
+  formCta?: InputMaybe<ComponentBlocksFormLandingPageFormCtaFiltersInput>
+  linkCtas?: InputMaybe<ComponentBlocksFormLandingPageLinkCtaFiltersInput>
+  not?: InputMaybe<ComponentBlocksFormLandingPageFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksFormLandingPageFormCta = {
+  __typename?: 'ComponentBlocksFormLandingPageFormCta'
+  buttonLabel: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksFormLandingPageFormCtaFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageFormCtaFiltersInput>>>
+  buttonLabel?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksFormLandingPageFormCtaFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageFormCtaFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksFormLandingPageFormCtaInput = {
+  buttonLabel?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksFormLandingPageInput = {
+  formCta?: InputMaybe<ComponentBlocksFormLandingPageFormCtaInput>
+  id?: InputMaybe<Scalars['ID']['input']>
+  linkCtas?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageLinkCtaInput>>>
+  text?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksFormLandingPageLinkCta = {
+  __typename?: 'ComponentBlocksFormLandingPageLinkCta'
+  buttonLabel: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  text?: Maybe<Scalars['String']['output']>
+  title: Scalars['String']['output']
+  url: Scalars['String']['output']
+}
+
+export type ComponentBlocksFormLandingPageLinkCtaFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageLinkCtaFiltersInput>>>
+  buttonLabel?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksFormLandingPageLinkCtaFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksFormLandingPageLinkCtaFiltersInput>>>
+  text?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+  url?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksFormLandingPageLinkCtaInput = {
+  buttonLabel?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  text?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+  url?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentBlocksHelpCategory = {
   __typename?: 'ComponentBlocksHelpCategory'
   id: Scalars['ID']['output']
@@ -291,6 +372,50 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']['input']>
 }
 
+export type Form = {
+  __typename?: 'Form'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  landingPage?: Maybe<ComponentBlocksFormLandingPage>
+  moreInformationUrl?: Maybe<Scalars['String']['output']>
+  slug: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type FormEntity = {
+  __typename?: 'FormEntity'
+  attributes?: Maybe<Form>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type FormEntityResponse = {
+  __typename?: 'FormEntityResponse'
+  data?: Maybe<FormEntity>
+}
+
+export type FormEntityResponseCollection = {
+  __typename?: 'FormEntityResponseCollection'
+  data: Array<FormEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type FormFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<FormFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  landingPage?: InputMaybe<ComponentBlocksFormLandingPageFiltersInput>
+  moreInformationUrl?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<FormFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<FormFiltersInput>>>
+  slug?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type FormInput = {
+  landingPage?: InputMaybe<ComponentBlocksFormLandingPageInput>
+  moreInformationUrl?: InputMaybe<Scalars['String']['input']>
+  slug?: InputMaybe<Scalars['String']['input']>
+}
+
 export type General = {
   __typename?: 'General'
   alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
@@ -320,11 +445,15 @@ export type GeneralInput = {
 }
 
 export type GenericMorph =
+  | ComponentBlocksFormLandingPage
+  | ComponentBlocksFormLandingPageFormCta
+  | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
   | ComponentGeneralAlert
   | ContentReleasesRelease
   | ContentReleasesReleaseAction
+  | Form
   | General
   | HelpPage
   | I18NLocale
@@ -480,6 +609,7 @@ export type Mutation = {
   changePassword?: Maybe<UsersPermissionsLoginPayload>
   createContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
   createContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
+  createForm?: Maybe<FormEntityResponse>
   createUploadFile?: Maybe<UploadFileEntityResponse>
   createUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Create a new role */
@@ -488,6 +618,7 @@ export type Mutation = {
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse
   deleteContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
   deleteContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
+  deleteForm?: Maybe<FormEntityResponse>
   deleteGeneral?: Maybe<GeneralEntityResponse>
   deleteHelpPage?: Maybe<HelpPageEntityResponse>
   deleteTax?: Maybe<TaxEntityResponse>
@@ -511,6 +642,7 @@ export type Mutation = {
   updateContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
   updateContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   updateFileInfo: UploadFileEntityResponse
+  updateForm?: Maybe<FormEntityResponse>
   updateGeneral?: Maybe<GeneralEntityResponse>
   updateHelpPage?: Maybe<HelpPageEntityResponse>
   updateTax?: Maybe<TaxEntityResponse>
@@ -537,6 +669,10 @@ export type MutationCreateContentReleasesReleaseActionArgs = {
   data: ContentReleasesReleaseActionInput
 }
 
+export type MutationCreateFormArgs = {
+  data: FormInput
+}
+
 export type MutationCreateUploadFileArgs = {
   data: UploadFileInput
 }
@@ -558,6 +694,10 @@ export type MutationDeleteContentReleasesReleaseArgs = {
 }
 
 export type MutationDeleteContentReleasesReleaseActionArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteFormArgs = {
   id: Scalars['ID']['input']
 }
 
@@ -625,6 +765,11 @@ export type MutationUpdateFileInfoArgs = {
   info?: InputMaybe<FileInfoInput>
 }
 
+export type MutationUpdateFormArgs = {
+  data: FormInput
+  id: Scalars['ID']['input']
+}
+
 export type MutationUpdateGeneralArgs = {
   data: GeneralInput
 }
@@ -686,6 +831,8 @@ export type Query = {
   contentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   contentReleasesReleaseActions?: Maybe<ContentReleasesReleaseActionEntityResponseCollection>
   contentReleasesReleases?: Maybe<ContentReleasesReleaseEntityResponseCollection>
+  form?: Maybe<FormEntityResponse>
+  forms?: Maybe<FormEntityResponseCollection>
   general?: Maybe<GeneralEntityResponse>
   helpPage?: Maybe<HelpPageEntityResponse>
   i18NLocale?: Maybe<I18NLocaleEntityResponse>
@@ -718,6 +865,16 @@ export type QueryContentReleasesReleaseActionsArgs = {
 
 export type QueryContentReleasesReleasesArgs = {
   filters?: InputMaybe<ContentReleasesReleaseFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryFormArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryFormsArgs = {
+  filters?: InputMaybe<FormFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
@@ -1199,6 +1356,125 @@ export type UsersPermissionsUserRelationResponseCollection = {
   data: Array<UsersPermissionsUserEntity>
 }
 
+export type FormLandingPageLinkCtaFragment = {
+  __typename: 'ComponentBlocksFormLandingPageLinkCta'
+  id: string
+  title: string
+  text?: string | null
+  buttonLabel: string
+  url: string
+}
+
+export type FormLandingPageFormCtaFragment = {
+  __typename: 'ComponentBlocksFormLandingPageFormCta'
+  title: string
+  text?: string | null
+  buttonLabel: string
+}
+
+export type FormLandingPageFragment = {
+  __typename?: 'ComponentBlocksFormLandingPage'
+  text?: string | null
+  linkCtas?: Array<{
+    __typename: 'ComponentBlocksFormLandingPageLinkCta'
+    id: string
+    title: string
+    text?: string | null
+    buttonLabel: string
+    url: string
+  } | null> | null
+  formCta: {
+    __typename: 'ComponentBlocksFormLandingPageFormCta'
+    title: string
+    text?: string | null
+    buttonLabel: string
+  }
+}
+
+export type FormBaseFragment = {
+  __typename?: 'Form'
+  slug: string
+  moreInformationUrl?: string | null
+}
+
+export type FormWithLandingPageFragment = {
+  __typename?: 'Form'
+  slug: string
+  moreInformationUrl?: string | null
+  landingPage?: {
+    __typename?: 'ComponentBlocksFormLandingPage'
+    text?: string | null
+    linkCtas?: Array<{
+      __typename: 'ComponentBlocksFormLandingPageLinkCta'
+      id: string
+      title: string
+      text?: string | null
+      buttonLabel: string
+      url: string
+    } | null> | null
+    formCta: {
+      __typename: 'ComponentBlocksFormLandingPageFormCta'
+      title: string
+      text?: string | null
+      buttonLabel: string
+    }
+  } | null
+}
+
+export type FormBaseBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input']
+}>
+
+export type FormBaseBySlugQuery = {
+  __typename?: 'Query'
+  forms?: {
+    __typename?: 'FormEntityResponseCollection'
+    data: Array<{
+      __typename?: 'FormEntity'
+      id?: string | null
+      attributes?: { __typename?: 'Form'; slug: string; moreInformationUrl?: string | null } | null
+    }>
+  } | null
+}
+
+export type FormWithLandingPageBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input']
+}>
+
+export type FormWithLandingPageBySlugQuery = {
+  __typename?: 'Query'
+  forms?: {
+    __typename?: 'FormEntityResponseCollection'
+    data: Array<{
+      __typename?: 'FormEntity'
+      id?: string | null
+      attributes?: {
+        __typename?: 'Form'
+        slug: string
+        moreInformationUrl?: string | null
+        landingPage?: {
+          __typename?: 'ComponentBlocksFormLandingPage'
+          text?: string | null
+          linkCtas?: Array<{
+            __typename: 'ComponentBlocksFormLandingPageLinkCta'
+            id: string
+            title: string
+            text?: string | null
+            buttonLabel: string
+            url: string
+          } | null> | null
+          formCta: {
+            __typename: 'ComponentBlocksFormLandingPageFormCta'
+            title: string
+            text?: string | null
+            buttonLabel: string
+          }
+        } | null
+      } | null
+    }>
+  } | null
+}
+
 export type HelpItemFragment = {
   __typename?: 'ComponentBlocksHelpItem'
   id: string
@@ -1286,6 +1562,53 @@ export type TaxQuery = {
   } | null
 }
 
+export const FormBaseFragmentDoc = gql`
+  fragment FormBase on Form {
+    slug
+    moreInformationUrl
+  }
+`
+export const FormLandingPageLinkCtaFragmentDoc = gql`
+  fragment FormLandingPageLinkCta on ComponentBlocksFormLandingPageLinkCta {
+    __typename
+    id
+    title
+    text
+    buttonLabel
+    url
+  }
+`
+export const FormLandingPageFormCtaFragmentDoc = gql`
+  fragment FormLandingPageFormCta on ComponentBlocksFormLandingPageFormCta {
+    __typename
+    title
+    text
+    buttonLabel
+  }
+`
+export const FormLandingPageFragmentDoc = gql`
+  fragment FormLandingPage on ComponentBlocksFormLandingPage {
+    text
+    linkCtas {
+      ...FormLandingPageLinkCta
+    }
+    formCta {
+      ...FormLandingPageFormCta
+    }
+  }
+  ${FormLandingPageLinkCtaFragmentDoc}
+  ${FormLandingPageFormCtaFragmentDoc}
+`
+export const FormWithLandingPageFragmentDoc = gql`
+  fragment FormWithLandingPage on Form {
+    ...FormBase
+    landingPage {
+      ...FormLandingPage
+    }
+  }
+  ${FormBaseFragmentDoc}
+  ${FormLandingPageFragmentDoc}
+`
 export const HelpItemFragmentDoc = gql`
   fragment HelpItem on ComponentBlocksHelpItem {
     id
@@ -1318,6 +1641,32 @@ export const TaxFragmentDoc = gql`
     currentYearTaxInPreparationTitle
     displayCurrentYearTaxInPreparation
   }
+`
+export const FormBaseBySlugDocument = gql`
+  query FormBaseBySlug($slug: String!) {
+    forms(filters: { slug: { eq: $slug } }) {
+      data {
+        id
+        attributes {
+          ...FormBase
+        }
+      }
+    }
+  }
+  ${FormBaseFragmentDoc}
+`
+export const FormWithLandingPageBySlugDocument = gql`
+  query FormWithLandingPageBySlug($slug: String!) {
+    forms(filters: { slug: { eq: $slug } }) {
+      data {
+        id
+        attributes {
+          ...FormWithLandingPage
+        }
+      }
+    }
+  }
+  ${FormWithLandingPageFragmentDoc}
 `
 export const HelpPageDocument = gql`
   query HelpPage {
@@ -1356,6 +1705,37 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    FormBaseBySlug(
+      variables: FormBaseBySlugQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<FormBaseBySlugQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<FormBaseBySlugQuery>(FormBaseBySlugDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'FormBaseBySlug',
+        'query',
+        variables,
+      )
+    },
+    FormWithLandingPageBySlug(
+      variables: FormWithLandingPageBySlugQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<FormWithLandingPageBySlugQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<FormWithLandingPageBySlugQuery>(
+            FormWithLandingPageBySlugDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'FormWithLandingPageBySlug',
+        'query',
+        variables,
+      )
+    },
     HelpPage(
       variables?: HelpPageQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,

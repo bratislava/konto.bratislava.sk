@@ -108,6 +108,11 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG,
       ) === 'true',
+    hideStatusbar:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR,
+      ) === 'true',
   },
   formsMimetypes: assertEnv(
     'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',

@@ -39,20 +39,6 @@ export default class GinisHelper {
   }
 
   /**
-   * @param formId Id of the form.
-   * @returns true if the error is set to GINIS error, or the form does not exist.
-   */
-  async isFormInGinisError(formId: string): Promise<boolean> {
-    // TODOERIKQUESTION
-    return this.formsService
-      .getUniqueForm(formId)
-      .then(
-        (form) => form === null || form.error === FormError.GINIS_SEND_ERROR,
-      )
-    // We are not checking if the state is ERROR as well, because that might be overwritten by some other file upload.
-  }
-
-  /**
    * @param pospId posp id of form definition, the id by which the form is registered in NASES.
    * @returns properties for ginis-automation register submission - determines the official who processes the form further
    */

@@ -29,7 +29,7 @@
   "dependencies": {
     "@bratislava/ginis-sdk": "^0.5.0",
     "@golevelup/nestjs-rabbitmq": "^5.3.0",
-    "@golevelup/ts-jest": "^0.5.0",
+    "@golevelup/ts-jest": "^0.5.4",
     "@nestjs/bull": "^10.1.1",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.3.8",
@@ -62,7 +62,7 @@
     "mailgun.js": "^9.3.0",
     "mime-types": "^2.1.35",
     "nestjs-minio-client": "^2.2.0",
-    "npm-check-updates": "^16.14.20",
+    "npm-check-updates": "^17.1.1",
     "passport-headerapikey": "^1.2.2",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",

@@ -171,7 +171,6 @@ describe('RF01 -', { testIsolation: false }, () => {
           it('1. Submitting wrong value.', () => {
             cy.visit('/zabudnute-heslo')
             cy.hideNavbar(device)
-            cy.hideInfoBar()
 
             cy.dataCy('forgotten-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).type('test')

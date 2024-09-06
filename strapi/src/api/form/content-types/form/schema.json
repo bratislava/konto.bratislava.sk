@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "forms",
+  "info": {
+    "singularName": "form",
+    "pluralName": "forms",
+    "displayName": "Form",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "required": true
+    },
+    "moreInformationUrl": {
+      "type": "string"
+    },
+    "landingPage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.form-landing-page",
+      "required": false
+    }
+  }
+}

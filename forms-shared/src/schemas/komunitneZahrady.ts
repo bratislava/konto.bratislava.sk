@@ -47,10 +47,7 @@ export default schema(
   {
     title: 'Komunitné záhrady',
   },
-  {
-    moreInformationUrl:
-      'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady',
-  },
+  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       object(

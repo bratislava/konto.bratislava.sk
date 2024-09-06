@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_blocks_form_landing_pages",
+  "info": {
+    "displayName": "Form landing page",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "richtext",
+      "required": false
+    },
+    "linkCtas": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.form-landing-page-link-cta"
+    },
+    "formCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "blocks.form-landing-page-form-cta",
+      "required": true
+    }
+  }
+}

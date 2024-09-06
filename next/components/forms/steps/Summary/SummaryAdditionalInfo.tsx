@@ -11,7 +11,7 @@ const SummaryAdditionalInfo = () => {
   const { formDefinition } = useFormContext()
   const { formData } = useFormState()
   const additionalInfo = useMemo(
-    () => renderFormAdditionalInfo(formDefinition, formData),
+    () => renderFormAdditionalInfo(formDefinition, formData, true),
     [formDefinition, formData],
   )
 

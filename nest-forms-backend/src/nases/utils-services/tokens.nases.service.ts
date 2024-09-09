@@ -13,6 +13,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
@@ -331,7 +332,12 @@ export default class NasesUtilsService {
     }
     if (!isSigned) {
       try {
-        message = await this.convertService.convertJsonToXmlForForm(form, true)
+        const messageXmlObject =
+          await this.convertService.convertJsonToXmlObjectForForm(form)
+        message = buildSlovenskoSkXml(messageXmlObject, {
+          pretty: false,
+          headless: true,
+        })
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

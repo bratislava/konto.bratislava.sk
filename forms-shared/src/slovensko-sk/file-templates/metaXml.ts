@@ -1,6 +1,6 @@
 import { FormDefinitionSlovenskoSk } from '../../definitions/formDefinitionTypes'
-import { slovenskoSkXmlBuilder } from '../xmlBuilder'
 import { getSlovenskoSkMetaIdentifier } from '../urls'
+import { buildSlovenskoSkXml } from '../xmlBuilder'
 
 export const getMetaXml = (formDefinition: FormDefinitionSlovenskoSk, validFrom: string) => {
   const metaData = {
@@ -29,5 +29,5 @@ export const getMetaXml = (formDefinition: FormDefinitionSlovenskoSk, validFrom:
     },
   }
 
-  return slovenskoSkXmlBuilder.buildObject(metaData)
+  return buildSlovenskoSkXml(metaData, { headless: false, pretty: true })
 }

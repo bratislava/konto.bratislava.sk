@@ -1,3 +1,4 @@
+import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 import Editor from '@monaco-editor/react'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
@@ -5,19 +6,18 @@ import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
 import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { useTranslation } from 'next-i18next'
 import { useQueryState } from 'nuqs'
-import React, { Fragment, useMemo, useState, useRef, useEffect } from 'react'
+import React, { Fragment, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
+import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { downloadBlob } from '../../frontend/utils/general'
+import Button from './simple-components/ButtonNew'
 import ThemedForm from './ThemedForm'
 import { FormFileUploadContext } from './useFormFileUpload'
 import { FormStateContext } from './useFormState'
 import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
-import Button from './simple-components/ButtonNew'
-import { downloadBlob } from '../../frontend/utils/general'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { useTranslation } from 'next-i18next'
-import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 
 export type FormsPlaygroundProps = {
   formDefinitions: FormDefinition[]
@@ -33,7 +33,12 @@ type FormPlaygroundProvidersProps = {
   children: React.ReactNode
 }
 
-const FormPlaygroundProviders = ({ formData, files, setFiles, children }: FormPlaygroundProvidersProps) => {
+const FormPlaygroundProviders = ({
+  formData,
+  files,
+  setFiles,
+  children,
+}: FormPlaygroundProvidersProps) => {
   const formFileUploadContextValue = useMemo(
     () => ({
       removeFiles: (fileIds: string[]) => {
@@ -103,7 +108,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   }, [allForms, slug])
 
   const defaultFormData = useMemo(
-    () => selectedForm ? baGetDefaultFormStateStable(selectedForm.schemas.schema, {}) : {},
+    () => (selectedForm ? baGetDefaultFormStateStable(selectedForm.schemas.schema, {}) : {}),
     [selectedForm],
   )
 
@@ -210,22 +215,25 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     }
   }
 
-  const formOptions = useMemo(() => [
-    {
-      label: 'Regular Forms',
-      options: formDefinitions.map((form) => ({
-        value: form.slug,
-        label: form.title || form.slug,
-      })),
-    },
-    {
-      label: 'Dev Forms',
-      options: devFormDefinitions.map((form) => ({
-        value: form.slug,
-        label: form.title || form.slug,
-      })),
-    },
-  ], [formDefinitions, devFormDefinitions])
+  const formOptions = useMemo(
+    () => [
+      {
+        label: 'Forms',
+        options: formDefinitions.map((form) => ({
+          value: form.slug,
+          label: form.title || form.slug,
+        })),
+      },
+      {
+        label: 'Dev Forms',
+        options: devFormDefinitions.map((form) => ({
+          value: form.slug,
+          label: form.title || form.slug,
+        })),
+      },
+    ],
+    [formDefinitions, devFormDefinitions],
+  )
 
   const exampleOptions: SelectOption[] = useMemo(() => {
     if (!selectedForm) return []
@@ -239,20 +247,19 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     ]
   }, [selectedForm])
 
-
   return (
-    <FormPlaygroundProviders
-      formData={formData}
-      files={files}
-      setFiles={setFiles}
-    >
+    <FormPlaygroundProviders formData={formData} files={files} setFiles={setFiles}>
       <div className="flex flex-col lg:flex-row">
         <div className="w-full p-4 lg:sticky lg:top-0 lg:h-screen lg:w-1/3 lg:overflow-y-auto">
           <SelectField
             options={formOptions}
-            value={selectedForm ? formOptions
-              .flatMap((group) => group.options)
-              .find((option) => option.value === selectedForm.slug) : null}
+            value={
+              selectedForm
+                ? formOptions
+                    .flatMap((group) => group.options)
+                    .find((option) => option.value === selectedForm.slug)
+                : null
+            }
             onChange={handleFormSelect}
             label="Select Form"
             className="mb-4"
@@ -283,19 +290,11 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
             }}
           />
 
-          <div className="flex gap-2 mt-4">
-            <Button
-              onPress={exportJson}
-              variant="black-solid"
-              startIcon={<DownloadIcon />}
-            >
+          <div className="mt-4 flex gap-2">
+            <Button onPress={exportJson} variant="black-solid" startIcon={<DownloadIcon />}>
               Export JSON
             </Button>
-            <Button
-              onPress={triggerImportJson}
-              variant="black-outline"
-              startIcon={<UploadIcon />}
-            >
+            <Button onPress={triggerImportJson} variant="black-outline" startIcon={<UploadIcon />}>
               Import JSON
             </Button>
             <input
@@ -308,21 +307,25 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           </div>
         </div>
         <div className="w-full p-4 lg:mx-auto lg:w-2/3 lg:max-w-[800px]">
-        {selectedForm ?          <ThemedForm
-            schema={selectedForm.schemas.schema}
-            uiSchema={selectedForm.schemas.uiSchema}
-            formData={formData}
-            onChange={(e) => {
-              setFormData(e.formData)
-              setJsonInput(JSON.stringify(e.formData, null, 2))
-            }}
-            noHtml5Validate
-            showErrorList={false}
-            {...baFormDefaults}
-          >
-            {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-            <></>
-          </ThemedForm> : null}
+          {selectedForm ? (
+            <ThemedForm
+              schema={selectedForm.schemas.schema}
+              uiSchema={selectedForm.schemas.uiSchema}
+              formData={formData}
+              onChange={(e) => {
+                setFormData(e.formData)
+                setJsonInput(JSON.stringify(e.formData, null, 2))
+              }}
+              noHtml5Validate
+              showErrorList={false}
+              omitExtraData
+              liveOmit
+              {...baFormDefaults}
+            >
+              {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+              <></>
+            </ThemedForm>
+          ) : null}
         </div>
       </div>
     </FormPlaygroundProviders>

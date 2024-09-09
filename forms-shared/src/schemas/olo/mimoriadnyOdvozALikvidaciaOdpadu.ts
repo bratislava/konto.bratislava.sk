@@ -1,8 +1,10 @@
 import {
+  arrayField,
   checkbox,
   conditionalFields,
   datePicker,
   input,
+  markdownText,
   object,
   radioGroup,
   schema,
@@ -12,159 +14,6 @@ import {
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createCondition, createStringOptions } from '../../generator/helpers'
-
-const infoOOdpadeFields = [
-  input(
-    'miestoDodania',
-    { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-    { helptext: 'Presná adresa' },
-  ),
-  radioGroup(
-    'druhOdpadu',
-    {
-      title: 'Vyberte druh odpadu',
-      required: true,
-      type: 'string',
-      options: createStringOptions([
-        'Zmesový komunálny odpad',
-        'Jedlé oleje a tuky',
-        'Kuchynský biologicky rozložiteľný odpad',
-        'Biologicky rozložiteľný odpad',
-        'Papier',
-        'Plasty/kovové obaly a VKM',
-        'Sklo',
-      ]).map((option) => ({
-        ...option,
-        description:
-          option.title === 'Jedlé oleje a tuky'
-            ? 'Dostupné iba pre právnické osoby a správcovské spoločnosti'
-            : undefined,
-      })),
-    },
-    { variant: 'boxed', orientations: 'column' },
-  ),
-  conditionalFields(createCondition([[['druhOdpadu'], { const: 'Zmesový komunálny odpad' }]]), [
-    select(
-      'objemNadobyZmesovyKomunalnyOdpad',
-      {
-        title: 'Vyberte objem nádoby',
-        required: true,
-        options: createStringOptions(
-          [
-            '120 l zberná nádoba',
-            '240 l zberná nádoba',
-            '1100 l zberná nádoba',
-            '3000 l polopodzemný kontajner',
-            '5000 l polopodzemný kontajner',
-          ],
-          false,
-        ),
-      },
-      {},
-    ),
-  ]),
-  conditionalFields(
-    createCondition([[['druhOdpadu'], { const: 'Kuchynský biologicky rozložiteľný odpad' }]]),
-    [
-      select(
-        'objemNadobyKuchynskyBiologicky',
-        {
-          title: 'Vyberte objem nádoby',
-          required: true,
-          options: createStringOptions(
-            ['23 l zberná nádoba', '120 l zberná nádoba', '240 l zberná nádoba'],
-            false,
-          ),
-        },
-        { helptext: '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.' },
-      ),
-    ],
-  ),
-  conditionalFields(
-    createCondition([
-      [['ziadatelTyp'], { enum: ['PravnickaOsoba', 'SpravcovskaSpolocnost'] }],
-      [
-        ['druhOdpadu'],
-        { const: 'Jedlé oleje a tuky (iba pre právnické osoby a správcovské spoločnosti)' },
-      ],
-    ]),
-    [
-      select(
-        'objemNadobyJedleOlejeATuky',
-        {
-          title: 'Vyberte objem nádoby',
-          required: true,
-          options: createStringOptions(['120 l zberná nádoba'], false),
-        },
-        {
-          helptext:
-            'Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na zberné hniezda (prelink).',
-        },
-      ),
-    ],
-  ),
-  conditionalFields(createCondition([[['druhOdpadu'], { const: 'Papier' }]]), [
-    select(
-      'objemNadobyPapier',
-      {
-        title: 'Vyberte objem nádoby',
-        required: true,
-        options: createStringOptions(
-          [
-            '120 l zberná nádoba',
-            '240 l zberná nádoba',
-            '1100 l zberná nádoba',
-            '3000 l polopodzemný kontajner',
-            '5000 l polopodzemný kontajner',
-          ],
-          false,
-        ),
-      },
-      {},
-    ),
-  ]),
-  conditionalFields(createCondition([[['druhOdpadu'], { const: 'Plasty/kovové obaly a VKM' }]]), [
-    select(
-      'objemNadobyPlastyKovoveObaly',
-      {
-        title: 'Vyberte objem nádoby',
-        required: true,
-        options: createStringOptions(
-          [
-            '120 l zberná nádoba',
-            '240 l zberná nádoba',
-            '1100 l zberná nádoba',
-            '3000 l polopodzemný kontajner',
-            '5000 l polopodzemný kontajner',
-          ],
-          false,
-        ),
-      },
-      {},
-    ),
-  ]),
-  conditionalFields(createCondition([[['druhOdpadu'], { const: 'Sklo' }]]), [
-    select(
-      'objemNadobySklo',
-      {
-        title: 'Vyberte objem nádoby',
-        required: true,
-        options: createStringOptions(
-          [
-            '120 l zberná nádoba',
-            '240 l zberná nádoba',
-            '1100 l zberná nádoba',
-            '1800 l zvon na sklo',
-            '3000 l polopodzemný kontajner',
-            '5000 l polopodzemný kontajner',
-          ],
-          false,
-        ),
-      },
-      {},
-    ),
-  ]),
-]
 
 export default schema(
   {
@@ -267,7 +116,7 @@ export default schema(
                 input(
                   'emailPreFaktury',
                   {
-                    type: 'text',
+                    type: 'email',
                     title: 'E-mail pre zasielanie elektronických faktúr',
                     required: true,
                   },
@@ -280,16 +129,199 @@ export default schema(
       ),
     ]),
     step('sluzba', { title: 'Služba' }, [
-      object('infoOOdpade', { required: true }, {}, infoOOdpadeFields),
+      arrayField(
+        'infoOOdpade',
+        { title: 'Info o odpade', required: true },
+        {
+          variant: 'topLevel',
+          addButtonLabel: 'Pridať ďalší odpad',
+          itemTitle: 'Odpad č. {index}',
+        },
+        [
+          input(
+            'miestoDodania',
+            { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
+            { helptext: 'Presná adresa' },
+          ),
+          select(
+            'druhOdpadu',
+            {
+              title: 'Vyberte druh odpadu',
+              required: true,
+              options: createStringOptions([
+                'Zmesový komunálny odpad',
+                'Kuchynský biologicky rozložiteľný odpad',
+                'Biologicky rozložiteľný odpad',
+                'Jedlé oleje a tuky',
+                'Papier',
+                'Plasty/kovové obaly a nápojové kartóny',
+                'Sklo',
+              ]),
+            },
+            {},
+          ),
+          conditionalFields(
+            createCondition([[['druhOdpadu'], { const: 'Zmesový komunálny odpad' }]]),
+            [
+              select(
+                'objemNadobyZmesovyKomunalnyOdpad',
+                {
+                  title: 'Vyberte objem nádoby',
+                  required: true,
+                  options: createStringOptions(
+                    [
+                      '120 l zberná nádoba',
+                      '240 l zberná nádoba',
+                      '1100 l zberná nádoba',
+                      '3000 l polopodzemný kontajner',
+                      '5000 l polopodzemný kontajner',
+                    ],
+                    false,
+                  ),
+                },
+                {},
+              ),
+            ],
+          ),
+          conditionalFields(
+            createCondition([
+              [['druhOdpadu'], { const: 'Kuchynský biologicky rozložiteľný odpad' }],
+            ]),
+            [
+              select(
+                'objemNadobyKuchynskyBiologicky',
+                {
+                  title: 'Vyberte objem nádoby',
+                  required: true,
+                  options: createStringOptions(
+                    ['23 l zberná nádoba', '120 l zberná nádoba', '240 l zberná nádoba'],
+                    false,
+                  ),
+                },
+                { helptext: '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.' },
+              ),
+            ],
+          ),
+          conditionalFields(createCondition([[['druhOdpadu'], { const: 'Jedlé oleje a tuky' }]]), [
+            select(
+              'objemNadobyJedleOlejeATuky',
+              {
+                title: 'Vyberte objem nádoby',
+                required: true,
+                options: createStringOptions(['120 l zberná nádoba'], false),
+              },
+              {
+                helptext: markdownText(
+                  'Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).',
+                ),
+              },
+            ),
+          ]),
+          conditionalFields(createCondition([[['druhOdpadu'], { const: 'Papier' }]]), [
+            select(
+              'objemNadobyPapier',
+              {
+                title: 'Vyberte objem nádoby',
+                required: true,
+                options: createStringOptions(
+                  [
+                    '120 l zberná nádoba',
+                    '240 l zberná nádoba',
+                    '1100 l zberná nádoba',
+                    '3000 l polopodzemný kontajner',
+                    '5000 l polopodzemný kontajner',
+                  ],
+                  false,
+                ),
+              },
+              {},
+            ),
+          ]),
+          conditionalFields(
+            createCondition([
+              [['druhOdpadu'], { const: 'Plasty/kovové obaly a nápojové kartóny' }],
+            ]),
+            [
+              select(
+                'objemNadobyPlastyKovoveObaly',
+                {
+                  title: 'Vyberte objem nádoby',
+                  required: true,
+                  options: createStringOptions(
+                    [
+                      '120 l zberná nádoba',
+                      '240 l zberná nádoba',
+                      '1100 l zberná nádoba',
+                      '3000 l polopodzemný kontajner',
+                      '5000 l polopodzemný kontajner',
+                    ],
+                    false,
+                  ),
+                },
+                {},
+              ),
+            ],
+          ),
+          conditionalFields(createCondition([[['druhOdpadu'], { const: 'Sklo' }]]), [
+            select(
+              'objemNadobySklo',
+              {
+                title: 'Vyberte objem nádoby',
+                required: true,
+                options: createStringOptions(
+                  [
+                    '120 l zberná nádoba',
+                    '240 l zberná nádoba',
+                    '1100 l zberná nádoba',
+                    '1800 l zvon na sklo',
+                    '3000 l polopodzemný kontajner',
+                    '5000 l polopodzemný kontajner',
+                  ],
+                  false,
+                ),
+              },
+              {},
+            ),
+          ]),
+          conditionalFields(
+            createCondition([[['druhOdpadu'], { const: 'Biologicky rozložiteľný odpad' }]]),
+            [
+              select(
+                'objemNadobyBiologickyRozlozitelny',
+                {
+                  title: 'Vyberte objem nádoby',
+                  required: true,
+                  options: createStringOptions(
+                    ['120 l zberná nádoba', '240 l zberná nádoba'],
+                    false,
+                  ),
+                },
+                {},
+              ),
+            ],
+          ),
+        ],
+      ),
       datePicker(
-        'datumVykonania',
-        { title: 'Preferovaný dátum vykonania služby', required: true },
-        { size: 'medium' },
+        'preferovanyDatum',
+        {
+          title: 'Preferovaný dátum vykonania služby',
+          required: true,
+        },
+        {
+          helptextHeader:
+            'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
+        },
       ),
       textArea(
-        'doplnujuceInformacie',
-        { title: 'Doplňujúce informácie' },
-        { helptext: 'Špecifikujte individuálne požiadavky.' },
+        'doplnujuceInfo',
+        {
+          title: 'Doplňujúce info',
+          required: false,
+        },
+        {
+          helptextHeader: 'Špecifikujte individuálne požiadavky.',
+        },
       ),
     ]),
   ],

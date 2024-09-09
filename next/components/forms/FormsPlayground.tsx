@@ -6,8 +6,9 @@ import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultForm
 import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useQueryState } from 'nuqs'
 import React, { Fragment, useMemo, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import Editor from '@monaco-editor/react'
 import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
+import { v4 as uuidv4 } from 'uuid'
 
 import ThemedForm from './ThemedForm'
 import { FormFileUploadContext } from './useFormFileUpload'
@@ -86,8 +87,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     }
   }
 
-  const handleJsonInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setJsonInput(event.target.value)
+  const handleJsonInputChange = (value: string | undefined) => {
+    if (value) {
+      setJsonInput(value)
+    }
   }
 
   const handleJsonInputBlur = () => {
@@ -149,7 +152,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const exampleOptions: SelectOption[] = useMemo(() => {
     const currentFormExamples = exampleForms[selectedForm.slug] || [];
     return [
-      { value: '', label: 'Select an example' },
+      { value: '', label: 'Empty form' },
       ...currentFormExamples.map((example) => ({
         value: example.name,
         label: example.name,
@@ -159,7 +162,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/3 p-4">
+      <div className="w-full lg:w-1/3 p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
         <SelectField
           options={formOptions}
           value={formOptions.find(option => option.value === selectedForm.slug)}
@@ -176,15 +179,22 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           className="mb-4"
         />
 
-        <textarea
+        <Editor
+          height="400px"
+          defaultLanguage="json"
           value={jsonInput}
           onChange={handleJsonInputChange}
-          onBlur={handleJsonInputBlur}
-          className="h-64 w-full rounded border p-2"
-          placeholder="Enter form data JSON here"
+          onMount={(editor) => {
+            editor.onDidBlurEditorWidget(() => handleJsonInputBlur());
+          }}
+          options={{
+            minimap: { enabled: false },
+            formatOnPaste: true,
+            formatOnType: true,
+          }}
         />
       </div>
-      <div className="w-full lg:w-2/3 p-4">
+      <div className="w-full lg:w-2/3 p-4 lg:max-w-[800px] lg:mx-auto">
         <Fragment key={selectedForm.slug}>
           {/* @ts-ignore */}
           <FormFileUploadContext.Provider value={formFileUploadContextValue}>

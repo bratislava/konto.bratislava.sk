@@ -225,7 +225,9 @@ const useGetContext = () => {
   }
 }
 
-const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormStateProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

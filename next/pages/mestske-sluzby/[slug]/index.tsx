@@ -1,15 +1,37 @@
 import { formsApi } from '@clients/forms'
+import { strapiClient } from '@clients/graphql-strapi'
+import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
+import FormLandingPage, {
+  FormLandingPageProps,
+  FormWithLandingPageRequiredFragment,
+} from '../../../components/forms/FormLandingPage'
+import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
   slug: string
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
+const fetchStrapiForm = async (
+  slug: string,
+): Promise<FormWithLandingPageFragment | null | undefined> => {
+  const result = await strapiClient.FormWithLandingPageBySlug({ slug })
+
+  return result.forms?.data?.[0]?.attributes
+}
+
+export const formHasLandingPage = (
+  form: FormWithLandingPageFragment | null | undefined,
+): form is FormWithLandingPageRequiredFragment => {
+  return Boolean(form?.landingPage)
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps, Params>(
   async ({ context, getAccessToken }) => {
     if (!context.params) {
       return { notFound: true }
@@ -21,6 +43,18 @@ export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
       return { notFound: true }
     }
 
+    const strapiForm = await fetchStrapiForm(slug)
+    if (formHasLandingPage(strapiForm)) {
+      return {
+        props: {
+          formDefinition,
+          strapiForm,
+          ...(await slovakServerSideTranslations()),
+        },
+      }
+    }
+
+    // If Strapi form does not have a landing page, create a new form instance and redirect to it directly.
     try {
       const { data: form } = await formsApi.nasesControllerCreateForm(
         {
@@ -47,8 +81,7 @@ export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
       throw error
     }
   },
-  { skipSsrAuthContext: true },
+  {},
 )
 
-const EmptyComponent = () => {}
-export default EmptyComponent
+export default SsrAuthProviderHOC(FormLandingPage)

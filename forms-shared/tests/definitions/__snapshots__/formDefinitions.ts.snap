@@ -804,9 +804,7 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       },
     },
     "ui:hideError": true,
-    "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady",
-    },
+    "ui:options": {},
     "zahrada": {
       "dovodyZalozenia": {
         "ui:label": false,
@@ -1399,9 +1397,7 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       ],
     },
     "ui:hideError": true,
-    "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/predzahradky",
-    },
+    "ui:options": {},
     "ziadatel": {
       "adresa": {
         "mestoPsc": {
@@ -8368,7 +8364,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                       ],
                       "variant": "black",
                     },
-                    "type": "propertyTaxCalculator",
+                    "type": "calculator",
                   },
                 ],
               },
@@ -8492,7 +8488,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                           ],
                           "variant": "black",
                         },
-                        "type": "propertyTaxCalculator",
+                        "type": "calculator",
                       },
                     ],
                   },
@@ -8879,7 +8875,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                         ],
                         "variant": "black",
                       },
-                      "type": "propertyTaxCalculator",
+                      "type": "calculator",
                     },
                   ],
                 },
@@ -9287,7 +9283,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                     ],
                     "variant": "black",
                   },
-                  "type": "propertyTaxCalculator",
+                  "type": "calculator",
                 },
               ],
             },
@@ -9713,7 +9709,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                       "label": "Sumár",
                       "variant": "white",
                     },
-                    "type": "propertyTaxCalculator",
+                    "type": "calculator",
                   },
                 ],
               },
@@ -9738,7 +9734,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                           ],
                           "variant": "black",
                         },
-                        "type": "propertyTaxCalculator",
+                        "type": "calculator",
                       },
                     ],
                   },
@@ -15074,7 +15070,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
     },
     "ui:hideError": true,
     "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru",
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
     },
@@ -16598,7 +16593,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
     },
     "ui:hideError": true,
     "ui:options": {
-      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti",
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
     },
@@ -17412,6 +17406,11 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       {},
                     ],
                   },
+                  "customComponent9_gRbYIKNcAF": {
+                    "anyOf": [
+                      {},
+                    ],
+                  },
                   "davkaVNezamestnanosti": {
                     "default": false,
                     "oneOf": [
@@ -17892,7 +17891,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                     "title": "Uchádzate sa o pridelenie bezbariérového bytu?",
                     "type": "boolean",
                   },
-                  "customComponent9_gRbYIKNcAF": {
+                  "customComponent10_gRbYIKNcAF": {
                     "anyOf": [
                       {},
                     ],
@@ -18240,7 +18239,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent10_gRbYIKNcAF": {
+                        "customComponent11_gRbYIKNcAF": {
+                          "anyOf": [
+                            {},
+                          ],
+                        },
+                        "customComponent12_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -18640,7 +18644,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent11_gRbYIKNcAF": {
+                        "customComponent13_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -18745,7 +18749,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                           },
                           "then": {
                             "properties": {
-                              "customComponent12_gRbYIKNcAF": {
+                              "customComponent14_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -19053,7 +19057,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent13_gRbYIKNcAF": {
+                        "customComponent15_gRbYIKNcAF": {
+                          "anyOf": [
+                            {},
+                          ],
+                        },
+                        "customComponent16_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -19453,7 +19462,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent14_gRbYIKNcAF": {
+                        "customComponent17_gRbYIKNcAF": {
                           "anyOf": [
                             {},
                           ],
@@ -19646,7 +19655,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent15_gRbYIKNcAF": {
+                                    "customComponent18_gRbYIKNcAF": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -19684,6 +19693,11 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
+                              "customComponent19_gRbYIKNcAF": {
+                                "anyOf": [
+                                  {},
+                                ],
+                              },
                               "maPrijem": {
                                 "default": false,
                                 "oneOf": [
@@ -20015,7 +20029,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent16_gRbYIKNcAF": {
+                              "customComponent20_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20134,7 +20148,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent17_gRbYIKNcAF": {
+                                    "customComponent21_gRbYIKNcAF": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -20408,7 +20422,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent18_gRbYIKNcAF": {
+                              "customComponent22_gRbYIKNcAF": {
+                                "anyOf": [
+                                  {},
+                                ],
+                              },
+                              "customComponent23_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20808,7 +20827,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent19_gRbYIKNcAF": {
+                              "customComponent24_gRbYIKNcAF": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -20951,7 +20970,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                 "title": "Čestné vyhlásenie",
                 "type": "boolean",
               },
-              "customComponent20_gRbYIKNcAF": {
+              "customComponent25_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
@@ -21078,7 +21097,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
           },
           "prijem": {
-            "customComponent15_gRbYIKNcAF": {
+            "customComponent18_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -21087,6 +21106,27 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       "type": "info",
                     },
                     "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
+            "customComponent19_gRbYIKNcAF": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "maPrijem ? prijemVyska : 0",
+                          "label": "Súčet všetkých čistých mesačných príjmov dieťaťa",
+                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                          "unit": "€",
+                        },
+                      ],
+                      "variant": "white",
+                    },
+                    "type": "calculator",
                   },
                 ],
               },
@@ -21131,9 +21171,10 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
             "ui:order": [
               "student",
-              "customComponent15_gRbYIKNcAF",
+              "customComponent18_gRbYIKNcAF",
               "maPrijem",
               "prijemVyska",
+              "customComponent19_gRbYIKNcAF",
             ],
           },
           "sucasneByvanie": {
@@ -21231,7 +21272,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               },
               "ui:widget": "RadioGroup",
             },
-            "customComponent16_gRbYIKNcAF": {
+            "customComponent20_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -21451,7 +21492,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent16_gRbYIKNcAF",
+              "customComponent20_gRbYIKNcAF",
             ],
           },
         },
@@ -21542,7 +21583,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             "ui:widget": "Input",
           },
         },
-        "customComponent12_gRbYIKNcAF": {
+        "customComponent14_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -21643,12 +21684,12 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "datumNarodenia",
           "statnaPrislusnost",
           "rodinnyStav",
-          "customComponent12_gRbYIKNcAF",
+          "customComponent14_gRbYIKNcAF",
           "adresaSkutocnehoPobytu",
         ],
       },
       "prijem": {
-        "customComponent13_gRbYIKNcAF": {
+        "customComponent15_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -21657,6 +21698,33 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                   "type": "info",
                 },
                 "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
+        "customComponent16_gRbYIKNcAF": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov druha/družky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
               },
             ],
           },
@@ -21747,7 +21815,8 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent13_gRbYIKNcAF",
+          "customComponent15_gRbYIKNcAF",
+          "customComponent16_gRbYIKNcAF",
         ],
         "vyzivne": {
           "ui:options": {
@@ -21881,7 +21950,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent14_gRbYIKNcAF": {
+        "customComponent17_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -22101,7 +22170,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent14_gRbYIKNcAF",
+          "customComponent17_gRbYIKNcAF",
         ],
       },
     },
@@ -22200,7 +22269,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
       "zoznamInychClenov": {
         "items": {
           "osobneUdaje": {
-            "customComponent17_gRbYIKNcAF": {
+            "customComponent21_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22301,7 +22370,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "datumNarodenia",
               "statnaPrislusnost",
               "rodinnyStav",
-              "customComponent17_gRbYIKNcAF",
+              "customComponent21_gRbYIKNcAF",
               "vlastnikNehnutelnosti",
               "vlastnikNehnutelnostiDovody",
             ],
@@ -22332,7 +22401,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
             },
           },
           "prijem": {
-            "customComponent18_gRbYIKNcAF": {
+            "customComponent22_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22341,6 +22410,33 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                       "type": "info",
                     },
                     "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
+            "customComponent23_gRbYIKNcAF": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                          "label": "Súčet všetkých čistých mesačných príjmov člena/členky domácnosti",
+                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                          "unit": "€",
+                        },
+                      ],
+                      "variant": "white",
+                    },
+                    "type": "calculator",
                   },
                 ],
               },
@@ -22431,7 +22527,8 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "davkaVNezamestnanostiVyska",
               "inePrijmy",
               "inePrijmyVyska",
-              "customComponent18_gRbYIKNcAF",
+              "customComponent22_gRbYIKNcAF",
+              "customComponent23_gRbYIKNcAF",
             ],
             "vyzivne": {
               "ui:options": {
@@ -22562,7 +22659,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               },
               "ui:widget": "RadioGroup",
             },
-            "customComponent19_gRbYIKNcAF": {
+            "customComponent24_gRbYIKNcAF": {
               "ui:options": {
                 "customComponents": [
                   {
@@ -22782,7 +22879,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent19_gRbYIKNcAF",
+              "customComponent24_gRbYIKNcAF",
             ],
           },
         },
@@ -22941,7 +23038,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         ],
       },
       "prijem": {
-        "customComponent10_gRbYIKNcAF": {
+        "customComponent11_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -22950,6 +23047,33 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                   "type": "info",
                 },
                 "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
+        "customComponent12_gRbYIKNcAF": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov manžela/manželky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
               },
             ],
           },
@@ -23040,7 +23164,8 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent10_gRbYIKNcAF",
+          "customComponent11_gRbYIKNcAF",
+          "customComponent12_gRbYIKNcAF",
         ],
         "vyzivne": {
           "ui:options": {
@@ -23174,7 +23299,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent11_gRbYIKNcAF": {
+        "customComponent13_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -23394,7 +23519,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent11_gRbYIKNcAF",
+          "customComponent13_gRbYIKNcAF",
         ],
       },
     },
@@ -23406,15 +23531,45 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         },
         "ui:widget": "Checkbox",
       },
-      "customComponent20_gRbYIKNcAF": {
+      "customComponent25_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
-                "message": "Súčeť príjmov TODO",
-                "type": "info",
+                "calculators": [
+                  {
+                    "dataContextLevelsUp": 1,
+                    "formula": "calculateZamestnaniePrijemSum(prijem) = prijem.zamestnanie ? prijem.zamestnaniePrijem : 0;
+calculateSamostatnaZarobkovaCinnostPrijemSum(prijem) = prijem.samostatnaZarobkovaCinnost ? prijem.samostatnaZarobkovaCinnostPrijem : 0;
+calculateDochodokSum(prijem) = prijem.dochodok ? prijem.dochodokVyska : 0;
+calculateVyzivneSum(prijem) = prijem.vyzivne ? prijem.vyzivneVyska : 0;
+calculateDavkaVNezamestnanostiSum(prijem) = prijem.davkaVNezamestnanosti ? prijem.davkaVNezamestnanostiVyska : 0;
+calculateInePrijmySum(prijem) = prijem.inePrijmy ? prijem.inePrijmyVyska : 0;
+
+calculatePrijem(prijem) = calculateZamestnaniePrijemSum(prijem) + calculateSamostatnaZarobkovaCinnostPrijemSum(prijem) + calculateDochodokSum(prijem) + calculateVyzivneSum(prijem) + calculateDavkaVNezamestnanostiSum(prijem) + calculateInePrijmySum(prijem);
+
+calculateDietaPrijem(dieta) = dieta.prijem.maPrijem ? dieta.prijem.prijemVyska : 0;
+sum(a, b) = a + b;
+calculateDetiPrijem(deti) = deti.detiSucastouDomacnosti ? fold(sum, 0, map(calculateDietaPrijem, deti.zoznamDeti)) : 0;
+
+calculateClenPrijem(clen) = calculatePrijem(clen.prijem);
+calculateInychClenovPrijmy(inyClenoviaClenkyDomacnosti) = inyClenoviaClenkyDomacnosti.inyClenoviaClenkySucastouDomacnosti ? fold(sum, 0, map(calculateClenPrijem, inyClenoviaClenkyDomacnosti.zoznamInychClenov)) : 0;
+
+ziadatelPrijem = calculatePrijem(ziadatelZiadatelka.prijem);
+manzelManzelkaPrijem = manzelManzelka.manzelManzelkaSucastouDomacnosti ? calculatePrijem(manzelManzelka.prijem) : 0;
+druhDruzkaPrijem = druhDruzka.druhDruzkaSucastouDomacnosti ? calculatePrijem(druhDruzka.prijem) : 0;
+detiPrijmy = calculateDetiPrijem(deti);
+inyClenoviaPrijmy = calculateInychClenovPrijmy(inyClenoviaClenkyDomacnosti);
+
+ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyClenoviaPrijmy",
+                    "label": "Celkový čistý mesačný príjem budúcej domácnosti",
+                    "missingFieldsMessage": "Pre zobrazenie celkového čistého mesačného príjmu budúcej domácnosti je potrebné vyplniť správne všetky príjmy.",
+                    "unit": "€",
+                  },
+                ],
+                "variant": "white",
               },
-              "type": "alert",
+              "type": "calculator",
             },
           ],
         },
@@ -23424,7 +23579,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         "stepQueryParam": "sucet-prijmov-a-cestne-vyhlasenie",
       },
       "ui:order": [
-        "customComponent20_gRbYIKNcAF",
+        "customComponent25_gRbYIKNcAF",
         "cestneVyhlasenie",
       ],
     },
@@ -23734,6 +23889,33 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "CustomComponents",
         },
+        "customComponent9_gRbYIKNcAF": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov žiadateľa/žiadateľky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "davkaVNezamestnanosti": {
           "ui:options": {
             "orientations": "row",
@@ -23820,6 +24002,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "inePrijmy",
           "inePrijmyVyska",
           "customComponent8_gRbYIKNcAF",
+          "customComponent9_gRbYIKNcAF",
         ],
         "vyzivne": {
           "ui:options": {
@@ -23995,7 +24178,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent9_gRbYIKNcAF": {
+        "customComponent10_gRbYIKNcAF": {
           "ui:options": {
             "customComponents": [
               {
@@ -24216,7 +24399,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
           "chronickeOchorenie",
           "existujuceDiagnozy",
           "bezbarierovyByt",
-          "customComponent9_gRbYIKNcAF",
+          "customComponent10_gRbYIKNcAF",
         ],
       },
     },

@@ -16,7 +16,8 @@
     "generate-assets": "ts-node scripts/assets/generate.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
     "build:watch": "tsc --project tsconfig.build.json --watch",
-    "sandbox": "ts-node scripts/sandbox.ts"
+    "sandbox": "ts-node scripts/sandbox.ts",
+    "create-ai-prompt": "ts-node scripts/createAiPrompt.ts"
   },
   "exports": {
     "./*": "./dist/*.js",
@@ -43,7 +44,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-email": "^2.1.6",
+    "react-email": "^3.0.1",
     "react-markdown": "6.0.3",
     "remove-markdown": "^0.5.2",
     "rodnecislo": "^1.6.0",
@@ -62,7 +63,7 @@
     "@types/json-schema": "7.0.15",
     "@types/lodash": "^4.17.7",
     "@types/prompts": "^2.4.9",
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/remove-markdown": "^0.3.4",
     "@types/traverse": "^0.6.37",
@@ -73,6 +74,7 @@
     "archiver": "^7.0.1",
     "autoprefixer": "^10.4.20",
     "classnames": "^2.5.1",
+    "glob": "^11.0.0",
     "inquirer": "^10.1.8",
     "jest": "^29.7.0",
     "jest-image-snapshot": "^6.4.0",

@@ -1,15 +1,26 @@
 import { Builder } from 'xml2js'
+import { GenericObjectType } from '@rjsf/utils'
 
-const builderOptionsBase = {
-  xmldec: {
-    version: '1.0',
-    encoding: 'UTF-8',
+export const buildSlovenskoSkXml = (
+  xmlObject: GenericObjectType,
+  {
+    headless,
+    pretty,
+  }: {
+    headless: boolean
+    pretty: boolean
   },
-  renderOpts: {
-    pretty: true,
-  },
+) => {
+  const builder = new Builder({
+    xmldec: {
+      version: '1.0',
+      encoding: 'UTF-8',
+    },
+    renderOpts: {
+      pretty,
+    },
+    headless,
+  })
+
+  return builder.buildObject(xmlObject)
 }
-
-export const slovenskoSkXmlBuilder = new Builder(builderOptionsBase)
-
-export const slovenskoSkXmlBuilderHeadless = new Builder({ ...builderOptionsBase, headless: true })

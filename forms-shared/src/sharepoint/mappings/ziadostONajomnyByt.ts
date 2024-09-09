@@ -498,7 +498,7 @@ export const ziadostONajomnyBytSharepointData = {
     },
   },
   oneToOne: {
-    'ziadatelZiadatelka': {
+    ziadatelZiadatelka: {
       databaseName: 'dtb_NajomneByvanieZiadatel',
       originalTableId: 'Ziadatel',
       columnMap: columnMapNajomneByvanieZiadatel,

@@ -2,6 +2,23 @@
 
 exports[`getValuesForFields should match snapshots 1`] = `
 {
+  "DatumNarodenia": "1985-03-15",
+  "Email": "jana.novakova@email.com",
+  "GinisID": "MAG123",
+  "MaximalnaVyskaNajomneho": 700,
+  "MenoZiadatela": "Jana",
+  "PreferovanaLokalita": "ruzinov, noveMesto",
+  "PreferovanaVelkost": "3izbovy",
+  "PriezviskoZiadatela": "Nováková",
+  "TelefonneCislo": "+421901234567",
+  "TrvalyPobytMesto": "Bratislava",
+  "TrvalyPobytPsc": "81101",
+  "TrvalyPobytUlicaACislo": "Hlavná 123",
+}
+`;
+
+exports[`getValuesForFields should match snapshots 2`] = `
+{
   "ByvanieVMestskomNajomnomByte": false,
   "ChronickeOchorenie": true,
   "DovodyPodaniaZiadosti": "Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.",
@@ -37,8 +54,9 @@ exports[`getValuesForFields should match snapshots 1`] = `
 }
 `;
 
-exports[`getValuesForFields should match snapshots 2`] = `
+exports[`getValuesForFields should match snapshots 3`] = `
 {
+  "GinisID": "MAG123",
   "SucasneByvaniaRovnakaSituacia": true,
   "TzpPreukaz": true,
   "VlastnikNehnutelnosti": false,
@@ -57,9 +75,10 @@ exports[`getValuesForFields should match snapshots 2`] = `
 }
 `;
 
-exports[`getValuesForFields should match snapshots 3`] = `
+exports[`getValuesForFields should match snapshots 4`] = `
 {
   "ChronickeOchorenie": false,
+  "GinisID": "MAG123",
   "MaPrijem": false,
   "Student": true,
   "SucasneByvanieRovnakeAkoVase": true,
@@ -72,8 +91,9 @@ exports[`getValuesForFields should match snapshots 3`] = `
 }
 `;
 
-exports[`getValuesForFields should match snapshots 4`] = `
+exports[`getValuesForFields should match snapshots 5`] = `
 {
+  "GinisID": "MAG123",
   "MaPrijem": true,
   "MieraFunkcnejPoruchy": "75az100",
   "Student": true,
@@ -88,8 +108,9 @@ exports[`getValuesForFields should match snapshots 4`] = `
 }
 `;
 
-exports[`getValuesForFields should match snapshots 5`] = `
+exports[`getValuesForFields should match snapshots 6`] = `
 {
+  "GinisID": "MAG123",
   "MieraFunkcnejPoruchy": "50az74",
   "SucasneByvanieRovnakeAkoVase": true,
   "TzpPreukaz": true,

@@ -48,12 +48,7 @@ const ColumnDisplay = ({
  * This implementation removes `TitleFieldTemplate` and `DescriptionFieldTemplate` from the
  * implementation and displays them directly.
  */
-const BAObjectFieldTemplate = ({
-  idSchema,
-  properties,
-  schema,
-  uiSchema,
-}: ObjectFieldTemplateProps) => {
+const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
   const defaultSpacing = {
     wrapper: {},
@@ -67,7 +62,6 @@ const BAObjectFieldTemplate = ({
   return (
     <WidgetWrapper id={idSchema.$id} options={options} defaultSpacing={defaultSpacing}>
       <fieldset className={fieldsetClassname} data-cy={`fieldset-${idSchema.$id}`}>
-        {schema.title && <h2 className="text-h2 mb-3">{schema.title}</h2>}
         {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
         {options.description && (
           <div className="text-p2 mb-3 whitespace-pre-wrap">

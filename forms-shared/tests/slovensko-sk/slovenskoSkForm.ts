@@ -12,6 +12,7 @@ import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { validateXml } from '../../test-utils/validateXml'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
 import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
+import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -43,11 +44,12 @@ describe('slovenskoSkForm', () => {
       describe(`${exampleForm.name}`, () => {
         let xmlString: string
         beforeAll(async () => {
-          xmlString = await generateSlovenskoSkXml(
+          const xmlObject = await generateSlovenskoSkXml(
             formDefinition,
             exampleForm.formData,
             exampleForm.serverFiles,
           )
+          xmlString = buildSlovenskoSkXml(xmlObject, {headless: false, pretty: true})
         })
 
         it('XML should match snapshot', async () => {

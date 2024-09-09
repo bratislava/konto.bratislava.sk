@@ -6,7 +6,7 @@ import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { getSlovenskoSkXmlns } from './urls'
 import { slovenskoSkXmlBuilder, slovenskoSkXmlBuilderHeadless } from './xmlBuilder'
 
-function getSlovenskoSkXmlBase(formDefinition: FormDefinitionSlovenskoSk, body: GenericObjectType) {
+function getSlovenskoSkXmlObjectBase(formDefinition: FormDefinitionSlovenskoSk, body: GenericObjectType) {
   return {
     eform: {
       $: {
@@ -18,8 +18,8 @@ function getSlovenskoSkXmlBase(formDefinition: FormDefinitionSlovenskoSk, body: 
   }
 }
 
-export function getEmptySlovenskoSkXml(formDefinition: FormDefinitionSlovenskoSk) {
-  const xml = getSlovenskoSkXmlBase(formDefinition, {
+export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlovenskoSk) {
+  return getSlovenskoSkXmlObjectBase(formDefinition, {
     Json: JSON.stringify({}),
     Summary: {
       Form: {
@@ -30,22 +30,16 @@ export function getEmptySlovenskoSkXml(formDefinition: FormDefinitionSlovenskoSk
     },
     TermsAndConditions: '',
   })
-
-  return slovenskoSkXmlBuilder.buildObject(xml)
 }
 
-export async function generateSlovenskoSkXml(
+export async function generateSlovenskoSkXmlObject(
   formDefinition: FormDefinitionSlovenskoSk,
   formData: GenericObjectType,
   serverFiles?: FormsBackendFile[],
-  headless = false,
 ) {
-  const xml = getSlovenskoSkXmlBase(formDefinition, {
+  return getSlovenskoSkXmlObjectBase(formDefinition, {
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary(formDefinition, formData, serverFiles),
     TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
   })
-
-  const builder = headless ? slovenskoSkXmlBuilderHeadless : slovenskoSkXmlBuilder
-  return builder.buildObject(xml)
 }

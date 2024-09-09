@@ -356,7 +356,8 @@ export default class NasesUtilsService {
     }
     if (!isSigned) {
       try {
-        message = await this.convertService.convertJsonToXmlForForm(form, true)
+        const messageXmlObject = await this.convertService.convertJsonToXmlObjectForForm(form, true)
+        message = buildSlovenskoSkXml(messageXmlObject, {pretty: false, headless: true})
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,

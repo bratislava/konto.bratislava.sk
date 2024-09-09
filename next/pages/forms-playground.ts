@@ -4,13 +4,14 @@ import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampl
 
 import FormsPlayground, { FormsPlaygroundProps } from '../components/forms/FormsPlayground'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { environment } from '../environment'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { isProductionDeployment } from '../frontend/utils/general'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps<FormsPlaygroundProps>(async () => {
-  if (isProductionDeployment()) return { notFound: true }
-
+  if (!environment.featureToggles.developmentForms) {
+    return { notFound: true }
+  }
   return {
     props: {
       formDefinitions,

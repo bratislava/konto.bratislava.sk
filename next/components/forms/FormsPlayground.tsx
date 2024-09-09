@@ -1,3 +1,4 @@
+import Editor from '@monaco-editor/react'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
@@ -6,13 +7,12 @@ import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultForm
 import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useQueryState } from 'nuqs'
 import React, { Fragment, useMemo, useState } from 'react'
-import Editor from '@monaco-editor/react'
-import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
 import { v4 as uuidv4 } from 'uuid'
 
 import ThemedForm from './ThemedForm'
 import { FormFileUploadContext } from './useFormFileUpload'
 import { FormStateContext } from './useFormState'
+import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
 
 export type FormsPlaygroundProps = {
   formDefinitions: FormDefinition[]
@@ -32,7 +32,8 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   )
 
   const selectedForm = useMemo(() => {
-    return allForms.find((form) => form.slug === slug) || allForms[0]
+    const form = allForms.find((form) => form.slug === slug)
+    return form || allForms[0]
   }, [allForms, slug])
 
   const defaultFormData = useMemo(
@@ -43,17 +44,17 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   const [formData, setFormData] = useState(defaultFormData)
   const [jsonInput, setJsonInput] = useState(JSON.stringify(defaultFormData, null, 2))
 
-  const handleFormSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSlug = event.target.value
-    setSlug(newSlug)
-    setSelectedExampleName('')
-    const newDefaultData = baGetDefaultFormStateStable(
-      allForms.find((form) => form.slug === newSlug)!.schemas.schema,
-      {},
-    )
-    setFormData(newDefaultData)
-    setJsonInput(JSON.stringify(newDefaultData, null, 2))
-    setFiles({})
+  const handleFormSelect = (option: SelectOption | null) => {
+    if (option) {
+      const newSlug = option.value
+      setSlug(newSlug)
+      setSelectedExampleName('')
+      const newForm = allForms.find((form) => form.slug === newSlug)!
+      const newDefaultData = baGetDefaultFormStateStable(newForm.schemas.schema, {})
+      setFormData(newDefaultData)
+      setJsonInput(JSON.stringify(newDefaultData, null, 2))
+      setFiles({})
+    }
   }
 
   const handleExampleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -141,40 +142,56 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     }),
     [files],
   )
-  const formOptions: SelectOption[] = useMemo(() => 
-    allForms.map((form) => ({
-      value: form.slug,
-      label: form.title || form.slug,
-    })),
-    [allForms]
-  );
+  const formOptions = useMemo(
+    () => [
+      {
+        label: 'Forms',
+        options: formDefinitions.map((form) => ({
+          value: form.slug,
+          label: form.title || form.slug,
+        })),
+      },
+      {
+        label: 'Dev Forms',
+        options: devFormDefinitions.map((form) => ({
+          value: form.slug,
+          label: form.title || form.slug,
+        })),
+      },
+    ],
+    [formDefinitions, devFormDefinitions],
+  )
 
   const exampleOptions: SelectOption[] = useMemo(() => {
-    const currentFormExamples = exampleForms[selectedForm.slug] || [];
+    const currentFormExamples = exampleForms[selectedForm.slug] || []
     return [
       { value: '', label: 'Empty form' },
       ...currentFormExamples.map((example) => ({
         value: example.name,
         label: example.name,
       })),
-    ];
-  }, [selectedForm.slug, exampleForms]);
+    ]
+  }, [selectedForm.slug, exampleForms])
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="w-full lg:w-1/3 p-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+      <div className="w-full p-4 lg:sticky lg:top-0 lg:h-screen lg:w-1/3 lg:overflow-y-auto">
         <SelectField
           options={formOptions}
-          value={formOptions.find(option => option.value === selectedForm.slug)}
-          onChange={(option) => handleFormSelect({ target: { value: option?.value || '' } } as any)}
+          value={formOptions
+            .flatMap((group) => group.options)
+            .find((option) => option.value === selectedForm.slug)}
+          onChange={handleFormSelect}
           label="Select Form"
           className="mb-4"
         />
 
         <SelectField
           options={exampleOptions}
-          value={exampleOptions.find(option => option.value === selectedExampleName)}
-          onChange={(option) => handleExampleSelect({ target: { value: option?.value || '' } } as any)}
+          value={exampleOptions.find((option) => option.value === selectedExampleName)}
+          onChange={(option) =>
+            handleExampleSelect({ target: { value: option?.value || '' } } as any)
+          }
           label="Select Example"
           className="mb-4"
         />
@@ -185,7 +202,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           value={jsonInput}
           onChange={handleJsonInputChange}
           onMount={(editor) => {
-            editor.onDidBlurEditorWidget(() => handleJsonInputBlur());
+            editor.onDidBlurEditorWidget(() => handleJsonInputBlur())
           }}
           options={{
             minimap: { enabled: false },
@@ -194,7 +211,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           }}
         />
       </div>
-      <div className="w-full lg:w-2/3 p-4 lg:max-w-[800px] lg:mx-auto">
+      <div className="w-full p-4 lg:mx-auto lg:w-2/3 lg:max-w-[800px]">
         <Fragment key={selectedForm.slug}>
           {/* @ts-ignore */}
           <FormFileUploadContext.Provider value={formFileUploadContextValue}>
@@ -211,7 +228,12 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
                 noHtml5Validate
                 showErrorList={false}
                 {...baFormDefaults}
-              />
+              >
+                {/* There must be an empty fragment inside the form, otherwise RJSF renders submit button
+                 * inside the form. */}
+                {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+                <></>
+              </ThemedForm>
             </FormStateContext.Provider>
           </FormFileUploadContext.Provider>
         </Fragment>

@@ -1,5 +1,6 @@
 import { DownloadIcon, UploadIcon } from '@assets/ui-icons'
 import Editor from '@monaco-editor/react'
+import { GenericObjectType } from '@rjsf/utils'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
@@ -27,7 +28,7 @@ export type FormsPlaygroundProps = {
 }
 
 type FormPlaygroundProvidersProps = {
-  formData: any
+  formData: GenericObjectType
   files: Record<string, FileInfo>
   setFiles: React.Dispatch<React.SetStateAction<Record<string, FileInfo>>>
   children: React.ReactNode
@@ -84,8 +85,7 @@ const FormPlaygroundProviders = ({
     // @ts-expect-error - This is a mock implementation for FormFileUploadContext
     // The actual context requires more properties that are not necessary for this playground
     <FormFileUploadContext.Provider value={formFileUploadContextValue}>
-      {/* @ts-expect-error - This is a mock implementation for FormStateContext
-          The actual context might require additional properties or have a different structure */}
+      {/* @ts-expect-error - This is a mock implementation for FormStateContext The actual context might require additional properties or have a different structure */}
       <FormStateContext.Provider value={formStateContextValue}>
         {children}
       </FormStateContext.Provider>
@@ -135,8 +135,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
     }
   }
 
-  const handleExampleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value
+  const handleExampleSelect = (selectedValue: string | null) => {
+    if (!selectedValue) {
+      return
+    }
     setSelectedExampleName(selectedValue)
 
     if (selectedValue === '') {
@@ -160,6 +162,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           ),
         )
       } else {
+        // eslint-disable-next-line no-console
         console.warn(`Example "${selectedValue}" not found for form "${selectedForm.slug}"`)
         setFormData(defaultFormData)
         setJsonInput(JSON.stringify(defaultFormData, null, 2))
@@ -179,6 +182,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
       const parsedData = JSON.parse(jsonInput)
       setFormData(parsedData)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Invalid JSON input')
       setJsonInput(JSON.stringify(formData, null, 2))
     }
@@ -268,9 +272,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           <SelectField
             options={exampleOptions}
             value={exampleOptions.find((option) => option.value === selectedExampleName)}
-            onChange={(option) =>
-              handleExampleSelect({ target: { value: option?.value || '' } } as any)
-            }
+            onChange={(option) => handleExampleSelect(option?.value ?? null)}
             label="Select Example"
             className="mb-4"
           />

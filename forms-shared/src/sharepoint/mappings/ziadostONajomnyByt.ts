@@ -336,27 +336,27 @@ const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumn
   },
   ZamestnaniePrijem: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.zamestnaniePrijem',
+    info: 'prijem.zamestnaniePrijem',
   },
   SamostatnaZarobkovaCinnostPrijem: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.samostatnaZarobkovaCinnostPrijem',
+    info: 'prijem.samostatnaZarobkovaCinnostPrijem',
   },
   DochodokVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.dochodokVyska',
+    info: 'prijem.dochodokVyska',
   },
   VyzivneVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.vyzivneVyska',
+    info: 'prijem.vyzivneVyska',
   },
   DavkaVNezamestnanostiVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.davkaVNezamestnanostiVyska',
+    info: 'prijem.davkaVNezamestnanostiVyska',
   },
   InePrijmyVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.inePrijmyVyska',
+    info: 'prijem.inePrijmyVyska',
   },
   TzpPreukaz: {
     type: 'json_path',

@@ -294,10 +294,10 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
 
           <div className="mt-4 flex gap-2">
             <Button onPress={exportJson} variant="black-solid" startIcon={<DownloadIcon />}>
-              Export JSON
+              {t('menu_list.download_json')}
             </Button>
             <Button onPress={triggerImportJson} variant="black-outline" startIcon={<UploadIcon />}>
-              Import JSON
+              {t('menu_list.upload_json')}
             </Button>
             <input
               type="file"

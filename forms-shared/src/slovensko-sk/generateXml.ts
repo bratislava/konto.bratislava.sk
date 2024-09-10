@@ -20,6 +20,9 @@ function getSlovenskoSkXmlObjectBase(
   }
 }
 
+/**
+ * Generates an empty Slovensko SK XML object that can be built with "xml2js" to create a valid XML.
+ */
 export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlovenskoSk) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
     Json: JSON.stringify({}),
@@ -34,6 +37,9 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
   })
 }
 
+/**
+ * Generates a Slovensko SK XML object that can be built with "xml2js" to create a valid XML.
+ */
 export async function generateSlovenskoSkXmlObject(
   formDefinition: FormDefinitionSlovenskoSk,
   formData: GenericObjectType,

@@ -1,7 +1,7 @@
 import { ExampleForm } from '../types'
 
-const ziadostONajomnyBytExample: ExampleForm = {
-  name: 'ziadostONajomnyBytExample',
+const ziadostONajomBytuExample: ExampleForm = {
+  name: 'ziadostONajomBytuExample',
   formData: {
     ziadatelZiadatelka: {
       osobneUdaje: {
@@ -323,4 +323,4 @@ const ziadostONajomnyBytExample: ExampleForm = {
   },
 }
 
-export default ziadostONajomnyBytExample
+export default ziadostONajomBytuExample

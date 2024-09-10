@@ -17556,10 +17556,6 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
                                 "const": "opustenieSpecialnehoZariadenia",
                                 "title": "Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko",
                               },
-                              {
-                                "const": "ine",
-                                "title": "Iné",
-                              },
                             ],
                           },
                           "minItems": 1,
@@ -21798,7 +21794,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Ak má váš druh/družka nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.",
+          "description": "Uveďte, prosím, priemerný čistý mesačný príjem vášho druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -22510,7 +22506,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Number",
             },
             "ui:options": {
-              "description": "Ak má člen/členka domácnosti nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.",
+              "description": "Uveďte, prosím, priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
               "objectDisplay": "boxed",
               "title": "Príjem",
             },
@@ -23147,7 +23143,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Ak má váš manžel/manželka nepravidelný príjem, uveďte, prosím, priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.",
+          "description": "Uveďte, prosím, priemerný čistý mesačný príjem vášho manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -23984,7 +23980,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Ak máte nepravidelný príjem, uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok a za súčasný rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberali.",
+          "description": "Uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },

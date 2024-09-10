@@ -16841,7 +16841,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matc
 }
 `;
 
-exports[`Form definitions ziadost-o-najomny-byt default form state should match snapshot 1`] = `
+exports[`Form definitions ziadost-o-najom-bytu default form state should match snapshot 1`] = `
 {
   "deti": {
     "detiSucastouDomacnosti": false,
@@ -16893,7 +16893,7 @@ exports[`Form definitions ziadost-o-najomny-byt default form state should match 
 }
 `;
 
-exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
+exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [
@@ -20985,7 +20985,7 @@ exports[`Form definitions ziadost-o-najomny-byt schemas match snapshot 1`] = `
         "type": "object",
       },
     ],
-    "title": "Žiadosť o nájomný byt (TESTOVACIA VERZIA)",
+    "title": "Žiadosť o nájom bytu",
   },
   "uiSchema": {
     "deti": {

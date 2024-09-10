@@ -482,7 +482,7 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   }
 }
 
-export const ziadostONajomnyBytSharepointData = {
+export const ziadostONajomBytuSharepointData = {
   databaseName: 'dtb_NajomneByvanieZiadost',
   columnMap: defaultColumnMapNajomneByvanie,
   oneToMany: {

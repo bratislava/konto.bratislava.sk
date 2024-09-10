@@ -1207,7 +1207,6 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
                 title:
                   'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
               },
-              { value: 'ine', title: 'Iné' },
             ],
             required: true,
           },

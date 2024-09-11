@@ -1,7 +1,7 @@
 import { ExampleForm } from '../types'
 
-const ziadostONajomnyBytExample: ExampleForm = {
-  name: 'ziadostONajomnyBytExample',
+const ziadostONajomBytuExample: ExampleForm = {
+  name: 'ziadostONajomBytuExample',
   formData: {
     ziadatelZiadatelka: {
       osobneUdaje: {
@@ -141,51 +141,26 @@ const ziadostONajomnyBytExample: ExampleForm = {
   sharepointFieldMap: {
     fieldMap: {
       GinisID: 'GinisID',
-      KontaktovanyEmailom: 'KontaktovanyEmailom',
-      Meno: 'ZiadatelMeno',
-      Priezvisko: 'ZiadatelPriezvisko',
-      RodnePriezvisko: 'ZiadatelRodnePriezvisko',
-      DatumNarodenia: 'ZiadatelDatumNarodenia',
-      StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
-      RodinnyStav: 'ZiadatelRodinnyStav',
-      Email: 'ZiadatelEmail',
-      TelefonneCislo: 'ZiadatelTelefonneCislo',
-      TrvalyPobytUlicaACislo: 'ZiadatelTrvalyPobytUlicaACislo',
-      TrvalyPobytMesto: 'ZiadatelTrvalyPobytMesto',
-      TrvalyPobytPsc: 'ZiadatelTrvalyPobytPsc',
-      TrvalyPobytVlastnikNehnutelnosti: 'ZiadatelTrvalyPobytVlastnikNehnu',
-      ByvanieVMestskomNajomnomByte: 'ByvanieVMestskomNajomnomByte',
-      PobytVBratislaveViacAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
-      SkutocnyPobytRovnakyAkoTrvaly: 'ZiadatelSkutocnyPobytRovnakyAkoT',
-      SkutocnyPobytUlica: 'ZiadatelSkutocnyPobytUlica',
-      SkutocnyPobytMesto: 'ZiadatelSkutocnyPobytMesto',
-      SkutocnyPobytPsc: 'ZiadatelSkutocnyPobytPsc',
-      ZamestnaniePrijem: 'ZiadatelZamestnaniePrijem',
-      SamostatnaZarobkovaCinnostPrijem: 'ZiadatelSamostatnaZarobkovaCinno',
-      DochodokVyska: 'ZiadatelDochodokVyska',
-      VyzivneVyska: 'ZiadatelVyzivneVyska',
-      DavkaVNezamestnanostiVyska: 'ZiadatelDavkaVNezamestnanostiVys',
-      InePrijmyVyska: 'ZiadatelInePrijmyVyska',
-      TzpPreukaz: 'ZiadatelFunkcnaPorucha',
-      MieraFunkcnejPoruchy: 'ZiadatelMieraFunkcnejPoruchy',
-      ChronickeOchorenie: 'ChronickeOchorenie',
-      ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
-      BezbarierovyByt: 'ZiadatelBezbarierovyByt',
-      BytovaNudza: 'ZiadatelBytovaNudza',
-      TypByvania: 'ZiadatelTypSkutocnehoByvania',
-      DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
-      RizikoveFaktory: 'RizikoveFaktory',
-      ZoznamRizikovychFaktorov: 'ZoznamRizikovychFaktorov',
-      VekNajstarsiehoClena: 'Vek',
+      MenoZiadatela: 'MenoZiadatela',
+      PriezviskoZiadatela: 'PriezviskoZiadatela',
+      DatumNarodenia: 'DatumNarodenia',
+      Email: 'Email',
+      TelefonneCislo: 'TelefonneCislo',
+      TrvalyPobytUlicaACislo: 'TrvalyPobytUlicaACislo',
+      TrvalyPobytMesto: 'TrvalyPobytMesto',
+      TrvalyPobytPsc: 'TrvalyPobytPsc',
+      SkutocnyPobytUlica: 'SkutocnyPobytUlica',
+      SkutocnyPobytMesto: 'SkutocnyPobytMesto',
+      SkutocnyPobytPsc: 'SkutocnyPobytPsc',
       PreferovanaVelkost: 'PreferovanaVelkost',
       PreferovanaLokalita: 'PreferovanaLokalita',
-      DovodyPodaniaZiadosti: 'DovodyPodaniaZiadosti',
       MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
     },
     oneToMany: {
       fieldMaps: {
         dtb_NajomneByvanieDieta: {
           fieldMap: {
+            GinisID: 'GinisID',
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',
             DatumNarodenia: 'ZiadatelDatumNarodenia',
@@ -206,6 +181,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         },
         dtb_NajomneByvanieIniClenovia: {
           fieldMap: {
+            GinisID: 'GinisID',
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',
             DatumNarodenia: 'ZiadatelDatumNarodenia',
@@ -234,8 +210,9 @@ const ziadostONajomnyBytExample: ExampleForm = {
     },
     oneToOne: {
       fieldMaps: {
-        dtb_NajomneByvanieDruh: {
+        dtb_NajomneByvanieManzel: {
           fieldMap: {
+            GinisID: 'GinisID',
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',
             RodnePriezvisko: 'ZiadatelRodnePriezvisko',
@@ -262,8 +239,54 @@ const ziadostONajomnyBytExample: ExampleForm = {
             DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
           },
         },
-        dtb_NajomneByvanieManzel: {
+        dtb_NajomneByvanieZiadatel: {
           fieldMap: {
+            GinisID: 'GinisID',
+            KontaktovanyEmailom: 'KontaktovanyEmailom',
+            Meno: 'ZiadatelMeno',
+            Priezvisko: 'ZiadatelPriezvisko',
+            RodnePriezvisko: 'ZiadatelRodnePriezvisko',
+            DatumNarodenia: 'ZiadatelDatumNarodenia',
+            StatnaPrislusnost: 'ZiadatelStatnaPrislusnost',
+            RodinnyStav: 'ZiadatelRodinnyStav',
+            Email: 'ZiadatelEmail',
+            TelefonneCislo: 'ZiadatelTelefonneCislo',
+            TrvalyPobytUlicaACislo: 'ZiadatelTrvalyPobytUlicaACislo',
+            TrvalyPobytMesto: 'ZiadatelTrvalyPobytMesto',
+            TrvalyPobytPsc: 'ZiadatelTrvalyPobytPsc',
+            TrvalyPobytVlastnikNehnutelnosti: 'ZiadatelTrvalyPobytVlastnikNehnu',
+            ByvanieVMestskomNajomnomByte: 'ByvanieVMestskomNajomnomByte',
+            PobytVBratislaveViacAkoRok: 'ZiadatelTrvalyPobytPobytMenejAko',
+            SkutocnyPobytRovnakyAkoTrvaly: 'ZiadatelSkutocnyPobytRovnakyAkoT',
+            SkutocnyPobytUlica: 'ZiadatelSkutocnyPobytUlica',
+            SkutocnyPobytMesto: 'ZiadatelSkutocnyPobytMesto',
+            SkutocnyPobytPsc: 'ZiadatelSkutocnyPobytPsc',
+            ZamestnaniePrijem: 'ZiadatelZamestnaniePrijem',
+            SamostatnaZarobkovaCinnostPrijem: 'ZiadatelSamostatnaZarobkovaCinno',
+            DochodokVyska: 'ZiadatelDochodokVyska',
+            VyzivneVyska: 'ZiadatelVyzivneVyska',
+            DavkaVNezamestnanostiVyska: 'ZiadatelDavkaVNezamestnanostiVys',
+            InePrijmyVyska: 'ZiadatelInePrijmyVyska',
+            TzpPreukaz: 'ZiadatelFunkcnaPorucha',
+            MieraFunkcnejPoruchy: 'ZiadatelMieraFunkcnejPoruchy',
+            ChronickeOchorenie: 'ChronickeOchorenie',
+            ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
+            BezbarierovyByt: 'ZiadatelBezbarierovyByt',
+            BytovaNudza: 'ZiadatelBytovaNudza',
+            TypByvania: 'ZiadatelTypSkutocnehoByvania',
+            DlzkaBytovejNudze: 'ZiadatelDlzkaBytovejNudze',
+            RizikoveFaktory: 'RizikoveFaktory',
+            ZoznamRizikovychFaktorov: 'ZoznamRizikovychFaktorov',
+            VekNajstarsiehoClena: 'Vek',
+            PreferovanaVelkost: 'PreferovanaVelkost',
+            PreferovanaLokalita: 'PreferovanaLokalita',
+            DovodyPodaniaZiadosti: 'DovodyPodaniaZiadosti',
+            MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
+          },
+        },
+        dtb_NajomneByvanieDruh: {
+          fieldMap: {
+            GinisID: 'GinisID',
             Meno: 'ZiadatelMeno',
             Priezvisko: 'ZiadatelPriezvisko',
             RodnePriezvisko: 'ZiadatelRodnePriezvisko',
@@ -292,6 +315,7 @@ const ziadostONajomnyBytExample: ExampleForm = {
         },
       },
       originalTableFields: {
+        Ziadatel: 'Ziadatel',
         ManzelManzelka: 'ManzelManzelka',
         DruhDruzka: 'DruhDruzka',
       },
@@ -299,4 +323,4 @@ const ziadostONajomnyBytExample: ExampleForm = {
   },
 }
 
-export default ziadostONajomnyBytExample
+export default ziadostONajomBytuExample

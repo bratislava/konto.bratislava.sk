@@ -5344,7 +5344,7 @@ exports[`getSummaryJson zavazneStanoviskoKInvesticnejCinnostiExample summary JSO
 }
 `;
 
-exports[`getSummaryJson ziadostONajomnyBytExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -6661,7 +6661,7 @@ exports[`getSummaryJson ziadostONajomnyBytExample summary JSON should match snap
       "type": "Step",
     },
   ],
-  "title": "Žiadosť o nájomný byt (TESTOVACIA VERZIA)",
+  "title": "Žiadosť o nájom bytu",
   "type": "Form",
 }
 `;

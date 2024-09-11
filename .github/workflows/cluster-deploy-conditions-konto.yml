@@ -103,7 +103,7 @@ jobs:
 
       - id: dev
         name: Check for deployment of whole project to dev
-        if: startsWith(github.ref, 'refs/tags/dev') && startsWith(github.ref, 'refs/tags/dev-next') == false && startsWith(github.ref, 'refs/tags/dev-strapi') == false && startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/dev-clamav') == false && startsWith(github.ref, 'refs/tags/dev-nest-clamav-scanner') == false
+        if: startsWith(github.ref, 'refs/tags/dev') && startsWith(github.ref, 'refs/tags/dev-strapi') == false && startsWith(github.ref, 'refs/tags/dev-next') == false && startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/dev-nest-clamav-scanner') == false
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT

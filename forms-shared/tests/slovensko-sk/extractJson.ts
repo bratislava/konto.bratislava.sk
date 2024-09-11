@@ -1,6 +1,6 @@
 import {
   extractJsonFromSlovenskoSkXml,
-  ExtractJsonFromSlovenskoSkXmlError,
+  ExtractJsonFromSlovenskoSkXmlErrorType,
 } from '../../src/slovensko-sk/extractJson'
 import { FormDefinitionSlovenskoSk } from '../../src/definitions/formDefinitionTypes'
 
@@ -26,8 +26,11 @@ describe('extractJsonFromSlovenskoSkXml', () => {
 
   it('should throw InvalidXml error for malformed XML', async () => {
     const invalidXml = '<invalid></xml>'
-    await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidXml)).rejects.toEqual(
-      ExtractJsonFromSlovenskoSkXmlError.InvalidXml,
+    await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidXml)).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml,
+      }),
     )
   })
 
@@ -40,7 +43,12 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     `
     await expect(
       extractJsonFromSlovenskoSkXml(formDefinition, incorrectXmlStructure),
-    ).rejects.toEqual(ExtractJsonFromSlovenskoSkXmlError.XmlDoesntMatchSchema)
+    ).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.XmlDoesntMatchSchema,
+      }),
+    )
   })
 
   it('should throw XmlDoesntMatchSchema error for incorrect xmlns format', async () => {
@@ -48,8 +56,11 @@ describe('extractJsonFromSlovenskoSkXml', () => {
       'http://schemas.gov.sk/form/App.GeneralAgenda/1.9',
       'invalid-xmlns',
     )
-    await expect(extractJsonFromSlovenskoSkXml(formDefinition, incorrectXmlns)).rejects.toEqual(
-      ExtractJsonFromSlovenskoSkXmlError.XmlDoesntMatchSchema,
+    await expect(extractJsonFromSlovenskoSkXml(formDefinition, incorrectXmlns)).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.XmlDoesntMatchSchema,
+      }),
     )
   })
 
@@ -60,13 +71,21 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     } as FormDefinitionSlovenskoSk
     await expect(
       extractJsonFromSlovenskoSkXml(mismatchedPospIdDefinition, validXmlString),
-    ).rejects.toEqual(ExtractJsonFromSlovenskoSkXmlError.WrongPospId)
+    ).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.WrongPospId,
+      }),
+    )
   })
 
   it('should throw InvalidJson error for malformed JSON in XML', async () => {
     const invalidJsonXml = validXmlString.replace('{"key":"value"}', '{invalid json}')
-    await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidJsonXml)).rejects.toEqual(
-      ExtractJsonFromSlovenskoSkXmlError.InvalidJson,
+    await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidJsonXml)).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidJson,
+      }),
     )
   })
 })

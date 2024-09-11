@@ -1,4 +1,7 @@
 {
-  "eslint.workingDirectories": ["./next"],
+  "eslint.workingDirectories": [
+    "./next",
+    "./nest-forms-backend"
+  ],
   "typescript.tsdk": "./next/node_modules/typescript/lib"
 }

@@ -27,6 +27,78 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksFormLandingPage {
+  formCta: ComponentBlocksFormLandingPageFormCta!
+  id: ID!
+  linkCtas(filters: ComponentBlocksFormLandingPageLinkCtaFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksFormLandingPageLinkCta]
+  text: String
+}
+
+input ComponentBlocksFormLandingPageFiltersInput {
+  and: [ComponentBlocksFormLandingPageFiltersInput]
+  formCta: ComponentBlocksFormLandingPageFormCtaFiltersInput
+  linkCtas: ComponentBlocksFormLandingPageLinkCtaFiltersInput
+  not: ComponentBlocksFormLandingPageFiltersInput
+  or: [ComponentBlocksFormLandingPageFiltersInput]
+  text: StringFilterInput
+}
+
+type ComponentBlocksFormLandingPageFormCta {
+  buttonLabel: String!
+  id: ID!
+  text: String
+  title: String!
+}
+
+input ComponentBlocksFormLandingPageFormCtaFiltersInput {
+  and: [ComponentBlocksFormLandingPageFormCtaFiltersInput]
+  buttonLabel: StringFilterInput
+  not: ComponentBlocksFormLandingPageFormCtaFiltersInput
+  or: [ComponentBlocksFormLandingPageFormCtaFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
+}
+
+input ComponentBlocksFormLandingPageFormCtaInput {
+  buttonLabel: String
+  id: ID
+  text: String
+  title: String
+}
+
+input ComponentBlocksFormLandingPageInput {
+  formCta: ComponentBlocksFormLandingPageFormCtaInput
+  id: ID
+  linkCtas: [ComponentBlocksFormLandingPageLinkCtaInput]
+  text: String
+}
+
+type ComponentBlocksFormLandingPageLinkCta {
+  buttonLabel: String!
+  id: ID!
+  text: String
+  title: String!
+  url: String!
+}
+
+input ComponentBlocksFormLandingPageLinkCtaFiltersInput {
+  and: [ComponentBlocksFormLandingPageLinkCtaFiltersInput]
+  buttonLabel: StringFilterInput
+  not: ComponentBlocksFormLandingPageLinkCtaFiltersInput
+  or: [ComponentBlocksFormLandingPageLinkCtaFiltersInput]
+  text: StringFilterInput
+  title: StringFilterInput
+  url: StringFilterInput
+}
+
+input ComponentBlocksFormLandingPageLinkCtaInput {
+  buttonLabel: String
+  id: ID
+  text: String
+  title: String
+  url: String
+}
+
 type ComponentBlocksHelpCategory {
   id: ID!
   items(filters: ComponentBlocksHelpItemFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpItem]!
@@ -289,6 +361,50 @@ input FloatFilterInput {
   startsWith: Float
 }
 
+type Form {
+  createdAt: DateTime
+  landingPage: ComponentBlocksFormLandingPage
+  moreInformationUrl: String
+  slug: String!
+  updatedAt: DateTime
+}
+
+type FormEntity {
+  attributes: Form
+  id: ID
+}
+
+type FormEntityResponse {
+  data: FormEntity
+}
+
+type FormEntityResponseCollection {
+  data: [FormEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input FormFiltersInput {
+  and: [FormFiltersInput]
+  createdAt: DateTimeFilterInput
+  id: IDFilterInput
+  landingPage: ComponentBlocksFormLandingPageFiltersInput
+  moreInformationUrl: StringFilterInput
+  not: FormFiltersInput
+  or: [FormFiltersInput]
+  slug: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input FormInput {
+  landingPage: ComponentBlocksFormLandingPageInput
+  moreInformationUrl: String
+  slug: String
+}
+
+type FormRelationResponseCollection {
+  data: [FormEntity!]!
+}
+
 type General {
   alerts(filters: ComponentGeneralAlertFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentGeneralAlert]
   createdAt: DateTime
@@ -326,7 +442,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | General | HelpPage | I18NLocale | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | I18NLocale | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -524,6 +640,7 @@ type Mutation {
   changePassword(currentPassword: String!, password: String!, passwordConfirmation: String!): UsersPermissionsLoginPayload
   createContentReleasesRelease(data: ContentReleasesReleaseInput!): ContentReleasesReleaseEntityResponse
   createContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!): ContentReleasesReleaseActionEntityResponse
+  createForm(data: FormInput!): FormEntityResponse
   createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
   createUploadFolder(data: UploadFolderInput!): UploadFolderEntityResponse
 
@@ -534,6 +651,7 @@ type Mutation {
   createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
   deleteContentReleasesRelease(id: ID!): ContentReleasesReleaseEntityResponse
   deleteContentReleasesReleaseAction(id: ID!): ContentReleasesReleaseActionEntityResponse
+  deleteForm(id: ID!): FormEntityResponse
   deleteGeneral: GeneralEntityResponse
   deleteHelpPage: HelpPageEntityResponse
   deleteTax: TaxEntityResponse
@@ -565,6 +683,7 @@ type Mutation {
   updateContentReleasesRelease(data: ContentReleasesReleaseInput!, id: ID!): ContentReleasesReleaseEntityResponse
   updateContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!, id: ID!): ContentReleasesReleaseActionEntityResponse
   updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
+  updateForm(data: FormInput!, id: ID!): FormEntityResponse
   updateGeneral(data: GeneralInput!): GeneralEntityResponse
   updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
   updateTax(data: TaxInput!): TaxEntityResponse
@@ -603,6 +722,8 @@ type Query {
   contentReleasesReleaseAction(id: ID): ContentReleasesReleaseActionEntityResponse
   contentReleasesReleaseActions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionEntityResponseCollection
   contentReleasesReleases(filters: ContentReleasesReleaseFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseEntityResponseCollection
+  form(id: ID): FormEntityResponse
+  forms(filters: FormFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): FormEntityResponseCollection
   general: GeneralEntityResponse
   helpPage: HelpPageEntityResponse
   i18NLocale(id: ID): I18NLocaleEntityResponse

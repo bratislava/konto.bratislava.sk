@@ -1,5 +1,4 @@
 const { execSync } = require('node:child_process')
-const { readFile, writeFile } = require('node:fs').promises
 const { rimrafSync } = require('rimraf')
 
 /*
@@ -10,20 +9,8 @@ const { rimrafSync } = require('rimraf')
  *   on all platforms (the official CLI breaks when the schema generator needs update). This one uses the latest release
  *   automatically.
  * 2. Removes the existing client directory before generating a new one.
- * 3. Replaces all `options?: any` with `options?: RawAxiosRequestConfig` in the generated client. This is needed until
- *   https://github.com/OpenAPITools/openapi-generator/issues/15985 is fixed.
- * 4. Formats the generated client with Prettier.
+ * 3. Formats the generated client with Prettier.
  */
-
-async function replaceOptionsType(filePath: string) {
-  try {
-    const data = await readFile(filePath, 'utf-8')
-    const result = data.replaceAll('options?: any', 'options?: RawAxiosRequestConfig')
-    await writeFile(filePath, result, 'utf-8')
-  } catch (error) {
-    console.error(error)
-  }
-}
 
 const validTypes = ['forms', 'tax', 'city-account']
 
@@ -61,8 +48,6 @@ const generateClient = async (type: string) => {
     execSync(`cross-env ${dockerPullCommand}`, { stdio: 'inherit' })
     console.log(`Generating client for ${type}...`)
     execSync(`cross-env ${dockerCommand}`, { stdio: 'inherit' })
-    console.log(`Replacing options type in generated client...`)
-    await replaceOptionsType(`${outputDir}/api.ts`)
     console.log(`Formatting ${type} client with Prettier...`)
     execSync(`cross-env ${prettierCommand}`, { stdio: 'inherit' })
     console.log(`Client generation for ${type} completed successfully.`)

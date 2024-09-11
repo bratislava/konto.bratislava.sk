@@ -20,12 +20,6 @@ declare namespace Cypress {
     hideNavbar(device: string): Chainable<any>
 
     /**
-     * Custom command to hide info bar on device.
-     * @example cy.hideInfoBar()
-     */
-    hideInfoBar(): Chainable<any>
-
-    /**
      * Custom command to show navbar on device.
      * @param device Device type.
      * @example cy.showNavbar('desktop')
@@ -41,12 +35,6 @@ Cypress.Commands.add('dataCy', (attribute, specify) => {
 
 Cypress.Commands.add('hideNavbar', (device) => {
   cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
-})
-
-Cypress.Commands.add('hideInfoBar', () => {
-  if (cy.dataCy(`info-bar`)) {
-    cy.dataCy(`info-bar`).invoke('attr', 'style', 'display: none')
-  }
 })
 
 Cypress.Commands.add('showNavbar', (device) => {

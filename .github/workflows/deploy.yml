@@ -87,9 +87,24 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+  deploy-dev-clamav:
+    name: dev clamav
+    needs: conditions
+    if: needs.conditions.outputs.dev-clamav == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+    with:
+      directory: clamav/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
   deploy-dev-nest-clamav-scanner:
     name: dev nest-clamav-scanner
-    needs: conditions
+    needs: [conditions, deploy-dev-clamav]
     if: needs.conditions.outputs.dev-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -165,9 +180,24 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+  deploy-staging-clamav:
+    name: staging clamav
+    needs: conditions
+    if: needs.conditions.outputs.staging-clamav == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: clamav/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+      flag: --staging
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
   deploy-staging-nest-clamav-scanner:
     name: staging nest-clamav-scanner
-    needs: conditions
+    needs: [conditions, deploy-staging-clamav]
     if: needs.conditions.outputs.staging-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -243,9 +273,24 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+  deploy-prod-clamav:
+    name: prod clamav
+    needs: conditions
+    if: needs.conditions.outputs.prod-clamav == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: clamav/
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
   deploy-prod-nest-clamav-scanner:
     name: prod nest-clamav-scanner
-    needs: conditions
+    needs: [conditions, deploy-prod-clamav]
     if: needs.conditions.outputs.prod-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:

@@ -62,7 +62,7 @@
     "mailgun.js": "^9.3.0",
     "mime-types": "^2.1.35",
     "nestjs-minio-client": "^2.2.0",
-    "npm-check-updates": "^16.14.20",
+    "npm-check-updates": "^17.1.1",
     "passport-headerapikey": "^1.2.2",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",

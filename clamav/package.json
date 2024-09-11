@@ -1,0 +1,6 @@
+{
+  "name": "clamav",
+  "description": "ClamAV is an open source antivirus engine for detecting trojans, viruses, malware & other malicious threats.",
+  "version": "0.0.1",
+  "author": "Bratislava city inovation"
+}

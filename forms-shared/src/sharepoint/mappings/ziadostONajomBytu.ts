@@ -4,6 +4,68 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   GinisID: {
     type: 'mag_number',
   },
+  MenoZiadatela: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.meno',
+  },
+  PriezviskoZiadatela: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.priezvisko',
+  },
+  DatumNarodenia: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.datumNarodenia',
+  },
+  Email: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.email',
+  },
+  TelefonneCislo: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.telefonneCislo',
+  },
+  TrvalyPobytUlicaACislo: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.ulicaACislo',
+  },
+  TrvalyPobytMesto: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.mesto',
+  },
+  TrvalyPobytPsc: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.psc',
+  },
+  SkutocnyPobytUlica: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo',
+  },
+  SkutocnyPobytMesto: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
+  },
+  SkutocnyPobytPsc: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
+  },
+  PreferovanaVelkost: {
+    type: 'json_path',
+    info: 'ineOkolnosti.preferovanaVelkost',
+  },
+  PreferovanaLokalita: {
+    type: 'json_path',
+    info: 'ineOkolnosti.preferovanaLokalita',
+  },
+  MaximalnaVyskaNajomneho: {
+    type: 'json_path',
+    info: 'ineOkolnosti.maximalnaVyskaNajomneho',
+  },
+}
+
+const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> = {
+  GinisID: {
+    type: 'mag_number',
+  },
   KontaktovanyEmailom: {
     type: 'json_path',
     info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom',
@@ -167,6 +229,9 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
 }
 
 const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
+  GinisID: {
+    type: 'mag_number',
+  },
   Meno: {
     type: 'json_path',
     info: 'osobneUdaje.menoPriezvisko.meno',
@@ -234,6 +299,9 @@ const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapVal
 }
 
 const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumnMapValue> = {
+  GinisID: {
+    type: 'mag_number',
+  },
   Meno: {
     type: 'json_path',
     info: 'osobneUdaje.menoPriezvisko.meno',
@@ -268,27 +336,27 @@ const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumn
   },
   ZamestnaniePrijem: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.zamestnaniePrijem',
+    info: 'prijem.zamestnaniePrijem',
   },
   SamostatnaZarobkovaCinnostPrijem: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.samostatnaZarobkovaCinnostPrijem',
+    info: 'prijem.samostatnaZarobkovaCinnostPrijem',
   },
   DochodokVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.dochodokVyska',
+    info: 'prijem.dochodokVyska',
   },
   VyzivneVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.vyzivneVyska',
+    info: 'prijem.vyzivneVyska',
   },
   DavkaVNezamestnanostiVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.davkaVNezamestnanostiVyska',
+    info: 'prijem.davkaVNezamestnanostiVyska',
   },
   InePrijmyVyska: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.prijem.inePrijmyVyska',
+    info: 'prijem.inePrijmyVyska',
   },
   TzpPreukaz: {
     type: 'json_path',
@@ -312,6 +380,9 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   prefix: 'druhDruzka' | 'manzelManzelka',
 ): Record<string, SharepointColumnMapValue> => {
   return {
+    GinisID: {
+      type: 'mag_number',
+    },
     Meno: {
       type: 'json_path',
       info: `${prefix}.osobneUdaje.menoPriezvisko.meno`,
@@ -411,22 +482,27 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
   }
 }
 
-export const ziadostONajomnyBytSharepointData = {
-  databaseName: 'dtb_NajomneByvanieZiadatel',
+export const ziadostONajomBytuSharepointData = {
+  databaseName: 'dtb_NajomneByvanieZiadost',
   columnMap: defaultColumnMapNajomneByvanie,
   oneToMany: {
     'deti.zoznamDeti': {
       databaseName: 'dtb_NajomneByvanieDieta',
-      originalTableId: 'Ziadatel',
+      originalTableId: 'Deti',
       columnMap: defaultColumnMapNajomneByvanieDieta,
     },
     'inyClenoviaClenkyDomacnosti.zoznamInychClenov': {
       databaseName: 'dtb_NajomneByvanieIniClenovia',
-      originalTableId: 'Ziadatel',
+      originalTableId: 'IniClenovia',
       columnMap: defaultColumnMapNajomneByvanieIniClenovia,
     },
   },
   oneToOne: {
+    ziadatelZiadatelka: {
+      databaseName: 'dtb_NajomneByvanieZiadatel',
+      originalTableId: 'Ziadatel',
+      columnMap: columnMapNajomneByvanieZiadatel,
+    },
     'manzelManzelka.manzelManzelkaSucastouDomacnosti': {
       databaseName: 'dtb_NajomneByvanieManzel',
       originalTableId: 'ManzelManzelka',

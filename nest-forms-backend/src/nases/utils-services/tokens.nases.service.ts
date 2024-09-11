@@ -4,6 +4,7 @@ import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import {
@@ -12,6 +13,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 import { Builder, Parser } from 'xml2js'
@@ -52,6 +54,7 @@ export default class NasesUtilsService {
     private prismaService: PrismaService,
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
+    private configService: ConfigService,
   ) {
     this.logger = new Logger('NasesUtilsService')
   }
@@ -65,7 +68,7 @@ export default class NasesUtilsService {
           [Symbol.toPrimitive](hint: 'string'): string
         },
   ): boolean {
-    const publicKey = process.env.OBO_TOKEN_PUBLIC ?? ''
+    const publicKey = this.configService.getOrThrow<string>('OBO_TOKEN_PUBLIC')
     const verifyObject = crypto.createVerify('RSA-SHA256')
     verifyObject.write(`${rawHead}.${rawBody}`)
     verifyObject.end()
@@ -106,7 +109,7 @@ export default class NasesUtilsService {
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
-        process.env.MINIO_SAFE_BUCKET!,
+        this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
       // eslint-disable-next-line no-restricted-syntax
@@ -154,85 +157,66 @@ export default class NasesUtilsService {
   }
 
   createUserJwtToken(oboToken: string): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
-    const header = {
-      alg: 'RS256',
-      cty: 'JWT',
-    }
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
-    const jti = uuidv1()
     const payload = {
-      exp,
-      jti,
+      jti: uuidv1(),
       obo: oboToken,
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+      header: {
+        alg: 'RS256',
+        cty: 'JWT',
+      },
+    }
+
+    return jwt.sign(
+      payload,
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      options,
     )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const signature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   createTechnicalAccountJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
     const payload = {
-      sub: process.env.SUB_NASES_TECHNICAL_ACCOUNT,
-      exp,
-      jti,
+      sub: this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      jti: uuidv1(),
       obo: null,
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
+
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+    }
+
+    return jwt.sign(
+      payload,
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      options,
     )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const signature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   createAdministrationJwtToken(): string {
-    const privateKey = process.env.API_TOKEN_PRIVATE ?? ''
-    const header = {
-      alg: 'RS256',
-    }
-    const jti = uuidv1()
-    const exp = Math.floor(new Date(Date.now() + 5 * 60_000).getTime() / 1000)
     const payload = {
-      exp,
-      jti,
+      jti: uuidv1(),
     }
-    const headerEncode = Buffer.from(JSON.stringify(header)).toString(
-      'base64url',
+
+    const options: jwt.SignOptions = {
+      algorithm: 'RS256',
+      expiresIn: '5m', // 5 minutes
+    }
+
+    return jwt.sign(
+      payload,
+      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      options,
     )
-    const payloadEncode = Buffer.from(JSON.stringify(payload)).toString(
-      'base64url',
-    )
-    const buffer = Buffer.from(`${headerEncode}.${payloadEncode}`)
-    const signature = crypto
-      .sign('sha256', buffer, { key: privateKey })
-      .toString('base64url')
-    return `${headerEncode}.${payloadEncode}.${signature}`
   }
 
   async getUserInfo(bearerToken: string): Promise<ResponseGdprDataDto> {
     return axios
       .post(
-        `${process.env.USER_ACCOUNT_API ?? ''}/user/get-or-create`,
+        `${this.configService.getOrThrow<string>('USER_ACCOUNT_API')}/user/get-or-create`,
         undefined,
         {
           headers: {
@@ -280,7 +264,7 @@ export default class NasesUtilsService {
     /* const result = await axios
       .post(
         `${
-          process.env.SLOVENSKO_SK_CONTAINER_URI ?? ''
+          this.configService.getOrThrow<string>('SLOVENSKO_SK_CONTAINER_URI')
         }/api/iam/identities/search`,
         {
           uris: [
@@ -391,7 +375,8 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(form, isSigned)
 
-    const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
+    const senderId =
+      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
     const correlationId = uuidv4()
     let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
@@ -453,7 +438,9 @@ export default class NasesUtilsService {
             },
             MessageId: form.id,
             SenderId: senderId,
-            RecipientId: process.env.NASES_RECIPIENT_URI ?? '',
+            RecipientId: this.configService.getOrThrow<string>(
+              'NASES_RECIPIENT_URI',
+            ),
             MessageType: pospID,
             MessageSubject: subject,
             Object: attachments,
@@ -490,22 +477,22 @@ export default class NasesUtilsService {
   }
 
   async sendMessageNases(
-    jwt: string,
+    jwtToken: string,
     data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
     const message = await this.createEnvelopeSendMessage(data, senderUri)
     const result = await axios
       .post(
-        `${
-          process.env.SLOVENSKO_SK_CONTAINER_URI ?? ''
-        }/api/sktalk/receive_and_save_to_outbox`,
+        `${this.configService.getOrThrow<string>(
+          'SLOVENSKO_SK_CONTAINER_URI',
+        )}/api/sktalk/receive_and_save_to_outbox`,
         {
           message,
         },
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         },
       )
@@ -546,15 +533,15 @@ export default class NasesUtilsService {
   }
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
-    const jwt = this.createTechnicalAccountJwtToken()
+    const jwtToken = this.createTechnicalAccountJwtToken()
     const result = await axios
       .get(
-        `${
-          process.env.SLOVENSKO_SK_CONTAINER_URI ?? ''
-        }/api/edesk/messages/search?correlation_id=${formId}`,
+        `${this.configService.getOrThrow<string>(
+          'SLOVENSKO_SK_CONTAINER_URI',
+        )}/api/edesk/messages/search?correlation_id=${formId}`,
         {
           headers: {
-            Authorization: `Bearer ${jwt}`,
+            Authorization: `Bearer ${jwtToken}`,
           },
         },
       )

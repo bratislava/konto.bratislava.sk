@@ -1,4 +1,6 @@
 import { formsApi } from '@clients/forms'
+import { strapiClient } from '@clients/graphql-strapi'
+import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -11,6 +13,12 @@ import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/get
 import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+
+const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
+  const result = await strapiClient.FormBaseBySlug({ slug })
+
+  return result.forms?.data?.[0]?.attributes
+}
 
 type Params = {
   slug: string
@@ -43,12 +51,13 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
         return { notFound: true }
       }
 
-      const [{ data: files }, initialSignature] = await Promise.all([
+      const [{ data: files }, initialSignature, strapiForm] = await Promise.all([
         formsApi.filesControllerGetFilesStatusByForm(formId, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrGetFn: getAccessToken,
         }),
         getInitialFormSignature(form.formDataBase64),
+        fetchStrapiForm(slug),
       ])
 
       const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
@@ -57,7 +66,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
 
       return {
         props: {
-          formContext: {
+          formServerContext: {
             formDefinition,
             formId,
             initialFormDataJson:
@@ -68,6 +77,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
             formMigrationRequired,
             // TODO: To be implemented.
             isEmbedded: false,
+            strapiForm: strapiForm ?? null,
           },
           ...(await slovakServerSideTranslations()),
         } satisfies FormPageWrapperProps,

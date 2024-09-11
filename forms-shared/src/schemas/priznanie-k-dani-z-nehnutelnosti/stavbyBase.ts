@@ -6,7 +6,7 @@ import { StepEnum } from './stepEnum'
 export const stavbyBase = (step: StepEnum) => [
   input(
     'cisloListuVlastnictva',
-    { title: 'Číslo listu vlastníctva' },
+    { type: 'text', title: 'Číslo listu vlastníctva' },
     { size: 'medium', placeholder: 'Napr. 4567' },
   ),
   object(
@@ -17,7 +17,7 @@ export const stavbyBase = (step: StepEnum) => [
       columnsRatio: '3/1',
     },
     [
-      input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, {}),
+      input('ulicaACisloDomu', { type: 'text', title: 'Ulica a číslo domu', required: true }, {}),
       number(
         'supisneCislo',
         { title: 'Súpisné číslo', required: true, type: 'integer', minimum: 1 },
@@ -68,7 +68,7 @@ export const stavbyBase = (step: StepEnum) => [
       ),
       input(
         'cisloParcely',
-        { title: 'Číslo parcely', required: true },
+        { type: 'text', title: 'Číslo parcely', required: true },
         {
           placeholder: 'Napr. 7986/1',
           helptext: markdownText(

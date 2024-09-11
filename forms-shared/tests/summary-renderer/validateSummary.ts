@@ -14,8 +14,8 @@ describe('validateSummary', () => {
 
   describe('Simple validation', () => {
     const { schema } = object('wrapper', {}, {}, [
-      input('requiredInput', { title: 'Required input', required: true }, {}),
-      input('optionalInput', { title: 'Optional input' }, {}),
+      input('requiredInput', { type: 'text', title: 'Required input', required: true }, {}),
+      input('optionalInput', { type: 'text', title: 'Optional input' }, {}),
     ])
 
     it('should validate successfully when required field is provided', () => {

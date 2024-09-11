@@ -7,11 +7,6 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
-    // "Žiadosť o nájomné bývanie" is skipped until fully implemented
-    if (formDefinition.slug === 'ziadost-o-najomny-byt') {
-      return
-    }
-
     describe(formDefinition.slug, () => {
       it('schemas match snapshot', () => {
         expect(formDefinition.schemas).toMatchSnapshot()

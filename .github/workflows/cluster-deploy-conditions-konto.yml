@@ -5,39 +5,58 @@ on:
       dev:
         description: "Returns true if dev-nest-forms-backend, dev-strapi and dev-next can be deployed"
         value: ${{ jobs.conditions.outputs.dev }}
-      dev-nest-forms-backend:
-        description: "Returns true if dev-nest-forms-backend: can be deployed"
-        value: ${{ jobs.conditions.outputs.dev-nest-forms-backend }}
-      dev-strapi:
-        description: "Returns true if dev-strapi can be deployed"
-        value: ${{ jobs.conditions.outputs.dev-strapi }}
       dev-next:
         description: "Returns true if dev-next can be deployed"
         value: ${{ jobs.conditions.outputs.dev-next }}
+      dev-strapi:
+        description: "Returns true if dev-strapi can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-strapi }}
+      dev-nest-forms-backend:
+        description: "Returns true if dev-nest-forms-backend: can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-nest-forms-backend }}
+      dev-clamav:
+        description: "Returns true if dev-clamav can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-clamav }}
+      dev-nest-clamav-scanner:
+        description: "Returns true if dev-nest-clamav-scanner: can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-nest-clamav-scanner }}
       staging:
-        description: "Returns true if staging-nest-forms-backend, staging-strapi and staging-next can be deployed"
+        description: "Returns true if staging-next, staging-strapi, staging-nest-forms-backend staging-nest-clamav-scanner can be deployed"
         value: ${{ jobs.conditions.outputs.staging }}
-      staging-nest-forms-backend:
-        description: "Returns true if staging-nest-forms-backend can be deployed"
-        value: ${{ jobs.conditions.outputs.staging-nest-forms-backend }}
-      staging-strapi:
-        description: "Returns true if staging-strapi can be deployed"
-        value: ${{ jobs.conditions.outputs.staging-strapi }}
       staging-next:
         description: "Returns true if staging-next can be deployed"
         value: ${{ jobs.conditions.outputs.staging-next }}
+      staging-strapi:
+        description: "Returns true if staging-strapi can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-strapi }}
+      staging-nest-forms-backend:
+        description: "Returns true if staging-nest-forms-backend can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-nest-forms-backend }}
+      staging-clamav:
+        description: "Returns true if staging-clamav can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-clamav }}
+      staging-nest-clamav-scanner:
+        description: "Returns true if staging-nest-clamav-scanner can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-nest-clamav-scanner }}
       prod:
         description: "Returns true if prod-nest-forms-backend, prod-strapi and prod-next can be deployed"
         value: ${{ jobs.conditions.outputs.prod }}
-      prod-nest-forms-backend:
-        description: "Returns true if prod-nest-forms-backend can be deployed"
-        value: ${{ jobs.conditions.outputs.prod-nest-forms-backend }}
-      prod-strapi:
-        description: "Returns true if prod-strapi can be deployed"
-        value: ${{ jobs.conditions.outputs.prod-strapi }}
       prod-next:
         description: "Returns true if prod-next can be deployed"
         value: ${{ jobs.conditions.outputs.prod-next }}
+      prod-strapi:
+        description: "Returns true if prod-strapi can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-strapi }}
+      prod-nest-forms-backend:
+        description: "Returns true if prod-nest-forms-backend can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-nest-forms-backend }}
+      prod-clamav:
+        description: "Returns true if prod-clamav can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-clamav }}
+      prod-nest-clamav-scanner:
+        description: "Returns true if prod-nest-clamav-scanner can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-nest-clamav-scanner }}
+
 jobs:
   conditions:
     name: Checking konto deployment conditions
@@ -46,17 +65,23 @@ jobs:
       COUNT: 0
     outputs:
       dev: ${{ steps.dev.outputs.condition }}
-      dev-nest-forms-backend: ${{ steps.dev-nest-forms-backend.outputs.condition }}
-      dev-strapi: ${{ steps.dev-strapi.outputs.condition }}
       dev-next: ${{ steps.dev-next.outputs.condition }}
+      dev-strapi: ${{ steps.dev-strapi.outputs.condition }}
+      dev-nest-forms-backend: ${{ steps.dev-nest-forms-backend.outputs.condition }}
+      dev-clamav: ${{ steps.dev-clamav.outputs.condition }}
+      dev-nest-clamav-scanner: ${{ steps.dev-nest-clamav-scanner.outputs.condition }}
       staging: ${{ steps.staging.outputs.condition }}
-      staging-nest-forms-backend: ${{ steps.staging-nest-forms-backend.outputs.condition }}
-      staging-strapi: ${{ steps.staging-strapi.outputs.condition }}
       staging-next: ${{ steps.staging-next.outputs.condition }}
+      staging-strapi: ${{ steps.staging-strapi.outputs.condition }}
+      staging-nest-forms-backend: ${{ steps.staging-nest-forms-backend.outputs.condition }}
+      staging-clamav: ${{ steps.staging-clamav.outputs.condition }}
+      staging-nest-clamav-scanner: ${{ steps.staging-nest-clamav-scanner.outputs.condition }}
       prod: ${{ steps.prod.outputs.condition }}
-      prod-nest-forms-backend: ${{ steps.prod-nest-forms-backend.outputs.condition }}
-      prod-strapi: ${{ steps.prod-strapi.outputs.condition }}
       prod-next: ${{ steps.prod-next.outputs.condition }}
+      prod-strapi: ${{ steps.prod-strapi.outputs.condition }}
+      prod-nest-forms-backend: ${{ steps.prod-nest-forms-backend.outputs.condition }}
+      prod-clamav: ${{ steps.prod-clamav.outputs.condition }}
+      prod-nest-clamav-scanner: ${{ steps.prod-nest-clamav-scanner.outputs.condition }}
     steps:
       - name: Print pipeline summary
         run: |
@@ -66,27 +91,11 @@ jobs:
 
       - id: dev
         name: Check for deployment of whole project to dev
-        if: startsWith(github.ref, 'refs/tags/dev') && startsWith(github.ref, 'refs/tags/dev-strapi') == false && startsWith(github.ref, 'refs/tags/dev-next') == false && startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') == false
+        if: startsWith(github.ref, 'refs/tags/dev') && startsWith(github.ref, 'refs/tags/dev-next') == false && startsWith(github.ref, 'refs/tags/dev-strapi') == false && startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/dev-clamav') == false && startsWith(github.ref, 'refs/tags/dev-nest-clamav-scanner') == false
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev**" >> $GITHUB_STEP_SUMMARY
-
-      - id: dev-nest-forms-backend
-        name: Check for dev nest-forms-backend
-        if: startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') || steps.dev.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **dev-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
-
-      - id: dev-strapi
-        name: Check for dev strapi
-        if: startsWith(github.ref, 'refs/tags/dev-strapi') || steps.dev.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **dev-strapi**" >> $GITHUB_STEP_SUMMARY
 
       - id: dev-next
         name: Check for dev next
@@ -96,29 +105,45 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev-next**" >> $GITHUB_STEP_SUMMARY
 
+      - id: dev-strapi
+        name: Check for dev strapi
+        if: startsWith(github.ref, 'refs/tags/dev-strapi') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-strapi**" >> $GITHUB_STEP_SUMMARY
+
+      - id: dev-nest-forms-backend
+        name: Check for dev nest-forms-backend
+        if: startsWith(github.ref, 'refs/tags/dev-nest-forms-backend') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
+
+      - id: dev-clamav
+        name: Check for dev clamav
+        if: startsWith(github.ref, 'refs/tags/dev-clamav') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-clamav**" >> $GITHUB_STEP_SUMMARY
+
+      - id: dev-nest-clamav-scanner
+        name: Check for dev nest-clamav-scanner
+        if: startsWith(github.ref, 'refs/tags/dev-nest-clamav-scanner') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-nest-clamav-scanner**" >> $GITHUB_STEP_SUMMARY
+
       - id: staging
         name: Check for deployment of whole project to staging
-        if: (startsWith(github.ref, 'refs/tags/staging') && startsWith(github.ref, 'refs/tags/staging-strapi') == false && startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/staging-next') == false) || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+        if: (startsWith(github.ref, 'refs/tags/staging') && startsWith(github.ref, 'refs/tags/staging-next') == false && startsWith(github.ref, 'refs/tags/staging-strapi') == false && startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/staging-clamav') == false && startsWith(github.ref, 'refs/tags/staging-nest-clamav-scanner') == false) || (github.event_name == 'push' && github.ref == 'refs/heads/master')
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **staging**" >> $GITHUB_STEP_SUMMARY
-
-      - id: staging-nest-forms-backend
-        name: Check for staging nest-forms-backend
-        if: startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') || steps.staging.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **staging-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY    
-
-      - id: staging-strapi
-        name: Check for staging strapi
-        if: startsWith(github.ref, 'refs/tags/staging-strapi') || steps.staging.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **staging-strapi**" >> $GITHUB_STEP_SUMMARY
 
       - id: staging-next
         name: Check for staging next
@@ -128,21 +153,53 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **staging-next**" >> $GITHUB_STEP_SUMMARY
 
+      - id: staging-strapi
+        name: Check for staging strapi
+        if: startsWith(github.ref, 'refs/tags/staging-strapi') || steps.staging.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **staging-strapi**" >> $GITHUB_STEP_SUMMARY
+
+      - id: staging-nest-forms-backend
+        name: Check for staging nest-forms-backend
+        if: startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') || steps.staging.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **staging-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
+
+      - id: staging-clamav
+        name: Check for staging clamav
+        if: startsWith(github.ref, 'refs/tags/staging-clamav') || steps.staging.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **staging-clamav**" >> $GITHUB_STEP_SUMMARY
+
+      - id: staging-nest-clamav-scanner
+        name: Check for staging nest-clamav-scanner
+        if: startsWith(github.ref, 'refs/tags/staging-nest-clamav-scanner') || steps.staging.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **staging-nest-clamav-scanner**" >> $GITHUB_STEP_SUMMARY  
+
       - id: prod
         name: Check for deployment of whole project to prod
-        if: startsWith(github.ref, 'refs/tags/prod') && startsWith(github.ref, 'refs/tags/prod-strapi') == false && startsWith(github.ref, 'refs/tags/prod-next') == false && startsWith(github.ref, 'refs/tags/prod-nest-forms-backend') == false
+        if: startsWith(github.ref, 'refs/tags/prod') && startsWith(github.ref, 'refs/tags/prod-next') == false && startsWith(github.ref, 'refs/tags/prod-strapi') == false && startsWith(github.ref, 'refs/tags/prod-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/prod-clamav') == false && startsWith(github.ref, 'refs/tags/prod-nest-clamav-scanner') == false
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod**" >> $GITHUB_STEP_SUMMARY
 
-      - id: prod-nest-forms-backend
-        name: Check for prod nest-forms-backend
-        if: startsWith(github.ref, 'refs/tags/prod-nest-forms-backend') || steps.prod.outputs.condition == 'true'
+      - id: prod-next
+        name: Check for prod next
+        if: startsWith(github.ref, 'refs/tags/prod-next')
         run: |
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **prod-nest-forms-backend** " >> $GITHUB_STEP_SUMMARY
+          echo ":soon: **prod-next** " >> $GITHUB_STEP_SUMMARY
 
       - id: prod-strapi
         name: Check for prod strapi
@@ -152,13 +209,29 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod-strapi** " >> $GITHUB_STEP_SUMMARY
 
-      - id: prod-next
-        name: Check for prod next
-        if: startsWith(github.ref, 'refs/tags/prod-next')
+      - id: prod-nest-forms-backend
+        name: Check for prod nest-forms-backend
+        if: startsWith(github.ref, 'refs/tags/prod-nest-forms-backend') || steps.prod.outputs.condition == 'true'
         run: |
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **prod-next** " >> $GITHUB_STEP_SUMMARY
+          echo ":soon: **prod-nest-forms-backend** " >> $GITHUB_STEP_SUMMARY
+
+      - id: prod-clamav
+        name: Check for prod clamav
+        if: startsWith(github.ref, 'refs/tags/prod-clamav') || steps.prod.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **prod-clamav**" >> $GITHUB_STEP_SUMMARY
+
+      - id: prod-nest-clamav-scanner
+        name: Check for prod nest-clamav-scanner
+        if: startsWith(github.ref, 'refs/tags/prod-nest-clamav-scanner') || steps.prod.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **prod-nest-clamav-scanner** " >> $GITHUB_STEP_SUMMARY
 
       - id: conditions-count-zero-summary
         if: env.COUNT == 0

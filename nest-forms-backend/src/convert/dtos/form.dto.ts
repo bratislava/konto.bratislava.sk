@@ -43,11 +43,18 @@ export class JsonToXmlV2RequestDto {
 
 export class XmlToJsonRequestDto {
   @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
+  @ApiProperty({
     description: 'Form values in XML',
     example: XML_FORM_EXAMPLE,
   })
   @IsString()
-  xmlForm!: string
+  xmlForm: string
 }
 
 export class XmlToJsonResponseDto {

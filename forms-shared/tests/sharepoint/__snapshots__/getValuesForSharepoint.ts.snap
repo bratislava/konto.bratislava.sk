@@ -110,6 +110,7 @@ exports[`getValuesForFields should match snapshots 5`] = `
 
 exports[`getValuesForFields should match snapshots 6`] = `
 {
+  "DochodokVyska": 550,
   "GinisID": "MAG123",
   "MieraFunkcnejPoruchy": "50az74",
   "SucasneByvanieRovnakeAkoVase": true,

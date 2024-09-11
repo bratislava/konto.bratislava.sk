@@ -88,14 +88,6 @@ describe('NasesUtilsService', () => {
 
   describe('createEnvelopeSendMessage', () => {
     it('should create XML', async () => {
-      const xml = `
-        <root>
-          < tag1   attribute="value1"/>
-          <   tag2   
-            attribute="value2">Content</tag2> 
-          <tag3      >Another content    
-               </  tag3>     
-        </root>`
       const mockFiles = [
         {
           id: 'id-file0001',
@@ -131,10 +123,15 @@ describe('NasesUtilsService', () => {
 
       ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
       ;(v1 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
-      // eslint-disable-next-line xss/no-mixed-html
-      service['convertService'].convertJsonToXmlForForm = jest
+      service['convertService'].convertJsonToXmlObjectForForm = jest
         .fn()
-        .mockResolvedValue(xml)
+        .mockResolvedValue({
+          eform: {
+            tag1: [{ $: { attribute: 'value1' } }],
+            tag2: [{ $: { attribute: 'value2' }, _: 'Content' }],
+            tag3: ['Another content\n'],
+          },
+        })
 
       prismaMock.files.findMany.mockResolvedValue(mockFiles)
 
@@ -190,7 +187,7 @@ describe('NasesUtilsService', () => {
       const parser = new Parser()
       const builder = new Builder({
         // eslint-disable-next-line unicorn/text-encoding-identifier-case
-        xmldec: { version: '1.0', encoding: 'utf-8' },
+        xmldec: { version: '1.0', encoding: 'UTF-8' },
         renderOpts: {
           pretty: false,
         },
@@ -281,12 +278,12 @@ describe('NasesUtilsService', () => {
             `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
             `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
             `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
-            `            <root>\n` +
+            `            <eform>\n` +
             `              <tag1 attribute="value1"/>\n` +
             `              <tag2 attribute="value2">Content</tag2>\n` +
-            `              <tag3>Another content    
-               </tag3>\n` +
-            `            </root>\n` +
+            `              <tag3>Another content\n` +
+            `</tag3>\n` +
+            `            </eform>\n` +
             `          </Object>\n` +
             `        </MessageContainer>\n` +
             `      </Body>\n` +

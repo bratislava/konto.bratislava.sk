@@ -3,7 +3,7 @@
 import { Readable } from 'node:stream'
 
 import { getQueueToken } from '@nestjs/bull'
-import { ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
 import { v1, v4 } from 'uuid'
@@ -33,13 +33,18 @@ describe('NasesUtilsService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forFeature(async () => ({
+          NASES_SENDER_URI: 'example_sender',
+          NASES_RECIPIENT_URI: 'example_recipient',
+        })),
+      ],
       providers: [
         NasesUtilsService,
         ConvertService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        ConfigService,
         TaxService,
         {
           provide: getQueueToken('tax'),
@@ -191,17 +196,6 @@ describe('NasesUtilsService', () => {
         },
       })
 
-      const senderIdXml =
-        process.env.NASES_SENDER_URI &&
-        process.env.NASES_SENDER_URI.trim() !== ''
-          ? `          <SenderId>${process.env.NASES_SENDER_URI}</SenderId>`
-          : '          <SenderId/>'
-      const recipientIdXml =
-        process.env.NASES_RECIPIENT_URI &&
-        process.env.NASES_RECIPIENT_URI.trim() !== ''
-          ? `          <RecipientId>${process.env.NASES_RECIPIENT_URI}</RecipientId>`
-          : '          <RecipientId/>'
-
       /* eslint-disable no-secrets/no-secrets */
       let xmlExample = builder.buildObject(
         await parser.parseStringPromise(
@@ -219,11 +213,10 @@ describe('NasesUtilsService', () => {
             `      </Header>\n` +
             `      <Body>\n` +
             `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
-            `          <MessageId>123456678901234567890</MessageId>\n${
-              senderIdXml
-            }${
-              recipientIdXml
-            }          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n` +
+            `          <SenderId>example_sender</SenderId>\n` +
+            `          <RecipientId>example_recipient</RecipientId>\n` +
+            `          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
             `          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n` +
             `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
             `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
@@ -282,11 +275,10 @@ describe('NasesUtilsService', () => {
             `      </Header>\n` +
             `      <Body>\n` +
             `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
-            `          <MessageId>123456678901234567890</MessageId>\n${
-              senderIdXml
-            }${
-              recipientIdXml
-            }          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n` +
+            `          <SenderId>example_sender</SenderId>\n` +
+            `          <RecipientId>example_recipient</RecipientId>\n` +
+            `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
             `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
             `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
             `            <root>\n` +

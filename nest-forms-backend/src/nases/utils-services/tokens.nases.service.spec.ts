@@ -37,6 +37,7 @@ describe('NasesUtilsService', () => {
         ConfigModule.forFeature(async () => ({
           NASES_SENDER_URI: 'example_sender',
           NASES_RECIPIENT_URI: 'example_recipient',
+          MINIO_SAFE_BUCKET: '',
         })),
       ],
       providers: [

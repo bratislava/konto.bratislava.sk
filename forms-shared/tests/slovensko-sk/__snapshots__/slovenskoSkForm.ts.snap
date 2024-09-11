@@ -2275,13 +2275,13 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Prosím uveďte maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
           <StringValue>700</StringValue>
         </Field>
       </Step>
       <Step id="root_sucetPrijmovCestneVyhlasenie" title="Súčet príjmov a čestné výhlásenie">
         <Field id="root_sucetPrijmovCestneVyhlasenie_cestneVyhlasenie" label="Čestné vyhlásenie">
-          <StringValue>Čestne vyhlasujem, že všetky údaje, uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
+          <StringValue>Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
         </Field>
       </Step>
     </Form>

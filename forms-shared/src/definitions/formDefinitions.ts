@@ -112,8 +112,10 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o nájom bytu',
     sharepointData: ziadostONajomBytuSharepointData,
+    // TODO
     ginisAssignment: {
-      ginisOrganizationName: 'SNB',
+      ginisOrganizationName: 'SX',
+      ginisPersonName: 'Pinter Martin',
     },
     isSigned: false,
     newGovernmentXml: true,

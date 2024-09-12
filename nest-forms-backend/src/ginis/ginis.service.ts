@@ -366,7 +366,7 @@ export default class GinisService {
   async assignSubmission(
     documentId: string,
     organization: string,
-    person: string,
+    person?: string,
   ): Promise<void> {
     this.logger.debug('---- start to assign submission ----')
     await this.prismaService.forms.update({
@@ -383,7 +383,7 @@ export default class GinisService {
       {
         doc_id: documentId,
         organization,
-        person,
+        ...(person ? { person } : {}),
       },
       ASSIGN_QUEUE,
     )

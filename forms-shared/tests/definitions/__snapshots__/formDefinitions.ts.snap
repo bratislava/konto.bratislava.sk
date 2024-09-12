@@ -17541,8 +17541,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 "title": "Rodič na rodičovskej/materskej/otcovskej dovolenke",
                               },
                               {
-                                "const": "hrozbaOdobratiaDeti",
-                                "title": "Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa",
+                                "const": "moznostNavratuDeti",
+                                "title": "Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania",
                               },
                               {
                                 "const": "opustenieUstavnejStarostlivosti",
@@ -17550,11 +17550,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               },
                               {
                                 "const": "opustenieVazby",
-                                "title": "Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením",
+                                "title": "Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr",
                               },
                               {
                                 "const": "opustenieSpecialnehoZariadenia",
-                                "title": "Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko",
+                                "title": "Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)",
                               },
                             ],
                           },
@@ -20072,7 +20072,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 },
               },
             ],
-            "description": "Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10 ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.",
+            "description": "Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10-ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.",
             "properties": {
               "detiSucastouDomacnosti": {
                 "default": false,
@@ -20909,7 +20909,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
               "maximalnaVyskaNajomneho": {
                 "minimum": 0,
-                "title": "Prosím uveďte maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
+                "title": "Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
                 "type": "number",
               },
               "preferovanaLokalita": {
@@ -20967,6 +20967,16 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 "type": "boolean",
               },
               "customComponent25_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "customComponent26_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "customComponent27_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
@@ -21068,7 +21078,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
             ],
             "vlastnikNehnutelnosti": {
               "ui:options": {
-                "helptextHeader": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.",
+                "helptextHeader": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -21555,7 +21565,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           },
           "vlastnikNehnutelnosti": {
             "ui:options": {
-              "helptextHeader": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.",
+              "helptextHeader": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
               "orientations": "row",
               "radioOptions": [],
               "variant": "boxed",
@@ -21657,7 +21667,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
-            "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.",
+            "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
             "inputType": "text",
           },
           "ui:widget": "Input",
@@ -21690,7 +21700,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
             "customComponents": [
               {
                 "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                   "type": "info",
                 },
                 "type": "alert",
@@ -21794,7 +21804,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem vášho druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Uveďte, prosím, priemerný čistý mesačný príjem druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal. ",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -21832,7 +21842,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -22343,7 +22353,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             "rodnePriezvisko": {
               "ui:label": false,
               "ui:options": {
-                "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.",
+                "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
                 "inputType": "text",
               },
               "ui:widget": "Input",
@@ -22372,7 +22382,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             ],
             "vlastnikNehnutelnosti": {
               "ui:options": {
-                "helptextHeader": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.",
+                "helptextHeader": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -22402,7 +22412,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "customComponents": [
                   {
                     "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                       "type": "info",
                     },
                     "type": "alert",
@@ -22544,7 +22554,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "zamestnanie": {
               "ui:options": {
-                "helptextHeader": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.",
+                "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -22942,7 +22952,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "vlastnikNehnutelnosti": {
             "ui:options": {
-              "helptextHeader": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.",
+              "helptextHeader": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
               "orientations": "row",
               "radioOptions": [],
               "variant": "boxed",
@@ -23008,7 +23018,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
-            "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.",
+            "helptextHeader": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
             "inputType": "text",
           },
           "ui:widget": "Input",
@@ -23039,7 +23049,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             "customComponents": [
               {
                 "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                   "type": "info",
                 },
                 "type": "alert",
@@ -23143,7 +23153,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem vášho manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Uveďte, prosím, priemerný čistý mesačný príjem manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -23181,7 +23191,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -23522,7 +23532,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
     "sucetPrijmovCestneVyhlasenie": {
       "cestneVyhlasenie": {
         "ui:options": {
-          "checkboxLabel": "Čestne vyhlasujem, že všetky údaje, uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.",
+          "checkboxLabel": "Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -23571,11 +23581,45 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         },
         "ui:widget": "CustomComponents",
       },
+      "customComponent26_gRbYIKNcAF": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "message": "Overte si, či váš celkový čistý mesačný príjem budúcej domácnosti spĺňa podmienky. Celkový príjem nemôže prekročiť  štvornásobok, resp. päťnásobok aktuálneho životného minima.",
+                "type": "info",
+              },
+              "type": "alert",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "customComponent27_gRbYIKNcAF": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://bratislava.sk/socialne-sluzby-a-byvanie/byvanie-a-ubytovanie/najomne-byvanie",
+                    "title": "Overiť príjem",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
       "ui:options": {
         "stepQueryParam": "sucet-prijmov-a-cestne-vyhlasenie",
       },
       "ui:order": [
         "customComponent25_gRbYIKNcAF",
+        "customComponent26_gRbYIKNcAF",
+        "customComponent27_gRbYIKNcAF",
         "cestneVyhlasenie",
       ],
     },
@@ -23712,7 +23756,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           },
           "vlastnikNehnutelnosti": {
             "ui:options": {
-              "helptextHeader": "Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.",
+              "helptextHeader": "markdown_gKgflRNwdS:Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
               "orientations": "row",
               "radioOptions": [],
               "variant": "boxed",
@@ -23830,7 +23874,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
-            "helptextHeader": "Vyplňte iba v prípade, ak je vaše priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.",
+            "helptextHeader": "Vyplňte iba v prípade, ak je vaše priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
             "inputType": "text",
           },
           "ui:widget": "Input",
@@ -23876,7 +23920,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             "customComponents": [
               {
                 "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                   "type": "info",
                 },
                 "type": "alert",
@@ -24018,7 +24062,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť váš priemerný mesačný čistý príjem.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte, prosím, váš čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -24054,13 +24098,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         ],
         "vekNajstarsiehoClena": {
           "ui:options": {
-            "radioOptions": [],
-            "variant": "boxed",
-          },
-          "ui:widget": "RadioGroup",
-        },
-        "zoznamRizikovychFaktorov": {
-          "ui:options": {
             "belowComponents": [
               {
                 "props": {
@@ -24070,6 +24107,14 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "type": "alert",
               },
             ],
+            "helptextHeader": "Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor.",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
+        "zoznamRizikovychFaktorov": {
+          "ui:options": {
             "helptextHeader": "Môžete označiť viac možností.",
             "variant": "boxed",
           },

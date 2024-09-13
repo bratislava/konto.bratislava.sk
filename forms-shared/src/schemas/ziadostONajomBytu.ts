@@ -1246,7 +1246,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
               props: {
                 type: 'info',
                 message:
-                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
+                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedené rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
               },
             },
           ],
@@ -1502,8 +1502,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             links: [
               {
                 title: 'Overiť príjem',
-                // TODO replace link
-                href: 'https://bratislava.sk/socialne-sluzby-a-byvanie/byvanie-a-ubytovanie/najomne-byvanie',
+                href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf',
               },
             ],
           },

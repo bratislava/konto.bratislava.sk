@@ -1502,8 +1502,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             links: [
               {
                 title: 'Overiť príjem',
-                // TODO replace link
-                href: 'https://bratislava.sk/socialne-sluzby-a-byvanie/byvanie-a-ubytovanie/najomne-byvanie',
+                href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf',
               },
             ],
           },

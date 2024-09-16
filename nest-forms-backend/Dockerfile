@@ -1,65 +1,54 @@
-ARG FORMS_SHARED_TAG=latest
+# id forms-shared tag is not specified, use general "latest"
+ARG FORMS_SHARED_TAG=6869d7843b1710ea921281de07182ddbd977c37e
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
-FROM node:20.9 AS base
+# alpine has limitations with installing playwright
+FROM node:20.10 AS base
+ENV NODE_ENV=production
 
 RUN npx playwright install-deps chromium
 
-# build
-FROM base AS build
-WORKDIR /root/forms-shared
+# used as app-base in prodution and development image
+FROM base AS app-base
+RUN apt-get update \
+ && apt-get install -y tini \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /home/node/app \
+ && chown -R node:node /home/node/app
+USER node
+WORKDIR /home/node/app
+ENTRYPOINT [ "/sbin/tini", "--" ]
+
+FROM base AS build-base
+# make forms shared available
+WORKDIR /forms-shared
 COPY --from=shared /app/ ./
+WORKDIR /build
+COPY package.json package-lock.json prisma ./
+RUN npm ci --include=dev --frozen-lockfile \
+ && npx prisma generate
 
-WORKDIR /root/nest-forms-backend
-COPY package*.json ./
+FROM build-base AS build
+COPY --chown=node:node . ./
+RUN npm run build \
+ && npm prune --production
 
-RUN npm ci
-
-COPY . ./
-
-RUN npx prisma generate --schema=./prisma/schema.prisma
-
-RUN npx prisma migrate
-
-RUN npm run build
-
-# development
-FROM base AS dev
-
-WORKDIR /home/node/nest-forms-backend
-COPY package*.json ./
-
-RUN npm install
-COPY . ./
-
-RUN npx prisma generate
-
+FROM app-base AS dev
+ENV NODE_ENV=development
+# used **only** for development and local directory should be mounted
 CMD [ "npm", "run", "start:debug" ]
 
-
 # production
-FROM base AS prod
+FROM app-base AS prod
 
-USER node
-
-# When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
-# to be present.
-# TODO: Find a way how to use --install-links flag in npm install to avoid this.
-RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
-WORKDIR /home/node/forms-shared
-COPY --chown=node:node --from=shared /app/ ./
-
-RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
-WORKDIR /home/node/app
-
-COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
-COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
-# Playwright must be installed after node_modules are copied (installs the same version as in package.json)
-RUN npx playwright install chromium
-RUN npm prune --production
-
-COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
-COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res
-COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
+COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
+COPY --chown=node:node --from=build /build/node_modules ./node_modules
+COPY --chown=node:node --from=build /build/dist ./dist
+COPY --chown=node:node --from=build /build/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json
-
-ENTRYPOINT npx prisma migrate deploy && npm run start:prod
+EXPOSE 3000
+ARG GIT_COMMIT="undefined"
+ENV GIT_COMMIT=$GIT_COMMIT
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/bratislava/nest-prisma-template" \
+      org.opencontainers.image.licenses="EUPL-1.2"
+CMD [ "npm", "run", "start:migrate:prod" ]

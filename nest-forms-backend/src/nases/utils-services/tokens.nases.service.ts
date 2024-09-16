@@ -13,10 +13,10 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
-import { Builder, Parser } from 'xml2js'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ConvertService from '../../convert/convert.service'
@@ -305,7 +305,6 @@ export default class NasesUtilsService {
     isSigned: boolean,
   ): Promise<string | object> {
     let message: string | object | null = null
-    const parser = new Parser()
 
     if (form.formDataBase64) {
       message = form.formDataBase64
@@ -313,14 +312,7 @@ export default class NasesUtilsService {
 
     if (!isSigned) {
       try {
-        const messageXml = await this.convertService.convertJsonToXmlForForm(
-          form,
-          true,
-        )
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const response = await parser.parseStringPromise(messageXml)
-        message = typeof response === 'object' ? (response as object) : null
+        message = await this.convertService.convertJsonToXmlObjectForForm(form)
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -449,14 +441,7 @@ export default class NasesUtilsService {
       },
     }
 
-    const builder = new Builder({
-      // eslint-disable-next-line unicorn/text-encoding-identifier-case
-      xmldec: { version: '1.0', encoding: 'utf-8' },
-      renderOpts: {
-        pretty: false,
-      },
-    })
-    return builder.buildObject(template)
+    return buildSlovenskoSkXml(template, { headless: false, pretty: false })
   }
 
   private getNasesError(code: number): string {

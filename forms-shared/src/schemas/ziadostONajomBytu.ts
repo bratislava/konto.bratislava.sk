@@ -72,8 +72,12 @@ const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
         orientations: 'row',
         helptextHeader:
           stepType === StepType.Ziadatel
-            ? 'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.'
-            : 'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie.',
+            ? markdownText(
+                'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
+              )
+            : markdownText(
+                'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
+              ),
       },
     ),
     conditionalFields(createCondition([[['vlastnikNehnutelnosti'], { const: true }]]), [
@@ -237,8 +241,8 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             {
               helptextHeader:
                 stepType === StepType.Ziadatel
-                  ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.'
-                  : 'Vyplňte iba v prípade, ak je priezvisko iné, ako to, čo ste uviedli v predchádzajúcej odpovedi.',
+                  ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.'
+                  : 'Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.',
             },
           )
         : null,
@@ -391,9 +395,9 @@ const getPrijemSection = (stepType: StepType) => {
           [StepType.Ziadatel]:
             'Uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
           [StepType.ManzelManzelka]:
-            'Uveďte, prosím, priemerný čistý mesačný príjem vášho manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
+            'Uveďte, prosím, priemerný čistý mesačný príjem manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
           [StepType.DruhDruzka]:
-            'Uveďte, prosím, priemerný čistý mesačný príjem vášho druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
+            'Uveďte, prosím, priemerný čistý mesačný príjem druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal. ',
           [StepType.Dieta]: undefined,
           [StepType.InyClen]:
             'Uveďte, prosím, priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
@@ -512,14 +516,18 @@ const getPrijemSection = (stepType: StepType) => {
         variant: 'boxed',
         orientations: 'row',
         helptextHeader: {
-          [StepType.Ziadatel]:
-            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť váš priemerný mesačný čistý príjem.',
-          [StepType.ManzelManzelka]:
-            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.',
-          [StepType.DruhDruzka]:
-            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.',
-          [StepType.InyClen]:
-            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví potvrdenie o výške príjmu. Je potrebné uviesť priemerný mesačný čistý príjem.',
+          [StepType.Ziadatel]: markdownText(
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte, prosím, váš čistý príjem za posledný známy rok.',
+          ),
+          [StepType.ManzelManzelka]: markdownText(
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+          ),
+          [StepType.DruhDruzka]: markdownText(
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+          ),
+          [StepType.InyClen]: markdownText(
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+          ),
         }[stepType],
       },
     ),
@@ -671,13 +679,13 @@ const getPrijemSection = (stepType: StepType) => {
           type: 'info',
           message: {
             [StepType.Ziadatel]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.ManzelManzelka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.DruhDruzka]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.InyClen]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
           }[stepType],
         },
       },
@@ -1188,9 +1196,9 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
                 title: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
               },
               {
-                value: 'hrozbaOdobratiaDeti',
+                value: 'moznostNavratuDeti',
                 title:
-                  'Hrozba odobratia detí orgánom Sociálnoprávnej ochrany detí a sociálnej kurately v dôsledku akútnej bytovej núdze žiadateľa',
+                  'Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania',
               },
               {
                 value: 'opustenieUstavnejStarostlivosti',
@@ -1200,12 +1208,12 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
               {
                 value: 'opustenieVazby',
                 title:
-                  'Opustenie Ústavu na výkon väzby a Ústav na výkon trestu odňatia slobody v uplynulých 3 rokoch alebo 3 mesiace pred prepustením',
+                  'Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr',
               },
               {
                 value: 'opustenieSpecialnehoZariadenia',
                 title:
-                  'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch alebo 3 mesiace pred prepustením: Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatóriá, resocializačné stredisko',
+                  'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)',
               },
             ],
             required: true,
@@ -1213,16 +1221,6 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           {
             helptextHeader: 'Môžete označiť viac možností.',
             variant: 'boxed',
-            belowComponents: [
-              {
-                type: 'alert',
-                props: {
-                  type: 'info',
-                  message:
-                    'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
-                },
-              },
-            ],
           },
         ),
       ]),
@@ -1239,7 +1237,20 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             { value: '81aViac', title: '81 a viac rokov' },
           ],
         },
-        { variant: 'boxed' },
+        {
+          variant: 'boxed',
+          helptextHeader: 'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor.',
+          belowComponents: [
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message:
+                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedené rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
+              },
+            },
+          ],
+        },
       ),
     ],
   )
@@ -1310,7 +1321,7 @@ export default schema(
         title: 'Nezaopatrené deti do 25 rokov',
         stepperTitle: 'Nezaopatrené dieťa/deti',
         description:
-          'Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10 ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.',
+          'Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10-ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.',
       },
       [
         radioGroup(
@@ -1424,7 +1435,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Prosím uveďte maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
+            'Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
           required: true,
           minimum: 0,
         },
@@ -1473,6 +1484,31 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         },
         {},
       ),
+      customComponentsField(
+        {
+          type: 'alert',
+          props: {
+            type: 'info',
+            message:
+              'Overte si, či váš celkový čistý mesačný príjem budúcej domácnosti spĺňa podmienky. Celkový príjem nemôže prekročiť  štvornásobok, resp. päťnásobok aktuálneho životného minima.',
+          },
+        },
+        {},
+      ),
+      customComponentsField(
+        {
+          type: 'additionalLinks',
+          props: {
+            links: [
+              {
+                title: 'Overiť príjem',
+                href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf',
+              },
+            ],
+          },
+        },
+        {},
+      ),
       checkbox(
         'cestneVyhlasenie',
         {
@@ -1482,7 +1518,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         },
         {
           checkboxLabel:
-            'Čestne vyhlasujem, že všetky údaje, uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.',
+            'Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.',
           variant: 'boxed',
         },
       ),

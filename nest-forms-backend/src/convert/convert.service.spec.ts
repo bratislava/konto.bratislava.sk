@@ -19,7 +19,6 @@ describe('ConvertService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CacheModule.register()],
       providers: [
         ConvertService,
         TaxService,

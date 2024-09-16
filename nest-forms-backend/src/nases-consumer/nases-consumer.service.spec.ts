@@ -72,7 +72,6 @@ describe('NasesConsumerService', () => {
 
     // TODO refactor to use imports
     const app: TestingModule = await Test.createTestingModule({
-      imports: [CacheModule.register()],
       providers: [
         ConvertPdfService,
         NasesConsumerService,

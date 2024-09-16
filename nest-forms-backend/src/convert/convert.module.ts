@@ -16,13 +16,7 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Module({
   controllers: [ConvertController],
-  imports: [
-    FormsModule,
-    ScannerClientModule,
-    FilesModule,
-    TaxModule,
-    CacheModule.register(),
-  ],
+  imports: [FormsModule, ScannerClientModule, FilesModule, TaxModule],
   providers: [
     ConvertService,
     JsonXmlConvertService,

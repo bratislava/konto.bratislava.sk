@@ -28,7 +28,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
       const logger = new Logger(statusMessage)
 
       const responseStringified = JSON.stringify(responseData).replaceAll(
-        '\\"',
+        String.raw`\"`,
         '"',
       )
 

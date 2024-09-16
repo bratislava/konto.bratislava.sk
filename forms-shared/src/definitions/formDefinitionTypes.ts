@@ -32,7 +32,7 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkGeneric
   ginisAssignment: {
     ginisOrganizationName: string
-    ginisPersonName: string
+    ginisPersonName?: string
   }
   sharepointData?: SharepointData
 }

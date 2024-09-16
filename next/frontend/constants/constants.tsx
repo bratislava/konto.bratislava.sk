@@ -20,6 +20,7 @@ import SecurityIcon from '../../assets/icons/most-wanted-services/reporting-of-i
 import MarianumIcon from '../../assets/icons/other/marianum.svg'
 import MosquitoIcon from '../../assets/icons/other/mosquito-hunters.svg'
 import ChristmasTreeIcon from '../../assets/icons/other/tree.svg'
+import HousingIcon from '../../assets/icons/social-services/housing.svg'
 import TransportIcon from '../../assets/icons/transport-and-maps/city-​​transport.svg'
 import ExcavationsIcon from '../../assets/icons/transport-and-maps/excavations.svg'
 import ManagmentCommunicationsIcon from '../../assets/icons/transport-and-maps/management-communications.svg'
@@ -31,6 +32,7 @@ export const MunicipalServicesCategories = {
   TAXES_CATEGORY: 'Dane',
   CULTURE_CATEGORY: 'Kultúra a voľný čas',
   TRANSPORT_CATEGORY: 'Doprava',
+  SOCIAL_SERVICES_CATEGORY: 'Sociálne služby a bývanie',
   ENVIROMENTS_CATEGORY: 'Nebytové priestory',
   BASKET_CATEGORY: 'Odpady',
   MARIANUM_CATEGORY: 'Pohrebníctvo Marianum',
@@ -452,6 +454,17 @@ export const serviceCards: ServiceCardBase[] = [
     tagStyle: 'text-main-700 bg-main-100',
     category: [MunicipalServicesCategories.TAXES_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
+  },
+  {
+    id: 44,
+    title: 'account_section_services.cards.44.title',
+    description: 'account_section_services.cards.44.description',
+    buttonText: 'account_section_services.cards.44.buttonText',
+    icon: <HousingIcon className="size-10 text-social-600 lg:size-12" />,
+    tag: 'account_section_services.cards.44.tag',
+    tagStyle: 'text-social-700 bg-social-100',
+    category: [MunicipalServicesCategories.SOCIAL_SERVICES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-najom-bytu'),
   },
 ]
 

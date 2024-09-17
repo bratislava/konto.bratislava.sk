@@ -50,6 +50,6 @@ EXPOSE 3000
 ARG GIT_COMMIT="undefined"
 ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/nest-prisma-template" \
+      org.opencontainers.image.source="https://github.com/bratislava/nest-forms-backend" \
       org.opencontainers.image.licenses="EUPL-1.2"
 CMD [ "npm", "run", "start:migrate:prod" ]

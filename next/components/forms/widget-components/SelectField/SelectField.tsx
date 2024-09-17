@@ -195,7 +195,10 @@ const SelectField = <
                 }),
               placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
               valueContainer: ({ isDisabled }) =>
-                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
+                // If there's a long value in select, it stretches the parent element instead of wrapping the text.
+                // `[container-type:inline-size]` fixes this for some reason.
+                cx('gap-x-2 gap-y-1 px-3 py-2 [container-type:inline-size] lg:px-4 lg:py-3', {
+                  // cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
                   // if rounded is not applied, the background overflows to the "control"
                   'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
                 }),

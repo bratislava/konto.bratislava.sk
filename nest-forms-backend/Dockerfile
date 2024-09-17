@@ -1,13 +1,14 @@
-# id forms-shared tag is not specified, use general "latest"
-ARG FORMS_SHARED_TAG=6869d7843b1710ea921281de07182ddbd977c37e
+# If FORMS_SHARED_TAG is not specified, use general "latest"
+ARG FORMS_SHARED_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
-# alpine has limitations with installing playwright
+
 FROM node:20.10 AS base
 ENV NODE_ENV=production
 
+# Install Playwright dependencies
 RUN npx playwright install-deps chromium
 
-# used as app-base in prodution and development image
+# Used as app-base in production and development image
 FROM base AS app-base
 RUN apt-get update \
  && apt-get install -y tini \
@@ -16,10 +17,10 @@ RUN apt-get update \
  && chown -R node:node /home/node/app
 USER node
 WORKDIR /home/node/app
-ENTRYPOINT [ "/sbin/tini", "--" ]
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 FROM base AS build-base
-# make forms shared available
+# Make forms-shared available
 WORKDIR /forms-shared
 COPY --from=shared /app/ ./
 WORKDIR /build
@@ -34,10 +35,10 @@ RUN npm run build \
 
 FROM app-base AS dev
 ENV NODE_ENV=development
-# used **only** for development and local directory should be mounted
+# Used **only** for development and local directory should be mounted
 CMD [ "npm", "run", "start:debug" ]
 
-# production
+# Production
 FROM app-base AS prod
 
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./

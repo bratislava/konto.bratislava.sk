@@ -16880,10 +16880,10 @@ exports[`Form definitions ziadost-o-najom-bytu default form state should match s
       "zamestnanie": false,
     },
     "rizikoveFaktory": {
-      "rizikoveFaktoryPritomne": false,
+      "rizikoveFaktoryPritomne": true,
     },
     "sucasneByvanie": {
-      "bytovaNudza": false,
+      "bytovaNudza": true,
     },
     "zdravotnyStav": {
       "bezbarierovyByt": false,
@@ -17573,7 +17573,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 ],
                 "properties": {
                   "rizikoveFaktoryPritomne": {
-                    "default": false,
+                    "default": true,
                     "oneOf": [
                       {
                         "const": true,
@@ -17692,7 +17692,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 ],
                 "properties": {
                   "bytovaNudza": {
-                    "default": false,
+                    "default": true,
                     "oneOf": [
                       {
                         "const": true,
@@ -18436,7 +18436,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             ],
                             "properties": {
                               "bytovaNudza": {
-                                "default": false,
+                                "default": true,
                                 "oneOf": [
                                   {
                                     "const": true,
@@ -19254,7 +19254,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             ],
                             "properties": {
                               "bytovaNudza": {
-                                "default": false,
+                                "default": true,
                                 "oneOf": [
                                   {
                                     "const": true,
@@ -19821,7 +19821,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   ],
                                   "properties": {
                                     "bytovaNudza": {
-                                      "default": false,
+                                      "default": true,
                                       "oneOf": [
                                         {
                                           "const": true,
@@ -20619,7 +20619,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   ],
                                   "properties": {
                                     "bytovaNudza": {
-                                      "default": false,
+                                      "default": true,
                                       "oneOf": [
                                         {
                                           "const": true,

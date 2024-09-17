@@ -12,6 +12,7 @@ import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
 import { useFormContext } from './useFormContext'
+import { useFormData } from './useFormData'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
@@ -24,11 +25,11 @@ const FormPage = () => {
     displayHeaderAndMenu,
     isEmbedded,
   } = useFormContext()
+  const { formData } = useFormData()
   const {
     currentStepIndex,
     currentStepperStep,
     currentStepSchema,
-    formData,
     handleFormOnSubmit,
     handleFormOnChange,
     popScrollToFieldId,

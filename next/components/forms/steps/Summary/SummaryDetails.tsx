@@ -19,6 +19,7 @@ import { useFormState } from '../../useFormState'
 import SummaryFile from './SummaryFile'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
+import { useFormData } from 'components/forms/useFormData'
 
 const FormRenderer = ({ children }: SummaryFormRendererProps) => (
   <div className="flex flex-col gap-8">{children}</div>
@@ -135,7 +136,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 }
 
 const SummaryDetails = () => {
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { getValidatedSummary } = useFormSummary()
   const validatedSummary = getValidatedSummary()
   const {

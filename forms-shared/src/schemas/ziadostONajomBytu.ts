@@ -1052,8 +1052,8 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             : 'Nachádza sa v bytovej núdzi?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, title: 'Áno', isDefault: true },
+          { value: false, title: 'Nie' },
         ],
       },
       {
@@ -1174,8 +1174,8 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, title: 'Áno', isDefault: true },
+            { value: false, title: 'Nie' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },

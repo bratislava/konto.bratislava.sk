@@ -1,4 +1,5 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
+import { useFormData } from 'components/forms/useFormData'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
 import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
@@ -19,7 +20,6 @@ import { useFormState } from '../../useFormState'
 import SummaryFile from './SummaryFile'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
-import { useFormData } from 'components/forms/useFormData'
 
 const FormRenderer = ({ children }: SummaryFormRendererProps) => (
   <div className="flex flex-col gap-8">{children}</div>

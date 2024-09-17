@@ -26,10 +26,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: 8Gi
+              cpu: ${CPU_LIMITS}
+              memory: ${MEMORY_LIMITS}
             requests:
-              cpu: 100m
-              memory: 2Gi
+              cpu: ${CPU_REQUESTS}
+              memory: ${MEMORY_REQUESTS}
           volumeMounts:
             - name: data-vol
               mountPath: /data

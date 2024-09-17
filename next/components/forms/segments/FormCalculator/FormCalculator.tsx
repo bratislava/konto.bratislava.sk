@@ -1,5 +1,6 @@
 import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
+import { useFormData } from 'components/forms/useFormData'
 import {
   calculateFormCalculatorExpression,
   getFormCalculatorExpression,
@@ -13,7 +14,6 @@ import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
 import FormMarkdown from '../../info-components/FormMarkdown'
-import { useFormState } from '../../useFormState'
 import { useFormWidget } from '../../useFormWidget'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
@@ -67,7 +67,7 @@ const Calculator = ({
   variant: CustomComponentCalculatorProps['variant']
 }) => {
   const formatter = useNumberFormatter()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { widget } = useFormWidget()
 
   const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])

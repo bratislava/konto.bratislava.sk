@@ -17,9 +17,9 @@ import { useIsClient, useIsMounted } from 'usehooks-ts'
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
+import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
 import { useFormModals } from '../useFormModals'
-import { useFormState } from '../useFormState'
 import { SignerErrorType } from './mapDitecError'
 // kept while it might be usefull for local testing
 // import { signerExamplePayload } from './signerExamplePayload'
@@ -44,7 +44,7 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
   const { isSigned, initialSignature } = useFormContext()
-  const { formData, formDataRef } = useFormState()
+  const { formData, formDataRef } = useFormData()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {

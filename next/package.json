@@ -43,7 +43,7 @@
     "@grafana/faro-core": "^1.0.5",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
-    "@iframe-resizer/child": "^5.2.1",
+    "@iframe-resizer/child": "^5.3.1",
     "@internationalized/date": "3.5.4",
     "@jest/globals": "^29.5.0",
     "@monaco-editor/react": "^4.6.0",

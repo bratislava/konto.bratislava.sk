@@ -10,7 +10,6 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
 import {
@@ -23,6 +22,7 @@ import {
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
 import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
+import { useFormData } from './useFormData'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -33,15 +33,14 @@ const useGetContext = () => {
       schemas: { schema, uiSchema },
     },
     formMigrationRequired,
-    initialFormDataJson,
     isReadonly,
   } = useFormContext()
+  const { formData, setFormData } = useFormData()
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   /**
@@ -205,8 +204,6 @@ const useGetContext = () => {
   }
 
   return {
-    formData,
-    formDataRef,
     currentStepIndex,
     submittedStepsIndexes,
     stepperData,
@@ -225,7 +222,9 @@ const useGetContext = () => {
   }
 }
 
-const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormStateProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

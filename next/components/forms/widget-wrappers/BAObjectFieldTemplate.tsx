@@ -1,5 +1,6 @@
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import cx from 'classnames'
+import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { PropsWithChildren } from 'react'
 
@@ -48,11 +49,20 @@ const ColumnDisplay = ({
  * This implementation removes `TitleFieldTemplate` and `DescriptionFieldTemplate` from the
  * implementation and displays them directly.
  */
-const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
+const BAObjectFieldTemplate = ({
+  idSchema,
+  properties,
+  schema,
+  uiSchema,
+}: ObjectFieldTemplateProps) => {
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
+  const { isStepObject, isFormObject } = getObjectFieldInfo(idSchema)
   const defaultSpacing = {
-    wrapper: {},
-    boxed: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
+    wrapper: isFormObject ? { spaceTop: 'none' as const } : {},
+    boxed: {
+      spaceBottom: 'medium' as const,
+      spaceTop: 'medium' as const,
+    },
   }[options.objectDisplay ?? 'wrapper']
 
   const fieldsetClassname = cx({
@@ -62,11 +72,20 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
   return (
     <WidgetWrapper id={idSchema.$id} options={options} defaultSpacing={defaultSpacing}>
       <fieldset className={fieldsetClassname} data-cy={`fieldset-${idSchema.$id}`}>
-        {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
-        {options.description && (
-          <div className="text-p2 mb-3 whitespace-pre-wrap">
-            <FormMarkdown>{options.description}</FormMarkdown>
+        {isStepObject ? (
+          <div className="mb-8 flex flex-col gap-4">
+            <h2 className="text-h2">{schema.title}</h2>
+            {schema.description && <p className="text-p2">{schema.description}</p>}
           </div>
+        ) : (
+          <>
+            {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
+            {options.description && (
+              <div className="text-p2 mb-3 whitespace-pre-wrap">
+                <FormMarkdown>{options.description}</FormMarkdown>
+              </div>
+            )}
+          </>
         )}
         <ColumnDisplay uiOptions={options}>
           {properties.map(({ content }, index) => {

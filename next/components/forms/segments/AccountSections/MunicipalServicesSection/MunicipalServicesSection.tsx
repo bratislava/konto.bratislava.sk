@@ -63,7 +63,8 @@ const foMunicipalServicesSection = [
   29, 26, 27, 28, 32, 18,
 ]
 const poMunicipalServicesSection = [
-  34, 35, 3, 4, 6, 43, 1, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39, 28, 14, 40, 41, 32, 18,
+  34, 35, 44, 3, 4, 6, 43, 1, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39, 28, 14, 40, 41, 32,
+  18,
 ]
 
 const MunicipalServicesSection = () => {

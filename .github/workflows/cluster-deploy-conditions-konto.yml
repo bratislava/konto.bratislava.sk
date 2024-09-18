@@ -247,7 +247,7 @@ jobs:
 
       - id: prod-cvdmirror
         name: Check for prod clamav
-        if: startsWith(github.ref, 'refs/tags/prod-cvdmirror') || steps.staging.outputs.condition == 'true'
+        if: startsWith(github.ref, 'refs/tags/prod-cvdmirror') || steps.prod.outputs.condition == 'true'
         run: |
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT

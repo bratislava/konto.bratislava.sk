@@ -21,10 +21,10 @@ import { RegistrationModalType } from './segments/RegistrationModal/Registration
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormSummary } from './steps/Summary/useFormSummary'
 import { useFormContext } from './useFormContext'
+import { useFormData } from './useFormData'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
-import { useFormState } from './useFormState'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.
@@ -61,7 +61,7 @@ const useGetContext = () => {
     formId,
     formDefinition: { slug },
   } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
   const {
     isSignedIn,

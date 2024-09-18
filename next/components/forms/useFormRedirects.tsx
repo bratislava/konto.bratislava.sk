@@ -9,14 +9,14 @@ import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirec
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
+import { useFormData } from './useFormData'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
-import { useFormState } from './useFormState'
 
 const useGetContext = () => {
   const router = useRouter()
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { formId } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { t } = useTranslation('forms')
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

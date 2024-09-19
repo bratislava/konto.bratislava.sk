@@ -1,12 +1,9 @@
 # If FORMS_SHARED_TAG is not specified, use general "latest"
-ARG FORMS_SHARED_TAG=latest
-FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
+ARG FORMS_SHARED_TAG=c48e3984e7f93934dcf1de7004484935c6c501fc
+FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} AS shared
 
 FROM node:20.10 AS base
 ENV NODE_ENV=production
-
-# Install Playwright dependencies
-RUN npx playwright install-deps chromium
 
 # Used as app-base in production and development image
 FROM base AS app-base
@@ -20,11 +17,14 @@ WORKDIR /home/node/app
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 FROM base AS build-base
-# Make forms-shared available
-WORKDIR /forms-shared
-COPY --from=shared /app/ ./
+COPY --from=shared /app/dist /forms-shared/
+
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
+
+# Install Playwright dependencies
+RUN npx playwright install-deps chromium
+
 RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
 
@@ -41,7 +41,7 @@ CMD [ "npm", "run", "start:debug" ]
 # Production
 FROM app-base AS prod
 
-COPY --chown=node:node --from=shared /app/ /home/node/forms-shared
+COPY --chown=node:node --from=shared /app/dist/ /home/node/forms-shared/
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist
@@ -51,6 +51,6 @@ EXPOSE 3000
 ARG GIT_COMMIT="undefined"
 ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/nest-forms-backend" \
+      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend" \
       org.opencontainers.image.licenses="EUPL-1.2"
 CMD [ "npm", "run", "start:migrate:prod" ]

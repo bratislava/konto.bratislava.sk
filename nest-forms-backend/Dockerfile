@@ -1,5 +1,5 @@
 # If FORMS_SHARED_TAG is not specified, use general "latest"
-ARG FORMS_SHARED_TAG=c48e3984e7f93934dcf1de7004484935c6c501fc
+ARG FORMS_SHARED_TAG=prod2.3.18-b2c7b7b894cac42fc0ad77828f9903dc4ac4ab7d
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} AS shared
 
 FROM node:20.10 AS base
@@ -17,7 +17,7 @@ WORKDIR /home/node/app
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 FROM base AS build-base
-COPY --from=shared /app/dist /forms-shared/
+COPY --from=shared /app/ /forms-shared/
 
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
@@ -41,7 +41,7 @@ CMD [ "npm", "run", "start:debug" ]
 # Production
 FROM app-base AS prod
 
-COPY --chown=node:node --from=shared /app/dist/ /home/node/forms-shared/
+COPY --chown=node:node --from=shared /app/ /home/node/forms-shared/
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist

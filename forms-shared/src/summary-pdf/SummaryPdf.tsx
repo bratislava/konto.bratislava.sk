@@ -160,6 +160,17 @@ const AdditionalInfo = ({
   )
 }
 
+const TermsAndConditions = ({ formDefinition }: Pick<SummaryPdfProps, 'formDefinition'>) => {
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl font-semibold">Ochrana osobných údajov</h2>
+      <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">
+        {formDefinition.termsAndConditions}
+      </SummaryMarkdown>
+    </div>
+  )
+}
+
 export const SummaryPdf = ({
   formDefinition,
   cssToInject,
@@ -189,12 +200,7 @@ export const SummaryPdf = ({
             renderInvalidValue={InvalidValueRenderer}
           />
           <AdditionalInfo formDefinition={formDefinition} formData={formData} />
-          <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-semibold">Ochrana osobných údajov</h2>
-            <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">
-              {formDefinition.termsAndConditions}
-            </SummaryMarkdown>
-          </div>
+          <TermsAndConditions formDefinition={formDefinition} />
         </div>
       </body>
     </html>

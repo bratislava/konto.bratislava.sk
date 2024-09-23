@@ -29,11 +29,11 @@ spec:
           args: ["serve"]
           resources:
             limits:
-              cpu: 500m
-              memory: 8Gi
+              cpu: ${CPU_LIMITS}
+              memory: ${MEMORY_LIMITS}
             requests:
-              cpu: 100m
-              memory: 1Gi
+              cpu: ${CPU_REQUESTS}
+              memory: ${MEMORY_REQUESTS}
           volumeMounts:
             - name: database
               mountPath: /mnt/cvdupdate

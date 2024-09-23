@@ -1,5 +1,9 @@
 {
   "envs": {
-    "REPLICAS": "1"
+    "REPLICAS": "1",
+    "CPU_LIMITS": "500m",
+    "MEMORY_LIMITS": "8Gi",
+    "CPU_REQUESTS": "100m",
+    "MEMORY_REQUESTS": "1Gi"
   }
 }

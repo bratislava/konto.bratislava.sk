@@ -41,7 +41,7 @@ CMD [ "npm", "run", "start:debug" ]
 # Production
 FROM app-base AS prod
 
-COPY --chown=node:node --from=shared /app/dist/ /home/node/forms-shared/
+COPY --chown=node:node --from=shared /app/ /home/node/forms-shared/
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist

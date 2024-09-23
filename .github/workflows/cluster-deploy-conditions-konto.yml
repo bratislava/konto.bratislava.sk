@@ -60,7 +60,7 @@ on:
 jobs:
   conditions:
     name: Checking konto deployment conditions
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
     env:
       COUNT: 0
     outputs:

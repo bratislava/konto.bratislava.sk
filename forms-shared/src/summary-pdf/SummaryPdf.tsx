@@ -11,11 +11,12 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import Markdown from 'react-markdown'
-import { generalTermsAndConditions } from '../definitions/termsAndConditions'
 import cx from 'classnames'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
+import { FormDefinition } from '../definitions/formDefinitionTypes'
 
 type SummaryPdfProps = {
+  formDefinition: FormDefinition
   cssToInject: string
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
@@ -111,7 +112,12 @@ const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProp
   )
 }
 
-export const SummaryPdf = ({ cssToInject, summaryJson, validatedSummary }: SummaryPdfProps) => {
+export const SummaryPdf = ({
+  formDefinition,
+  cssToInject,
+  summaryJson,
+  validatedSummary,
+}: SummaryPdfProps) => {
   return (
     <html>
       <head>
@@ -145,8 +151,7 @@ export const SummaryPdf = ({ cssToInject, summaryJson, validatedSummary }: Summa
                 ),
               }}
             >
-              {/* TODO: Use from form definition. */}
-              {generalTermsAndConditions}
+              {formDefinition.termsAndConditions}
             </Markdown>
           </div>
         </div>

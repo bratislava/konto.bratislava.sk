@@ -45,6 +45,7 @@ export const renderSummaryPdf = async ({
       cssToInject={summaryPdfCss.toString()}
       summaryJson={summaryJson}
       validatedSummary={validatedSummary}
+      formData={formData}
     ></SummaryPdf>,
   )
   const browser = await launchBrowser()

@@ -14,10 +14,13 @@ import Markdown from 'react-markdown'
 import cx from 'classnames'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
+import { GenericObjectType } from '@rjsf/utils'
+import { renderFormAdditionalInfo } from '../string-templates/renderTemplate'
 
 type SummaryPdfProps = {
   formDefinition: FormDefinition
   cssToInject: string
+  formData: GenericObjectType
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
 }
@@ -112,11 +115,57 @@ const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProp
   )
 }
 
+const SummaryMarkdown = ({ className, children }: { className: string; children: string }) => {
+  return (
+    <Markdown
+      className={className}
+      components={{
+        h2: ({ children }) => <h2 className="text-h-xl font-semibold mb-4">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-h-lg font-semibold mb-3">{children}</h3>,
+        h4: ({ children }) => <h4 className="text-h-md font-semibold mb-2">{children}</h4>,
+        h5: ({ children }) => <h5 className="text-h-base font-semibold mb-2">{children}</h5>,
+        h6: ({ children }) => <h6 className="text-h-xs font-semibold mb-2">{children}</h6>,
+        p: ({ children }) => <p className="text-p-md font-normal mb-4">{children}</p>,
+        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+        ol: ({ children }) => <ol className="list-decimal pl-8 mb-4">{children}</ol>,
+        ul: ({ children }) => <ul className="list-disc pl-8 mb-4">{children}</ul>,
+        li: ({ children }) => <li className="text-p-md font-normal mb-2">{children}</li>,
+        a: ({ children, href }) => (
+          <a href={href} className="font-semibold underline" target="_blank">
+            {children}
+          </a>
+        ),
+      }}
+    >
+      {children}
+    </Markdown>
+  )
+}
+
+const AdditionalInfo = ({
+  formDefinition,
+  formData,
+}: Pick<SummaryPdfProps, 'formDefinition' | 'formData'>) => {
+  const additionalInfo = renderFormAdditionalInfo(formDefinition, formData)
+
+  if (!additionalInfo) {
+    return null
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl font-semibold">Doplňujúce informácie</h2>
+      <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">{additionalInfo}</SummaryMarkdown>
+    </div>
+  )
+}
+
 export const SummaryPdf = ({
   formDefinition,
   cssToInject,
   summaryJson,
   validatedSummary,
+  formData,
 }: SummaryPdfProps) => {
   return (
     <html>
@@ -139,20 +188,12 @@ export const SummaryPdf = ({
             renderNoneValue={NoneValueRenderer}
             renderInvalidValue={InvalidValueRenderer}
           />
+          <AdditionalInfo formDefinition={formDefinition} formData={formData} />
           <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold">Ochrana osobných údajov</h2>
-            <Markdown
-              className="rounded-xl bg-gray-50 p-6"
-              components={{
-                a: ({ children, href }) => (
-                  <a href={href} className="font-semibold underline" target="_blank">
-                    {children}
-                  </a>
-                ),
-              }}
-            >
+            <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">
               {formDefinition.termsAndConditions}
-            </Markdown>
+            </SummaryMarkdown>
           </div>
         </div>
       </body>

@@ -1,10 +1,8 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
-import zevoMechanickaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia from '../schemas/olo/zevoMechanickaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia'
-import zevoRucnaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia from '../schemas/olo/zevoRucnaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia'
-import zevoPodrvenieAZhodnotenieOdpaduVysypanimDoZasobnika from '../schemas/olo/zevoPodrvenieAZhodnotenieOdpaduVysypanimDoZasobnika'
-import zevoUzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/zevoUzatvorenieZmluvyONakladaniSOdpadom'
+import mimoriadnyOdvozAZhodnotenieOdpadu from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
+import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
+import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
 import docisteniStanovistaZbernychNadob from '../schemas/olo/docisteniStanovistaZbernychNadob'
 import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
 import koloTaxi from '../schemas/olo/koloTaxi'
@@ -17,9 +15,9 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti from '../schemas
 export const devFormDefinitions: FormDefinition[] = [
   {
     type: FormDefinitionType.Email,
-    slug: 'olo-mimoriadny-odvoz-a-likvidacia-odpadu',
-    title: 'Mimoriadny odvoz a likvidácia odpadu',
-    schemas: mimoriadnyOdvozALikvidaciaOdpadu,
+    slug: 'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu',
+    title: 'Mimoriadny odvoz a zhodnotenie odpadu',
+    schemas: mimoriadnyOdvozAZhodnotenieOdpadu,
     email: '',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
@@ -27,9 +25,9 @@ export const devFormDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'olo-zevo-mechanicka-vykladka-a-zhodnotenie-odpadu-podla-integrovaneho-povolenia',
-    title: 'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-    schemas: zevoMechanickaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia,
+    slug: 'olo-energeticke-zhodnotenie-odpadu-v-zevo',
+    title: 'Energetické zhodnotenie odpadu v ZEVO',
+    schemas: energetickeZhodnotenieOdpaduVZevo,
     email: '',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
@@ -37,29 +35,9 @@ export const devFormDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'olo-zevo-rucna-vykladka-a-zhodnotenie-odpadu-podla-integrovaneho-povolenia',
-    title: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-    schemas: zevoRucnaVykladkaAZhodnotenieOdpaduPodlaIntegrovanehoPovlenia,
-    email: '',
-    termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
-    embedded: 'olo',
-  },
-  {
-    type: FormDefinitionType.Email,
-    slug: 'olo-zevo-podrvenie-a-zhodnotenie-odpadu-vysypanim-do-zasobnika',
-    title: 'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka',
-    schemas: zevoPodrvenieAZhodnotenieOdpaduVysypanimDoZasobnika,
-    email: '',
-    termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
-    embedded: 'olo',
-  },
-  {
-    type: FormDefinitionType.Email,
-    slug: 'olo-zevo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
+    slug: 'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
     title: 'Uzatvorenie zmluvy o nakladaní s odpadom',
-    schemas: zevoUzatvorenieZmluvyONakladaniSOdpadom,
+    schemas: uzatvorenieZmluvyONakladaniSOdpadom,
     email: '',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',

@@ -38,8 +38,10 @@ CMD [ "npm", "run", "start:debug" ]
 # Production
 FROM app-base AS prod
 
+USER root
 # Install Playwright dependencies
 RUN npx playwright install-deps chromium
+USER node
 
 COPY --chown=node:node --from=shared /app/ /home/node/forms-shared/
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./

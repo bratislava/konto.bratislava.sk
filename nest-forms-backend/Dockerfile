@@ -1,5 +1,5 @@
 # If FORMS_SHARED_TAG is not specified, use general "latest"
-ARG FORMS_SHARED_TAG=prod2.3.18-b2c7b7b894cac42fc0ad77828f9903dc4ac4ab7d
+ARG FORMS_SHARED_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} AS shared
 
 FROM node:20.10 AS base

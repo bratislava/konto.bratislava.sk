@@ -655,15 +655,21 @@ export const schema = (
     description?: string
   },
   uiOptions: SchemaUiOptions,
-  steps: ReturnType<typeof step | typeof conditionalStep>[],
+  steps: (ReturnType<typeof step | typeof conditionalStep> | null)[],
 ): Schemas => {
+  const filteredSteps = steps.filter((stepInner) => stepInner != null) as ReturnType<
+    typeof step | typeof conditionalStep
+  >[]
+
   return {
     schema: removeUndefinedValues({
       ...options,
-      allOf: steps.map((stepInner) => stepInner.schema),
+      allOf: filteredSteps.map((stepInner) => stepInner.schema),
     }) as RJSFSchema,
     uiSchema: removeUndefinedValues({
-      ...Object.fromEntries(steps.map((stepInner) => [stepInner.property, stepInner.uiSchema])),
+      ...Object.fromEntries(
+        filteredSteps.map((stepInner) => [stepInner.property, stepInner.uiSchema]),
+      ),
       'ui:options': uiOptions,
       'ui:hideError': true,
     }) as UiSchema,

@@ -22,9 +22,6 @@ COPY --from=shared /app/ /forms-shared/
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
 
-# Install Playwright dependencies
-RUN npx playwright install-deps chromium
-
 RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
 
@@ -40,6 +37,9 @@ CMD [ "npm", "run", "start:debug" ]
 
 # Production
 FROM app-base AS prod
+
+# Install Playwright dependencies
+RUN npx playwright install-deps chromium
 
 COPY --chown=node:node --from=shared /app/ /home/node/forms-shared/
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./

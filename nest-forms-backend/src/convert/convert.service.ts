@@ -296,8 +296,7 @@ export default class ConvertService {
     let pdfBuffer: Buffer
     try {
       pdfBuffer = await renderSummaryPdf({
-        jsonSchema: formDefinition.schemas.schema,
-        uiSchema: formDefinition.schemas.uiSchema,
+        formDefinition,
         formData: jsonForm as GenericObjectType,
         launchBrowser: () => chromium.launch(),
         clientFiles,

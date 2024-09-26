@@ -17,8 +17,7 @@ describe('getSummaryJson', () => {
       )
 
       const pdfBuffer = await renderSummaryPdf({
-        jsonSchema: formDefinition.schemas.schema,
-        uiSchema: formDefinition.schemas.uiSchema,
+        formDefinition,
         formData: exampleForm.formData,
         launchBrowser: launchPlaywrightTest,
         serverFiles: exampleForm.serverFiles,

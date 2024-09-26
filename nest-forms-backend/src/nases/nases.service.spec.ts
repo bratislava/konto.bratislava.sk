@@ -2,7 +2,12 @@ import { getQueueToken } from '@nestjs/bull'
 import { HttpException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Forms } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
+import {
+  FormDefinition,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -15,9 +20,13 @@ import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import TaxService from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
+import { NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
+jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
+  getFormDefinitionBySlug: jest.fn(),
+}))
 jest.mock('../forms/forms.service')
 jest.mock('../files/files.service')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
@@ -232,6 +241,71 @@ describe('NasesService', () => {
           },
         } as JwtNasesPayloadDto),
       ).toBeTruthy()
+    })
+  })
+
+  describe('sendFormEid', () => {
+    it('should throw an error if sendMessageNases returns a status different than 200', async () => {
+      // Mock dependencies
+      const mockForm = { id: '1', formDefinitionSlug: 'test-slug' } as Forms
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
+      const mockFormDefinition: FormDefinition = {
+        schemas: {
+          schema: {},
+          uiSchema: { 'ui:options': {} },
+        },
+        slug: 'test-slug',
+        type: FormDefinitionType.SlovenskoSkTax,
+        title: 'Test Form',
+        termsAndConditions: 'Test Terms and Conditions',
+        messageSubjectDefault: 'Test Subject',
+        pospID: 'test-posp-id',
+        pospVersion: '1.0',
+        publisher: 'Test Publisher',
+        gestor: 'Test Gestor',
+        isSigned: false,
+      }
+
+      // Setup mocks
+      service['formsService'].checkFormBeforeSending = jest
+        .fn()
+        .mockResolvedValue(mockForm)
+      service['formsHelper'].userCanSendFormEid = jest
+        .fn()
+        .mockReturnValue(true)
+      service['nasesUtilsService'].createUserJwtToken = jest
+        .fn()
+        .mockReturnValue('mock-jwt')
+      service['filesService'].areFormAttachmentsReady = jest
+        .fn()
+        .mockResolvedValue({ filesReady: true, requeue: false })
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+
+      // this is the important mock we're testing against
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({
+          status: 500,
+          data: 'Error',
+          statusText: 'Error',
+        })
+
+      const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
+
+      // Execute and assert
+      await expect(
+        service.sendFormEid('1', 'mock-obo-token', mockUser, mockCognitoUser),
+      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_TO_NASES_ERROR)
+      expect(updateFormSpy).toHaveBeenCalledWith('1', {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
     })
   })
 })

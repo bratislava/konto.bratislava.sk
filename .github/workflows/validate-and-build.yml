@@ -16,7 +16,7 @@ jobs:
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=${{ github.sha }}'
+      tag: '--tag=build-${{ github.sha }}'
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -43,7 +43,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
       debug: --debug
       fetch-depth: 1
     secrets:
@@ -77,7 +77,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}

@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull'
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
@@ -14,6 +15,7 @@ import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
@@ -29,6 +31,9 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     ConvertModule,
     TaxModule,
     ConvertPdfModule,
+    BullModule.registerQueue({
+      name: 'email-forms.send',
+    }),
   ],
   providers: [
     NasesService,
@@ -40,6 +45,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
+    EmailFormsSubservice,
   ],
   exports: [NasesService, NasesUtilsService],
   controllers: [NasesController],

@@ -1,7 +1,12 @@
+import { InjectQueue } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { Queue } from 'bull'
+import {
+  FormDefinitionType,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 
@@ -56,6 +61,8 @@ export default class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
+    @InjectQueue('email-forms.send')
+    private readonly emailFormsSendQueue: Queue,
   ) {
     this.logger = new Logger('NasesService')
   }
@@ -285,19 +292,6 @@ export default class NasesService {
       )
     }
 
-    if (!isUserVerified(user)) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.SEND_UNVERIFIED,
-        NasesErrorsResponseEnum.SEND_UNVERIFIED,
-      )
-    }
-
-    if (!this.formsHelper.userCanSendForm(form, userInfo, user.sub)) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
     const validationResult = baRjsfValidator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
@@ -312,6 +306,28 @@ export default class NasesService {
       throw this.throwerErrorGuard.NotAcceptableException(
         FormsErrorsEnum.FORM_DATA_INVALID,
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
+      )
+    }
+
+    if (
+      (formDefinition.type !== FormDefinitionType.Email ||
+        formDefinition.onlyForVerifiedUsers) &&
+      !isUserVerified(user)
+    ) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.SEND_UNVERIFIED,
+        NasesErrorsResponseEnum.SEND_UNVERIFIED,
+      )
+    }
+
+    if (formDefinition.type === FormDefinitionType.Email) {
+      return this.sendFormEmail(form.id)
+    }
+
+    if (!this.formsHelper.userCanSendForm(form, userInfo, user.sub)) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.FORBIDDEN_SEND,
+        NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
 
@@ -486,5 +502,25 @@ export default class NasesService {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(formId)
     return formAttachmentsReady.filesReady
+  }
+
+  async sendFormEmail(formId: string): Promise<SendFormResponseDto> {
+    this.emailFormsSendQueue.add(
+      {
+        formId,
+      },
+      {
+        backoff: {
+          type: 'fixed',
+          delay: 60_000, // 1 minute
+        },
+      },
+    )
+
+    return {
+      id: formId,
+      message: 'Form was successfuly queued to be sent to email.',
+      state: FormState.QUEUED,
+    }
   }
 }

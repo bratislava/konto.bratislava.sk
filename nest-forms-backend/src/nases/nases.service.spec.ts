@@ -1,41 +1,46 @@
+/* eslint-disable pii/no-email */
+import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
-import { HttpException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { RJSFValidationError, ValidationData } from '@rjsf/utils'
 import {
   FormDefinition,
+  FormDefinitionEmail,
+  FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import * as formDefinitionModule from 'forms-shared/definitions/getFormDefinitionBySlug'
+import * as baRjsfValidatorModule from 'forms-shared/form-utils/validators'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import * as isUserVerified from '../common/utils/helpers'
 import FilesService from '../files/files.service'
+import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import TaxService from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
+import { ResponseGdprDataDto } from './dtos/responses.dto'
 import { NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
-jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
-  getFormDefinitionBySlug: jest.fn(),
-}))
-jest.mock('../forms/forms.service')
-jest.mock('../files/files.service')
-jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('../forms/forms.helper')
-jest.mock('../nases-consumer/nases-consumer.service')
-jest.mock('./utils-services/tokens.nases.service')
+jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
+jest.mock('forms-shared/form-utils/validators')
+jest.mock('../common/utils/helpers')
 
 describe('NasesService', () => {
   let service: NasesService
+  let formsService: FormsService
+  let formsHelper: FormsHelper
+  let rabbitmqClientService: RabbitmqClientService
 
   beforeEach(async () => {
     jest.resetAllMocks()
@@ -43,25 +48,68 @@ describe('NasesService', () => {
     const app: TestingModule = await Test.createTestingModule({
       providers: [
         NasesService,
-        ConfigService,
-        FormsService,
-        FilesService,
-        FormsHelper,
-        NasesConsumerService,
-        RabbitmqClientService,
-        ThrowerErrorGuard,
-        NasesUtilsService,
-        TaxService,
         {
-          provide: getQueueToken('tax'),
-          useValue: {},
+          provide: FormsService,
+          useValue: createMock<FormsService>(),
         },
-        { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: FilesService,
+          useValue: createMock<FilesService>(),
+        },
+        {
+          provide: FormsHelper,
+          useValue: createMock<FormsHelper>(),
+        },
+        {
+          provide: NasesConsumerService,
+          useValue: createMock<NasesConsumerService>(),
+        },
+        {
+          provide: RabbitmqClientService,
+          useValue: createMock<RabbitmqClientService>(),
+        },
+        ThrowerErrorGuard,
+        {
+          provide: NasesUtilsService,
+          useValue: createMock<NasesUtilsService>(),
+        },
+        {
+          provide: PrismaService,
+          useValue: prismaMock,
+        },
+        {
+          provide: getQueueToken('email-forms.send'),
+          useValue: {
+            add: jest.fn(),
+          },
+        },
       ],
     }).compile()
 
     service = app.get<NasesService>(NasesService)
-    Object.defineProperty(service, 'logger', { value: { error: jest.fn() } })
+    formsService = app.get<FormsService>(FormsService)
+    formsHelper = app.get<FormsHelper>(FormsHelper)
+    rabbitmqClientService = app.get<RabbitmqClientService>(
+      RabbitmqClientService,
+    )
+
+    Object.defineProperty(
+      app.get<ThrowerErrorGuard>(ThrowerErrorGuard),
+      'logger',
+      {
+        value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
+      },
+    )
+    Object.defineProperty(service, 'logger', {
+      value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
+    })
+
+    jest
+      .spyOn(baRjsfValidatorModule.baRjsfValidator, 'validateFormData')
+      .mockReturnValue({
+        errors: [],
+        errorSchema: {},
+      } as unknown as ValidationData<any>)
   })
 
   describe('should be defined', () => {
@@ -144,6 +192,9 @@ describe('NasesService', () => {
     })
 
     it('should throw unauthorized', async () => {
+      service['formsHelper'].isFormAccessGranted = jest
+        .fn()
+        .mockReturnValue(false)
       prismaMock.forms.findFirst.mockResolvedValue({} as Forms)
 
       await expect(
@@ -288,13 +339,9 @@ describe('NasesService', () => {
       )
 
       // this is the important mock we're testing against
-      service['nasesUtilsService'].sendMessageNases = jest
+      service['nasesConsumerService'].sendToNasesAndUpdateState = jest
         .fn()
-        .mockResolvedValue({
-          status: 500,
-          data: 'Error',
-          statusText: 'Error',
-        })
+        .mockReturnValue(false)
 
       const updateFormSpy = jest.spyOn(service['formsService'], 'updateForm')
 
@@ -308,4 +355,185 @@ describe('NasesService', () => {
       })
     })
   })
+
+  describe('sendForm', () => {
+    const mockForm = {
+      id: 'form-id',
+      formDefinitionSlug: 'test-slug',
+      formDataJson: {},
+    }
+    const mockUser = {
+      sub: 'user-sub',
+      email: 'user@example.com',
+      given_name: 'John',
+    } as CognitoGetUserData
+    const mockUserInfo = {} as ResponseGdprDataDto
+
+    beforeEach(() => {
+      formsService.checkFormBeforeSending = jest
+        .fn()
+        .mockResolvedValue(mockForm as Forms)
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.SlovenskoSkGeneric,
+          schemas: { schema: {}, uiSchema: {} },
+        } as FormDefinitionSlovenskoSkGeneric)
+      jest.spyOn(formsHelper, 'userCanSendForm').mockReturnValue(true)
+      jest.spyOn(isUserVerified, 'isUserVerified').mockReturnValue(true)
+    })
+
+    it('should send a form successfully', async () => {
+      const result = await service.sendForm(
+        'form-id',
+        mockUserInfo as ResponseGdprDataDto,
+        mockUser as CognitoGetUserData,
+      )
+
+      expect(formsService.checkFormBeforeSending).toHaveBeenCalledWith(
+        'form-id',
+      )
+      expect(formDefinitionModule.getFormDefinitionBySlug).toHaveBeenCalledWith(
+        'test-slug',
+      )
+      expect(
+        baRjsfValidatorModule.baRjsfValidator.validateFormData,
+      ).toHaveBeenCalled()
+      expect(formsHelper.userCanSendForm).toHaveBeenCalledWith(
+        mockForm,
+        mockUserInfo,
+        'user-sub',
+      )
+      expect(rabbitmqClientService.publishDelay).toHaveBeenCalled()
+      expect(formsService.updateForm).toHaveBeenCalledWith('form-id', {
+        state: FormState.QUEUED,
+      })
+      expect(result).toEqual({
+        id: 'form-id',
+        message: 'Form was successfully queued to rabbitmq.',
+        state: FormState.QUEUED,
+      })
+    })
+
+    it('should throw an error if form definition is not found', async () => {
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue(null)
+
+      await expect(
+        service.sendForm('form-id', mockUserInfo, mockUser),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: HttpStatus.NOT_FOUND,
+        }),
+      )
+    })
+
+    it('should throw an error if form data is invalid', async () => {
+      jest
+        .spyOn(baRjsfValidatorModule.baRjsfValidator, 'validateFormData')
+        .mockReturnValue({
+          errors: [{ message: 'some error' } as RJSFValidationError],
+        } as ValidationData<any>)
+
+      await expect(
+        service.sendForm('form-id', mockUserInfo, mockUser),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: HttpStatus.NOT_ACCEPTABLE,
+          message: FormsErrorsResponseEnum.FORM_DATA_INVALID,
+        }),
+      )
+    })
+
+    it('should throw an error if user is not verified for an email form that requires verification', async () => {
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.Email,
+          schemas: { schema: {} },
+          onlyForVerifiedUsers: true,
+        } as FormDefinitionEmail)
+
+      jest.spyOn(isUserVerified, 'isUserVerified').mockReturnValue(false)
+
+      await expect(
+        service.sendForm('form-id', mockUserInfo, mockUser),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: HttpStatus.FORBIDDEN,
+        }),
+      )
+    })
+
+    it('should throw an error if user is not allowed to send the form', async () => {
+      jest.spyOn(formsHelper, 'userCanSendForm').mockReturnValue(false)
+
+      await expect(
+        service.sendForm('form-id', mockUserInfo, mockUser),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: HttpStatus.FORBIDDEN,
+        }),
+      )
+    })
+
+    it('should handle email forms correctly', async () => {
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.Email,
+          schemas: { schema: {} },
+        } as FormDefinitionEmail)
+
+      const result = await service.sendForm('form-id', mockUserInfo, mockUser)
+
+      expect(result).toEqual({
+        id: 'form-id',
+        message: 'Form was successfuly queued to be sent to email.',
+        state: FormState.QUEUED,
+      })
+    })
+
+    it('should throw an error if unable to add form to RabbitMQ', async () => {
+      jest
+        .spyOn(rabbitmqClientService, 'publishDelay')
+        .mockRejectedValue(new Error('RabbitMQ error'))
+
+      await expect(
+        service.sendForm('form-id', mockUserInfo, mockUser),
+      ).rejects.toThrow(
+        expect.objectContaining({
+          status: HttpStatus.NOT_FOUND,
+        }),
+      )
+    })
+
+    it('should handle email forms for verified users only', async () => {
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.Email,
+          schemas: { schema: {} },
+          onlyForVerifiedUsers: true,
+        } as FormDefinitionEmail)
+
+      const result = await service.sendForm('form-id', mockUserInfo, mockUser)
+
+      expect(result).toEqual({
+        id: 'form-id',
+        message: 'Form was successfuly queued to be sent to email.',
+        state: FormState.QUEUED,
+      })
+    })
+
+    it('should update form state to QUEUED after successful sending', async () => {
+      await service.sendForm('form-id', mockUserInfo, mockUser)
+
+      expect(formsService.updateForm).toHaveBeenCalledWith('form-id', {
+        state: FormState.QUEUED,
+      })
+    })
+  })
 })
+/* eslint-enable pii/no-email */

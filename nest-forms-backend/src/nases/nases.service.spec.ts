@@ -466,6 +466,51 @@ describe('NasesService', () => {
       )
     })
 
+    it('should be okay if user is not verified but the email form does not require verification', async () => {
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.Email,
+          schemas: { schema: {} },
+          onlyForVerifiedUsers: false,
+        } as FormDefinitionEmail)
+
+      const sendEmailSpy = jest.spyOn(service, 'sendFormEmail')
+      const sendToNasesSpy = jest.spyOn(
+        service['rabbitmqClientService'],
+        'publishDelay',
+      )
+
+      jest.spyOn(isUserVerified, 'isUserVerified').mockReturnValue(false)
+
+      let result = await service.sendForm('form-id', mockUserInfo, mockUser)
+
+      expect(result).toEqual({
+        id: 'form-id',
+        message: 'Form was successfuly queued to be sent to email.',
+        state: FormState.QUEUED,
+      })
+
+      // Even if onlyForVerifiedUsers is empty, we should be okay if the user is not verified
+      jest
+        .spyOn(formDefinitionModule, 'getFormDefinitionBySlug')
+        .mockReturnValue({
+          type: FormDefinitionType.Email,
+          schemas: { schema: {} },
+        } as FormDefinitionEmail)
+
+      result = await service.sendForm('form-id', mockUserInfo, mockUser)
+
+      expect(result).toEqual({
+        id: 'form-id',
+        message: 'Form was successfuly queued to be sent to email.',
+        state: FormState.QUEUED,
+      })
+
+      expect(sendEmailSpy).toHaveBeenCalledTimes(2)
+      expect(sendToNasesSpy).not.toHaveBeenCalled()
+    })
+
     it('should throw an error if user is not allowed to send the form', async () => {
       jest.spyOn(formsHelper, 'userCanSendForm').mockReturnValue(false)
 

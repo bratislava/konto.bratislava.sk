@@ -48,6 +48,8 @@ export type FormDefinitionSlovenskoSk =
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
+  userEmailPath: string
+  onlyForVerifiedUsers?: boolean
 }
 
 export type FormDefinition =

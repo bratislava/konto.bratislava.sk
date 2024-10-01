@@ -22,6 +22,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -32,6 +34,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -42,6 +46,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -52,6 +58,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -62,6 +70,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -72,6 +82,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -82,6 +94,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -92,6 +106,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -102,6 +118,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -112,6 +130,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -122,5 +142,7 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    onlyForVerifiedUsers: false,
+    userEmailPath: '', // TODO
   },
 ]

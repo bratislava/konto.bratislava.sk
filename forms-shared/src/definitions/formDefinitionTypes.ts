@@ -5,6 +5,7 @@ export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
   SlovenskoSkTax = 'SlovenskoSkTax',
   Email = 'Email',
+  Webhook = 'Webhook',
 }
 
 type FormDefinitionBase = {
@@ -42,6 +43,11 @@ export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkTax
 }
 
+export type FormDefinitionWebhook = FormDefinitionBase & {
+  type: FormDefinitionType.Webhook
+  webhookUrl: string
+}
+
 export type FormDefinitionSlovenskoSk =
   | FormDefinitionSlovenskoSkGeneric
   | FormDefinitionSlovenskoSkTax
@@ -57,7 +63,7 @@ export type FormDefinition =
   | FormDefinitionSlovenskoSkGeneric
   | FormDefinitionSlovenskoSkTax
   | FormDefinitionEmail
-
+  | FormDefinitionWebhook
 export const isSlovenskoSkGenericFormDefinition = (
   formDefinition: FormDefinition,
 ): formDefinition is FormDefinitionSlovenskoSkGeneric =>
@@ -77,3 +83,7 @@ export const isSlovenskoSkFormDefinition = (
 export const isEmailFormDefinition = (
   formDefinition: FormDefinition,
 ): formDefinition is FormDefinitionEmail => formDefinition.type === FormDefinitionType.Email
+
+export const isWebhookFormDefinition = (
+  formDefinition: FormDefinition,
+): formDefinition is FormDefinitionWebhook => formDefinition.type === FormDefinitionType.Webhook

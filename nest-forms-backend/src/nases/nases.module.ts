@@ -15,6 +15,7 @@ import ScannerClientService from '../scanner-client/scanner-client.service'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import WebhookSubservice from '../utils/subservices/webhook.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
@@ -40,6 +41,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
+    WebhookSubservice,
   ],
   exports: [NasesService, NasesUtilsService],
   controllers: [NasesController],

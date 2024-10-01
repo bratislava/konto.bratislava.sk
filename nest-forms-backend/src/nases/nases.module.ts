@@ -17,6 +17,7 @@ import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
+import WebhookSubservice from '../utils/subservices/webhook.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
@@ -34,6 +35,9 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     BullModule.registerQueue({
       name: 'email-forms.send',
     }),
+    BullModule.registerQueue({
+      name: 'webhook.send',
+    }),
   ],
   providers: [
     NasesService,
@@ -46,6 +50,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     ScannerClientService,
     MinioClientSubservice,
     EmailFormsSubservice,
+    WebhookSubservice,
   ],
   exports: [NasesService, NasesUtilsService],
   controllers: [NasesController],

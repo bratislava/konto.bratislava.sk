@@ -15,6 +15,7 @@ import * as baRjsfValidatorModule from 'forms-shared/form-utils/validators'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import * as helpers from '../common/utils/helpers'
 import FilesService from '../files/files.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'

@@ -29,6 +29,7 @@ import {
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
 import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
+import WebhookSubservice from '../utils/subservices/webhook.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -49,6 +50,7 @@ export default class NasesConsumerService {
     private readonly convertPdfService: ConvertPdfService,
     private readonly emailFormsSubservice: EmailFormsSubservice,
     private readonly prismaService: PrismaService,
+    private readonly webhookSubservice: WebhookSubservice,
   ) {
     this.logger = new Logger('NasesConsumerService')
   }
@@ -124,6 +126,11 @@ export default class NasesConsumerService {
         data.userData.firstName,
       )
       return emailResult
+    }
+
+    if (formDefinition.type === FormDefinitionType.Webhook) {
+      const webhookResult = await this.handleWebhookForm(form)
+      return webhookResult
     }
 
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
@@ -365,6 +372,38 @@ export default class NasesConsumerService {
         .catch((error_) => {
           alertError(
             `Setting form error with id ${form.id} to EMAIL_SEND_ERROR failed.`,
+            this.logger,
+            JSON.stringify(error_),
+          )
+        })
+      const requeueEmail = await this.nackTrueWithWait(20_000)
+      return requeueEmail
+    }
+  }
+
+  private async handleWebhookForm(form: Forms): Promise<Nack> {
+    try {
+      await this.webhookSubservice.sendWebhook(form.id)
+      return new Nack(false)
+    } catch (error) {
+      alertError(
+        `Sending webhook of form ${form.id} has failed.`,
+        this.logger,
+        JSON.stringify(error),
+      )
+
+      await this.prismaService.forms
+        .update({
+          where: {
+            id: form.id,
+          },
+          data: {
+            error: FormError.WEBHOOK_SEND_ERROR,
+          },
+        })
+        .catch((error_) => {
+          alertError(
+            `Setting form error with id ${form.id} to WEBHOOK_SEND_ERROR failed.`,
             this.logger,
             JSON.stringify(error_),
           )

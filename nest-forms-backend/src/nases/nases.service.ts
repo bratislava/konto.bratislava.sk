@@ -332,6 +332,31 @@ export default class NasesService {
       )
     }
 
+    const onlyForVerifiedUsers =
+      formDefinition.type !== FormDefinitionType.Email ||
+      formDefinition.onlyForVerifiedUsers ||
+      false
+    if (onlyForVerifiedUsers && !isUserVerified(user)) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.SEND_UNVERIFIED,
+        NasesErrorsResponseEnum.SEND_UNVERIFIED,
+      )
+    }
+
+    if (
+      !this.formsHelper.userCanSendForm(
+        form,
+        onlyForVerifiedUsers,
+        userInfo,
+        user?.sub,
+      )
+    ) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.FORBIDDEN_SEND,
+        NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(

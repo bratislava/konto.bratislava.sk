@@ -28,6 +28,7 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
+import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,

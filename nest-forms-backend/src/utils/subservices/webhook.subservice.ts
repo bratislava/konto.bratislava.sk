@@ -1,8 +1,12 @@
-import { Process, Processor } from '@nestjs/bull'
+import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
+import { FormError, FormState } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
+import axios from 'axios'
 import { Job } from 'bull'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import {
   FormsErrorsEnum,
@@ -10,6 +14,8 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
+import alertError from '../logging'
+import WebhookDto from './dtos/webhook.dto'
 import {
   WebhookErrorsEnum,
   WebhookErrorsResponseEnum,
@@ -59,6 +65,55 @@ export default class WebhookSubservice {
       `Sending webhook form ${job.data.formId} to ${formDefinition.webhookUrl}`,
     )
 
-    // TODO axios?
+    const webhookDto: WebhookDto = {
+      formData: omitExtraData(
+        formDefinition.schemas.schema,
+        form.formDataJson as GenericObjectType,
+      ),
+    }
+    await axios.post(formDefinition.webhookUrl, webhookDto)
+
+    try {
+      await this.prismaService.forms.update({
+        where: {
+          id: job.data.formId,
+        },
+        data: {
+          state: FormState.PROCESSING,
+        },
+      })
+    } catch (error) {
+      alertError(
+        `Setting form state with id ${job.data.formId} to PROCESSING failed.`,
+        this.logger,
+        JSON.stringify(error),
+      )
+    }
+  }
+
+  @OnQueueFailed()
+  async onFailed(job: Job, error: Error): Promise<void> {
+    alertError(
+      `Sending webhook of form ${job.data.formId} has failed.`,
+      this.logger,
+      JSON.stringify(error),
+    )
+
+    this.prismaService.forms
+      .update({
+        where: {
+          id: job.data.formId,
+        },
+        data: {
+          error: FormError.WEBHOOK_SEND_ERROR,
+        },
+      })
+      .catch((error_) => {
+        alertError(
+          `Setting form error with id ${job.data.formId} to WEBHOOK_SEND_ERROR failed.`,
+          this.logger,
+          JSON.stringify(error_),
+        )
+      })
   }
 }

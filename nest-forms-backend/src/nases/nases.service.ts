@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionType,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 
@@ -273,8 +276,8 @@ export default class NasesService {
 
   async sendForm(
     id: string,
-    userInfo: ResponseGdprDataDto,
-    user: CognitoGetUserData,
+    userInfo?: ResponseGdprDataDto,
+    user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
@@ -285,19 +288,6 @@ export default class NasesService {
       )
     }
 
-    if (!isUserVerified(user)) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.SEND_UNVERIFIED,
-        NasesErrorsResponseEnum.SEND_UNVERIFIED,
-      )
-    }
-
-    if (!this.formsHelper.userCanSendForm(form, userInfo, user.sub)) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORBIDDEN_SEND,
-        NasesErrorsResponseEnum.FORBIDDEN_SEND,
-      )
-    }
     const validationResult = baRjsfValidator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
@@ -315,6 +305,31 @@ export default class NasesService {
       )
     }
 
+    const onlyForVerifiedUsers =
+      formDefinition.type !== FormDefinitionType.Email ||
+      formDefinition.onlyForVerifiedUsers ||
+      false
+    if (onlyForVerifiedUsers && !isUserVerified(user)) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.SEND_UNVERIFIED,
+        NasesErrorsResponseEnum.SEND_UNVERIFIED,
+      )
+    }
+
+    if (
+      !this.formsHelper.userCanSendForm(
+        form,
+        onlyForVerifiedUsers,
+        userInfo,
+        user?.sub,
+      )
+    ) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.FORBIDDEN_SEND,
+        NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(
@@ -322,8 +337,8 @@ export default class NasesService {
           formId: form.id,
           tries: 0,
           userData: {
-            email: user.email || null,
-            firstName: user.given_name || null,
+            email: user?.email || null,
+            firstName: user?.given_name || null,
           },
         },
         10_000,

@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 
+import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 // import { Forms } from '@prisma/client'
 import FormsHelper from './forms.helper'
 
@@ -51,33 +52,41 @@ describe('FormsHelper', () => {
     })
   })
 
-  // TODO update this
+  describe('userCanSendForm', () => {
+    it('should return true when form is owned by company and ICO matches', () => {
+      const form = { ico: '12345' } as Forms
+      const userInfo = { ico: '12345' } as ResponseGdprDataDto
+      expect(helper.userCanSendForm(form, false, userInfo)).toBe(true)
+    })
 
-  // describe('userCanSendForm', () => {
-  //   const formWithoutUriAndUser = {
-  //     mainUri: null,
-  //     actorUri: null,
-  //     userExternalId: null,
-  //     ico: null,
-  //   } as Forms
-  //   const form = {
-  //     mainUri: 'uri',
-  //     actorUri: 'actorUri',
-  //     userExternalId: 'user',
-  //     ico: null,
-  //   } as Forms
+    it('should return false when form is owned by company and ICO does not match', () => {
+      const form = { ico: '12345' } as Forms
+      const userInfo = { ico: '67890' } as ResponseGdprDataDto
+      expect(helper.userCanSendForm(form, false, userInfo)).toBe(false)
+    })
 
-  //   it('should be false if user is undefined', () => {
-  //     expect(helper.userCanSendForm(form, { ico: '000000', birthNumber: '00000', createdAt: '2022' }, null)).toBeFalsy()
-  //   })
+    it('should return true when form is owned by user and userSub matches', () => {
+      const form = { userExternalId: 'user123' } as Forms
+      expect(helper.userCanSendForm(form, false, undefined, 'user123')).toBe(
+        true,
+      )
+    })
 
-  //   it('should be false if the form is not owned by anyone', () => {
-  // eslint-disable-next-line no-secrets/no-secrets
-  //     expect(helper.userCanSendForm(formWithoutUriAndUser, 'user')).toBeFalsy()
-  //   })
+    it('should return false when form is owned by user and userSub does not match', () => {
+      const form = { userExternalId: 'user123' } as Forms
+      expect(helper.userCanSendForm(form, false, undefined, 'user456')).toBe(
+        false,
+      )
+    })
 
-  //   it('should be true if uri is set and the user matches', () => {
-  //     expect(helper.userCanSendForm(form, null, 'user')).toBeTruthy()
-  //   })
-  // })
+    it('should return true when form is not owned and onlyForVerifiedUsers is false', () => {
+      const form = { ico: null, userExternalId: null } as Forms
+      expect(helper.userCanSendForm(form, false)).toBe(true)
+    })
+
+    it('should return false when form is not owned and onlyForVerifiedUsers is true', () => {
+      const form = { ico: null, userExternalId: null } as Forms
+      expect(helper.userCanSendForm(form, true)).toBe(false)
+    })
+  })
 })

@@ -132,7 +132,7 @@ export default class EmailFormsSubservice {
       )
     }
 
-    this.prismaService.forms
+    await this.prismaService.forms
       .update({
         where: {
           id: form.id,

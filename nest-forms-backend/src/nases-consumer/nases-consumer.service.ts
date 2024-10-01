@@ -336,7 +336,7 @@ export default class NasesConsumerService {
         JSON.stringify(error),
       )
 
-      this.prismaService.forms
+      await this.prismaService.forms
         .update({
           where: {
             id: form.id,

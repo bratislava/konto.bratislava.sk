@@ -63,6 +63,8 @@ export default class NasesService {
     private readonly prisma: PrismaService,
     @InjectQueue('email-forms.send')
     private readonly emailFormsSendQueue: Queue,
+    @InjectQueue('webhook.send')
+    private readonly webhookQueue: Queue,
   ) {
     this.logger = new Logger('NasesService')
   }
@@ -320,6 +322,11 @@ export default class NasesService {
       )
     }
 
+    // TODO maybe we need to check userCanSendForm
+    if (formDefinition.type === FormDefinitionType.Webhook) {
+      return this.sendFormWebhook(form.id)
+    }
+
     if (formDefinition.type === FormDefinitionType.Email) {
       return this.sendFormEmail(form.id)
     }
@@ -520,6 +527,26 @@ export default class NasesService {
     return {
       id: formId,
       message: 'Form was successfuly queued to be sent to email.',
+      state: FormState.QUEUED,
+    }
+  }
+
+  async sendFormWebhook(formId: string): Promise<SendFormResponseDto> {
+    this.webhookQueue.add(
+      {
+        formId,
+      },
+      {
+        backoff: {
+          type: 'fixed',
+          delay: 60_000, // 1 minute
+        },
+      },
+    )
+
+    return {
+      id: formId,
+      message: 'Form was successfuly queued to be sent to webhook.',
       state: FormState.QUEUED,
     }
   }

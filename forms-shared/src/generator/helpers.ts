@@ -1,5 +1,7 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
+import { BaAjvInputFormat } from '../form-utils/ajvFormats'
+import { InputUiOptionsInputType } from './uiOptionsTypes'
 
 type ObjectJsonSchema = {
   type: 'object'
@@ -187,4 +189,15 @@ export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
  */
 export const removeUndefinedValues = <T>(obj: T) => {
   return JSON.parse(JSON.stringify(obj)) as T
+}
+
+export const getInputTypeForAjvFormat = (format: BaAjvInputFormat): InputUiOptionsInputType => {
+  return {
+    'ba-slovak-zip': 'text' as const,
+    'ba-phone-number': 'tel' as const,
+    'ba-slovak-phone-number': 'tel' as const,
+    'ba-ico': 'text' as const,
+    'ba-iban': 'text' as const,
+    'ba-ratio': 'text' as const,
+  }[format]
 }

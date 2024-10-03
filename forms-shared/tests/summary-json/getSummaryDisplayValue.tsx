@@ -209,7 +209,7 @@ describe('getSummaryDisplayValues', () => {
   })
 
   describe('Input', () => {
-    const field = input('inputProperty', { title: 'Input Title', type: 'text' }, {})
+    const field = input('inputProperty', { type: 'text', title: 'Input Title' }, {})
     const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
 
     it('returns the input string for Input widget', () => {

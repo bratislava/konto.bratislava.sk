@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Param,
   Post,
   Res,
   StreamableFile,
@@ -10,6 +9,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -40,8 +40,11 @@ import {
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
 import {
-  FormIdMissingErrorDto,
+  InvalidJsonErrorDto,
+  InvalidXmlErrorDto,
   PdfGenerationFailedErrorDto,
+  WrongPospIdErrorDto,
+  XmlDoesntMatchSchemaErrorDto,
 } from './errors/convert.errors.dto'
 
 @ApiTags('convert')
@@ -51,24 +54,26 @@ export default class ConvertController {
   constructor(private readonly convertService: ConvertService) {}
 
   @ApiOperation({
-    summary: '',
+    summary: 'Convert JSON to XML',
     description:
-      'Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.',
+      'Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.',
   })
   @ApiResponse({
     status: 200,
     description: 'Return XML form',
     type: String,
   })
+  @ApiExtraModels(FormNotFoundErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
-    description: 'Form definition was not found',
-    type: FormDefinitionNotFoundErrorDto,
-  })
-  @ApiBadRequestResponse({
-    status: HttpStatusCode.BadRequest,
-    description: 'If there is no form data, form id must be provided.',
-    type: FormIdMissingErrorDto,
+    description: 'Form or form definition was not found',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(FormNotFoundErrorDto) },
+        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
+      ],
+    },
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,
@@ -95,30 +100,62 @@ export default class ConvertController {
   }
 
   @ApiOperation({
-    summary: '',
-    description:
-      'Generates JSON form from given XML data and form definition slug',
+    summary: 'Convert XML to JSON',
+    description: 'Generates JSON form from given XML data and form ID',
   })
   @ApiResponse({
     status: 200,
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
   })
+  @ApiExtraModels(InvalidXmlErrorDto)
+  @ApiExtraModels(XmlDoesntMatchSchemaErrorDto)
+  @ApiExtraModels(WrongPospIdErrorDto)
+  @ApiExtraModels(InvalidJsonErrorDto)
   @ApiBadRequestResponse({
     status: 400,
     description: 'There was an error during converting to json.',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(InvalidXmlErrorDto) },
+        { $ref: getSchemaPath(XmlDoesntMatchSchemaErrorDto) },
+        { $ref: getSchemaPath(WrongPospIdErrorDto) },
+        { $ref: getSchemaPath(InvalidJsonErrorDto) },
+      ],
+    },
   })
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
-    description: 'Form definition was not found',
-    type: FormDefinitionNotFoundErrorDto,
+    description: 'Form or form definition was not found',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(FormNotFoundErrorDto) },
+        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
+      ],
+    },
   })
-  @Post('xml-to-json/:slug')
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatusCode.UnprocessableEntity,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionNotSupportedTypeErrorDto,
+  })
+  @ApiForbiddenResponse({
+    status: HttpStatusCode.Forbidden,
+    description: 'Form is owned by someone else.',
+    type: FormIsOwnedBySomeoneElseErrorDto,
+  })
+  @UseGuards(new CognitoGuard(true))
+  @Post('xml-to-json')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
-    @Param('slug') slug: string,
+    @User() user?: CognitoGetUserData,
+    @UserInfo() userInfo?: ResponseGdprDataDto,
   ): Promise<XmlToJsonResponseDto> {
-    return this.convertService.convertXmlToJson(data.xmlForm, slug)
+    return this.convertService.convertXmlToJson(
+      data,
+      userInfo?.ico ?? null,
+      user,
+    )
   }
 
   @ApiOperation({

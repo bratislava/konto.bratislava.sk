@@ -43,7 +43,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
 
     return {
       props: {
-        formContext: {
+        formServerContext: {
           formDefinition,
           formId: '',
           initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
@@ -52,6 +52,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           formMigrationRequired: false,
           isEmbedded: isEmbeddedQueryParam,
           isDevRoute: true,
+          strapiForm: { slug },
         },
         ...(await slovakServerSideTranslations()),
       } satisfies FormPageWrapperProps,

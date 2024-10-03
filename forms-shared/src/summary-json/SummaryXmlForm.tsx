@@ -19,6 +19,7 @@ import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
 import { baFormDefaults } from '../form-utils/formDefaults'
+import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -132,10 +133,7 @@ const ArrayFieldTemplate = ({
 }
 
 const ObjectFieldTemplate = ({ schema, properties, idSchema, title }: ObjectFieldTemplateProps) => {
-  const id = idSchema.$id
-  const splitId = id.split('_')
-  const isFormObject = splitId.length === 1 && splitId[0] === 'root'
-  const isStepObject = splitId.length === 2 && splitId[0] === 'root'
+  const { id, splitId, isFormObject, isStepObject } = getObjectFieldInfo(idSchema)
 
   const content = properties.map((element, index) => (
     <Fragment key={index}>{element.content}</Fragment>

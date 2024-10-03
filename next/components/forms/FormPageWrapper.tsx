@@ -8,11 +8,11 @@ import FormPage from './FormPage'
 import FormProviders from './FormProviders'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import ConditionalWrap from './simple-components/ConditionalWrap'
-import { FormContext, FormContextProvider } from './useFormContext'
+import { FormContextProvider, FormServerContext } from './useFormContext'
 import { FormSentRenderer } from './useFormSent'
 
 export type FormPageWrapperProps = {
-  formContext: FormContext
+  formServerContext: FormServerContext
 }
 
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
@@ -41,8 +41,8 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
-const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
-  const { formDefinition, isEmbedded } = formContext
+const FormPageWrapper = ({ formServerContext }: FormPageWrapperProps) => {
+  const { formDefinition, isEmbedded } = formServerContext
   useCustomPlausibleFormPagesTracking(formDefinition.slug)
 
   return (
@@ -51,7 +51,7 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
       // if it stays this way remove the prop completely
       initialFormSent={false}
       notSentChildren={
-        <FormProviders formContext={formContext}>
+        <FormProviders formServerContext={formServerContext}>
           <ConditionalWrap
             condition={!isEmbedded}
             wrap={(children) => <AccountPageLayout>{children}</AccountPageLayout>}
@@ -61,7 +61,7 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
         </FormProviders>
       }
       sentChildren={
-        <FormContextProvider formContext={formContext}>
+        <FormContextProvider formServerContext={formServerContext}>
           <ConditionalWrap
             condition={!isEmbedded}
             wrap={(children) => (

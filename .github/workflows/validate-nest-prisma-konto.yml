@@ -26,7 +26,7 @@ on:
 jobs:
   test:
     name: Unit tests and lint
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

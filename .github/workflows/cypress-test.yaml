@@ -48,12 +48,20 @@ jobs:
           working-directory: tests
           command: npm run cypress:ci
 
-      - name: Screenshots of errors during E2E tests
+      - name: Upload Cypress screenshots
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
+          retention-days: 1
+
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: tests/cypress/videos
           retention-days: 1
 
       - name: Visual testing screenshots

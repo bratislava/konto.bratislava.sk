@@ -1,4 +1,5 @@
 import { Schemas } from '../generator/functions'
+import { SharepointData } from './sharepointTypes'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -13,6 +14,7 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string
+  additionalInfoTemplate?: string
   embedded?: false | 'olo'
 }
 
@@ -22,15 +24,19 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   publisher: string
   gestor: string
   isSigned: boolean
+  // Temporary flag until all forms are converted to new government XMLs
+  newGovernmentXml?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkGeneric
   ginisAssignment: {
     ginisOrganizationName: string
-    ginisPersonName: string
+    ginisPersonName?: string
   }
+  sharepointData?: SharepointData
 }
+
 export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkTax
 }

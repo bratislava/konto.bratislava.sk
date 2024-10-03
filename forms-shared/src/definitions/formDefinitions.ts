@@ -5,6 +5,10 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndCond
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
+import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
+import ziadostONajomBytu, {
+  ziadostONajomBytuAdditionalInfoTemplate,
+} from '../schemas/ziadostONajomBytu'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -94,5 +98,25 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+  },
+  {
+    type: FormDefinitionType.SlovenskoSkGeneric,
+    slug: 'ziadost-o-najom-bytu',
+    title: 'Žiadosť o nájom bytu',
+    schemas: ziadostONajomBytu,
+    // pospID contains different wording because the original form was created with a different name
+    pospID: '00603481.ziadostONajomnyByt',
+    pospVersion: '1.1',
+    publisher: 'ico://sk/00603481',
+    gestor: 'Pinter Martin',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: 'Žiadosť o nájom bytu',
+    sharepointData: ziadostONajomBytuSharepointData,
+    ginisAssignment: {
+      ginisOrganizationName: 'SNB',
+    },
+    isSigned: false,
+    newGovernmentXml: true,
+    additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
   },
 ]

@@ -31,9 +31,9 @@ const celkovaZastavanaPlocha = number(
 const spoluvlastnickyPodiel = input(
   'spoluvlastnickyPodiel',
   {
+    type: 'ba-ratio',
     title: 'Spoluvlastnícky podiel',
     required: true,
-    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 1/1',
@@ -55,7 +55,7 @@ const zakladDane = number(
 
 const zakladDaneKalkulacka = customComponentsField(
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       variant: 'black',
       calculators: [
@@ -238,7 +238,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],

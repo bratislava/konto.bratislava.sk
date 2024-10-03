@@ -16,8 +16,9 @@ describe('RF01 -', { testIsolation: false }, () => {
     .filter((device) => Cypress.env('devices')[`${device}`])
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
-        const emailHash = `${Date.now() + device}@cypress.test`
-        const wrongEmailHash = `${Date.now() + device}wrongemail@cypress.test`
+        const emailDomain = 'cypress.test'
+        const emailHash = `${Date.now() + device}@${emailDomain}`
+        const wrongEmailHash = `${Date.now() + device}wrongemail@${emailDomain}`
 
         it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
@@ -73,8 +74,8 @@ describe('RF01 -', { testIsolation: false }, () => {
         describe('A02 - change email and password', { testIsolation: false }, () => {
           it('1. Logging in.', () => {
             cy.logInUser(device, emailHash, password)
-            cy.get("[data-cy=add-phone-number]", {timeout: 10000})
-            cy.get("[data-cy=close-modal]").click({multiple: true})
+            cy.get('[data-cy=add-phone-number]', { timeout: 10000 })
+            cy.get('[data-cy=close-modal]').click({ multiple: true })
           })
 
           it('2. Changing email.', () => {
@@ -104,34 +105,72 @@ describe('RF01 -', { testIsolation: false }, () => {
           })
 
           it('4. Changing password.', () => {
-            cy.visit("/moj-profil")
+            cy.visit('/moj-profil')
             cy.get('[data-cy=change-password-button]').click()
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/zmena-hesla');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.dataCy('change-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-oldPassword]', form)).clear().type(password)
               cy.wrap(Cypress.$('[data-cy=input-password]', form)).clear().type(password)
-              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).clear().type(password)
+              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form))
+                .clear()
+                .type(password)
               cy.get('[data-cy=change-password-submit]').click()
             })
           })
-  
+
           it('5. Validating saved information', () => {
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/zmena-hesla');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/zmena-hesla')
             cy.get('[data-cy=success-alert]').should('be.visible')
             cy.get('[data-cy=pokračovať-do-konta-button]').click()
-            cy.location('pathname', {timeout: 4000})
-            .should('eq', '/');
+            cy.location('pathname', { timeout: 4000 }).should('eq', '/')
             cy.logOutUser()
           })
         })
 
         describe('RF05 - forgotten password', () => {
+          beforeEach(() => {
+            /*
+             * These tests were previously prone to intermittent failures due to rate limiting (LimitExceededException).
+             * To improve reliability, we've implemented a mock response that mimics the AWS Cognito API.
+             */
+            cy.intercept(
+              {
+                url: /^https:\/\/cognito-idp\.[a-z0-9-]+\.amazonaws\.com\/$/,
+                headers: {
+                  'x-amz-target': 'AWSCognitoIdentityProviderService.ForgotPassword',
+                },
+                method: 'POST',
+              },
+              (req) => {
+                const requestEmail = req.body.Username
+                if (requestEmail === wrongEmailHash) {
+                  req.reply({
+                    statusCode: 400,
+                    body: {
+                      __type: 'UserNotFoundException',
+                      message: 'Username/client id combination not found.',
+                    },
+                  })
+                } else if (requestEmail === emailHash) {
+                  req.reply({
+                    statusCode: 200,
+                    body: {
+                      CodeDeliveryDetails: {
+                        AttributeName: 'email',
+                        DeliveryMedium: 'EMAIL',
+                        // peter.horvath@bratislava.sk -> "p***@b***"
+                        Destination: `${requestEmail[0]}***@${emailDomain[0]}***`,
+                      },
+                    },
+                  })
+                }
+              },
+            ).as('forgotPasswordRequest')
+          })
+
           it('1. Submitting wrong value.', () => {
             cy.visit('/zabudnute-heslo')
             cy.hideNavbar(device)
-            cy.hideInfoBar()
 
             cy.dataCy('forgotten-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).type('test')
@@ -148,19 +187,21 @@ describe('RF01 -', { testIsolation: false }, () => {
           it('2. Submitting wrong email.', () => {
             cy.dataCy('forgotten-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(wrongEmailHash)
-
               cy.submitForm('forgotten-password-form')
             })
+
+            cy.wait('@forgotPasswordRequest').its('response.statusCode').should('eq', 400)
             cy.dataCy('alert-container').should('be.visible')
-            cy.dataCy('forgotten-password-form').should('be.visible') //.matchImage()
+            cy.dataCy('forgotten-password-form').should('be.visible')
           })
 
           it('3. Submitting correct email.', () => {
             cy.dataCy('forgotten-password-form').then((form) => {
               cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(emailHash)
-
               cy.submitForm('forgotten-password-form')
             })
+
+            cy.wait('@forgotPasswordRequest').its('response.statusCode').should('eq', 200)
             cy.dataCy('new-password-form').should('be.visible')
           })
         })

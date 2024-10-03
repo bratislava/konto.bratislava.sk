@@ -1,5 +1,5 @@
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { generateSlovenskoSkXml } from '../../src/slovensko-sk/generateXml'
+import { generateSlovenskoSkXmlObject } from '../../src/slovensko-sk/generateXml'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { renderApacheFopPdf } from '../../test-utils/apache-fop/renderApacheFopPdf'
 import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
@@ -11,6 +11,8 @@ import { getSchemaXsd } from '../../src/slovensko-sk/file-templates/schemaXsd'
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { validateXml } from '../../test-utils/validateXml'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
+import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
+import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -42,11 +44,12 @@ describe('slovenskoSkForm', () => {
       describe(`${exampleForm.name}`, () => {
         let xmlString: string
         beforeAll(async () => {
-          xmlString = await generateSlovenskoSkXml(
+          const xmlObject = await generateSlovenskoSkXmlObject(
             formDefinition,
             exampleForm.formData,
             exampleForm.serverFiles,
           )
+          xmlString = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })
         })
 
         it('XML should match snapshot', async () => {
@@ -58,6 +61,12 @@ describe('slovenskoSkForm', () => {
           const isValid = validateXml(xmlString, xsdString)
 
           expect(isValid).toBe(true)
+        })
+
+        it('extractJsonFromSlovenskoSkXml should extract the same JSON from XML', async () => {
+          const extractedJson = await extractJsonFromSlovenskoSkXml(formDefinition, xmlString)
+
+          expect(extractedJson).toEqual(exampleForm.formData)
         })
 
         it('PDF should match snapshot', async () => {

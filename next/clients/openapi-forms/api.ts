@@ -78,12 +78,22 @@ export interface CanSendResponseDto {
   formId: string
 }
 /**
- * @type ConvertControllerConvertToPdf404Response
+ * @type ConvertControllerConvertJsonToXmlV2404Response
  * @export
  */
-export type ConvertControllerConvertToPdf404Response =
+export type ConvertControllerConvertJsonToXmlV2404Response =
   | FormDefinitionNotFoundErrorDto
   | FormNotFoundErrorDto
+
+/**
+ * @type ConvertControllerConvertXmlToJson400Response
+ * @export
+ */
+export type ConvertControllerConvertXmlToJson400Response =
+  | InvalidJsonErrorDto
+  | InvalidXmlErrorDto
+  | WrongPospIdErrorDto
+  | XmlDoesntMatchSchemaErrorDto
 
 /**
  *
@@ -105,10 +115,10 @@ export interface ConvertToPdfRequestDto {
   jsonData?: object
   /**
    * Used only in the FE requests to display files not yet uploaded to the server.
-   * @type {Array<object>}
+   * @type {Array<SimplifiedClientFileInfoDto>}
    * @memberof ConvertToPdfRequestDto
    */
-  clientFiles?: Array<object>
+  clientFiles?: Array<SimplifiedClientFileInfoDto>
 }
 /**
  *
@@ -1637,56 +1647,6 @@ export type FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FormIdMissingErrorDto
- */
-export interface FormIdMissingErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FormIdMissingErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FormIdMissingErrorDto
-   */
-  errorName: FormIdMissingErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FormIdMissingErrorDto
-   */
-  object?: object
-}
-
-export const FormIdMissingErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FormIdMissingErrorDtoErrorNameEnum =
-  (typeof FormIdMissingErrorDtoErrorNameEnum)[keyof typeof FormIdMissingErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
  * @interface FormIsOwnedBySomeoneElseErrorDto
  */
 export interface FormIsOwnedBySomeoneElseErrorDto {
@@ -2456,6 +2416,56 @@ export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
 /**
  *
  * @export
+ * @interface InvalidJsonErrorDto
+ */
+export interface InvalidJsonErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidJsonErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidJsonErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidJsonErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidJsonErrorDto
+   */
+  errorName: InvalidJsonErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidJsonErrorDto
+   */
+  object?: object
+}
+
+export const InvalidJsonErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type InvalidJsonErrorDtoErrorNameEnum =
+  (typeof InvalidJsonErrorDtoErrorNameEnum)[keyof typeof InvalidJsonErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface InvalidJwtTokenErrorDto
  */
 export interface InvalidJwtTokenErrorDto {
@@ -2556,6 +2566,56 @@ export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface InvalidXmlErrorDto
+ */
+export interface InvalidXmlErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidXmlErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidXmlErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidXmlErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidXmlErrorDto
+   */
+  errorName: InvalidXmlErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidXmlErrorDto
+   */
+  object?: object
+}
+
+export const InvalidXmlErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type InvalidXmlErrorDtoErrorNameEnum =
+  (typeof InvalidXmlErrorDtoErrorNameEnum)[keyof typeof InvalidXmlErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface JsonConvertRequestDto
  */
 export interface JsonConvertRequestDto {
@@ -2573,19 +2633,13 @@ export interface JsonConvertRequestDto {
  */
 export interface JsonToXmlV2RequestDto {
   /**
-   * Form id. If jsonData is not provided, this is required.
+   * Form id
    * @type {string}
    * @memberof JsonToXmlV2RequestDto
    */
-  formId?: string
+  formId: string
   /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof JsonToXmlV2RequestDto
-   */
-  slug: string
-  /**
-   * Form values in JSON
+   * JSON form values, if not provided the form data from the database will be used.
    * @type {object}
    * @memberof JsonToXmlV2RequestDto
    */
@@ -3225,6 +3279,31 @@ export interface SimpleBadRequestErrorDto {
 /**
  *
  * @export
+ * @interface SimplifiedClientFileInfoDto
+ */
+export interface SimplifiedClientFileInfoDto {
+  /**
+   *
+   * @type {string}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  id: string
+  /**
+   *
+   * @type {object}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  file: object
+  /**
+   *
+   * @type {object}
+   * @memberof SimplifiedClientFileInfoDto
+   */
+  status: object
+}
+/**
+ *
+ * @export
  * @interface StatusResponseDto
  */
 export interface StatusResponseDto {
@@ -3635,9 +3714,115 @@ export interface UpdateFormRequestDto {
 /**
  *
  * @export
+ * @interface WrongPospIdErrorDto
+ */
+export interface WrongPospIdErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof WrongPospIdErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof WrongPospIdErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof WrongPospIdErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof WrongPospIdErrorDto
+   */
+  errorName: WrongPospIdErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof WrongPospIdErrorDto
+   */
+  object?: object
+}
+
+export const WrongPospIdErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type WrongPospIdErrorDtoErrorNameEnum =
+  (typeof WrongPospIdErrorDtoErrorNameEnum)[keyof typeof WrongPospIdErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface XmlDoesntMatchSchemaErrorDto
+ */
+export interface XmlDoesntMatchSchemaErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof XmlDoesntMatchSchemaErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof XmlDoesntMatchSchemaErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof XmlDoesntMatchSchemaErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof XmlDoesntMatchSchemaErrorDto
+   */
+  errorName: XmlDoesntMatchSchemaErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof XmlDoesntMatchSchemaErrorDto
+   */
+  object?: object
+}
+
+export const XmlDoesntMatchSchemaErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type XmlDoesntMatchSchemaErrorDtoErrorNameEnum =
+  (typeof XmlDoesntMatchSchemaErrorDtoErrorNameEnum)[keyof typeof XmlDoesntMatchSchemaErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface XmlToJsonRequestDto
  */
 export interface XmlToJsonRequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof XmlToJsonRequestDto
+   */
+  formId: string
   /**
    * Form values in XML
    * @type {string}
@@ -3957,8 +4142,8 @@ export class ADMINApi extends BaseAPI {
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4063,30 +4248,23 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates JSON form from given XML data and form definition slug
-     * @summary
-     * @param {string} slug
+     * Generates JSON form from given XML data and form ID
+     * @summary Convert XML to JSON
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson: async (
-      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'slug' is not null or undefined
-      assertParamExists('convertControllerConvertXmlToJson', 'slug', slug)
       // verify required parameter 'xmlToJsonRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertXmlToJson',
         'xmlToJsonRequestDto',
         xmlToJsonRequestDto,
       )
-      const localVarPath = `/convert/xml-to-json/{slug}`.replace(
-        `{${'slug'}}`,
-        encodeURIComponent(String(slug)),
-      )
+      const localVarPath = `/convert/xml-to-json`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -4133,8 +4311,8 @@ export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4189,20 +4367,17 @@ export const ConvertApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Generates JSON form from given XML data and form definition slug
-     * @summary
-     * @param {string} slug
+     * Generates JSON form from given XML data and form ID
+     * @summary Convert XML to JSON
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertXmlToJson(
-      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
-        slug,
         xmlToJsonRequestDto,
         options,
       )
@@ -4234,8 +4409,8 @@ export const ConvertApiFactory = function (
   const localVarFp = ConvertApiFp(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-     * @summary
+     * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+     * @summary Convert JSON to XML
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4264,20 +4439,18 @@ export const ConvertApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates JSON form from given XML data and form definition slug
-     * @summary
-     * @param {string} slug
+     * Generates JSON form from given XML data and form ID
+     * @summary Convert XML to JSON
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson(
-      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
-        .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
+        .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4291,8 +4464,8 @@ export const ConvertApiFactory = function (
  */
 export class ConvertApi extends BaseAPI {
   /**
-   * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
-   * @summary
+   * Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.
+   * @summary Convert JSON to XML
    * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4325,21 +4498,19 @@ export class ConvertApi extends BaseAPI {
   }
 
   /**
-   * Generates JSON form from given XML data and form definition slug
-   * @summary
-   * @param {string} slug
+   * Generates JSON form from given XML data and form ID
+   * @summary Convert XML to JSON
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertXmlToJson(
-    slug: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
+      .convertControllerConvertXmlToJson(xmlToJsonRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

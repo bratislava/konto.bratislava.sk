@@ -10,7 +10,7 @@ export type CustomComponentAdditionalLinksProps = {
   }[]
 }
 
-export type CustomComponentPropertyCalculator = {
+export type CustomComponentCalculator = {
   label: string
   formula: string
   missingFieldsMessage: string
@@ -28,10 +28,10 @@ export type CustomComponentAlertProps = {
   message: string
 }
 
-export type CustomComponentPropertyCalculatorProps = {
+export type CustomComponentCalculatorProps = {
   label?: string
   variant: 'white' | 'black'
-  calculators: CustomComponentPropertyCalculator[]
+  calculators: CustomComponentCalculator[]
 }
 
 export type CustomComponentType =
@@ -44,8 +44,8 @@ export type CustomComponentType =
       props: CustomComponentAdditionalLinksProps
     }
   | {
-      type: 'propertyTaxCalculator'
-      props: CustomComponentPropertyCalculatorProps
+      type: 'calculator'
+      props: CustomComponentCalculatorProps
     }
   | {
       type: 'alert'
@@ -83,14 +83,16 @@ export type CheckboxUiOptions = {
 
 export type DatePickerUiOptions = WidgetUiOptions
 
+export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
+
 export type InputUiOptions = {
-  type?: 'text' | 'password' | 'email' | 'tel'
+  inputType: InputUiOptionsInputType
   resetIcon?: boolean
-  leftIcon?: 'person' | 'mail' | 'call' | 'lock'
+  leftIcon?: 'person' | 'mail' | 'call' | 'lock' | 'euro'
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'type'>
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
 
 type RadioOption = {
   value: string
@@ -170,7 +172,6 @@ export type StepUiOptions = {
 }
 
 export type SchemaUiOptions = {
-  moreInformationUrl?: string
   titlePath?: string
   titleFallback?: string
 }

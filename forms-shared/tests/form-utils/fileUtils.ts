@@ -5,7 +5,7 @@ describe('fileUtils', () => {
   const fileUploadSchema = object('files', {}, {}, [
     fileUpload('file', { title: 'File' }, {}),
     fileUpload('fileMultiple', { title: 'File multiple', multiple: true }, {}),
-    input('fakeFileInput', { title: 'Fake file' }, {}),
+    input('fakeFileInput', { type: 'text', title: 'Fake file' }, {}),
     selectMultiple(
       'fakeFileSelect',
       {
@@ -23,7 +23,7 @@ describe('fileUtils', () => {
       },
       {},
     ),
-    input('anotherField', { title: 'Another field' }, {}),
+    input('anotherField', { type: 'text', title: 'Another field' }, {}),
   ])
 
   const data = {

@@ -1,0 +1,12 @@
+resources:
+  - ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: env
+  namespace: ${NAMESPACE}
+  behavior: merge
+  envs:
+  - .env

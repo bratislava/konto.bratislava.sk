@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { FormOwnerType, Forms, FormState } from '@prisma/client'
+import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -429,13 +429,28 @@ export default class NasesService {
     }
 
     // Send to nases
-    await this.nasesConsumerService.sendToNasesAndUpdateState(
+    const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
       jwt,
       form,
       data,
       formDefinition,
       user.sub,
     )
+
+    if (!isSent) {
+      // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
+      // TODO: This also breaks if anything throws between setting to SENDING_TO_NASES and reverting to DRAFT
+      // today, if we don't revert the state in this case, the form can't be sent again
+      await this.formsService.updateForm(data.formId, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+      )
+    }
 
     if (!isUserVerified(cognitoUser)) {
       await verifyUserByEidToken(oboToken, this.logger, bearerToken)

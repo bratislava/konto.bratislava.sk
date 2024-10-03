@@ -609,10 +609,7 @@ SELECT
             lcs.dane21_doklad_sum_saldo
        WHERE
         lcs.dane21_doklad_sum_saldo.uhrazeno > 0
-        AND (
-            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '{%FROM_DATE%}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '{%TO_DATE%}')
-            {%OVERPAYMENTS%} 
-        )
+        {%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}
         ) as view_doklad_saldo
         ON 
             view_doklad_saldo.cislo_subjektu=dane21_doklad.cislo_subjektu
@@ -646,4 +643,5 @@ SELECT
         AND lcs.dane21_druh_dokladu.typ_dane = '1'
         AND dane21_doklad.stav_dokladu<>'s'
         AND lcs.dane21_priznanie.podnikatel = 'N'
+        {%VARIABLE_SYMBOLS%}
 `

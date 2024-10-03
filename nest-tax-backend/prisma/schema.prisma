@@ -26,7 +26,6 @@ model TaxPayer {
   permanentResidenceStreet    String?
   permanentResidenceZip       String?
   permanentResidenceCity      String?
-  norisLastCalled             DateTime @default(now())
 
   taxes Tax[]
 
@@ -35,27 +34,28 @@ model TaxPayer {
 }
 
 model Tax {
-  id               Int              @id @default(autoincrement())
-  uuid             String           @default(uuid()) @db.Uuid
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @default(now()) @updatedAt
-  year             Int
-  taxPayerId       Int
-  taxPayer         TaxPayer         @relation(fields: [taxPayerId], references: [id])
-  amount           Int
-  variableSymbol   String
-  taxEmployeeId    Int
-  qrCodeWeb        String?
-  qrCodeEmail      String?
-  taxId            String?
-  dateCreateTax    String?
-  taxLand          Int?
-  taxConstructions Int?
-  taxFlat          Int?
-  taxPayments      TaxPayment[]
-  taxInstallments  TaxInstallment[]
-  taxDetails       TaxDetail[]
-  taxEmployees     TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
+  id                  Int              @id @default(autoincrement())
+  uuid                String           @default(uuid()) @db.Uuid
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now()) @updatedAt
+  year                Int
+  taxPayerId          Int
+  taxPayer            TaxPayer         @relation(fields: [taxPayerId], references: [id])
+  amount              Int
+  variableSymbol      String
+  taxEmployeeId       Int
+  qrCodeWeb           String?
+  qrCodeEmail         String?
+  taxId               String?
+  dateCreateTax       String?
+  taxLand             Int?
+  taxConstructions    Int?
+  taxFlat             Int?
+  taxPayments         TaxPayment[]
+  taxInstallments     TaxInstallment[]
+  taxDetails          TaxDetail[]
+  taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
+  lastCheckedPayments DateTime         @default(now())
 
   @@unique([taxPayerId, year])
   @@unique([uuid])

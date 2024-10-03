@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { LoadingPaymentsFromNoris } from '@prisma/client'
 import { connect } from 'mssql'
 import {
   RequestPostNorisLoadDataDto,
+  RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from 'src/admin/dtos/requests.dto'
 
@@ -10,6 +11,8 @@ import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 
 @Injectable()
 export class NorisService {
+  private logger: Logger = new Logger('NorisService')
+
   constructor() {
     if (
       !process.env.MSSQL_HOST ||
@@ -58,7 +61,7 @@ export class NorisService {
 
   async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,
-    lastLodedPayment?: LoadingPaymentsFromNoris | null,
+    lastLoadedPayment?: LoadingPaymentsFromNoris | null,
   ) {
     const connection = await connect({
       server: process.env.MSSQL_HOST,
@@ -76,8 +79,8 @@ export class NorisService {
     let { fromDate } = data
     let { toDate } = data
     if (!fromDate) {
-      if (lastLodedPayment) {
-        fromDate = lastLodedPayment.loadingDateTo.toDateString()
+      if (lastLoadedPayment) {
+        fromDate = lastLoadedPayment.loadingDateTo.toDateString()
       } else {
         const newFromDate = new Date(`${data.year}-04-01`)
         fromDate = newFromDate.toDateString()
@@ -95,10 +98,57 @@ export class NorisService {
     }
     const norisData = await connection.query(
       queryPaymentsFromNoris
+        .replaceAll(
+          '{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}',
+          `AND (
+            (lcs.dane21_doklad_sum_saldo.datum_posledni_platby >= '${fromDate}' AND lcs.dane21_doklad_sum_saldo.datum_posledni_platby <= '${toDate}')
+            ${overpayments}
+        )`,
+        )
         .replaceAll('{%YEAR%}', data.year.toString())
-        .replaceAll('{%FROM_DATE%}', fromDate)
-        .replaceAll('{%TO_DATE%}', toDate)
-        .replaceAll('{%OVERPAYMENTS%}', overpayments),
+        .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
+    )
+    connection.close()
+    return norisData.recordset
+  }
+
+  async getPaymentDataFromNorisByVariableSymbols(
+    data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
+  ) {
+    const connection = await connect({
+      server: process.env.MSSQL_HOST,
+      port: 1433,
+      database: process.env.MSSQL_DB,
+      user: process.env.MSSQL_USERNAME,
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: process.env.MSSQL_PASSWORD,
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    let variableSymbols = ''
+    data.variableSymbols.forEach((variableSymbol) => {
+      if (/^\d+$/.test(variableSymbol)) {
+        variableSymbols += `'${variableSymbol}',`
+      } else {
+        this.logger.error(
+          `ERROR 500 - variable symbol has a wrong format: "${variableSymbol}"`,
+        )
+      }
+    })
+    variableSymbols = `(${variableSymbols.slice(0, -1)})`
+
+    const norisData = await connection.query(
+      queryPaymentsFromNoris
+        .replaceAll('{%YEAR%}', data.year.toString())
+        .replaceAll(
+          '{%VARIABLE_SYMBOLS%}',
+          `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,
+        )
+        .replaceAll('{%FROM_TO_AND_OVERPAYMENTS_SETTINGS%}', ''),
     )
     connection.close()
     return norisData.recordset

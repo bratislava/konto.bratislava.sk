@@ -144,6 +144,35 @@ export type CognitoGetUserDataUserStatusEnum = typeof CognitoGetUserDataUserStat
 /**
  * 
  * @export
+ * @interface DeactivateAccountResponseDto
+ */
+export interface DeactivateAccountResponseDto {
+    /**
+     * Marks if the operation has been successful
+     * @type {boolean}
+     * @memberof DeactivateAccountResponseDto
+     */
+    'success': boolean;
+    /**
+     * Status of the anonymization of user in bloomreach
+     * @type {string}
+     * @memberof DeactivateAccountResponseDto
+     */
+    'bloomreachRemovedStatus': DeactivateAccountResponseDtoBloomreachRemovedStatusEnum;
+}
+
+export const DeactivateAccountResponseDtoBloomreachRemovedStatusEnum = {
+    NotFound: 'NOT_FOUND',
+    NotActive: 'NOT_ACTIVE',
+    Error: 'ERROR',
+    Success: 'SUCCESS'
+} as const;
+
+export type DeactivateAccountResponseDtoBloomreachRemovedStatusEnum = typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum];
+
+/**
+ * 
+ * @export
  * @interface GdprDataDto
  */
 export interface GdprDataDto {
@@ -175,6 +204,19 @@ export const GdprDataDtoCategoryEnum = {
 
 export type GdprDataDtoCategoryEnum = typeof GdprDataDtoCategoryEnum[keyof typeof GdprDataDtoCategoryEnum];
 
+/**
+ * 
+ * @export
+ * @interface GetUserDataByBirthNumbersBatchResponseDto
+ */
+export interface GetUserDataByBirthNumbersBatchResponseDto {
+    /**
+     * A record of users keyed by their birth number
+     * @type {{ [key: string]: ResponseUserByBirthNumberDto; }}
+     * @memberof GetUserDataByBirthNumbersBatchResponseDto
+     */
+    'users': { [key: string]: ResponseUserByBirthNumberDto; };
+}
 /**
  * 
  * @export
@@ -212,6 +254,19 @@ export interface OnlySuccessDto {
      * @memberof OnlySuccessDto
      */
     'success': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface RequestBatchQueryUsersByBirthNumbersDto
+ */
+export interface RequestBatchQueryUsersByBirthNumbersDto {
+    /**
+     * Birth numbers without slash which should be retrieved from user database.
+     * @type {Array<string>}
+     * @memberof RequestBatchQueryUsersByBirthNumbersDto
+     */
+    'birthNumbers': Array<string>;
 }
 /**
  * 
@@ -1147,6 +1202,45 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
+         * Get user data by birthnumbers in batch.
+         * @summary Get user data
+         * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetUserDataByBirthNumbersBatch: async (requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
+            assertParamExists('adminControllerGetUserDataByBirthNumbersBatch', 'requestBatchQueryUsersByBirthNumbersDto', requestBatchQueryUsersByBirthNumbersDto)
+            const localVarPath = `/admin/userdata-batch`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication apiKey required
+            await setApiKeyToObject(localVarHeaderParameter, "apiKey", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBatchQueryUsersByBirthNumbersDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
          * @summary Get verification data for user.
          * @param {string} email 
@@ -1367,7 +1461,7 @@ export const ADMINApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async adminControllerDeactivateAccount(externalId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OnlySuccessDto>> {
+        async adminControllerDeactivateAccount(externalId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeactivateAccountResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeactivateAccount(externalId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ADMINApi.adminControllerDeactivateAccount']?.[localVarOperationServerIndex]?.url;
@@ -1384,6 +1478,19 @@ export const ADMINApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumber(birthNumber, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumber']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get user data by birthnumbers in batch.
+         * @summary Get user data
+         * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumbersBatch']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1478,7 +1585,7 @@ export const ADMINApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        adminControllerDeactivateAccount(externalId: string, options?: any): AxiosPromise<OnlySuccessDto> {
+        adminControllerDeactivateAccount(externalId: string, options?: any): AxiosPromise<DeactivateAccountResponseDto> {
             return localVarFp.adminControllerDeactivateAccount(externalId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1490,6 +1597,16 @@ export const ADMINApiFactory = function (configuration?: Configuration, basePath
          */
         adminControllerGetUserDataByBirthNumber(birthNumber: string, options?: any): AxiosPromise<ResponseUserByBirthNumberDto> {
             return localVarFp.adminControllerGetUserDataByBirthNumber(birthNumber, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get user data by birthnumbers in batch.
+         * @summary Get user data
+         * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto, options?: any): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
+            return localVarFp.adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
@@ -1585,6 +1702,18 @@ export class ADMINApi extends BaseAPI {
      */
     public adminControllerGetUserDataByBirthNumber(birthNumber: string, options?: RawAxiosRequestConfig) {
         return ADMINApiFp(this.configuration).adminControllerGetUserDataByBirthNumber(birthNumber, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ADMINApi
+     */
+    public adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto, options?: RawAxiosRequestConfig) {
+        return ADMINApiFp(this.configuration).adminControllerGetUserDataByBirthNumbersBatch(requestBatchQueryUsersByBirthNumbersDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

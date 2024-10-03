@@ -28,6 +28,7 @@ export class AdminController {
   @ApiResponse({
     status: 200,
     description: 'Load data from noris',
+    type: CreateBirthNumbersResponseDto,
   })
   @UseGuards(AdminGuard)
   @Post('create-data-from-noris')
@@ -67,7 +68,10 @@ export class AdminController {
   async updatePaymentsFromNoris(
     @Body() data: RequestPostNorisPaymentDataLoadDto,
   ): Promise<any> {
-    return this.adminService.updatePaymentsFromNoris(data)
+    return this.adminService.updatePaymentsFromNoris({
+      type: 'fromToDate',
+      data,
+    })
   }
 
   @HttpCode(200)

@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { MAX_NORIS_BATCH_SELECT } from '../utils/constants'
+import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
 
 @Injectable()
 export class TasksService {
@@ -16,47 +17,59 @@ export class TasksService {
     this.logger = new Logger('TasksService')
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
-  async createDataFromNorisBatchTask() {
-    this.logger.log('Running createDataFromNorisBatchTask')
-
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async updatePaymentsFromNoris() {
     const year = new Date().getFullYear()
-    const birthNumbersFromDb = await this.prismaService.taxPayer.findMany({
-      select: {
-        birthNumber: true,
-      },
-      where: {
-        taxes: {
-          none: {
-            year,
-          },
-        },
-      },
-      orderBy: {
-        norisLastCalled: 'asc',
-      },
-      take: MAX_NORIS_BATCH_SELECT,
-    })
-    const birthNumbers = birthNumbersFromDb.map((bn) => bn.birthNumber)
 
-    if (birthNumbers.length === 0) {
-      return
+    const variableSymbolsDb = await this.prismaService.$queryRaw<
+      { variableSymbol: string; id: number }[]
+    >(Prisma.sql`
+    WITH total_payments AS (
+      SELECT "taxId", SUM("amount") AS totalPayments
+      FROM "TaxPayment"
+      GROUP BY "taxId"
+    )
+    SELECT t."variableSymbol", t."id"
+    FROM "Tax" t
+    LEFT JOIN total_payments tp ON t."id" = tp."taxId"
+    WHERE 
+      COALESCE(tp.totalPayments, 0) < t."amount"
+      AND t.year = ${year}
+    ORDER BY t."lastCheckedPayments" ASC
+    LIMIT ${MAX_NORIS_PAYMENTS_BATCH_SELECT}
+    `)
+
+    if (variableSymbolsDb.length === 0) return
+
+    const data = {
+      year,
+      variableSymbols: variableSymbolsDb.map(
+        (variableSymbolDb) => variableSymbolDb.variableSymbol,
+      ),
     }
 
-    await this.adminService.loadDataFromNoris({
-      year,
-      birthNumbers,
+    this.logger.log(
+      `TasksService: Updating payments from Noris with data: ${JSON.stringify(data)}`,
+    )
+
+    const result = await this.adminService.updatePaymentsFromNoris({
+      type: 'variableSymbols',
+      data,
     })
 
-    await this.prismaService.taxPayer.updateMany({
+    await this.prismaService.tax.updateMany({
       where: {
-        birthNumber: {
-          in: birthNumbers,
+        id: {
+          in: variableSymbolsDb.map((dbRecord) => dbRecord.id),
         },
       },
       data: {
-        norisLastCalled: new Date(),
+        lastCheckedPayments: new Date(),
       },
     })
+
+    this.logger.log(
+      `TasksService: Updated payments from Noris, result: ${JSON.stringify(result)}`,
+    )
   }
 }

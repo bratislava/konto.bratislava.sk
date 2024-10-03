@@ -462,6 +462,13 @@ export class ResponseTaxDto {
     },
   })
   taxEmployees: ResponseTaxEmployeesDto
+
+  @ApiProperty({
+    description:
+      'When were last checked payments for this tax with automatic task.',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  lastCheckedPayments: Date
 }
 
 export class ResponseGetTaxesBodyDto {

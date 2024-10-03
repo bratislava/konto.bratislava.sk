@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
+  NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
 } from './dtos/requests.dto'
@@ -196,11 +197,19 @@ export class AdminService {
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     console.info('Start Loading data from noris')
-    const norisData = await this.norisService.getDataFromNoris(data)
+    const norisData = (await this.norisService.getDataFromNoris(
+      data,
+    )) as NorisTaxPayersDto[]
     const birthNumbersResult: string[] = []
 
     console.info(`Data loaded from noris - count ${norisData.length}`)
-    for (const elem of norisData as NorisTaxPayersDto[]) {
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        norisData.map((norisRecord) => norisRecord.ICO_RC),
+      )
+
+    for (const elem of norisData) {
       birthNumbersResult.push(elem.ICO_RC)
       const taxExists = await this.prismaService.tax.findFirst({
         where: {
@@ -214,9 +223,7 @@ export class AdminService {
         const { userData, dataFromNoris } =
           await this.insertTaxPayerDataToDatabase(elem, data.year)
         const userFromCityAccount =
-          await this.cityAccountSubservice.getUserDataAdmin(
-            userData.birthNumber,
-          )
+          userDataFromCityAccount[userData.birthNumber] || null
         if (userFromCityAccount !== null) {
           const bloomreachTracker = await this.bloomreachService.trackEventTax(
             {
@@ -273,13 +280,18 @@ export class AdminService {
   }
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async updatePaymentsFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
+  async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
     let created = 0
     let alreadyCreated = 0
     let notFound = 0
     const norisInconsistency = []
     const norisErrorLoad = []
-    const norisPaymentData = await this.getPaymentDataFromNoris(data)
+    const norisPaymentData =
+      norisRequest.type === 'fromToDate'
+        ? await this.getPaymentDataFromNoris(norisRequest.data)
+        : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
+            norisRequest.data,
+          )
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
     for (const norisPayment of norisPaymentData as Partial<NorisPaymentsDto>[]) {
       try {
@@ -291,11 +303,6 @@ export class AdminService {
             taxPayer: true,
           },
         })
-        if (!taxData) {
-          console.error(
-            `ERROR - Status-500: invalid norisPayment with variable symbol ${norisPayment.variabilny_symbol}`,
-          )
-        }
         if (taxData) {
           const payerData = await this.prismaService.taxPayment.aggregate({
             _sum: {
@@ -406,17 +413,23 @@ export class AdminService {
         norisErrorLoad.push(norisPayment.variabilny_symbol)
       }
     }
-    await this.prismaService.loadingPaymentsFromNoris.create({
-      data: {
-        alreadPayedPayments: alreadyCreated,
-        loadingDateFrom: new Date(data.fromDate),
-        loadingDateTo: new Date(data.toDate),
-        loadedPayments: created,
-        norisInconsistencyVariableSymbols: norisInconsistency,
-        errorVariableSymbols: norisErrorLoad,
-        notFound,
-      },
-    })
+
+    // If payments are loaded by date, save the data to loadingPaymentsFromNoris table.
+    // This table is used to retrieve the last dates for which we have loaded the payments.
+    if (norisRequest.type === 'fromToDate') {
+      await this.prismaService.loadingPaymentsFromNoris.create({
+        data: {
+          alreadPayedPayments: alreadyCreated,
+          loadingDateFrom: new Date(norisRequest.data.fromDate),
+          loadingDateTo: new Date(norisRequest.data.toDate),
+          loadedPayments: created,
+          norisInconsistencyVariableSymbols: norisInconsistency,
+          errorVariableSymbols: norisErrorLoad,
+          notFound,
+        },
+      })
+    }
+
     return {
       created,
       alreadyCreated,

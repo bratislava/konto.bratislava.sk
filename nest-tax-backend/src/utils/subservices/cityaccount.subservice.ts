@@ -51,4 +51,31 @@ export class CityAccountSubservice {
       return null
     }
   }
+
+  async getUserDataAdminBatch(
+    birthNumbers: string[],
+  ): Promise<Record<string, ResponseUserByBirthNumberDto>> {
+    const birthNumbersWithoutSlash = birthNumbers.map((birthNumber) =>
+      birthNumber.replaceAll('/', ''),
+    )
+    const userDataResult =
+      await this.cityAccountApi.adminControllerGetUserDataByBirthNumbersBatch(
+        { birthNumbers: birthNumbersWithoutSlash },
+        {
+          headers: {
+            apiKey: process.env.CITY_ACCOUNT_ADMIN_API_KEY,
+          },
+        },
+      )
+
+    const result: Record<string, ResponseUserByBirthNumberDto> = {}
+    Object.keys(userDataResult.data.users).forEach((birthNumber) => {
+      const modifiedKey = birthNumber.includes('/')
+        ? birthNumber
+        : `${birthNumber.slice(0, 6)}/${birthNumber.slice(6)}`
+      result[modifiedKey] = userDataResult.data.users[birthNumber]
+    })
+
+    return result
+  }
 }

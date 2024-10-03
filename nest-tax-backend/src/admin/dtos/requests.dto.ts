@@ -32,18 +32,6 @@ export class RequestPostNorisPaymentDataLoadDto {
   year: number
 
   @ApiProperty({
-    description: 'user name to noris',
-    default: 'test',
-  })
-  msq_username: string
-
-  @ApiProperty({
-    description: 'password to noris',
-    default: 'test',
-  })
-  msq_password: string
-
-  @ApiProperty({
     description: 'From date - if is not set, take one from database',
     default: '2022-01-01',
   })
@@ -56,15 +44,36 @@ export class RequestPostNorisPaymentDataLoadDto {
   toDate: string
 
   @ApiProperty({
-    description: 'If is possible to send confirmation email',
-    default: true,
-  })
-  sendConfEmails: Boolean
-
-  @ApiProperty({
-    description:
-      'If you want to count also overpayments. It is recommended to choose sendConfEmails to false if this is true',
+    description: 'If you want to count also overpayments.',
     default: false,
   })
   overPayments: Boolean
 }
+
+export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
+  @ApiProperty({
+    description: 'Year of tax',
+    default: 2022,
+  })
+  year: number
+
+  @ApiProperty({
+    description: 'Variable symbols which should be checked.',
+    default: ['010010101', '4463782'],
+    type: String,
+    isArray: true,
+  })
+  variableSymbols: string[]
+}
+
+export type NorisRequestGeneral =
+  | {
+      type: 'fromToDate'
+
+      data: RequestPostNorisPaymentDataLoadDto
+    }
+  | {
+      type: 'variableSymbols'
+
+      data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto
+    }

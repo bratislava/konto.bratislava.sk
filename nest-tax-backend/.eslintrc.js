@@ -46,6 +46,7 @@ module.exports = {
   ignorePatterns: [
     '*.config.*',
     '.eslintrc.js',
+    'src/generated-clients/**/*'
   ],
   overrides: [
     {

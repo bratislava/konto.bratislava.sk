@@ -28,12 +28,12 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
-import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
 } from './nases-consumer.dto'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
+import EmailFormsSubservice from './subservices/email-forms.subservice'
 
 @Injectable()
 export default class NasesConsumerService {
@@ -114,18 +114,31 @@ export default class NasesConsumerService {
     }
 
     if (formDefinition.type === FormDefinitionType.Email) {
-      const emailResult = await this.handleEmailForm(form)
+      const emailResult = await this.handleEmailForm(
+        form,
+        data.userData.email,
+        data.userData.firstName,
+      )
       return emailResult
     }
 
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       alertError(
-        `ERROR onQueueConsumption: UnprocessableEntityException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}.`,
+        `ERROR onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} In the nases-consumer queue only Slovensko.sk forms can be sent to Nases. Form id: ${form.id}.`,
         this.logger,
       )
       return new Nack(false)
     }
 
+    const result = await this.handleSlovenskoSkForm(form, data, formDefinition)
+    return result
+  }
+
+  private async handleSlovenskoSkForm(
+    form: Forms,
+    data: RabbitPayloadDto,
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<Nack> {
     this.logger.debug(
       `All files are in final state, sending message to nases for formId: ${data.formId}`,
     )
@@ -325,9 +338,13 @@ export default class NasesConsumerService {
     return CheckAttachmentsEnum.OK
   }
 
-  private async handleEmailForm(form: Forms): Promise<Nack> {
+  private async handleEmailForm(
+    form: Forms,
+    toEmail: string | null,
+    firstName: string | null,
+  ): Promise<Nack> {
     try {
-      await this.emailFormsSubservice.sendEmailForm(form.id)
+      await this.emailFormsSubservice.sendEmailForm(form.id, toEmail, firstName)
       return new Nack(false)
     } catch (error) {
       alertError(

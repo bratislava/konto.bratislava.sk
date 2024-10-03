@@ -11,10 +11,10 @@ import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import TaxModule from '../tax/tax.module'
 import MailgunService from '../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
+import EmailFormsSubservice from './subservices/email-forms.subservice'
 
 @Module({
   imports: [

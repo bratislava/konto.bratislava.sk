@@ -22,8 +22,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO,
   },
   {
     type: FormDefinitionType.Email,
@@ -34,8 +35,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -46,8 +48,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -58,8 +61,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -70,8 +74,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -82,8 +87,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -94,8 +100,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -106,8 +113,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -118,8 +126,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -130,8 +139,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -142,7 +152,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
-    onlyForVerifiedUsers: false,
-    userEmailPath: '', // TODO
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
 ]

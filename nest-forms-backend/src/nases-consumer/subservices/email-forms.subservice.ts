@@ -2,34 +2,30 @@ import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
-import {
-  FormDefinitionEmail,
-  FormDefinitionType,
-} from 'forms-shared/definitions/formDefinitionTypes'
+import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
 import * as jwt from 'jsonwebtoken'
-import lodash from 'lodash'
 
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
-import { MailgunTemplateEnum } from '../global-services/mailgun/mailgun.constants'
-import MailgunService from '../global-services/mailgun/mailgun.service'
-import ThrowerErrorGuard from '../guards/thrower-error.guard'
+import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
+import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
-} from '../handlers/text.handler'
-import alertError from '../logging'
-import { FormWithFiles } from '../types/prisma'
+} from '../../utils/handlers/text.handler'
+import alertError from '../../utils/logging'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
-} from './dtos/email-forms.errors.enum'
+} from '../../utils/subservices/dtos/email-forms.errors.enum'
+import { FormWithFiles } from '../../utils/types/prisma'
 
 @Injectable()
 export default class EmailFormsSubservice {
@@ -44,7 +40,11 @@ export default class EmailFormsSubservice {
     this.logger = new Logger('EmailFormsSubservice')
   }
 
-  async sendEmailForm(formId: string): Promise<void> {
+  async sendEmailForm(
+    formId: string,
+    toEmail: string | null,
+    firstName: string | null,
+  ): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
         id: formId,
@@ -109,27 +109,26 @@ export default class EmailFormsSubservice {
     })
 
     // Send confirmation email to user
-    const toEmail =
-      form.email ||
-      this.getEmailOfUser(formDefinition, form.id, jsonDataExtraDataOmitted)
-    try {
-      // TODO - temporary delivered mail, we should use some OLO mail with html data as when sending the confirmation email to OLO.
-      await this.mailgunService.sendEmail({
-        to: toEmail,
-        template: MailgunTemplateEnum.GINIS_DELIVERED,
-        data: {
-          formId: form.id,
-          messageSubject: formTitle,
-          firstName: null,
-          slug: formDefinition.slug,
-        },
-      })
-    } catch (error) {
-      alertError(
-        `Sending confirmation email to ${toEmail} for form ${formId} failed.`,
-        this.logger,
-        JSON.stringify(error),
-      )
+    if (toEmail) {
+      try {
+        // TODO - temporary delivered mail, we should use some OLO mail with html data as when sending the confirmation email to OLO.
+        await this.mailgunService.sendEmail({
+          to: toEmail,
+          template: MailgunTemplateEnum.GINIS_DELIVERED,
+          data: {
+            formId: form.id,
+            messageSubject: formTitle,
+            firstName,
+            slug: formDefinition.slug,
+          },
+        })
+      } catch (error) {
+        alertError(
+          `Sending confirmation email to ${toEmail} for form ${formId} failed.`,
+          this.logger,
+          JSON.stringify(error),
+        )
+      }
     }
 
     await this.prismaService.forms
@@ -163,20 +162,5 @@ export default class EmailFormsSubservice {
       result[file.id] = `${frontendUrl}/download/file/${token}`
     })
     return result
-  }
-
-  private getEmailOfUser(
-    formDefinition: FormDefinitionEmail,
-    formId: string,
-    jsonData: GenericObjectType,
-  ): string {
-    const atPath = lodash.get(jsonData, formDefinition.userEmailPath, null)
-    if (!lodash.isString(atPath)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        EmailFormsErrorsEnum.EMAIL_ADDRESS_NOT_STRING,
-        `${EmailFormsErrorsResponseEnum.EMAIL_ADDRESS_NOT_STRING} form id: ${formId}.`,
-      )
-    }
-    return atPath
   }
 }

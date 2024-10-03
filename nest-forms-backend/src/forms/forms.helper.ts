@@ -55,22 +55,23 @@ export default class FormsHelper {
 
   userCanSendForm(
     form: Forms,
-    onlyForVerifiedUsers: boolean,
+    allowSendingByUnverifiedUsers: boolean,
     userInfo?: ResponseGdprDataDto,
     userSub?: string,
   ): boolean {
     // If owned by company, it must have the same ICO
-    if (form.ico !== null) {
+    if (form.ico != null) {
       return form.ico === userInfo?.ico
     }
 
     // If owned by user, it must have the same user sub
-    if (form.userExternalId !== null) {
+    if (form.userExternalId != null) {
       return form.userExternalId === userSub
     }
 
-    // If not owned, return negation of onlyForVerifiedUsers.
-    return !onlyForVerifiedUsers
+    // If not owned, return allowSendingByUnverifiedUsers
+    // (If the form is only for verified users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
+    return allowSendingByUnverifiedUsers
   }
 
   userCanSendFormEid(

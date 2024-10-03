@@ -4,7 +4,6 @@ import { HttpStatus, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { FormDefinitionEmail } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -13,10 +12,10 @@ import * as jwt from 'jsonwebtoken'
 import prismaMock from '../../../../test/singleton'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
-import MailgunService from '../../global-services/mailgun/mailgun.service'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import { FormWithFiles } from '../../types/prisma'
-import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
+import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
+import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import { EmailFormsErrorsResponseEnum } from '../../../utils/subservices/dtos/email-forms.errors.enum'
+import { FormWithFiles } from '../../../utils/types/prisma'
 import EmailFormsSubservice from '../email-forms.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
@@ -104,7 +103,7 @@ describe('EmailFormsSubservice', () => {
         '<html></html>',
       )
 
-      await service.sendEmailForm(mockFormId)
+      await service.sendEmailForm(mockFormId, 'some@mail.com', null)
 
       expect(prismaMock.forms.findUnique).toHaveBeenCalledWith({
         where: { id: 'test-form-id', archived: false },
@@ -152,13 +151,13 @@ describe('EmailFormsSubservice', () => {
         '<html></html>',
       )
 
-      await service.sendEmailForm(mockFormId)
+      await service.sendEmailForm(mockFormId, null, null)
 
       expect(prismaMock.forms.findUnique).toHaveBeenCalledWith({
         where: { id: 'test-form-id', archived: false },
         include: { files: true },
       })
-      expect(mailgunService.sendEmail).toHaveBeenCalledTimes(2)
+      expect(mailgunService.sendEmail).toHaveBeenCalledTimes(1)
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
         data: { state: FormState.PROCESSING, error: FormError.NONE },
@@ -168,7 +167,9 @@ describe('EmailFormsSubservice', () => {
     it('should throw NotFoundException when form is not found', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
 
-      await expect(service.sendEmailForm(mockFormId)).rejects.toThrow(
+      await expect(
+        service.sendEmailForm(mockFormId, null, null),
+      ).rejects.toThrow(
         expect.objectContaining({
           message: FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
           status: HttpStatus.NOT_FOUND,
@@ -184,7 +185,9 @@ describe('EmailFormsSubservice', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue(null)
 
-      await expect(service.sendEmailForm(mockFormId)).rejects.toThrow(
+      await expect(
+        service.sendEmailForm(mockFormId, null, null),
+      ).rejects.toThrow(
         expect.objectContaining({
           message: expect.stringContaining(
             FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
@@ -202,7 +205,9 @@ describe('EmailFormsSubservice', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
       ).mockReturnValue({ type: 'NotEmail' })
 
-      await expect(service.sendEmailForm(mockFormId)).rejects.toThrow(
+      await expect(
+        service.sendEmailForm(mockFormId, null, null),
+      ).rejects.toThrow(
         expect.objectContaining({
           message: expect.stringContaining(
             EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM,
@@ -232,66 +237,6 @@ describe('EmailFormsSubservice', () => {
       expect(result).toHaveProperty('file2')
       expect(result.file1).toBe('http://frontend.com/download/file/token')
       expect(result.file2).toBe('http://frontend.com/download/file/token')
-    })
-  })
-
-  describe('getEmailOfUser', () => {
-    it('should return correct email from form data', () => {
-      const mockFormDefinition = {
-        userEmailPath: 'user.email',
-      }
-      const mockFormId = 'test-form-id'
-      const mockJsonData = {
-        user: {
-          email: 'test@example.com',
-        },
-      }
-
-      const result = service['getEmailOfUser'](
-        mockFormDefinition as FormDefinitionEmail,
-        mockFormId,
-        mockJsonData,
-      )
-
-      expect(result).toBe(mockJsonData.user.email)
-    })
-
-    it('should throw UnprocessableEntityException when email is not a string', () => {
-      const mockFormDefinition = {
-        userEmailPath: 'user.email',
-      }
-      const mockFormId = 'test-form-id'
-      const mockJsonData = {
-        user: {
-          email: 123, // Not a string
-        },
-      }
-
-      expect(() =>
-        service['getEmailOfUser'](
-          mockFormDefinition as FormDefinitionEmail,
-          mockFormId,
-          mockJsonData,
-        ),
-      ).toThrow(EmailFormsErrorsResponseEnum.EMAIL_ADDRESS_NOT_STRING)
-    })
-
-    it('should should throw UnprocessableEntityException when email path is not found', () => {
-      const mockFormDefinition = {
-        userEmailPath: 'user.nonexistent.email',
-      }
-      const mockFormId = 'test-form-id'
-      const mockJsonData = {
-        user: {},
-      }
-
-      expect(() =>
-        service['getEmailOfUser'](
-          mockFormDefinition as FormDefinitionEmail,
-          mockFormId,
-          mockJsonData,
-        ),
-      ).toThrow(EmailFormsErrorsResponseEnum.EMAIL_ADDRESS_NOT_STRING)
     })
   })
 })

@@ -17,10 +17,10 @@ import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailgun/mailgun.service'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
-import EmailFormsSubservice from '../utils/subservices/email-forms.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
 import NasesConsumerService from './nases-consumer.service'
+import EmailFormsSubservice from './subservices/email-forms.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
@@ -285,7 +285,11 @@ describe('NasesConsumerService', () => {
       const result = await service.onQueueConsumption(mockRabbitPayloadDto)
 
       expect(result).toEqual(new Nack(false))
-      expect(service['handleEmailForm']).toHaveBeenCalledWith(mockForm)
+      expect(service['handleEmailForm']).toHaveBeenCalledWith(
+        mockForm,
+        'test@example.com',
+        'Test',
+      )
       expect(sendToNasesAndUpdateStateSpy).not.toHaveBeenCalled()
     })
 
@@ -381,7 +385,7 @@ describe('NasesConsumerService', () => {
         .spyOn(service['emailFormsSubservice'], 'sendEmailForm')
         .mockResolvedValue()
 
-      const result = await service['handleEmailForm'](mockForm)
+      const result = await service['handleEmailForm'](mockForm, null, null)
 
       expect(result).toEqual(new Nack(false))
     })
@@ -393,7 +397,7 @@ describe('NasesConsumerService', () => {
         .mockRejectedValue(new Error('Failed to send email'))
       jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
 
-      const result = await service['handleEmailForm'](mockForm)
+      const result = await service['handleEmailForm'](mockForm, null, null)
 
       expect(result).toEqual(new Nack(true))
       expect(service['logger'].error).toHaveBeenCalled()

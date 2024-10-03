@@ -15,7 +15,6 @@ import * as baRjsfValidatorModule from 'forms-shared/form-utils/validators'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import * as helpers from '../common/utils/helpers'
 import FilesService from '../files/files.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
@@ -23,6 +22,7 @@ import FormsService from '../forms/forms.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import { Tier } from '../utils/global-enums/city-account.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -31,7 +31,6 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
-jest.mock('../common/utils/helpers')
 
 describe('NasesService', () => {
   let service: NasesService
@@ -372,7 +371,7 @@ describe('NasesService', () => {
       jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
-      jest.spyOn(helpers, 'isUserVerified').mockReturnValue(true)
+      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(true)
     })
 
     it('should throw an error if form definition is not found', async () => {
@@ -396,7 +395,7 @@ describe('NasesService', () => {
     })
 
     it('should throw an error if user is not verified for a form that requires verification', async () => {
-      jest.spyOn(helpers, 'isUserVerified').mockReturnValue(false)
+      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
 
       await expect(
         service.sendForm('1', undefined, {} as CognitoGetUserData),
@@ -436,9 +435,8 @@ describe('NasesService', () => {
     it('should fail if the email form is only for verified users and the user is not verified', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         ...mockFormDefinitionEmail,
-        onlyForVerifiedUsers: true,
       })
-      jest.spyOn(helpers, 'isUserVerified').mockReturnValue(false)
+      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
 
       await expect(service.sendForm('1')).rejects.toThrow(
         NasesErrorsResponseEnum.SEND_UNVERIFIED,
@@ -446,10 +444,11 @@ describe('NasesService', () => {
     })
 
     it('should queue the email form even if the user is not verified and the form is not only for verified users', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
-        mockFormDefinitionEmail,
-      )
-      jest.spyOn(helpers, 'isUserVerified').mockReturnValue(false)
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        ...mockFormDefinitionEmail,
+        allowSendingByUnverifiedUsers: true,
+      })
+      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
 
       const result = await service.sendForm('1')
 
@@ -463,7 +462,7 @@ describe('NasesService', () => {
     it('should queue the email form when the user is verified and needs to be verified', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         ...mockFormDefinitionEmail,
-        onlyForVerifiedUsers: true,
+        allowSendingByUnverifiedUsers: false,
       })
 
       const result = await service.sendForm('1')
@@ -473,6 +472,122 @@ describe('NasesService', () => {
         message: 'Form was successfully queued to rabbitmq.',
         state: FormState.QUEUED,
       })
+    })
+  })
+
+  describe('isUserVerified', () => {
+    it('should return true if the user is verified', () => {
+      expect(
+        service['isUserVerified']({
+          'custom:tier': Tier.IDENTITY_CARD,
+        } as CognitoGetUserData),
+      ).toBeTruthy()
+    })
+
+    it('should return false if the user is not verified', () => {
+      expect(
+        service['isUserVerified']({
+          'custom:tier': Tier.NOT_VERIFIED_IDENTITY_CARD,
+        } as CognitoGetUserData),
+      ).toBeFalsy()
+    })
+
+    it('should return false if the user is not provided', () => {
+      expect(service['isUserVerified']()).toBeFalsy()
+    })
+  })
+
+  describe('emailParsedFromForm', () => {
+    it('should return null if the form definition is not an email form', () => {
+      expect(
+        service['emailParsedFromForm'](
+          {
+            type: FormDefinitionType.SlovenskoSkGeneric,
+          } as FormDefinition,
+          {},
+        ),
+      ).toBeNull()
+    })
+
+    it('should return null if the user email path is not a string', () => {
+      expect(
+        service['emailParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userEmailPath: 'user.email',
+          } as FormDefinitionEmail,
+          { user: { email: { more: 'data' } } },
+        ),
+      ).toBeNull()
+
+      expect(
+        service['emailParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userEmailPath: 'user.email',
+          } as FormDefinitionEmail,
+          {},
+        ),
+      ).toBeNull()
+    })
+
+    it('should return the email if the user email path is a string', () => {
+      expect(
+        service['emailParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userEmailPath: 'user.email',
+          } as FormDefinitionEmail,
+          { user: { email: 'test@example.com' } },
+        ),
+      ).toBe('test@example.com')
+    })
+  })
+
+  describe('firstNameParsedFromForm', () => {
+    it('should return null if the form definition is not an email form', () => {
+      expect(
+        service['firstNameParsedFromForm'](
+          {
+            type: FormDefinitionType.SlovenskoSkGeneric,
+          } as FormDefinition,
+          {},
+        ),
+      ).toBeNull()
+    })
+
+    it('should return null if the user name path is not a string', () => {
+      expect(
+        service['firstNameParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userNamePath: 'user.name',
+          } as FormDefinitionEmail,
+          { user: { name: { more: 'data' } } },
+        ),
+      ).toBeNull()
+
+      expect(
+        service['firstNameParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userNamePath: 'user.name',
+          } as FormDefinitionEmail,
+          {},
+        ),
+      ).toBeNull()
+    })
+
+    it('should return the first name if the user name path is a string', () => {
+      expect(
+        service['firstNameParsedFromForm'](
+          {
+            type: FormDefinitionType.Email,
+            userNamePath: 'user.name',
+          } as FormDefinitionEmail,
+          { user: { name: 'John' } },
+        ),
+      ).toBe('John')
     })
   })
 })

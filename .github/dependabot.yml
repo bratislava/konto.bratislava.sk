@@ -21,9 +21,3 @@ updates:
     directory: '/nest-clamav-scanner'
     schedule:
       interval: 'weekly'
-
-# Specify permissions for Dependabot
-permissions:
-  pull-requests: write
-  contents: write
-  issues: write

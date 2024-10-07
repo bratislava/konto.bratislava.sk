@@ -22,6 +22,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO,
   },
   {
     type: FormDefinitionType.Email,
@@ -32,6 +35,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -42,6 +48,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -52,6 +61,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -62,6 +74,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -72,6 +87,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -82,6 +100,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -92,6 +113,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -102,6 +126,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -112,6 +139,9 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -122,5 +152,8 @@ export const devFormDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     embedded: 'olo',
+    allowSendingByUnverifiedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
 ]

@@ -1,9 +1,6 @@
 import { FileStatus } from '@prisma/client'
 import { isString } from 'class-validator'
 
-import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
-import { Tier } from '../../utils/global-enums/city-account.enum'
-
 export const processingScanStatuses = [
   FileStatus.UPLOADED,
   FileStatus.ACCEPTED,
@@ -56,12 +53,4 @@ export function listOfStatuses(): string {
 
 export function removeXMLWhitespace(xml: string): string {
   return xml.replaceAll(/>\s+</g, '><')
-}
-
-export function isUserVerified(user?: CognitoGetUserData): boolean {
-  if (!user) return false
-  return (
-    user['custom:tier'] === Tier.IDENTITY_CARD ||
-    user['custom:tier'] === Tier.EID
-  )
 }

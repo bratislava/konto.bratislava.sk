@@ -55,25 +55,23 @@ export default class FormsHelper {
 
   userCanSendForm(
     form: Forms,
-    userInfo: ResponseGdprDataDto,
+    allowSendingByUnverifiedUsers: boolean,
+    userInfo?: ResponseGdprDataDto,
     userSub?: string,
   ): boolean {
-    // If user is not provided return false.
-    if (!userSub) {
-      return false
-    }
-    // if file is not owned by anyone, it can't be sent
-    if (form.userExternalId === null) {
-      return false
-    }
-
     // If owned by company, it must have the same ICO
-    if (form.ico !== null) {
-      return form.ico === userInfo.ico
+    if (form.ico != null) {
+      return form.ico === userInfo?.ico
     }
 
-    // Can be sent if uri is set and also it is the logged in user's form.
-    return form.userExternalId === userSub
+    // If owned by user, it must have the same user sub
+    if (form.userExternalId != null) {
+      return form.userExternalId === userSub
+    }
+
+    // If not owned, return allowSendingByUnverifiedUsers
+    // (If the form is only for verified users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
+    return allowSendingByUnverifiedUsers
   }
 
   userCanSendFormEid(

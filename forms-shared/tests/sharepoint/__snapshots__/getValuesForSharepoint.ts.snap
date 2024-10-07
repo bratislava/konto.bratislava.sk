@@ -115,6 +115,7 @@ exports[`getValuesForFields should match snapshots 6`] = `
   "MieraFunkcnejPoruchy": "50az74",
   "SucasneByvanieRovnakeAkoVase": true,
   "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
   "ZiadatelDatumNarodenia": "1960-09-05",
   "ZiadatelMeno": "Mária",
   "ZiadatelPriezvisko": "Kováčová",

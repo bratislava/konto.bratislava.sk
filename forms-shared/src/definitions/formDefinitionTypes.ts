@@ -16,6 +16,7 @@ type FormDefinitionBase = {
   messageSubjectFormat?: string
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
+  allowSendingByUnverifiedUsers?: boolean // Default should be false, so undefined must be handled as false
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
@@ -48,6 +49,8 @@ export type FormDefinitionSlovenskoSk =
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
+  userEmailPath: string
+  userNamePath?: string
 }
 
 export type FormDefinition =

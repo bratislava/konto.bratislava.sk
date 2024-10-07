@@ -6,6 +6,7 @@ import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionSlovenskoSk,
+  FormDefinitionType,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -16,6 +17,7 @@ import FilesService from '../files/files.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
+import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
 import { MailgunTemplateEnum } from '../utils/global-services/mailgun/mailgun.constants'
@@ -31,6 +33,7 @@ import {
   RabbitPayloadUserDataDto,
 } from './nases-consumer.dto'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
+import EmailFormsSubservice from './subservices/email-forms.subservice'
 
 @Injectable()
 export default class NasesConsumerService {
@@ -43,6 +46,8 @@ export default class NasesConsumerService {
     private readonly filesService: FilesService,
     private readonly mailgunService: MailgunService,
     private readonly convertPdfService: ConvertPdfService,
+    private readonly emailFormsSubservice: EmailFormsSubservice,
+    private readonly prismaService: PrismaService,
   ) {
     this.logger = new Logger('NasesConsumerService')
   }
@@ -89,14 +94,6 @@ export default class NasesConsumerService {
       return new Nack(false)
     }
 
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      alertError(
-        `ERROR onQueueConsumption: UnprocessableEntityException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}.`,
-        this.logger,
-      )
-      return new Nack(false)
-    }
-
     const checkedAttachments = await this.checkAttachments(
       data,
       form,
@@ -107,13 +104,44 @@ export default class NasesConsumerService {
       return requeueAttachment
     }
     if (checkedAttachments === CheckAttachmentsEnum.ERROR) {
+      if (formDefinition.type === FormDefinitionType.Email) {
+        alertError(
+          `ERROR onQueueConsumption: Found virus in attachments for email form ${form.id}.`,
+          this.logger,
+        )
+      }
+      return new Nack(false)
+    }
+    this.logger.debug(
+      `All files are in final state, sending form with id: ${data.formId}`,
+    )
+
+    if (formDefinition.type === FormDefinitionType.Email) {
+      const emailResult = await this.handleEmailForm(
+        form,
+        data.userData.email,
+        data.userData.firstName,
+      )
+      return emailResult
+    }
+
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      alertError(
+        `ERROR onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} In the nases-consumer queue only Slovensko.sk forms can be sent to Nases. Form id: ${form.id}.`,
+        this.logger,
+      )
       return new Nack(false)
     }
 
-    this.logger.debug(
-      `All files are in final state, sending message to nases for formId: ${data.formId}`,
-    )
+    const result = await this.handleSlovenskoSkForm(form, data, formDefinition)
+    return result
+  }
 
+  private async handleSlovenskoSkForm(
+    form: Forms,
+    data: RabbitPayloadDto,
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<Nack> {
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
     const isSent = await this.sendToNasesAndUpdateState(
       jwt,
@@ -307,5 +335,41 @@ export default class NasesConsumerService {
       return CheckAttachmentsEnum.ERROR
     }
     return CheckAttachmentsEnum.OK
+  }
+
+  private async handleEmailForm(
+    form: Forms,
+    toEmail: string | null,
+    firstName: string | null,
+  ): Promise<Nack> {
+    try {
+      await this.emailFormsSubservice.sendEmailForm(form.id, toEmail, firstName)
+      return new Nack(false)
+    } catch (error) {
+      alertError(
+        `Sending email of form ${form.id} has failed.`,
+        this.logger,
+        JSON.stringify(error),
+      )
+
+      await this.prismaService.forms
+        .update({
+          where: {
+            id: form.id,
+          },
+          data: {
+            error: FormError.EMAIL_SEND_ERROR,
+          },
+        })
+        .catch((error_) => {
+          alertError(
+            `Setting form error with id ${form.id} to EMAIL_SEND_ERROR failed.`,
+            this.logger,
+            JSON.stringify(error_),
+          )
+        })
+      const requeueEmail = await this.nackTrueWithWait(20_000)
+      return requeueEmail
+    }
   }
 }

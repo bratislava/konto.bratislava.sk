@@ -3,6 +3,11 @@ on:
   pull_request:
     branches:
       - master
+
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   test-forms-shared:
     name: Run tests on forms-shared
@@ -46,6 +51,7 @@ jobs:
       build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
       debug: --debug
       fetch-depth: 1
+      build_image_no_registry: ''
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all
@@ -79,6 +85,7 @@ jobs:
       directory: nest-forms-backend/
       build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
       fetch-depth: 1
+      build_image_no_registry: ''
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

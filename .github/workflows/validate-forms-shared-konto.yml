@@ -16,13 +16,15 @@ on:
 jobs:
   test:
     name: Forms-shared tests
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
     defaults:
       run:
         working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Pipelines Version
         run: |

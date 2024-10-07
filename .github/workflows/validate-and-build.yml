@@ -3,6 +3,11 @@ on:
   pull_request:
     branches:
       - master
+
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   test-forms-shared:
     name: Run tests on forms-shared
@@ -12,11 +17,12 @@ jobs:
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=${{ github.sha }}'
+      tag: '--tag=build-${{ github.sha }}'
+      fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
@@ -39,11 +45,12 @@ jobs:
     name: build next
     needs: [conditions, validate-next]
     if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
       debug: --debug
+      fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all
@@ -52,10 +59,11 @@ jobs:
     name: build Strapi
     needs: conditions
     if: needs.conditions.outputs.strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
       debug: --debug
+      fetch-depth: 1
     permissions: write-all
 
   validate-nest-forms-backend:
@@ -71,10 +79,11 @@ jobs:
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
+      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
+      fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all
@@ -92,9 +101,10 @@ jobs:
     name: build nest-clamav-scanner
     needs: [conditions, validate-nest-clamav-scanner]
     if: needs.conditions.outputs.nest-clamav-scanner == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
+      fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

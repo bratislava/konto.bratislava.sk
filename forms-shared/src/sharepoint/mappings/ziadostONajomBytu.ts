@@ -374,6 +374,10 @@ const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumn
     type: 'json_path',
     info: 'zdravotnyStav.existujuceDiagnozy',
   },
+  VlastnikNehnutelnosti: {
+    type: 'json_path',
+    info: 'osobneUdaje.vlastnikNehnutelnosti',
+  },
 }
 
 const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (

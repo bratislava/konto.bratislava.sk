@@ -200,6 +200,7 @@ const ziadostONajomBytuExample: ExampleForm = {
             MieraFunkcnejPoruchy: 'MieraFunkcnejPoruchy',
             ChronickeOchorenie: 'ChronickeOchorenie',
             ExistujuceDiagnozy: 'ZiadatelExistujuceDiagnozy',
+            VlastnikNehnutelnosti: 'VlastnikNehnutelnosti',
           },
         },
       },

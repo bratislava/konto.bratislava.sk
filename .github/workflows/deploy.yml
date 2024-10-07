@@ -11,17 +11,17 @@ on:
 jobs:
   build-forms-shared:
     name: Build and push specific forms-shared image
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: forms-shared/
       build_image_no_registry: ''
       tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
+      fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   conditions:
     name: Check for cluster conditions
-    needs: build-forms-shared
     uses: bratislava/konto.bratislava.sk/.github/workflows/cluster-deploy-conditions-konto.yml@stable
 
   deploy-dev:
@@ -36,13 +36,14 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-dev-next:
     name: dev Next
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.dev-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -52,6 +53,7 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -67,13 +69,14 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-dev-nest-forms-backend:
     name: dev nest-forms-backend
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -83,13 +86,30 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-dev-cvdmirror:
+    name: dev cvdmirror
+    needs: conditions
+    if: needs.conditions.outputs.dev-cvdmirror == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+    with:
+      directory: cvdmirror/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-dev-clamav:
     name: dev clamav
-    needs: conditions
+    needs: deploy-dev-cvdmirror
     if: needs.conditions.outputs.dev-clamav == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -98,13 +118,14 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-dev-nest-clamav-scanner:
     name: dev nest-clamav-scanner
-    needs: [conditions, deploy-dev-clamav]
+    needs: deploy-dev-clamav
     if: needs.conditions.outputs.dev-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -113,6 +134,7 @@ jobs:
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -129,13 +151,14 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging-next:
     name: staging Next
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.staging-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -145,6 +168,7 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -160,13 +184,14 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging-nest-forms-backend:
     name: staging nest-forms-backend
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.staging-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -176,13 +201,30 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-staging-cvdmirror:
+    name: staging cvdmirror
+    needs: conditions
+    if: needs.conditions.outputs.staging-cvdmirror == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: cvdmirror/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+      flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging-clamav:
     name: staging clamav
-    needs: conditions
+    needs: deploy-staging-cvdmirror
     if: needs.conditions.outputs.staging-clamav == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -191,13 +233,14 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging-nest-clamav-scanner:
     name: staging nest-clamav-scanner
-    needs: [conditions, deploy-staging-clamav]
+    needs: deploy-staging-clamav
     if: needs.conditions.outputs.staging-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -206,6 +249,7 @@ jobs:
       url: https://tkg.staging.bratislava.sk
       debug: --debug
       flag: --staging
+      fetch-depth: 1
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -221,6 +265,7 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
@@ -228,7 +273,7 @@ jobs:
 
   deploy-prod-next:
     name: prod Next
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.prod-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -237,6 +282,7 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
@@ -252,6 +298,7 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
@@ -259,7 +306,7 @@ jobs:
 
   deploy-prod-nest-forms-backend:
     name: prod nest-forms-backend
-    needs: conditions
+    needs: [build-forms-shared, conditions]
     if: needs.conditions.outputs.prod-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -268,6 +315,23 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-prod-cvdmirror:
+    name: prod cvdmirror
+    needs: conditions
+    if: needs.conditions.outputs.prod-cvdmirror == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: cvdmirror/
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
@@ -275,7 +339,7 @@ jobs:
 
   deploy-prod-clamav:
     name: prod clamav
-    needs: conditions
+    needs: deploy-prod-cvdmirror
     if: needs.conditions.outputs.prod-clamav == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -283,6 +347,7 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
@@ -290,7 +355,7 @@ jobs:
 
   deploy-prod-nest-clamav-scanner:
     name: prod nest-clamav-scanner
-    needs: [conditions, deploy-prod-clamav]
+    needs: deploy-prod-clamav
     if: needs.conditions.outputs.prod-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -298,6 +363,7 @@ jobs:
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
+      fetch-depth: 1
       debug: --debug
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}

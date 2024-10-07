@@ -129,6 +129,11 @@ export default class EmailFormsSubservice {
           JSON.stringify(error),
         )
       }
+    } else {
+      alertError(
+        `No email address to send confirmation email to (toEmail) for form ${formId}.`,
+        this.logger,
+      )
     }
 
     await this.prismaService.forms

@@ -291,23 +291,6 @@ export default class NasesService {
       )
     }
 
-    const validationResult = baRjsfValidator.validateFormData(
-      form.formDataJson,
-      formDefinition.schemas.schema,
-    )
-    if (validationResult.errors.length > 0) {
-      this.logger.error(
-        `Data for form with id ${id} is invalid: ${JSON.stringify(
-          validationResult.errors,
-        )}`,
-      )
-
-      throw this.throwerErrorGuard.NotAcceptableException(
-        FormsErrorsEnum.FORM_DATA_INVALID,
-        FormsErrorsResponseEnum.FORM_DATA_INVALID,
-      )
-    }
-
     if (
       !formDefinition.allowSendingByUnverifiedUsers &&
       !this.isUserVerified(user)
@@ -329,6 +312,23 @@ export default class NasesService {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
+    const validationResult = baRjsfValidator.validateFormData(
+      form.formDataJson,
+      formDefinition.schemas.schema,
+    )
+    if (validationResult.errors.length > 0) {
+      this.logger.error(
+        `Data for form with id ${id} is invalid: ${JSON.stringify(
+          validationResult.errors,
+        )}`,
+      )
+
+      throw this.throwerErrorGuard.NotAcceptableException(
+        FormsErrorsEnum.FORM_DATA_INVALID,
+        FormsErrorsResponseEnum.FORM_DATA_INVALID,
       )
     }
 

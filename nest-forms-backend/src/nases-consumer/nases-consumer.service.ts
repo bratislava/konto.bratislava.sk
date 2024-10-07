@@ -112,6 +112,9 @@ export default class NasesConsumerService {
       }
       return new Nack(false)
     }
+    this.logger.debug(
+      `All files are in final state, sending form with id: ${data.formId}`,
+    )
 
     if (formDefinition.type === FormDefinitionType.Email) {
       const emailResult = await this.handleEmailForm(
@@ -139,10 +142,6 @@ export default class NasesConsumerService {
     data: RabbitPayloadDto,
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<Nack> {
-    this.logger.debug(
-      `All files are in final state, sending message to nases for formId: ${data.formId}`,
-    )
-
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
     const isSent = await this.sendToNasesAndUpdateState(
       jwt,

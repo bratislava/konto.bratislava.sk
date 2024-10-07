@@ -1,13 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  FormDefinitionType,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baRjsfValidator } from 'forms-shared/form-utils/validators'
+import lodash from 'lodash'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
-import { isUserVerified } from '../common/utils/helpers'
 import FilesService from '../files/files.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import {
@@ -20,6 +25,7 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
@@ -273,8 +279,8 @@ export default class NasesService {
 
   async sendForm(
     id: string,
-    userInfo: ResponseGdprDataDto,
-    user: CognitoGetUserData,
+    userInfo?: ResponseGdprDataDto,
+    user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
@@ -285,19 +291,30 @@ export default class NasesService {
       )
     }
 
-    if (!isUserVerified(user)) {
+    if (
+      !formDefinition.allowSendingByUnverifiedUsers &&
+      !this.isUserVerified(user)
+    ) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.SEND_UNVERIFIED,
         NasesErrorsResponseEnum.SEND_UNVERIFIED,
       )
     }
 
-    if (!this.formsHelper.userCanSendForm(form, userInfo, user.sub)) {
+    if (
+      !this.formsHelper.userCanSendForm(
+        form,
+        formDefinition.allowSendingByUnverifiedUsers ?? false,
+        userInfo,
+        user?.sub,
+      )
+    ) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
+
     const validationResult = baRjsfValidator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
@@ -322,8 +339,20 @@ export default class NasesService {
           formId: form.id,
           tries: 0,
           userData: {
-            email: user.email || null,
-            firstName: user.given_name || null,
+            email:
+              user?.email ||
+              this.emailParsedFromForm(
+                formDefinition,
+                form.formDataJson as GenericObjectType,
+              ) ||
+              null,
+            firstName:
+              user?.given_name ||
+              this.firstNameParsedFromForm(
+                formDefinition,
+                form.formDataJson as GenericObjectType,
+              ) ||
+              null,
           },
         },
         10_000,
@@ -452,7 +481,7 @@ export default class NasesService {
       )
     }
 
-    if (!isUserVerified(cognitoUser)) {
+    if (!this.isUserVerified(cognitoUser)) {
       await verifyUserByEidToken(oboToken, this.logger, bearerToken)
     }
 
@@ -486,5 +515,44 @@ export default class NasesService {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(formId)
     return formAttachmentsReady.filesReady
+  }
+
+  private isUserVerified(user?: CognitoGetUserData): boolean {
+    if (!user) return false
+    return (
+      user['custom:tier'] === Tier.IDENTITY_CARD ||
+      user['custom:tier'] === Tier.EID
+    )
+  }
+
+  private emailParsedFromForm(
+    formDefinition: FormDefinition,
+    jsonData: GenericObjectType,
+  ): string | null {
+    if (formDefinition.type !== FormDefinitionType.Email) {
+      return null
+    }
+    const atPath = lodash.get(jsonData, formDefinition.userEmailPath, null)
+    if (!lodash.isString(atPath)) {
+      return null
+    }
+    return atPath
+  }
+
+  private firstNameParsedFromForm(
+    formDefinition: FormDefinition,
+    jsonData: GenericObjectType,
+  ): string | null {
+    if (
+      formDefinition.type !== FormDefinitionType.Email ||
+      !formDefinition.userNamePath
+    ) {
+      return null
+    }
+    const atPath = lodash.get(jsonData, formDefinition.userNamePath, null)
+    if (!lodash.isString(atPath)) {
+      return null
+    }
+    return atPath
   }
 }

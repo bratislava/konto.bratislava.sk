@@ -349,7 +349,7 @@ export default class NasesConsumerService {
       alertError(
         `Sending email of form ${form.id} has failed.`,
         this.logger,
-        JSON.stringify(error),
+        (error as Error).message,
       )
 
       await this.prismaService.forms

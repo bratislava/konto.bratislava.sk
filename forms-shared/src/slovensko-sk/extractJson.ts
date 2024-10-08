@@ -1,5 +1,5 @@
 import { FormDefinitionSlovenskoSk } from '../definitions/formDefinitionTypes'
-import { Parser } from 'xml2js'
+import { parseStringPromise } from 'xml2js'
 import Ajv from 'ajv'
 import { parseSlovenskoSkXmlnsString } from './urls'
 import { GenericObjectType } from '@rjsf/utils'
@@ -20,12 +20,7 @@ const baseFormXmlSchema = {
           required: ['xmlns'],
         },
         Json: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          minItems: 1,
-          maxItems: 1,
+          type: 'string',
         },
       },
       required: ['$', 'Json'],
@@ -39,11 +34,9 @@ type BaseFormXml = {
     $: {
       xmlns: string
     }
-    Json: [string]
+    Json: string
   }
 }
-
-const parser = new Parser({ explicitArray: true })
 
 const isBaseFormXml = (data: any): data is BaseFormXml => {
   const ajv = new Ajv()
@@ -75,7 +68,7 @@ export async function extractJsonFromSlovenskoSkXml(
 ) {
   let parsedXml: any
   try {
-    parsedXml = await parser.parseStringPromise(xmlString)
+    parsedXml = await parseStringPromise(xmlString, { explicitArray: false })
   } catch {
     throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml)
   }
@@ -98,7 +91,7 @@ export async function extractJsonFromSlovenskoSkXml(
   }
 
   try {
-    return JSON.parse(parsedXml.eform.Json[0]) as GenericObjectType
+    return JSON.parse(parsedXml.eform.Json) as GenericObjectType
   } catch {
     throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidJson)
   }

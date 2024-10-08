@@ -1,0 +1,110 @@
+import { ExampleForm } from '../types'
+
+const exampleForm: ExampleForm = {
+  name: 'oloEnergetickeZhodnotenieOdpaduVZevoExample',
+  formData: {
+    ziadatel: {
+      ziadatelTyp: 'Fyzická osoba',
+      telefon: '+421999888555',
+      email: 'olo@test.sk',
+      vyberSluzby: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+      preferovanyDatumDovozu: '2025-11-08',
+      sposobPlatby: 'Platba kartou',
+      menoPriezvisko: {
+        meno: 'Jozef',
+        priezvisko: 'Mrkva',
+      },
+      adresaObyvatel: {
+        ulicaACislo: 'Bratislavská 5',
+        mestoPsc: {
+          mesto: 'Holice',
+          psc: '90011',
+        },
+      },
+      cisloOp: 'AB123456',
+      preferovanyCasDovozu: '10:00',
+    },
+    povodcaOdpadu: {
+      stePovodcaOdpadu: false,
+      typPovodcuOdpadu: 'Právnická osoba',
+      emailPovodcuOdpadu: 'odpad@odpad.sk',
+      nazovOrganizacie: 'Odpad s.r.o.',
+      sidloOrganizacie: {
+        ulicaACislo: 'Gagarinova 10',
+        mestoPsc: {
+          mesto: 'Bratislava',
+          psc: '11144',
+        },
+      },
+      ico: '5689541122',
+    },
+    drzitelOdpadu: {
+      steDrzitelOdpadu: true,
+    },
+    vyberDruhuOdpadu: {
+      separovaneZlozky: ['20_01_10', '20_01_11'],
+      odpadyZoZahrad: ['20_02_03'],
+      ineKomunalneOdpady: [],
+      odpadyZAerobnejUpravy: ['19_05_01'],
+      odpadyZCistiarni: [],
+      odpadyZUpravyVody: [],
+      odpadyZMechanickehoSpracovania: [],
+      odpadyZPorodnictva: [],
+      odpadyZVeterinarnehoVyskumu: ['18_02_03'],
+      drevoSkloPlasty: [],
+      izolacneMaterialy: [],
+      ineOdpadyZoStavieb: ['17_09_04'],
+      stareVozidla: [],
+      vyrobneZarze: [],
+      obaly: ['15_01_04', '15_01_02', '15_01_01', '15_01_03'],
+      absorbenty: [],
+      odpadyZTvarovania: [],
+      odpadyZElektrarni: [],
+      odpadyZVyrobySkla: [],
+      odpadyZFotografickehoPriemyslu: [],
+      odpadyZFariebALakov: [],
+      odpadyZInychNaterovychHmot: ['08_02_01'],
+      odpadyZTlaciarenskychFarieb: ['08_03_18'],
+      odpadyZLepidiel: [],
+      odpadyZPlastov: ['07_02_13', '07_02_15'],
+      odpadyZFarmaceutickychVyrobkov: [],
+      odpadyZTukovAMydiel: [],
+      odpadyZCistychChemikalii: [],
+      odpadyZPyrolyznehoSpracovania: [],
+      odpadyZKoziarskehoPriemyslu: ['04_01_09'],
+      odpadyZTextilnehoPriemyslu: [],
+      odpadyZoSpracovaniaDreva: [],
+      odpadyZVyrobyPapiera: [],
+      odpadyZPolnohospodarstva: [],
+      odpadyZPripravyMasa: [],
+      odpadyZoSpracovaniaOvocia: [],
+      odpadyZPriemysluMliecnychVyrobkov: ['02_05_01'],
+      odpadyZPekarenskehoACukrovinkarskeho: [],
+      odpadyZVyrobyNapojov: [],
+    },
+    informacieODovoze: {
+      spzVozidla: 'AA111BB',
+      predpokladaneMnozstvo: 5547,
+      fotoOdpadu: ['80fb7c4d-3b93-4f5f-b945-5e9fe7840533', '8eb499bd-3d93-4601-b428-cca8053e83e6'],
+    },
+    suhlasy: {
+      suhlas: true,
+    },
+  },
+  serverFiles: [
+    {
+      id: '80fb7c4d-3b93-4f5f-b945-5e9fe7840533',
+      fileName: 'test1.jpg',
+      fileSize: 0,
+      status: 'SAFE',
+    },
+    {
+      id: '8eb499bd-3d93-4601-b428-cca8053e83e6',
+      fileName: 'test2.jpg',
+      fileSize: 0,
+      status: 'SAFE',
+    },
+  ],
+}
+
+export default exampleForm

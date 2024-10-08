@@ -82,7 +82,7 @@
     "node-font2base64": "^0.9.2",
     "pdf-to-img": "^3.0.0",
     "playwright": "^1.45.0",
-    "postcss": "^8.4.41",
+    "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prompts": "^2.4.2",
     "rimraf": "^6.0.1",

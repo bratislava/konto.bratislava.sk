@@ -25,6 +25,7 @@ jobs:
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
   conditions:
     name: Check for conditions
@@ -54,6 +55,7 @@ jobs:
       build_image_no_registry: ''
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     permissions: write-all
 
   build-strapi:
@@ -88,6 +90,7 @@ jobs:
       build_image_no_registry: ''
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     permissions: write-all
 
   validate-nest-clamav-scanner:
@@ -109,6 +112,7 @@ jobs:
       fetch-depth: 1
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     permissions: write-all
 
   validate-nest-tax-backend:
@@ -130,4 +134,5 @@ jobs:
       build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     permissions: write-all

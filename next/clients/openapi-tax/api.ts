@@ -91,18 +91,6 @@ export interface RequestPostNorisPaymentDataLoadDto {
    */
   year: number
   /**
-   * user name to noris
-   * @type {string}
-   * @memberof RequestPostNorisPaymentDataLoadDto
-   */
-  msq_username: string
-  /**
-   * password to noris
-   * @type {string}
-   * @memberof RequestPostNorisPaymentDataLoadDto
-   */
-  msq_password: string
-  /**
    * From date - if is not set, take one from database
    * @type {string}
    * @memberof RequestPostNorisPaymentDataLoadDto
@@ -115,13 +103,7 @@ export interface RequestPostNorisPaymentDataLoadDto {
    */
   toDate: string
   /**
-   * If is possible to send confirmation email
-   * @type {object}
-   * @memberof RequestPostNorisPaymentDataLoadDto
-   */
-  sendConfEmails: object
-  /**
-   * If you want to count also overpayments. It is recommended to choose sendConfEmails to false if this is true
+   * If you want to count also overpayments.
    * @type {object}
    * @memberof RequestPostNorisPaymentDataLoadDto
    */
@@ -616,6 +598,12 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   taxEmployees: ResponseTaxEmployeesDto
+  /**
+   * When were last checked payments for this tax with automatic task.
+   * @type {string}
+   * @memberof ResponseTaxDto
+   */
+  lastCheckedPayments: string
 }
 
 /**
@@ -1052,7 +1040,9 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminControllerLoadDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateBirthNumbersResponseDto>
+    > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerLoadDataFromNorris(
         requestPostNorisLoadDataDto,
         options,
@@ -1166,7 +1156,7 @@ export const AdminApiFactory = function (
     adminControllerLoadDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<CreateBirthNumbersResponseDto> {
       return localVarFp
         .adminControllerLoadDataFromNorris(requestPostNorisLoadDataDto, options)
         .then((request) => request(axios, basePath))

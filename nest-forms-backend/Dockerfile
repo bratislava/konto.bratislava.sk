@@ -9,8 +9,6 @@ FROM base AS build
 WORKDIR /root/forms-shared
 COPY --from=shared /app/ ./
 
-RUN apt-get update && apt-get install git
-
 WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 
@@ -26,11 +24,6 @@ RUN npm run build
 
 # development
 FROM base AS dev
-
-RUN apt-get update && apt-get install -y git \
-    postgresql-client \
-    curl \
-    vim
 
 WORKDIR /home/node/nest-forms-backend
 COPY package*.json ./

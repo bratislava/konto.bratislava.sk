@@ -1,4 +1,5 @@
 import { Schemas } from '../generator/functions'
+import { SharepointData } from './sharepointTypes'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -15,6 +16,7 @@ type FormDefinitionBase = {
   messageSubjectFormat?: string
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
+  allowSendingByUnverifiedUsers?: boolean // Default should be false, so undefined must be handled as false
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
@@ -31,9 +33,11 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkGeneric
   ginisAssignment: {
     ginisOrganizationName: string
-    ginisPersonName: string
+    ginisPersonName?: string
   }
+  sharepointData?: SharepointData
 }
+
 export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkTax
 }
@@ -45,6 +49,8 @@ export type FormDefinitionSlovenskoSk =
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
+  userEmailPath: string
+  userNamePath?: string
 }
 
 export type FormDefinition =

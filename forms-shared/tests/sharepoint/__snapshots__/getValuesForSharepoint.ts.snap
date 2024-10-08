@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getValuesForFields should match snapshots 1`] = `
+{
+  "DatumNarodenia": "1985-03-15",
+  "Email": "jana.novakova@email.com",
+  "GinisID": "MAG123",
+  "MaximalnaVyskaNajomneho": 700,
+  "MenoZiadatela": "Jana",
+  "PreferovanaLokalita": "ruzinov, noveMesto",
+  "PreferovanaVelkost": "3izbovy",
+  "PriezviskoZiadatela": "Nováková",
+  "TelefonneCislo": "+421901234567",
+  "TrvalyPobytMesto": "Bratislava",
+  "TrvalyPobytPsc": "81101",
+  "TrvalyPobytUlicaACislo": "Hlavná 123",
+}
+`;
+
+exports[`getValuesForFields should match snapshots 2`] = `
+{
+  "ByvanieVMestskomNajomnomByte": false,
+  "ChronickeOchorenie": true,
+  "DovodyPodaniaZiadosti": "Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.",
+  "GinisID": "MAG123",
+  "KontaktovanyEmailom": true,
+  "MaximalnaVyskaNajomneho": 700,
+  "PreferovanaLokalita": "ruzinov, noveMesto",
+  "PreferovanaVelkost": "3izbovy",
+  "RizikoveFaktory": true,
+  "Vek": "menejAko63",
+  "ZiadatelBezbarierovyByt": false,
+  "ZiadatelBytovaNudza": false,
+  "ZiadatelDatumNarodenia": "1985-03-15",
+  "ZiadatelEmail": "jana.novakova@email.com",
+  "ZiadatelExistujuceDiagnozy": "astma, chronickaParadentoza",
+  "ZiadatelFunkcnaPorucha": false,
+  "ZiadatelInePrijmyVyska": 150,
+  "ZiadatelMeno": "Jana",
+  "ZiadatelPriezvisko": "Nováková",
+  "ZiadatelRodinnyStav": "rozvedeny",
+  "ZiadatelRodnePriezvisko": "Kováčová",
+  "ZiadatelSkutocnyPobytRovnakyAkoT": true,
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelTelefonneCislo": "+421901234567",
+  "ZiadatelTrvalyPobytMesto": "Bratislava",
+  "ZiadatelTrvalyPobytPobytMenejAko": true,
+  "ZiadatelTrvalyPobytPsc": "81101",
+  "ZiadatelTrvalyPobytUlicaACislo": "Hlavná 123",
+  "ZiadatelTrvalyPobytVlastnikNehnu": false,
+  "ZiadatelVyzivneVyska": 200,
+  "ZiadatelZamestnaniePrijem": 1200,
+  "ZoznamRizikovychFaktorov": "osamelyRodic",
+}
+`;
+
+exports[`getValuesForFields should match snapshots 3`] = `
+{
+  "GinisID": "MAG123",
+  "SucasneByvaniaRovnakaSituacia": true,
+  "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "1982-07-22",
+  "ZiadatelMeno": "Peter",
+  "ZiadatelMieraFunkcnejPoruchy": "50az74",
+  "ZiadatelPriezvisko": "Horváth",
+  "ZiadatelRodinnyStav": "slobodny",
+  "ZiadatelRodnePriezvisko": "Horváth",
+  "ZiadatelSamostatnaZarobkovaCinno": 300,
+  "ZiadatelSkutocnyPobytMesto": "Bratislava",
+  "ZiadatelSkutocnyPobytPsc": "82105",
+  "ZiadatelSkutocnyPobytUlica": "Nová 456",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelZamestnaniePrijem": 1500,
+}
+`;
+
+exports[`getValuesForFields should match snapshots 4`] = `
+{
+  "ChronickeOchorenie": false,
+  "GinisID": "MAG123",
+  "MaPrijem": false,
+  "Student": true,
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": false,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "2010-11-30",
+  "ZiadatelMeno": "Lucia",
+  "ZiadatelPriezvisko": "Nováková",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+}
+`;
+
+exports[`getValuesForFields should match snapshots 5`] = `
+{
+  "GinisID": "MAG123",
+  "MaPrijem": true,
+  "MieraFunkcnejPoruchy": "75az100",
+  "Student": true,
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "2005-04-18",
+  "ZiadatelMeno": "Michal",
+  "ZiadatelPriezvisko": "Novák",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+  "ZiadatelZamestnaniePrijem": 200,
+}
+`;
+
+exports[`getValuesForFields should match snapshots 6`] = `
+{
+  "DochodokVyska": 550,
+  "GinisID": "MAG123",
+  "MieraFunkcnejPoruchy": "50az74",
+  "SucasneByvanieRovnakeAkoVase": true,
+  "TzpPreukaz": true,
+  "VlastnikNehnutelnosti": false,
+  "ZiadatelDatumNarodenia": "1960-09-05",
+  "ZiadatelMeno": "Mária",
+  "ZiadatelPriezvisko": "Kováčová",
+  "ZiadatelStatnaPrislusnost": "slovenska",
+}
+`;

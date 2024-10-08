@@ -11,12 +11,14 @@ import { FormDefinition } from '../definitions/formDefinitionTypes'
 export type RenderSummaryEmailPayload = {
   formDefinition: FormDefinition
   formData: GenericObjectType
+  fileIdUrlMap?: Record<string, string>
   serverFiles?: FormsBackendFile[]
 }
 
 export const renderSummaryEmail = async ({
   formDefinition,
   formData,
+  fileIdUrlMap,
   serverFiles,
 }: RenderSummaryEmailPayload) => {
   const summaryJson = getSummaryJsonNode(

@@ -1,4 +1,5 @@
 import { getUiOptions } from '@rjsf/utils'
+import { useFormData } from 'components/forms/useFormData'
 import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,7 +10,6 @@ import Button from '../../simple-components/ButtonNew'
 import { useFormContext } from '../../useFormContext'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
-import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -73,7 +73,7 @@ const FormModals = () => {
       schemas: { uiSchema },
     },
   } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const uiOptions = getUiOptions(uiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 

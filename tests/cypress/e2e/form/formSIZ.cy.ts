@@ -29,7 +29,11 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.hideNavbar(device)
         })
 
-        it('1. Checking "Applicant" step validation.', () => {
+        it('1. Press fill form button.', () => {
+          cy.dataCy('form-landing-page-fill-form-button').click()
+        })
+
+        it('2. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
           cy.dataCy('form-container').then((form) => {
             cy.checkFormValidation(device, form, 7, applicantErrorBorderFields)
@@ -45,7 +49,7 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('2. Filling out the "Applicant" step.', () => {
+        it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
@@ -69,7 +73,7 @@ describe('F01 -', { testIsolation: false }, () => {
           })
         })
 
-        it('3. Filling out the "Investor" step', () => {
+        it('4. Filling out the "Investor" step', () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')
@@ -80,7 +84,7 @@ describe('F01 -', { testIsolation: false }, () => {
           })
         })
 
-        it('4. Checking "Responsible designer" step validation.', () => {
+        it('5. Checking "Responsible designer" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -106,7 +110,7 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('5. Filling out the "Responsible designer" step.', () => {
+        it('6. Filling out the "Responsible designer" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
@@ -132,7 +136,7 @@ describe('F01 -', { testIsolation: false }, () => {
           })
         })
 
-        it('6. Checking "Construction information" step validation.', () => {
+        it('7. Checking "Construction information" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -149,7 +153,7 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('7. Filling out the "Construction information" step.', () => {
+        it('8. Filling out the "Construction information" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-nazov]', form)).type(this.fileData.construction_name)
 
@@ -170,7 +174,7 @@ describe('F01 -', { testIsolation: false }, () => {
           })
         })
 
-        it('8. Checking "File" step validation.', () => {
+        it('9. Checking "File" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
@@ -178,14 +182,14 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('9. Uploading file in "File" step.', () => {
+        it('10. Uploading file in "File" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf')
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
         })
 
-        it('10. Checking form summary page.', () => {
+        it('11. Checking form summary page.', () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
 
           cy.dataCy('form-container').then((form) => {

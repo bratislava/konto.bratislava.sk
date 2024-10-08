@@ -1,4 +1,5 @@
 import { useDeepMemo } from '@react-aria/utils'
+import { useFormData } from 'components/forms/useFormData'
 import {
   FileStatusType,
   isInfectedFileStatusType,
@@ -38,7 +39,8 @@ const useGetContext = () => {
       schemas: { schema },
     },
   } = useFormContext()
-  const { formData, currentStepIndex } = useFormState()
+  const { formData } = useFormData()
+  const { currentStepIndex } = useFormState()
 
   const { clientFiles, serverFiles } = useFormFileUpload()
   // Don't use directly!

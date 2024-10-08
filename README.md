@@ -20,7 +20,11 @@ Each sub-project contains a README which should get you up and running. More doc
 
 🗄️ `/nest-forms-backend` Service which is handling incoming and outgoing forms created by users
 
-🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the scanner.
+⚙️️ `/clamav` Instance of clamav https://www.clamav.net
+
+⚙️️ `/cvdmirror` Local mirror of cvd database used for clamav scanner
+
+🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the clamav scanner.
 
 🐳 `docker-compose.yml` - if you need to quickly set up a postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
 

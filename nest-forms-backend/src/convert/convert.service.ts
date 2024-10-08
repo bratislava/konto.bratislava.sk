@@ -13,7 +13,12 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
-import { generateSlovenskoSkXml } from 'forms-shared/slovensko-sk/generateXml'
+import {
+  extractJsonFromSlovenskoSkXml,
+  ExtractJsonFromSlovenskoSkXmlError,
+} from 'forms-shared/slovensko-sk/extractJson'
+import { generateSlovenskoSkXmlObject } from 'forms-shared/slovensko-sk/generateXml'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 import { parseStringPromise } from 'xml2js'
@@ -35,8 +40,10 @@ import { FormWithFiles } from '../utils/types/prisma'
 import {
   ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
+  XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
+import { extractJsonErrorMapping } from './errors/convert.errors.dto'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
@@ -62,12 +69,11 @@ export default class ConvertService {
   /**
    * Temporary function to convert forms with new government XMLs, will be deleted when all the forms are migrated.
    */
-  private async convertJsonToXmlNewGovernment(
+  private async convertJsonToXmlObjectNewGovernment(
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
     formDataJson: Prisma.JsonValue,
-    headless: boolean,
-  ): Promise<string> {
+  ): Promise<GenericObjectType> {
     // Find a better way how to get the form with files
     const formWithFiles = (await this.prismaService.forms.findUnique({
       where: {
@@ -78,18 +84,17 @@ export default class ConvertService {
       },
     })) as FormWithFiles
 
-    return generateSlovenskoSkXml(
+    return generateSlovenskoSkXmlObject(
       formDefinition,
       formDataJson as GenericObjectType,
       formWithFiles.files,
-      headless,
     )
   }
 
-  private async convertJsonToXmlLegacy(
+  private async convertJsonToXmlObjectLegacy(
     formDefinition: FormDefinitionSlovenskoSk,
     formDataJson: Prisma.JsonValue,
-  ): Promise<string> {
+  ): Promise<GenericObjectType> {
     const xmlTemplate = createXmlTemplate(formDefinition)
     const $ = cheerio.load(xmlTemplate, {
       xmlMode: true,
@@ -101,19 +106,20 @@ export default class ConvertService {
       formDataJson,
       formDefinition.schemas.schema as JsonSchema,
     )
-    return $('E-form').prop('outerHTML') ?? ''
+    const xmlString = $('E-form').prop('outerHTML') ?? ''
+
+    return parseStringPromise(xmlString)
   }
 
   /**
-   * Do not use directly for user facing endpoints as this bypasses the access check in `convertJsonToXmlNewGovernment`.
+   * Do not use directly for user facing endpoints as this bypasses the access check in `convertJsonToXmlObjectNewGovernment`.
    *
    * TODO: Pass files to the function instead
    */
-  async convertJsonToXmlForForm(
+  async convertJsonToXmlObjectForForm(
     form: Forms,
-    headless: boolean,
     formDataJsonOverride?: Prisma.JsonValue,
-  ): Promise<string> {
+  ): Promise<GenericObjectType> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -130,15 +136,14 @@ export default class ConvertService {
     const formDataJson = formDataJsonOverride ?? form.formDataJson
 
     if (formDefinition.newGovernmentXml) {
-      return this.convertJsonToXmlNewGovernment(
+      return this.convertJsonToXmlObjectNewGovernment(
         form,
         formDefinition,
         formDataJson,
-        headless,
       )
     }
 
-    return this.convertJsonToXmlLegacy(formDefinition, formDataJson)
+    return this.convertJsonToXmlObjectLegacy(formDefinition, formDataJson)
   }
 
   async convertJsonToXmlV2(
@@ -152,21 +157,17 @@ export default class ConvertService {
       ico,
     )
 
-    return this.convertJsonToXmlForForm(form, false, data.jsonData)
+    const xmlObject = await this.convertJsonToXmlObjectForForm(
+      form,
+      data.jsonData,
+    )
+    return buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })
   }
 
-  async convertXmlToJson(
+  private async convertXmlToJsonLegacy(
     xmlData: string,
-    formDefinitionSlug: string,
-  ): Promise<XmlToJsonResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`,
-      )
-    }
-
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<GenericObjectType> {
     // xml2js has issues when top level element isn't a single node
     const wrappedXmlString = `<wrapper>${xmlData}</wrapper>`
     const obj: { wrapper: GenericObjectType } = (await parseStringPromise(
@@ -186,9 +187,65 @@ export default class ConvertService {
       [],
       formDefinition.schemas.schema as JsonSchema,
     )
-    return {
-      jsonForm: body,
+    return body
+  }
+
+  async convertXmlToJson(
+    data: XmlToJsonRequestDto,
+    ico: string | null,
+    user?: CognitoGetUserData,
+  ): Promise<XmlToJsonResponseDto> {
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user?.sub ?? null,
+      ico,
+    )
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
     }
+
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+      )
+    }
+
+    if (formDefinition.newGovernmentXml) {
+      try {
+        const jsonForm = await extractJsonFromSlovenskoSkXml(
+          formDefinition,
+          data.xmlForm,
+        )
+        return { jsonForm }
+      } catch (error) {
+        if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
+          const { error: errorEnum, message: errorMessage } =
+            extractJsonErrorMapping[error.type]
+          throw this.throwerErrorGuard.BadRequestException(
+            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
+            errorEnum,
+            errorMessage,
+          )
+        } else {
+          this.logger.error(
+            `Unexpected error during XML to JSON conversion: ${error}`,
+          )
+          throw error
+        }
+      }
+    }
+
+    const jsonForm = await this.convertXmlToJsonLegacy(
+      data.xmlForm,
+      formDefinition,
+    )
+    return { jsonForm }
   }
 
   private async generateTaxPdf(
@@ -239,8 +296,7 @@ export default class ConvertService {
     let pdfBuffer: Buffer
     try {
       pdfBuffer = await renderSummaryPdf({
-        jsonSchema: formDefinition.schemas.schema,
-        uiSchema: formDefinition.schemas.uiSchema,
+        formDefinition,
         formData: jsonForm as GenericObjectType,
         launchBrowser: () => chromium.launch(),
         clientFiles,

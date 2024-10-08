@@ -9,7 +9,7 @@ const FormWidgetContext = createContext<{ widget?: WidgetProps }>({
 /**
  * Provides an ability to access WidgetProps deep in the component tree.
  *
- * For example, PropertyTaxCalculator requires an ability to update the value of the widget that it
+ * For example, calculator requires an ability to update the value of the widget that it
  * is used in.
  */
 export const useFormWidget = () => {

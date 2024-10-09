@@ -17,5 +17,11 @@ COPY Caddyfile health.sh entrypoint.sh ./
 RUN chmod +x ./health.sh ./entrypoint.sh \
     && echo '0 */4 * * * /opt/app-root/src/entrypoint.sh update' >> /etc/crontabs/root
 
+ARG GIT_COMMIT="undefined"
+ENV GIT_COMMIT=$GIT_COMMIT
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/cvdmirror" \
+      org.opencontainers.image.licenses="EUPL-1.2"
+
 # Start Server
 EXPOSE 8080

@@ -14,8 +14,8 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { EmailFormsErrorsResponseEnum } from '../../../utils/subservices/dtos/email-forms.errors.enum'
 import { FormWithFiles } from '../../../utils/types/prisma'
+import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')

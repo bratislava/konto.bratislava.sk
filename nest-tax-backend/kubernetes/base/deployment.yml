@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: ${NAMESPACE}
+  labels:
+    service: app
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
+spec:
+  selector:
+    matchLabels:
+      service: app
+  template:
+    metadata:
+      labels:
+        service: app
+    spec:
+      containers:
+      - image: ${IMAGE_TAG}
+        name: app
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: ${NEST_CPU_LIMITS}
+            memory: ${NEST_MEMORY_LIMITS}
+          requests:
+            cpu: ${NEST_CPU_REQUESTS}
+            memory: ${NEST_MEMORY_REQUESTS}
+        envFrom:
+        - secretRef:
+            name: database-secret
+        - secretRef:
+            name: mailgun-secret
+        - secretRef:
+            name: payment-secret
+        - secretRef:
+            name: cognito-secret
+        - secretRef:
+            name: admin-secret
+        - secretRef:
+            name: bloomreach-secret
+        - secretRef:
+            name: noris-secret
+        - configMapRef:
+            name: env
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: ${INTERNAL_APP_PORT}
+        volumeMounts:
+        - mountPath: "${PAYGATE_CERT_PATH}"
+          name: paygate-certs
+      imagePullSecrets:
+      - name: ${IMAGE_PULL_SECRET}
+      volumes:
+      - name: paygate-certs
+        secret:
+          secretName: ${BUILD_REPOSITORY_NAME}-payment-secret

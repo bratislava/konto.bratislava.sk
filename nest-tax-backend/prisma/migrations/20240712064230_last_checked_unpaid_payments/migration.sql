@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Tax" ADD COLUMN     "lastCheckedPayments" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

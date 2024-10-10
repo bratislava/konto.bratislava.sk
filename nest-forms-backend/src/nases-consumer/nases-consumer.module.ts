@@ -15,6 +15,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
+import WebhookSubservice from './subservices/webhook.subservice'
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import EmailFormsSubservice from './subservices/email-forms.subservice'
     MailgunService,
     MinioClientSubservice,
     EmailFormsSubservice,
+    WebhookSubservice,
   ],
   exports: [NasesConsumerService, NasesConsumerHelper],
 })

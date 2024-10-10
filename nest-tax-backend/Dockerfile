@@ -38,6 +38,6 @@ EXPOSE 3000
 ARG GIT_COMMIT="undefined"
 ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-    org.opencontainers.image.source="https://github.com/bratislava/enforcement-scan-app-backend" \
+    org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-tax-backend" \
     org.opencontainers.image.licenses="EUPL-1.2"
 CMD [ "npm", "run", "start:migrate:prod" ]

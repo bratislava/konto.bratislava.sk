@@ -21,6 +21,7 @@ import { FormWithFiles } from '../utils/types/prisma'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
 import NasesConsumerService from './nases-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
+import WebhookSubservice from './subservices/webhook.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 
@@ -61,6 +62,10 @@ describe('NasesConsumerService', () => {
         {
           provide: EmailFormsSubservice,
           useValue: createMock<EmailFormsSubservice>(),
+        },
+        {
+          provide: WebhookSubservice,
+          useValue: createMock<WebhookSubservice>(),
         },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
       ],
@@ -293,6 +298,29 @@ describe('NasesConsumerService', () => {
       expect(sendToNasesAndUpdateStateSpy).not.toHaveBeenCalled()
     })
 
+    it('should handle webhook form when form definition type is Webhook', async () => {
+      const mockForm = { formDefinitionSlug: 'test-slug' } as Forms
+      jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        type: FormDefinitionType.Webhook,
+      })
+      jest
+        .spyOn(service as any, 'checkAttachments')
+        .mockResolvedValue(CheckAttachmentsEnum.OK)
+      jest
+        .spyOn(service as any, 'handleWebhookForm')
+        .mockResolvedValue(new Nack(false))
+      const sendToNasesAndUpdateStateSpy = jest
+        .spyOn(service, 'sendToNasesAndUpdateState')
+        .mockResolvedValue(true)
+
+      const result = await service.onQueueConsumption(mockRabbitPayloadDto)
+
+      expect(result).toEqual(new Nack(false))
+      expect(service['handleWebhookForm']).toHaveBeenCalledWith(mockForm)
+      expect(sendToNasesAndUpdateStateSpy).not.toHaveBeenCalled()
+    })
+
     it('should send to NASES and update state when all checks pass', async () => {
       const mockForm = {
         formDefinitionSlug: 'test-slug',
@@ -401,6 +429,32 @@ describe('NasesConsumerService', () => {
 
       expect(result).toEqual(new Nack(true))
       expect(service['logger'].error).toHaveBeenCalled()
+      expect(service.nackTrueWithWait).toHaveBeenCalled()
+    })
+  })
+
+  describe('handleWebhookForm', () => {
+    it('should send webhook and return Nack(false) when successful', async () => {
+      const mockForm = { id: 'test-id' } as Forms
+      jest
+        .spyOn(service['webhookSubservice'], 'sendWebhook')
+        .mockResolvedValue()
+
+      const result = await service['handleWebhookForm'](mockForm)
+
+      expect(result).toEqual(new Nack(false))
+    })
+
+    it('should handle error when sending webhook fails', async () => {
+      const mockForm = { id: 'test-id' } as Forms
+      jest
+        .spyOn(service['webhookSubservice'], 'sendWebhook')
+        .mockRejectedValue(new Error('Failed to send webhook'))
+      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
+
+      const result = await service['handleWebhookForm'](mockForm)
+
+      expect(result).toEqual(new Nack(true))
       expect(service.nackTrueWithWait).toHaveBeenCalled()
     })
   })

@@ -40,7 +40,7 @@
     "@types/mssql": "^9.1.5",
     "await-exec": "^0.1.2",
     "aws-sdk": "^2.1691.0",
-    "bysquare": "^2.1.0",
+    "bysquare": "^2.11.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "crypto": "^1.0.1",

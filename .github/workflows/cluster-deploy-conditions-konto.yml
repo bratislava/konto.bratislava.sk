@@ -3,7 +3,7 @@ on:
   workflow_call:
     outputs:
       dev:
-        description: "Returns true if dev-nest-forms-backend, dev-nest-tax-backend, dev-strapi, nest-clamav-scanner, cvdmirror, clamav and dev-next can be deployed"
+        description: "Returns true if dev-nest-forms-backend, dev-nest-tax-backend, dev-strapi, dev-nest-clamav-scanner, dev-cvdmirror, clamav and dev-next can be deployed"
         value: ${{ jobs.conditions.outputs.dev }}
       dev-next:
         description: "Returns true if dev-next can be deployed"
@@ -48,8 +48,8 @@ on:
         description: "Returns true if staging-nest-clamav-scanner can be deployed"
         value: ${{ jobs.conditions.outputs.staging-nest-clamav-scanner }}
       staging-nest-tax-backend:
-        description: "Returns true if nest-tax-backend can be deployed"
-        value: ${{ jobs.conditions.outputs.nest-tax-backend }}
+        description: "Returns true if staging-nest-tax-backend can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-nest-tax-backend }}
       prod:
         description: "Returns true if prod-strapi prod-nest-forms-backend, prod-nest-tax-backend, prod-nest-clamav-scanner, prod-cvdmirror, prod-clamav and prod-next can be deployed"
         value: ${{ jobs.conditions.outputs.prod }}
@@ -154,7 +154,7 @@ jobs:
           echo ":soon: **dev-cvdmirror**" >> $GITHUB_STEP_SUMMARY
 
       - id: dev-nest-tax-backend
-        name: Check for dev nest-forms-backend
+        name: Check for dev nest-tax-backend
         if: startsWith(github.ref, 'refs/tags/dev-nest-tax-backend') || steps.dev.outputs.condition == 'true'
         run: |
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
@@ -275,7 +275,7 @@ jobs:
           echo ":soon: **prod-nest-forms-backend** " >> $GITHUB_STEP_SUMMARY
 
       - id: prod-cvdmirror
-        name: Check for prod clamav
+        name: Check for prod cvdmirror
         if: startsWith(github.ref, 'refs/tags/prod-cvdmirror') || steps.prod.outputs.condition == 'true'
         run: |
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV

@@ -21,11 +21,11 @@ import {
   getSubjectTextFromForm,
 } from '../../utils/handlers/text.handler'
 import alertError from '../../utils/logging'
+import { FormWithFiles } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
-} from '../../utils/subservices/dtos/email-forms.errors.enum'
-import { FormWithFiles } from '../../utils/types/prisma'
+} from './dtos/email-forms.errors.enum'
 
 @Injectable()
 export default class EmailFormsSubservice {

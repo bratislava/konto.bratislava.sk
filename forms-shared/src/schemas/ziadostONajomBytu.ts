@@ -393,14 +393,14 @@ const getPrijemSection = (stepType: StepType) => {
         title: 'Príjem',
         description: {
           [StepType.Ziadatel]:
-            'Uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
+            'Posudzuje sa váš priemerný čistý mesačný príjem za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
           [StepType.ManzelManzelka]:
-            'Uveďte, prosím, priemerný čistý mesačný príjem manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
+            'Posudzuje sa priemerný čistý mesačný príjem manžela/manželky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
           [StepType.DruhDruzka]:
-            'Uveďte, prosím, priemerný čistý mesačný príjem druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal. ',
+            'Posudzuje sa priemerný čistý mesačný príjem druha/družky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
           [StepType.Dieta]: undefined,
           [StepType.InyClen]:
-            'Uveďte, prosím, priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
+            'Posudzuje sa priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.',
         }[stepType],
       },
       fields,
@@ -442,7 +442,7 @@ const getPrijemSection = (stepType: StepType) => {
         {
           type: 'boolean',
           title:
-            'Má dieťa staršie ako 15 rokov príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?',
+            'Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?',
           required: true,
           options: [
             { value: true, title: 'Áno' },
@@ -501,10 +501,11 @@ const getPrijemSection = (stepType: StepType) => {
       {
         type: 'boolean',
         title: {
-          [StepType.Ziadatel]: 'Ste zamestnaný/á?',
-          [StepType.ManzelManzelka]: 'Je váš manžel/manželka zamestnaný/á?',
-          [StepType.DruhDruzka]: 'Je váš druh/družka zamestnaný/á?',
-          [StepType.InyClen]: 'Je člen/členka domácnosti zamestnaný/á?',
+          [StepType.Ziadatel]: 'Boli ste v minulom kalendárnom roku zamestnaný/á?',
+          [StepType.ManzelManzelka]:
+            'Bol váš manžel/manželka v minulom kalendárnom roku zamestnaný/á?',
+          [StepType.DruhDruzka]: 'Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?',
+          [StepType.InyClen]: 'Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?',
         }[stepType],
         required: true,
         options: [
@@ -517,16 +518,16 @@ const getPrijemSection = (stepType: StepType) => {
         orientations: 'row',
         helptextHeader: {
           [StepType.Ziadatel]: markdownText(
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte, prosím, váš čistý príjem za posledný známy rok.',
+            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.',
           ),
           [StepType.ManzelManzelka]: markdownText(
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
           ),
           [StepType.DruhDruzka]: markdownText(
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
           ),
           [StepType.InyClen]: markdownText(
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.',
+            'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
           ),
         }[stepType],
       },
@@ -544,8 +545,8 @@ const getPrijemSection = (stepType: StepType) => {
         type: 'boolean',
         title:
           stepType === StepType.Ziadatel
-            ? 'Máte príjem zo samostatnej zárobkovej činnosti?'
-            : 'Má príjem zo samostatnej zárobkovej činnosti?',
+            ? 'Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?'
+            : 'Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?',
         required: true,
         options: [
           { value: true, title: 'Áno' },
@@ -557,13 +558,13 @@ const getPrijemSection = (stepType: StepType) => {
         orientations: 'row',
         helptextHeader: {
           [StepType.Ziadatel]:
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.',
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.',
           [StepType.ManzelManzelka]:
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
           [StepType.DruhDruzka]:
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
           [StepType.InyClen]:
-            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
+            'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
         }[stepType],
       },
     ),
@@ -578,7 +579,10 @@ const getPrijemSection = (stepType: StepType) => {
       'dochodok',
       {
         type: 'boolean',
-        title: stepType === StepType.Ziadatel ? 'Poberáte dôchodok?' : 'Poberá dôchodok?',
+        title:
+          stepType === StepType.Ziadatel
+            ? 'Poberali ste v minulom kalendárnom roku dôchodok?'
+            : 'Poberal/poberala v minulom kalendárnom roku dôchodok?',
         required: true,
         options: [
           { value: true, title: 'Áno' },
@@ -590,8 +594,8 @@ const getPrijemSection = (stepType: StepType) => {
         orientations: 'row',
         helptextHeader:
           stepType === StepType.Ziadatel
-            ? 'Označte áno, ak poberáte niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.'
-            : 'Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.',
+            ? 'Označte áno, ak ste poberali v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.'
+            : 'Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.',
       },
     ),
     conditionalFields(createCondition([[['dochodok'], { const: true }]]), [
@@ -607,8 +611,8 @@ const getPrijemSection = (stepType: StepType) => {
         type: 'boolean',
         title:
           stepType === StepType.Ziadatel
-            ? 'Poberáte výživné alebo náhradné výživné na dieťa/deti?'
-            : 'Poberá výživné alebo náhradné výživné na dieťa/deti?',
+            ? 'Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?'
+            : 'Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?',
         required: true,
         options: [
           { value: true, title: 'Áno' },
@@ -620,7 +624,7 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['vyzivne'], { const: true }]]), [
       number(
         'vyzivneVyska',
-        { title: 'Celková výška výživného na deti', required: true, minimum: 0 },
+        { title: 'Mesačná výška sumy výživného na dieťa/deti', required: true, minimum: 0 },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -630,8 +634,8 @@ const getPrijemSection = (stepType: StepType) => {
         type: 'boolean',
         title:
           stepType === StepType.Ziadatel
-            ? 'Poberáte dávku v nezamestnanosti?'
-            : 'Poberá dávku v nezamestnanosti?',
+            ? 'Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?'
+            : 'Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?',
         required: true,
         options: [
           { value: true, title: 'Áno' },
@@ -643,7 +647,7 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['davkaVNezamestnanosti'], { const: true }]]), [
       number(
         'davkaVNezamestnanostiVyska',
-        { title: 'Výška príspevku z úradu práce', required: true, minimum: 0 },
+        { title: 'Mesačná výška príspevku z úradu práce', required: true, minimum: 0 },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -651,7 +655,10 @@ const getPrijemSection = (stepType: StepType) => {
       'inePrijmy',
       {
         type: 'boolean',
-        title: stepType === StepType.Ziadatel ? 'Poberáte iné príjmy?' : 'Poberá iné príjmy?',
+        title:
+          stepType === StepType.Ziadatel
+            ? 'Poberali ste v minulom kalendárnom roku iné príjmy?'
+            : 'Poberal/poberala v minulom kalendárnom roku iné príjmy?',
         required: true,
         options: [
           { value: true, title: 'Áno' },
@@ -668,7 +675,7 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['inePrijmy'], { const: true }]]), [
       number(
         'inePrijmyVyska',
-        { title: 'Iné pravidelné príjmy', required: true, minimum: 0 },
+        { title: 'Iné pravidelné mesačné príjmy', required: true, minimum: 0 },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -679,7 +686,7 @@ const getPrijemSection = (stepType: StepType) => {
           type: 'info',
           message: {
             [StepType.Ziadatel]:
-              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
+              'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.ManzelManzelka]:
               'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)',
             [StepType.DruhDruzka]:
@@ -756,15 +763,15 @@ const getZdravotnyStavSection = (stepType: StepType) => {
       title: 'Zdravotný stav',
       description: {
         [StepType.Ziadatel]:
-          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom.',
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
         [StepType.ManzelManzelka]:
-          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky.',
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
         [StepType.DruhDruzka]:
-          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky.',
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
         [StepType.Dieta]:
-          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa.',
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
         [StepType.InyClen]:
-          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom člena/členky domácnosti.',
+          'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom člena/členky domácnosti  - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
       }[stepType],
     },
     [
@@ -1239,7 +1246,8 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
         },
         {
           variant: 'boxed',
-          helptextHeader: 'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor.',
+          helptextHeader:
+            'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.',
           belowComponents: [
             {
               type: 'alert',

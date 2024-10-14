@@ -48,7 +48,7 @@
     "@jest/globals": "^29.5.0",
     "@monaco-editor/react": "^4.6.0",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
-    "@radix-ui/react-navigation-menu": "^1.1.4",
+    "@radix-ui/react-navigation-menu": "^1.2.1",
     "@react-aria/utils": "3.24.1",
     "@react-stately/utils": "3.10.1",
     "@rjsf/core": "5.19.3",

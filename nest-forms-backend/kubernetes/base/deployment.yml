@@ -84,6 +84,8 @@ spec:
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-ginis-api-secret
         - secretRef:
+            name: ${BUILD_REPOSITORY_NAME}-olo-smtp-secret
+        - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-mailgun-secret
         - secretRef:
             name: ${BUILD_REPOSITORY_NAME}-admin-secret

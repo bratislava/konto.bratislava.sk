@@ -161,7 +161,7 @@ export const MAILGUN_CONFIG = {
   },
   OLO_SEND_FORM: {
     template: 'olo-form-send',
-    subject: 'OLO - nové podanie',
+    subject: '[TEST] OLO - nové podanie',
     variables: {
       applicationName: {
         type: MailgunConfigVariableType.PARAMETER,

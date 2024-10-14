@@ -131,7 +131,11 @@ export default class MailgunService {
     }
   }
 
-  async sendOloMail(data: SendEmailInputDto): Promise<void> {
+  /**
+   * Sends an email using OLO SMTP instead of Mailgun.
+   * @param data Object containing the email data which should be sent.
+   */
+  async sendOloEmail(data: SendEmailInputDto): Promise<void> {
     try {
       const mailBody = await this.getFilledTemplate(
         MAILGUN_CONFIG[data.template].template,
@@ -152,6 +156,15 @@ export default class MailgunService {
     }
   }
 
+  /**
+   * Retrieves a Mailgun email template through API and fills it with provided variables using Handlebars.
+   *
+   * @async
+   * @param {string} templateName - The name of the Mailgun template to retrieve.
+   * @param {SendEmailVariablesDto} variables - An object containing variables to be inserted into the template.
+   * @returns {Promise<string>} A promise that resolves to the filled template as an html string.
+   * @throws {HttpException} Throws an error if the Mailgun template is not found.
+   */
   async getFilledTemplate(
     templateName: string,
     variables: SendEmailVariablesDto,
@@ -167,7 +180,10 @@ export default class MailgunService {
       },
     })
     if (!response.data) {
-      throw new Error('Mailgun template not found')
+      throw this.throwerErrorGuard.NotFoundException(
+        MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+      )
     }
     const { template } = response.data.template.version
 

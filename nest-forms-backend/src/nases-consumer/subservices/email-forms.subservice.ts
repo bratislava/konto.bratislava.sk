@@ -91,7 +91,7 @@ export default class EmailFormsSubservice {
       form.formDataJson as GenericObjectType,
     )
 
-    await this.mailgunService.sendOloMail({
+    await this.mailgunService.sendOloEmail({
       to: formDefinition.email,
       template: MailgunTemplateEnum.OLO_SEND_FORM,
       data: {
@@ -112,7 +112,7 @@ export default class EmailFormsSubservice {
     if (toEmail) {
       try {
         // TODO - temporary delivered mail, we should use some OLO mail with html data as when sending the confirmation email to OLO.
-        await this.mailgunService.sendOloMail({
+        await this.mailgunService.sendOloEmail({
           to: toEmail,
           template: MailgunTemplateEnum.GINIS_DELIVERED,
           data: {

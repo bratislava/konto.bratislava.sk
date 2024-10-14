@@ -605,7 +605,7 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['dochodok'], { const: true }]]), [
       number(
         'dochodokVyska',
-        { title: 'Výška mesačného dôchodku', required: true, minimum: 0 },
+        { title: 'Mesačná výška dôchodku', required: true, minimum: 0 },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),

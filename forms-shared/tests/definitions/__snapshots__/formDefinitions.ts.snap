@@ -29596,7 +29596,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "dochodokVyska": {
                           "minimum": 0,
-                          "title": "Výška mesačného dôchodku",
+                          "title": "Mesačná výška dôchodku",
                           "type": "number",
                         },
                       },
@@ -30430,7 +30430,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -31248,7 +31248,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -32613,7 +32613,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "dochodokVyska": {
                                       "minimum": 0,
-                                      "title": "Výška mesačného dôchodku",
+                                      "title": "Mesačná výška dôchodku",
                                       "type": "number",
                                     },
                                   },

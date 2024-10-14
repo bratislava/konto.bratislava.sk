@@ -10453,7 +10453,7 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
                     },
                   ],
                   "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska",
-                  "label": "Výška mesačného dôchodku",
+                  "label": "Mesačná výška dôchodku",
                   "type": "Field",
                   "value": 550,
                 },

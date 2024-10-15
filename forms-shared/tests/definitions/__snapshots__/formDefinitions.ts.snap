@@ -5264,7 +5264,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 "if": {
                   "properties": {
                     "ziadatelTyp": {
-                      "const": "Obyvateľ",
+                      "const": "Fyzická osoba",
                     },
                   },
                   "required": [
@@ -6989,7 +6989,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
   "suhlasy": {},
   "ziadatel": {
     "fakturacia": {},
-    "ziadatelTyp": "Obyvateľ",
+    "ziadatelTyp": "Fyzická osoba",
   },
 }
 `;
@@ -7006,7 +7006,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "if": {
                   "properties": {
                     "ziadatelTyp": {
-                      "const": "Obyvateľ",
+                      "const": "Fyzická osoba",
                     },
                   },
                   "required": [
@@ -7340,11 +7340,11 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "type": "string",
               },
               "ziadatelTyp": {
-                "default": "Obyvateľ",
+                "default": "Fyzická osoba",
                 "oneOf": [
                   {
-                    "const": "Obyvateľ",
-                    "title": "Obyvateľ",
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
                   },
                   {
                     "const": "Právnická osoba",
@@ -29253,7 +29253,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "dochodokVyska": {
                           "minimum": 0,
-                          "title": "Výška mesačného dôchodku",
+                          "title": "Mesačná výška dôchodku",
                           "type": "number",
                         },
                       },
@@ -29279,7 +29279,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "vyzivneVyska": {
                           "minimum": 0,
-                          "title": "Celková výška výživného na deti",
+                          "title": "Mesačná výška sumy výživného na dieťa/deti",
                           "type": "number",
                         },
                       },
@@ -29305,7 +29305,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "davkaVNezamestnanostiVyska": {
                           "minimum": 0,
-                          "title": "Výška príspevku z úradu práce",
+                          "title": "Mesačná výška príspevku z úradu práce",
                           "type": "number",
                         },
                       },
@@ -29331,7 +29331,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "inePrijmyVyska": {
                           "minimum": 0,
-                          "title": "Iné pravidelné príjmy",
+                          "title": "Iné pravidelné mesačné príjmy",
                           "type": "number",
                         },
                       },
@@ -29365,7 +29365,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte dávku v nezamestnanosti?",
+                    "title": "Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?",
                     "type": "boolean",
                   },
                   "dochodok": {
@@ -29380,7 +29380,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte dôchodok?",
+                    "title": "Poberali ste v minulom kalendárnom roku dôchodok?",
                     "type": "boolean",
                   },
                   "inePrijmy": {
@@ -29395,7 +29395,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte iné príjmy?",
+                    "title": "Poberali ste v minulom kalendárnom roku iné príjmy?",
                     "type": "boolean",
                   },
                   "samostatnaZarobkovaCinnost": {
@@ -29410,7 +29410,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Máte príjem zo samostatnej zárobkovej činnosti?",
+                    "title": "Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                     "type": "boolean",
                   },
                   "vyzivne": {
@@ -29425,7 +29425,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte výživné alebo náhradné výživné na dieťa/deti?",
+                    "title": "Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                     "type": "boolean",
                   },
                   "zamestnanie": {
@@ -29440,7 +29440,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Ste zamestnaný/á?",
+                    "title": "Boli ste v minulom kalendárnom roku zamestnaný/á?",
                     "type": "boolean",
                   },
                 },
@@ -30087,7 +30087,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -30113,7 +30113,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "vyzivneVyska": {
                                 "minimum": 0,
-                                "title": "Celková výška výživného na deti",
+                                "title": "Mesačná výška sumy výživného na dieťa/deti",
                                 "type": "number",
                               },
                             },
@@ -30139,7 +30139,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "davkaVNezamestnanostiVyska": {
                                 "minimum": 0,
-                                "title": "Výška príspevku z úradu práce",
+                                "title": "Mesačná výška príspevku z úradu práce",
                                 "type": "number",
                               },
                             },
@@ -30165,7 +30165,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "inePrijmyVyska": {
                                 "minimum": 0,
-                                "title": "Iné pravidelné príjmy",
+                                "title": "Iné pravidelné mesačné príjmy",
                                 "type": "number",
                               },
                             },
@@ -30199,7 +30199,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dávku v nezamestnanosti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                           "type": "boolean",
                         },
                         "dochodok": {
@@ -30214,7 +30214,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dôchodok?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                           "type": "boolean",
                         },
                         "inePrijmy": {
@@ -30229,7 +30229,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá iné príjmy?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
                         "samostatnaZarobkovaCinnost": {
@@ -30244,7 +30244,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                          "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
                         },
                         "vyzivne": {
@@ -30259,7 +30259,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                           "type": "boolean",
                         },
                         "zamestnanie": {
@@ -30274,7 +30274,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Je váš manžel/manželka zamestnaný/á?",
+                          "title": "Bol váš manžel/manželka v minulom kalendárnom roku zamestnaný/á?",
                           "type": "boolean",
                         },
                       },
@@ -30905,7 +30905,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -30931,7 +30931,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "vyzivneVyska": {
                                 "minimum": 0,
-                                "title": "Celková výška výživného na deti",
+                                "title": "Mesačná výška sumy výživného na dieťa/deti",
                                 "type": "number",
                               },
                             },
@@ -30957,7 +30957,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "davkaVNezamestnanostiVyska": {
                                 "minimum": 0,
-                                "title": "Výška príspevku z úradu práce",
+                                "title": "Mesačná výška príspevku z úradu práce",
                                 "type": "number",
                               },
                             },
@@ -30983,7 +30983,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "inePrijmyVyska": {
                                 "minimum": 0,
-                                "title": "Iné pravidelné príjmy",
+                                "title": "Iné pravidelné mesačné príjmy",
                                 "type": "number",
                               },
                             },
@@ -31017,7 +31017,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dávku v nezamestnanosti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                           "type": "boolean",
                         },
                         "dochodok": {
@@ -31032,7 +31032,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dôchodok?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                           "type": "boolean",
                         },
                         "inePrijmy": {
@@ -31047,7 +31047,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá iné príjmy?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
                         "samostatnaZarobkovaCinnost": {
@@ -31062,7 +31062,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                          "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
                         },
                         "vyzivne": {
@@ -31077,7 +31077,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                           "type": "boolean",
                         },
                         "zamestnanie": {
@@ -31092,7 +31092,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Je váš druh/družka zamestnaný/á?",
+                          "title": "Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?",
                           "type": "boolean",
                         },
                       },
@@ -31648,7 +31648,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Má dieťa staršie ako 15 rokov príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
+                                "title": "Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
                                 "type": "boolean",
                               },
                               "student": {
@@ -32270,7 +32270,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "dochodokVyska": {
                                       "minimum": 0,
-                                      "title": "Výška mesačného dôchodku",
+                                      "title": "Mesačná výška dôchodku",
                                       "type": "number",
                                     },
                                   },
@@ -32296,7 +32296,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "vyzivneVyska": {
                                       "minimum": 0,
-                                      "title": "Celková výška výživného na deti",
+                                      "title": "Mesačná výška sumy výživného na dieťa/deti",
                                       "type": "number",
                                     },
                                   },
@@ -32322,7 +32322,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "davkaVNezamestnanostiVyska": {
                                       "minimum": 0,
-                                      "title": "Výška príspevku z úradu práce",
+                                      "title": "Mesačná výška príspevku z úradu práce",
                                       "type": "number",
                                     },
                                   },
@@ -32348,7 +32348,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "inePrijmyVyska": {
                                       "minimum": 0,
-                                      "title": "Iné pravidelné príjmy",
+                                      "title": "Iné pravidelné mesačné príjmy",
                                       "type": "number",
                                     },
                                   },
@@ -32382,7 +32382,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá dávku v nezamestnanosti?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                                 "type": "boolean",
                               },
                               "dochodok": {
@@ -32397,7 +32397,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá dôchodok?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                                 "type": "boolean",
                               },
                               "inePrijmy": {
@@ -32412,7 +32412,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá iné príjmy?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                                 "type": "boolean",
                               },
                               "samostatnaZarobkovaCinnost": {
@@ -32427,7 +32427,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                                "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                                 "type": "boolean",
                               },
                               "vyzivne": {
@@ -32442,7 +32442,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                                 "type": "boolean",
                               },
                               "zamestnanie": {
@@ -32457,7 +32457,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Je člen/členka domácnosti zamestnaný/á?",
+                                "title": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
                                 "type": "boolean",
                               },
                             },
@@ -33431,7 +33431,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa.",
+              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -33696,7 +33696,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -33730,7 +33730,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -33746,7 +33746,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal. ",
+          "description": "Posudzuje sa priemerný čistý mesačný príjem druha/družky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -33784,7 +33784,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -34109,7 +34109,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -34408,7 +34408,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "dochodok": {
               "ui:options": {
-                "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+                "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -34442,7 +34442,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "samostatnaZarobkovaCinnost": {
               "ui:options": {
-                "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+                "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -34458,7 +34458,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Number",
             },
             "ui:options": {
-              "description": "Uveďte, prosím, priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+              "description": "Posudzuje sa priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
               "objectDisplay": "boxed",
               "title": "Príjem",
             },
@@ -34496,7 +34496,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "zamestnanie": {
               "ui:options": {
-                "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+                "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -34818,7 +34818,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom člena/členky domácnosti.",
+              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -35045,7 +35045,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35079,7 +35079,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35095,7 +35095,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Posudzuje sa priemerný čistý mesačný príjem manžela/manželky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -35133,7 +35133,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35458,7 +35458,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -35862,7 +35862,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             "customComponents": [
               {
                 "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                   "type": "info",
                 },
                 "type": "alert",
@@ -35916,7 +35916,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberáte niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak ste poberali v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35950,7 +35950,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35966,7 +35966,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Posudzuje sa váš priemerný čistý mesačný príjem za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -36004,7 +36004,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte, prosím, váš čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36049,7 +36049,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "type": "alert",
               },
             ],
-            "helptextHeader": "Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor.",
+            "helptextHeader": "Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.",
             "radioOptions": [],
             "variant": "boxed",
           },
@@ -36146,7 +36146,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
       "zdravotnyStav": {
         "bezbarierovyByt": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle prílohy č. 2 [zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy)",
+            "helptextHeader": "markdown_gKgflRNwdS:Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36372,7 +36372,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },

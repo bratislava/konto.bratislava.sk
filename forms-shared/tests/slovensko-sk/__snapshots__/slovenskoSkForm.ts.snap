@@ -2243,7 +2243,7 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodok" label="Poberal/poberala v minulom kalendárnom roku dôchodok?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska" label="Výška mesačného dôchodku">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska" label="Mesačná výška dôchodku">
               <StringValue>550</StringValue>
             </Field>
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_vyzivne" label="Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">

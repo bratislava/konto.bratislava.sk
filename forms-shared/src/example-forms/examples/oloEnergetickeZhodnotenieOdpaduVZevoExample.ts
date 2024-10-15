@@ -9,7 +9,9 @@ const exampleForm: ExampleForm = {
       email: 'olo@test.sk',
       vyberSluzby: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
       preferovanyDatumDovozu: '2025-11-08',
-      sposobPlatby: 'Platba kartou',
+      fakturacia: {
+        sposobPlatby: 'Platba kartou',
+      },
       menoPriezvisko: {
         meno: 'Jozef',
         priezvisko: 'Mrkva',

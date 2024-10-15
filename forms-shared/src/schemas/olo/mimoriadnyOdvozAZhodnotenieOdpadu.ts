@@ -27,9 +27,13 @@ export default schema(
         'ziadatelTyp',
         {
           type: 'string',
-          title: 'Žiadateľ',
+          title: 'Žiadam ako',
           required: true,
-          options: createStringOptions(['Obyvateľ', 'Právnická osoba', 'Správcovská spoločnosť']),
+          options: createStringOptions([
+            'Fyzická osoba',
+            'Právnická osoba',
+            'Správcovská spoločnosť',
+          ]),
         },
         { variant: 'boxed', orientations: 'column' },
       ),
@@ -54,12 +58,12 @@ export default schema(
         ]),
         [
           input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
-          sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla', true),
+          sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
           input('ico', { type: 'text', title: 'IČO', required: true }, {}),
           input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
           checkbox(
             'platcaDph',
-            { title: 'Som platca DPH?', required: true },
+            { title: 'Som platca DPH?' },
             { checkboxLabel: 'Som platca DPH?', variant: 'boxed' },
           ),
           conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
@@ -71,7 +75,11 @@ export default schema(
         input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
         input(
           'zastupeny',
-          { type: 'text', title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)' },
+          {
+            type: 'text',
+            title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+            required: true,
+          },
           {},
         ),
       ]),
@@ -94,7 +102,7 @@ export default schema(
         ]),
         [input('email', { title: 'E-mail', required: true, type: 'email' }, {})],
       ),
-      conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Obyvateľ'] }]]), [
+      conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Fyzická osoba'] }]]), [
         input('emailObyvatel', { title: 'E-mail', type: 'email' }, {}),
       ]),
       conditionalFields(
@@ -112,12 +120,11 @@ export default schema(
                 'elektronickaFaktura',
                 {
                   title: 'Zasielanie faktúry elektronicky',
-                  required: true,
                 },
                 {
                   helptextHeader:
                     'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-                  checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
+                  checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
                   variant: 'boxed',
                 },
               ),
@@ -150,7 +157,7 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Presná adresa' },
+            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
@@ -160,7 +167,6 @@ export default schema(
               options: createStringOptions([
                 'Zmesový komunálny odpad',
                 'Kuchynský biologicky rozložiteľný odpad',
-                'Biologicky rozložiteľný odpad',
                 'Jedlé oleje a tuky',
                 'Papier',
                 'Plasty/kovové obaly a nápojové kartóny',

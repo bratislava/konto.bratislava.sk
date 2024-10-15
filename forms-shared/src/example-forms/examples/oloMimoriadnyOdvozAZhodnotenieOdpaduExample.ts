@@ -4,19 +4,8 @@ const exampleForm: ExampleForm = {
   name: 'oloMimoriadnyOdvozAZhodnotenieOdpaduExample',
   formData: {
     ziadatel: {
-      ziadatelTyp: 'Obyvateľ',
+      ziadatelTyp: 'Fyzická osoba',
       telefon: '+421903111444',
-      menoPriezvisko: {
-        meno: 'Jozef',
-        priezvisko: 'Mrkva',
-      },
-      adresaObyvatel: {
-        ulicaACislo: 'Hlavná ulica 12',
-        mestoPsc: {
-          mesto: 'Žabokreky',
-          psc: '44557',
-        },
-      },
       emailObyvatel: 'test@email.com',
     },
     sluzba: {
@@ -28,8 +17,8 @@ const exampleForm: ExampleForm = {
         },
         {
           miestoDodania: 'Varšavská 101',
-          druhOdpadu: 'Biologicky rozložiteľný odpad',
-          objemNadobyBiologickyRozlozitelny: '120 l zberná nádoba',
+          druhOdpadu: 'Zmesový komunálny odpad',
+          objemNadobyZmesovyKomunalnyOdpad: '120 l zberná nádoba',
         },
       ],
       preferovanyDatum: '2024-10-09',

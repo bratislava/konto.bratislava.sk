@@ -23,11 +23,15 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Obyvateľ', 'Právnická osoba', 'Správcovská spoločnosť']),
+        options: createStringOptions([
+          'Fyzická osoba',
+          'Právnická osoba',
+          'Správcovská spoločnosť',
+        ]),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
-    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Obyvateľ' }]]), [
+    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
       object(
         'menoPriezvisko',
         { required: true },

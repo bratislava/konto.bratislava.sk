@@ -37,7 +37,7 @@ export default schema(
         },
         { variant: 'boxed', orientations: 'column' },
       ),
-      conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Obyvateľ' }]]), [
+      conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
         object(
           'menoPriezvisko',
           { required: true },

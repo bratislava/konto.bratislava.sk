@@ -6,6 +6,17 @@ const exampleForm: ExampleForm = {
     ziadatel: {
       ziadatelTyp: 'Fyzická osoba',
       telefon: '+421903111444',
+      menoPriezvisko: {
+        meno: 'Jozef',
+        priezvisko: 'Mrkva',
+      },
+      adresaObyvatel: {
+        ulicaACislo: 'Galvaniho 1',
+        mestoPsc: {
+          mesto: 'Bratislava',
+          psc: '84101',
+        },
+      },
       emailObyvatel: 'test@email.com',
     },
     sluzba: {

@@ -6,6 +6,7 @@ import {
   datePicker,
   input,
   number,
+  object,
   radioGroup,
   schema,
   select,
@@ -74,20 +75,33 @@ export default schema(
           { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
         ),
       ]),
-      input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
+      conditionalFields(
+        createCondition([
+          [
+            ['typOdberatela'],
+            {
+              enum: ['Zmena odberateľa'],
+            },
+          ],
+        ]),
+        [
+          input(
+            'dicNovehoOdberatela',
+            { type: 'text', title: 'DIČ nového odberateľa', required: true },
+            {},
+          ),
+        ],
+        [input('dic', { type: 'text', title: 'DIČ', required: true }, {})],
+      ),
       checkbox(
         'platcaDph',
-        { title: 'Som platca DPH?', required: true },
+        { title: 'Som platca DPH?' },
         { checkboxLabel: 'Som platca DPH', variant: 'boxed' },
       ),
       conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
         input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
       ]),
-      input(
-        'konatel',
-        { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
-      ),
+      input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
       input(
         'zastupeny',
         {
@@ -95,7 +109,7 @@ export default schema(
           title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko zástupcu na základe splnomocnenia' },
+        {},
       ),
       input(
         'menoKontaktnejOsoby',
@@ -104,51 +118,50 @@ export default schema(
       ),
       sharedPhoneNumberField('telefon', true),
       input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
-      checkbox(
-        'elektronickaFaktura',
-        {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
-          required: true,
-        },
-        {
-          helptextHeader:
-            'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-          checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-          variant: 'boxed',
-        },
-      ),
-      conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
-        input(
-          'emailPreFaktury',
-          { type: 'text', title: 'E-mail pre zasielanie elektronických faktúr', required: true },
-          {},
+      object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+        input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
+        checkbox(
+          'elektronickaFaktura',
+          {
+            title: 'Súhlasím so zaslaním elektronickej faktúry',
+          },
+          {
+            helptextHeader:
+              'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+            checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+            variant: 'boxed',
+          },
         ),
+        conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+          input(
+            'emailPreFaktury',
+            { type: 'text', title: 'E-mail pre zasielanie elektronických faktúr', required: true },
+            {},
+          ),
+        ]),
       ]),
       conditionalFields(
         createCondition([
           [
             ['typOdberatela'],
             {
-              enum: [
-                'Existujúci',
-                'Zmena poplatkovej povinnosti pre existujúceho zákazníka',
-                'Zmena odberateľa',
-              ],
+              enum: ['Zmena poplatkovej povinnosti pre existujúceho zákazníka', 'Zmena odberateľa'],
             },
           ],
         ]),
         [
-          checkbox(
+          radioGroup(
             'zmenyVPocteNadob',
             {
+              type: 'boolean',
               title: 'Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu',
               required: true,
+              options: [
+                { value: true, title: 'Áno' },
+                { value: false, title: 'Nie' },
+              ],
             },
-            {
-              checkboxLabel: 'Áno, chcem vykonať zmeny',
-              variant: 'boxed',
-            },
+            { variant: 'boxed', orientations: 'row' },
           ),
         ],
       ),

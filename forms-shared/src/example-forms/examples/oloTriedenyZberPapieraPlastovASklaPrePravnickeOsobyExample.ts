@@ -20,8 +20,11 @@ const exampleForm: ExampleForm = {
       menoKontaktnejOsoby: 'Michal Dunaj',
       telefon: '+421911444555',
       email: 'voda@odpad.com',
-      iban: 'SK3112000000198742637541',
-      elektronickaFaktura: false,
+      fakturacia: {
+        iban: 'SK3112000000198742637541',
+        elektronickaFaktura: true,
+        emailPreFaktury: 'ceruzka@email.com',
+      },
       ico: '445577886655',
       icDph: 'SK98154154848',
       zmenyVPocteNadob: true,

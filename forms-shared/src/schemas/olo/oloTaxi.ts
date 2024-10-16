@@ -24,7 +24,7 @@ export default schema(
         'ziadatelTyp',
         {
           type: 'string',
-          title: 'Žiadateľ',
+          title: 'Žiadam ako',
           required: true,
           options: createStringOptions(['Fyzická osoba']),
         },
@@ -57,7 +57,7 @@ export default schema(
         },
         {
           placeholder: 'Zadajte presnú adresu',
-          helptextHeader: 'Presná adresa',
+          helptextHeader: 'Vyplňte vo formáte ulica a číslo',
         },
       ),
       datePicker(
@@ -89,7 +89,7 @@ export default schema(
           required: true,
         },
         {
-          placeholder: 'Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.',
+          helptextHeader: 'Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.',
         },
       ),
       checkbox(

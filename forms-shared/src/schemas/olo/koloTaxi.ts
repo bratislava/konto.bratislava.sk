@@ -18,7 +18,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       'ziadatelTyp',
       {
         type: 'string',
-        title: 'Žiadateľ',
+        title: 'Žiadam ako',
         required: true,
         options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
       },
@@ -48,7 +48,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
       checkbox(
         'platcaDph',
-        { title: 'Som platca DPH?', required: true },
+        { title: 'Som platca DPH?' },
         { checkboxLabel: 'Som platca DPH', variant: 'boxed' },
       ),
       conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
@@ -77,7 +77,6 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
           'elektronickaFaktura',
           {
             title: 'Súhlasím so zaslaním elektronickej faktúry',
-            required: true,
           },
           {
             helptextHeader:
@@ -109,8 +108,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         required: true,
       },
       {
-        placeholder: 'Zadajte presnú adresu',
-        helptextHeader: 'Presná adresa',
+        helptextHeader: 'Vyplňte vo formáte ulica a číslo',
       },
     ),
     textArea(
@@ -120,7 +118,6 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         required: true,
       },
       {
-        placeholder: 'Popíšte darované veci',
         helptextHeader: 'Okrem čalúneného nábytku a elektrospotrebičov',
       },
     ),

@@ -967,7 +967,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob default form 
   "suhlasy": {},
   "ziadatel": {
     "fakturacia": {},
-    "ziadatelTyp": "Obyvateľ",
+    "ziadatelTyp": "Fyzická osoba",
   },
 }
 `;
@@ -984,7 +984,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                 "if": {
                   "properties": {
                     "ziadatelTyp": {
-                      "const": "Obyvateľ",
+                      "const": "Fyzická osoba",
                     },
                   },
                   "required": [
@@ -1147,7 +1147,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                     "adresaPravnickaOsoba",
                     "ico",
                     "dic",
-                    "platcaDph",
                   ],
                   "type": "object",
                 },
@@ -1177,6 +1176,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                   },
                   "required": [
                     "konatel",
+                    "zastupeny",
                   ],
                   "type": "object",
                 },
@@ -1243,7 +1243,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                   "properties": {
                     "ziadatelTyp": {
                       "enum": [
-                        "Obyvateľ",
+                        "Fyzická osoba",
                       ],
                     },
                   },
@@ -1318,11 +1318,11 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                 "type": "string",
               },
               "ziadatelTyp": {
-                "default": "Obyvateľ",
+                "default": "Fyzická osoba",
                 "oneOf": [
                   {
-                    "const": "Obyvateľ",
-                    "title": "Obyvateľ",
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
                   },
                   {
                     "const": "Právnická osoba",
@@ -1333,7 +1333,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                     "title": "Správcovská spoločnosť",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -1460,7 +1460,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -1587,7 +1587,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -1825,7 +1825,9 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo default form
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "sposobPlatby": "Platba kartou",
+    "fakturacia": {
+      "sposobPlatby": "Platba kartou",
+    },
     "vyberSluzby": "Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
     "ziadatelTyp": "Fyzická osoba",
   },
@@ -1886,7 +1888,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "type": "object",
                     },
                     "cisloOp": {
-                      "title": "Číslo OP",
+                      "title": "Číslo občianskeho preukazu",
                       "type": "string",
                     },
                     "menoPriezvisko": {
@@ -1931,62 +1933,32 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   "type": "object",
                 },
                 "then": {
-                  "properties": {
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "nazov": {
-                      "title": "Názov organizácie",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "nazov",
-                    "ico",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "const": "Právnická osoba s povolením na vstup do ZEVO",
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "cisloPovoleniaNaVstup": {
-                      "title": "Číslo povolenia na vstup",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "cisloPovoleniaNaVstup",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "const": "Právnická osoba",
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "ziadatelTyp": {
+                            "const": "Právnická osoba s povolením na vstup do ZEVO",
+                          },
+                        },
+                        "required": [
+                          "ziadatelTyp",
+                        ],
+                        "type": "object",
+                      },
+                      "then": {
+                        "properties": {
+                          "cisloPovoleniaNaVstup": {
+                            "title": "Číslo povolenia na vstup",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "cisloPovoleniaNaVstup",
+                        ],
+                        "type": "object",
+                      },
+                    },
                     {
                       "if": {
                         "properties": {
@@ -2049,12 +2021,20 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "title": "DIČ",
                       "type": "string",
                     },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
                     "konatel": {
                       "title": "Konateľ (meno, priezvisko)",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
                       "title": "Meno kontaktnej osoby",
+                      "type": "string",
+                    },
+                    "nazov": {
+                      "title": "Názov organizácie",
                       "type": "string",
                     },
                     "platcaDph": {
@@ -2067,9 +2047,10 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                     },
                   },
                   "required": [
+                    "nazov",
                     "adresaPravnickaOsoba",
+                    "ico",
                     "dic",
-                    "platcaDph",
                     "konatel",
                     "zastupeny",
                     "kontaktnaOsoba",
@@ -2111,88 +2092,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   "type": "object",
                 },
               },
-              {
-                "if": {
-                  "properties": {
-                    "sposobPlatby": {
-                      "const": "Platba na faktúru",
-                    },
-                  },
-                  "required": [
-                    "sposobPlatby",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "allOf": [
-                    {
-                      "if": {
-                        "properties": {
-                          "elektronickaFaktura": {
-                            "const": true,
-                          },
-                        },
-                        "required": [
-                          "elektronickaFaktura",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "emailPreFaktury": {
-                            "format": "email",
-                            "title": "E-mail pre zasielanie elektronických faktúr",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "emailPreFaktury",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                  ],
-                  "properties": {
-                    "elektronickaFaktura": {
-                      "title": "Súhlasím so zaslaním elektronickej faktúry",
-                      "type": "boolean",
-                    },
-                  },
-                  "required": [
-                    "elektronickaFaktura",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Právnická osoba",
-                        "Právnická osoba s povolením na vstup do ZEVO",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "iban": {
-                      "format": "ba-iban",
-                      "title": "IBAN",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "iban",
-                  ],
-                  "type": "object",
-                },
-              },
             ],
             "properties": {
               "email": {
@@ -2200,24 +2099,114 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 "title": "E-mail",
                 "type": "string",
               },
+              "fakturacia": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "sposobPlatby": {
+                          "const": "Platba na faktúru",
+                        },
+                      },
+                      "required": [
+                        "sposobPlatby",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "format": "email",
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadatelTyp": {
+                          "enum": [
+                            "Právnická osoba",
+                            "Právnická osoba s povolením na vstup do ZEVO",
+                          ],
+                        },
+                      },
+                      "required": [
+                        "ziadatelTyp",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
+                "properties": {
+                  "sposobPlatby": {
+                    "default": "Platba kartou",
+                    "oneOf": [
+                      {
+                        "const": "Platba kartou",
+                        "title": "Platba kartou",
+                      },
+                      {
+                        "const": "Platba na faktúru",
+                        "title": "Platba na faktúru",
+                      },
+                    ],
+                    "title": "Spôsob platby",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "sposobPlatby",
+                ],
+                "type": "object",
+              },
               "preferovanyDatumDovozu": {
                 "format": "date",
                 "title": "Preferovaný dátum dovozu odpadu",
-                "type": "string",
-              },
-              "sposobPlatby": {
-                "default": "Platba kartou",
-                "oneOf": [
-                  {
-                    "const": "Platba kartou",
-                    "title": "Platba kartou",
-                  },
-                  {
-                    "const": "Platba na faktúru",
-                    "title": "Platba na faktúru",
-                  },
-                ],
-                "title": "Spôsob platby",
                 "type": "string",
               },
               "telefon": {
@@ -2237,8 +2226,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                     "title": "Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
                   },
                   {
-                    "const": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka",
-                    "title": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka",
+                    "const": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom",
+                    "title": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom",
                   },
                 ],
                 "title": "Výber služby",
@@ -2260,7 +2249,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                     "title": "Právnická osoba s povolením na vstup do ZEVO",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -2270,7 +2259,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
               "email",
               "vyberSluzby",
               "preferovanyDatumDovozu",
-              "sposobPlatby",
+              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -2407,16 +2396,21 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                             "type": "object",
                           },
                           "cisloOp": {
-                            "title": "Číslo OP",
+                            "title": "Číslo občianskeho preukazu",
                             "type": "string",
                           },
-                          "menoAPriezvisko": {
-                            "title": "Meno a priezvisko",
+                          "meno": {
+                            "title": "Meno",
+                            "type": "string",
+                          },
+                          "priezvisko": {
+                            "title": "Priezvisko",
                             "type": "string",
                           },
                         },
                         "required": [
-                          "menoAPriezvisko",
+                          "meno",
+                          "priezvisko",
                           "adresa",
                           "cisloOp",
                         ],
@@ -2609,16 +2603,21 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                             "type": "object",
                           },
                           "cisloOp": {
-                            "title": "Číslo OP",
+                            "title": "Číslo občianskeho preukazu",
                             "type": "string",
                           },
-                          "menoAPriezvisko": {
-                            "title": "Meno a priezvisko",
+                          "meno": {
+                            "title": "Meno",
+                            "type": "string",
+                          },
+                          "priezvisko": {
+                            "title": "Priezvisko",
                             "type": "string",
                           },
                         },
                         "required": [
-                          "menoAPriezvisko",
+                          "meno",
+                          "priezvisko",
                           "adresa",
                           "cisloOp",
                         ],
@@ -2805,7 +2804,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "07 07 Odpady z VSDP čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
+                "title": "07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -2831,7 +2830,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "08 01 Odpady z VSDP a odstraňovania farieb a lakov",
+                "title": "08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -2843,7 +2842,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "07 05 Odpady z VSDP farmaceutických výrobkov",
+                "title": "07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -2870,7 +2869,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "08 02 Odpady z VSDP iných náterových hmôt (vrátane keramických materiálov)",
+                "title": "08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -2894,7 +2893,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "08 04 Odpady z VSDP lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
+                "title": "08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -2938,7 +2937,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "07 02 Odpady z VSDP plastov, syntetického kaučuku a syntetických vlákien",
+                "title": "07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -3035,7 +3034,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "08 03 Odpady z VSDP tlačiarenských farieb",
+                "title": "08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -3047,7 +3046,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   ],
                   "type": "string",
                 },
-                "title": "07 06 Odpady z VSDP tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
+                "title": "07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -3358,7 +3357,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Input",
       },
-      "menoAPriezvisko": {
+      "meno": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -3366,6 +3365,13 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:widget": "Input",
       },
       "nazovOrganizacie": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "priezvisko": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -3399,7 +3405,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Sídlo organizácie",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -3439,7 +3445,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "nazovOrganizacie",
         "sidloOrganizacie",
         "ico",
-        "menoAPriezvisko",
+        "meno",
+        "priezvisko",
         "adresa",
         "cisloOp",
         "emailDrzitelaOdpadu",
@@ -3455,15 +3462,12 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       },
       "predpokladaneMnozstvo": {
         "ui:label": false,
-        "ui:options": {
-          "placeholder": "Zadajte množstvo v kg",
-        },
+        "ui:options": {},
         "ui:widget": "Number",
       },
       "spzVozidla": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "ŠPZ vozidla, ktoré odpad dovezie do ZEVO",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -3540,7 +3544,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Input",
       },
-      "menoAPriezvisko": {
+      "meno": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -3548,6 +3552,13 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:widget": "Input",
       },
       "nazovOrganizacie": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "priezvisko": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -3581,7 +3592,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Sídlo organizácie",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -3621,7 +3632,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "nazovOrganizacie",
         "sidloOrganizacie",
         "ico",
-        "menoAPriezvisko",
+        "meno",
+        "priezvisko",
         "adresa",
         "cisloOp",
         "emailPovodcuOdpadu",
@@ -4345,7 +4357,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -4381,14 +4393,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Input",
       },
-      "elektronickaFaktura": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
-          "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "email": {
         "ui:label": false,
         "ui:options": {
@@ -4396,19 +4400,47 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Input",
       },
-      "emailPreFaktury": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
+      "fakturacia": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
         },
-        "ui:widget": "Input",
-      },
-      "iban": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "sposobPlatby": {
+          "ui:options": {
+            "orientations": "column",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "sposobPlatby",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+          "iban",
+        ],
       },
       "icDph": {
         "ui:label": false,
@@ -4499,14 +4531,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:options": {},
         "ui:widget": "DatePicker",
       },
-      "sposobPlatby": {
-        "ui:options": {
-          "orientations": "column",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
       "telefon": {
         "ui:label": false,
         "ui:options": {
@@ -4525,9 +4549,9 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "adresaObyvatel",
         "cisloOp",
         "nazov",
-        "ico",
         "cisloPovoleniaNaVstup",
         "adresaPravnickaOsoba",
+        "ico",
         "dic",
         "platcaDph",
         "icDph",
@@ -4539,10 +4563,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "vyberSluzby",
         "preferovanyDatumDovozu",
         "preferovanyCasDovozu",
-        "sposobPlatby",
-        "elektronickaFaktura",
-        "emailPreFaktury",
-        "iban",
+        "fakturacia",
       ],
       "vyberSluzby": {
         "ui:options": {
@@ -4794,7 +4815,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       },
                       "required": [
                         "iban",
-                        "elektronickaFaktura",
                       ],
                       "type": "object",
                     },
@@ -4833,7 +4853,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                     "adresaSidlaOrganizacie",
                     "ico",
                     "dic",
-                    "platcaDph",
                     "konatel",
                     "zastupeny",
                     "menoKontaktnejOsoby",
@@ -4858,7 +4877,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                     "title": "Právnická osoba",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -4933,9 +4952,8 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
-          "placeholder": "Zadajte presnú adresu",
         },
         "ui:widget": "Input",
       },
@@ -4943,7 +4961,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "ui:label": false,
         "ui:options": {
           "helptextHeader": "Okrem čalúneného nábytku a elektrospotrebičov",
-          "placeholder": "Popíšte darované veci",
         },
         "ui:widget": "TextArea",
       },
@@ -5230,7 +5247,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu default form
   },
   "suhlasy": {},
   "ziadatel": {
-    "ziadatelTyp": "Obyvateľ",
+    "ziadatelTyp": "Fyzická osoba",
   },
 }
 `;
@@ -5247,7 +5264,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 "if": {
                   "properties": {
                     "ziadatelTyp": {
-                      "const": "Obyvateľ",
+                      "const": "Fyzická osoba",
                     },
                   },
                   "required": [
@@ -5410,7 +5427,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                     "adresaPravnickaOsoba",
                     "ico",
                     "dic",
-                    "platcaDph",
                   ],
                   "type": "object",
                 },
@@ -5440,6 +5456,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                   },
                   "required": [
                     "konatel",
+                    "zastupeny",
                   ],
                   "type": "object",
                 },
@@ -5506,7 +5523,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                   "properties": {
                     "ziadatelTyp": {
                       "enum": [
-                        "Obyvateľ",
+                        "Fyzická osoba",
                       ],
                     },
                   },
@@ -5586,7 +5603,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                       },
                       "required": [
                         "iban",
-                        "elektronickaFaktura",
                       ],
                       "type": "object",
                     },
@@ -5605,11 +5621,11 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 "type": "string",
               },
               "ziadatelTyp": {
-                "default": "Obyvateľ",
+                "default": "Fyzická osoba",
                 "oneOf": [
                   {
-                    "const": "Obyvateľ",
-                    "title": "Obyvateľ",
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
                   },
                   {
                     "const": "Právnická osoba",
@@ -5620,7 +5636,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                     "title": "Správcovská spoločnosť",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -5878,7 +5894,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                       "enum": [
                         "Zmesový komunálny odpad",
                         "Kuchynský biologicky rozložiteľný odpad",
-                        "Biologicky rozložiteľný odpad",
                         "Jedlé oleje a tuky",
                         "Papier",
                         "Plasty/kovové obaly a nápojové kartóny",
@@ -5965,9 +5980,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
           "druhOdpadu": {
             "ui:options": {
               "selectOptions": {
-                "Biologicky rozložiteľný odpad": {
-                  "title": "Biologicky rozložiteľný odpad",
-                },
                 "Jedlé oleje a tuky": {
                   "title": "Jedlé oleje a tuky",
                 },
@@ -5993,7 +6005,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
           "miestoDodania": {
             "ui:label": false,
             "ui:options": {
-              "helptextHeader": "Presná adresa",
+              "helptextHeader": "Vyplňte vo formáte ulica a číslo",
               "inputType": "text",
             },
             "ui:widget": "Input",
@@ -6269,7 +6281,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -6307,7 +6319,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
-            "checkboxLabel": "Súhlasím so zaslaním elektronickej fakúry",
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
             "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
             "variant": "boxed",
           },
@@ -6614,7 +6626,6 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
                 },
                 "required": [
                   "iban",
-                  "elektronickaFaktura",
                 ],
                 "type": "object",
               },
@@ -6651,7 +6662,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
                     "title": "Správcovská spoločnosť",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -6661,7 +6672,6 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
               "adresaSidla",
               "ico",
               "dic",
-              "platcaDph",
               "kontaktnaOsoba",
               "telefon",
               "email",
@@ -6738,7 +6748,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6899,7 +6909,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
       "konatel": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "Uveďte meno a priezvisko konateľa",
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6955,7 +6965,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6979,7 +6989,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
   "suhlasy": {},
   "ziadatel": {
     "fakturacia": {},
-    "ziadatelTyp": "Obyvateľ",
+    "ziadatelTyp": "Fyzická osoba",
   },
 }
 `;
@@ -6996,7 +7006,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "if": {
                   "properties": {
                     "ziadatelTyp": {
-                      "const": "Obyvateľ",
+                      "const": "Fyzická osoba",
                     },
                   },
                   "required": [
@@ -7159,7 +7169,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                     "adresaPravnickaOsoba",
                     "ico",
                     "dic",
-                    "platcaDph",
                   ],
                   "type": "object",
                 },
@@ -7189,6 +7198,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                   },
                   "required": [
                     "konatel",
+                    "zastupeny",
                   ],
                   "type": "object",
                 },
@@ -7255,7 +7265,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                   "properties": {
                     "ziadatelTyp": {
                       "enum": [
-                        "Obyvateľ",
+                        "Fyzická osoba",
                       ],
                     },
                   },
@@ -7330,11 +7340,11 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "type": "string",
               },
               "ziadatelTyp": {
-                "default": "Obyvateľ",
+                "default": "Fyzická osoba",
                 "oneOf": [
                   {
-                    "const": "Obyvateľ",
-                    "title": "Obyvateľ",
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
                   },
                   {
                     "const": "Právnická osoba",
@@ -7345,7 +7355,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                     "title": "Správcovská spoločnosť",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -7424,12 +7434,12 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
               },
               "objemKontajnera": {
                 "enum": [
-                  "2.5m3_3t",
                   "7m3_3t",
-                  "7m3_8t",
+                  "10m3_3t",
                   "11m3_8t",
                   "16m3_8t",
                   "27m3_8t",
+                  "30m3_8t",
                 ],
                 "title": "Objem kontajnera",
                 "type": "string",
@@ -7544,23 +7554,23 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "objemKontajnera": {
         "ui:options": {
           "selectOptions": {
+            "10m3_3t": {
+              "title": "objem: 10 m³ / nosnosť: do 3 t",
+            },
             "11m3_8t": {
               "title": "objem: 11 m³ / nosnosť: do 8 t",
             },
             "16m3_8t": {
               "title": "objem: 16 m³ / nosnosť: do 8 t",
             },
-            "2.5m3_3t": {
-              "title": "objem: 2,5 m³ / nosnosť: do 3 t",
-            },
             "27m3_8t": {
               "title": "objem: 27 m³ / nosnosť: do 8 t",
             },
+            "30m3_8t": {
+              "title": "objem: 30 m³ / nosnosť: do 8 t",
+            },
             "7m3_3t": {
               "title": "objem: 7 m³ / nosnosť: do 3 t",
-            },
-            "7m3_8t": {
-              "title": "objem: 7 m³ / nosnosť: do 8 t",
             },
           },
         },
@@ -7691,7 +7701,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -7963,7 +7973,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                     "title": "Fyzická osoba",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -8061,7 +8071,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
           "placeholder": "Zadajte presnú adresu",
         },
@@ -8070,7 +8080,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       "mnozstvoADruhOdpadu": {
         "ui:label": false,
         "ui:options": {
-          "placeholder": "Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.",
+          "helptextHeader": "Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.",
         },
         "ui:widget": "TextArea",
       },
@@ -8248,7 +8258,6 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
 exports[`Form definitions olo-podnety-a-pochvaly-obcanov default form state should match snapshot 1`] = `
 {
   "podnet": {
-    "kategoriaPodnetu": [],
     "prilohy": [],
   },
 }
@@ -8266,9 +8275,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
                 "if": {
                   "properties": {
                     "kategoriaPodnetu": {
-                      "contains": {
-                        "const": "Nevykonaný odvoz",
-                      },
+                      "const": "Nevykonaný odvoz",
                     },
                   },
                   "required": [
@@ -8339,9 +8346,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
                 "if": {
                   "properties": {
                     "kategoriaPodnetu": {
-                      "contains": {
-                        "const": "Pracovníci OLO",
-                      },
+                      "const": "Pracovníci OLO",
                     },
                   },
                   "required": [
@@ -8371,35 +8376,30 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
                 "type": "string",
               },
               "kategoriaPodnetu": {
-                "default": [],
-                "items": {
-                  "anyOf": [
-                    {
-                      "const": "Nevykonaný odvoz",
-                      "title": "Nevykonaný odvoz",
-                    },
-                    {
-                      "const": "Pracovníci OLO",
-                      "title": "Pracovníci OLO",
-                    },
-                    {
-                      "const": "Poškodená nádoba",
-                      "title": "Poškodená nádoba",
-                    },
-                    {
-                      "const": "Iné",
-                      "title": "Iné",
-                    },
-                    {
-                      "const": "Pochvala",
-                      "title": "Pochvala",
-                    },
-                  ],
-                },
-                "minItems": 1,
+                "oneOf": [
+                  {
+                    "const": "Nevykonaný odvoz",
+                    "title": "Nevykonaný odvoz",
+                  },
+                  {
+                    "const": "Pracovníci OLO",
+                    "title": "Pracovníci OLO",
+                  },
+                  {
+                    "const": "Poškodená nádoba",
+                    "title": "Poškodená nádoba",
+                  },
+                  {
+                    "const": "Pochvala",
+                    "title": "Pochvala",
+                  },
+                  {
+                    "const": "Iné",
+                    "title": "Iné",
+                  },
+                ],
                 "title": "Kategória podnetu",
-                "type": "array",
-                "uniqueItems": true,
+                "type": "string",
               },
               "meno": {
                 "title": "Meno",
@@ -8484,10 +8484,11 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
       },
       "kategoriaPodnetu": {
         "ui:options": {
-          "helptextHeader": "Vyberte aspoň jednu možnosť",
+          "orientations": "column",
+          "radioOptions": [],
           "variant": "boxed",
         },
-        "ui:widget": "CheckboxGroup",
+        "ui:widget": "RadioGroup",
       },
       "meno": {
         "ui:label": false,
@@ -8511,7 +8512,9 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
       },
       "sprava": {
         "ui:label": false,
-        "ui:options": {},
+        "ui:options": {
+          "helptextHeader": "Napíšte svoje podnety",
+        },
         "ui:widget": "TextArea",
       },
       "suhlasSOchranouOsobnychUdajov": {
@@ -8573,6 +8576,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
     "adresaSidla": {
       "mestoPsc": {},
     },
+    "fakturacia": {},
     "typOdberatela": "Nový",
   },
 }
@@ -8677,6 +8681,45 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 },
               },
               {
+                "else": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dic",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dicNovehoOdberatela",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
                 "if": {
                   "properties": {
                     "platcaDph": {
@@ -8704,34 +8747,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               {
                 "if": {
                   "properties": {
-                    "elektronickaFaktura": {
-                      "const": true,
-                    },
-                  },
-                  "required": [
-                    "elektronickaFaktura",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "emailPreFaktury": {
-                      "title": "E-mail pre zasielanie elektronických faktúr",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "emailPreFaktury",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
                     "typOdberatela": {
                       "enum": [
-                        "Existujúci",
                         "Zmena poplatkovej povinnosti pre existujúceho zákazníka",
                         "Zmena odberateľa",
                       ],
@@ -8745,6 +8762,16 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 "then": {
                   "properties": {
                     "zmenyVPocteNadob": {
+                      "oneOf": [
+                        {
+                          "const": true,
+                          "title": "Áno",
+                        },
+                        {
+                          "const": false,
+                          "title": "Nie",
+                        },
+                      ],
                       "title": "Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu",
                       "type": "boolean",
                     },
@@ -8788,23 +8815,54 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 ],
                 "type": "object",
               },
-              "dic": {
-                "title": "DIČ",
-                "type": "string",
-              },
-              "elektronickaFaktura": {
-                "title": "Súhlasím so zaslaním elektronickej faktúry",
-                "type": "boolean",
-              },
               "email": {
                 "format": "email",
                 "title": "Email",
                 "type": "string",
               },
-              "iban": {
-                "format": "ba-iban",
-                "title": "IBAN",
-                "type": "string",
+              "fakturacia": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "elektronickaFaktura",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "emailPreFaktury": {
+                          "title": "E-mail pre zasielanie elektronických faktúr",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "emailPreFaktury",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
+                "properties": {
+                  "elektronickaFaktura": {
+                    "title": "Súhlasím so zaslaním elektronickej faktúry",
+                    "type": "boolean",
+                  },
+                  "iban": {
+                    "format": "ba-iban",
+                    "title": "IBAN",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "iban",
+                ],
+                "type": "object",
               },
               "konatel": {
                 "title": "Konateľ (meno, priezvisko)",
@@ -8859,15 +8917,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               "typOdberatela",
               "nazovOrganizacie",
               "adresaSidla",
-              "dic",
-              "platcaDph",
               "konatel",
               "zastupeny",
               "menoKontaktnejOsoby",
               "telefon",
               "email",
-              "iban",
-              "elektronickaFaktura",
+              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -9522,13 +9577,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
-      "elektronickaFaktura": {
+      "dicNovehoOdberatela": {
+        "ui:label": false,
         "ui:options": {
-          "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
-          "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
-          "variant": "boxed",
+          "inputType": "text",
         },
-        "ui:widget": "Checkbox",
+        "ui:widget": "Input",
       },
       "email": {
         "ui:label": false,
@@ -9537,19 +9591,38 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
-      "emailPreFaktury": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
+      "fakturacia": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
         },
-        "ui:widget": "Input",
-      },
-      "iban": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
       },
       "icDph": {
         "ui:label": false,
@@ -9575,7 +9648,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       "konatel": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -9638,6 +9710,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "icoPovodnehOdberatela",
         "noveIco",
         "datumZmeny",
+        "dicNovehoOdberatela",
         "dic",
         "platcaDph",
         "icDph",
@@ -9646,25 +9719,23 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "menoKontaktnejOsoby",
         "telefon",
         "email",
-        "iban",
-        "elektronickaFaktura",
-        "emailPreFaktury",
+        "fakturacia",
         "zmenyVPocteNadob",
       ],
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Uveďte meno a priezvisko zástupcu na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
       },
       "zmenyVPocteNadob": {
         "ui:options": {
-          "checkboxLabel": "Áno, chcem vykonať zmeny",
+          "orientations": "row",
+          "radioOptions": [],
           "variant": "boxed",
         },
-        "ui:widget": "Checkbox",
+        "ui:widget": "RadioGroup",
       },
     },
   },
@@ -9685,6 +9756,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
     "adresaSidla": {
       "mestoPsc": {},
     },
+    "fakturacia": {},
     "typOdberatela": "Nový",
   },
 }
@@ -9698,6 +9770,114 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "properties": {
           "ziadatel": {
             "allOf": [
+              {
+                "else": {
+                  "properties": {
+                    "adresaSidla": {
+                      "properties": {
+                        "mestoPsc": {
+                          "properties": {
+                            "mesto": {
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
+                    },
+                    "nazovOrganizacie": {
+                      "title": "Názov organizácie",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "nazovOrganizacie",
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "nazovOrganizacieNovehoOdberatela": {
+                      "title": "Názov organizácie nového odberateľa",
+                      "type": "string",
+                    },
+                    "nazovOrganizaciePovodnehoOdberatela": {
+                      "title": "Názov organizácie pôvodného odberateľa",
+                      "type": "string",
+                    },
+                    "novaAdresaSidla": {
+                      "properties": {
+                        "mestoPsc": {
+                          "properties": {
+                            "mesto": {
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "nazovOrganizaciePovodnehoOdberatela",
+                    "nazovOrganizacieNovehoOdberatela",
+                    "novaAdresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
               {
                 "if": {
                   "properties": {
@@ -9788,6 +9968,45 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
               },
               {
+                "else": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dic",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dicNovehoOdberatela",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
                 "if": {
                   "properties": {
                     "platcaDph": {
@@ -9813,26 +10032,54 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
               },
               {
-                "if": {
+                "else": {
                   "properties": {
-                    "elektronickaFaktura": {
-                      "const": true,
+                    "email": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefon": {
+                      "format": "ba-phone-number",
+                      "title": "Telefónne číslo",
+                      "type": "string",
                     },
                   },
                   "required": [
-                    "elektronickaFaktura",
+                    "telefon",
+                    "email",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
                   ],
                   "type": "object",
                 },
                 "then": {
                   "properties": {
-                    "emailPreFaktury": {
-                      "title": "E-mail pre zasielanie elektronických faktúr",
+                    "emailNovehoOdberatela": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefonNovehoOdberatela": {
+                      "format": "ba-phone-number",
+                      "title": "Nové telefónne číslo",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "emailPreFaktury",
+                    "telefonNovehoOdberatela",
+                    "emailNovehoOdberatela",
                   ],
                   "type": "object",
                 },
@@ -9842,7 +10089,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   "properties": {
                     "typOdberatela": {
                       "enum": [
-                        "Existujúci",
                         "Zmena odberateľa",
                       ],
                     },
@@ -9855,6 +10101,16 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 "then": {
                   "properties": {
                     "zmenyVPocteNadob": {
+                      "oneOf": [
+                        {
+                          "const": true,
+                          "title": "Áno",
+                        },
+                        {
+                          "const": false,
+                          "title": "Nie",
+                        },
+                      ],
                       "title": "Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu",
                       "type": "boolean",
                     },
@@ -9867,71 +10123,91 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               },
             ],
             "properties": {
-              "adresaSidla": {
-                "properties": {
-                  "mestoPsc": {
-                    "properties": {
-                      "mesto": {
-                        "title": "Mesto",
-                        "type": "string",
+              "fakturacia": {
+                "allOf": [
+                  {
+                    "else": {
+                      "properties": {
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
                       },
-                      "psc": {
-                        "format": "ba-slovak-zip",
-                        "title": "PSČ",
-                        "type": "string",
-                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
                     },
-                    "required": [
-                      "mesto",
-                      "psc",
-                    ],
-                    "type": "object",
+                    "if": {
+                      "properties": {
+                        "typOdberatela": {
+                          "enum": [
+                            "Zmena odberateľa",
+                          ],
+                        },
+                      },
+                      "required": [
+                        "typOdberatela",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "ibanNovehoOdberatela": {
+                          "format": "ba-iban",
+                          "title": "Nový IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ibanNovehoOdberatela",
+                      ],
+                      "type": "object",
+                    },
                   },
-                  "ulicaACislo": {
-                    "title": "Ulica a číslo",
-                    "type": "string",
+                  {
+                    "if": {
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "elektronickaFaktura",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "emailPreFaktury": {
+                          "title": "E-mail pre zasielanie elektronických faktúr",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "emailPreFaktury",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
+                "properties": {
+                  "elektronickaFaktura": {
+                    "title": "Súhlasím so zaslaním elektronickej faktúry",
+                    "type": "boolean",
                   },
                 },
-                "required": [
-                  "ulicaACislo",
-                  "mestoPsc",
-                ],
+                "required": [],
                 "type": "object",
-              },
-              "dic": {
-                "title": "DIČ",
-                "type": "string",
-              },
-              "elektronickaFaktura": {
-                "title": "Súhlasím so zaslaním elektronickej faktúry",
-                "type": "boolean",
-              },
-              "email": {
-                "format": "email",
-                "title": "Email",
-                "type": "string",
-              },
-              "iban": {
-                "format": "ba-iban",
-                "title": "IBAN",
-                "type": "string",
               },
               "menoKontaktnejOsoby": {
                 "title": "Meno kontaktnej osoby",
                 "type": "string",
               },
-              "nazovOrganizacie": {
-                "title": "Názov organizácie",
-                "type": "string",
-              },
               "platcaDph": {
                 "title": "Som platca DPH?",
                 "type": "boolean",
-              },
-              "telefon": {
-                "format": "ba-phone-number",
-                "title": "Telefónne číslo",
-                "type": "string",
               },
               "typOdberatela": {
                 "default": "Nový",
@@ -9955,15 +10231,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             },
             "required": [
               "typOdberatela",
-              "nazovOrganizacie",
-              "adresaSidla",
-              "dic",
-              "platcaDph",
               "menoKontaktnejOsoby",
-              "telefon",
-              "email",
-              "iban",
-              "elektronickaFaktura",
+              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -10215,7 +10484,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "items": {
           "druhOdpadu": {
             "ui:options": {
-              "helptextHeader": "Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. Zmesový komunálny odpad sa rieši na Magistráte hlavného mesta (https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).",
+              "helptextHeader": "markdown_gKgflRNwdS:Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).",
               "selectOptions": {
                 "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)": {
                   "title": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
@@ -10443,13 +10712,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "elektronickaFaktura": {
+      "dicNovehoOdberatela": {
+        "ui:label": false,
         "ui:options": {
-          "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
-          "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
-          "variant": "boxed",
+          "inputType": "text",
         },
-        "ui:widget": "Checkbox",
+        "ui:widget": "Input",
       },
       "email": {
         "ui:label": false,
@@ -10458,19 +10726,53 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "emailPreFaktury": {
+      "emailNovehoOdberatela": {
         "ui:label": false,
         "ui:options": {
-          "inputType": "text",
+          "inputType": "email",
         },
         "ui:widget": "Input",
       },
-      "iban": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
+      "fakturacia": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
         },
-        "ui:widget": "Input",
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ibanNovehoOdberatela": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "ibanNovehoOdberatela",
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
       },
       "icDph": {
         "ui:label": false,
@@ -10507,6 +10809,61 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
+      "nazovOrganizacieNovehoOdberatela": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "nazovOrganizaciePovodnehoOdberatela": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "novaAdresaSidla": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "inputType": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "inputType": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Nová adresa sídla organizácie",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+      },
       "noveIco": {
         "ui:label": false,
         "ui:options": {
@@ -10524,8 +10881,17 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "+421",
           "inputType": "tel",
-          "placeholder": "+421",
+          "size": "medium",
+        },
+        "ui:widget": "Input",
+      },
+      "telefonNovehoOdberatela": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "+421",
+          "inputType": "tel",
           "size": "medium",
         },
         "ui:widget": "Input",
@@ -10544,6 +10910,9 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       },
       "ui:order": [
         "typOdberatela",
+        "nazovOrganizaciePovodnehoOdberatela",
+        "nazovOrganizacieNovehoOdberatela",
+        "novaAdresaSidla",
         "nazovOrganizacie",
         "adresaSidla",
         "cisloZmluvy",
@@ -10551,23 +10920,25 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "icoPovodnehOdberatela",
         "noveIco",
         "datumZmeny",
+        "dicNovehoOdberatela",
         "dic",
         "platcaDph",
         "icDph",
         "menoKontaktnejOsoby",
+        "telefonNovehoOdberatela",
+        "emailNovehoOdberatela",
         "telefon",
         "email",
-        "iban",
-        "elektronickaFaktura",
-        "emailPreFaktury",
+        "fakturacia",
         "zmenyVPocteNadob",
       ],
       "zmenyVPocteNadob": {
         "ui:options": {
-          "checkboxLabel": "Áno, chcem vykonať zmeny",
+          "orientations": "row",
+          "radioOptions": [],
           "variant": "boxed",
         },
-        "ui:widget": "Checkbox",
+        "ui:widget": "RadioGroup",
       },
     },
   },
@@ -10576,13 +10947,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
 
 exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default form state should match snapshot 1`] = `
 {
-  "drzitelOdpadu": {
-    "steDrzitelOdpadu": true,
-  },
   "informacieOMnozstve": {},
-  "povodcaOdpadu": {
-    "stePovodcaOdpadu": true,
-  },
   "suhlasy": {},
   "vyberDruhuOdpadu": {
     "absorbenty": [],
@@ -10626,7 +10991,9 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default f
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "sposobPlatby": "Platba kartou",
+    "fakturacia": {
+      "sposobPlatby": "Platba kartou",
+    },
     "ziadatelTyp": "Fyzická osoba",
   },
 }
@@ -10686,7 +11053,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "type": "object",
                     },
                     "cisloOp": {
-                      "title": "Číslo OP",
+                      "title": "Číslo občianskeho preukazu",
                       "type": "string",
                     },
                     "menoPriezvisko": {
@@ -10731,62 +11098,32 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   "type": "object",
                 },
                 "then": {
-                  "properties": {
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "nazov": {
-                      "title": "Názov organizácie",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "nazov",
-                    "ico",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "const": "Právnická osoba s povolením na vstup do ZEVO",
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "cisloPovoleniaNaVstup": {
-                      "title": "Číslo povolenia na vstup",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "cisloPovoleniaNaVstup",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "const": "Právnická osoba",
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "ziadatelTyp": {
+                            "const": "Právnická osoba s povolením na vstup do ZEVO",
+                          },
+                        },
+                        "required": [
+                          "ziadatelTyp",
+                        ],
+                        "type": "object",
+                      },
+                      "then": {
+                        "properties": {
+                          "cisloPovoleniaNaVstup": {
+                            "title": "Číslo povolenia na vstup",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "cisloPovoleniaNaVstup",
+                        ],
+                        "type": "object",
+                      },
+                    },
                     {
                       "if": {
                         "properties": {
@@ -10849,12 +11186,20 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "title": "DIČ",
                       "type": "string",
                     },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
                     "konatel": {
                       "title": "Konateľ (meno, priezvisko)",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
                       "title": "Meno kontaktnej osoby",
+                      "type": "string",
+                    },
+                    "nazov": {
+                      "title": "Názov organizácie",
                       "type": "string",
                     },
                     "platcaDph": {
@@ -10867,94 +11212,13 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                     },
                   },
                   "required": [
+                    "nazov",
                     "adresaPravnickaOsoba",
+                    "ico",
                     "dic",
-                    "platcaDph",
                     "konatel",
                     "zastupeny",
                     "kontaktnaOsoba",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "sposobPlatby": {
-                      "const": "Platba na faktúru",
-                    },
-                  },
-                  "required": [
-                    "sposobPlatby",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "allOf": [
-                    {
-                      "if": {
-                        "properties": {
-                          "elektronickaFaktura": {
-                            "const": true,
-                          },
-                        },
-                        "required": [
-                          "elektronickaFaktura",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "emailPreFaktury": {
-                            "format": "email",
-                            "title": "E-mail pre zasielanie elektronických faktúr",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "emailPreFaktury",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                  ],
-                  "properties": {
-                    "elektronickaFaktura": {
-                      "title": "Súhlasím so zaslaním elektronickej faktúry",
-                      "type": "boolean",
-                    },
-                  },
-                  "required": [
-                    "elektronickaFaktura",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Právnická osoba",
-                        "Právnická osoba s povolením na vstup do ZEVO",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "iban": {
-                      "format": "ba-iban",
-                      "title": "IBAN",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "iban",
                   ],
                   "type": "object",
                 },
@@ -10966,20 +11230,110 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                 "title": "E-mail",
                 "type": "string",
               },
-              "sposobPlatby": {
-                "default": "Platba kartou",
-                "oneOf": [
+              "fakturacia": {
+                "allOf": [
                   {
-                    "const": "Platba kartou",
-                    "title": "Platba kartou",
+                    "if": {
+                      "properties": {
+                        "sposobPlatby": {
+                          "const": "Platba na faktúru",
+                        },
+                      },
+                      "required": [
+                        "sposobPlatby",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "format": "email",
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                      },
+                      "required": [],
+                      "type": "object",
+                    },
                   },
                   {
-                    "const": "Platba na faktúru",
-                    "title": "Platba na faktúru",
+                    "if": {
+                      "properties": {
+                        "ziadatelTyp": {
+                          "enum": [
+                            "Právnická osoba",
+                            "Právnická osoba s povolením na vstup do ZEVO",
+                          ],
+                        },
+                      },
+                      "required": [
+                        "ziadatelTyp",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
                   },
                 ],
-                "title": "Spôsob platby",
-                "type": "string",
+                "properties": {
+                  "sposobPlatby": {
+                    "default": "Platba kartou",
+                    "oneOf": [
+                      {
+                        "const": "Platba kartou",
+                        "title": "Platba kartou",
+                      },
+                      {
+                        "const": "Platba na faktúru",
+                        "title": "Platba na faktúru",
+                      },
+                    ],
+                    "title": "Spôsob platby",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "sposobPlatby",
+                ],
+                "type": "object",
               },
               "telefon": {
                 "format": "ba-phone-number",
@@ -11002,7 +11356,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                     "title": "Právnická osoba s povolením na vstup do ZEVO",
                   },
                 ],
-                "title": "Žiadateľ",
+                "title": "Žiadam ako",
                 "type": "string",
               },
             },
@@ -11010,7 +11364,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
               "ziadatelTyp",
               "telefon",
               "email",
-              "sposobPlatby",
+              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -11018,410 +11372,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "required": [
           "ziadatel",
-        ],
-        "type": "object",
-      },
-      {
-        "properties": {
-          "povodcaOdpadu": {
-            "allOf": [
-              {
-                "if": {
-                  "properties": {
-                    "stePovodcaOdpadu": {
-                      "const": false,
-                    },
-                  },
-                  "required": [
-                    "stePovodcaOdpadu",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "allOf": [
-                    {
-                      "if": {
-                        "properties": {
-                          "typPovodcuOdpadu": {
-                            "const": "Právnická osoba",
-                          },
-                        },
-                        "required": [
-                          "typPovodcuOdpadu",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "ico": {
-                            "title": "IČO",
-                            "type": "string",
-                          },
-                          "nazovOrganizacie": {
-                            "title": "Názov organizácie",
-                            "type": "string",
-                          },
-                          "sidloOrganizacie": {
-                            "properties": {
-                              "mestoPsc": {
-                                "properties": {
-                                  "mesto": {
-                                    "title": "Mesto",
-                                    "type": "string",
-                                  },
-                                  "psc": {
-                                    "format": "ba-slovak-zip",
-                                    "title": "PSČ",
-                                    "type": "string",
-                                  },
-                                },
-                                "required": [
-                                  "mesto",
-                                  "psc",
-                                ],
-                                "type": "object",
-                              },
-                              "ulicaACislo": {
-                                "title": "Ulica a číslo",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "ulicaACislo",
-                              "mestoPsc",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                        "required": [
-                          "nazovOrganizacie",
-                          "sidloOrganizacie",
-                          "ico",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                    {
-                      "if": {
-                        "properties": {
-                          "typPovodcuOdpadu": {
-                            "const": "Fyzická osoba",
-                          },
-                        },
-                        "required": [
-                          "typPovodcuOdpadu",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "adresa": {
-                            "properties": {
-                              "mestoPsc": {
-                                "properties": {
-                                  "mesto": {
-                                    "title": "Mesto",
-                                    "type": "string",
-                                  },
-                                  "psc": {
-                                    "format": "ba-slovak-zip",
-                                    "title": "PSČ",
-                                    "type": "string",
-                                  },
-                                },
-                                "required": [
-                                  "mesto",
-                                  "psc",
-                                ],
-                                "type": "object",
-                              },
-                              "ulicaACislo": {
-                                "title": "Ulica a číslo",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "ulicaACislo",
-                              "mestoPsc",
-                            ],
-                            "type": "object",
-                          },
-                          "cisloOp": {
-                            "title": "Číslo OP",
-                            "type": "string",
-                          },
-                          "menoAPriezvisko": {
-                            "title": "Meno a priezvisko",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "menoAPriezvisko",
-                          "adresa",
-                          "cisloOp",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                  ],
-                  "properties": {
-                    "emailPovodcuOdpadu": {
-                      "format": "email",
-                      "title": "E-mail pôvodcu odpadu",
-                      "type": "string",
-                    },
-                    "typPovodcuOdpadu": {
-                      "default": "Fyzická osoba",
-                      "oneOf": [
-                        {
-                          "const": "Fyzická osoba",
-                          "title": "Fyzická osoba",
-                        },
-                        {
-                          "const": "Právnická osoba",
-                          "title": "Právnická osoba",
-                        },
-                      ],
-                      "title": "Typ pôvodcu odpadu",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "typPovodcuOdpadu",
-                    "emailPovodcuOdpadu",
-                  ],
-                  "type": "object",
-                },
-              },
-            ],
-            "properties": {
-              "stePovodcaOdpadu": {
-                "default": true,
-                "oneOf": [
-                  {
-                    "const": true,
-                    "title": "Áno",
-                  },
-                  {
-                    "const": false,
-                    "title": "Nie",
-                  },
-                ],
-                "title": "Ste zároveň aj pôvodca odpadu?",
-                "type": "boolean",
-              },
-            },
-            "required": [
-              "stePovodcaOdpadu",
-            ],
-            "title": "Identifikačné údaje pôvodcu odpadu",
-            "type": "object",
-          },
-        },
-        "required": [
-          "povodcaOdpadu",
-        ],
-        "type": "object",
-      },
-      {
-        "properties": {
-          "drzitelOdpadu": {
-            "allOf": [
-              {
-                "if": {
-                  "properties": {
-                    "steDrzitelOdpadu": {
-                      "const": false,
-                    },
-                  },
-                  "required": [
-                    "steDrzitelOdpadu",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "allOf": [
-                    {
-                      "if": {
-                        "properties": {
-                          "typDrzitelaOdpadu": {
-                            "const": "Právnická osoba",
-                          },
-                        },
-                        "required": [
-                          "typDrzitelaOdpadu",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "ico": {
-                            "title": "IČO",
-                            "type": "string",
-                          },
-                          "nazovOrganizacie": {
-                            "title": "Názov organizácie",
-                            "type": "string",
-                          },
-                          "sidloOrganizacie": {
-                            "properties": {
-                              "mestoPsc": {
-                                "properties": {
-                                  "mesto": {
-                                    "title": "Mesto",
-                                    "type": "string",
-                                  },
-                                  "psc": {
-                                    "format": "ba-slovak-zip",
-                                    "title": "PSČ",
-                                    "type": "string",
-                                  },
-                                },
-                                "required": [
-                                  "mesto",
-                                  "psc",
-                                ],
-                                "type": "object",
-                              },
-                              "ulicaACislo": {
-                                "title": "Ulica a číslo",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "ulicaACislo",
-                              "mestoPsc",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                        "required": [
-                          "nazovOrganizacie",
-                          "sidloOrganizacie",
-                          "ico",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                    {
-                      "if": {
-                        "properties": {
-                          "typDrzitelaOdpadu": {
-                            "const": "Fyzická osoba",
-                          },
-                        },
-                        "required": [
-                          "typDrzitelaOdpadu",
-                        ],
-                        "type": "object",
-                      },
-                      "then": {
-                        "properties": {
-                          "adresa": {
-                            "properties": {
-                              "mestoPsc": {
-                                "properties": {
-                                  "mesto": {
-                                    "title": "Mesto",
-                                    "type": "string",
-                                  },
-                                  "psc": {
-                                    "format": "ba-slovak-zip",
-                                    "title": "PSČ",
-                                    "type": "string",
-                                  },
-                                },
-                                "required": [
-                                  "mesto",
-                                  "psc",
-                                ],
-                                "type": "object",
-                              },
-                              "ulicaACislo": {
-                                "title": "Ulica a číslo",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "ulicaACislo",
-                              "mestoPsc",
-                            ],
-                            "type": "object",
-                          },
-                          "cisloOp": {
-                            "title": "Číslo OP",
-                            "type": "string",
-                          },
-                          "menoAPriezvisko": {
-                            "title": "Meno a priezvisko",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "menoAPriezvisko",
-                          "adresa",
-                          "cisloOp",
-                        ],
-                        "type": "object",
-                      },
-                    },
-                  ],
-                  "properties": {
-                    "emailDrzitelaOdpadu": {
-                      "format": "email",
-                      "title": "E-mail držiteľa odpadu",
-                      "type": "string",
-                    },
-                    "typDrzitelaOdpadu": {
-                      "default": "Fyzická osoba",
-                      "oneOf": [
-                        {
-                          "const": "Fyzická osoba",
-                          "title": "Fyzická osoba",
-                        },
-                        {
-                          "const": "Právnická osoba",
-                          "title": "Právnická osoba",
-                        },
-                      ],
-                      "title": "Typ držiteľa odpadu",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "typDrzitelaOdpadu",
-                    "emailDrzitelaOdpadu",
-                  ],
-                  "type": "object",
-                },
-              },
-            ],
-            "properties": {
-              "steDrzitelOdpadu": {
-                "default": true,
-                "oneOf": [
-                  {
-                    "const": true,
-                    "title": "Áno",
-                  },
-                  {
-                    "const": false,
-                    "title": "Nie",
-                  },
-                ],
-                "title": "Ste zároveň aj držiteľ odpadu?",
-                "type": "boolean",
-              },
-            },
-            "required": [
-              "steDrzitelOdpadu",
-            ],
-            "title": "Identifikačné údaje držiteľa odpadu",
-            "type": "object",
-          },
-        },
-        "required": [
-          "drzitelOdpadu",
         ],
         "type": "object",
       },
@@ -11545,7 +11495,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "07 07 Odpady z VSDP čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
+                "title": "07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11571,7 +11521,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "08 01 Odpady z VSDP a odstraňovania farieb a lakov",
+                "title": "08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11583,7 +11533,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "07 05 Odpady z VSDP farmaceutických výrobkov",
+                "title": "07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11610,7 +11560,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "08 02 Odpady z VSDP iných náterových hmôt (vrátane keramických materiálov)",
+                "title": "08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11634,7 +11584,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "08 04 Odpady z VSDP lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
+                "title": "08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11678,7 +11628,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "07 02 Odpady z VSDP plastov, syntetického kaučuku a syntetických vlákien",
+                "title": "07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11775,7 +11725,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "08 03 Odpady z VSDP tlačiarenských farieb",
+                "title": "08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -11787,7 +11737,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   ],
                   "type": "string",
                 },
-                "title": "07 06 Odpady z VSDP tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
+                "title": "07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
                 "type": "array",
                 "uniqueItems": true,
               },
@@ -12020,162 +11970,10 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
     "title": "Uzatvorenie zmluvy o nakladaní s odpadom",
   },
   "uiSchema": {
-    "drzitelOdpadu": {
-      "adresa": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "emailDrzitelaOdpadu": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "menoAPriezvisko": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "nazovOrganizacie": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "sidloOrganizacie": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Sídlo organizácie",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "steDrzitelOdpadu": {
-        "ui:options": {
-          "helptextHeader": "Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov",
-          "orientations": "row",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
-      "typDrzitelaOdpadu": {
-        "ui:options": {
-          "orientations": "column",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
-      "ui:options": {
-        "stepQueryParam": "identifikacne-udaje-drzitela-odpadu",
-      },
-      "ui:order": [
-        "steDrzitelOdpadu",
-        "typDrzitelaOdpadu",
-        "nazovOrganizacie",
-        "sidloOrganizacie",
-        "ico",
-        "menoAPriezvisko",
-        "adresa",
-        "cisloOp",
-        "emailDrzitelaOdpadu",
-      ],
-    },
     "informacieOMnozstve": {
       "predpokladaneMnozstvo": {
         "ui:label": false,
-        "ui:options": {
-          "placeholder": "Zadajte množstvo v kg",
-        },
+        "ui:options": {},
         "ui:widget": "Number",
       },
       "ui:options": {
@@ -12183,156 +11981,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       },
       "ui:order": [
         "predpokladaneMnozstvo",
-      ],
-    },
-    "povodcaOdpadu": {
-      "adresa": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "emailPovodcuOdpadu": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "menoAPriezvisko": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "nazovOrganizacie": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "sidloOrganizacie": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Sídlo organizácie",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "stePovodcaOdpadu": {
-        "ui:options": {
-          "helptextHeader": "Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov",
-          "orientations": "row",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
-      "typPovodcuOdpadu": {
-        "ui:options": {
-          "orientations": "column",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
-      "ui:options": {
-        "stepQueryParam": "identifikacne-udaje-povodcu-odpadu",
-      },
-      "ui:order": [
-        "stePovodcaOdpadu",
-        "typPovodcuOdpadu",
-        "nazovOrganizacie",
-        "sidloOrganizacie",
-        "ico",
-        "menoAPriezvisko",
-        "adresa",
-        "cisloOp",
-        "emailPovodcuOdpadu",
       ],
     },
     "suhlasy": {
@@ -13053,7 +12701,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:options": {
           "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "title": "Adresa sídla organizácie",
         },
         "ui:order": [
           "ulicaACislo",
@@ -13089,14 +12737,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "Input",
       },
-      "elektronickaFaktura": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
-          "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "email": {
         "ui:label": false,
         "ui:options": {
@@ -13104,19 +12744,47 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "Input",
       },
-      "emailPreFaktury": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
+      "fakturacia": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
         },
-        "ui:widget": "Input",
-      },
-      "iban": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "sposobPlatby": {
+          "ui:options": {
+            "orientations": "column",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "sposobPlatby",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+          "iban",
+        ],
       },
       "icDph": {
         "ui:label": false,
@@ -13184,14 +12852,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "Checkbox",
       },
-      "sposobPlatby": {
-        "ui:options": {
-          "orientations": "column",
-          "radioOptions": [],
-          "variant": "boxed",
-        },
-        "ui:widget": "RadioGroup",
-      },
       "telefon": {
         "ui:label": false,
         "ui:options": {
@@ -13210,9 +12870,9 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "adresaObyvatel",
         "cisloOp",
         "nazov",
-        "ico",
         "cisloPovoleniaNaVstup",
         "adresaPravnickaOsoba",
+        "ico",
         "dic",
         "platcaDph",
         "icDph",
@@ -13221,10 +12881,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "sposobPlatby",
-        "elektronickaFaktura",
-        "emailPreFaktury",
-        "iban",
+        "fakturacia",
       ],
       "zastupeny": {
         "ui:label": false,
@@ -29596,7 +29253,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "dochodokVyska": {
                           "minimum": 0,
-                          "title": "Výška mesačného dôchodku",
+                          "title": "Mesačná výška dôchodku",
                           "type": "number",
                         },
                       },
@@ -29622,7 +29279,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "vyzivneVyska": {
                           "minimum": 0,
-                          "title": "Celková výška výživného na deti",
+                          "title": "Mesačná výška sumy výživného na dieťa/deti",
                           "type": "number",
                         },
                       },
@@ -29648,7 +29305,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "davkaVNezamestnanostiVyska": {
                           "minimum": 0,
-                          "title": "Výška príspevku z úradu práce",
+                          "title": "Mesačná výška príspevku z úradu práce",
                           "type": "number",
                         },
                       },
@@ -29674,7 +29331,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "properties": {
                         "inePrijmyVyska": {
                           "minimum": 0,
-                          "title": "Iné pravidelné príjmy",
+                          "title": "Iné pravidelné mesačné príjmy",
                           "type": "number",
                         },
                       },
@@ -29708,7 +29365,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte dávku v nezamestnanosti?",
+                    "title": "Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?",
                     "type": "boolean",
                   },
                   "dochodok": {
@@ -29723,7 +29380,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte dôchodok?",
+                    "title": "Poberali ste v minulom kalendárnom roku dôchodok?",
                     "type": "boolean",
                   },
                   "inePrijmy": {
@@ -29738,7 +29395,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte iné príjmy?",
+                    "title": "Poberali ste v minulom kalendárnom roku iné príjmy?",
                     "type": "boolean",
                   },
                   "samostatnaZarobkovaCinnost": {
@@ -29753,7 +29410,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Máte príjem zo samostatnej zárobkovej činnosti?",
+                    "title": "Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                     "type": "boolean",
                   },
                   "vyzivne": {
@@ -29768,7 +29425,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Poberáte výživné alebo náhradné výživné na dieťa/deti?",
+                    "title": "Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                     "type": "boolean",
                   },
                   "zamestnanie": {
@@ -29783,7 +29440,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         "title": "Nie",
                       },
                     ],
-                    "title": "Ste zamestnaný/á?",
+                    "title": "Boli ste v minulom kalendárnom roku zamestnaný/á?",
                     "type": "boolean",
                   },
                 },
@@ -30430,7 +30087,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -30456,7 +30113,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "vyzivneVyska": {
                                 "minimum": 0,
-                                "title": "Celková výška výživného na deti",
+                                "title": "Mesačná výška sumy výživného na dieťa/deti",
                                 "type": "number",
                               },
                             },
@@ -30482,7 +30139,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "davkaVNezamestnanostiVyska": {
                                 "minimum": 0,
-                                "title": "Výška príspevku z úradu práce",
+                                "title": "Mesačná výška príspevku z úradu práce",
                                 "type": "number",
                               },
                             },
@@ -30508,7 +30165,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "inePrijmyVyska": {
                                 "minimum": 0,
-                                "title": "Iné pravidelné príjmy",
+                                "title": "Iné pravidelné mesačné príjmy",
                                 "type": "number",
                               },
                             },
@@ -30542,7 +30199,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dávku v nezamestnanosti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                           "type": "boolean",
                         },
                         "dochodok": {
@@ -30557,7 +30214,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dôchodok?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                           "type": "boolean",
                         },
                         "inePrijmy": {
@@ -30572,7 +30229,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá iné príjmy?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
                         "samostatnaZarobkovaCinnost": {
@@ -30587,7 +30244,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                          "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
                         },
                         "vyzivne": {
@@ -30602,7 +30259,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                           "type": "boolean",
                         },
                         "zamestnanie": {
@@ -30617,7 +30274,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Je váš manžel/manželka zamestnaný/á?",
+                          "title": "Bol váš manžel/manželka v minulom kalendárnom roku zamestnaný/á?",
                           "type": "boolean",
                         },
                       },
@@ -31248,7 +30905,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "dochodokVyska": {
                                 "minimum": 0,
-                                "title": "Výška mesačného dôchodku",
+                                "title": "Mesačná výška dôchodku",
                                 "type": "number",
                               },
                             },
@@ -31274,7 +30931,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "vyzivneVyska": {
                                 "minimum": 0,
-                                "title": "Celková výška výživného na deti",
+                                "title": "Mesačná výška sumy výživného na dieťa/deti",
                                 "type": "number",
                               },
                             },
@@ -31300,7 +30957,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "davkaVNezamestnanostiVyska": {
                                 "minimum": 0,
-                                "title": "Výška príspevku z úradu práce",
+                                "title": "Mesačná výška príspevku z úradu práce",
                                 "type": "number",
                               },
                             },
@@ -31326,7 +30983,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                             "properties": {
                               "inePrijmyVyska": {
                                 "minimum": 0,
-                                "title": "Iné pravidelné príjmy",
+                                "title": "Iné pravidelné mesačné príjmy",
                                 "type": "number",
                               },
                             },
@@ -31360,7 +31017,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dávku v nezamestnanosti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                           "type": "boolean",
                         },
                         "dochodok": {
@@ -31375,7 +31032,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá dôchodok?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                           "type": "boolean",
                         },
                         "inePrijmy": {
@@ -31390,7 +31047,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá iné príjmy?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
                         "samostatnaZarobkovaCinnost": {
@@ -31405,7 +31062,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                          "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
                         },
                         "vyzivne": {
@@ -31420,7 +31077,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                          "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                           "type": "boolean",
                         },
                         "zamestnanie": {
@@ -31435,7 +31092,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               "title": "Nie",
                             },
                           ],
-                          "title": "Je váš druh/družka zamestnaný/á?",
+                          "title": "Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?",
                           "type": "boolean",
                         },
                       },
@@ -31991,7 +31648,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Má dieťa staršie ako 15 rokov príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
+                                "title": "Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?",
                                 "type": "boolean",
                               },
                               "student": {
@@ -32613,7 +32270,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "dochodokVyska": {
                                       "minimum": 0,
-                                      "title": "Výška mesačného dôchodku",
+                                      "title": "Mesačná výška dôchodku",
                                       "type": "number",
                                     },
                                   },
@@ -32639,7 +32296,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "vyzivneVyska": {
                                       "minimum": 0,
-                                      "title": "Celková výška výživného na deti",
+                                      "title": "Mesačná výška sumy výživného na dieťa/deti",
                                       "type": "number",
                                     },
                                   },
@@ -32665,7 +32322,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "davkaVNezamestnanostiVyska": {
                                       "minimum": 0,
-                                      "title": "Výška príspevku z úradu práce",
+                                      "title": "Mesačná výška príspevku z úradu práce",
                                       "type": "number",
                                     },
                                   },
@@ -32691,7 +32348,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "properties": {
                                     "inePrijmyVyska": {
                                       "minimum": 0,
-                                      "title": "Iné pravidelné príjmy",
+                                      "title": "Iné pravidelné mesačné príjmy",
                                       "type": "number",
                                     },
                                   },
@@ -32725,7 +32382,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá dávku v nezamestnanosti?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?",
                                 "type": "boolean",
                               },
                               "dochodok": {
@@ -32740,7 +32397,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá dôchodok?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku dôchodok?",
                                 "type": "boolean",
                               },
                               "inePrijmy": {
@@ -32755,7 +32412,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá iné príjmy?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                                 "type": "boolean",
                               },
                               "samostatnaZarobkovaCinnost": {
@@ -32770,7 +32427,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Má príjem zo samostatnej zárobkovej činnosti?",
+                                "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                                 "type": "boolean",
                               },
                               "vyzivne": {
@@ -32785,7 +32442,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Poberá výživné alebo náhradné výživné na dieťa/deti?",
+                                "title": "Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?",
                                 "type": "boolean",
                               },
                               "zamestnanie": {
@@ -32800,7 +32457,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                     "title": "Nie",
                                   },
                                 ],
-                                "title": "Je člen/členka domácnosti zamestnaný/á?",
+                                "title": "Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?",
                                 "type": "boolean",
                               },
                             },
@@ -33774,7 +33431,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa.",
+              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -34039,7 +33696,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -34073,7 +33730,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -34089,7 +33746,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem druha/družky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal. ",
+          "description": "Posudzuje sa priemerný čistý mesačný príjem druha/družky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -34127,7 +33784,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -34452,7 +34109,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -34751,7 +34408,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "dochodok": {
               "ui:options": {
-                "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+                "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -34785,7 +34442,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "samostatnaZarobkovaCinnost": {
               "ui:options": {
-                "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+                "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -34801,7 +34458,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Number",
             },
             "ui:options": {
-              "description": "Uveďte, prosím, priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+              "description": "Posudzuje sa priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
               "objectDisplay": "boxed",
               "title": "Príjem",
             },
@@ -34839,7 +34496,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
             "zamestnanie": {
               "ui:options": {
-                "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+                "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
                 "orientations": "row",
                 "radioOptions": [],
                 "variant": "boxed",
@@ -35161,7 +34818,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom člena/členky domácnosti.",
+              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -35388,7 +35045,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberá niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35422,7 +35079,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35438,7 +35095,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, priemerný čistý mesačný príjem manžela/manželky za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Posudzuje sa priemerný čistý mesačný príjem manžela/manželky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -35476,7 +35133,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte, prosím, čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -35801,7 +35458,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -36205,7 +35862,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             "customComponents": [
               {
                 "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy. (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
                   "type": "info",
                 },
                 "type": "alert",
@@ -36259,7 +35916,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "dochodok": {
           "ui:options": {
-            "helptextHeader": "Označte áno, ak poberáte niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
+            "helptextHeader": "Označte áno, ak ste poberali v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36293,7 +35950,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
-            "helptextHeader": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na sociálne poistenie a zdravotné poistenie a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36309,7 +35966,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "ui:options": {
-          "description": "Uveďte, prosím, váš priemerný čistý mesačný príjem za celý minulý rok. Priemerný mesačný príjem počítajte ako podiel príjmu za kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
+          "description": "Posudzuje sa váš priemerný čistý mesačný príjem za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
           "title": "Príjem",
         },
@@ -36347,7 +36004,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "zamestnanie": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade, prosím, uveďte sumu vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte, prosím, váš čistý príjem za posledný známy rok.",
+            "helptextHeader": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36392,7 +36049,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "type": "alert",
               },
             ],
-            "helptextHeader": "Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor.",
+            "helptextHeader": "Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.",
             "radioOptions": [],
             "variant": "boxed",
           },
@@ -36489,7 +36146,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
       "zdravotnyStav": {
         "bezbarierovyByt": {
           "ui:options": {
-            "helptextHeader": "markdown_gKgflRNwdS:Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle prílohy č. 2 [zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy)",
+            "helptextHeader": "markdown_gKgflRNwdS:Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).",
             "orientations": "row",
             "radioOptions": [],
             "variant": "boxed",
@@ -36715,7 +36372,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom.",
+          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },

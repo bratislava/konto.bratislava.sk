@@ -5,6 +5,7 @@ import {
   datePicker,
   fileUpload,
   input,
+  radioGroup,
   schema,
   step,
   textArea,
@@ -14,84 +15,83 @@ import { sharedPhoneNumberField } from '../shared/fields'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   step('podnet', { title: 'Podať podnet' }, [
-    checkboxGroup(
+    radioGroup(
       'kategoriaPodnetu',
       {
+        type: 'string',
         title: 'Kategória podnetu',
         required: true,
         options: createStringOptions(
-          ['Nevykonaný odvoz', 'Pracovníci OLO', 'Poškodená nádoba', 'Iné', 'Pochvala'],
+          ['Nevykonaný odvoz', 'Pracovníci OLO', 'Poškodená nádoba', 'Pochvala', 'Iné'],
           false,
         ),
       },
       {
         variant: 'boxed',
-        helptextHeader: 'Vyberte aspoň jednu možnosť',
+        orientations: 'column',
       },
     ),
-    conditionalFields(
-      createCondition([[['kategoriaPodnetu'], { contains: { const: 'Nevykonaný odvoz' } }]]),
-      [
-        datePicker(
-          'terminNevykonaniaOdvozuOdpadu',
-          {
-            title: 'Presný termín nevykonania odvozu odpadu',
-            required: true,
-          },
-          {},
-        ),
-        checkboxGroup(
-          'druhOdpadu',
-          {
-            title: 'Vyberte druh odpadu',
-            required: true,
-            options: createStringOptions(
-              [
-                'Zmesový komunálny odpad',
-                'Kuchynský biologicky rozložiteľný odpad',
-                'Biologicky rozložiteľný odpad',
-                'Jedlé oleje a tuky',
-                'Papier',
-                'Plasty/Kovové obaly a nápojové kartóny',
-                'Sklo',
-              ],
-              false,
-            ),
-          },
-          {
-            variant: 'boxed',
-            helptextHeader: 'Vyberte aspoň jednu možnosť',
-          },
-        ),
-        input(
-          'adresaMiestaOdvozu',
-          {
-            type: 'text',
-            title: 'Presná adresa miesta odvozu',
-            required: true,
-          },
-          {},
-        ),
-      ],
-    ),
-    conditionalFields(
-      createCondition([[['kategoriaPodnetu'], { contains: { const: 'Pracovníci OLO' } }]]),
-      [
-        datePicker(
-          'datumCasUdalosti',
-          {
-            title: 'Dátum a orientačný čas vzniknutej udalosti',
-            required: true,
-          },
-          {},
-        ),
-      ],
-    ),
+    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'Nevykonaný odvoz' }]]), [
+      datePicker(
+        'terminNevykonaniaOdvozuOdpadu',
+        {
+          title: 'Presný termín nevykonania odvozu odpadu',
+          required: true,
+        },
+        {},
+      ),
+      checkboxGroup(
+        'druhOdpadu',
+        {
+          title: 'Vyberte druh odpadu',
+          required: true,
+          options: createStringOptions(
+            [
+              'Zmesový komunálny odpad',
+              'Kuchynský biologicky rozložiteľný odpad',
+              'Biologicky rozložiteľný odpad',
+              'Jedlé oleje a tuky',
+              'Papier',
+              'Plasty/Kovové obaly a nápojové kartóny',
+              'Sklo',
+            ],
+            false,
+          ),
+        },
+        {
+          variant: 'boxed',
+          helptextHeader: 'Vyberte aspoň jednu možnosť',
+        },
+      ),
+      input(
+        'adresaMiestaOdvozu',
+        {
+          type: 'text',
+          title: 'Presná adresa miesta odvozu',
+          required: true,
+        },
+        {},
+      ),
+    ]),
+    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'Pracovníci OLO' }]]), [
+      datePicker(
+        'datumCasUdalosti',
+        {
+          title: 'Dátum a orientačný čas vzniknutej udalosti',
+          required: true,
+        },
+        {},
+      ),
+    ]),
     input('meno', { type: 'text', title: 'Meno', required: true }, {}),
     input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
-    textArea('sprava', { title: 'Správa', required: true }, {}),
+    textArea(
+      'sprava',
+      { title: 'Správa', required: true },
+      { helptextHeader: 'Napíšte svoje podnety' },
+    ),
     fileUpload(
       'prilohy',
       {

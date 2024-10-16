@@ -21,13 +21,17 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       'ziadatelTyp',
       {
         type: 'string',
-        title: 'Žiadateľ',
+        title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Obyvateľ', 'Právnická osoba', 'Správcovská spoločnosť']),
+        options: createStringOptions([
+          'Fyzická osoba',
+          'Právnická osoba',
+          'Správcovská spoločnosť',
+        ]),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
-    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Obyvateľ' }]]), [
+    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
       object(
         'menoPriezvisko',
         { required: true },
@@ -46,12 +50,12 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       createCondition([[['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }]]),
       [
         input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
-        sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla', true),
+        sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
         input('ico', { type: 'text', title: 'IČO', required: true }, {}),
         input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
         checkbox(
           'platcaDph',
-          { title: 'Som platca DPH?', required: true },
+          { title: 'Som platca DPH?' },
           { checkboxLabel: 'Som platca DPH?', variant: 'boxed' },
         ),
         conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
@@ -63,7 +67,11 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
       input(
         'zastupeny',
-        { type: 'text', title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)' },
+        {
+          type: 'text',
+          title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+          required: true,
+        },
         {},
       ),
     ]),
@@ -82,7 +90,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       createCondition([[['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }]]),
       [input('email', { title: 'E-mail', required: true, type: 'email' }, {})],
     ),
-    conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Obyvateľ'] }]]), [
+    conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Fyzická osoba'] }]]), [
       input('emailObyvatel', { title: 'E-mail', type: 'email' }, {}),
     ]),
     object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
@@ -146,12 +154,12 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         title: 'Objem kontajnera',
         required: true,
         options: [
-          { value: '2.5m3_3t', title: 'objem: 2,5 m³ / nosnosť: do 3 t' },
           { value: '7m3_3t', title: 'objem: 7 m³ / nosnosť: do 3 t' },
-          { value: '7m3_8t', title: 'objem: 7 m³ / nosnosť: do 8 t' },
+          { value: '10m3_3t', title: 'objem: 10 m³ / nosnosť: do 3 t' },
           { value: '11m3_8t', title: 'objem: 11 m³ / nosnosť: do 8 t' },
           { value: '16m3_8t', title: 'objem: 16 m³ / nosnosť: do 8 t' },
           { value: '27m3_8t', title: 'objem: 27 m³ / nosnosť: do 8 t' },
+          { value: '30m3_8t', title: 'objem: 30 m³ / nosnosť: do 8 t' },
         ],
       },
       {},

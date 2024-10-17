@@ -279,9 +279,6 @@ export default schema(
                 title: 'Vyberte objem nádoby',
                 required: true,
                 options: createStringOptions([
-                  '120 l zberná nádoba',
-                  '240 l zberná nádoba',
-                  '1100 l zberná nádoba',
                   '1800 l zvon na sklo',
                   '3000 l polopodzemný kontajner',
                   '5000 l polopodzemný kontajner',

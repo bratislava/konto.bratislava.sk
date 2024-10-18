@@ -339,7 +339,6 @@ export default class FilesHelper {
     const hash = createHash('sha1').update(timestamp).digest('hex').slice(0, 8)
     const extension = file.originalname.slice(
       file.originalname.lastIndexOf('.'),
-      file.originalname.length,
     )
     return `${fileName}-${hash}${extension}`
   }

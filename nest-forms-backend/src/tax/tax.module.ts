@@ -1,4 +1,4 @@
-import { join } from 'node:path'
+import path from 'node:path'
 
 import { BullModule } from '@nestjs/bull'
 import { Module } from '@nestjs/common'
@@ -40,7 +40,7 @@ import TaxService from './tax.service'
             // This registers processor as a separate process. As the PDF generation is CPU heavy and takes around ~3
             // seconds, without this, it would block the main thread.
             // eslint-disable-next-line unicorn/prefer-module
-            path: join(__dirname, 'processor.js'),
+            path: path.join(__dirname, 'processor.js'),
           },
         ],
       }),

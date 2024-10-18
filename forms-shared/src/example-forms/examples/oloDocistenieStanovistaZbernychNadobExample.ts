@@ -4,7 +4,7 @@ const exampleForm: ExampleForm = {
   name: 'oloDocistenieStanovistaZbernychNadobExample',
   formData: {
     ziadatel: {
-      ziadatelTyp: 'Obyvateľ',
+      ziadatelTyp: 'Fyzická osoba',
       telefon: '+421948777555',
       fakturacia: {
         iban: 'SK3112000000198742637541',

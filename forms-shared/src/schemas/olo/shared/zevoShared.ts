@@ -26,7 +26,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'ziadatelTyp',
       {
         type: 'string',
-        title: 'Žiadateľ',
+        title: 'Žiadam ako',
         required: true,
         options: createStringOptions([
           'Fyzická osoba',
@@ -50,7 +50,7 @@ export const getZevoSchema = (type: ZevoType) => [
         ],
       ),
       sharedAddressField('adresaObyvatel', 'Adresa trvalého pobytu', true),
-      input('cisloOp', { type: 'text', title: 'Číslo OP', required: true }, {}),
+      input('cisloOp', { type: 'text', title: 'Číslo občianskeho preukazu', required: true }, {}),
     ]),
     conditionalFields(
       createCondition([
@@ -61,46 +61,49 @@ export const getZevoSchema = (type: ZevoType) => [
       ]),
       [
         input('nazov', { type: 'text', title: 'Názov organizácie', required: true }, {}),
+        conditionalFields(
+          createCondition([
+            [['ziadatelTyp'], { const: 'Právnická osoba s povolením na vstup do ZEVO' }],
+          ]),
+          [
+            input(
+              'cisloPovoleniaNaVstup',
+              { type: 'text', title: 'Číslo povolenia na vstup', required: true },
+              {
+                helptextHeader:
+                  'Vo formáte: 123/45 alebo 1234/45/2026 (číslo Objednávky alebo Zmluvy)',
+              },
+            ),
+          ],
+        ),
+        sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla organizácie', true),
         input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-      ],
-    ),
-    conditionalFields(
-      createCondition([
-        [['ziadatelTyp'], { const: 'Právnická osoba s povolením na vstup do ZEVO' }],
-      ]),
-      [
+        input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
+        checkbox(
+          'platcaDph',
+          { title: 'Som platca DPH?' },
+          { checkboxLabel: 'Som platca DPH', variant: 'boxed' },
+        ),
+        conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
+          input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
+        ]),
+        input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
         input(
-          'cisloPovoleniaNaVstup',
-          { type: 'text', title: 'Číslo povolenia na vstup', required: true },
+          'zastupeny',
           {
-            helptextHeader: 'Vo formáte: 123/45 alebo 1234/45/2026 (číslo Objednávky alebo Zmluvy)',
+            type: 'text',
+            title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+            required: true,
           },
+          {},
+        ),
+        input(
+          'kontaktnaOsoba',
+          { type: 'text', title: 'Meno kontaktnej osoby', required: true },
+          {},
         ),
       ],
     ),
-    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
-      sharedAddressField('adresaPravnickaOsoba', 'Adresa sídla', true),
-      input('dic', { type: 'text', title: 'DIČ', required: true }, {}),
-      checkbox(
-        'platcaDph',
-        { title: 'Som platca DPH?', required: true },
-        { checkboxLabel: 'Som platca DPH', variant: 'boxed' },
-      ),
-      conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
-        input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
-      ]),
-      input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
-      input(
-        'zastupeny',
-        {
-          type: 'text',
-          title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
-          required: true,
-        },
-        {},
-      ),
-      input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
-    ]),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
@@ -113,7 +116,7 @@ export const getZevoSchema = (type: ZevoType) => [
             options: createStringOptions([
               'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
               'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-              'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka',
+              'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
             ]),
           },
           { variant: 'boxed', orientations: 'column' },
@@ -155,146 +158,178 @@ export const getZevoSchema = (type: ZevoType) => [
           ],
         )
       : null,
-    radioGroup(
-      'sposobPlatby',
-      {
-        type: 'string',
-        title: 'Spôsob platby',
-        required: true,
-        options: createStringOptions(['Platba kartou', 'Platba na faktúru']),
-      },
-      { variant: 'boxed', orientations: 'column' },
-    ),
-    conditionalFields(createCondition([[['sposobPlatby'], { const: 'Platba na faktúru' }]]), [
-      checkbox(
-        'elektronickaFaktura',
+    object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+      radioGroup(
+        'sposobPlatby',
         {
-          title: 'Súhlasím so zaslaním elektronickej faktúry',
+          type: 'string',
+          title: 'Spôsob platby',
           required: true,
+          options: createStringOptions(['Platba kartou', 'Platba na faktúru']),
         },
-        {
-          helptextHeader:
-            'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-          checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-          variant: 'boxed',
-        },
+        { variant: 'boxed', orientations: 'column' },
       ),
-      conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
-        input(
-          'emailPreFaktury',
+      conditionalFields(createCondition([[['sposobPlatby'], { const: 'Platba na faktúru' }]]), [
+        checkbox(
+          'elektronickaFaktura',
           {
-            type: 'email',
-            title: 'E-mail pre zasielanie elektronických faktúr',
-            required: true,
+            title: 'Súhlasím so zaslaním elektronickej faktúry',
           },
-          {},
+          {
+            helptextHeader:
+              'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+            checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+            variant: 'boxed',
+          },
         ),
+        conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+          input(
+            'emailPreFaktury',
+            {
+              type: 'email',
+              title: 'E-mail pre zasielanie elektronických faktúr',
+              required: true,
+            },
+            {},
+          ),
+        ]),
       ]),
-    ]),
-    conditionalFields(
-      createCondition([
-        [
-          ['ziadatelTyp'],
-          { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
-        ],
-      ]),
-      [input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {})],
-    ),
-  ]),
-  step('povodcaOdpadu', { title: 'Identifikačné údaje pôvodcu odpadu' }, [
-    radioGroup(
-      'stePovodcaOdpadu',
-      {
-        type: 'boolean',
-        title: 'Ste zároveň aj pôvodca odpadu?',
-        required: true,
-        options: [
-          { value: true, title: 'Áno', isDefault: true },
-          { value: false, title: 'Nie' },
-        ],
-      },
-      {
-        variant: 'boxed',
-        orientations: 'row',
-        helptextHeader:
-          'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
-      },
-    ),
-    conditionalFields(createCondition([[['stePovodcaOdpadu'], { const: false }]]), [
-      radioGroup(
-        'typPovodcuOdpadu',
-        {
-          type: 'string',
-          title: 'Typ pôvodcu odpadu',
-          required: true,
-          options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
-        },
-        { variant: 'boxed', orientations: 'column' },
-      ),
-      conditionalFields(createCondition([[['typPovodcuOdpadu'], { const: 'Právnická osoba' }]]), [
-        input('nazovOrganizacie', { type: 'text', title: 'Názov organizácie', required: true }, {}),
-        sharedAddressField('sidloOrganizacie', 'Sídlo organizácie', true),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-      ]),
-      conditionalFields(createCondition([[['typPovodcuOdpadu'], { const: 'Fyzická osoba' }]]), [
-        input('menoAPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-        sharedAddressField('adresa', 'Adresa', true),
-        input('cisloOp', { type: 'text', title: 'Číslo OP', required: true }, {}),
-      ]),
-      input(
-        'emailPovodcuOdpadu',
-        { title: 'E-mail pôvodcu odpadu', required: true, type: 'email' },
-        {},
+      conditionalFields(
+        createCondition([
+          [
+            ['ziadatelTyp'],
+            { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
+          ],
+        ]),
+        [input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {})],
       ),
     ]),
   ]),
-  step('drzitelOdpadu', { title: 'Identifikačné údaje držiteľa odpadu' }, [
-    radioGroup(
-      'steDrzitelOdpadu',
-      {
-        type: 'boolean',
-        title: 'Ste zároveň aj držiteľ odpadu?',
-        required: true,
-        options: [
-          { value: true, title: 'Áno', isDefault: true },
-          { value: false, title: 'Nie' },
-        ],
-      },
-      {
-        variant: 'boxed',
-        orientations: 'row',
-        helptextHeader:
-          'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
-      },
-    ),
-    conditionalFields(createCondition([[['steDrzitelOdpadu'], { const: false }]]), [
-      radioGroup(
-        'typDrzitelaOdpadu',
-        {
-          type: 'string',
-          title: 'Typ držiteľa odpadu',
-          required: true,
-          options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
-        },
-        { variant: 'boxed', orientations: 'column' },
-      ),
-      conditionalFields(createCondition([[['typDrzitelaOdpadu'], { const: 'Právnická osoba' }]]), [
-        input('nazovOrganizacie', { type: 'text', title: 'Názov organizácie', required: true }, {}),
-        sharedAddressField('sidloOrganizacie', 'Sídlo organizácie', true),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-      ]),
-      conditionalFields(createCondition([[['typDrzitelaOdpadu'], { const: 'Fyzická osoba' }]]), [
-        input('menoAPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-        sharedAddressField('adresa', 'Adresa', true),
-        input('cisloOp', { type: 'text', title: 'Číslo OP', required: true }, {}),
-      ]),
-      input(
-        'emailDrzitelaOdpadu',
-        { title: 'E-mail držiteľa odpadu', required: true, type: 'email' },
-        {},
-      ),
-    ]),
-  ]),
+  type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
+    ? step('povodcaOdpadu', { title: 'Identifikačné údaje pôvodcu odpadu' }, [
+        radioGroup(
+          'stePovodcaOdpadu',
+          {
+            type: 'boolean',
+            title: 'Ste zároveň aj pôvodca odpadu?',
+            required: true,
+            options: [
+              { value: true, title: 'Áno', isDefault: true },
+              { value: false, title: 'Nie' },
+            ],
+          },
+          {
+            variant: 'boxed',
+            orientations: 'row',
+            helptextHeader:
+              'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
+          },
+        ),
+        conditionalFields(createCondition([[['stePovodcaOdpadu'], { const: false }]]), [
+          radioGroup(
+            'typPovodcuOdpadu',
+            {
+              type: 'string',
+              title: 'Typ pôvodcu odpadu',
+              required: true,
+              options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+            },
+            { variant: 'boxed', orientations: 'column' },
+          ),
+          conditionalFields(
+            createCondition([[['typPovodcuOdpadu'], { const: 'Právnická osoba' }]]),
+            [
+              input(
+                'nazovOrganizacie',
+                { type: 'text', title: 'Názov organizácie', required: true },
+                {},
+              ),
+              sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
+              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+            ],
+          ),
+          conditionalFields(createCondition([[['typPovodcuOdpadu'], { const: 'Fyzická osoba' }]]), [
+            input('meno', { type: 'text', title: 'Meno', required: true }, {}),
+            input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
+            sharedAddressField('adresa', 'Adresa', true),
+            input(
+              'cisloOp',
+              { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
+              {},
+            ),
+          ]),
+          input(
+            'emailPovodcuOdpadu',
+            { title: 'E-mail pôvodcu odpadu', required: true, type: 'email' },
+            {},
+          ),
+        ]),
+      ])
+    : null,
+  type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
+    ? step('drzitelOdpadu', { title: 'Identifikačné údaje držiteľa odpadu' }, [
+        radioGroup(
+          'steDrzitelOdpadu',
+          {
+            type: 'boolean',
+            title: 'Ste zároveň aj držiteľ odpadu?',
+            required: true,
+            options: [
+              { value: true, title: 'Áno', isDefault: true },
+              { value: false, title: 'Nie' },
+            ],
+          },
+          {
+            variant: 'boxed',
+            orientations: 'row',
+            helptextHeader:
+              'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
+          },
+        ),
+        conditionalFields(createCondition([[['steDrzitelOdpadu'], { const: false }]]), [
+          radioGroup(
+            'typDrzitelaOdpadu',
+            {
+              type: 'string',
+              title: 'Typ držiteľa odpadu',
+              required: true,
+              options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+            },
+            { variant: 'boxed', orientations: 'column' },
+          ),
+          conditionalFields(
+            createCondition([[['typDrzitelaOdpadu'], { const: 'Právnická osoba' }]]),
+            [
+              input(
+                'nazovOrganizacie',
+                { type: 'text', title: 'Názov organizácie', required: true },
+                {},
+              ),
+              sharedAddressField('sidloOrganizacie', 'Adresa sídla organizácie', true),
+              input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+            ],
+          ),
+          conditionalFields(
+            createCondition([[['typDrzitelaOdpadu'], { const: 'Fyzická osoba' }]]),
+            [
+              input('meno', { type: 'text', title: 'Meno', required: true }, {}),
+              input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
+              sharedAddressField('adresa', 'Adresa', true),
+              input(
+                'cisloOp',
+                { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
+                {},
+              ),
+            ],
+          ),
+          input(
+            'emailDrzitelaOdpadu',
+            { title: 'E-mail držiteľa odpadu', required: true, type: 'email' },
+            {},
+          ),
+        ]),
+      ])
+    : null,
   step('vyberDruhuOdpadu', { title: 'Výber druhu odpadu na základe katalogizácie' }, [
     selectMultiple(
       'separovaneZlozky',
@@ -592,7 +627,8 @@ export const getZevoSchema = (type: ZevoType) => [
     selectMultiple(
       'odpadyZFariebALakov',
       {
-        title: '08 01 Odpady z VSDP a odstraňovania farieb a lakov',
+        title:
+          '08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov',
         options: [
           {
             value: '08_01_12',
@@ -614,7 +650,8 @@ export const getZevoSchema = (type: ZevoType) => [
     selectMultiple(
       'odpadyZInychNaterovychHmot',
       {
-        title: '08 02 Odpady z VSDP iných náterových hmôt (vrátane keramických materiálov)',
+        title:
+          '08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)',
         options: [{ value: '08_02_01', title: '08 02 01 Odpadové náterové prášky' }],
       },
       {},
@@ -622,7 +659,7 @@ export const getZevoSchema = (type: ZevoType) => [
     selectMultiple(
       'odpadyZTlaciarenskychFarieb',
       {
-        title: '08 03 Odpady z VSDP tlačiarenských farieb',
+        title: '08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb',
         options: [
           {
             value: '08_03_13',
@@ -640,7 +677,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZLepidiel',
       {
         title:
-          '08 04 Odpady z VSDP lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)',
+          '08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)',
         options: [
           {
             value: '08_04_10',
@@ -653,7 +690,8 @@ export const getZevoSchema = (type: ZevoType) => [
     selectMultiple(
       'odpadyZPlastov',
       {
-        title: '07 02 Odpady z VSDP plastov, syntetického kaučuku a syntetických vlákien',
+        title:
+          '07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien',
         options: [
           { value: '07_02_13', title: '07 02 13 Odpadový plast' },
           { value: '07_02_15', title: '07 02 15 Odpadové prísady iné ako uvedené v 07 02 14' },
@@ -668,7 +706,8 @@ export const getZevoSchema = (type: ZevoType) => [
     selectMultiple(
       'odpadyZFarmaceutickychVyrobkov',
       {
-        title: '07 05 Odpady z VSDP farmaceutických výrobkov',
+        title:
+          '07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov',
         options: [{ value: '07_05_14', title: '07 05 14 Tuhé odpady iné ako uvedené v 07 05 13' }],
       },
       {},
@@ -677,7 +716,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZTukovAMydiel',
       {
         title:
-          '07 06 Odpady z VSDP tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov',
+          '07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov',
         options: [
           {
             value: '07_06_12',
@@ -692,7 +731,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZCistychChemikalii',
       {
         title:
-          '07 07 Odpady z VSDP čistých chemikálií a chemických výrobkov inak nešpecifikovaných',
+          '07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných',
         options: [
           {
             value: '07_07_12',
@@ -871,9 +910,7 @@ export const getZevoSchema = (type: ZevoType) => [
             title: 'ŠPZ vozidla',
             required: true,
           },
-          {
-            helptextHeader: 'ŠPZ vozidla, ktoré odpad dovezie do ZEVO',
-          },
+          {},
         ),
         number(
           'predpokladaneMnozstvo',
@@ -882,9 +919,7 @@ export const getZevoSchema = (type: ZevoType) => [
             required: true,
             minimum: 0,
           },
-          {
-            placeholder: 'Zadajte množstvo v kg',
-          },
+          {},
         ),
         fileUpload(
           'fotoOdpadu',
@@ -910,9 +945,7 @@ export const getZevoSchema = (type: ZevoType) => [
             required: true,
             minimum: 0,
           },
-          {
-            placeholder: 'Zadajte množstvo v kg',
-          },
+          {},
         ),
       ])
     : null,

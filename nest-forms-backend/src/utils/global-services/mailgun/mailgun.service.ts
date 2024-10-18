@@ -134,8 +134,12 @@ export default class MailgunService {
   /**
    * Sends an email using OLO SMTP instead of Mailgun.
    * @param data Object containing the email data which should be sent.
+   * @param attachments Optional array of attachments to be sent with the email.
    */
-  async sendOloEmail(data: SendEmailInputDto): Promise<void> {
+  async sendOloEmail(
+    data: SendEmailInputDto,
+    attachments?: nodemailer.SendMailOptions['attachments'],
+  ): Promise<void> {
     try {
       const mailBody = await this.getFilledTemplate(
         MAILGUN_CONFIG[data.template].template,
@@ -147,6 +151,7 @@ export default class MailgunService {
         subject: MAILGUN_CONFIG[data.template].subject,
         // eslint-disable-next-line xss/no-mixed-html
         html: mailBody,
+        attachments,
       })
     } catch (error) {
       this.throwerErrorGuard.InternalServerErrorException(

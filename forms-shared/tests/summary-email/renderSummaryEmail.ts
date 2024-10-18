@@ -11,10 +11,18 @@ describe('renderSummaryEmail', () => {
       let emailHtml: string
 
       beforeAll(async () => {
+        const fileIdUrlMapEntries = (exampleForm.serverFiles ?? []).map((file) => [
+          file.id,
+          `https://example.com/${file.id}`,
+        ])
+        const fileIdUrlMap = Object.fromEntries(fileIdUrlMapEntries)
+
         emailHtml = await renderSummaryEmail({
           formDefinition,
           formData: exampleForm.formData,
           serverFiles: exampleForm.serverFiles,
+          fileIdUrlMap,
+          withHtmlBodyTags: true,
         })
       })
       ;(['desktop', 'mobile'] as const).forEach((size) => {

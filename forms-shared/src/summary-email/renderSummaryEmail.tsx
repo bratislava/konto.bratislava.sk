@@ -8,11 +8,14 @@ import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 
+export type RenderSummaryEmailFileIdUrlMap = Record<string, string>
+
 export type RenderSummaryEmailPayload = {
   formDefinition: FormDefinition
   formData: GenericObjectType
-  fileIdUrlMap?: Record<string, string>
+  fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
   serverFiles?: FormsBackendFile[]
+  withHtmlBodyTags?: boolean
 }
 
 export const renderSummaryEmail = async ({
@@ -20,6 +23,7 @@ export const renderSummaryEmail = async ({
   formData,
   fileIdUrlMap,
   serverFiles,
+  withHtmlBodyTags = false,
 }: RenderSummaryEmailPayload) => {
   const summaryJson = getSummaryJsonNode(
     formDefinition.schemas.schema,
@@ -30,6 +34,11 @@ export const renderSummaryEmail = async ({
   const validatedSummary = validateSummary(formDefinition.schemas.schema, formData, fileInfos)
 
   return render(
-    <SummaryEmail summaryJson={summaryJson} validatedSummary={validatedSummary}></SummaryEmail>,
+    <SummaryEmail
+      summaryJson={summaryJson}
+      validatedSummary={validatedSummary}
+      fileIdUrlMap={fileIdUrlMap}
+      withHtmlBodyTags={withHtmlBodyTags}
+    ></SummaryEmail>,
   )
 }

@@ -367,13 +367,13 @@ exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Obyvateľ",
+              "value": "Fyzická osoba",
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
-          "value": "Obyvateľ",
+          "value": "Fyzická osoba",
         },
         {
           "displayValues": [
@@ -592,7 +592,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Fyzická osoba",
         },
@@ -664,7 +664,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_ziadatel_cisloOp",
-          "label": "Číslo OP",
+          "label": "Číslo občianskeho preukazu",
           "type": "Field",
           "value": "AB123456",
         },
@@ -735,7 +735,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
               "value": "Platba kartou",
             },
           ],
-          "id": "root_ziadatel_sposobPlatby",
+          "id": "root_ziadatel_fakturacia_sposobPlatby",
           "label": "Spôsob platby",
           "type": "Field",
           "value": "Platba kartou",
@@ -1134,7 +1134,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZFariebALakov",
-          "label": "08 01 Odpady z VSDP a odstraňovania farieb a lakov",
+          "label": "08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov",
           "type": "Field",
           "value": [],
         },
@@ -1146,7 +1146,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZInychNaterovychHmot",
-          "label": "08 02 Odpady z VSDP iných náterových hmôt (vrátane keramických materiálov)",
+          "label": "08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)",
           "type": "Field",
           "value": [
             "08_02_01",
@@ -1160,7 +1160,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZTlaciarenskychFarieb",
-          "label": "08 03 Odpady z VSDP tlačiarenských farieb",
+          "label": "08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb",
           "type": "Field",
           "value": [
             "08_03_18",
@@ -1173,7 +1173,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZLepidiel",
-          "label": "08 04 Odpady z VSDP lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
+          "label": "08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
           "type": "Field",
           "value": [],
         },
@@ -1189,7 +1189,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZPlastov",
-          "label": "07 02 Odpady z VSDP plastov, syntetického kaučuku a syntetických vlákien",
+          "label": "07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien",
           "type": "Field",
           "value": [
             "07_02_13",
@@ -1203,7 +1203,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZFarmaceutickychVyrobkov",
-          "label": "07 05 Odpady z VSDP farmaceutických výrobkov",
+          "label": "07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov",
           "type": "Field",
           "value": [],
         },
@@ -1214,7 +1214,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZTukovAMydiel",
-          "label": "07 06 Odpady z VSDP tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
+          "label": "07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
           "type": "Field",
           "value": [],
         },
@@ -1225,7 +1225,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZCistychChemikalii",
-          "label": "07 07 Odpady z VSDP čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
+          "label": "07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
           "type": "Field",
           "value": [],
         },
@@ -1450,7 +1450,7 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Právnická osoba",
         },
@@ -1711,13 +1711,13 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Obyvateľ",
+              "value": "Fyzická osoba",
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
-          "value": "Obyvateľ",
+          "value": "Fyzická osoba",
         },
         {
           "displayValues": [
@@ -1747,37 +1747,37 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Hlavná ulica 12",
+              "value": "Galvaniho 1",
             },
           ],
           "id": "root_ziadatel_adresaObyvatel_ulicaACislo",
           "label": "Ulica a číslo",
           "type": "Field",
-          "value": "Hlavná ulica 12",
+          "value": "Galvaniho 1",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Žabokreky",
+              "value": "Bratislava",
             },
           ],
           "id": "root_ziadatel_adresaObyvatel_mestoPsc_mesto",
           "label": "Mesto",
           "type": "Field",
-          "value": "Žabokreky",
+          "value": "Bratislava",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "44557",
+              "value": "84101",
             },
           ],
           "id": "root_ziadatel_adresaObyvatel_mestoPsc_psc",
           "label": "PSČ",
           "type": "Field",
-          "value": "44557",
+          "value": "84101",
         },
         {
           "displayValues": [
@@ -1874,13 +1874,13 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "Biologicky rozložiteľný odpad",
+                      "value": "Zmesový komunálny odpad",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_1_druhOdpadu",
                   "label": "Vyberte druh odpadu",
                   "type": "Field",
-                  "value": "Biologicky rozložiteľný odpad",
+                  "value": "Zmesový komunálny odpad",
                 },
                 {
                   "displayValues": [
@@ -1889,7 +1889,7 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
                       "value": "120 l zberná nádoba",
                     },
                   ],
-                  "id": "root_sluzba_infoOOdpade_1_objemNadobyBiologickyRozlozitelny",
+                  "id": "root_sluzba_infoOOdpade_1_objemNadobyZmesovyKomunalnyOdpad",
                   "label": "Vyberte objem nádoby",
                   "type": "Field",
                   "value": "120 l zberná nádoba",
@@ -1971,7 +1971,7 @@ exports[`getSummaryJson oloOdvozObjemnehoOdpaduValnikomExample summary JSON shou
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Správcovská spoločnosť",
         },
@@ -2218,7 +2218,7 @@ exports[`getSummaryJson oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromEx
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Správcovská spoločnosť",
         },
@@ -2537,7 +2537,7 @@ exports[`getSummaryJson oloOloTaxiExample summary JSON should match snapshot 1`]
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Fyzická osoba",
         },
@@ -2732,18 +2732,11 @@ exports[`getSummaryJson oloPodnetyAPochvalyObcanovExample summary JSON should ma
               "type": "String",
               "value": "Pracovníci OLO",
             },
-            {
-              "type": "String",
-              "value": "Poškodená nádoba",
-            },
           ],
           "id": "root_podnet_kategoriaPodnetu",
           "label": "Kategória podnetu",
           "type": "Field",
-          "value": [
-            "Pracovníci OLO",
-            "Poškodená nádoba",
-          ],
+          "value": "Pracovníci OLO",
         },
         {
           "displayValues": [
@@ -3035,7 +3028,7 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExamp
               "value": "SK3112000000198742637541",
             },
           ],
-          "id": "root_ziadatel_iban",
+          "id": "root_ziadatel_fakturacia_iban",
           "label": "IBAN",
           "type": "Field",
           "value": "SK3112000000198742637541",
@@ -3043,19 +3036,32 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExamp
         {
           "displayValues": [
             {
-              "type": "None",
+              "type": "String",
+              "value": "Súhlasím so zaslaním elektronickej faktúry",
             },
           ],
-          "id": "root_ziadatel_elektronickaFaktura",
+          "id": "root_ziadatel_fakturacia_elektronickaFaktura",
           "label": "Súhlasím so zaslaním elektronickej faktúry",
           "type": "Field",
-          "value": false,
+          "value": true,
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Áno, chcem vykonať zmeny",
+              "value": "ceruzka@email.com",
+            },
+          ],
+          "id": "root_ziadatel_fakturacia_emailPreFaktury",
+          "label": "E-mail pre zasielanie elektronických faktúr",
+          "type": "Field",
+          "value": "ceruzka@email.com",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Áno",
             },
           ],
           "id": "root_ziadatel_zmenyVPocteNadob",
@@ -3263,97 +3269,85 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
           "displayValues": [
             {
               "type": "String",
-              "value": "Existujúci",
+              "value": "Nový",
             },
           ],
           "id": "root_ziadatel_typOdberatela",
           "label": "Typ odberateľa",
           "type": "Field",
-          "value": "Existujúci",
+          "value": "Nový",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Odpad s.r.o.",
+              "value": "Test org",
             },
           ],
           "id": "root_ziadatel_nazovOrganizacie",
           "label": "Názov organizácie",
           "type": "Field",
-          "value": "Odpad s.r.o.",
+          "value": "Test org",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Moravská 1",
+              "value": "Test 1",
             },
           ],
           "id": "root_ziadatel_adresaSidla_ulicaACislo",
           "label": "Ulica a číslo",
           "type": "Field",
-          "value": "Moravská 1",
+          "value": "Test 1",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Bratislava",
+              "value": "Bratislava ",
             },
           ],
           "id": "root_ziadatel_adresaSidla_mestoPsc_mesto",
           "label": "Mesto",
           "type": "Field",
-          "value": "Bratislava",
+          "value": "Bratislava ",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "83103",
+              "value": "81101",
             },
           ],
           "id": "root_ziadatel_adresaSidla_mestoPsc_psc",
           "label": "PSČ",
           "type": "Field",
-          "value": "83103",
+          "value": "81101",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "AA554778",
-            },
-          ],
-          "id": "root_ziadatel_cisloZmluvy",
-          "label": "Číslo zmluvy",
-          "type": "Field",
-          "value": "AA554778",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "4455117788",
+              "value": "123456",
             },
           ],
           "id": "root_ziadatel_ico",
           "label": "IČO",
           "type": "Field",
-          "value": "4455117788",
+          "value": "123456",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "12154564564",
+              "value": "123456",
             },
           ],
           "id": "root_ziadatel_dic",
           "label": "DIČ",
           "type": "Field",
-          "value": "12154564564",
+          "value": "123456",
         },
         {
           "displayValues": [
@@ -3370,37 +3364,37 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
           "displayValues": [
             {
               "type": "String",
-              "value": "Jozef Ceruzka",
+              "value": "Test Test",
             },
           ],
           "id": "root_ziadatel_menoKontaktnejOsoby",
           "label": "Meno kontaktnej osoby",
           "type": "Field",
-          "value": "Jozef Ceruzka",
+          "value": "Test Test",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "+421903654788",
+              "value": "+421123323232",
             },
           ],
           "id": "root_ziadatel_telefon",
           "label": "Telefónne číslo",
           "type": "Field",
-          "value": "+421903654788",
+          "value": "+421123323232",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "ceruzka@email.com",
+              "value": "test@test.test",
             },
           ],
           "id": "root_ziadatel_email",
           "label": "Email",
           "type": "Field",
-          "value": "ceruzka@email.com",
+          "value": "test@test.test",
         },
         {
           "displayValues": [
@@ -3409,7 +3403,7 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
               "value": "SK3112000000198742637541",
             },
           ],
-          "id": "root_ziadatel_iban",
+          "id": "root_ziadatel_fakturacia_iban",
           "label": "IBAN",
           "type": "Field",
           "value": "SK3112000000198742637541",
@@ -3421,7 +3415,7 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
               "value": "Súhlasím so zaslaním elektronickej faktúry",
             },
           ],
-          "id": "root_ziadatel_elektronickaFaktura",
+          "id": "root_ziadatel_fakturacia_elektronickaFaktura",
           "label": "Súhlasím so zaslaním elektronickej faktúry",
           "type": "Field",
           "value": true,
@@ -3430,24 +3424,13 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
           "displayValues": [
             {
               "type": "String",
-              "value": "ceruzka@email.com",
+              "value": "test@test.test",
             },
           ],
-          "id": "root_ziadatel_emailPreFaktury",
+          "id": "root_ziadatel_fakturacia_emailPreFaktury",
           "label": "E-mail pre zasielanie elektronických faktúr",
           "type": "Field",
-          "value": "ceruzka@email.com",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "None",
-            },
-          ],
-          "id": "root_ziadatel_zmenyVPocteNadob",
-          "label": "Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu",
-          "type": "Field",
-          "value": false,
+          "value": "test@test.test",
         },
       ],
       "id": "root_ziadatel",
@@ -3465,61 +3448,61 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "Moravská 1, Bratislava, 83103",
+                      "value": "Test 1",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_miestoDodania",
                   "label": "Miesto dodania / výkonu služby",
                   "type": "Field",
-                  "value": "Moravská 1, Bratislava, 83103",
+                  "value": "Test 1",
                 },
                 {
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "Plasty (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
+                      "value": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_druhOdpadu",
                   "label": "Vyberte druh odpadu",
                   "type": "Field",
-                  "value": "Plasty (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
+                  "value": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                 },
                 {
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "240 l zberná nádoba",
+                      "value": "120 l zberná nádoba",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_objemNadobyPapierPlasty",
                   "label": "Vyberte objem nádoby",
                   "type": "Field",
-                  "value": "240 l zberná nádoba",
+                  "value": "120 l zberná nádoba",
                 },
                 {
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "2 x do týždňa",
+                      "value": "1 x do týždňa",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_frekvenciaOdvozovPapierPlasty",
                   "label": "Frekvencia odvozov",
                   "type": "Field",
-                  "value": "2 x do týždňa",
+                  "value": "1 x do týždňa",
                 },
                 {
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "4",
+                      "value": "1",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_pocetNadob",
                   "label": "Počet nádob",
                   "type": "Field",
-                  "value": 4,
+                  "value": 1,
                 },
               ],
               "id": "root_sluzba_infoOOdpade_0",
@@ -3534,13 +3517,13 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
           "displayValues": [
             {
               "type": "String",
-              "value": "ceruzka@email.com",
+              "value": "test@test.test",
             },
           ],
           "id": "root_sluzba_emailPotvrdenie",
           "label": "E-mail (potvrdenie o prevzatí odpadov/obalov)",
           "type": "Field",
-          "value": "ceruzka@email.com",
+          "value": "test@test.test",
         },
       ],
       "id": "root_sluzba",
@@ -3586,7 +3569,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_ziadatel_ziadatelTyp",
-          "label": "Žiadateľ",
+          "label": "Žiadam ako",
           "type": "Field",
           "value": "Právnická osoba s povolením na vstup do ZEVO",
         },
@@ -3594,73 +3577,85 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "ZEVO s.r.o.",
+              "value": "Test",
             },
           ],
           "id": "root_ziadatel_nazov",
           "label": "Názov organizácie",
           "type": "Field",
-          "value": "ZEVO s.r.o.",
+          "value": "Test",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "4845485454",
-            },
-          ],
-          "id": "root_ziadatel_ico",
-          "label": "IČO",
-          "type": "Field",
-          "value": "4845485454",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "123/55",
+              "value": "123/45",
             },
           ],
           "id": "root_ziadatel_cisloPovoleniaNaVstup",
           "label": "Číslo povolenia na vstup",
           "type": "Field",
-          "value": "123/55",
+          "value": "123/45",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "+421977444666",
+              "value": "Galvaniho 1",
             },
           ],
-          "id": "root_ziadatel_telefon",
-          "label": "Telefónne číslo",
+          "id": "root_ziadatel_adresaPravnickaOsoba_ulicaACislo",
+          "label": "Ulica a číslo",
           "type": "Field",
-          "value": "+421977444666",
+          "value": "Galvaniho 1",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "email@zevo.sk",
+              "value": "Bratislava",
             },
           ],
-          "id": "root_ziadatel_email",
-          "label": "E-mail",
+          "id": "root_ziadatel_adresaPravnickaOsoba_mestoPsc_mesto",
+          "label": "Mesto",
           "type": "Field",
-          "value": "email@zevo.sk",
+          "value": "Bratislava",
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "Platba na faktúru",
+              "value": "81101",
             },
           ],
-          "id": "root_ziadatel_sposobPlatby",
-          "label": "Spôsob platby",
+          "id": "root_ziadatel_adresaPravnickaOsoba_mestoPsc_psc",
+          "label": "PSČ",
           "type": "Field",
-          "value": "Platba na faktúru",
+          "value": "81101",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "12334412",
+            },
+          ],
+          "id": "root_ziadatel_ico",
+          "label": "IČO",
+          "type": "Field",
+          "value": "12334412",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "12332123",
+            },
+          ],
+          "id": "root_ziadatel_dic",
+          "label": "DIČ",
+          "type": "Field",
+          "value": "12332123",
         },
         {
           "displayValues": [
@@ -3668,22 +3663,81 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
               "type": "None",
             },
           ],
-          "id": "root_ziadatel_elektronickaFaktura",
-          "label": "Súhlasím so zaslaním elektronickej faktúry",
+          "id": "root_ziadatel_platcaDph",
+          "label": "Som platca DPH?",
           "type": "Field",
-          "value": false,
         },
         {
           "displayValues": [
             {
               "type": "String",
-              "value": "SK3112000000198742637541",
+              "value": "Konatel Konajuci",
             },
           ],
-          "id": "root_ziadatel_iban",
-          "label": "IBAN",
+          "id": "root_ziadatel_konatel",
+          "label": "Konateľ (meno, priezvisko)",
           "type": "Field",
-          "value": "SK3112000000198742637541",
+          "value": "Konatel Konajuci",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Jozef Mrkva",
+            },
+          ],
+          "id": "root_ziadatel_zastupeny",
+          "label": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+          "type": "Field",
+          "value": "Jozef Mrkva",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Jozef Mrkva",
+            },
+          ],
+          "id": "root_ziadatel_kontaktnaOsoba",
+          "label": "Meno kontaktnej osoby",
+          "type": "Field",
+          "value": "Jozef Mrkva",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "+421941212332",
+            },
+          ],
+          "id": "root_ziadatel_telefon",
+          "label": "Telefónne číslo",
+          "type": "Field",
+          "value": "+421941212332",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "test@test.ts",
+            },
+          ],
+          "id": "root_ziadatel_email",
+          "label": "E-mail",
+          "type": "Field",
+          "value": "test@test.ts",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Platba kartou",
+            },
+          ],
+          "id": "root_ziadatel_fakturacia_sposobPlatby",
+          "label": "Spôsob platby",
+          "type": "Field",
+          "value": "Platba kartou",
         },
       ],
       "id": "root_ziadatel",
@@ -3695,143 +3749,13 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
         {
           "displayValues": [
             {
-              "type": "String",
-              "value": "Áno",
-            },
-          ],
-          "id": "root_povodcaOdpadu_stePovodcaOdpadu",
-          "label": "Ste zároveň aj pôvodca odpadu?",
-          "type": "Field",
-          "value": true,
-        },
-      ],
-      "id": "root_povodcaOdpadu",
-      "title": "Identifikačné údaje pôvodcu odpadu",
-      "type": "Step",
-    },
-    {
-      "children": [
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Nie",
-            },
-          ],
-          "id": "root_drzitelOdpadu_steDrzitelOdpadu",
-          "label": "Ste zároveň aj držiteľ odpadu?",
-          "type": "Field",
-          "value": false,
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Právnická osoba",
-            },
-          ],
-          "id": "root_drzitelOdpadu_typDrzitelaOdpadu",
-          "label": "Typ držiteľa odpadu",
-          "type": "Field",
-          "value": "Právnická osoba",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Velo s.r.o.",
-            },
-          ],
-          "id": "root_drzitelOdpadu_nazovOrganizacie",
-          "label": "Názov organizácie",
-          "type": "Field",
-          "value": "Velo s.r.o.",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Veľká 10",
-            },
-          ],
-          "id": "root_drzitelOdpadu_sidloOrganizacie_ulicaACislo",
-          "label": "Ulica a číslo",
-          "type": "Field",
-          "value": "Veľká 10",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Nitra",
-            },
-          ],
-          "id": "root_drzitelOdpadu_sidloOrganizacie_mestoPsc_mesto",
-          "label": "Mesto",
-          "type": "Field",
-          "value": "Nitra",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "88877",
-            },
-          ],
-          "id": "root_drzitelOdpadu_sidloOrganizacie_mestoPsc_psc",
-          "label": "PSČ",
-          "type": "Field",
-          "value": "88877",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "545123545",
-            },
-          ],
-          "id": "root_drzitelOdpadu_ico",
-          "label": "IČO",
-          "type": "Field",
-          "value": "545123545",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "velo@odpad.sk",
-            },
-          ],
-          "id": "root_drzitelOdpadu_emailDrzitelaOdpadu",
-          "label": "E-mail držiteľa odpadu",
-          "type": "Field",
-          "value": "velo@odpad.sk",
-        },
-      ],
-      "id": "root_drzitelOdpadu",
-      "title": "Identifikačné údaje držiteľa odpadu",
-      "type": "Step",
-    },
-    {
-      "children": [
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "20 01 10 Šatstvo",
-            },
-            {
-              "type": "String",
-              "value": "20 01 08 Biologicky rozložiteľný kuchynský a reštauračný odpad",
+              "type": "None",
             },
           ],
           "id": "root_vyberDruhuOdpadu_separovaneZlozky",
           "label": "20 01 Separovane zbierané zložky komunálnych odpadov (okrem 15 01)",
           "type": "Field",
-          "value": [
-            "20_01_10",
-            "20_01_08",
-          ],
+          "value": [],
         },
         {
           "displayValues": [
@@ -3902,16 +3826,13 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
         {
           "displayValues": [
             {
-              "type": "String",
-              "value": "18 01 04 Odpady, ktorých zber a zneškodňovanie nepodliehajú osobitným požiadavkám z hľadiska prevencie nákazy (napr. obväzy, sadrové odtlačky a obväzy, posteľná bielizeň, jednorazové odevy, plienky)",
+              "type": "None",
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZPorodnictva",
           "label": "18 01 Odpady z pôrodníckej starostlivosti, diagnostiky, liečby alebo zdravotnej prevencie",
           "type": "Field",
-          "value": [
-            "18_01_04",
-          ],
+          "value": [],
         },
         {
           "displayValues": [
@@ -3938,13 +3859,16 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
         {
           "displayValues": [
             {
-              "type": "None",
+              "type": "String",
+              "value": "17 06 04 Izolačné materiály iné ako uvedené v 17 06 01 a 17 06 03",
             },
           ],
           "id": "root_vyberDruhuOdpadu_izolacneMaterialy",
           "label": "17 06 Izolačné materiály a stavebné materiály obsahujúce azbest",
           "type": "Field",
-          "value": [],
+          "value": [
+            "17_06_04",
+          ],
         },
         {
           "displayValues": [
@@ -4052,23 +3976,20 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZFariebALakov",
-          "label": "08 01 Odpady z VSDP a odstraňovania farieb a lakov",
+          "label": "08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov",
           "type": "Field",
           "value": [],
         },
         {
           "displayValues": [
             {
-              "type": "String",
-              "value": "08 02 01 Odpadové náterové prášky",
+              "type": "None",
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZInychNaterovychHmot",
-          "label": "08 02 Odpady z VSDP iných náterových hmôt (vrátane keramických materiálov)",
+          "label": "08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)",
           "type": "Field",
-          "value": [
-            "08_02_01",
-          ],
+          "value": [],
         },
         {
           "displayValues": [
@@ -4077,7 +3998,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZTlaciarenskychFarieb",
-          "label": "08 03 Odpady z VSDP tlačiarenských farieb",
+          "label": "08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb",
           "type": "Field",
           "value": [],
         },
@@ -4088,7 +4009,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZLepidiel",
-          "label": "08 04 Odpady z VSDP lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
+          "label": "08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)",
           "type": "Field",
           "value": [],
         },
@@ -4099,7 +4020,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZPlastov",
-          "label": "07 02 Odpady z VSDP plastov, syntetického kaučuku a syntetických vlákien",
+          "label": "07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien",
           "type": "Field",
           "value": [],
         },
@@ -4110,23 +4031,20 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZFarmaceutickychVyrobkov",
-          "label": "07 05 Odpady z VSDP farmaceutických výrobkov",
+          "label": "07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov",
           "type": "Field",
           "value": [],
         },
         {
           "displayValues": [
             {
-              "type": "String",
-              "value": "07 06 12 Kaly zo spracovania odpadu v mieste jeho vzniku iné ako uvedené v 07 06 11",
+              "type": "None",
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZTukovAMydiel",
-          "label": "07 06 Odpady z VSDP tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
+          "label": "07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov",
           "type": "Field",
-          "value": [
-            "07_06_12",
-          ],
+          "value": [],
         },
         {
           "displayValues": [
@@ -4135,7 +4053,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
             },
           ],
           "id": "root_vyberDruhuOdpadu_odpadyZCistychChemikalii",
-          "label": "07 07 Odpady z VSDP čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
+          "label": "07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných",
           "type": "Field",
           "value": [],
         },
@@ -4271,13 +4189,13 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "54",
+              "value": "1",
             },
           ],
           "id": "root_informacieOMnozstve_predpokladaneMnozstvo",
           "label": "Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)",
           "type": "Field",
-          "value": 54,
+          "value": 1,
         },
       ],
       "id": "root_informacieOMnozstve",
@@ -10453,7 +10371,7 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
                     },
                   ],
                   "id": "root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska",
-                  "label": "Výška mesačného dôchodku",
+                  "label": "Mesačná výška dôchodku",
                   "type": "Field",
                   "value": 550,
                 },

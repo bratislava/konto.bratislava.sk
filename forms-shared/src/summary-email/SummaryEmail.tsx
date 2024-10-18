@@ -1,5 +1,5 @@
-import React from 'react'
-import { Body, Container, Html, Row, Section, Text } from '@react-email/components'
+import React, { createContext } from 'react'
+import { Body, Container, Html, Link, Row, Section, Text } from '@react-email/components'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -14,10 +14,23 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
+import { RenderSummaryEmailFileIdUrlMap } from './renderSummaryEmail'
 
 type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
+  fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
+}
+
+const FileIdUrlMapContext = createContext<RenderSummaryEmailFileIdUrlMap | null>(null)
+
+const useFileIdUrlMap = () => {
+  const fileIdUrlMap = React.useContext(FileIdUrlMapContext)
+  if (!fileIdUrlMap) {
+    throw new Error('useFileIdUrlMap must be used within a FileIdUrlMapProvider')
+  }
+
+  return fileIdUrlMap
 }
 
 const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
@@ -67,11 +80,17 @@ const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps)
   )
 }
 
-const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>
-    {fileInfo.fileName}
-  </Text>
-)
+const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
+  const fileIdUrlMap = useFileIdUrlMap()
+  const fileUrl = fileIdUrlMap[fileInfo.id]
+  const content = fileUrl ? (
+    <Link href={fileUrl}>{fileInfo.fileName}</Link>
+  ) : (
+    <>{fileInfo.fileName}</>
+  )
+
+  return <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>{content}</Text>
+}
 
 const NoneValueRenderer = ({ isLast }: SummaryNoneValueRendererProps) => (
   <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>-</Text>
@@ -116,7 +135,11 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
   </Section>
 )
 
-export const SummaryEmail = ({ summaryJson, validatedSummary }: SummaryEmailProps) => {
+export const SummaryEmail = ({
+  summaryJson,
+  validatedSummary,
+  fileIdUrlMap,
+}: SummaryEmailProps) => {
   return (
     <Html>
       <Body
@@ -126,19 +149,21 @@ export const SummaryEmail = ({ summaryJson, validatedSummary }: SummaryEmailProp
             '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
         }}
       >
-        <SummaryRenderer
-          summaryJson={summaryJson}
-          validatedSummary={validatedSummary}
-          renderForm={FormRenderer}
-          renderStep={StepRenderer}
-          renderField={FieldRenderer}
-          renderArray={ArrayRenderer}
-          renderArrayItem={ArrayItemRenderer}
-          renderStringValue={StringValueRenderer}
-          renderFileValue={FileValueRenderer}
-          renderNoneValue={NoneValueRenderer}
-          renderInvalidValue={InvalidValueRenderer}
-        />
+        <FileIdUrlMapContext.Provider value={fileIdUrlMap}>
+          <SummaryRenderer
+            summaryJson={summaryJson}
+            validatedSummary={validatedSummary}
+            renderForm={FormRenderer}
+            renderStep={StepRenderer}
+            renderField={FieldRenderer}
+            renderArray={ArrayRenderer}
+            renderArrayItem={ArrayItemRenderer}
+            renderStringValue={StringValueRenderer}
+            renderFileValue={FileValueRenderer}
+            renderNoneValue={NoneValueRenderer}
+            renderInvalidValue={InvalidValueRenderer}
+          />
+        </FileIdUrlMapContext.Provider>
       </Body>
     </Html>
   )

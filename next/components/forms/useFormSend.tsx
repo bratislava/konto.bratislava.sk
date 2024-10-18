@@ -60,14 +60,12 @@ const useGetContext = () => {
   const {
     formId,
     formDefinition: { slug },
+    signInMissing,
+    verificationMissing,
   } = useFormContext()
   const { formData } = useFormData()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
-  const {
-    isSignedIn,
-    accountType,
-    tierStatus: { isIdentityVerified },
-  } = useSsrAuth()
+  const { isSignedIn, accountType } = useSsrAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { isValidSignature, signature } = useFormSignature()
 
@@ -241,7 +239,7 @@ const useGetContext = () => {
       return
     }
 
-    if (!isSignedIn) {
+    if (signInMissing) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
@@ -254,12 +252,12 @@ const useGetContext = () => {
     }
 
     // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
-    if (isSignedIn && !isIdentityVerified && getScanFiles().length === 0) {
+    if (isSignedIn && verificationMissing && getScanFiles().length === 0) {
       setSendFilesScanningNotVerified(modalValueEid)
       return
     }
 
-    if (!isIdentityVerified) {
+    if (verificationMissing) {
       setSendIdentityMissingModal(true)
       return
     }
@@ -295,7 +293,7 @@ const useGetContext = () => {
       return
     }
 
-    if (isSignedIn && isIdentityVerified && getScanFiles().length > 0) {
+    if (isSignedIn && !verificationMissing && getScanFiles().length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setSendFilesScanningEidModal({
         isOpen: true,
@@ -304,7 +302,7 @@ const useGetContext = () => {
       return
     }
 
-    if (isSignedIn && !isIdentityVerified && getScanFiles().length > 0) {
+    if (isSignedIn && verificationMissing && getScanFiles().length > 0) {
       setSendFilesScanningNotVerifiedEidModal(true)
       return
     }

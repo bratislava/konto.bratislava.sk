@@ -8,6 +8,7 @@ import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
 import * as jwt from 'jsonwebtoken'
 
+import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -36,6 +37,7 @@ export default class EmailFormsSubservice {
     private prismaService: PrismaService,
     private mailgunService: MailgunService,
     private configService: ConfigService,
+    private convertService: ConvertService,
   ) {
     this.logger = new Logger('EmailFormsSubservice')
   }
@@ -110,18 +112,34 @@ export default class EmailFormsSubservice {
 
     // Send confirmation email to user
     if (toEmail) {
+      // Generate confirmation pdf and send to user.
+      const file = await this.convertService.generatePdf(
+        jsonDataExtraDataOmitted,
+        form.id,
+        formDefinition,
+      )
+      const attachments = [
+        {
+          filename: `potvrdenie.pdf`,
+          content: file,
+        },
+      ]
+
       try {
         // TODO - temporary delivered mail, we should use some OLO mail with html data as when sending the confirmation email to OLO.
-        await this.mailgunService.sendOloEmail({
-          to: toEmail,
-          template: MailgunTemplateEnum.GINIS_DELIVERED,
-          data: {
-            formId: form.id,
-            messageSubject: formTitle,
-            firstName,
-            slug: formDefinition.slug,
+        await this.mailgunService.sendOloEmail(
+          {
+            to: toEmail,
+            template: MailgunTemplateEnum.GINIS_DELIVERED,
+            data: {
+              formId: form.id,
+              messageSubject: formTitle,
+              firstName,
+              slug: formDefinition.slug,
+            },
           },
-        })
+          attachments,
+        )
       } catch (error) {
         alertError(
           `Sending confirmation email to ${toEmail} for form ${formId} failed.`,

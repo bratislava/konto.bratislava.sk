@@ -443,10 +443,10 @@ describe('NasesService', () => {
       )
     })
 
-    it('should queue the email form even if the user is not verified and the form is not only for verified users', async () => {
+    it('should queue the email form even if the user is not authenticated and the form is not only for authenticated users', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         ...mockFormDefinitionEmail,
-        allowSendingByUnverifiedUsers: true,
+        allowSendingUnauthenticatedUsers: true,
       })
       jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
 
@@ -459,10 +459,10 @@ describe('NasesService', () => {
       })
     })
 
-    it('should queue the email form when the user is verified and needs to be verified', async () => {
+    it('should queue the email form when the user is authenticated and needs to be authenticated', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         ...mockFormDefinitionEmail,
-        allowSendingByUnverifiedUsers: false,
+        allowSendingUnauthenticatedUsers: false,
       })
 
       const result = await service.sendForm('1')

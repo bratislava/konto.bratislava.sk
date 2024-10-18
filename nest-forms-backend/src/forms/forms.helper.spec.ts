@@ -79,12 +79,12 @@ describe('FormsHelper', () => {
       )
     })
 
-    it('should return true when form is not owned and allowSendingByUnverifiedUsers is true', () => {
+    it('should return true when form is not owned and allowSendingUnauthenticatedUsers is true', () => {
       const form = { ico: null, userExternalId: null } as Forms
       expect(helper.userCanSendForm(form, true)).toBe(true)
     })
 
-    it('should return false when form is not owned and allowSendingByUnverifiedUsers is false', () => {
+    it('should return false when form is not owned and allowSendingUnauthenticatedUsers is false', () => {
       const form = { ico: null, userExternalId: null } as Forms
       expect(helper.userCanSendForm(form, false)).toBe(false)
     })

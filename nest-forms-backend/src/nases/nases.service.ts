@@ -292,7 +292,7 @@ export default class NasesService {
     }
 
     if (
-      !formDefinition.allowSendingByUnverifiedUsers &&
+      !formDefinition.allowSendingUnauthenticatedUsers &&
       !this.isUserVerified(user)
     ) {
       throw this.throwerErrorGuard.ForbiddenException(
@@ -304,7 +304,7 @@ export default class NasesService {
     if (
       !this.formsHelper.userCanSendForm(
         form,
-        formDefinition.allowSendingByUnverifiedUsers ?? false,
+        formDefinition.allowSendingUnauthenticatedUsers ?? false,
         userInfo,
         user?.sub,
       )

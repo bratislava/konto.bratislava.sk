@@ -20,6 +20,7 @@ type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
   fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
+  withHtmlBodyTags: boolean
 }
 
 const FileIdUrlMapContext = createContext<RenderSummaryEmailFileIdUrlMap | null>(null)
@@ -139,7 +140,30 @@ export const SummaryEmail = ({
   summaryJson,
   validatedSummary,
   fileIdUrlMap,
+  withHtmlBodyTags,
 }: SummaryEmailProps) => {
+  const content = (
+    <FileIdUrlMapContext.Provider value={fileIdUrlMap}>
+      <SummaryRenderer
+        summaryJson={summaryJson}
+        validatedSummary={validatedSummary}
+        renderForm={FormRenderer}
+        renderStep={StepRenderer}
+        renderField={FieldRenderer}
+        renderArray={ArrayRenderer}
+        renderArrayItem={ArrayItemRenderer}
+        renderStringValue={StringValueRenderer}
+        renderFileValue={FileValueRenderer}
+        renderNoneValue={NoneValueRenderer}
+        renderInvalidValue={InvalidValueRenderer}
+      />
+    </FileIdUrlMapContext.Provider>
+  )
+
+  if (!withHtmlBodyTags) {
+    return content
+  }
+
   return (
     <Html>
       <Body
@@ -149,21 +173,7 @@ export const SummaryEmail = ({
             '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
         }}
       >
-        <FileIdUrlMapContext.Provider value={fileIdUrlMap}>
-          <SummaryRenderer
-            summaryJson={summaryJson}
-            validatedSummary={validatedSummary}
-            renderForm={FormRenderer}
-            renderStep={StepRenderer}
-            renderField={FieldRenderer}
-            renderArray={ArrayRenderer}
-            renderArrayItem={ArrayItemRenderer}
-            renderStringValue={StringValueRenderer}
-            renderFileValue={FileValueRenderer}
-            renderNoneValue={NoneValueRenderer}
-            renderInvalidValue={InvalidValueRenderer}
-          />
-        </FileIdUrlMapContext.Provider>
+        {content}
       </Body>
     </Html>
   )

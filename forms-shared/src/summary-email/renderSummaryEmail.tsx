@@ -15,6 +15,7 @@ export type RenderSummaryEmailPayload = {
   formData: GenericObjectType
   fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
   serverFiles?: FormsBackendFile[]
+  withHtmlBodyTags?: boolean
 }
 
 export const renderSummaryEmail = async ({
@@ -22,6 +23,7 @@ export const renderSummaryEmail = async ({
   formData,
   fileIdUrlMap,
   serverFiles,
+  withHtmlBodyTags = false,
 }: RenderSummaryEmailPayload) => {
   const summaryJson = getSummaryJsonNode(
     formDefinition.schemas.schema,
@@ -36,6 +38,7 @@ export const renderSummaryEmail = async ({
       summaryJson={summaryJson}
       validatedSummary={validatedSummary}
       fileIdUrlMap={fileIdUrlMap}
+      withHtmlBodyTags={withHtmlBodyTags}
     ></SummaryEmail>,
   )
 }

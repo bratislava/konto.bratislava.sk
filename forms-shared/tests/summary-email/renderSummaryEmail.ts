@@ -22,6 +22,7 @@ describe('renderSummaryEmail', () => {
           formData: exampleForm.formData,
           serverFiles: exampleForm.serverFiles,
           fileIdUrlMap,
+          withHtmlBodyTags: true,
         })
       })
       ;(['desktop', 'mobile'] as const).forEach((size) => {

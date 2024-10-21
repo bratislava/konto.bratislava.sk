@@ -38,7 +38,7 @@
     "@nestjs/platform-express": "^10.4.4",
     "@nestjs/schedule": "^4.1.0",
     "@nestjs/swagger": "^7.3.1",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.21.1",
     "@rjsf/utils": "5.19.3",
     "amqplib": "^0.10.4",
     "aws-sdk": "^2.1691.0",

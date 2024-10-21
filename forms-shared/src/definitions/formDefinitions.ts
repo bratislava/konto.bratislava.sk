@@ -141,7 +141,7 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: '', // TODO,
-    userNamePath: '', // TODO,
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -153,8 +153,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userEmailPath: 'ziadatel.email',
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -166,8 +166,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userEmailPath: 'ziadatel.email',
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -180,7 +180,7 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -193,7 +193,7 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -206,7 +206,7 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -218,8 +218,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userEmailPath: 'ziadatel.email',
+    userNamePath: 'ziadatel.menoPriezvisko.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -231,8 +231,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    userEmailPath: 'podnet.email',
+    userNamePath: 'podnet.meno',
   },
   {
     type: FormDefinitionType.Email,
@@ -244,7 +244,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
+    userEmailPath: 'ziadatel.email',
     userNamePath: '', // TODO
   },
   {
@@ -257,7 +257,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
+    userEmailPath: 'ziadatel.email',
     userNamePath: '', // TODO
   },
   {

@@ -10,6 +10,7 @@ import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEma
 import * as jwt from 'jsonwebtoken'
 
 import prismaMock from '../../../../test/singleton'
+import ConvertService from '../../../convert/convert.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
@@ -44,6 +45,10 @@ describe('EmailFormsSubservice', () => {
         {
           provide: ConfigService,
           useValue: createMock<ConfigService>(),
+        },
+        {
+          provide: ConvertService,
+          useValue: createMock<ConvertService>(),
         },
         ThrowerErrorGuard,
       ],

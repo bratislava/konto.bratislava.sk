@@ -1,5 +1,6 @@
 import { Schemas } from '../generator/functions'
 import { SharepointData } from './sharepointTypes'
+import { GinisDataBase } from './mapGinisData'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -18,6 +19,7 @@ type FormDefinitionBase = {
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
   allowSendingUnauthenticatedUsers?: boolean // Default should be false, so undefined must be handled as false
+  mapGinisData?: <GinisData extends GinisDataBase>(ginisData: GinisData) => GinisData
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

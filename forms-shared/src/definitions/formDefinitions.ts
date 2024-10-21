@@ -20,6 +20,7 @@ import podnetyAPochvalyObcanov from '../schemas/olo/podnetyAPochvalyObcanov'
 import odvozObjemnehoOdpaduValnikom from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
 import triedenyZberPapieraPlastovASklaPrePravnickeOsoby from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
 import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
+import { mapGinisDataPriznanieKDaniZNehnutelnosti, mapGinisDataSur } from './mapGinisData'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -40,6 +41,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    mapGinisData: mapGinisDataSur,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -60,6 +62,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    mapGinisData: mapGinisDataSur,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -109,6 +112,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+    mapGinisData: mapGinisDataPriznanieKDaniZNehnutelnosti,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

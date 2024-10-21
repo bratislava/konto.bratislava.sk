@@ -245,7 +245,6 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: 'ziadatel.email',
-    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -258,7 +257,6 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: 'ziadatel.email',
-    userNamePath: '', // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -271,6 +269,5 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
   },
 ]

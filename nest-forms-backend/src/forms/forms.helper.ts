@@ -55,7 +55,7 @@ export default class FormsHelper {
 
   userCanSendForm(
     form: Forms,
-    allowSendingByUnverifiedUsers: boolean,
+    allowSendingUnauthenticatedUsers: boolean,
     userInfo?: ResponseGdprDataDto,
     userSub?: string,
   ): boolean {
@@ -69,9 +69,9 @@ export default class FormsHelper {
       return form.userExternalId === userSub
     }
 
-    // If not owned, return allowSendingByUnverifiedUsers
-    // (If the form is only for verified users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
-    return allowSendingByUnverifiedUsers
+    // If not owned, return allowSendingUnauthenticatedUsers
+    // (If the form is only for authenticated users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
+    return allowSendingUnauthenticatedUsers
   }
 
   userCanSendFormEid(

@@ -90,7 +90,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       [input('email', { title: 'E-mail', required: true, type: 'email' }, {})],
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Fyzická osoba'] }]]), [
-      input('emailObyvatel', { title: 'E-mail', type: 'email' }, {}),
+      input('email', { title: 'E-mail', type: 'email' }, {}),
     ]),
     object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),

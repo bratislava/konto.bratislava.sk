@@ -1254,7 +1254,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                 },
                 "then": {
                   "properties": {
-                    "emailObyvatel": {
+                    "email": {
                       "format": "email",
                       "title": "E-mail",
                       "type": "string",
@@ -1615,13 +1615,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -1748,7 +1741,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -4657,7 +4649,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       ],
                       "type": "object",
                     },
-                    "emailFyzickaOsoba": {
+                    "email": {
                       "format": "email",
                       "title": "Email",
                       "type": "string",
@@ -4769,7 +4761,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "title": "DIČ",
                       "type": "string",
                     },
-                    "emailPravnickaOsoba": {
+                    "email": {
                       "format": "email",
                       "title": "Email",
                       "type": "string",
@@ -4857,7 +4849,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                     "zastupeny",
                     "menoKontaktnejOsoby",
                     "telefonPravnickaOsoba",
-                    "emailPravnickaOsoba",
+                    "email",
                     "fakturacia",
                   ],
                   "type": "object",
@@ -5073,14 +5065,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "emailFyzickaOsoba": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "emailPravnickaOsoba": {
+      "email": {
         "ui:label": false,
         "ui:options": {
           "inputType": "email",
@@ -5203,7 +5188,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "menoPriezvisko",
         "adresaTrvalehoPobytu",
         "telefonPravnickaOsoba",
-        "emailFyzickaOsoba",
+        "email",
         "nazovOrganizacie",
         "adresaSidlaOrganizacie",
         "ico",
@@ -5213,7 +5198,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "konatel",
         "zastupeny",
         "menoKontaktnejOsoby",
-        "emailPravnickaOsoba",
         "fakturacia",
       ],
       "zastupeny": {
@@ -5534,7 +5518,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 },
                 "then": {
                   "properties": {
-                    "emailObyvatel": {
+                    "email": {
                       "format": "email",
                       "title": "E-mail",
                       "type": "string",
@@ -6309,13 +6293,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -6442,7 +6419,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -7276,7 +7252,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 },
                 "then": {
                   "properties": {
-                    "emailObyvatel": {
+                    "email": {
                       "format": "email",
                       "title": "E-mail",
                       "type": "string",
@@ -7729,13 +7705,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -7862,7 +7831,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -10034,11 +10002,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               {
                 "else": {
                   "properties": {
-                    "email": {
-                      "format": "email",
-                      "title": "Email",
-                      "type": "string",
-                    },
                     "telefon": {
                       "format": "ba-phone-number",
                       "title": "Telefónne číslo",
@@ -10047,7 +10010,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   },
                   "required": [
                     "telefon",
-                    "email",
                   ],
                   "type": "object",
                 },
@@ -10066,11 +10028,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
                 "then": {
                   "properties": {
-                    "emailNovehoOdberatela": {
-                      "format": "email",
-                      "title": "Email",
-                      "type": "string",
-                    },
                     "telefonNovehoOdberatela": {
                       "format": "ba-phone-number",
                       "title": "Nové telefónne číslo",
@@ -10079,7 +10036,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   },
                   "required": [
                     "telefonNovehoOdberatela",
-                    "emailNovehoOdberatela",
                   ],
                   "type": "object",
                 },
@@ -10123,6 +10079,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "Email",
+                "type": "string",
+              },
               "fakturacia": {
                 "allOf": [
                   {
@@ -10232,6 +10193,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             "required": [
               "typOdberatela",
               "menoKontaktnejOsoby",
+              "email",
               "fakturacia",
             ],
             "title": "Žiadateľ",
@@ -10726,13 +10688,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "emailNovehoOdberatela": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -10926,7 +10881,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "icDph",
         "menoKontaktnejOsoby",
         "telefonNovehoOdberatela",
-        "emailNovehoOdberatela",
         "telefon",
         "email",
         "fakturacia",

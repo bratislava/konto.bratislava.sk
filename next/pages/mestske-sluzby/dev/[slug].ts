@@ -4,7 +4,7 @@ import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
-import { getEmbeddedFormsAllowedOrigins } from '../../../frontend/utils/embeddedFormsAllowedOrigins'
+import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
@@ -27,18 +27,12 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
       return { notFound: true }
     }
 
-    const isEmbeddedQueryParam = context.query['externa-sluzba'] === 'true'
-
-    if (isEmbeddedQueryParam) {
-      const allowedOrigins = getEmbeddedFormsAllowedOrigins(formDefinition)
-      if (!allowedOrigins) {
-        return { notFound: true }
-      }
-
-      context.res.setHeader(
-        'Content-Security-Policy',
-        `frame-ancestors ${allowedOrigins.join(' ')}`,
-      )
+    const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+      formDefinition,
+      context,
+    )
+    if (!embeddedSuccess) {
+      return { notFound: true }
     }
 
     return {
@@ -50,7 +44,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
-          isEmbedded: isEmbeddedQueryParam,
+          isEmbedded,
           isDevRoute: true,
           strapiForm: { slug },
         },

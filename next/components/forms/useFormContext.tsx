@@ -42,12 +42,12 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   // TODO: Revisit this logic
   const requiresVerification =
-    !formDefinition.allowSendingByUnverifiedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
+    !formDefinition.allowSendingUnauthenticatedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
   const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
 
   // TODO: Revisit this logic
   const requiresSignIn =
-    !formDefinition.allowSendingByUnverifiedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
+    !formDefinition.allowSendingUnauthenticatedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
   const signInMissing = requiresSignIn && !isSignedIn
 
   const displayHeaderAndMenu = !isEmbedded

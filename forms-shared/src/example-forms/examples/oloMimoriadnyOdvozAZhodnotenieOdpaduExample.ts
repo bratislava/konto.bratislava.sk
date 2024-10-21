@@ -17,7 +17,7 @@ const exampleForm: ExampleForm = {
           psc: '84101',
         },
       },
-      emailObyvatel: 'test@email.com',
+      email: 'test@email.com',
     },
     sluzba: {
       infoOOdpade: [

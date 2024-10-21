@@ -39,7 +39,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       ),
       sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
       sharedPhoneNumberField('telefonPravnickaOsoba', true),
-      input('emailFyzickaOsoba', { title: 'Email', required: false, type: 'email' }, {}),
+      input('email', { title: 'Email', required: false, type: 'email' }, {}),
     ]),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
       input('nazovOrganizacie', { type: 'text', title: 'Názov organizácie', required: true }, {}),
@@ -70,7 +70,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         {},
       ),
       sharedPhoneNumberField('telefonPravnickaOsoba', true),
-      input('emailPravnickaOsoba', { title: 'Email', required: true, type: 'email' }, {}),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
         input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
         checkbox(

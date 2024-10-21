@@ -453,7 +453,7 @@ exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON
               "type": "None",
             },
           ],
-          "id": "root_ziadatel_emailObyvatel",
+          "id": "root_ziadatel_email",
           "label": "E-mail",
           "type": "Field",
         },
@@ -1470,6 +1470,18 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
           "displayValues": [
             {
               "type": "String",
+              "value": "test@email.com",
+            },
+          ],
+          "id": "root_ziadatel_email",
+          "label": "Email",
+          "type": "Field",
+          "value": "test@email.com",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
               "value": "Odpad s.r.o.",
             },
           ],
@@ -1584,18 +1596,6 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
           "label": "Meno kontaktnej osoby",
           "type": "Field",
           "value": "Jozef Druhý",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "test@email.com",
-            },
-          ],
-          "id": "root_ziadatel_emailPravnickaOsoba",
-          "label": "Email",
-          "type": "Field",
-          "value": "test@email.com",
         },
         {
           "displayValues": [
@@ -1798,7 +1798,7 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
               "value": "test@email.com",
             },
           ],
-          "id": "root_ziadatel_emailObyvatel",
+          "id": "root_ziadatel_email",
           "label": "E-mail",
           "type": "Field",
           "value": "test@email.com",

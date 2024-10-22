@@ -123,7 +123,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
-    "@graphql-codegen/client-preset": "4.2.5",
+    "@graphql-codegen/client-preset": "4.4.0",
     "@graphql-codegen/typescript-graphql-request": "6.2.0",
     "@next/bundle-analyzer": "14.2.3",
     "@svgr/webpack": "6.5.1",

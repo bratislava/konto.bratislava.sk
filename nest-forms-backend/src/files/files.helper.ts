@@ -125,7 +125,7 @@ export default class FilesHelper {
         fileSize,
         fileName,
         formId,
-        pospId: pospIdOrSlug,
+        pospId: pospIdOrSlug, // We use different naming, because for non-slovensko.sk forms we use slug instead of pospId
       },
     }
 

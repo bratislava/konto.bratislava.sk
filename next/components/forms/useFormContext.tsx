@@ -42,13 +42,18 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   // TODO: Revisit this logic
   const requiresVerification =
-    !formDefinition.allowSendingUnauthenticatedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
+    !formDefinition.allowSendingUnauthenticatedUsers &&
+    !isSlovenskoSkTaxFormDefinition(formDefinition)
   const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
 
   // TODO: Revisit this logic
   const requiresSignIn =
-    !formDefinition.allowSendingUnauthenticatedUsers && !isSlovenskoSkTaxFormDefinition(formDefinition)
+    !formDefinition.allowSendingUnauthenticatedUsers &&
+    !isSlovenskoSkTaxFormDefinition(formDefinition)
   const signInMissing = requiresSignIn && !isSignedIn
+
+  // TODO: Revisit this logic
+  const sendWithEidAllowed = isSlovenskoSkFormDefinition(formDefinition)
 
   const displayHeaderAndMenu = !isEmbedded
 
@@ -83,6 +88,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
     ...formServerContext,
     verificationMissing,
     signInMissing,
+    sendWithEidAllowed,
     displayHeaderAndMenu,
     xmlImportExportAllowed,
     jsonImportExportAllowed,

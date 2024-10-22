@@ -14,7 +14,7 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isTaxForm, isSigned, isReadonly } = useFormContext()
+  const { isTaxForm, isSigned, isReadonly, sendWithEidAllowed } = useFormContext()
   const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { getValidatedSummary } = useFormSummary()
@@ -54,7 +54,7 @@ const SummaryFormControls = () => {
               >
                 {t('summary.export_pdf')}
               </ButtonNew>
-              {isSigned && (
+              {isSigned && sendWithEidAllowed ? (
                 <ButtonNew
                   isDisabled={submitDisabled}
                   type="submit"
@@ -63,18 +63,20 @@ const SummaryFormControls = () => {
                 >
                   {t('summary.button_send_eid')}
                 </ButtonNew>
-              )}
+              ) : null}
             </>
           ) : (
             <>
-              <ButtonNew
-                isDisabled={submitDisabled}
-                type="submit"
-                variant="black-outline"
-                onPress={handleSendEidButtonPress}
-              >
-                {t('summary.button_send_eid')}
-              </ButtonNew>
+              {sendWithEidAllowed ? (
+                <ButtonNew
+                  isDisabled={submitDisabled}
+                  type="submit"
+                  variant="black-outline"
+                  onPress={handleSendEidButtonPress}
+                >
+                  {t('summary.button_send_eid')}
+                </ButtonNew>
+              ) : null}
               <ButtonNew
                 isDisabled={submitDisabled}
                 type="submit"
@@ -100,7 +102,7 @@ const SummaryFormControls = () => {
             >
               {t('summary.export_pdf')}
             </ButtonNew>
-            {isSigned && (
+            {isSigned && sendWithEidAllowed ? (
               <ButtonNew
                 isDisabled={submitDisabled}
                 size="small"
@@ -111,20 +113,22 @@ const SummaryFormControls = () => {
               >
                 {t('summary.button_send_eid')}
               </ButtonNew>
-            )}
+            ) : null}
           </>
         ) : (
           <>
-            <ButtonNew
-              isDisabled={submitDisabled}
-              size="small"
-              fullWidth
-              type="submit"
-              variant="black-outline"
-              onPress={handleSendEidButtonPress}
-            >
-              {t('summary.button_send_eid')}
-            </ButtonNew>
+            {sendWithEidAllowed ? (
+              <ButtonNew
+                isDisabled={submitDisabled}
+                size="small"
+                fullWidth
+                type="submit"
+                variant="black-outline"
+                onPress={handleSendEidButtonPress}
+              >
+                {t('summary.button_send_eid')}
+              </ButtonNew>
+            ) : null}
             <ButtonNew
               isDisabled={submitDisabled}
               size="small"

@@ -38,6 +38,7 @@ export const handleEmbeddedFormRequest = (
     return { success: false, isEmbedded: undefined }
   }
 
+  // This only allows embedding from the specified origins, we don't want it to be embedded in any other site.
   context.res.setHeader('Content-Security-Policy', `frame-ancestors ${allowedOrigins.join(' ')}`)
 
   return {

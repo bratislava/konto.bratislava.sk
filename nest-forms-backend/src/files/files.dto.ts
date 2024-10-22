@@ -103,7 +103,7 @@ export class FormInfo {
     example: 'esmao.eforms.bratislava.object_082',
   })
   @IsString()
-  declare pospId: string
+  declare pospIdOrSlug: string
 
   @ApiProperty({
     description: 'Form record id',

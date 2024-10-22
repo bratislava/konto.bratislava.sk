@@ -116,7 +116,7 @@ export default class FilesHelper {
     fileName: string,
     fileSize: number,
     formId: string,
-    pospId: string,
+    pospIdOrSlug: string,
   ): Promise<Files> {
     // if file does not exist in the database, save it
     const createData: Prisma.FilesCreateArgs = {
@@ -125,7 +125,7 @@ export default class FilesHelper {
         fileSize,
         fileName,
         formId,
-        pospId,
+        pospId: pospIdOrSlug,
       },
     }
 
@@ -288,7 +288,7 @@ export default class FilesHelper {
   }
 
   getPath(formInfo: FormInfo): string {
-    return `/${formInfo.pospId}/${formInfo.formId}/`
+    return `/${formInfo.pospIdOrSlug}/${formInfo.formId}/`
   }
 
   // optional status
@@ -312,24 +312,17 @@ export default class FilesHelper {
       )
     }
 
-    // TODO: Remove this, it is only needed because of `formDefinition.pospID`. When migrating to non-Slovensko.sk forms,
-    // different identifier must be used.
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}`,
-      )
-    }
-
     return {
-      pospId: formDefinition.pospID,
+      pospIdOrSlug: isSlovenskoSkFormDefinition(formDefinition)
+        ? formDefinition.pospID
+        : formDefinition.slug,
       formId: form.id,
     }
   }
 
   fileDto2formInfo(files: BasicFileDto): FormInfo {
     return {
-      pospId: files.pospId,
+      pospIdOrSlug: files.pospId,
       formId: files.formId,
     }
   }

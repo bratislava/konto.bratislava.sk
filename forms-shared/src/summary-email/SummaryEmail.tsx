@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import { Body, Container, Html, Link, Row, Section, Text } from '@react-email/components'
+import { Body, Container, Html, Link, Section, Text } from '@react-email/components'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -43,8 +43,8 @@ const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => 
     <Text
       style={{
         fontSize: '20px',
-        fontWeight: '600',
-        marginTop: isFirst ? '0px' : '16px',
+        fontWeight: 'bold',
+        marginTop: isFirst ? '0' : '16px',
         marginBottom: '16px',
       }}
     >
@@ -55,59 +55,61 @@ const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => 
 )
 
 const FieldRenderer = ({ field, children }: SummaryFieldRendererProps) => (
-  <Row
+  <Section
     style={{
       borderBottom: '2px solid #e5e7eb',
       paddingBottom: '10px',
       marginBottom: '10px',
     }}
   >
-    <Text style={{ margin: '0px', fontWeight: '600' }}>{field.label}</Text>
+    <Text style={{ margin: '0', fontWeight: 'bold' }}>{field.label}</Text>
     {children}
-  </Row>
+  </Section>
 )
 
-const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps) => {
-  return (
-    <Text
-      style={{
-        marginTop: '0px',
-        marginBottom: isLast ? '0px' : '8px',
-        whiteSpace: 'pre-wrap',
-      }}
-    >
-      {value}
-    </Text>
-  )
-}
+const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps) => (
+  <Text
+    style={{
+      margin: '0',
+      paddingBottom: isLast ? '0' : '8px',
+      whiteSpace: 'pre-wrap',
+    }}
+  >
+    {value}
+  </Text>
+)
 
 const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
   const fileIdUrlMap = useFileIdUrlMap()
   const fileUrl = fileIdUrlMap[fileInfo.id]
-  const content = fileUrl ? (
-    <Link href={fileUrl}>{fileInfo.fileName}</Link>
-  ) : (
-    <>{fileInfo.fileName}</>
+  return (
+    <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>
+      {fileUrl ? <Link href={fileUrl}>{fileInfo.fileName}</Link> : fileInfo.fileName}
+    </Text>
   )
-
-  return <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>{content}</Text>
 }
 
 const NoneValueRenderer = ({ isLast }: SummaryNoneValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>-</Text>
+  <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>-</Text>
 )
 
 const InvalidValueRenderer = ({ isLast }: SummaryInvalidValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px', color: '#ef4444' }}>
+  <Text
+    style={{
+      margin: '0',
+      paddingBottom: isLast ? '0' : '8px',
+      color: '#ef4444',
+    }}
+  >
     Neznáma hodnota
   </Text>
 )
 
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
-  <>
-    <Text style={{ fontWeight: '600', marginTop: '0px', marginBottom: '16px' }}>{array.title}</Text>
+  <Section>
+    <Text style={{ fontWeight: 'bold', margin: '0 0 16px 0' }}>{array.title}</Text>
     {children}
-  </>
+  </Section>
 )
 
 const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRendererProps) => (
@@ -115,19 +117,18 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
     style={{
       borderLeft: '2px solid #e5e7eb',
       paddingLeft: '16px',
-      marginTop: '0px',
-      marginBottom: isLast ? '0px' : '16px',
+      marginTop: '0',
+      marginBottom: isLast ? '0' : '16px',
     }}
   >
     <Text
       style={{
         display: 'inline-block',
-        fontWeight: '600',
+        fontWeight: 'bold',
         backgroundColor: '#f3f4f6',
-        padding: '0px 8px',
+        padding: '0 8px',
         borderRadius: '12px',
-        marginTop: '0px',
-        marginBottom: '8px',
+        margin: '0 0 8px 0',
       }}
     >
       {arrayItem.title}

@@ -62,6 +62,7 @@ const useGetContext = () => {
     formDefinition: { slug },
     signInMissing,
     verificationMissing,
+    sendWithEidAllowed,
   } = useFormContext()
   const { formData } = useFormData()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
@@ -281,6 +282,10 @@ const useGetContext = () => {
   }
 
   const handleSendEidButtonPress = () => {
+    if (!sendWithEidAllowed) {
+      return
+    }
+
     const validatedSummary = getValidatedSummary()
     const submitDisabled = isFormSubmitDisabled(validatedSummary, isValidSignature())
 

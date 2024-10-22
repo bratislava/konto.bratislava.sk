@@ -9,6 +9,7 @@ import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
@@ -64,6 +65,14 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
       // If the form was created by an unauthenticated user, a migration modal is displayed and form is not editable.
       const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
 
+      const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+        formDefinition,
+        context,
+      )
+      if (!embeddedSuccess) {
+        return { notFound: true }
+      }
+
       return {
         props: {
           formServerContext: {
@@ -75,8 +84,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
             initialSignature,
             formSent,
             formMigrationRequired,
-            // TODO: To be implemented.
-            isEmbedded: false,
+            isEmbedded,
             strapiForm: strapiForm ?? null,
           },
           ...(await slovakServerSideTranslations()),

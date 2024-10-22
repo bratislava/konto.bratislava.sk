@@ -29,10 +29,9 @@ const IframeResizerChild = ({ children, enabled = false }: IframeResizerChildPro
 
   const handleLibraryOnReady = () => {
     if (window.parentIFrame) {
-      // https://github.com/davidjbradshaw/iframe-resizer/pull/1351
       cleanupRef.current = window.parentIFrame.getParentProps((props) => {
         setParentProps(props)
-      }) as unknown as () => void
+      })
     }
   }
 

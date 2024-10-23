@@ -450,12 +450,14 @@ exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON
         {
           "displayValues": [
             {
-              "type": "None",
+              "type": "String",
+              "value": "test@email.com",
             },
           ],
-          "id": "root_ziadatel_emailObyvatel",
+          "id": "root_ziadatel_email",
           "label": "E-mail",
           "type": "Field",
+          "value": "test@email.com",
         },
         {
           "displayValues": [
@@ -1458,18 +1460,6 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
           "displayValues": [
             {
               "type": "String",
-              "value": "+421944555444",
-            },
-          ],
-          "id": "root_ziadatel_telefonPravnickaOsoba",
-          "label": "Telefónne číslo",
-          "type": "Field",
-          "value": "+421944555444",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "Odpad s.r.o.",
             },
           ],
@@ -1589,10 +1579,22 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
           "displayValues": [
             {
               "type": "String",
+              "value": "+421944555444",
+            },
+          ],
+          "id": "root_ziadatel_telefon",
+          "label": "Telefónne číslo",
+          "type": "Field",
+          "value": "+421944555444",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
               "value": "test@email.com",
             },
           ],
-          "id": "root_ziadatel_emailPravnickaOsoba",
+          "id": "root_ziadatel_email",
           "label": "Email",
           "type": "Field",
           "value": "test@email.com",
@@ -1798,7 +1800,7 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
               "value": "test@email.com",
             },
           ],
-          "id": "root_ziadatel_emailObyvatel",
+          "id": "root_ziadatel_email",
           "label": "E-mail",
           "type": "Field",
           "value": "test@email.com",
@@ -2616,12 +2618,14 @@ exports[`getSummaryJson oloOloTaxiExample summary JSON should match snapshot 1`]
         {
           "displayValues": [
             {
-              "type": "None",
+              "type": "String",
+              "value": "test@email.com",
             },
           ],
           "id": "root_ziadatel_email",
           "label": "E-mail",
           "type": "Field",
+          "value": "test@email.com",
         },
       ],
       "id": "root_ziadatel",

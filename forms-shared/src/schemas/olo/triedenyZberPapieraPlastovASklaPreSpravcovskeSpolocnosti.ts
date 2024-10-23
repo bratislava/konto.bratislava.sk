@@ -119,33 +119,8 @@ export default schema(
         { type: 'text', title: 'Meno kontaktnej osoby', required: true },
         {},
       ),
-      conditionalFields(
-        createCondition([
-          [
-            ['typOdberatela'],
-            {
-              enum: ['Zmena odberateľa'],
-            },
-          ],
-        ]),
-        [
-          input(
-            'telefonNovehoOdberatela',
-            { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
-            { size: 'medium', helptextHeader: '+421' },
-          ),
-          input('emailNovehoOdberatela', { title: 'Email', required: true, type: 'email' }, {}),
-        ],
-        [
-          input(
-            'telefon',
-            { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
-            { size: 'medium', helptextHeader: '+421' },
-          ),
-          input('email', { title: 'Email', required: true, type: 'email' }, {}),
-        ],
-      ),
-
+      sharedPhoneNumberField('telefon', true),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
       object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
         conditionalFields(
           createCondition([

@@ -6,6 +6,7 @@ const exampleForm: ExampleForm = {
     ziadatel: {
       ziadatelTyp: 'Fyzická osoba',
       telefon: '+421948777555',
+      email: 'test@email.com',
       fakturacia: {
         iban: 'SK3112000000198742637541',
         elektronickaFaktura: true,

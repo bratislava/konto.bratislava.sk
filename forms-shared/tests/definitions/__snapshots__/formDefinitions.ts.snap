@@ -1209,63 +1209,13 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                   "type": "object",
                 },
               },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Právnická osoba",
-                        "Správcovská spoločnosť",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "email",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Fyzická osoba",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "emailObyvatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [],
-                  "type": "object",
-                },
-              },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
               "fakturacia": {
                 "allOf": [
                   {
@@ -1340,6 +1290,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
             "required": [
               "ziadatelTyp",
               "telefon",
+              "email",
               "fakturacia",
             ],
             "title": "Žiadateľ",
@@ -1615,13 +1566,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -1748,7 +1692,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -4657,11 +4600,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       ],
                       "type": "object",
                     },
-                    "emailFyzickaOsoba": {
-                      "format": "email",
-                      "title": "Email",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -4679,16 +4617,10 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       ],
                       "type": "object",
                     },
-                    "telefonPravnickaOsoba": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
                   },
                   "required": [
                     "menoPriezvisko",
                     "adresaTrvalehoPobytu",
-                    "telefonPravnickaOsoba",
                   ],
                   "type": "object",
                 },
@@ -4769,11 +4701,57 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "title": "DIČ",
                       "type": "string",
                     },
-                    "emailPravnickaOsoba": {
-                      "format": "email",
-                      "title": "Email",
+                    "ico": {
+                      "title": "IČO",
                       "type": "string",
                     },
+                    "konatel": {
+                      "title": "Konateľ (meno, priezvisko)",
+                      "type": "string",
+                    },
+                    "menoKontaktnejOsoby": {
+                      "title": "Meno kontaktnej osoby",
+                      "type": "string",
+                    },
+                    "nazovOrganizacie": {
+                      "title": "Názov organizácie",
+                      "type": "string",
+                    },
+                    "platcaDph": {
+                      "title": "Som platca DPH?",
+                      "type": "boolean",
+                    },
+                    "zastupeny": {
+                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "nazovOrganizacie",
+                    "adresaSidlaOrganizacie",
+                    "ico",
+                    "dic",
+                    "konatel",
+                    "zastupeny",
+                    "menoKontaktnejOsoby",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "ziadatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "ziadatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
                     "fakturacia": {
                       "allOf": [
                         {
@@ -4818,46 +4796,8 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       ],
                       "type": "object",
                     },
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
-                      "type": "string",
-                    },
-                    "menoKontaktnejOsoby": {
-                      "title": "Meno kontaktnej osoby",
-                      "type": "string",
-                    },
-                    "nazovOrganizacie": {
-                      "title": "Názov organizácie",
-                      "type": "string",
-                    },
-                    "platcaDph": {
-                      "title": "Som platca DPH?",
-                      "type": "boolean",
-                    },
-                    "telefonPravnickaOsoba": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
-                    "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
-                      "type": "string",
-                    },
                   },
                   "required": [
-                    "nazovOrganizacie",
-                    "adresaSidlaOrganizacie",
-                    "ico",
-                    "dic",
-                    "konatel",
-                    "zastupeny",
-                    "menoKontaktnejOsoby",
-                    "telefonPravnickaOsoba",
-                    "emailPravnickaOsoba",
                     "fakturacia",
                   ],
                   "type": "object",
@@ -4865,6 +4805,16 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "Email",
+                "type": "string",
+              },
+              "telefon": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
               "ziadatelTyp": {
                 "default": "Fyzická osoba",
                 "oneOf": [
@@ -4883,6 +4833,8 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
             },
             "required": [
               "ziadatelTyp",
+              "telefon",
+              "email",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -5073,14 +5025,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "emailFyzickaOsoba": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "emailPravnickaOsoba": {
+      "email": {
         "ui:label": false,
         "ui:options": {
           "inputType": "email",
@@ -5186,7 +5131,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "Checkbox",
       },
-      "telefonPravnickaOsoba": {
+      "telefon": {
         "ui:label": false,
         "ui:options": {
           "inputType": "tel",
@@ -5202,8 +5147,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "ziadatelTyp",
         "menoPriezvisko",
         "adresaTrvalehoPobytu",
-        "telefonPravnickaOsoba",
-        "emailFyzickaOsoba",
         "nazovOrganizacie",
         "adresaSidlaOrganizacie",
         "ico",
@@ -5213,7 +5156,8 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "konatel",
         "zastupeny",
         "menoKontaktnejOsoby",
-        "emailPravnickaOsoba",
+        "telefon",
+        "email",
         "fakturacia",
       ],
       "zastupeny": {
@@ -5506,61 +5450,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 },
                 "then": {
                   "properties": {
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "email",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Fyzická osoba",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "emailObyvatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Právnická osoba",
-                        "Správcovská spoločnosť",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
                     "fakturacia": {
                       "allOf": [
                         {
@@ -5615,6 +5504,11 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
               "telefon": {
                 "format": "ba-phone-number",
                 "title": "Telefónne číslo",
@@ -5643,6 +5537,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
             "required": [
               "ziadatelTyp",
               "telefon",
+              "email",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -6309,13 +6204,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -6442,7 +6330,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -7231,63 +7118,13 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                   "type": "object",
                 },
               },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Právnická osoba",
-                        "Správcovská spoločnosť",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "email",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "ziadatelTyp": {
-                      "enum": [
-                        "Fyzická osoba",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "ziadatelTyp",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "emailObyvatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                  },
-                  "required": [],
-                  "type": "object",
-                },
-              },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
               "fakturacia": {
                 "allOf": [
                   {
@@ -7362,6 +7199,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
             "required": [
               "ziadatelTyp",
               "telefon",
+              "email",
               "fakturacia",
             ],
             "title": "Žiadateľ",
@@ -7729,13 +7567,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         },
         "ui:widget": "Input",
       },
-      "emailObyvatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -7862,7 +7693,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "kontaktnaOsoba",
         "telefon",
         "email",
-        "emailObyvatel",
         "fakturacia",
       ],
       "zastupeny": {
@@ -7982,6 +7812,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
               "menoPriezvisko",
               "adresaTrvalehoPobytu",
               "telefon",
+              "email",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -10032,59 +9863,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
               },
               {
-                "else": {
-                  "properties": {
-                    "email": {
-                      "format": "email",
-                      "title": "Email",
-                      "type": "string",
-                    },
-                    "telefon": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "telefon",
-                    "email",
-                  ],
-                  "type": "object",
-                },
-                "if": {
-                  "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Zmena odberateľa",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "emailNovehoOdberatela": {
-                      "format": "email",
-                      "title": "Email",
-                      "type": "string",
-                    },
-                    "telefonNovehoOdberatela": {
-                      "format": "ba-phone-number",
-                      "title": "Nové telefónne číslo",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "telefonNovehoOdberatela",
-                    "emailNovehoOdberatela",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
                 "if": {
                   "properties": {
                     "typOdberatela": {
@@ -10123,6 +9901,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "Email",
+                "type": "string",
+              },
               "fakturacia": {
                 "allOf": [
                   {
@@ -10209,6 +9992,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 "title": "Som platca DPH?",
                 "type": "boolean",
               },
+              "telefon": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
               "typOdberatela": {
                 "default": "Nový",
                 "oneOf": [
@@ -10232,6 +10020,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             "required": [
               "typOdberatela",
               "menoKontaktnejOsoby",
+              "telefon",
+              "email",
               "fakturacia",
             ],
             "title": "Žiadateľ",
@@ -10726,13 +10516,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "emailNovehoOdberatela": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "fakturacia": {
         "elektronickaFaktura": {
           "ui:options": {
@@ -10881,17 +10664,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       "telefon": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "+421",
           "inputType": "tel",
-          "size": "medium",
-        },
-        "ui:widget": "Input",
-      },
-      "telefonNovehoOdberatela": {
-        "ui:label": false,
-        "ui:options": {
-          "helptextHeader": "+421",
-          "inputType": "tel",
+          "placeholder": "+421",
           "size": "medium",
         },
         "ui:widget": "Input",
@@ -10925,8 +10699,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "platcaDph",
         "icDph",
         "menoKontaktnejOsoby",
-        "telefonNovehoOdberatela",
-        "emailNovehoOdberatela",
         "telefon",
         "email",
         "fakturacia",

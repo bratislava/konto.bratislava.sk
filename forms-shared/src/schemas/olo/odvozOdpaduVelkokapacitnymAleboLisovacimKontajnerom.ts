@@ -86,13 +86,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       ],
     ),
     sharedPhoneNumberField('telefon', true),
-    conditionalFields(
-      createCondition([[['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }]]),
-      [input('email', { title: 'E-mail', required: true, type: 'email' }, {})],
-    ),
-    conditionalFields(createCondition([[['ziadatelTyp'], { enum: ['Fyzická osoba'] }]]), [
-      input('emailObyvatel', { title: 'E-mail', type: 'email' }, {}),
-    ]),
+    input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(

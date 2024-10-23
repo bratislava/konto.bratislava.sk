@@ -126,11 +126,10 @@ export default class EmailFormsSubservice {
       ]
 
       try {
-        // TODO - temporary delivered mail, we should use some OLO mail with html data as when sending the confirmation email to OLO.
         await this.mailgunService.sendOloEmail(
           {
             to: toEmail,
-            template: MailgunTemplateEnum.GINIS_DELIVERED,
+            template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
             data: {
               formId: form.id,
               messageSubject: formTitle,

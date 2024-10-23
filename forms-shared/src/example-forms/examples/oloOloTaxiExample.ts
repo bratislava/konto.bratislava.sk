@@ -17,6 +17,7 @@ const exampleForm: ExampleForm = {
         },
       },
       telefon: '+421912444555',
+      email: 'test@email.com',
     },
     sluzba: {
       miestoDodania: 'Holandská 10',

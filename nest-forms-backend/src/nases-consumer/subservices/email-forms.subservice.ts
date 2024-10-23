@@ -176,13 +176,13 @@ export default class EmailFormsSubservice {
   private getFileIdsToUrlMap(form: FormWithFiles): Record<string, string> {
     const result: Record<string, string> = {}
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
-    const frontendUrl = this.configService.getOrThrow<string>('FRONTEND_URL')
+    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
     form.files.forEach((file) => {
       const token = jwt.sign({ fileId: file.id }, jwtSecret, {
         expiresIn: '5y',
       })
-      result[file.id] = `${frontendUrl}/download/file/${token}`
+      result[file.id] = `${selfUrl}/files/download/file/${token}`
     })
     return result
   }

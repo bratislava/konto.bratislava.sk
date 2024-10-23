@@ -35,4 +35,4 @@ yarn-error.log*
 *.tsbuildinfo
 
 # Copied by CopyWebpackPlugin in next.config.js
-public/scripts/iframe-resizer-child.js
+public/scripts/iframe-resizer-child-*.js

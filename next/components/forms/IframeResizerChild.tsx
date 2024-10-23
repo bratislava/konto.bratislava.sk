@@ -9,6 +9,8 @@ import React, {
   useState,
 } from 'react'
 
+import { environment } from '../../environment'
+
 const IframeResizerChildContext = createContext<iframeResizer.ParentProps | null>(null)
 
 export const useIframeResizerChildContext = () => {
@@ -22,6 +24,8 @@ interface IframeResizerChildProps extends PropsWithChildren {
 /*
  * Component that loads the `@iframe-resizer/child` library, handles load and clean up, and creates a context with
  * parent props.
+ *
+ * It is possible to load the library with ES module import, however, this would always include it.
  */
 const IframeResizerChild = ({ children, enabled = false }: IframeResizerChildProps) => {
   const cleanupRef = useRef<(() => void) | null>(null)
@@ -59,8 +63,7 @@ const IframeResizerChild = ({ children, enabled = false }: IframeResizerChildPro
 
   return (
     <IframeResizerChildContext.Provider value={parentProps}>
-      {/* Must be copied in next.config.js to work correctly. */}
-      <Script src="/scripts/iframe-resizer-child.js" async onLoad={handleScriptOnLoad} />
+      <Script src={environment.iframeResizerPublicPath} async onLoad={handleScriptOnLoad} />
       {children}
     </IframeResizerChildContext.Provider>
   )

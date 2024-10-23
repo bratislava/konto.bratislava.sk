@@ -90,8 +90,11 @@ export const environment = {
     process.env.NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS,
     false,
   ),
-
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
+  iframeResizerPublicPath: assertEnv(
+    'IFRAME_RESIZER_PUBLIC_PATH',
+    process.env.IFRAME_RESIZER_PUBLIC_PATH,
+  ),
   featureToggles: {
     developmentForms:
       assertEnv(

@@ -2,15 +2,28 @@ const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { join } = require('node:path')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
+const iframeResizerPublicPath = (() => {
+  const packagePath = path.join(__dirname, './node_modules/@iframe-resizer/child/package.json')
+  const { version } = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+
+  // The path must contain the version so that the browser does not serve the old cached version when the package is updated.
+  return `/scripts/iframe-resizer-child-${version}.js`
+})()
+
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  env: {
+    IFRAME_RESIZER_PUBLIC_PATH: iframeResizerPublicPath,
+  },
   i18n,
   reactStrictMode: true,
   images: {
@@ -116,12 +129,13 @@ const nextConfig = {
       },
     })
 
+    // See `IframeResizerChild.tsx`
     config.plugins.push(
       new CopyWebpackPlugin({
         patterns: [
           {
             from: join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js'),
-            to: join(__dirname, './public/scripts/iframe-resizer-child.js'),
+            to: join(__dirname, 'public', iframeResizerPublicPath),
           },
         ],
       }),

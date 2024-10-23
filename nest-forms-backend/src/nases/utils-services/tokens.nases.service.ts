@@ -307,7 +307,8 @@ export default class NasesUtilsService {
     let message: string | object | null = null
 
     if (form.formDataBase64) {
-      message = form.formDataBase64
+      // Remove any whitespace characters - data saved from signer software may contain those & slovensko.sk can't handle them
+      message = form.formDataBase64.replaceAll(/\s/g, '')
     }
 
     if (!isSigned) {

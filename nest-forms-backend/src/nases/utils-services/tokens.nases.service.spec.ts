@@ -177,7 +177,7 @@ describe('NasesUtilsService', () => {
         formDataJson: null,
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
-        formDataBase64: 'L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====',
+        formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
         ginisDocumentId: null,
         senderId: null,
         recipientId: null,
@@ -219,7 +219,7 @@ describe('NasesUtilsService', () => {
             `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
             `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
             `          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n` +
-            `          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\tag&gt;liaUWHDL====</Object>\n` +
+            `          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\\tag&gt;liaUWHDL====</Object>\n` +
             `        </MessageContainer>\n` +
             `      </Body>\n` +
             `    </SKTalkMessage>`,
@@ -247,7 +247,7 @@ describe('NasesUtilsService', () => {
         formDataJson: null,
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
-        formDataBase64: 'L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====',
+        formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
         ginisDocumentId: null,
         senderId: null,
         recipientId: null,

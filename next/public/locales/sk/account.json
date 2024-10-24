@@ -170,9 +170,9 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Online lístky na kúpaliská",
-    "announcement_card_text_first": "Otvorili sme mestské kúpaliská! Kúpte si lístok alebo permanentku online a ušetrite nie len čas strávený v rade, ale aj peniaze. Užite si zlaté časy pri vode. ",
-    "announcement_card_button_first": "Viac informácií",
+    "announcement_card_title_first": "Žiadosť o nájom bytu",
+    "announcement_card_text_first": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
+    "announcement_card_button_first": "Mám záujem",
     "announcement_card_title_second": "Založte si komunitnú záhradu",
     "announcement_card_text_second": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
     "announcement_card_button_second": "Viac informácií",
@@ -402,6 +402,12 @@
         "title": "Priznanie k dani z nehnuteľností",
         "description": "Vyplňte jednoducho priznanie s návodom a pomocnými kalkulačkami.",
         "buttonText": "Prejsť na priznanie",
+        "tag": "Nová služba"
+      },
+      "44": {
+        "title": "Žiadosť o nájom bytu",
+        "description": "Možnosť podať si žiadosť o mestský nájomný byt, pri ktorej sa bude posudzovať splnenie stanovených podmienok pre pridelenie nájomného bytu.",
+        "buttonText": "Mám záujem",
         "tag": "Nová služba"
       }
     }

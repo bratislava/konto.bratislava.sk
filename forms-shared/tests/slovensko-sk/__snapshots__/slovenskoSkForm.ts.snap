@@ -1866,7 +1866,7 @@ exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should
 </eform>"
 `;
 
-exports[`slovenskoSkForm ziadost-o-najomny-byt schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -1949,12 +1949,12 @@ exports[`slovenskoSkForm ziadost-o-najomny-byt schema XSD should match snapshot 
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":false},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"mieraFunkcnejPoruchy":"50az74","tzpPreukaz":true}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"tzpPreukaz":false,"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"75az100"}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"50az74"}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
   <Summary>
-    <Form title="Žiadosť o nájomný byt (TESTOVACIA VERZIA)">
+    <Form title="Žiadosť o nájom bytu">
       <Step id="root_ziadatelZiadatelka" title="Žiadateľ/žiadateľka">
         <Field id="root_ziadatelZiadatelka_osobneUdaje_menoPriezvisko_meno" label="Meno">
           <StringValue>Jana</StringValue>
@@ -2007,31 +2007,31 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
         <Field id="root_ziadatelZiadatelka_sucasneByvanie_bytovaNudza" label="Nachádzate sa v bytovej núdzi?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_zamestnanie" label="Ste zamestnaný/á?">
+        <Field id="root_ziadatelZiadatelka_prijem_zamestnanie" label="Boli ste v minulom kalendárnom roku zamestnaný/á?">
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
           <StringValue>1200</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_samostatnaZarobkovaCinnost" label="Máte príjem zo samostatnej zárobkovej činnosti?">
+        <Field id="root_ziadatelZiadatelka_prijem_samostatnaZarobkovaCinnost" label="Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_dochodok" label="Poberáte dôchodok?">
+        <Field id="root_ziadatelZiadatelka_prijem_dochodok" label="Poberali ste v minulom kalendárnom roku dôchodok?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_vyzivne" label="Poberáte výživné alebo náhradné výživné na dieťa/deti?">
+        <Field id="root_ziadatelZiadatelka_prijem_vyzivne" label="Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
           <StringValue>Áno</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_vyzivneVyska" label="Celková výška výživného na deti">
+        <Field id="root_ziadatelZiadatelka_prijem_vyzivneVyska" label="Mesačná výška sumy výživného na dieťa/deti">
           <StringValue>200</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_davkaVNezamestnanosti" label="Poberáte dávku v nezamestnanosti?">
+        <Field id="root_ziadatelZiadatelka_prijem_davkaVNezamestnanosti" label="Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_inePrijmy" label="Poberáte iné príjmy?">
+        <Field id="root_ziadatelZiadatelka_prijem_inePrijmy" label="Poberali ste v minulom kalendárnom roku iné príjmy?">
           <StringValue>Áno</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_prijem_inePrijmyVyska" label="Iné pravidelné príjmy">
+        <Field id="root_ziadatelZiadatelka_prijem_inePrijmyVyska" label="Iné pravidelné mesačné príjmy">
           <StringValue>150</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_zdravotnyStav_tzpPreukaz" label="Ste držiteľom preukazu ŤZP?">
@@ -2099,28 +2099,28 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
         <Field id="root_druhDruzka_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho druha/družky rovnaká ako vaša?">
           <StringValue>Áno</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_zamestnanie" label="Je váš druh/družka zamestnaný/á?">
+        <Field id="root_druhDruzka_prijem_zamestnanie" label="Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?">
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_druhDruzka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
           <StringValue>1500</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnost" label="Má príjem zo samostatnej zárobkovej činnosti?">
+        <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnostPrijem" label="Mesačný príjem z podnikania">
           <StringValue>300</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_dochodok" label="Poberá dôchodok?">
+        <Field id="root_druhDruzka_prijem_dochodok" label="Poberal/poberala v minulom kalendárnom roku dôchodok?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_vyzivne" label="Poberá výživné alebo náhradné výživné na dieťa/deti?">
+        <Field id="root_druhDruzka_prijem_vyzivne" label="Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_davkaVNezamestnanosti" label="Poberá dávku v nezamestnanosti?">
+        <Field id="root_druhDruzka_prijem_davkaVNezamestnanosti" label="Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_druhDruzka_prijem_inePrijmy" label="Poberá iné príjmy?">
+        <Field id="root_druhDruzka_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
           <StringValue>Nie</StringValue>
         </Field>
         <Field id="root_druhDruzka_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
@@ -2157,7 +2157,7 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
             <Field id="root_deti_zoznamDeti_0_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_0_prijem_maPrijem" label="Má dieťa staršie ako 15 rokov príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
+            <Field id="root_deti_zoznamDeti_0_prijem_maPrijem" label="Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
               <StringValue>Nie</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
@@ -2189,7 +2189,7 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
             <Field id="root_deti_zoznamDeti_1_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_1_prijem_maPrijem" label="Má dieťa staršie ako 15 rokov príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
+            <Field id="root_deti_zoznamDeti_1_prijem_maPrijem" label="Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
               <StringValue>Áno</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_1_prijem_prijemVyska" label="Čistý mesačný príjem dieťaťa">
@@ -2234,25 +2234,25 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie" label="Je člen/členka domácnosti zamestnaný/á?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie" label="Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_samostatnaZarobkovaCinnost" label="Má príjem zo samostatnej zárobkovej činnosti?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodok" label="Poberá dôchodok?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodok" label="Poberal/poberala v minulom kalendárnom roku dôchodok?">
               <StringValue>Áno</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska" label="Výška mesačného dôchodku">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska" label="Mesačná výška dôchodku">
               <StringValue>550</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_vyzivne" label="Poberá výživné alebo náhradné výživné na dieťa/deti?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_vyzivne" label="Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_davkaVNezamestnanosti" label="Poberá dávku v nezamestnanosti?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_davkaVNezamestnanosti" label="Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_inePrijmy" label="Poberá iné príjmy?">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
               <StringValue>Nie</StringValue>
             </Field>
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
@@ -2275,13 +2275,13 @@ exports[`slovenskoSkForm ziadostONajomnyBytExample XML should match snapshot 1`]
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Prosím uveďte maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
           <StringValue>700</StringValue>
         </Field>
       </Step>
       <Step id="root_sucetPrijmovCestneVyhlasenie" title="Súčet príjmov a čestné výhlásenie">
         <Field id="root_sucetPrijmovCestneVyhlasenie_cestneVyhlasenie" label="Čestné vyhlásenie">
-          <StringValue>Čestne vyhlasujem, že všetky údaje, uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
+          <StringValue>Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
         </Field>
       </Step>
     </Form>

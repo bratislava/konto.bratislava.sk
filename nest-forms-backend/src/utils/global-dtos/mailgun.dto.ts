@@ -8,6 +8,7 @@ export interface SendEmailInputDto {
     messageSubject: string
     firstName: string | null
     slug: string
+    htmlData?: string
   }
 }
 
@@ -17,4 +18,5 @@ export interface SendEmailVariablesDto {
   feHost?: string
   feedbackLinks?: string
   formId?: string
+  htmlData?: string
 }

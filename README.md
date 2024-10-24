@@ -20,7 +20,13 @@ Each sub-project contains a README which should get you up and running. More doc
 
 🗄️ `/nest-forms-backend` Service which is handling incoming and outgoing forms created by users
 
-🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the scanner.
+⚙️️ `/clamav` Instance of clamav https://www.clamav.net
+
+⚙️️ `/cvdmirror` Local mirror of cvd database used for clamav scanner
+
+🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the clamav scanner.
+
+🗄️ `/nest-tax-backend` This service is responsible for digital tax payment.
 
 🐳 `docker-compose.yml` - if you need to quickly set up a postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
 
@@ -40,3 +46,7 @@ By creating a PR, GitHub actions will run validation pipelines and build pipelin
 ## Product specification
 
 [Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
+
+## Acknowledgments
+
+This project utilizes the [iframe-resizer](https://github.com/davidjbradshaw/iframe-resizer) library, which is an open-source project developed by [David J. Bradshaw](https://github.com/davidjbradshaw). We are grateful for the work that has been put into this library and its contribution to the open-source community.

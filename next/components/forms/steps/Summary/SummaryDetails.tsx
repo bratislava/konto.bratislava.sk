@@ -1,4 +1,5 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
+import { useFormData } from 'components/forms/useFormData'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
 import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
@@ -135,7 +136,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 }
 
 const SummaryDetails = () => {
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { getValidatedSummary } = useFormSummary()
   const validatedSummary = getValidatedSummary()
   const {

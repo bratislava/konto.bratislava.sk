@@ -1,0 +1,13 @@
+resources:
+  - ../../base
+  - scaler.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: env
+  namespace: ${NAMESPACE}
+  behavior: merge
+  envs:
+  - .env

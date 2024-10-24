@@ -5,6 +5,7 @@ import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
 import { FormSummaryProvider } from './steps/Summary/useFormSummary'
 import { FormContextProvider, FormServerContext } from './useFormContext'
+import { FormDataProvider } from './useFormData'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -23,17 +24,19 @@ const FormProviders = ({ formServerContext, children }: PropsWithChildren<FormPr
         <FormLeaveProtectionProvider>
           <FormModalsProvider>
             <FormSignerLoaderProvider>
-              <FormStateProvider>
-                <FormSignatureProvider>
-                  <FormRedirectsProvider>
-                    <FormSummaryProvider>
-                      <FormSendProvider>
-                        <FormExportImportProvider>{children}</FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormSummaryProvider>
-                  </FormRedirectsProvider>
-                </FormSignatureProvider>
-              </FormStateProvider>
+              <FormDataProvider>
+                <FormStateProvider>
+                  <FormSignatureProvider>
+                    <FormRedirectsProvider>
+                      <FormSummaryProvider>
+                        <FormSendProvider>
+                          <FormExportImportProvider>{children}</FormExportImportProvider>
+                        </FormSendProvider>
+                      </FormSummaryProvider>
+                    </FormRedirectsProvider>
+                  </FormSignatureProvider>
+                </FormStateProvider>
+              </FormDataProvider>
             </FormSignerLoaderProvider>
           </FormModalsProvider>
         </FormLeaveProtectionProvider>

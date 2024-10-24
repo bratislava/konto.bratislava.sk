@@ -20,6 +20,12 @@ FROM base as prod
 COPY . ./
 RUN npm run build
 
+ARG GIT_COMMIT="undefined"
+ENV GIT_COMMIT=$GIT_COMMIT
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/forms-shared" \
+      org.opencontainers.image.licenses="EUPL-1.2"
+
 FROM base as test
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \

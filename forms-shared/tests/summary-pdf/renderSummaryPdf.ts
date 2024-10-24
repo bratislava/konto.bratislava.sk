@@ -17,14 +17,13 @@ describe('getSummaryJson', () => {
       )
 
       const pdfBuffer = await renderSummaryPdf({
-        jsonSchema: formDefinition.schemas.schema,
-        uiSchema: formDefinition.schemas.uiSchema,
+        formDefinition,
         formData: exampleForm.formData,
         launchBrowser: launchPlaywrightTest,
         serverFiles: exampleForm.serverFiles,
       })
 
       await expectPdfToMatchSnapshot(pdfBuffer)
-    }, /* The PDFs take a while to generate, so they need an increased timeout. */ 15000)
+    }, /* The PDFs take a while to generate, so they need an increased timeout. */ 30000)
   })
 })

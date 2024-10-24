@@ -1,15 +1,15 @@
+import { useFormData } from 'components/forms/useFormData'
 import { renderFormAdditionalInfo } from 'forms-shared/string-templates/renderTemplate'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import { useFormContext } from '../../useFormContext'
-import { useFormState } from '../../useFormState'
 
 const SummaryAdditionalInfo = () => {
   const { t } = useTranslation('forms')
   const { formDefinition } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const additionalInfo = useMemo(
     () => renderFormAdditionalInfo(formDefinition, formData, true),
     [formDefinition, formData],

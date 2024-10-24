@@ -37,7 +37,7 @@ describe('tax-form', () => {
         const base64Pdf = await generateTaxPdf({ formData: exampleForm.formData })
 
         await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
-      }, /* The PDFs take a while to generate, so they need an increased timeout. */ 15000)
+      }, /* The PDFs take a while to generate, so they need an increased timeout. */ 30000)
     },
   )
 })

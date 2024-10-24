@@ -21,3 +21,7 @@ updates:
     directory: '/nest-clamav-scanner'
     schedule:
       interval: 'weekly'
+  - package-ecosystem: 'npm'
+    directory: '/nest-tax-backend'
+    schedule:
+      interval: 'weekly'

@@ -5,10 +5,21 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndCond
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
-import { ziadostONajomnyBytSharepointData } from '../sharepoint/mappings/ziadostONajomnyByt'
-import ziadostONajomnyByt, {
-  ziadostONajomnyBytAdditionalInfoTemplate,
-} from '../schemas/ziadostONajomnyByt'
+import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
+import ziadostONajomBytu, {
+  ziadostONajomBytuAdditionalInfoTemplate,
+} from '../schemas/ziadostONajomBytu'
+import mimoriadnyOdvozAZhodnotenieOdpadu from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
+import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
+import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
+import docisteniStanovistaZbernychNadob from '../schemas/olo/docisteniStanovistaZbernychNadob'
+import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
+import koloTaxi from '../schemas/olo/koloTaxi'
+import oloTaxi from '../schemas/olo/oloTaxi'
+import podnetyAPochvalyObcanov from '../schemas/olo/podnetyAPochvalyObcanov'
+import odvozObjemnehoOdpaduValnikom from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
+import triedenyZberPapieraPlastovASklaPrePravnickeOsoby from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
+import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -101,23 +112,165 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
-    slug: 'ziadost-o-najomny-byt',
-    title: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
-    schemas: ziadostONajomnyByt,
+    slug: 'ziadost-o-najom-bytu',
+    title: 'Žiadosť o nájom bytu',
+    schemas: ziadostONajomBytu,
+    // pospID contains different wording because the original form was created with a different name
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o nájomný byt (TESTOVACIA VERZIA)',
-    sharepointData: ziadostONajomnyBytSharepointData,
-    // TODO
+    messageSubjectDefault: 'Žiadosť o nájom bytu',
+    sharepointData: ziadostONajomBytuSharepointData,
     ginisAssignment: {
-      ginisOrganizationName: 'SX',
-      ginisPersonName: 'Pinter Martin',
+      ginisOrganizationName: 'SNB',
     },
     isSigned: false,
     newGovernmentXml: true,
-    additionalInfoTemplate: ziadostONajomnyBytAdditionalInfoTemplate,
+    additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu',
+    title: 'TEST - Mimoriadny odvoz a zhodnotenie odpadu',
+    schemas: mimoriadnyOdvozAZhodnotenieOdpadu,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO,
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-energeticke-zhodnotenie-odpadu-v-zevo',
+    title: 'TEST - Energetické zhodnotenie odpadu v ZEVO',
+    schemas: energetickeZhodnotenieOdpaduVZevo,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom',
+    title: 'TEST - Uzatvorenie zmluvy o nakladaní s odpadom',
+    schemas: uzatvorenieZmluvyONakladaniSOdpadom,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-docistenie-stanovista-zbernych-nadob',
+    title: 'TEST - Dočistenie stanovišťa zberných nádob',
+    schemas: docisteniStanovistaZbernychNadob,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom',
+    title: 'TEST - Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
+    schemas: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-kolo-taxi',
+    title: 'TEST - KOLO Taxi',
+    schemas: koloTaxi,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-olo-taxi',
+    title: 'TEST - OLO Taxi',
+    schemas: oloTaxi,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-podnety-a-pochvaly-obcanov',
+    title: 'TEST - Podnety a pochvaly občanov',
+    schemas: podnetyAPochvalyObcanov,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-odvoz-objemneho-odpadu-valnikom',
+    title: 'TEST - Odvoz objemného odpadu valníkom',
+    schemas: odvozObjemnehoOdpaduValnikom,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
+    title: 'TEST - Triedený zber papiera, plastov a skla pre právnické osoby',
+    schemas: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
+    title: 'TEST - Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
+    schemas: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
+    email: 'barbora.puchlova@bratislava.sk',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
+    allowSendingUnauthenticatedUsers: true,
+    userEmailPath: '', // TODO,
+    userNamePath: '', // TODO
   },
 ]

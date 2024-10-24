@@ -14,6 +14,8 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
+import EmailFormsSubservice from './subservices/email-forms.subservice'
+import WebhookSubservice from './subservices/webhook.subservice'
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import NasesConsumerService from './nases-consumer.service'
     JsonXmlConvertService,
     MailgunService,
     MinioClientSubservice,
+    EmailFormsSubservice,
+    WebhookSubservice,
   ],
   exports: [NasesConsumerService, NasesConsumerHelper],
 })

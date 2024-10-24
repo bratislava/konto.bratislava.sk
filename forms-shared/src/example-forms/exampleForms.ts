@@ -8,7 +8,18 @@ import { ExampleForm } from './types'
 import zavazneStanoviskoKInvesticnejCinnostiExample from './examples/zavazneStanoviskoKInvesticnejCinnostiExample'
 import komunitneZahradyExample from './examples/komunitneZahradyExample'
 import stanoviskoKInvesticnemuZameruExample from './examples/stanoviskoKInvesticnemuZameruExample'
-import ziadostONajomnyBytExample from './examples/ziadostONajomnyBytExample'
+import ziadostONajomBytuExample from './examples/ziadostONajomBytuExample'
+import oloMimoriadnyOdvozAZhodnotenieOdpaduExample from './examples/oloMimoriadnyOdvozAZhodnotenieOdpaduExample'
+import oloEnergetickeZhodnotenieOdpaduVZevoExample from './examples/oloEnergetickeZhodnotenieOdpaduVZevoExample'
+import oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample from './examples/oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample'
+import oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample from './examples/oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample'
+import oloOdvozObjemnehoOdpaduValnikomExample from './examples/oloOdvozObjemnehoOdpaduValnikomExample'
+import oloOloTaxiExample from './examples/oloOloTaxiExample'
+import oloPodnetyAPochvalyObcanovExample from './examples/oloPodnetyAPochvalyObcanovExample'
+import oloKoloTaxiExample from './examples/oloKoloTaxiExample'
+import oloUzatvorenieZmluvyONakladaniSOdpadomExample from './examples/oloUzatvorenieZmluvyONakladaniSOdpadomExample'
+import oloDocistenieStanovistaZbernychNadobExample from './examples/oloDocistenieStanovistaZbernychNadobExample'
+import oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample from './examples/oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -22,7 +33,24 @@ export const exampleForms: Record<string, ExampleForm[]> = {
     priznanieKDaniZNehnutelnostiExample4,
     priznanieKDaniZNehnutelnostiExample5,
   ],
-  'ziadost-o-najomny-byt': [ziadostONajomnyBytExample],
+  'ziadost-o-najom-bytu': [ziadostONajomBytuExample],
+  'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu': [oloMimoriadnyOdvozAZhodnotenieOdpaduExample],
+  'olo-energeticke-zhodnotenie-odpadu-v-zevo': [oloEnergetickeZhodnotenieOdpaduVZevoExample],
+  'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti': [
+    oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample,
+  ],
+  'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby': [
+    oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample,
+  ],
+  'olo-odvoz-objemneho-odpadu-valnikom': [oloOdvozObjemnehoOdpaduValnikomExample],
+  'olo-olo-taxi': [oloOloTaxiExample],
+  'olo-podnety-a-pochvaly-obcanov': [oloPodnetyAPochvalyObcanovExample],
+  'olo-kolo-taxi': [oloKoloTaxiExample],
+  'olo-docistenie-stanovista-zbernych-nadob': [oloDocistenieStanovistaZbernychNadobExample],
+  'olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom': [
+    oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample,
+  ],
+  'olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom': [oloUzatvorenieZmluvyONakladaniSOdpadomExample],
 }
 
 export const exampleDevForms: Record<string, ExampleForm[]> = {}

@@ -1,8 +1,13 @@
 /* eslint-disable pii/no-phone-number */
 /* eslint-disable pii/no-email */
+import { Readable } from 'node:stream'
+
 import { getQueueToken } from '@nestjs/bull'
-import { ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { FileStatus } from '@prisma/client'
+import { v1, v4 } from 'uuid'
+import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../test/singleton'
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
@@ -17,6 +22,10 @@ import NasesUtilsService from './tokens.nases.service'
 jest.mock('axios')
 jest.mock('../../utils/subservices/minio-client.subservice')
 jest.mock('../../convert/convert.service')
+jest.mock('uuid', () => ({
+  v4: jest.fn(),
+  v1: jest.fn(),
+}))
 
 describe('NasesUtilsService', () => {
   let service: NasesUtilsService
@@ -24,13 +33,19 @@ describe('NasesUtilsService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forFeature(async () => ({
+          NASES_SENDER_URI: 'example_sender',
+          NASES_RECIPIENT_URI: 'example_recipient',
+          MINIO_SAFE_BUCKET: '',
+        })),
+      ],
       providers: [
         NasesUtilsService,
         ConvertService,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        ConfigService,
         TaxService,
         {
           provide: getQueueToken('tax'),
@@ -72,30 +87,213 @@ describe('NasesUtilsService', () => {
     })
   })
 
-  describe('formatXmlToOneLine', () => {
-    it('should correctly put xml into one line', () => {
-      const xml = `
-        <root>
-          < tag1   attribute="value1"/>
-          <   tag2   
-            attribute="value2">Content</tag2> 
-          <tag3      >Another content    
-               </  tag3>     
-        </root>`
+  describe('createEnvelopeSendMessage', () => {
+    it('should create XML', async () => {
+      const mockFiles = [
+        {
+          id: 'id-file0001',
+          pospId: 'posp0001',
+          formId: 'form0001',
+          scannerId: 'scanner0001',
+          minioFileName: 'miniofile0001',
+          fileName: 'file0001.pdf',
+          fileSize: 512,
+          status: FileStatus.ACCEPTED,
+          ginisOrder: 1,
+          ginisUploaded: false,
+          ginisUploadedError: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 'id-file0002',
+          pospId: 'posp0002',
+          formId: 'form0002',
+          scannerId: null,
+          minioFileName: 'miniofile0002',
+          fileName: 'file0002.pdf',
+          fileSize: 512,
+          status: FileStatus.ACCEPTED,
+          ginisOrder: null,
+          ginisUploaded: true,
+          ginisUploadedError: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ]
 
-      const xmlNormal = `
-        <root>
-          <tag1 attribute="value1"/>
-          <tag2 attribute="value2">Content</tag2>
-          <tag3>Another content</tag3>
-        </root>`
+      ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
+      ;(v1 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
+      service['convertService'].convertJsonToXmlObjectForForm = jest
+        .fn()
+        .mockResolvedValue({
+          eform: {
+            tag1: [{ $: { attribute: 'value1' } }],
+            tag2: [{ $: { attribute: 'value2' }, _: 'Content' }],
+            tag3: ['Another content\n'],
+          },
+        })
+
+      prismaMock.files.findMany.mockResolvedValue(mockFiles)
+
+      service['minioClientSubservice'].loadFileStream = jest
+        .fn()
+        .mockImplementation(async (_: string, filename: string) => {
+          const streamData = `test string for input: ${filename}`
+
+          const readableStream = new Readable()
+          // eslint-disable-next-line no-underscore-dangle
+          readableStream._read = () => {}
+          readableStream.push(streamData)
+          // eslint-disable-next-line unicorn/no-array-push-push
+          readableStream.push(null)
+        })
+
+      service['taxService'].getFilledInPdfBase64 = jest
+        .fn()
+        .mockResolvedValue('AWUKDHLAIUWDHU=====')
+
       // eslint-disable-next-line xss/no-mixed-html
-      const expected =
-        // eslint-disable-next-line no-secrets/no-secrets
-        '<root><tag1 attribute="value1"/><tag2 attribute="value2">Content</tag2><tag3>Another content</tag3></root>'
+      service['stream2buffer'] = jest
+        .fn()
+        // eslint-disable-next-line xss/no-mixed-html
+        .mockResolvedValue(Buffer.from('Mock file data <tag> string </tag>>'))
 
-      expect(service['formatXmlToOneLine'](xml)).toBe(expected)
-      expect(service['formatXmlToOneLine'](xmlNormal)).toBe(expected)
+      let returnXmlString = await service['createEnvelopeSendMessage']({
+        id: '123456678901234567890',
+        formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        externalId: null,
+        userExternalId: null,
+        email: null,
+        finishSubmission: new Date(),
+        mainUri: null,
+        actorUri: null,
+        ownerType: 'FO',
+        ico: '12345678',
+        state: 'QUEUED',
+        error: 'NONE',
+        formDataJson: null,
+        formDataGinis: null,
+        // eslint-disable-next-line xss/no-mixed-html
+        formDataBase64: 'L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====',
+        ginisDocumentId: null,
+        senderId: null,
+        recipientId: null,
+        archived: false,
+        ginisState: 'CREATED',
+      })
+
+      const parser = new Parser()
+      const builder = new Builder({
+        // eslint-disable-next-line unicorn/text-encoding-identifier-case
+        xmldec: { version: '1.0', encoding: 'UTF-8' },
+        renderOpts: {
+          pretty: false,
+        },
+      })
+
+      /* eslint-disable no-secrets/no-secrets */
+      let xmlExample = builder.buildObject(
+        await parser.parseStringPromise(
+          `<?xml version="1.0" encoding="UTF-8"?>\n` +
+            `    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n` +
+            `      <EnvelopeVersion>3.0</EnvelopeVersion>\n` +
+            `      <Header>\n` +
+            `        <MessageInfo>\n` +
+            `          <Class>EGOV_APPLICATION</Class>\n` +
+            `          <PospID>esmao.eforms.bratislava.obec_024</PospID>\n` +
+            `          <PospVersion>201501.2</PospVersion>\n` +
+            `          <MessageID>123456678901234567890</MessageID>\n` +
+            `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
+            `        </MessageInfo>\n` +
+            `      </Header>\n` +
+            `      <Body>\n` +
+            `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n` +
+            `          <SenderId>example_sender</SenderId>\n` +
+            `          <RecipientId>example_recipient</RecipientId>\n` +
+            `          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
+            `          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n` +
+            `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
+            `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
+            `          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n` +
+            `          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\tag&gt;liaUWHDL====</Object>\n` +
+            `        </MessageContainer>\n` +
+            `      </Body>\n` +
+            `    </SKTalkMessage>`,
+        ),
+      )
+      /* eslint-enable no-secrets/no-secrets */
+
+      expect(returnXmlString).toBe(xmlExample)
+
+      returnXmlString = await service['createEnvelopeSendMessage']({
+        id: '123456678901234567890',
+        formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        externalId: null,
+        userExternalId: null,
+        email: null,
+        finishSubmission: new Date(),
+        mainUri: null,
+        actorUri: null,
+        ownerType: 'FO',
+        ico: '12345678',
+        state: 'QUEUED',
+        error: 'NONE',
+        formDataJson: null,
+        formDataGinis: null,
+        // eslint-disable-next-line xss/no-mixed-html
+        formDataBase64: 'L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====',
+        ginisDocumentId: null,
+        senderId: null,
+        recipientId: null,
+        archived: false,
+        ginisState: 'CREATED',
+      })
+
+      /* eslint-disable no-secrets/no-secrets */
+      xmlExample = builder.buildObject(
+        // eslint-disable-next-line xss/no-mixed-html
+        await parser.parseStringPromise(
+          `<?xml version="1.0" encoding="UTF-8"?>\n` +
+            `    <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n` +
+            `      <EnvelopeVersion>3.0</EnvelopeVersion>\n` +
+            `      <Header>\n` +
+            `        <MessageInfo>\n` +
+            `          <Class>EGOV_APPLICATION</Class>\n` +
+            `          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n` +
+            `          <PospVersion>0.8</PospVersion>\n` +
+            `          <MessageID>123456678901234567890</MessageID>\n` +
+            `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
+            `        </MessageInfo>\n` +
+            `      </Header>\n` +
+            `      <Body>\n` +
+            `        <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">\n` +
+            `          <MessageId>123456678901234567890</MessageId>\n` +
+            `          <SenderId>example_sender</SenderId>\n` +
+            `          <RecipientId>example_recipient</RecipientId>\n` +
+            `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
+            `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
+            `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
+            `            <eform>\n` +
+            `              <tag1 attribute="value1"/>\n` +
+            `              <tag2 attribute="value2">Content</tag2>\n` +
+            `              <tag3>Another content\n` +
+            `</tag3>\n` +
+            `            </eform>\n` +
+            `          </Object>\n` +
+            `        </MessageContainer>\n` +
+            `      </Body>\n` +
+            `    </SKTalkMessage>`,
+        ),
+      )
+      /* eslint-enable no-secrets/no-secrets */
+
+      expect(returnXmlString).toBe(xmlExample)
     })
   })
 })

@@ -1,23 +1,19 @@
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Files } from '@prisma/client'
 
-import prismaMock from '../../test/singleton'
-import FormsHelper from '../forms/forms.helper'
-import FormsService from '../forms/forms.service'
-import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
-import PrismaService from '../prisma/prisma.service'
-import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import FilesHelper from './files.helper'
-import FilesService from './files.service'
+import prismaMock from '../../../test/singleton'
+import FormsHelper from '../../forms/forms.helper'
+import FormsService from '../../forms/forms.service'
+import NasesConsumerHelper from '../../nases-consumer/nases-consumer.helper'
+import PrismaService from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
+import FilesHelper from '../files.helper'
+import FilesService from '../files.service'
 
-jest.mock('@nestjs/config')
-jest.mock('../utils/subservices/minio-client.subservice')
-jest.mock('../forms/forms.service')
-jest.mock('./files.helper')
-jest.mock('../forms/forms.helper')
-jest.mock('../nases-consumer/nases-consumer.helper')
+jest.mock('../../forms/forms.service')
 
 describe('FilesService', () => {
   let service: FilesService
@@ -27,13 +23,19 @@ describe('FilesService', () => {
       providers: [
         FilesService,
         { provide: PrismaService, useValue: prismaMock },
-        ConfigService,
-        MinioClientSubservice,
-        FormsService,
-        FilesHelper,
-        FormsHelper,
+        { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: MinioClientSubservice,
+          useValue: createMock<MinioClientSubservice>(),
+        },
+        { provide: FormsService, useValue: createMock<FormsService>() },
+        { provide: FilesHelper, useValue: createMock<FilesHelper>() },
+        { provide: FormsHelper, useValue: createMock<FormsHelper>() },
         ThrowerErrorGuard,
-        NasesConsumerHelper,
+        {
+          provide: NasesConsumerHelper,
+          useValue: createMock<NasesConsumerHelper>(),
+        },
       ],
     }).compile()
 

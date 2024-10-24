@@ -45,7 +45,7 @@ export default class ConvertPdfService {
     }
 
     const formInfo: FormInfo = {
-      pospId: formDefinition.pospID,
+      pospIdOrSlug: formDefinition.pospID,
       formId,
     }
     const formPath = this.filesHelper.getPath(formInfo)

@@ -4,7 +4,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
-  isSlovenskoSkGenericFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
@@ -41,11 +40,20 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
 
-  const requiresVerification = isSlovenskoSkGenericFormDefinition(formDefinition)
+  // TODO: Revisit this logic
+  const requiresVerification =
+    !formDefinition.allowSendingUnauthenticatedUsers &&
+    !isSlovenskoSkTaxFormDefinition(formDefinition)
   const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
 
-  const requiresSignIn = isSlovenskoSkGenericFormDefinition(formDefinition)
+  // TODO: Revisit this logic
+  const requiresSignIn =
+    !formDefinition.allowSendingUnauthenticatedUsers &&
+    !isSlovenskoSkTaxFormDefinition(formDefinition)
   const signInMissing = requiresSignIn && !isSignedIn
+
+  // TODO: Revisit this logic
+  const sendWithEidAllowed = isSlovenskoSkFormDefinition(formDefinition)
 
   const displayHeaderAndMenu = !isEmbedded
 
@@ -80,6 +88,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
     ...formServerContext,
     verificationMissing,
     signInMissing,
+    sendWithEidAllowed,
     displayHeaderAndMenu,
     xmlImportExportAllowed,
     jsonImportExportAllowed,

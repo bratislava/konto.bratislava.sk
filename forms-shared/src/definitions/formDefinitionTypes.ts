@@ -17,7 +17,7 @@ type FormDefinitionBase = {
   messageSubjectFormat?: string
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
-  allowSendingByUnverifiedUsers?: boolean // Default should be false, so undefined must be handled as false
+  allowSendingUnauthenticatedUsers?: boolean // Default should be false, so undefined must be handled as false
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

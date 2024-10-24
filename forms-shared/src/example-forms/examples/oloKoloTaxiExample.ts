@@ -19,8 +19,8 @@ const exampleForm: ExampleForm = {
       konatel: 'Alexander Veľký',
       zastupeny: 'Alexander Macedónsky',
       menoKontaktnejOsoby: 'Jozef Druhý',
-      telefonPravnickaOsoba: '+421944555444',
-      emailPravnickaOsoba: 'test@email.com',
+      telefon: '+421944555444',
+      email: 'test@email.com',
       fakturacia: {
         iban: 'SK3112000000198742637541',
         elektronickaFaktura: true,

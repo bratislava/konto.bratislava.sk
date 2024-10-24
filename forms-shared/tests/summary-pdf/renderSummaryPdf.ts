@@ -24,6 +24,6 @@ describe('getSummaryJson', () => {
       })
 
       await expectPdfToMatchSnapshot(pdfBuffer)
-    }, /* The PDFs take a while to generate, so they need an increased timeout. */ 15000)
+    }, /* The PDFs take a while to generate, so they need an increased timeout. */ 30000)
   })
 })

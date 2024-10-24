@@ -303,7 +303,7 @@ export default class FilesService {
     }
 
     const formInfo = this.filesHelper.forms2formInfo(form)
-    const { pospId } = formInfo
+    const { pospIdOrSlug } = formInfo
     const filePath = this.filesHelper.getPath(formInfo)
     const minioFileName = this.filesHelper.createMinioFileName(
       bufferedFile,
@@ -329,7 +329,7 @@ export default class FilesService {
         fileName,
         fileSize,
         formId,
-        pospId,
+        pospIdOrSlug,
       )
     } else {
       throw this.throwerErrorGuard.UnprocessableEntityException(

@@ -42,6 +42,10 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
+import objednavkaZakresuSieti from '../schemas/tsb/objednavkaZakresuSieti'
+import objednavkaVytycenia from '../schemas/tsb/objednavkaVytycenie'
+import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
+import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -293,5 +297,49 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
     extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
+  },
+  {
+    type: FormDefinitionType.Webhook,
+    slug: 'tsb-objednavka-zakresu-sieti',
+    title: 'TEST - Objednávka zákresu sietí',
+    schemas: objednavkaZakresuSieti,
+    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
+    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    allowSendingUnauthenticatedUsers: true,
+  },
+  {
+    type: FormDefinitionType.Webhook,
+    slug: 'tsb-objednavka-vytycenia',
+    title: 'TEST - Objednávka vytýčenia',
+    schemas: objednavkaVytycenia,
+    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
+    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    allowSendingUnauthenticatedUsers: true,
+  },
+  {
+    type: FormDefinitionType.Webhook,
+    slug: 'tsb-ziadost-o-stanovisko-pd',
+    title: 'TEST - Žiadosť o stanovisko k projektovej dokumentácii',
+    schemas: ziadostOStanoviskoPD,
+    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
+    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    allowSendingUnauthenticatedUsers: true,
+  },
+  {
+    type: FormDefinitionType.Webhook,
+    slug: 'tsb-umiestnenie-zariadenia',
+    title: 'TEST - Umiestnenie zariadenia',
+    schemas: umiestnenieZariadenia,
+    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
+    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    allowSendingUnauthenticatedUsers: true,
   },
 ]

@@ -209,6 +209,8 @@ export class AdminService {
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
+    const variableSymbols: string[] = []
+
     for (const elem of norisData) {
       birthNumbersResult.push(elem.ICO_RC)
       const taxExists = await this.prismaService.tax.findFirst({
@@ -239,14 +241,22 @@ export class AdminService {
             )
           }
         }
+        variableSymbols.push(elem.variabilny_symbol)
       }
     }
+
+    // TODO do it in some queue! It is possible it will fail.
+    await this.updatePaymentsFromNoris({
+      type: 'variableSymbols',
+      data: { year: +data.year, variableSymbols },
+    })
     return { birthNumbers: birthNumbersResult }
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
     const norisData = await this.norisService.getDataFromNoris(data)
     let count = 0
+    const variableSymbols: string[] = []
     for (const elem of norisData as NorisTaxPayersDto[]) {
       const taxExists = await this.prismaService.tax.findFirst({
         where: {
@@ -257,6 +267,7 @@ export class AdminService {
         },
       })
       if (taxExists) {
+        variableSymbols.push(elem.variabilny_symbol)
         await this.prismaService.taxInstallment.deleteMany({
           where: {
             taxId: taxExists.id,
@@ -276,10 +287,15 @@ export class AdminService {
         }
       }
     }
+
+    // TODO do it in some queue! It is possible it will fail.
+    await this.updatePaymentsFromNoris({
+      type: 'variableSymbols',
+      data: { year: +data.year, variableSymbols },
+    })
     return { updated: count }
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
     let created = 0
     let alreadyCreated = 0
@@ -304,33 +320,38 @@ export class AdminService {
           },
         })
         if (taxData) {
-          const payerData = await this.prismaService.taxPayment.aggregate({
-            _sum: {
-              amount: true,
-            },
-            _count: {
-              _all: true,
-            },
-            where: {
-              taxId: taxData.id,
-              status: 'SUCCESS',
-            },
-          })
-          const payedFromNoris =
-            typeof norisPayment.uhrazeno === 'number'
-              ? currency(norisPayment.uhrazeno).intValue
-              : currency(norisPayment.uhrazeno.replace(',', '.')).intValue
-          const forPayment =
-            typeof norisPayment.uhrazeno === 'number'
-              ? currency(norisPayment.zbyva_uhradit).intValue
-              : currency(norisPayment.zbyva_uhradit.replace(',', '.')).intValue
-          if (
-            payerData._sum.amount === null ||
-            payerData._sum.amount < payedFromNoris
-          ) {
-            created += 1
-            const createdTaxPayment =
-              await this.prismaService.taxPayment.create({
+          // eslint-disable-next-line @typescript-eslint/no-loop-func, sonarjs/cognitive-complexity
+          await this.prismaService.$transaction(async (prisma) => {
+            const payerData = await prisma.taxPayment.aggregate({
+              _sum: {
+                amount: true,
+              },
+              _count: {
+                _all: true,
+              },
+              where: {
+                taxId: taxData.id,
+                status: 'SUCCESS',
+              },
+            })
+
+            const payedFromNoris =
+              typeof norisPayment.uhrazeno === 'number'
+                ? currency(norisPayment.uhrazeno).intValue
+                : currency(norisPayment.uhrazeno.replace(',', '.')).intValue
+
+            const forPayment =
+              typeof norisPayment.uhrazeno === 'number'
+                ? currency(norisPayment.zbyva_uhradit).intValue
+                : currency(norisPayment.zbyva_uhradit.replace(',', '.'))
+                    .intValue
+
+            if (
+              payerData._sum.amount === null ||
+              payerData._sum.amount < payedFromNoris
+            ) {
+              created += 1
+              const createdTaxPayment = await prisma.taxPayment.create({
                 data: {
                   amount: payedFromNoris - payerData._sum.amount,
                   source: 'BANK_ACCOUNT',
@@ -339,73 +360,76 @@ export class AdminService {
                   status: 'SUCCESS',
                 },
               })
-            const userFromCityAccount =
-              await this.cityAccountSubservice.getUserDataAdmin(
-                taxData.taxPayer.birthNumber,
-              )
-            if (userFromCityAccount) {
-              await this.bloomreachService.trackEventTaxPayment(
-                {
-                  amount: createdTaxPayment.amount,
-                  payment_source: 'BANK_ACCOUNT',
-                  year: taxData.year,
-                },
-                userFromCityAccount.externalId,
-              )
-            }
 
-            // TODO maybe all theese ifs remove, because logic will be in bloomreach
-            if (
-              payerData._count._all === 0 &&
-              payedFromNoris === taxData.amount
-            ) {
-              console.info('ZAPLATENE CELE NA PRVY KRAT')
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris === taxData.amount
-            ) {
-              console.info('ZAPLATENE CELE NA X-ty KRAT')
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris < taxData.amount
-            ) {
-              console.info('ZAPLATENA X-ta splatka')
-            } else if (
-              payerData._count._all === 0 &&
-              payedFromNoris < taxData.amount
-            ) {
-              console.info('ZAPLATENA prva splatka')
-            } else if (payedFromNoris > taxData.amount && forPayment === 0) {
-              console.log(
-                'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
-            } else if (
-              payerData._count._all === 0 &&
-              payedFromNoris >= taxData.amount &&
-              forPayment > 0
-            ) {
-              console.error(
-                'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris >= taxData.amount &&
-              forPayment > 0
-            ) {
-              // TODO send bloomreach email
-              console.error(
-                'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
+              const userFromCityAccount =
+                await this.cityAccountSubservice.getUserDataAdmin(
+                  taxData.taxPayer.birthNumber,
+                )
+
+              if (userFromCityAccount) {
+                await this.bloomreachService.trackEventTaxPayment(
+                  {
+                    amount: createdTaxPayment.amount,
+                    payment_source: 'BANK_ACCOUNT',
+                    year: taxData.year,
+                  },
+                  userFromCityAccount.externalId,
+                )
+              }
+
+              // TODO maybe all theese ifs remove, because logic will be in bloomreach
+              if (
+                payerData._count._all === 0 &&
+                payedFromNoris === taxData.amount
+              ) {
+                console.info('ZAPLATENE CELE NA PRVY KRAT')
+              } else if (
+                payerData._count._all > 0 &&
+                payedFromNoris === taxData.amount
+              ) {
+                console.info('ZAPLATENE CELE NA X-ty KRAT')
+              } else if (
+                payerData._count._all > 0 &&
+                payedFromNoris < taxData.amount
+              ) {
+                console.info('ZAPLATENA X-ta splatka')
+              } else if (
+                payerData._count._all === 0 &&
+                payedFromNoris < taxData.amount
+              ) {
+                console.info('ZAPLATENA prva splatka')
+              } else if (payedFromNoris > taxData.amount && forPayment === 0) {
+                console.log(
+                  'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+                )
+                norisInconsistency.push(norisPayment.variabilny_symbol)
+              } else if (
+                payerData._count._all === 0 &&
+                payedFromNoris >= taxData.amount &&
+                forPayment > 0
+              ) {
+                console.error(
+                  'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+                )
+                norisInconsistency.push(norisPayment.variabilny_symbol)
+              } else if (
+                payerData._count._all > 0 &&
+                payedFromNoris >= taxData.amount &&
+                forPayment > 0
+              ) {
+                // TODO send bloomreach email
+                console.error(
+                  'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+                )
+                norisInconsistency.push(norisPayment.variabilny_symbol)
+              } else {
+                console.error('ERROR - Status-500: NEOCAKAVANY STAV')
+                norisErrorLoad.push(norisPayment.variabilny_symbol)
+              }
             } else {
-              console.error('ERROR - Status-500: NEOCAKAVANY STAV')
-              norisErrorLoad.push(norisPayment.variabilny_symbol)
+              alreadyCreated += 1
             }
-          } else {
-            alreadyCreated += 1
-          }
+          })
         } else {
           notFound += 1
         }

@@ -40,29 +40,31 @@ export const taxDetail = (data: NorisTaxPayersDto, taxId: number) => {
   const response = []
   for (const [keyTaxConfig, valueTaxConfig] of Object.entries(config)) {
     for (const taxType of valueTaxConfig.types) {
+      const baseValue = data[
+        `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
+          valueTaxConfig.base
+        }_${taxType}` as keyof NorisTaxPayersDto
+      ]
+      const amountValue = data[
+        `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
+          valueTaxConfig.amount
+        }_${taxType}` as keyof NorisTaxPayersDto
+      ]
       response.push({
         taxId,
         areaType: taxType,
         type: valueTaxConfig.areaType,
         base: currency(
-          data[
-            `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-              valueTaxConfig.base
-            }_${taxType}`
-          ].replace(',', '.'),
+          typeof baseValue === 'string' ? baseValue.replace(',', '.') : baseValue,
         ).intValue,
         amount: currency(
-          data[
-            `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-              valueTaxConfig.amount
-            }_${taxType}`
-          ].replace(',', '.'),
+          typeof amountValue === 'string' ? amountValue.replace(',', '.') : amountValue,
         ).intValue,
         area: valueTaxConfig.area
           ? data[
               `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
                 valueTaxConfig.area
-              }_${taxType}`
+              }_${taxType}` as keyof NorisTaxPayersDto
             ]
           : null,
       })

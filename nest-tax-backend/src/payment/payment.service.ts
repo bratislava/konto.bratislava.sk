@@ -6,9 +6,10 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { PAYMENT_STATUSES } from 'src/utils/subservices/dtos/gpwebpay.dto'
+import { PAYMENT_STATUSES, PaymentResponseQueryDto } from 'src/utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
+import { ConfigService } from '@nestjs/config'
 
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
@@ -20,10 +21,11 @@ export class PaymentService {
     private errorThrowerGuard: ErrorThrowerGuard,
     private cityAccountSubservice: CityAccountSubservice,
     private bloomreachService: BloomreachService,
+    private configService: ConfigService,
   ) {}
 
   private async getPaymentUrl(tax: Tax): Promise<string> {
-    let taxPayment: TaxPaymentWithTaxYear
+    let taxPayment: TaxPaymentWithTaxYear | null
     try {
       taxPayment = await this.prisma.taxPayment.findFirst({
         where: {
@@ -90,7 +92,7 @@ export class PaymentService {
   }
 
   async redirectToPayGateByTaxId(uuid: string) {
-    let tax: Tax
+    let tax: Tax | null = null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
@@ -102,14 +104,14 @@ export class PaymentService {
     }
 
     if (!tax) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
     return this.getPaymentUrl(tax)
   }
 
   async getPayGateUrlByUserAndYear(year: string, birthNumber: string) {
-    let taxPayer: TaxPayer
+    let taxPayer: TaxPayer | null = null
     try {
       taxPayer = await this.prisma.taxPayer.findUnique({
         where: { birthNumber },
@@ -119,10 +121,10 @@ export class PaymentService {
     }
 
     if (!taxPayer) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
-    let tax: Tax
+    let tax: Tax | null = null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
@@ -137,7 +139,7 @@ export class PaymentService {
     }
 
     if (!tax) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
     return this.getPaymentUrl(tax)
@@ -151,7 +153,7 @@ export class PaymentService {
     DIGEST,
     DIGEST1,
     RESULTTEXT,
-  }): Promise<string> {
+  }: PaymentResponseQueryDto): Promise<string> {
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,

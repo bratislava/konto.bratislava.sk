@@ -1,10 +1,10 @@
 // TODO
 /* eslint-disable no-restricted-syntax */
-import { Tax, TaxDetail, TaxInstallment } from '@prisma/client'
+import { Tax, TaxDetail, TaxDetailareaType, TaxDetailType, TaxInstallment } from '@prisma/client'
 import currency from 'currency.js'
 
 export const taxDetailsToPdf = (taxDetails: TaxDetail[]) => {
-  const response = {}
+  const response: Record<TaxDetailType, Record<TaxDetailareaType, {area: string | null, base: string, amount: string}>> = {}
   for (const taxDetail of taxDetails) {
     if (taxDetail.type in response === false) {
       response[taxDetail.type] = {}

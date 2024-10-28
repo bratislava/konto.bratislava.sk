@@ -28,7 +28,7 @@ export class NorisService {
 
   async getDataFromNoris(data: RequestPostNorisLoadDataDto) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: process.env.MSSQL_HOST ?? 'localhost',
       port: 1433,
       database: process.env.MSSQL_DB,
       user: process.env.MSSQL_USERNAME,
@@ -64,7 +64,7 @@ export class NorisService {
     lastLoadedPayment?: LoadingPaymentsFromNoris | null,
   ) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: process.env.MSSQL_HOST ?? 'localhost',
       port: 1433,
       database: process.env.MSSQL_DB,
       user: process.env.MSSQL_USERNAME,
@@ -116,7 +116,7 @@ export class NorisService {
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: process.env.MSSQL_HOST ?? 'localhost',
       port: 1433,
       database: process.env.MSSQL_DB,
       user: process.env.MSSQL_USERNAME,

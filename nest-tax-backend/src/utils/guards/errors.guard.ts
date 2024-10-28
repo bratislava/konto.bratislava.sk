@@ -78,7 +78,7 @@ export class ErrorThrowerGuard {
   }
 
   paymentTaxNotFound() {
-    throw new HttpException(
+    return new HttpException(
       {
         statusCode: 422,
         status: 'Not Found',

@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { CognitoAuthModule } from '@nestjs-cognito/auth'
 
@@ -10,9 +11,9 @@ import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
 import { AppLoggerMiddleware } from './utils/middlewares/logger'
 
-// TODO - add eslint rules and remake it
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     CognitoAuthModule.register({
       jwtVerifier: {
         userPoolId: process.env.COGNITO_USER_POOL_ID,

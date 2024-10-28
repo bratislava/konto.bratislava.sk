@@ -121,7 +121,7 @@ jobs:
     if: needs.conditions.outputs.nest-tax-backend == 'true'
     uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
     with:
-      directory: nest-forms-backend/
+      directory: nest-tax-backend/
     permissions: write-all
 
   build-nest-tax-backend:

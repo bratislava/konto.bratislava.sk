@@ -12,6 +12,8 @@ import {
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createStringOptions } from '../../generator/helpers'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   {
@@ -134,3 +136,9 @@ export default schema(
     ]),
   ],
 )
+
+export const oloTaxiExtractEmail = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.email)
+
+export const oloTaxiExtractName = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.menoPriezvisko?.meno)

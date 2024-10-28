@@ -110,8 +110,12 @@ export default class EmailFormsSubservice {
       },
     })
 
+    const userConfirmationEmail =
+      userEmail ??
+      formDefinition.extractEmail(form.formDataJson as GenericObjectType)
+
     // Send confirmation email to user
-    if (userEmail) {
+    if (userConfirmationEmail) {
       // Generate confirmation pdf and send to user.
       const file = await this.convertService.generatePdf(
         jsonDataExtraDataOmitted,
@@ -124,16 +128,30 @@ export default class EmailFormsSubservice {
           content: file,
         },
       ]
+      const name = (() => {
+        if (userFirstName) {
+          return userFirstName
+        }
+        if (formDefinition.extractName) {
+          return (
+            formDefinition.extractName(
+              form.formDataJson as GenericObjectType,
+            ) ?? null
+          )
+        }
+
+        return null
+      })()
 
       try {
         await this.mailgunService.sendOloEmail(
           {
-            to: userEmail,
+            to: userConfirmationEmail,
             template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
             data: {
               formId: form.id,
               messageSubject: formTitle,
-              firstName: userFirstName,
+              firstName: name,
               slug: formDefinition.slug,
             },
           },
@@ -141,7 +159,7 @@ export default class EmailFormsSubservice {
         )
       } catch (error) {
         alertError(
-          `Sending confirmation email to ${userEmail} for form ${formId} failed.`,
+          `Sending confirmation email to ${userConfirmationEmail} for form ${formId} failed.`,
           this.logger,
           JSON.stringify(error),
         )

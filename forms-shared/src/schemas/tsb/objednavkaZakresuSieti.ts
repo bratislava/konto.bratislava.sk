@@ -49,18 +49,18 @@ export default schema(
       conditionalFields(
         createCondition([[['objednavatelTyp'], { const: 'Fyzická osoba - podnikateľ' }]]),
         [
-          object('menoPriezvisko', { required: true }, { columns: true, columnsRatio: '1/1' }, [
+          object('menoPriezviskoPodnikatel', { required: true }, { columns: true, columnsRatio: '1/1' }, [
             input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
             input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
           ]),
-          input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-          input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
-          input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
-          input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
-          sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input('obchodneMenoPodnikatel', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
+          input('icoPodnikatel', { title: 'IČO', required: true, type: 'text' }, {}),
+          input('dicPodnikatel', { title: 'DIČ', required: true, type: 'text' }, {}),
+          input('icDphPodnikatel', { title: 'IČ DPH', required: true, type: 'text' }, {}),
+          sharedAddressField('adresaPodnikatel', 'Miesto podnikania', true),
+          input('emailPodnikatel', { title: 'E-mail', required: true, type: 'email' }, {}),
           input(
-            'telefonneCislo',
+            'telefonneCisloPodnikatel',
             { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
             { helptextHeader: 'Vyplňte vo formáte +421' },
           ),

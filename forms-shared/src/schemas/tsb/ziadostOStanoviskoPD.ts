@@ -10,6 +10,7 @@ import {
   fileUpload,
 } from '../../generator/functions'
 import { createStringOptions, createCondition } from '../../generator/helpers'
+import { sharedAddressField } from '../shared/fields'
 
 export default schema(
   {
@@ -45,23 +46,7 @@ export default schema(
             input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
           ],
         ),
-        input(
-          'adresaTrvalehoPobytu',
-          { type: 'text', title: 'Adresa trvalého pobytu', required: true },
-          { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
-        ),
-        object(
-          'mestoPsc',
-          { required: true },
-          {
-            columns: true,
-            columnsRatio: '3/1',
-          },
-          [
-            input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-            input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-          ],
-        ),
+        sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
         input(
           'telefon',
@@ -72,41 +57,19 @@ export default schema(
       conditionalFields(
         createCondition([[['objednavatelAko'], { const: 'Fyzická osoba - podnikateľ' }]]),
         [
-          object(
-            'menoPriezvisko',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '1/1',
-            },
-            [
-              input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-              input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-            ],
-          ),
-          input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
-          input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+          object('menoPriezviskoPodnikatel', { required: true }, { columns: true, columnsRatio: '1/1' }, [
+            input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
+            input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+          ]),
+          input('obchodneMenoPodnikatel', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
+          input('icoPodnikatel', { title: 'IČO', required: true, type: 'text' }, {}),
+          input('dicPodnikatel', { title: 'DIČ', required: true, type: 'text' }, {}),
+          input('icDphPodnikatel', { title: 'IČ DPH', required: true, type: 'text' }, {}),
+          sharedAddressField('adresaPodnikatel', 'Miesto podnikania', true),
+          input('emailPodnikatel', { title: 'E-mail', required: true, type: 'email' }, {}),
           input(
-            'miestoPodnikania',
-            { type: 'text', title: 'Miesto podnikania', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-          object(
-            'mestoPsc',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '3/1',
-            },
-            [
-              input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-              input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-            ],
-          ),
-          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-          input(
-            'telefon',
-            { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+            'telefonneCisloPodnikatel',
+            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
             { helptextHeader: 'Vyplňte vo formáte +421' },
           ),
         ],

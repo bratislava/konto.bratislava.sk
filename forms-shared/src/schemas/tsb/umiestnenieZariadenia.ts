@@ -9,6 +9,7 @@ import {
   conditionalFields,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
+import { sharedAddressField } from '../shared/fields'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -39,23 +40,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
         ],
       ),
-      input(
-        'adresaTrvalehoPobytu',
-        { type: 'text', title: 'Adresa trvalého pobytu', required: true },
-        {},
-      ),
-      object(
-        'mestoPsc',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '3/1',
-        },
-        [
-          input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-          input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-        ],
-      ),
+      sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
       input(
         'telefonneCislo',
@@ -66,57 +51,27 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     conditionalFields(
       createCondition([[['objednavatelAko'], { const: 'Fyzická osoba - podnikateľ' }]]),
       [
-        object(
-          'menoPriezvisko',
-          { required: true },
-          {
-            columns: true,
-            columnsRatio: '1/1',
-          },
-          [
-            input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-            input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-          ],
-        ),
-        input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
-        input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-        input('miestoPodnikania', { type: 'text', title: 'Miesto podnikania', required: true }, {}),
-        object(
-          'mestoPsc',
-          { required: true },
-          {
-            columns: true,
-            columnsRatio: '3/1',
-          },
-          [
-            input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-            input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-          ],
-        ),
-        input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+        object('menoPriezviskoPodnikatel', { required: true }, { columns: true, columnsRatio: '1/1' }, [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
+          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+        ]),
+        input('obchodneMenoPodnikatel', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
+        input('icoPodnikatel', { title: 'IČO', required: true, type: 'text' }, {}),
+        input('dicPodnikatel', { title: 'DIČ', required: true, type: 'text' }, {}),
+        input('icDphPodnikatel', { title: 'IČ DPH', required: true, type: 'text' }, {}),
+        sharedAddressField('adresaPodnikatel', 'Miesto podnikania', true),
+        input('emailPodnikatel', { title: 'E-mail', required: true, type: 'email' }, {}),
         input(
-          'telefonneCislo',
+          'telefonneCisloPodnikatel',
           { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-          {},
+          { helptextHeader: 'Vyplňte vo formáte +421' },
         ),
       ],
     ),
     conditionalFields(createCondition([[['objednavatelAko'], { const: 'Právnická osoba' }]]), [
       input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
       input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-      input('adresaSidla', { type: 'text', title: 'Adresa sídla', required: true }, {}),
-      object(
-        'mestoPsc',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '3/1',
-        },
-        [
-          input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-          input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-        ],
-      ),
+      sharedAddressField('adresaSidla', 'Adresa sídla', true),
       object(
         'kontaktnaOsoba',
         { required: true },

@@ -4,7 +4,6 @@ import { HttpStatus, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -122,7 +121,7 @@ describe('EmailFormsSubservice', () => {
       })
     })
 
-    it('should process a valid email form successfully even when email not provided in user data', async () => {
+    it('should process a valid email form successfully even when email is not set', async () => {
       const mockForm = {
         id: 'test-form-id',
         formDefinitionSlug: 'test-slug',
@@ -139,7 +138,7 @@ describe('EmailFormsSubservice', () => {
         email: 'test@example.com',
         schemas: { schema: {} },
         slug: 'test-slug',
-        extractEmail: (formData: GenericObjectType) => formData.user.email,
+        userEmailPath: 'user.email',
       }
 
       prismaMock.forms.findUnique.mockResolvedValue(
@@ -163,7 +162,7 @@ describe('EmailFormsSubservice', () => {
         where: { id: 'test-form-id', archived: false },
         include: { files: true },
       })
-      expect(mailgunService.sendOloEmail).toHaveBeenCalledTimes(2)
+      expect(mailgunService.sendOloEmail).toHaveBeenCalledTimes(1)
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
         data: { state: FormState.PROCESSING, error: FormError.NONE },

@@ -14,8 +14,6 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   {
@@ -421,11 +419,3 @@ export default schema(
     ]),
   ],
 )
-
-export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail = (
-  formData: GenericObjectType,
-) => safeString(formData.ziadatel?.email)
-
-export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName = (
-  formData: GenericObjectType,
-) => safeString(formData.ziadatel?.nazovOrganizacie)

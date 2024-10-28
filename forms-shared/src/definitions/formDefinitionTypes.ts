@@ -1,6 +1,5 @@
 import { Schemas } from '../generator/functions'
 import { SharepointData } from './sharepointTypes'
-import { GenericObjectType } from '@rjsf/utils'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -56,8 +55,8 @@ export type FormDefinitionSlovenskoSk =
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
-  extractEmail: (formData: GenericObjectType) => string | undefined
-  extractName?: (formData: GenericObjectType) => string | undefined
+  userEmailPath: string
+  userNamePath?: string
 }
 
 export type FormDefinition =

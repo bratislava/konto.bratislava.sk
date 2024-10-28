@@ -6,7 +6,6 @@ import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
-import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
@@ -77,7 +76,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
       return {
         props: {
           formServerContext: {
-            formDefinition: makeSerializableFormDefinition(formDefinition),
+            formDefinition,
             formId,
             initialFormDataJson:
               form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition),

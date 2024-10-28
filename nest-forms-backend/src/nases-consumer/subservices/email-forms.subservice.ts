@@ -44,8 +44,8 @@ export default class EmailFormsSubservice {
 
   async sendEmailForm(
     formId: string,
-    toEmail: string | null,
-    firstName: string | null,
+    userEmail: string | null,
+    userFirstName: string | null,
   ): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -111,7 +111,7 @@ export default class EmailFormsSubservice {
     })
 
     // Send confirmation email to user
-    if (toEmail) {
+    if (userEmail) {
       // Generate confirmation pdf and send to user.
       const file = await this.convertService.generatePdf(
         jsonDataExtraDataOmitted,
@@ -128,12 +128,12 @@ export default class EmailFormsSubservice {
       try {
         await this.mailgunService.sendOloEmail(
           {
-            to: toEmail,
+            to: userEmail,
             template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
             data: {
               formId: form.id,
               messageSubject: formTitle,
-              firstName,
+              firstName: userFirstName,
               slug: formDefinition.slug,
             },
           },
@@ -141,7 +141,7 @@ export default class EmailFormsSubservice {
         )
       } catch (error) {
         alertError(
-          `Sending confirmation email to ${toEmail} for form ${formId} failed.`,
+          `Sending confirmation email to ${userEmail} for form ${formId} failed.`,
           this.logger,
           JSON.stringify(error),
         )

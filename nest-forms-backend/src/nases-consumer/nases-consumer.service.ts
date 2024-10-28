@@ -346,11 +346,15 @@ export default class NasesConsumerService {
 
   private async handleEmailForm(
     form: Forms,
-    toEmail: string | null,
-    firstName: string | null,
+    userEmail: string | null,
+    userFirstName: string | null,
   ): Promise<Nack> {
     try {
-      await this.emailFormsSubservice.sendEmailForm(form.id, toEmail, firstName)
+      await this.emailFormsSubservice.sendEmailForm(
+        form.id,
+        userEmail,
+        userFirstName,
+      )
       return new Nack(false)
     } catch (error) {
       alertError(

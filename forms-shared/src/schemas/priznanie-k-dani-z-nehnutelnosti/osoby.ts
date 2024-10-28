@@ -319,9 +319,6 @@ export const danovnik = [
   ]),
   obecPscField,
   statField,
-  conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
-    ulicaCisloFields(UlicaCisloTyp.PravnickaOsoba),
-  ]),
   conditionalFields(
     createCondition([
       [['voSvojomMene'], { const: true }],

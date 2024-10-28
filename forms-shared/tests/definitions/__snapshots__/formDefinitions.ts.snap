@@ -14049,44 +14049,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "priznanieAko": {
                       "const": "pravnickaOsoba",
                     },
-                  },
-                  "required": [
-                    "priznanieAko",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "ulicaCisloPravnickaOsoba": {
-                      "properties": {
-                        "cislo": {
-                          "title": "Čislo",
-                          "type": "string",
-                        },
-                        "ulica": {
-                          "title": "Ulica",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulica",
-                        "cislo",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  "required": [
-                    "ulicaCisloPravnickaOsoba",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "priznanieAko": {
-                      "const": "pravnickaOsoba",
-                    },
                     "voSvojomMene": {
                       "const": true,
                     },

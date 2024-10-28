@@ -466,12 +466,18 @@ export const object = (
   const conditionalFields = filteredFields.filter(
     (field) => 'condition' in field,
   ) as ConditionalFields[]
-  const fieldProperties = uniq(
-    filteredFields
-      .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
-      .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
-      .filter((field) => field !== null) as string[],
-  )
+  const fieldProperties = filteredFields
+    .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
+    .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
+    .filter((field) => field !== null) as string[]
+
+  if (fieldProperties.length !== uniq(fieldProperties).length) {
+    throw new Error(
+      `Field properties must be unique, but there are duplicates: ${fieldProperties
+        .filter((field, index) => fieldProperties.indexOf(field) !== index)
+        .join(', ')}`,
+    )
+  }
 
   const getSchema = () => {
     const allOf = conditionalFields.map((field) => ({
@@ -629,11 +635,10 @@ export const conditionalFields = (
 
   const intersectionProperties = intersection(thenFieldProperties, elseFieldProperties)
   if (intersectionProperties.length > 0) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `Conditional fields: ${intersectionProperties.join(
+    throw new Error(
+      `Field properties must be unique, but there are duplicates between then and else fields: ${intersectionProperties.join(
         ', ',
-      )} is in both then and else uiSchema, it will be overwritten by the else uiSchema`,
+      )}`,
     )
   }
 

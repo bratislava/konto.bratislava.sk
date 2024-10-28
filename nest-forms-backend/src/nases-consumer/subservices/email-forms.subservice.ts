@@ -42,6 +42,7 @@ export default class EmailFormsSubservice {
     this.logger = new Logger('EmailFormsSubservice')
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async sendEmailForm(
     formId: string,
     userEmail: string | null,

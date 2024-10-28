@@ -1,6 +1,7 @@
 import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
@@ -38,7 +39,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
     return {
       props: {
         formServerContext: {
-          formDefinition,
+          formDefinition: makeSerializableFormDefinition(formDefinition),
           formId: '',
           initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
           initialServerFiles: [],

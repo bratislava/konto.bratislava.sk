@@ -144,7 +144,7 @@ const innerArray = (kalkulacka: boolean) =>
       kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),
       kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
       kalkulacka ? skipSchema(zakladDane) : zakladDane,
-      kalkulacka ? zakladDaneKalkulacka : skipSchema(zakladDane),
+      kalkulacka ? zakladDaneKalkulacka : skipSchema(zakladDaneKalkulacka),
       number(
         'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
         {

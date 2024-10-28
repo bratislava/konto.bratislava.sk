@@ -11,6 +11,8 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -132,3 +134,9 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
     ),
   ]),
 ])
+
+export const odvozObjemnehoOdpaduValnikomExtractEmail = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.email)
+
+export const odvozObjemnehoOdpaduValnikomExtractName = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.nazov)

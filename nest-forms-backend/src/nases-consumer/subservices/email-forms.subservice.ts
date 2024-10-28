@@ -44,8 +44,8 @@ export default class EmailFormsSubservice {
 
   async sendEmailForm(
     formId: string,
-    userEmail: string | null,
-    userFirstName: string | null,
+    toEmail: string | null,
+    firstName: string | null,
   ): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -110,12 +110,8 @@ export default class EmailFormsSubservice {
       },
     })
 
-    const userConfirmationEmail =
-      userEmail ??
-      formDefinition.extractEmail(form.formDataJson as GenericObjectType)
-
     // Send confirmation email to user
-    if (userConfirmationEmail) {
+    if (toEmail) {
       // Generate confirmation pdf and send to user.
       const file = await this.convertService.generatePdf(
         jsonDataExtraDataOmitted,
@@ -128,30 +124,16 @@ export default class EmailFormsSubservice {
           content: file,
         },
       ]
-      const name = (() => {
-        if (userFirstName) {
-          return userFirstName
-        }
-        if (formDefinition.extractName) {
-          return (
-            formDefinition.extractName(
-              form.formDataJson as GenericObjectType,
-            ) ?? null
-          )
-        }
-
-        return null
-      })()
 
       try {
         await this.mailgunService.sendOloEmail(
           {
-            to: userConfirmationEmail,
+            to: toEmail,
             template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
             data: {
               formId: form.id,
               messageSubject: formTitle,
-              firstName: name,
+              firstName,
               slug: formDefinition.slug,
             },
           },
@@ -159,7 +141,7 @@ export default class EmailFormsSubservice {
         )
       } catch (error) {
         alertError(
-          `Sending confirmation email to ${userConfirmationEmail} for form ${formId} failed.`,
+          `Sending confirmation email to ${toEmail} for form ${formId} failed.`,
           this.logger,
           JSON.stringify(error),
         )

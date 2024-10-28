@@ -14,8 +14,6 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 
 export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -228,21 +226,3 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
     ),
   ]),
 ])
-
-export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail = (
-  formData: GenericObjectType,
-) => safeString(formData.ziadatel?.email)
-
-export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.ziadatelTyp === 'Fyzická osoba') {
-    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
-  }
-  if (
-    formData.ziadatel?.ziadatelTyp === 'Právnická osoba' ||
-    formData.ziadatel?.ziadatelTyp === 'Správcovská spoločnosť'
-  ) {
-    return safeString(formData.ziadatel?.nazov)
-  }
-}

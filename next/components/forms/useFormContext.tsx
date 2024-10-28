@@ -2,7 +2,6 @@ import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import {
-  FormDefinition,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
@@ -11,6 +10,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { useIsClient } from 'usehooks-ts'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
+import { SerializableFormDefinition } from './serializableFormDefinition'
 import type { FormSignature } from './signer/useFormSignature'
 
 declare global {
@@ -20,7 +20,7 @@ declare global {
 }
 
 export type FormServerContext = {
-  formDefinition: FormDefinition
+  formDefinition: SerializableFormDefinition
   formId: string
   initialFormDataJson: GenericObjectType
   initialClientFiles?: ClientFileInfo[]

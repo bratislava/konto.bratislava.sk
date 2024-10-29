@@ -53,7 +53,7 @@
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.0.23",
     "@golevelup/ts-jest": "^0.5.5",
-    "@nestjs/schematics": "^10.1.1",
+    "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.6",
     "@openapitools/openapi-generator-cli": "^2.14.0",
     "@types/ejs": "^3.1.5",

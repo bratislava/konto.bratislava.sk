@@ -38,6 +38,7 @@
     "@prisma/client": "^5.13.0",
     "@types/mssql": "^9.1.5",
     "aws-sdk": "^2.1691.0",
+    "axios": "^1.7.7",
     "bysquare": "^2.1.0",
     "class-validator": "^0.14.1",
     "currency.js": "^2.0.4",

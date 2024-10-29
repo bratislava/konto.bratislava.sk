@@ -99,7 +99,7 @@ const useGetContext = () => {
         {
           formDataJson: formData,
         },
-        { accessToken: 'always' },
+        { accessToken: 'onlyAuthenticated' },
       ),
     networkMode: 'always',
     onSuccess: () => {

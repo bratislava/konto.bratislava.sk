@@ -3,6 +3,7 @@ import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
 
 import FormsPlayground, { FormsPlaygroundProps } from '../components/forms/FormsPlayground'
+import { makeSerializableFormDefinitionArray } from '../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { environment } from '../environment'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -15,8 +16,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormsPlaygroundProps
 
   return {
     props: {
-      formDefinitions,
-      devFormDefinitions,
+      formDefinitions: makeSerializableFormDefinitionArray(formDefinitions),
+      devFormDefinitions: makeSerializableFormDefinitionArray(devFormDefinitions),
       exampleForms,
       exampleDevForms,
       ...(await slovakServerSideTranslations()),

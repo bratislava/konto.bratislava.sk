@@ -12,6 +12,8 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   step('podnet', { title: 'Podať podnet' }, [
@@ -119,3 +121,9 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
     ),
   ]),
 ])
+
+export const podnetyAPochvalyObcanovExtractEmail = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.email)
+
+export const podnetyAPochvalyObcanovExtractName = (formData: GenericObjectType) =>
+  safeString(formData.ziadatel?.meno)

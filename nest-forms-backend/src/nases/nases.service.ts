@@ -1,15 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
-import {
-  FormDefinition,
-  FormDefinitionType,
-  isSlovenskoSkFormDefinition,
-} from 'forms-shared/definitions/formDefinitionTypes'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { baRjsfValidator } from 'forms-shared/form-utils/validators'
-import lodash from 'lodash'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
@@ -339,20 +333,8 @@ export default class NasesService {
           formId: form.id,
           tries: 0,
           userData: {
-            email:
-              user?.email ||
-              this.emailParsedFromForm(
-                formDefinition,
-                form.formDataJson as GenericObjectType,
-              ) ||
-              null,
-            firstName:
-              user?.given_name ||
-              this.firstNameParsedFromForm(
-                formDefinition,
-                form.formDataJson as GenericObjectType,
-              ) ||
-              null,
+            email: user?.email || null,
+            firstName: user?.given_name || null,
           },
         },
         10_000,
@@ -523,36 +505,5 @@ export default class NasesService {
       user['custom:tier'] === Tier.IDENTITY_CARD ||
       user['custom:tier'] === Tier.EID
     )
-  }
-
-  private emailParsedFromForm(
-    formDefinition: FormDefinition,
-    jsonData: GenericObjectType,
-  ): string | null {
-    if (formDefinition.type !== FormDefinitionType.Email) {
-      return null
-    }
-    const atPath = lodash.get(jsonData, formDefinition.userEmailPath, null)
-    if (!lodash.isString(atPath)) {
-      return null
-    }
-    return atPath
-  }
-
-  private firstNameParsedFromForm(
-    formDefinition: FormDefinition,
-    jsonData: GenericObjectType,
-  ): string | null {
-    if (
-      formDefinition.type !== FormDefinitionType.Email ||
-      !formDefinition.userNamePath
-    ) {
-      return null
-    }
-    const atPath = lodash.get(jsonData, formDefinition.userNamePath, null)
-    if (!lodash.isString(atPath)) {
-      return null
-    }
-    return atPath
   }
 }

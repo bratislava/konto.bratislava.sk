@@ -15,6 +15,8 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
+import { safeString } from '../../form-utils/safeData'
+import { GenericObjectType } from '@rjsf/utils'
 
 export default schema(
   {
@@ -347,3 +349,16 @@ export default schema(
     ]),
   ],
 )
+
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail = (
+  formData: GenericObjectType,
+) => safeString(formData.ziadatel?.email)
+
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName = (
+  formData: GenericObjectType,
+) => {
+  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
+    return safeString(formData.ziadatel?.nazovOrganizacieNovehoOdberatela)
+  }
+  return safeString(formData.ziadatel?.nazovOrganizacie)
+}

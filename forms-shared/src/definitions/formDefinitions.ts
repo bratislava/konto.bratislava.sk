@@ -9,17 +9,39 @@ import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostO
 import ziadostONajomBytu, {
   ziadostONajomBytuAdditionalInfoTemplate,
 } from '../schemas/ziadostONajomBytu'
-import mimoriadnyOdvozAZhodnotenieOdpadu from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
+import mimoriadnyOdvozAZhodnotenieOdpadu, {
+  mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
+  mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
+} from '../schemas/olo/mimoriadnyOdvozAZhodnotenieOdpadu'
 import energetickeZhodnotenieOdpaduVZevo from '../schemas/olo/energetickeZhodnotenieOdpaduVZevo'
 import uzatvorenieZmluvyONakladaniSOdpadom from '../schemas/olo/uzatvorenieZmluvyONakladaniSOdpadom'
-import docisteniStanovistaZbernychNadob from '../schemas/olo/docisteniStanovistaZbernychNadob'
-import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
-import koloTaxi from '../schemas/olo/koloTaxi'
-import oloTaxi from '../schemas/olo/oloTaxi'
-import podnetyAPochvalyObcanov from '../schemas/olo/podnetyAPochvalyObcanov'
-import odvozObjemnehoOdpaduValnikom from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
-import triedenyZberPapieraPlastovASklaPrePravnickeOsoby from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
-import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
+import docisteniStanovistaZbernychNadob, {
+  docisteniStanovistaZbernychNadobExtractEmail,
+  docisteniStanovistaZbernychNadobExtractName,
+} from '../schemas/olo/docisteniStanovistaZbernychNadob'
+import odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom, {
+  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
+  odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
+} from '../schemas/olo/odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom'
+import koloTaxi, { koloTaxiExtractEmail, koloTaxiExtractName } from '../schemas/olo/koloTaxi'
+import oloTaxi, { oloTaxiExtractEmail, oloTaxiExtractName } from '../schemas/olo/oloTaxi'
+import podnetyAPochvalyObcanov, {
+  podnetyAPochvalyObcanovExtractEmail,
+  podnetyAPochvalyObcanovExtractName,
+} from '../schemas/olo/podnetyAPochvalyObcanov'
+import odvozObjemnehoOdpaduValnikom, {
+  odvozObjemnehoOdpaduValnikomExtractEmail,
+  odvozObjemnehoOdpaduValnikomExtractName,
+} from '../schemas/olo/odvozObjemnehoOdpaduValnikom'
+import triedenyZberPapieraPlastovASklaPrePravnickeOsoby, {
+  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
+  triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
+} from '../schemas/olo/triedenyZberPapieraPlastovASklaPrePravnickeOsoby'
+import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
+  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
+  triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
+} from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
+import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -47,7 +69,6 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
     schemas: zavazneStanoviskoKInvesticnejCinnosti,
     pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
-
     pospVersion: '0.7',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
@@ -140,8 +161,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO,
+    extractEmail: mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
+    extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -153,8 +174,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: zevoExtractEmail,
+    extractName: zevoExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -166,8 +187,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: zevoExtractEmail,
+    extractName: zevoExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -179,8 +200,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: docisteniStanovistaZbernychNadobExtractEmail,
+    extractName: docisteniStanovistaZbernychNadobExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -192,8 +213,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
+    extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -205,8 +226,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: koloTaxiExtractEmail,
+    extractName: koloTaxiExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -218,8 +239,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: oloTaxiExtractEmail,
+    extractName: oloTaxiExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -231,8 +252,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: podnetyAPochvalyObcanovExtractEmail,
+    extractName: podnetyAPochvalyObcanovExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -244,8 +265,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: odvozObjemnehoOdpaduValnikomExtractEmail,
+    extractName: odvozObjemnehoOdpaduValnikomExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -257,8 +278,8 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
+    extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
   },
   {
     type: FormDefinitionType.Email,
@@ -270,7 +291,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: '',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
-    userEmailPath: '', // TODO,
-    userNamePath: '', // TODO
+    extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
+    extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
   },
 ]

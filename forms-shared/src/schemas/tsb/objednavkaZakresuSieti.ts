@@ -33,45 +33,108 @@ export default schema(
         },
         { variant: 'boxed', orientations: 'column' },
       ),
-      conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Fyzická osoba' }]]), [
-        object('menoPriezvisko', { required: true }, { columns: true, columnsRatio: '1/1' }, [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-        ]),
-        sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
-        input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-        input(
-          'telefonneCislo',
-          { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-          { helptextHeader: 'Vyplňte vo formáte +421' },
-        ),
-      ]),
       conditionalFields(
-        createCondition([[['objednavatelTyp'], { const: 'Fyzická osoba - podnikateľ' }]]),
+        createCondition([
+          [
+            ['objednavatelTyp'],
+            {
+              enum: ['Fyzická osoba', 'Fyzická osoba - podnikateľ'],
+            },
+          ],
+        ]),
         [
-          object('menoPriezviskoPodnikatel', { required: true }, { columns: true, columnsRatio: '1/1' }, [
+          object('menoPriezvisko', { required: true }, { columns: true, columnsRatio: '1/1' }, [
             input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
             input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
           ]),
-          input('obchodneMenoPodnikatel', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-          input('icoPodnikatel', { title: 'IČO', required: true, type: 'text' }, {}),
-          input('dicPodnikatel', { title: 'DIČ', required: true, type: 'text' }, {}),
-          input('icDphPodnikatel', { title: 'IČ DPH', required: true, type: 'text' }, {}),
-          sharedAddressField('adresaPodnikatel', 'Miesto podnikania', true),
-          input('emailPodnikatel', { title: 'E-mail', required: true, type: 'email' }, {}),
+        ],
+      ),
+      conditionalFields(
+        createCondition([
+          [
+            ['objednavatelTyp'],
+            {
+              enum: ['Fyzická osoba - podnikateľ', 'Právnická osoba'],
+            },
+          ],
+        ]),
+        [
+          input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
+          input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
+          input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
+          input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
+        ],
+      ),
+      conditionalFields(
+        createCondition([
+          [
+            ['objednavatelTyp'],
+            {
+              const: 'Fyzická osoba',
+            },
+          ],
+        ]),
+        [
           input(
-            'telefonneCisloPodnikatel',
-            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptextHeader: 'Vyplňte vo formáte +421' },
+            'adresaTrvalehoPobytu',
+            { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
+            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
+      conditionalFields(
+        createCondition([
+          [
+            ['objednavatelTyp'],
+            {
+              const: 'Fyzická osoba - podnikateľ',
+            },
+          ],
+        ]),
+        [
+          input(
+            'adresaPodnikania',
+            { title: 'Miesto podnikania', required: true, type: 'text' },
+            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+          ),
+        ],
+      ),
+      conditionalFields(
+        createCondition([
+          [
+            ['objednavatelTyp'],
+            {
+              const: 'Právnická osoba',
+            },
+          ],
+        ]),
+        [
+          input(
+            'adresaSidla',
+            { title: 'Adresa sídla', required: true, type: 'text' },
+            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+          ),
+        ],
+      ),
+      object(
+        'mestoPsc',
+        { required: true },
+        {
+          columns: true,
+          columnsRatio: '3/1',
+        },
+        [
+          input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
+          input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
+        ],
+      ),
+      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      input(
+        'telefonneCislo',
+        { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
+        { helptextHeader: 'Vyplňte vo formáte +421' },
+      ),
       conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
-        input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-        input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
-        input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
-        input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
-        sharedAddressField('adresaSidla', 'Adresa sídla', true),
         object(
           'kontaktnaOsoba',
           { required: true },

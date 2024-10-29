@@ -69,7 +69,7 @@
     "@types/node": "^20.16.13",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2",
+    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",

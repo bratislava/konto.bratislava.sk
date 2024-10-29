@@ -99,7 +99,7 @@ export default class EmailFormsSubservice {
       template: MailgunTemplateEnum.OLO_SEND_FORM,
       data: {
         formId: form.id,
-        messageSubject: formDefinition.title,
+        messageSubject: formTitle,
         firstName: null,
         slug: formDefinition.slug,
         htmlData: await renderSummaryEmail({

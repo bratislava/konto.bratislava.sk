@@ -26997,6 +26997,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
 exports[`Form definitions tsb-objednavka-vytycenia default form state should match snapshot 1`] = `
 {
   "objednavatel": {
+    "mestoPsc": {},
     "objednavatelTyp": "Fyzická osoba",
   },
   "prilohy": {
@@ -27027,7 +27028,10 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                 "if": {
                   "properties": {
                     "objednavatelTyp": {
-                      "const": "Fyzická osoba",
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
                     },
                   },
                   "required": [
@@ -27037,43 +27041,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                 },
                 "then": {
                   "properties": {
-                    "adresaTrvalehoPobytu": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                    "menoPriezviskoFyzickaOsoba": {
+                    "menoPriezvisko": {
                       "properties": {
                         "meno": {
                           "title": "Meno",
@@ -27090,17 +27058,77 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                       ],
                       "type": "object",
                     },
-                    "telefonneCislo": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "menoPriezviskoFyzickaOsoba",
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
                     "adresaTrvalehoPobytu",
-                    "email",
-                    "telefonneCislo",
                   ],
                   "type": "object",
                 },
@@ -27119,90 +27147,13 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                 },
                 "then": {
                   "properties": {
-                    "adresaPodnikatel": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dicPodnikatel": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                    "emailPodnikatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                    "icDphPodnikatel": {
-                      "title": "IČ DPH",
-                      "type": "string",
-                    },
-                    "icoPodnikatel": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "menoPriezviskoPodnikatel": {
-                      "properties": {
-                        "meno": {
-                          "title": "Meno",
-                          "type": "string",
-                        },
-                        "priezvisko": {
-                          "title": "Priezvisko",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "meno",
-                        "priezvisko",
-                      ],
-                      "type": "object",
-                    },
-                    "obchodneMenoPodnikatel": {
-                      "title": "Obchodné meno",
-                      "type": "string",
-                    },
-                    "telefonneCisloPodnikatel": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "menoPriezviskoPodnikatel",
-                    "obchodneMenoPodnikatel",
-                    "icoPodnikatel",
-                    "dicPodnikatel",
-                    "icDphPodnikatel",
-                    "adresaPodnikatel",
-                    "emailPodnikatel",
-                    "telefonneCisloPodnikatel",
+                    "adresaPodnikania",
                   ],
                   "type": "object",
                 },
@@ -27222,48 +27173,30 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                 "then": {
                   "properties": {
                     "adresaSidla": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dic": {
-                      "title": "DIČ",
+                      "title": "Adresa sídla",
                       "type": "string",
                     },
-                    "icDph": {
-                      "title": "IČ DPH",
-                      "type": "string",
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
                     },
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
                     "kontaktnaOsoba": {
                       "properties": {
                         "email": {
@@ -27293,17 +27226,8 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                       ],
                       "type": "object",
                     },
-                    "obchodneMeno": {
-                      "title": "Obchodné meno",
-                      "type": "string",
-                    },
                   },
                   "required": [
-                    "obchodneMeno",
-                    "ico",
-                    "dic",
-                    "icDph",
-                    "adresaSidla",
                     "kontaktnaOsoba",
                   ],
                   "type": "object",
@@ -27311,6 +27235,29 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
               "objednavatelTyp": {
                 "default": "Fyzická osoba",
                 "oneOf": [
@@ -27330,9 +27277,17 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
                 "title": "Objednávate ako",
                 "type": "string",
               },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
             },
             "required": [
               "objednavatelTyp",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
             ],
             "title": "Objednávateľ",
             "type": "object",
@@ -27587,137 +27542,31 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
   },
   "uiSchema": {
     "objednavatel": {
-      "adresaPodnikatel": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Miesto podnikania",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "adresaSidla": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa sídla",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "adresaTrvalehoPobytu": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa trvalého pobytu",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "dic": {
+      "adresaPodnikania": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
       },
-      "dicPodnikatel": {
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -27731,13 +27580,6 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
         },
         "ui:widget": "Input",
       },
-      "emailPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "icDph": {
         "ui:label": false,
         "ui:options": {
@@ -27745,21 +27587,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
         },
         "ui:widget": "Input",
       },
-      "icDphPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "icoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -27809,7 +27637,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
           "telefonneCislo",
         ],
       },
-      "menoPriezviskoFyzickaOsoba": {
+      "menoPriezvisko": {
         "meno": {
           "ui:label": false,
           "ui:options": {
@@ -27833,15 +27661,15 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
           "priezvisko",
         ],
       },
-      "menoPriezviskoPodnikatel": {
-        "meno": {
+      "mestoPsc": {
+        "mesto": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
           },
           "ui:widget": "Input",
         },
-        "priezvisko": {
+        "psc": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
@@ -27850,21 +27678,14 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
         },
         "ui:options": {
           "columns": true,
-          "columnsRatio": "1/1",
+          "columnsRatio": "3/1",
         },
         "ui:order": [
-          "meno",
-          "priezvisko",
+          "mesto",
+          "psc",
         ],
       },
       "obchodneMeno": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "obchodneMenoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -27887,36 +27708,22 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
         },
         "ui:widget": "Input",
       },
-      "telefonneCisloPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "helptextHeader": "Vyplňte vo formáte +421",
-          "inputType": "tel",
-        },
-        "ui:widget": "Input",
-      },
       "ui:options": {
         "stepQueryParam": "objednavatel",
       },
       "ui:order": [
         "objednavatelTyp",
-        "menoPriezviskoFyzickaOsoba",
-        "adresaTrvalehoPobytu",
-        "email",
-        "telefonneCislo",
-        "menoPriezviskoPodnikatel",
-        "obchodneMenoPodnikatel",
-        "icoPodnikatel",
-        "dicPodnikatel",
-        "icDphPodnikatel",
-        "adresaPodnikatel",
-        "emailPodnikatel",
-        "telefonneCisloPodnikatel",
+        "menoPriezvisko",
         "obchodneMeno",
         "ico",
         "dic",
         "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
         "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
         "kontaktnaOsoba",
       ],
     },
@@ -28202,6 +28009,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = 
 exports[`Form definitions tsb-objednavka-zakresu-sieti default form state should match snapshot 1`] = `
 {
   "objednavatel": {
+    "mestoPsc": {},
     "objednavatelTyp": "Fyzická osoba",
   },
   "prilohy": {},
@@ -28226,7 +28034,10 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                 "if": {
                   "properties": {
                     "objednavatelTyp": {
-                      "const": "Fyzická osoba",
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
                     },
                   },
                   "required": [
@@ -28236,42 +28047,6 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                 },
                 "then": {
                   "properties": {
-                    "adresaTrvalehoPobytu": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -28289,17 +28064,77 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                       ],
                       "type": "object",
                     },
-                    "telefonneCislo": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "menoPriezvisko",
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
                     "adresaTrvalehoPobytu",
-                    "email",
-                    "telefonneCislo",
                   ],
                   "type": "object",
                 },
@@ -28318,90 +28153,13 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                 },
                 "then": {
                   "properties": {
-                    "adresaPodnikatel": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dicPodnikatel": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                    "emailPodnikatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                    "icDphPodnikatel": {
-                      "title": "IČ DPH",
-                      "type": "string",
-                    },
-                    "icoPodnikatel": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "menoPriezviskoPodnikatel": {
-                      "properties": {
-                        "meno": {
-                          "title": "Meno",
-                          "type": "string",
-                        },
-                        "priezvisko": {
-                          "title": "Priezvisko",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "meno",
-                        "priezvisko",
-                      ],
-                      "type": "object",
-                    },
-                    "obchodneMenoPodnikatel": {
-                      "title": "Obchodné meno",
-                      "type": "string",
-                    },
-                    "telefonneCisloPodnikatel": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "menoPriezviskoPodnikatel",
-                    "obchodneMenoPodnikatel",
-                    "icoPodnikatel",
-                    "dicPodnikatel",
-                    "icDphPodnikatel",
-                    "adresaPodnikatel",
-                    "emailPodnikatel",
-                    "telefonneCisloPodnikatel",
+                    "adresaPodnikania",
                   ],
                   "type": "object",
                 },
@@ -28421,48 +28179,30 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                 "then": {
                   "properties": {
                     "adresaSidla": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dic": {
-                      "title": "DIČ",
+                      "title": "Adresa sídla",
                       "type": "string",
                     },
-                    "icDph": {
-                      "title": "IČ DPH",
-                      "type": "string",
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
                     },
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
                     "kontaktnaOsoba": {
                       "properties": {
                         "email": {
@@ -28492,17 +28232,8 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                       ],
                       "type": "object",
                     },
-                    "obchodneMeno": {
-                      "title": "Obchodné meno",
-                      "type": "string",
-                    },
                   },
                   "required": [
-                    "obchodneMeno",
-                    "ico",
-                    "dic",
-                    "icDph",
-                    "adresaSidla",
                     "kontaktnaOsoba",
                   ],
                   "type": "object",
@@ -28510,6 +28241,29 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
               "objednavatelTyp": {
                 "default": "Fyzická osoba",
                 "oneOf": [
@@ -28529,9 +28283,17 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
                 "title": "Objednávate ako",
                 "type": "string",
               },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
             },
             "required": [
               "objednavatelTyp",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
             ],
             "title": "Objednávateľ",
             "type": "object",
@@ -28756,137 +28518,31 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
   },
   "uiSchema": {
     "objednavatel": {
-      "adresaPodnikatel": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Miesto podnikania",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "adresaSidla": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa sídla",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "adresaTrvalehoPobytu": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
-        "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa trvalého pobytu",
-        },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-      },
-      "dic": {
+      "adresaPodnikania": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
       },
-      "dicPodnikatel": {
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -28900,13 +28556,6 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
         },
         "ui:widget": "Input",
       },
-      "emailPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
       "icDph": {
         "ui:label": false,
         "ui:options": {
@@ -28914,21 +28563,7 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
         },
         "ui:widget": "Input",
       },
-      "icDphPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "icoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -29002,15 +28637,15 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
           "priezvisko",
         ],
       },
-      "menoPriezviskoPodnikatel": {
-        "meno": {
+      "mestoPsc": {
+        "mesto": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
           },
           "ui:widget": "Input",
         },
-        "priezvisko": {
+        "psc": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
@@ -29019,21 +28654,14 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
         },
         "ui:options": {
           "columns": true,
-          "columnsRatio": "1/1",
+          "columnsRatio": "3/1",
         },
         "ui:order": [
-          "meno",
-          "priezvisko",
+          "mesto",
+          "psc",
         ],
       },
       "obchodneMeno": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "obchodneMenoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -29056,36 +28684,22 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`
         },
         "ui:widget": "Input",
       },
-      "telefonneCisloPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "helptextHeader": "Vyplňte vo formáte +421",
-          "inputType": "tel",
-        },
-        "ui:widget": "Input",
-      },
       "ui:options": {
         "stepQueryParam": "objednavatel",
       },
       "ui:order": [
         "objednavatelTyp",
         "menoPriezvisko",
-        "adresaTrvalehoPobytu",
-        "email",
-        "telefonneCislo",
-        "menoPriezviskoPodnikatel",
-        "obchodneMenoPodnikatel",
-        "icoPodnikatel",
-        "dicPodnikatel",
-        "icDphPodnikatel",
-        "adresaPodnikatel",
-        "emailPodnikatel",
-        "telefonneCisloPodnikatel",
         "obchodneMeno",
         "ico",
         "dic",
         "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
         "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
         "kontaktnaOsoba",
       ],
     },
@@ -29338,6 +28952,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia default form state should m
     "fotografiaVizualizacia": [],
   },
   "ziadatel": {
+    "mestoPsc": {},
     "objednavatelAko": "Fyzická osoba",
   },
 }
@@ -29354,53 +28969,20 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
               {
                 "if": {
                   "properties": {
-                    "objednavatelAko": {
-                      "const": "Fyzická osoba",
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
                     },
                   },
                   "required": [
-                    "objednavatelAko",
+                    "objednavatelTyp",
                   ],
                   "type": "object",
                 },
                 "then": {
                   "properties": {
-                    "adresaTrvalehoPobytu": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -29418,17 +29000,9 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
                       ],
                       "type": "object",
                     },
-                    "telefonneCislo": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
                   },
                   "required": [
                     "menoPriezvisko",
-                    "adresaTrvalehoPobytu",
-                    "email",
-                    "telefonneCislo",
                   ],
                   "type": "object",
                 },
@@ -29436,190 +29010,31 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
               {
                 "if": {
                   "properties": {
-                    "objednavatelAko": {
-                      "const": "Fyzická osoba - podnikateľ",
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
                     },
                   },
                   "required": [
-                    "objednavatelAko",
+                    "objednavatelTyp",
                   ],
                   "type": "object",
                 },
                 "then": {
                   "properties": {
-                    "adresaPodnikatel": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dicPodnikatel": {
+                    "dic": {
                       "title": "DIČ",
                       "type": "string",
                     },
-                    "emailPodnikatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                    "icDphPodnikatel": {
+                    "icDph": {
                       "title": "IČ DPH",
                       "type": "string",
-                    },
-                    "icoPodnikatel": {
-                      "title": "IČO",
-                      "type": "string",
-                    },
-                    "menoPriezviskoPodnikatel": {
-                      "properties": {
-                        "meno": {
-                          "title": "Meno",
-                          "type": "string",
-                        },
-                        "priezvisko": {
-                          "title": "Priezvisko",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "meno",
-                        "priezvisko",
-                      ],
-                      "type": "object",
-                    },
-                    "obchodneMenoPodnikatel": {
-                      "title": "Obchodné meno",
-                      "type": "string",
-                    },
-                    "telefonneCisloPodnikatel": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "menoPriezviskoPodnikatel",
-                    "obchodneMenoPodnikatel",
-                    "icoPodnikatel",
-                    "dicPodnikatel",
-                    "icDphPodnikatel",
-                    "adresaPodnikatel",
-                    "emailPodnikatel",
-                    "telefonneCisloPodnikatel",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "if": {
-                  "properties": {
-                    "objednavatelAko": {
-                      "const": "Právnická osoba",
-                    },
-                  },
-                  "required": [
-                    "objednavatelAko",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "adresaSidla": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
                     },
                     "ico": {
                       "title": "IČO",
                       "type": "string",
-                    },
-                    "kontaktnaOsoba": {
-                      "properties": {
-                        "email": {
-                          "format": "email",
-                          "title": "E-mail",
-                          "type": "string",
-                        },
-                        "menoPriezvisko": {
-                          "properties": {
-                            "meno": {
-                              "title": "Meno",
-                              "type": "string",
-                            },
-                            "priezvisko": {
-                              "title": "Priezvisko",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "meno",
-                            "priezvisko",
-                          ],
-                          "type": "object",
-                        },
-                        "telefonneCislo": {
-                          "format": "ba-phone-number",
-                          "title": "Telefónne číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "menoPriezvisko",
-                        "email",
-                        "telefonneCislo",
-                      ],
-                      "type": "object",
                     },
                     "obchodneMeno": {
                       "title": "Obchodné meno",
@@ -29629,7 +29044,132 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
                   "required": [
                     "obchodneMeno",
                     "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaSidla": {
+                      "title": "Adresa sídla",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
                     "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "email": {
+                          "format": "email",
+                          "title": "E-mail",
+                          "type": "string",
+                        },
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "telefonneCislo": {
+                          "format": "ba-phone-number",
+                          "title": "Telefónne číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "email",
+                        "telefonneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
                     "kontaktnaOsoba",
                   ],
                   "type": "object",
@@ -29637,6 +29177,29 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
               "objednavatelAko": {
                 "default": "Fyzická osoba",
                 "oneOf": [
@@ -29656,9 +29219,17 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
                 "title": "Objednávateľ ako",
                 "type": "string",
               },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
             },
             "required": [
               "objednavatelAko",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -30000,130 +29571,31 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
     "ui:hideError": true,
     "ui:options": {},
     "ziadatel": {
-      "adresaPodnikatel": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
+      "adresaPodnikania": {
+        "ui:label": false,
         "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Miesto podnikania",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
         },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
+        "ui:widget": "Input",
       },
       "adresaSidla": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
+        "ui:label": false,
         "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa sídla",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
         },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
+        "ui:widget": "Input",
       },
       "adresaTrvalehoPobytu": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
+        "ui:label": false,
         "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa trvalého pobytu",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
         },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
+        "ui:widget": "Input",
       },
-      "dicPodnikatel": {
+      "dic": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -30137,14 +29609,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
         },
         "ui:widget": "Input",
       },
-      "emailPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "icDphPodnikatel": {
+      "icDph": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -30152,13 +29617,6 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
         "ui:widget": "Input",
       },
       "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "icoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -30173,33 +29631,26 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
           },
           "ui:widget": "Input",
         },
-        "menoPriezvisko": {
-          "meno": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "priezvisko": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
+        "meno": {
+          "ui:label": false,
           "ui:options": {
-            "columns": true,
-            "columnsRatio": "1/1",
+            "helptextHeader": "Meno",
+            "inputType": "text",
           },
-          "ui:order": [
-            "meno",
-            "priezvisko",
-          ],
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Priezvisko",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
         },
         "telefonneCislo": {
           "ui:label": false,
           "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte +421",
             "inputType": "tel",
           },
           "ui:widget": "Input",
@@ -30209,7 +29660,8 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
           "title": "Kontaktná osoba",
         },
         "ui:order": [
-          "menoPriezvisko",
+          "meno",
+          "priezvisko",
           "email",
           "telefonneCislo",
         ],
@@ -30238,15 +29690,15 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
           "priezvisko",
         ],
       },
-      "menoPriezviskoPodnikatel": {
-        "meno": {
+      "mestoPsc": {
+        "mesto": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
           },
           "ui:widget": "Input",
         },
-        "priezvisko": {
+        "psc": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
@@ -30255,21 +29707,14 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
         },
         "ui:options": {
           "columns": true,
-          "columnsRatio": "1/1",
+          "columnsRatio": "3/1",
         },
         "ui:order": [
-          "meno",
-          "priezvisko",
+          "mesto",
+          "psc",
         ],
       },
       "obchodneMeno": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "obchodneMenoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -30287,13 +29732,6 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
       "telefonneCislo": {
         "ui:label": false,
         "ui:options": {
-          "inputType": "tel",
-        },
-        "ui:widget": "Input",
-      },
-      "telefonneCisloPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
           "helptextHeader": "Vyplňte vo formáte +421",
           "inputType": "tel",
         },
@@ -30305,20 +29743,16 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] 
       "ui:order": [
         "objednavatelAko",
         "menoPriezvisko",
-        "adresaTrvalehoPobytu",
-        "email",
-        "telefonneCislo",
-        "menoPriezviskoPodnikatel",
-        "obchodneMenoPodnikatel",
-        "icoPodnikatel",
-        "dicPodnikatel",
-        "icDphPodnikatel",
-        "adresaPodnikatel",
-        "emailPodnikatel",
-        "telefonneCisloPodnikatel",
         "obchodneMeno",
         "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
         "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
         "kontaktnaOsoba",
       ],
     },
@@ -30341,6 +29775,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd default form state should 
     "stupenProjektovejDokumentacie": "Dokumentácia pre územné rozhodnutie (DÚR)",
   },
   "ziadatel": {
+    "mestoPsc": {},
     "objednavatelAko": "Fyzická osoba",
   },
 }
@@ -30357,53 +29792,20 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
               {
                 "if": {
                   "properties": {
-                    "objednavatelAko": {
-                      "const": "Fyzická osoba",
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
                     },
                   },
                   "required": [
-                    "objednavatelAko",
+                    "objednavatelTyp",
                   ],
                   "type": "object",
                 },
                 "then": {
                   "properties": {
-                    "adresaTrvalehoPobytu": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "email": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -30421,17 +29823,9 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
                       ],
                       "type": "object",
                     },
-                    "telefon": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
-                      "type": "string",
-                    },
                   },
                   "required": [
                     "menoPriezvisko",
-                    "adresaTrvalehoPobytu",
-                    "email",
-                    "telefon",
                   ],
                   "type": "object",
                 },
@@ -30439,101 +29833,42 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
               {
                 "if": {
                   "properties": {
-                    "objednavatelAko": {
-                      "const": "Fyzická osoba - podnikateľ",
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
                     },
                   },
                   "required": [
-                    "objednavatelAko",
+                    "objednavatelTyp",
                   ],
                   "type": "object",
                 },
                 "then": {
                   "properties": {
-                    "adresaPodnikatel": {
-                      "properties": {
-                        "mestoPsc": {
-                          "properties": {
-                            "mesto": {
-                              "title": "Mesto",
-                              "type": "string",
-                            },
-                            "psc": {
-                              "format": "ba-slovak-zip",
-                              "title": "PSČ",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "mesto",
-                            "psc",
-                          ],
-                          "type": "object",
-                        },
-                        "ulicaACislo": {
-                          "title": "Ulica a číslo",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ulicaACislo",
-                        "mestoPsc",
-                      ],
-                      "type": "object",
-                    },
-                    "dicPodnikatel": {
+                    "dic": {
                       "title": "DIČ",
                       "type": "string",
                     },
-                    "emailPodnikatel": {
-                      "format": "email",
-                      "title": "E-mail",
-                      "type": "string",
-                    },
-                    "icDphPodnikatel": {
+                    "icDph": {
                       "title": "IČ DPH",
                       "type": "string",
                     },
-                    "icoPodnikatel": {
+                    "ico": {
                       "title": "IČO",
                       "type": "string",
                     },
-                    "menoPriezviskoPodnikatel": {
-                      "properties": {
-                        "meno": {
-                          "title": "Meno",
-                          "type": "string",
-                        },
-                        "priezvisko": {
-                          "title": "Priezvisko",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "meno",
-                        "priezvisko",
-                      ],
-                      "type": "object",
-                    },
-                    "obchodneMenoPodnikatel": {
+                    "obchodneMeno": {
                       "title": "Obchodné meno",
-                      "type": "string",
-                    },
-                    "telefonneCisloPodnikatel": {
-                      "format": "ba-phone-number",
-                      "title": "Telefónne číslo",
                       "type": "string",
                     },
                   },
                   "required": [
-                    "menoPriezviskoPodnikatel",
-                    "obchodneMenoPodnikatel",
-                    "icoPodnikatel",
-                    "dicPodnikatel",
-                    "icDphPodnikatel",
-                    "adresaPodnikatel",
-                    "emailPodnikatel",
-                    "telefonneCisloPodnikatel",
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
                   ],
                   "type": "object",
                 },
@@ -30541,12 +29876,62 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
               {
                 "if": {
                   "properties": {
-                    "objednavatelAko": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
                       "const": "Právnická osoba",
                     },
                   },
                   "required": [
-                    "objednavatelAko",
+                    "objednavatelTyp",
                   ],
                   "type": "object",
                 },
@@ -30556,10 +29941,27 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
                       "title": "Adresa sídla",
                       "type": "string",
                     },
-                    "ico": {
-                      "title": "IČO",
-                      "type": "string",
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
                     },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
                     "kontaktnaOsoba": {
                       "properties": {
                         "email": {
@@ -30575,7 +29977,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
                           "title": "Priezvisko",
                           "type": "string",
                         },
-                        "telefon": {
+                        "telefonneCislo": {
                           "format": "ba-phone-number",
                           "title": "Telefónne číslo",
                           "type": "string",
@@ -30585,38 +29987,12 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
                         "meno",
                         "priezvisko",
                         "email",
-                        "telefon",
+                        "telefonneCislo",
                       ],
                       "type": "object",
-                    },
-                    "mestoPsc": {
-                      "properties": {
-                        "mesto": {
-                          "title": "Mesto",
-                          "type": "string",
-                        },
-                        "psc": {
-                          "format": "ba-slovak-zip",
-                          "title": "PSČ",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "mesto",
-                        "psc",
-                      ],
-                      "type": "object",
-                    },
-                    "obchodneMeno": {
-                      "title": "Obchodné meno",
-                      "type": "string",
                     },
                   },
                   "required": [
-                    "obchodneMeno",
-                    "ico",
-                    "adresaSidla",
-                    "mestoPsc",
                     "kontaktnaOsoba",
                   ],
                   "type": "object",
@@ -30624,6 +30000,29 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
               },
             ],
             "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
               "objednavatelAko": {
                 "default": "Fyzická osoba",
                 "oneOf": [
@@ -30643,9 +30042,17 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
                 "title": "Objednávateľ ako",
                 "type": "string",
               },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
             },
             "required": [
               "objednavatelAko",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -30983,46 +30390,13 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
     "ui:hideError": true,
     "ui:options": {},
     "ziadatel": {
-      "adresaPodnikatel": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
+      "adresaPodnikania": {
+        "ui:label": false,
         "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Miesto podnikania",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
         },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
+        "ui:widget": "Input",
       },
       "adresaSidla": {
         "ui:label": false,
@@ -31033,47 +30407,14 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
         "ui:widget": "Input",
       },
       "adresaTrvalehoPobytu": {
-        "mestoPsc": {
-          "mesto": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "psc": {
-            "ui:label": false,
-            "ui:options": {
-              "inputType": "text",
-            },
-            "ui:widget": "Input",
-          },
-          "ui:options": {
-            "columns": true,
-            "columnsRatio": "3/1",
-          },
-          "ui:order": [
-            "mesto",
-            "psc",
-          ],
-        },
+        "ui:label": false,
         "ui:options": {
-          "objectDisplay": "boxed",
-          "title": "Adresa trvalého pobytu",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
         },
-        "ui:order": [
-          "ulicaACislo",
-          "mestoPsc",
-        ],
-        "ulicaACislo": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
+        "ui:widget": "Input",
       },
-      "dicPodnikatel": {
+      "dic": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -31087,14 +30428,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
         },
         "ui:widget": "Input",
       },
-      "emailPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "email",
-        },
-        "ui:widget": "Input",
-      },
-      "icDphPodnikatel": {
+      "icDph": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -31102,13 +30436,6 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
         "ui:widget": "Input",
       },
       "ico": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
-      "icoPodnikatel": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -31139,7 +30466,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
           },
           "ui:widget": "Input",
         },
-        "telefon": {
+        "telefonneCislo": {
           "ui:label": false,
           "ui:options": {
             "helptextHeader": "Vyplňte vo formáte +421",
@@ -31155,34 +30482,10 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
           "meno",
           "priezvisko",
           "email",
-          "telefon",
+          "telefonneCislo",
         ],
       },
       "menoPriezvisko": {
-        "meno": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-        "priezvisko": {
-          "ui:label": false,
-          "ui:options": {
-            "inputType": "text",
-          },
-          "ui:widget": "Input",
-        },
-        "ui:options": {
-          "columns": true,
-          "columnsRatio": "1/1",
-        },
-        "ui:order": [
-          "meno",
-          "priezvisko",
-        ],
-      },
-      "menoPriezviskoPodnikatel": {
         "meno": {
           "ui:label": false,
           "ui:options": {
@@ -31237,13 +30540,6 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
         },
         "ui:widget": "Input",
       },
-      "obchodneMenoPodnikatel": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "objednavatelAko": {
         "ui:options": {
           "orientations": "column",
@@ -31252,15 +30548,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
         },
         "ui:widget": "RadioGroup",
       },
-      "telefon": {
-        "ui:label": false,
-        "ui:options": {
-          "helptextHeader": "Vyplňte vo formáte +421",
-          "inputType": "tel",
-        },
-        "ui:widget": "Input",
-      },
-      "telefonneCisloPodnikatel": {
+      "telefonneCislo": {
         "ui:label": false,
         "ui:options": {
           "helptextHeader": "Vyplňte vo formáte +421",
@@ -31274,21 +30562,16 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`]
       "ui:order": [
         "objednavatelAko",
         "menoPriezvisko",
-        "adresaTrvalehoPobytu",
-        "email",
-        "telefon",
-        "menoPriezviskoPodnikatel",
-        "obchodneMenoPodnikatel",
-        "icoPodnikatel",
-        "dicPodnikatel",
-        "icDphPodnikatel",
-        "adresaPodnikatel",
-        "emailPodnikatel",
-        "telefonneCisloPodnikatel",
         "obchodneMeno",
         "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
         "adresaSidla",
         "mestoPsc",
+        "email",
+        "telefonneCislo",
         "kontaktnaOsoba",
       ],
     },

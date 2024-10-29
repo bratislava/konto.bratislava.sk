@@ -108,6 +108,8 @@ export const CookiesAndTracking = () => {
               <a
                 href={t('cookie_consent_privacy_policy_link')}
                 className="cursor-pointer font-semibold underline"
+                target="_blank"
+                rel="noreferrer"
               >
                 {' '}
                 {t('cookie_consent_privacy_policy')}{' '}

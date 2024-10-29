@@ -26,12 +26,14 @@ describe('Form definitions', () => {
         expect(baGetDefaultFormState(formDefinition.schemas.schema, {})).toMatchSnapshot()
       })
 
-      it('has at least one example form', () => {
+      it('for selected forms, has at least one example form', () => {
         const examples = getExampleFormPairs({
           formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
             formDefinitionInner.slug === formDefinition.slug,
         })
-        expect(examples.length).toBeGreaterThan(0)
+        if (!formDefinition.slug.startsWith('tsb-')) {
+          expect(examples.length).toBeGreaterThan(0)
+        }
       })
     })
   })

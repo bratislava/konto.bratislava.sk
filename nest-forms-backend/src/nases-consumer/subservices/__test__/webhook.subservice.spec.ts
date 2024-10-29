@@ -84,6 +84,7 @@ describe('WebhookSubservice', () => {
         where: { id: 'test-form-id' },
       })
       expect(axios.post).toHaveBeenCalledWith('https://example.com/webhook', {
+        formId: 'test-form-id',
         formData: {},
       })
       expect(prismaMock.forms.update).toHaveBeenCalledWith({

@@ -60,6 +60,7 @@ export default class WebhookSubservice {
     )
 
     const webhookDto: WebhookDto = {
+      formId: form.id,
       formData: omitExtraData(
         formDefinition.schemas.schema,
         form.formDataJson as GenericObjectType,

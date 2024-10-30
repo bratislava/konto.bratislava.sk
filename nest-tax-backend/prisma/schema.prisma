@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+  binaryTargets   = ["native", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -34,13 +35,13 @@ model TaxPayer {
 }
 
 model Tax {
-  id                  Int              @id @default(autoincrement())
-  uuid                String           @default(uuid()) @db.Uuid
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @default(now()) @updatedAt
+  id                  Int                @id @default(autoincrement())
+  uuid                String             @default(uuid()) @db.Uuid
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @default(now()) @updatedAt
   year                Int
   taxPayerId          Int
-  taxPayer            TaxPayer         @relation(fields: [taxPayerId], references: [id])
+  taxPayer            TaxPayer           @relation(fields: [taxPayerId], references: [id])
   amount              Int
   variableSymbol      String
   taxEmployeeId       Int
@@ -54,8 +55,9 @@ model Tax {
   taxPayments         TaxPayment[]
   taxInstallments     TaxInstallment[]
   taxDetails          TaxDetail[]
-  taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
-  lastCheckedPayments DateTime         @default(now())
+  taxEmployees        TaxEmployee        @relation(fields: [taxEmployeeId], references: [id])
+  lastCheckedPayments DateTime           @default(now())
+  totalPayments       TotalPaymentsView?
 
   @@unique([taxPayerId, year])
   @@unique([uuid])
@@ -123,6 +125,12 @@ model LoadingPaymentsFromNoris {
   errorVariableSymbols              String[]
   norisInconsistencyVariableSymbols String[]
   notFound                          Int?
+}
+
+view TotalPaymentsView {
+  taxId         Int @unique
+  tax           Tax @relation(fields: [taxId], references: [id])
+  totalPayments Int
 }
 
 enum TaxDetailType {

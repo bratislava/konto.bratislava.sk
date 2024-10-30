@@ -17,7 +17,7 @@ export class TasksService {
     this.logger = new Logger('TasksService')
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async updatePaymentsFromNoris() {
     const year = new Date().getFullYear()
 

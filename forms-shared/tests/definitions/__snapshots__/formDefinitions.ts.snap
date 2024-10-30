@@ -1166,11 +1166,11 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -1335,7 +1335,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
               "miestoDodania",
               "komodita",
               "preferovanyDatum",
-              "doplnujuceInfo",
             ],
             "title": "Služba",
             "type": "object",
@@ -1616,6 +1615,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -1697,6 +1697,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -1768,9 +1769,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo default form
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "fakturacia": {
-      "sposobPlatby": "Platba kartou",
-    },
     "vyberSluzby": "Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
     "ziadatelTyp": "Fyzická osoba",
   },
@@ -1969,7 +1967,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
@@ -1985,7 +1983,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -2035,20 +2033,99 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   "type": "object",
                 },
               },
-            ],
-            "properties": {
-              "email": {
-                "format": "email",
-                "title": "E-mail",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
+              {
+                "if": {
+                  "properties": {
+                    "ziadatelTyp": {
+                      "enum": [
+                        "Právnická osoba",
+                        "Právnická osoba s povolením na vstup do ZEVO",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "ziadatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "sposobPlatby": {
+                                "const": "Platba na faktúru",
+                              },
+                            },
+                            "required": [
+                              "sposobPlatby",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "if": {
+                                  "properties": {
+                                    "elektronickaFaktura": {
+                                      "const": true,
+                                    },
+                                  },
+                                  "required": [
+                                    "elektronickaFaktura",
+                                  ],
+                                  "type": "object",
+                                },
+                                "then": {
+                                  "properties": {
+                                    "emailPreFaktury": {
+                                      "format": "email",
+                                      "title": "E-mail pre zasielanie elektronických faktúr",
+                                      "type": "string",
+                                    },
+                                  },
+                                  "required": [
+                                    "emailPreFaktury",
+                                  ],
+                                  "type": "object",
+                                },
+                              },
+                            ],
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "title": "Súhlasím so zaslaním elektronickej faktúry",
+                                "type": "boolean",
+                              },
+                              "iban": {
+                                "format": "ba-iban",
+                                "title": "IBAN",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "iban",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
                       "properties": {
                         "sposobPlatby": {
-                          "const": "Platba na faktúru",
+                          "default": "Platba kartou",
+                          "oneOf": [
+                            {
+                              "const": "Platba kartou",
+                              "title": "Platba kartou",
+                            },
+                            {
+                              "const": "Platba na faktúru",
+                              "title": "Platba na faktúru",
+                            },
+                          ],
+                          "title": "Spôsob platby",
+                          "type": "string",
                         },
                       },
                       "required": [
@@ -2056,96 +2133,19 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       ],
                       "type": "object",
                     },
-                    "then": {
-                      "allOf": [
-                        {
-                          "if": {
-                            "properties": {
-                              "elektronickaFaktura": {
-                                "const": true,
-                              },
-                            },
-                            "required": [
-                              "elektronickaFaktura",
-                            ],
-                            "type": "object",
-                          },
-                          "then": {
-                            "properties": {
-                              "emailPreFaktury": {
-                                "format": "email",
-                                "title": "E-mail pre zasielanie elektronických faktúr",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "emailPreFaktury",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                      ],
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "title": "Súhlasím so zaslaním elektronickej faktúry",
-                          "type": "boolean",
-                        },
-                      },
-                      "required": [],
-                      "type": "object",
-                    },
                   },
-                  {
-                    "if": {
-                      "properties": {
-                        "ziadatelTyp": {
-                          "enum": [
-                            "Právnická osoba",
-                            "Právnická osoba s povolením na vstup do ZEVO",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "ziadatelTyp",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "sposobPlatby": {
-                    "default": "Platba kartou",
-                    "oneOf": [
-                      {
-                        "const": "Platba kartou",
-                        "title": "Platba kartou",
-                      },
-                      {
-                        "const": "Platba na faktúru",
-                        "title": "Platba na faktúru",
-                      },
-                    ],
-                    "title": "Spôsob platby",
-                    "type": "string",
-                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
                 },
-                "required": [
-                  "sposobPlatby",
-                ],
-                "type": "object",
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
               },
               "preferovanyDatumDovozu": {
                 "format": "date",
@@ -2202,7 +2202,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
               "email",
               "vyberSluzby",
               "preferovanyDatumDovozu",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -4380,9 +4379,9 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:order": [
           "sposobPlatby",
+          "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
-          "iban",
         ],
       },
       "icDph": {
@@ -4402,6 +4401,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -4519,6 +4519,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -4706,7 +4707,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "menoKontaktnejOsoby": {
@@ -4722,7 +4723,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -5082,6 +5083,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -5163,6 +5165,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -5390,11 +5393,11 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -6254,6 +6257,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6335,6 +6339,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6414,11 +6419,11 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -7075,11 +7080,11 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -7384,7 +7389,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7617,6 +7622,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7698,6 +7704,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7836,7 +7843,12 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                 "type": "string",
               },
               "preferovanyCasOdvozu": {
-                "format": "ba-time",
+                "enum": [
+                  "07:00 (pondelok - sobota)",
+                  "09:00 (pondelok - sobota)",
+                  "11:00 (pondelok - sobota)",
+                  "13:00 (pondelok - piatok)",
+                ],
                 "title": "Preferovaný čas odvozu",
                 "type": "string",
               },
@@ -7845,7 +7857,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                 "title": "Preferovaný dátum odvozu",
                 "type": "string",
               },
-              "suhlasSDarom": {
+              "suhlasSPlatbou": {
                 "const": true,
                 "title": "Vyjadrenie súhlasu s platbou",
                 "type": "boolean",
@@ -7856,7 +7868,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
               "preferovanyDatumOdvozu",
               "preferovanyCasOdvozu",
               "mnozstvoADruhOdpadu",
-              "suhlasSDarom",
+              "suhlasSPlatbou",
             ],
             "title": "Služba",
             "type": "object",
@@ -7917,9 +7929,22 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       },
       "preferovanyCasOdvozu": {
         "ui:options": {
-          "helptextHeader": "7:00  (Pon - Sob); 9:00 (Pon - Sob); 11:00 (Pon - Sob); 13:00 (Pon - Pia)",
+          "selectOptions": {
+            "07:00 (pondelok - sobota)": {
+              "title": "07:00 (pondelok - sobota)",
+            },
+            "09:00 (pondelok - sobota)": {
+              "title": "09:00 (pondelok - sobota)",
+            },
+            "11:00 (pondelok - sobota)": {
+              "title": "11:00 (pondelok - sobota)",
+            },
+            "13:00 (pondelok - piatok)": {
+              "title": "13:00 (pondelok - piatok)",
+            },
+          },
         },
-        "ui:widget": "TimePicker",
+        "ui:widget": "Select",
       },
       "preferovanyDatumOdvozu": {
         "ui:options": {
@@ -7927,7 +7952,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "DatePicker",
       },
-      "suhlasSDarom": {
+      "suhlasSPlatbou": {
         "ui:options": {
           "checkboxLabel": "Súhlasím s platbou za službu OLO Taxi",
           "variant": "boxed",
@@ -7942,7 +7967,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "preferovanyDatumOdvozu",
         "preferovanyCasOdvozu",
         "mnozstvoADruhOdpadu",
-        "suhlasSDarom",
+        "suhlasSPlatbou",
       ],
     },
     "suhlasy": {
@@ -8291,6 +8316,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
       "adresaMiestaOdvozu": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -8447,23 +8473,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 },
               },
               {
-                "if": {
+                "else": {
                   "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Nový",
-                        "Existujúci",
-                        "Zmena poplatkovej povinnosti pre existujúceho zákazníka",
-                      ],
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
                     },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
                     "ico": {
                       "title": "IČO",
                       "type": "string",
@@ -8471,11 +8486,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                   },
                   "required": [
                     "ico",
+                    "dic",
                   ],
                   "type": "object",
                 },
-              },
-              {
                 "if": {
                   "properties": {
                     "typOdberatela": {
@@ -8494,7 +8508,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                       "title": "Dátum zmeny",
                       "type": "string",
                     },
-                    "icoPovodnehOdberatela": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                    "icoPovodnehoOdberatela": {
                       "title": "IČO pôvodného odberateľa",
                       "type": "string",
                     },
@@ -8504,48 +8522,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                     },
                   },
                   "required": [
-                    "icoPovodnehOdberatela",
+                    "icoPovodnehoOdberatela",
                     "noveIco",
-                    "datumZmeny",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "else": {
-                  "properties": {
-                    "dic": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "dic",
-                  ],
-                  "type": "object",
-                },
-                "if": {
-                  "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Zmena odberateľa",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "dicNovehoOdberatela": {
-                      "title": "DIČ nového odberateľa",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
                     "dicNovehoOdberatela",
+                    "datumZmeny",
                   ],
                   "type": "object",
                 },
@@ -8571,6 +8551,176 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                   },
                   "required": [
                     "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "email": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefon": {
+                      "format": "ba-phone-number",
+                      "title": "Telefónne číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "telefon",
+                    "email",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "const": "Zmena odberateľa",
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "noveTelefonneCislo": {
+                      "format": "ba-phone-number",
+                      "title": "Nové telefónne číslo",
+                      "type": "string",
+                    },
+                    "novyEmail": {
+                      "format": "email",
+                      "title": "Nový email",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "noveTelefonneCislo",
+                    "novyEmail",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturaciaNovehoOdoberatela": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "Nový IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturaciaNovehoOdoberatela",
                   ],
                   "type": "object",
                 },
@@ -8646,57 +8796,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 ],
                 "type": "object",
               },
-              "email": {
-                "format": "email",
-                "title": "Email",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "const": true,
-                        },
-                      },
-                      "required": [
-                        "elektronickaFaktura",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "emailPreFaktury": {
-                          "title": "E-mail pre zasielanie elektronických faktúr",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "emailPreFaktury",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "elektronickaFaktura": {
-                    "title": "Súhlasím so zaslaním elektronickej faktúry",
-                    "type": "boolean",
-                  },
-                  "iban": {
-                    "format": "ba-iban",
-                    "title": "IBAN",
-                    "type": "string",
-                  },
-                },
-                "required": [
-                  "iban",
-                ],
-                "type": "object",
-              },
               "konatel": {
-                "title": "Konateľ (meno, priezvisko)",
+                "title": "Konateľ",
                 "type": "string",
               },
               "menoKontaktnejOsoby": {
@@ -8710,11 +8811,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               "platcaDph": {
                 "title": "Som platca DPH?",
                 "type": "boolean",
-              },
-              "telefon": {
-                "format": "ba-phone-number",
-                "title": "Telefónne číslo",
-                "type": "string",
               },
               "typOdberatela": {
                 "default": "Nový",
@@ -8740,7 +8836,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 "type": "string",
               },
               "zastupeny": {
-                "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                "title": "Zastúpený - na základe splnomocnenia",
                 "type": "string",
               },
             },
@@ -8751,9 +8847,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               "konatel",
               "zastupeny",
               "menoKontaktnejOsoby",
-              "telefon",
-              "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -9188,7 +9281,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
           "miestoDodania": {
             "ui:label": false,
             "ui:options": {
-              "helptextHeader": "Presná adresa",
+              "helptextHeader": "Vyplňte vo formáte ulica a číslo",
               "inputType": "text",
             },
             "ui:widget": "Input",
@@ -9455,6 +9548,39 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
           "emailPreFaktury",
         ],
       },
+      "fakturaciaNovehoOdoberatela": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
+        },
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
+      },
       "icDph": {
         "ui:label": false,
         "ui:options": {
@@ -9469,7 +9595,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
-      "icoPovodnehOdberatela": {
+      "icoPovodnehoOdberatela": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -9479,6 +9605,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -9504,6 +9631,22 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
+      "noveTelefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "tel",
+          "placeholder": "+421",
+          "size": "medium",
+        },
+        "ui:widget": "Input",
+      },
+      "novyEmail": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
       "platcaDph": {
         "ui:options": {
           "checkboxLabel": "Som platca DPH",
@@ -9522,9 +9665,25 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       },
       "typOdberatela": {
         "ui:options": {
-          "helptextHeader": "Nový (nemám uzavretú zmluvu), Existujúci (mám uzavretú zmluvu), Zmena poplatkovej povinnosti (spoplatnenie služby), Zmena odberateľa (napr. preberám prevádzku alebo správu nehnuteľnosti)",
           "orientations": "column",
-          "radioOptions": [],
+          "radioOptions": [
+            {
+              "description": "Nemám uzavretú zmluvu",
+              "value": "Nový",
+            },
+            {
+              "description": "Mám uzavretú zmluvu",
+              "value": "Existujúci",
+            },
+            {
+              "description": "Spoplatnenie služby",
+              "value": "Zmena poplatkovej povinnosti pre existujúceho zákazníka",
+            },
+            {
+              "description": "Napr. preberám prevádzku alebo správu nehnuteľnosti",
+              "value": "Zmena odberateľa",
+            },
+          ],
           "variant": "boxed",
         },
         "ui:widget": "RadioGroup",
@@ -9537,25 +9696,29 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "nazovOrganizacie",
         "adresaSidla",
         "cisloZmluvy",
-        "ico",
-        "icoPovodnehOdberatela",
+        "icoPovodnehoOdberatela",
         "noveIco",
-        "datumZmeny",
         "dicNovehoOdberatela",
+        "datumZmeny",
+        "ico",
         "dic",
         "platcaDph",
         "icDph",
         "konatel",
         "zastupeny",
         "menoKontaktnejOsoby",
+        "noveTelefonneCislo",
+        "novyEmail",
         "telefon",
         "email",
+        "fakturaciaNovehoOdoberatela",
         "fakturacia",
         "zmenyVPocteNadob",
       ],
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -9763,6 +9926,18 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
               },
               {
+                "else": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dic",
+                  ],
+                  "type": "object",
+                },
                 "if": {
                   "properties": {
                     "typOdberatela": {
@@ -9781,7 +9956,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                       "title": "Dátum zmeny",
                       "type": "string",
                     },
-                    "icoPovodnehOdberatela": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                    "icoPovodnehoOdberatela": {
                       "title": "IČO pôvodného odberateľa",
                       "type": "string",
                     },
@@ -9791,48 +9970,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                     },
                   },
                   "required": [
-                    "icoPovodnehOdberatela",
+                    "icoPovodnehoOdberatela",
                     "noveIco",
-                    "datumZmeny",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "else": {
-                  "properties": {
-                    "dic": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "dic",
-                  ],
-                  "type": "object",
-                },
-                "if": {
-                  "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Zmena odberateľa",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "dicNovehoOdberatela": {
-                      "title": "DIČ nového odberateľa",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
                     "dicNovehoOdberatela",
+                    "datumZmeny",
                   ],
                   "type": "object",
                 },
@@ -9858,6 +9999,176 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   },
                   "required": [
                     "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "email": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefon": {
+                      "format": "ba-phone-number",
+                      "title": "Telefónne číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "telefon",
+                    "email",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "const": "Zmena odberateľa",
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "noveTelefonneCislo": {
+                      "format": "ba-phone-number",
+                      "title": "Nové telefónne číslo",
+                      "type": "string",
+                    },
+                    "novyEmail": {
+                      "format": "email",
+                      "title": "Nový email",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "noveTelefonneCislo",
+                    "novyEmail",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturaciaNovehoOdoberatela": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "Nový IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturaciaNovehoOdoberatela",
                   ],
                   "type": "object",
                 },
@@ -9901,89 +10212,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               },
             ],
             "properties": {
-              "email": {
-                "format": "email",
-                "title": "Email",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "else": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                    "if": {
-                      "properties": {
-                        "typOdberatela": {
-                          "enum": [
-                            "Zmena odberateľa",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "typOdberatela",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "ibanNovehoOdberatela": {
-                          "format": "ba-iban",
-                          "title": "Nový IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ibanNovehoOdberatela",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "const": true,
-                        },
-                      },
-                      "required": [
-                        "elektronickaFaktura",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "emailPreFaktury": {
-                          "title": "E-mail pre zasielanie elektronických faktúr",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "emailPreFaktury",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "elektronickaFaktura": {
-                    "title": "Súhlasím so zaslaním elektronickej faktúry",
-                    "type": "boolean",
-                  },
-                },
-                "required": [],
-                "type": "object",
-              },
               "menoKontaktnejOsoby": {
                 "title": "Meno kontaktnej osoby",
                 "type": "string",
@@ -9991,11 +10219,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               "platcaDph": {
                 "title": "Som platca DPH?",
                 "type": "boolean",
-              },
-              "telefon": {
-                "format": "ba-phone-number",
-                "title": "Telefónne číslo",
-                "type": "string",
               },
               "typOdberatela": {
                 "default": "Nový",
@@ -10020,9 +10243,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             "required": [
               "typOdberatela",
               "menoKontaktnejOsoby",
-              "telefon",
-              "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -10325,7 +10545,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           "miestoDodania": {
             "ui:label": false,
             "ui:options": {
-              "helptextHeader": "Presná adresa",
+              "helptextHeader": "Vyplňte vo formáte ulica a číslo",
               "inputType": "text",
             },
             "ui:widget": "Input",
@@ -10539,7 +10759,33 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           },
           "ui:widget": "Input",
         },
-        "ibanNovehoOdberatela": {
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
+      },
+      "fakturaciaNovehoOdoberatela": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
+        },
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "iban": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
@@ -10551,7 +10797,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           "title": "Fakturácia",
         },
         "ui:order": [
-          "ibanNovehoOdberatela",
           "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
@@ -10571,7 +10816,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "icoPovodnehOdberatela": {
+      "icoPovodnehoOdberatela": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -10654,6 +10899,22 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
+      "noveTelefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "tel",
+          "placeholder": "+421",
+          "size": "medium",
+        },
+        "ui:widget": "Input",
+      },
+      "novyEmail": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
       "platcaDph": {
         "ui:options": {
           "checkboxLabel": "Som platca DPH",
@@ -10672,9 +10933,21 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       },
       "typOdberatela": {
         "ui:options": {
-          "helptextHeader": "Nový (nemám uzavretú zmluvu), Existujúci (mám uzavretú zmluvu), Zmena odberateľa (napr. preberám prevádzku alebo správu nehnuteľnosti)",
           "orientations": "column",
-          "radioOptions": [],
+          "radioOptions": [
+            {
+              "description": "Nemám uzavretú zmluvu",
+              "value": "Nový",
+            },
+            {
+              "description": "Mám uzavretú zmluvu",
+              "value": "Existujúci",
+            },
+            {
+              "description": "Napr. preberám prevádzku alebo správu nehnuteľnosti",
+              "value": "Zmena odberateľa",
+            },
+          ],
           "variant": "boxed",
         },
         "ui:widget": "RadioGroup",
@@ -10691,16 +10964,19 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "adresaSidla",
         "cisloZmluvy",
         "ico",
-        "icoPovodnehOdberatela",
+        "icoPovodnehoOdberatela",
         "noveIco",
-        "datumZmeny",
         "dicNovehoOdberatela",
+        "datumZmeny",
         "dic",
         "platcaDph",
         "icDph",
         "menoKontaktnejOsoby",
+        "noveTelefonneCislo",
+        "novyEmail",
         "telefon",
         "email",
+        "fakturaciaNovehoOdoberatela",
         "fakturacia",
         "zmenyVPocteNadob",
       ],
@@ -10763,9 +11039,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default f
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "fakturacia": {
-      "sposobPlatby": "Platba kartou",
-    },
     "ziadatelTyp": "Fyzická osoba",
   },
 }
@@ -10963,7 +11236,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
@@ -10979,7 +11252,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -10995,20 +11268,99 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   "type": "object",
                 },
               },
-            ],
-            "properties": {
-              "email": {
-                "format": "email",
-                "title": "E-mail",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
+              {
+                "if": {
+                  "properties": {
+                    "ziadatelTyp": {
+                      "enum": [
+                        "Právnická osoba",
+                        "Právnická osoba s povolením na vstup do ZEVO",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "ziadatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "sposobPlatby": {
+                                "const": "Platba na faktúru",
+                              },
+                            },
+                            "required": [
+                              "sposobPlatby",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "if": {
+                                  "properties": {
+                                    "elektronickaFaktura": {
+                                      "const": true,
+                                    },
+                                  },
+                                  "required": [
+                                    "elektronickaFaktura",
+                                  ],
+                                  "type": "object",
+                                },
+                                "then": {
+                                  "properties": {
+                                    "emailPreFaktury": {
+                                      "format": "email",
+                                      "title": "E-mail pre zasielanie elektronických faktúr",
+                                      "type": "string",
+                                    },
+                                  },
+                                  "required": [
+                                    "emailPreFaktury",
+                                  ],
+                                  "type": "object",
+                                },
+                              },
+                            ],
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "title": "Súhlasím so zaslaním elektronickej faktúry",
+                                "type": "boolean",
+                              },
+                              "iban": {
+                                "format": "ba-iban",
+                                "title": "IBAN",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "iban",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
                       "properties": {
                         "sposobPlatby": {
-                          "const": "Platba na faktúru",
+                          "default": "Platba kartou",
+                          "oneOf": [
+                            {
+                              "const": "Platba kartou",
+                              "title": "Platba kartou",
+                            },
+                            {
+                              "const": "Platba na faktúru",
+                              "title": "Platba na faktúru",
+                            },
+                          ],
+                          "title": "Spôsob platby",
+                          "type": "string",
                         },
                       },
                       "required": [
@@ -11016,96 +11368,19 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       ],
                       "type": "object",
                     },
-                    "then": {
-                      "allOf": [
-                        {
-                          "if": {
-                            "properties": {
-                              "elektronickaFaktura": {
-                                "const": true,
-                              },
-                            },
-                            "required": [
-                              "elektronickaFaktura",
-                            ],
-                            "type": "object",
-                          },
-                          "then": {
-                            "properties": {
-                              "emailPreFaktury": {
-                                "format": "email",
-                                "title": "E-mail pre zasielanie elektronických faktúr",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "emailPreFaktury",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                      ],
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "title": "Súhlasím so zaslaním elektronickej faktúry",
-                          "type": "boolean",
-                        },
-                      },
-                      "required": [],
-                      "type": "object",
-                    },
                   },
-                  {
-                    "if": {
-                      "properties": {
-                        "ziadatelTyp": {
-                          "enum": [
-                            "Právnická osoba",
-                            "Právnická osoba s povolením na vstup do ZEVO",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "ziadatelTyp",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "sposobPlatby": {
-                    "default": "Platba kartou",
-                    "oneOf": [
-                      {
-                        "const": "Platba kartou",
-                        "title": "Platba kartou",
-                      },
-                      {
-                        "const": "Platba na faktúru",
-                        "title": "Platba na faktúru",
-                      },
-                    ],
-                    "title": "Spôsob platby",
-                    "type": "string",
-                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
                 },
-                "required": [
-                  "sposobPlatby",
-                ],
-                "type": "object",
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
               },
               "telefon": {
                 "format": "ba-phone-number",
@@ -11136,7 +11411,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
               "ziadatelTyp",
               "telefon",
               "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -12553,9 +12827,9 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:order": [
           "sposobPlatby",
+          "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
-          "iban",
         ],
       },
       "icDph": {
@@ -12575,6 +12849,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -12658,6 +12933,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",

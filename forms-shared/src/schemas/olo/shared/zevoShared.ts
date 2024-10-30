@@ -89,15 +89,21 @@ export const getZevoSchema = (type: ZevoType) => [
         conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
           input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
         ]),
-        input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
+        input(
+          'konatel',
+          { type: 'text', title: 'Konateľ', required: true },
+          { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        ),
         input(
           'zastupeny',
           {
             type: 'text',
-            title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+            title: 'Zastúpený - na základe splnomocnenia',
             required: true,
           },
-          {},
+          {
+            helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+          },
         ),
         input(
           'kontaktnaOsoba',
@@ -160,52 +166,54 @@ export const getZevoSchema = (type: ZevoType) => [
           ],
         )
       : null,
-    object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
-      radioGroup(
-        'sposobPlatby',
-        {
-          type: 'string',
-          title: 'Spôsob platby',
-          required: true,
-          options: createStringOptions(['Platba kartou', 'Platba na faktúru']),
-        },
-        { variant: 'boxed', orientations: 'column' },
-      ),
-      conditionalFields(createCondition([[['sposobPlatby'], { const: 'Platba na faktúru' }]]), [
-        checkbox(
-          'elektronickaFaktura',
-          {
-            title: 'Súhlasím so zaslaním elektronickej faktúry',
-          },
-          {
-            helptextHeader:
-              'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-            checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-            variant: 'boxed',
-          },
-        ),
-        conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
-          input(
-            'emailPreFaktury',
-            {
-              type: 'email',
-              title: 'E-mail pre zasielanie elektronických faktúr',
-              required: true,
-            },
-            {},
-          ),
-        ]),
+    conditionalFields(
+      createCondition([
+        [
+          ['ziadatelTyp'],
+          { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
+        ],
       ]),
-      conditionalFields(
-        createCondition([
-          [
-            ['ziadatelTyp'],
-            { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
-          ],
+      [
+        object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+          radioGroup(
+            'sposobPlatby',
+            {
+              type: 'string',
+              title: 'Spôsob platby',
+              required: true,
+              options: createStringOptions(['Platba kartou', 'Platba na faktúru']),
+            },
+            { variant: 'boxed', orientations: 'column' },
+          ),
+          conditionalFields(createCondition([[['sposobPlatby'], { const: 'Platba na faktúru' }]]), [
+            input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
+            checkbox(
+              'elektronickaFaktura',
+              {
+                title: 'Súhlasím so zaslaním elektronickej faktúry',
+              },
+              {
+                helptextHeader:
+                  'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+                checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+                variant: 'boxed',
+              },
+            ),
+            conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+              input(
+                'emailPreFaktury',
+                {
+                  type: 'email',
+                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  required: true,
+                },
+                {},
+              ),
+            ]),
+          ]),
         ]),
-        [input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {})],
-      ),
-    ]),
+      ],
+    ),
   ]),
   type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
     ? step('povodcaOdpadu', { title: 'Identifikačné údaje pôvodcu odpadu' }, [

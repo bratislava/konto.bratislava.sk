@@ -13,10 +13,51 @@ import {
   select,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import {
+  createCondition,
+  createStringOptions,
+  createStringOptionsV2,
+} from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { safeString } from '../../form-utils/safeData'
 import { GenericObjectType } from '@rjsf/utils'
+
+const getFakturacia = (novyOdberatel: boolean) =>
+  object(
+    novyOdberatel ? 'fakturaciaNovehoOdoberatela' : 'fakturacia',
+    { required: true },
+    { objectDisplay: 'boxed', title: 'Fakturácia' },
+    [
+      input(
+        'iban',
+        { type: 'ba-iban', title: novyOdberatel ? 'Nový IBAN' : 'IBAN', required: true },
+        {},
+      ),
+      checkbox(
+        'elektronickaFaktura',
+        {
+          title: 'Súhlasím so zaslaním elektronickej faktúry',
+        },
+        {
+          helptextHeader:
+            'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+          checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+          variant: 'boxed',
+        },
+      ),
+      conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+        input(
+          'emailPreFaktury',
+          {
+            type: 'text',
+            title: 'E-mail pre zasielanie elektronických faktúr',
+            required: true,
+          },
+          {},
+        ),
+      ]),
+    ],
+  )
 
 export default schema(
   {
@@ -31,13 +72,24 @@ export default schema(
           type: 'string',
           title: 'Typ odberateľa',
           required: true,
-          options: createStringOptions(['Nový', 'Existujúci', 'Zmena odberateľa']),
+          options: createStringOptionsV2([
+            {
+              title: 'Nový',
+              description: 'Nemám uzavretú zmluvu',
+            },
+            {
+              title: 'Existujúci',
+              description: 'Mám uzavretú zmluvu',
+            },
+            {
+              title: 'Zmena odberateľa',
+              description: 'Napr. preberám prevádzku alebo správu nehnuteľnosti',
+            },
+          ]),
         },
         {
           variant: 'boxed',
           orientations: 'column',
-          helptextHeader:
-            'Nový (nemám uzavretú zmluvu), Existujúci (mám uzavretú zmluvu), Zmena odberateľa (napr. preberám prevádzku alebo správu nehnuteľnosti)',
         },
       ),
       conditionalFields(
@@ -77,33 +129,24 @@ export default schema(
       conditionalFields(createCondition([[['typOdberatela'], { enum: ['Nový', 'Existujúci'] }]]), [
         input('ico', { type: 'text', title: 'IČO', required: true }, {}),
       ]),
-      conditionalFields(createCondition([[['typOdberatela'], { const: 'Zmena odberateľa' }]]), [
-        input(
-          'icoPovodnehOdberatela',
-          { type: 'text', title: 'IČO pôvodného odberateľa', required: true },
-          {},
-        ),
-        input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {}),
-        datePicker(
-          'datumZmeny',
-          { title: 'Dátum zmeny', required: true },
-          { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
-        ),
-      ]),
       conditionalFields(
-        createCondition([
-          [
-            ['typOdberatela'],
-            {
-              enum: ['Zmena odberateľa'],
-            },
-          ],
-        ]),
+        createCondition([[['typOdberatela'], { const: 'Zmena odberateľa' }]]),
         [
+          input(
+            'icoPovodnehoOdberatela',
+            { type: 'text', title: 'IČO pôvodného odberateľa', required: true },
+            {},
+          ),
+          input('noveIco', { type: 'text', title: 'Nové IČO', required: true }, {}),
           input(
             'dicNovehoOdberatela',
             { type: 'text', title: 'DIČ nového odberateľa', required: true },
             {},
+          ),
+          datePicker(
+            'datumZmeny',
+            { title: 'Dátum zmeny', required: true },
+            { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
           ),
         ],
         [input('dic', { type: 'text', title: 'DIČ', required: true }, {})],
@@ -121,47 +164,26 @@ export default schema(
         { type: 'text', title: 'Meno kontaktnej osoby', required: true },
         {},
       ),
-      sharedPhoneNumberField('telefon', true),
-      input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
-        conditionalFields(
-          createCondition([
-            [
-              ['typOdberatela'],
-              {
-                enum: ['Zmena odberateľa'],
-              },
-            ],
-          ]),
-          [
-            input(
-              'ibanNovehoOdberatela',
-              { type: 'ba-iban', title: 'Nový IBAN', required: true },
-              {},
-            ),
-          ],
-          [input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {})],
-        ),
-        checkbox(
-          'elektronickaFaktura',
-          {
-            title: 'Súhlasím so zaslaním elektronickej faktúry',
-          },
-          {
-            helptextHeader:
-              'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-            checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-            variant: 'boxed',
-          },
-        ),
-        conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+      conditionalFields(
+        createCondition([[['typOdberatela'], { const: 'Zmena odberateľa' }]]),
+        [
           input(
-            'emailPreFaktury',
-            { type: 'text', title: 'E-mail pre zasielanie elektronických faktúr', required: true },
-            {},
+            'noveTelefonneCislo',
+            { type: 'ba-phone-number', title: 'Nové telefónne číslo', required: true },
+            { size: 'medium', placeholder: '+421' },
           ),
-        ]),
-      ]),
+          input('novyEmail', { title: 'Nový email', required: true, type: 'email' }, {}),
+        ],
+        [
+          sharedPhoneNumberField('telefon', true),
+          input('email', { title: 'Email', required: true, type: 'email' }, {}),
+        ],
+      ),
+      conditionalFields(
+        createCondition([[['typOdberatela'], { enum: ['Zmena odberateľa'] }]]),
+        [getFakturacia(true)],
+        [getFakturacia(false)],
+      ),
       conditionalFields(createCondition([[['typOdberatela'], { enum: ['Zmena odberateľa'] }]]), [
         radioGroup(
           'zmenyVPocteNadob',
@@ -191,7 +213,7 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Presná adresa' },
+            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',

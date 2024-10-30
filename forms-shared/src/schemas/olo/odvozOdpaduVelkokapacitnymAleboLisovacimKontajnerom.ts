@@ -66,15 +66,19 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       ],
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
-      input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
+      input(
+        'konatel',
+        { type: 'text', title: 'Konateľ', required: true },
+        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+      ),
       input(
         'zastupeny',
         {
           type: 'text',
-          title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+          title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        {},
+        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -121,7 +125,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
     input(
       'miestoDodania',
       { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-      { helptextHeader: 'Presná adresa' },
+      { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
     ),
     select(
       'druhOdpadu',

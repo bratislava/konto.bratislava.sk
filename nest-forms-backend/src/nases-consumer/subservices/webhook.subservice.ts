@@ -6,13 +6,13 @@ import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
-import { getFileIdsToUrlMap, replaceFileIdsWithUrls } from 'src/utils/files'
 
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
+import { getFileIdsToUrlMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import WebhookDto from './dtos/webhook.dto'
@@ -67,13 +67,9 @@ export default class WebhookSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
     const fileIdUrlMap = getFileIdsToUrlMap(form, jwtSecret, selfUrl)
 
-    const formDataWithFileIds = omitExtraData(
+    const formData = omitExtraData(
       formDefinition.schemas.schema,
       form.formDataJson as GenericObjectType,
-    )
-    const formDataWithFileUrls = replaceFileIdsWithUrls(
-      formDataWithFileIds,
-      fileIdUrlMap,
     )
 
     this.logger.log(
@@ -82,7 +78,9 @@ export default class WebhookSubservice {
 
     const webhookDto: WebhookDto = {
       formId: form.id,
-      formData: formDataWithFileUrls,
+      slug: form.formDefinitionSlug,
+      data: formData,
+      files: fileIdUrlMap,
     }
     await axios.post(formDefinition.webhookUrl, webhookDto)
 

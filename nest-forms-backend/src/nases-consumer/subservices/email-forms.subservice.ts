@@ -6,7 +6,6 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
-import { getFileIdsToUrlMap } from 'src/utils/files'
 
 import ConvertService from '../../convert/convert.service'
 import {
@@ -14,6 +13,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
+import { getFileIdsToUrlMap } from '../../utils/files'
 import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'

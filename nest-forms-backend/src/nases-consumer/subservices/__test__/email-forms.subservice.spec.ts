@@ -223,27 +223,5 @@ describe('EmailFormsSubservice', () => {
       )
     })
   })
-
-  describe('getFileIdsToUrlMap', () => {
-    it('should return correct file URL map', () => {
-      const mockForm = {
-        files: [{ id: 'file1' }, { id: 'file2' }],
-      }
-      configService.getOrThrow
-        .mockReturnValueOnce('secret')
-        .mockReturnValueOnce('http://frontend.com')
-      jest.spyOn(jwt, 'sign').mockImplementation(() => 'token')
-
-      const result = service['getFileIdsToUrlMap'](
-        mockForm as unknown as FormWithFiles,
-      )
-
-      expect(Object.keys(result)).toHaveLength(2)
-      expect(result).toHaveProperty('file1')
-      expect(result).toHaveProperty('file2')
-      expect(result.file1).toBe('http://frontend.com/files/download/file/token')
-      expect(result.file2).toBe('http://frontend.com/files/download/file/token')
-    })
-  })
 })
 /* eslint-enable pii/no-email */

@@ -8,7 +8,7 @@ import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 
-export type RenderSummaryEmailFileIdUrlMap = Record<string, string>
+export type RenderSummaryEmailFileIdUrlMap = Record<string, { url: string; fileName: string }>
 
 export type RenderSummaryEmailPayload = {
   formDefinition: FormDefinition

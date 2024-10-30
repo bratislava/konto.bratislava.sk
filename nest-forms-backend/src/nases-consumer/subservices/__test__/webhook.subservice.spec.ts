@@ -1,4 +1,6 @@
+import { createMock } from '@golevelup/ts-jest'
 import { HttpStatus, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
 import axios from 'axios'
@@ -33,6 +35,7 @@ describe('WebhookSubservice', () => {
           useValue: prismaMock,
         },
         ThrowerErrorGuard,
+        { provide: ConfigService, useValue: createMock<ConfigService>() },
       ],
     }).compile()
 
@@ -82,10 +85,13 @@ describe('WebhookSubservice', () => {
       await service.sendWebhook(mockFormId)
       expect(prismaMock.forms.findUnique).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
+        include: { files: true },
       })
       expect(axios.post).toHaveBeenCalledWith('https://example.com/webhook', {
         formId: 'test-form-id',
-        formData: {},
+        slug: 'test-slug',
+        data: {},
+        files: {},
       })
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },

@@ -81,7 +81,7 @@ const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps)
 
 const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
   const fileIdUrlMap = useFileIdUrlMap()
-  const fileUrl = fileIdUrlMap[fileInfo.id]
+  const fileUrl = fileIdUrlMap[fileInfo.id].url
   return (
     <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>
       {fileUrl ? <Link href={fileUrl}>{fileInfo.fileName}</Link> : fileInfo.fileName}

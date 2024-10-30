@@ -585,7 +585,7 @@
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
-    "footer_text": "© 2023 Hlavné mesto Bratislava",
+    "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
     "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
     "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
@@ -615,7 +615,8 @@
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.  Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+      "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
     },
     "form_submit_tax": {
       "title": "Ďakujeme za odoslanie priznania",

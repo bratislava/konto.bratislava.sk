@@ -22,9 +22,9 @@ const exampleForm: ExampleForm = {
     sluzba: {
       miestoDodania: 'Holandská 10',
       preferovanyDatumOdvozu: '2025-05-05',
-      preferovanyCasOdvozu: '07:55',
+      preferovanyCasOdvozu: '07:00 (pondelok - sobota)',
       mnozstvoADruhOdpadu: 'Lots of paper.',
-      suhlasSDarom: true,
+      suhlasSPlatbou: true,
     },
     suhlasy: {
       suhlas: true,

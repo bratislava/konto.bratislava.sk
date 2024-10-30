@@ -5,7 +5,10 @@ import { get as getAppRootDir } from 'app-root-dir'
 import path from 'path'
 
 const globs = ['src/generator/uiOptionsTypes.ts', 'src/schemas/**/*.ts']
-const ignorePatterns = ['src/schemas/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky.ts']
+const ignorePatterns = [
+  'src/schemas/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky.ts',
+  'src/schemas/olo',
+]
 
 const rootDir = getAppRootDir()
 const outputPath = path.join(rootDir, 'dist-schemas/prompt.txt')

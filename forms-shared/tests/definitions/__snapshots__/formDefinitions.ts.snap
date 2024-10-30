@@ -1166,11 +1166,11 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -1335,7 +1335,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
               "miestoDodania",
               "komodita",
               "preferovanyDatum",
-              "doplnujuceInfo",
             ],
             "title": "Služba",
             "type": "object",
@@ -1616,6 +1615,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -1697,6 +1697,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -1768,9 +1769,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo default form
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "fakturacia": {
-      "sposobPlatby": "Platba kartou",
-    },
     "vyberSluzby": "Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
     "ziadatelTyp": "Fyzická osoba",
   },
@@ -1969,7 +1967,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
@@ -1985,7 +1983,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -2035,20 +2033,99 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   "type": "object",
                 },
               },
-            ],
-            "properties": {
-              "email": {
-                "format": "email",
-                "title": "E-mail",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
+              {
+                "if": {
+                  "properties": {
+                    "ziadatelTyp": {
+                      "enum": [
+                        "Právnická osoba",
+                        "Právnická osoba s povolením na vstup do ZEVO",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "ziadatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "sposobPlatby": {
+                                "const": "Platba na faktúru",
+                              },
+                            },
+                            "required": [
+                              "sposobPlatby",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "if": {
+                                  "properties": {
+                                    "elektronickaFaktura": {
+                                      "const": true,
+                                    },
+                                  },
+                                  "required": [
+                                    "elektronickaFaktura",
+                                  ],
+                                  "type": "object",
+                                },
+                                "then": {
+                                  "properties": {
+                                    "emailPreFaktury": {
+                                      "format": "email",
+                                      "title": "E-mail pre zasielanie elektronických faktúr",
+                                      "type": "string",
+                                    },
+                                  },
+                                  "required": [
+                                    "emailPreFaktury",
+                                  ],
+                                  "type": "object",
+                                },
+                              },
+                            ],
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "title": "Súhlasím so zaslaním elektronickej faktúry",
+                                "type": "boolean",
+                              },
+                              "iban": {
+                                "format": "ba-iban",
+                                "title": "IBAN",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "iban",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
                       "properties": {
                         "sposobPlatby": {
-                          "const": "Platba na faktúru",
+                          "default": "Platba kartou",
+                          "oneOf": [
+                            {
+                              "const": "Platba kartou",
+                              "title": "Platba kartou",
+                            },
+                            {
+                              "const": "Platba na faktúru",
+                              "title": "Platba na faktúru",
+                            },
+                          ],
+                          "title": "Spôsob platby",
+                          "type": "string",
                         },
                       },
                       "required": [
@@ -2056,96 +2133,19 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       ],
                       "type": "object",
                     },
-                    "then": {
-                      "allOf": [
-                        {
-                          "if": {
-                            "properties": {
-                              "elektronickaFaktura": {
-                                "const": true,
-                              },
-                            },
-                            "required": [
-                              "elektronickaFaktura",
-                            ],
-                            "type": "object",
-                          },
-                          "then": {
-                            "properties": {
-                              "emailPreFaktury": {
-                                "format": "email",
-                                "title": "E-mail pre zasielanie elektronických faktúr",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "emailPreFaktury",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                      ],
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "title": "Súhlasím so zaslaním elektronickej faktúry",
-                          "type": "boolean",
-                        },
-                      },
-                      "required": [],
-                      "type": "object",
-                    },
                   },
-                  {
-                    "if": {
-                      "properties": {
-                        "ziadatelTyp": {
-                          "enum": [
-                            "Právnická osoba",
-                            "Právnická osoba s povolením na vstup do ZEVO",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "ziadatelTyp",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "sposobPlatby": {
-                    "default": "Platba kartou",
-                    "oneOf": [
-                      {
-                        "const": "Platba kartou",
-                        "title": "Platba kartou",
-                      },
-                      {
-                        "const": "Platba na faktúru",
-                        "title": "Platba na faktúru",
-                      },
-                    ],
-                    "title": "Spôsob platby",
-                    "type": "string",
-                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
                 },
-                "required": [
-                  "sposobPlatby",
-                ],
-                "type": "object",
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
               },
               "preferovanyDatumDovozu": {
                 "format": "date",
@@ -2202,7 +2202,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
               "email",
               "vyberSluzby",
               "preferovanyDatumDovozu",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -4380,9 +4379,9 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:order": [
           "sposobPlatby",
+          "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
-          "iban",
         ],
       },
       "icDph": {
@@ -4402,6 +4401,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -4519,6 +4519,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -4706,7 +4707,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "menoKontaktnejOsoby": {
@@ -4722,7 +4723,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -5082,6 +5083,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -5163,6 +5165,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -5390,11 +5393,11 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -6254,6 +6257,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6335,6 +6339,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -6414,11 +6419,11 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -7075,11 +7080,11 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
                 "then": {
                   "properties": {
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -7384,7 +7389,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "miestoDodania": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Presná adresa",
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7617,6 +7622,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7698,6 +7704,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -7836,7 +7843,12 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                 "type": "string",
               },
               "preferovanyCasOdvozu": {
-                "format": "ba-time",
+                "enum": [
+                  "07:00 (pondelok - sobota)",
+                  "09:00 (pondelok - sobota)",
+                  "11:00 (pondelok - sobota)",
+                  "13:00 (pondelok - piatok)",
+                ],
                 "title": "Preferovaný čas odvozu",
                 "type": "string",
               },
@@ -7845,7 +7857,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                 "title": "Preferovaný dátum odvozu",
                 "type": "string",
               },
-              "suhlasSDarom": {
+              "suhlasSPlatbou": {
                 "const": true,
                 "title": "Vyjadrenie súhlasu s platbou",
                 "type": "boolean",
@@ -7856,7 +7868,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
               "preferovanyDatumOdvozu",
               "preferovanyCasOdvozu",
               "mnozstvoADruhOdpadu",
-              "suhlasSDarom",
+              "suhlasSPlatbou",
             ],
             "title": "Služba",
             "type": "object",
@@ -7917,9 +7929,22 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       },
       "preferovanyCasOdvozu": {
         "ui:options": {
-          "helptextHeader": "7:00  (Pon - Sob); 9:00 (Pon - Sob); 11:00 (Pon - Sob); 13:00 (Pon - Pia)",
+          "selectOptions": {
+            "07:00 (pondelok - sobota)": {
+              "title": "07:00 (pondelok - sobota)",
+            },
+            "09:00 (pondelok - sobota)": {
+              "title": "09:00 (pondelok - sobota)",
+            },
+            "11:00 (pondelok - sobota)": {
+              "title": "11:00 (pondelok - sobota)",
+            },
+            "13:00 (pondelok - piatok)": {
+              "title": "13:00 (pondelok - piatok)",
+            },
+          },
         },
-        "ui:widget": "TimePicker",
+        "ui:widget": "Select",
       },
       "preferovanyDatumOdvozu": {
         "ui:options": {
@@ -7927,7 +7952,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "DatePicker",
       },
-      "suhlasSDarom": {
+      "suhlasSPlatbou": {
         "ui:options": {
           "checkboxLabel": "Súhlasím s platbou za službu OLO Taxi",
           "variant": "boxed",
@@ -7942,7 +7967,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "preferovanyDatumOdvozu",
         "preferovanyCasOdvozu",
         "mnozstvoADruhOdpadu",
-        "suhlasSDarom",
+        "suhlasSPlatbou",
       ],
     },
     "suhlasy": {
@@ -8291,6 +8316,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
       "adresaMiestaOdvozu": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -8447,23 +8473,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 },
               },
               {
-                "if": {
+                "else": {
                   "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Nový",
-                        "Existujúci",
-                        "Zmena poplatkovej povinnosti pre existujúceho zákazníka",
-                      ],
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
                     },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
                     "ico": {
                       "title": "IČO",
                       "type": "string",
@@ -8471,11 +8486,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                   },
                   "required": [
                     "ico",
+                    "dic",
                   ],
                   "type": "object",
                 },
-              },
-              {
                 "if": {
                   "properties": {
                     "typOdberatela": {
@@ -8494,7 +8508,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                       "title": "Dátum zmeny",
                       "type": "string",
                     },
-                    "icoPovodnehOdberatela": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                    "icoPovodnehoOdberatela": {
                       "title": "IČO pôvodného odberateľa",
                       "type": "string",
                     },
@@ -8504,48 +8522,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                     },
                   },
                   "required": [
-                    "icoPovodnehOdberatela",
+                    "icoPovodnehoOdberatela",
                     "noveIco",
-                    "datumZmeny",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "else": {
-                  "properties": {
-                    "dic": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "dic",
-                  ],
-                  "type": "object",
-                },
-                "if": {
-                  "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Zmena odberateľa",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "dicNovehoOdberatela": {
-                      "title": "DIČ nového odberateľa",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
                     "dicNovehoOdberatela",
+                    "datumZmeny",
                   ],
                   "type": "object",
                 },
@@ -8571,6 +8551,176 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                   },
                   "required": [
                     "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "email": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefon": {
+                      "format": "ba-phone-number",
+                      "title": "Telefónne číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "telefon",
+                    "email",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "const": "Zmena odberateľa",
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "noveTelefonneCislo": {
+                      "format": "ba-phone-number",
+                      "title": "Nové telefónne číslo",
+                      "type": "string",
+                    },
+                    "novyEmail": {
+                      "format": "email",
+                      "title": "Nový email",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "noveTelefonneCislo",
+                    "novyEmail",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturaciaNovehoOdoberatela": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "Nový IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturaciaNovehoOdoberatela",
                   ],
                   "type": "object",
                 },
@@ -8646,57 +8796,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 ],
                 "type": "object",
               },
-              "email": {
-                "format": "email",
-                "title": "Email",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "const": true,
-                        },
-                      },
-                      "required": [
-                        "elektronickaFaktura",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "emailPreFaktury": {
-                          "title": "E-mail pre zasielanie elektronických faktúr",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "emailPreFaktury",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "elektronickaFaktura": {
-                    "title": "Súhlasím so zaslaním elektronickej faktúry",
-                    "type": "boolean",
-                  },
-                  "iban": {
-                    "format": "ba-iban",
-                    "title": "IBAN",
-                    "type": "string",
-                  },
-                },
-                "required": [
-                  "iban",
-                ],
-                "type": "object",
-              },
               "konatel": {
-                "title": "Konateľ (meno, priezvisko)",
+                "title": "Konateľ",
                 "type": "string",
               },
               "menoKontaktnejOsoby": {
@@ -8710,11 +8811,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               "platcaDph": {
                 "title": "Som platca DPH?",
                 "type": "boolean",
-              },
-              "telefon": {
-                "format": "ba-phone-number",
-                "title": "Telefónne číslo",
-                "type": "string",
               },
               "typOdberatela": {
                 "default": "Nový",
@@ -8740,7 +8836,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                 "type": "string",
               },
               "zastupeny": {
-                "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                "title": "Zastúpený - na základe splnomocnenia",
                 "type": "string",
               },
             },
@@ -8751,9 +8847,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
               "konatel",
               "zastupeny",
               "menoKontaktnejOsoby",
-              "telefon",
-              "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -9188,7 +9281,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
           "miestoDodania": {
             "ui:label": false,
             "ui:options": {
-              "helptextHeader": "Presná adresa",
+              "helptextHeader": "Vyplňte vo formáte ulica a číslo",
               "inputType": "text",
             },
             "ui:widget": "Input",
@@ -9455,6 +9548,39 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
           "emailPreFaktury",
         ],
       },
+      "fakturaciaNovehoOdoberatela": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
+        },
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "iban": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
+      },
       "icDph": {
         "ui:label": false,
         "ui:options": {
@@ -9469,7 +9595,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
-      "icoPovodnehOdberatela": {
+      "icoPovodnehoOdberatela": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -9479,6 +9605,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -9504,6 +9631,22 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "Input",
       },
+      "noveTelefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "tel",
+          "placeholder": "+421",
+          "size": "medium",
+        },
+        "ui:widget": "Input",
+      },
+      "novyEmail": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
       "platcaDph": {
         "ui:options": {
           "checkboxLabel": "Som platca DPH",
@@ -9522,9 +9665,25 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       },
       "typOdberatela": {
         "ui:options": {
-          "helptextHeader": "Nový (nemám uzavretú zmluvu), Existujúci (mám uzavretú zmluvu), Zmena poplatkovej povinnosti (spoplatnenie služby), Zmena odberateľa (napr. preberám prevádzku alebo správu nehnuteľnosti)",
           "orientations": "column",
-          "radioOptions": [],
+          "radioOptions": [
+            {
+              "description": "Nemám uzavretú zmluvu",
+              "value": "Nový",
+            },
+            {
+              "description": "Mám uzavretú zmluvu",
+              "value": "Existujúci",
+            },
+            {
+              "description": "Spoplatnenie služby",
+              "value": "Zmena poplatkovej povinnosti pre existujúceho zákazníka",
+            },
+            {
+              "description": "Napr. preberám prevádzku alebo správu nehnuteľnosti",
+              "value": "Zmena odberateľa",
+            },
+          ],
           "variant": "boxed",
         },
         "ui:widget": "RadioGroup",
@@ -9537,25 +9696,29 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "nazovOrganizacie",
         "adresaSidla",
         "cisloZmluvy",
-        "ico",
-        "icoPovodnehOdberatela",
+        "icoPovodnehoOdberatela",
         "noveIco",
-        "datumZmeny",
         "dicNovehoOdberatela",
+        "datumZmeny",
+        "ico",
         "dic",
         "platcaDph",
         "icDph",
         "konatel",
         "zastupeny",
         "menoKontaktnejOsoby",
+        "noveTelefonneCislo",
+        "novyEmail",
         "telefon",
         "email",
+        "fakturaciaNovehoOdoberatela",
         "fakturacia",
         "zmenyVPocteNadob",
       ],
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -9763,6 +9926,18 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                 },
               },
               {
+                "else": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "dic",
+                  ],
+                  "type": "object",
+                },
                 "if": {
                   "properties": {
                     "typOdberatela": {
@@ -9781,7 +9956,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                       "title": "Dátum zmeny",
                       "type": "string",
                     },
-                    "icoPovodnehOdberatela": {
+                    "dicNovehoOdberatela": {
+                      "title": "DIČ nového odberateľa",
+                      "type": "string",
+                    },
+                    "icoPovodnehoOdberatela": {
                       "title": "IČO pôvodného odberateľa",
                       "type": "string",
                     },
@@ -9791,48 +9970,10 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                     },
                   },
                   "required": [
-                    "icoPovodnehOdberatela",
+                    "icoPovodnehoOdberatela",
                     "noveIco",
-                    "datumZmeny",
-                  ],
-                  "type": "object",
-                },
-              },
-              {
-                "else": {
-                  "properties": {
-                    "dic": {
-                      "title": "DIČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "dic",
-                  ],
-                  "type": "object",
-                },
-                "if": {
-                  "properties": {
-                    "typOdberatela": {
-                      "enum": [
-                        "Zmena odberateľa",
-                      ],
-                    },
-                  },
-                  "required": [
-                    "typOdberatela",
-                  ],
-                  "type": "object",
-                },
-                "then": {
-                  "properties": {
-                    "dicNovehoOdberatela": {
-                      "title": "DIČ nového odberateľa",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
                     "dicNovehoOdberatela",
+                    "datumZmeny",
                   ],
                   "type": "object",
                 },
@@ -9858,6 +9999,176 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   },
                   "required": [
                     "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "email": {
+                      "format": "email",
+                      "title": "Email",
+                      "type": "string",
+                    },
+                    "telefon": {
+                      "format": "ba-phone-number",
+                      "title": "Telefónne číslo",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "telefon",
+                    "email",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "const": "Zmena odberateľa",
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "noveTelefonneCislo": {
+                      "format": "ba-phone-number",
+                      "title": "Nové telefónne číslo",
+                      "type": "string",
+                    },
+                    "novyEmail": {
+                      "format": "email",
+                      "title": "Nový email",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "noveTelefonneCislo",
+                    "novyEmail",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "else": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
+                },
+                "if": {
+                  "properties": {
+                    "typOdberatela": {
+                      "enum": [
+                        "Zmena odberateľa",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "typOdberatela",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturaciaNovehoOdoberatela": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "const": true,
+                              },
+                            },
+                            "required": [
+                              "elektronickaFaktura",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "emailPreFaktury": {
+                                "title": "E-mail pre zasielanie elektronických faktúr",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "emailPreFaktury",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
+                      "properties": {
+                        "elektronickaFaktura": {
+                          "title": "Súhlasím so zaslaním elektronickej faktúry",
+                          "type": "boolean",
+                        },
+                        "iban": {
+                          "format": "ba-iban",
+                          "title": "Nový IBAN",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "iban",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "fakturaciaNovehoOdoberatela",
                   ],
                   "type": "object",
                 },
@@ -9901,89 +10212,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               },
             ],
             "properties": {
-              "email": {
-                "format": "email",
-                "title": "Email",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "else": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                    "if": {
-                      "properties": {
-                        "typOdberatela": {
-                          "enum": [
-                            "Zmena odberateľa",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "typOdberatela",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "ibanNovehoOdberatela": {
-                          "format": "ba-iban",
-                          "title": "Nový IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "ibanNovehoOdberatela",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "const": true,
-                        },
-                      },
-                      "required": [
-                        "elektronickaFaktura",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "emailPreFaktury": {
-                          "title": "E-mail pre zasielanie elektronických faktúr",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "emailPreFaktury",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "elektronickaFaktura": {
-                    "title": "Súhlasím so zaslaním elektronickej faktúry",
-                    "type": "boolean",
-                  },
-                },
-                "required": [],
-                "type": "object",
-              },
               "menoKontaktnejOsoby": {
                 "title": "Meno kontaktnej osoby",
                 "type": "string",
@@ -9991,11 +10219,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
               "platcaDph": {
                 "title": "Som platca DPH?",
                 "type": "boolean",
-              },
-              "telefon": {
-                "format": "ba-phone-number",
-                "title": "Telefónne číslo",
-                "type": "string",
               },
               "typOdberatela": {
                 "default": "Nový",
@@ -10020,9 +10243,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             "required": [
               "typOdberatela",
               "menoKontaktnejOsoby",
-              "telefon",
-              "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -10325,7 +10545,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           "miestoDodania": {
             "ui:label": false,
             "ui:options": {
-              "helptextHeader": "Presná adresa",
+              "helptextHeader": "Vyplňte vo formáte ulica a číslo",
               "inputType": "text",
             },
             "ui:widget": "Input",
@@ -10539,7 +10759,33 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           },
           "ui:widget": "Input",
         },
-        "ibanNovehoOdberatela": {
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturácia",
+        },
+        "ui:order": [
+          "iban",
+          "elektronickaFaktura",
+          "emailPreFaktury",
+        ],
+      },
+      "fakturaciaNovehoOdoberatela": {
+        "elektronickaFaktura": {
+          "ui:options": {
+            "checkboxLabel": "Súhlasím so zaslaním elektronickej faktúry",
+            "helptextHeader": "V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.",
+            "variant": "boxed",
+          },
+          "ui:widget": "Checkbox",
+        },
+        "emailPreFaktury": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "iban": {
           "ui:label": false,
           "ui:options": {
             "inputType": "text",
@@ -10551,7 +10797,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           "title": "Fakturácia",
         },
         "ui:order": [
-          "ibanNovehoOdberatela",
           "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
@@ -10571,7 +10816,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
-      "icoPovodnehOdberatela": {
+      "icoPovodnehoOdberatela": {
         "ui:label": false,
         "ui:options": {
           "inputType": "text",
@@ -10654,6 +10899,22 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "Input",
       },
+      "noveTelefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "tel",
+          "placeholder": "+421",
+          "size": "medium",
+        },
+        "ui:widget": "Input",
+      },
+      "novyEmail": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
       "platcaDph": {
         "ui:options": {
           "checkboxLabel": "Som platca DPH",
@@ -10672,9 +10933,21 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       },
       "typOdberatela": {
         "ui:options": {
-          "helptextHeader": "Nový (nemám uzavretú zmluvu), Existujúci (mám uzavretú zmluvu), Zmena odberateľa (napr. preberám prevádzku alebo správu nehnuteľnosti)",
           "orientations": "column",
-          "radioOptions": [],
+          "radioOptions": [
+            {
+              "description": "Nemám uzavretú zmluvu",
+              "value": "Nový",
+            },
+            {
+              "description": "Mám uzavretú zmluvu",
+              "value": "Existujúci",
+            },
+            {
+              "description": "Napr. preberám prevádzku alebo správu nehnuteľnosti",
+              "value": "Zmena odberateľa",
+            },
+          ],
           "variant": "boxed",
         },
         "ui:widget": "RadioGroup",
@@ -10691,16 +10964,19 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "adresaSidla",
         "cisloZmluvy",
         "ico",
-        "icoPovodnehOdberatela",
+        "icoPovodnehoOdberatela",
         "noveIco",
-        "datumZmeny",
         "dicNovehoOdberatela",
+        "datumZmeny",
         "dic",
         "platcaDph",
         "icDph",
         "menoKontaktnejOsoby",
+        "noveTelefonneCislo",
+        "novyEmail",
         "telefon",
         "email",
+        "fakturaciaNovehoOdoberatela",
         "fakturacia",
         "zmenyVPocteNadob",
       ],
@@ -10763,9 +11039,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default f
     "vyrobneZarze": [],
   },
   "ziadatel": {
-    "fakturacia": {
-      "sposobPlatby": "Platba kartou",
-    },
     "ziadatelTyp": "Fyzická osoba",
   },
 }
@@ -10963,7 +11236,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "type": "string",
                     },
                     "konatel": {
-                      "title": "Konateľ (meno, priezvisko)",
+                      "title": "Konateľ",
                       "type": "string",
                     },
                     "kontaktnaOsoba": {
@@ -10979,7 +11252,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       "type": "boolean",
                     },
                     "zastupeny": {
-                      "title": "Zastúpený - na základe splnomocnenia (meno, priezvisko)",
+                      "title": "Zastúpený - na základe splnomocnenia",
                       "type": "string",
                     },
                   },
@@ -10995,20 +11268,99 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   "type": "object",
                 },
               },
-            ],
-            "properties": {
-              "email": {
-                "format": "email",
-                "title": "E-mail",
-                "type": "string",
-              },
-              "fakturacia": {
-                "allOf": [
-                  {
-                    "if": {
+              {
+                "if": {
+                  "properties": {
+                    "ziadatelTyp": {
+                      "enum": [
+                        "Právnická osoba",
+                        "Právnická osoba s povolením na vstup do ZEVO",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "ziadatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "fakturacia": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "sposobPlatby": {
+                                "const": "Platba na faktúru",
+                              },
+                            },
+                            "required": [
+                              "sposobPlatby",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "allOf": [
+                              {
+                                "if": {
+                                  "properties": {
+                                    "elektronickaFaktura": {
+                                      "const": true,
+                                    },
+                                  },
+                                  "required": [
+                                    "elektronickaFaktura",
+                                  ],
+                                  "type": "object",
+                                },
+                                "then": {
+                                  "properties": {
+                                    "emailPreFaktury": {
+                                      "format": "email",
+                                      "title": "E-mail pre zasielanie elektronických faktúr",
+                                      "type": "string",
+                                    },
+                                  },
+                                  "required": [
+                                    "emailPreFaktury",
+                                  ],
+                                  "type": "object",
+                                },
+                              },
+                            ],
+                            "properties": {
+                              "elektronickaFaktura": {
+                                "title": "Súhlasím so zaslaním elektronickej faktúry",
+                                "type": "boolean",
+                              },
+                              "iban": {
+                                "format": "ba-iban",
+                                "title": "IBAN",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "iban",
+                            ],
+                            "type": "object",
+                          },
+                        },
+                      ],
                       "properties": {
                         "sposobPlatby": {
-                          "const": "Platba na faktúru",
+                          "default": "Platba kartou",
+                          "oneOf": [
+                            {
+                              "const": "Platba kartou",
+                              "title": "Platba kartou",
+                            },
+                            {
+                              "const": "Platba na faktúru",
+                              "title": "Platba na faktúru",
+                            },
+                          ],
+                          "title": "Spôsob platby",
+                          "type": "string",
                         },
                       },
                       "required": [
@@ -11016,96 +11368,19 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       ],
                       "type": "object",
                     },
-                    "then": {
-                      "allOf": [
-                        {
-                          "if": {
-                            "properties": {
-                              "elektronickaFaktura": {
-                                "const": true,
-                              },
-                            },
-                            "required": [
-                              "elektronickaFaktura",
-                            ],
-                            "type": "object",
-                          },
-                          "then": {
-                            "properties": {
-                              "emailPreFaktury": {
-                                "format": "email",
-                                "title": "E-mail pre zasielanie elektronických faktúr",
-                                "type": "string",
-                              },
-                            },
-                            "required": [
-                              "emailPreFaktury",
-                            ],
-                            "type": "object",
-                          },
-                        },
-                      ],
-                      "properties": {
-                        "elektronickaFaktura": {
-                          "title": "Súhlasím so zaslaním elektronickej faktúry",
-                          "type": "boolean",
-                        },
-                      },
-                      "required": [],
-                      "type": "object",
-                    },
                   },
-                  {
-                    "if": {
-                      "properties": {
-                        "ziadatelTyp": {
-                          "enum": [
-                            "Právnická osoba",
-                            "Právnická osoba s povolením na vstup do ZEVO",
-                          ],
-                        },
-                      },
-                      "required": [
-                        "ziadatelTyp",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "iban": {
-                          "format": "ba-iban",
-                          "title": "IBAN",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "iban",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                ],
-                "properties": {
-                  "sposobPlatby": {
-                    "default": "Platba kartou",
-                    "oneOf": [
-                      {
-                        "const": "Platba kartou",
-                        "title": "Platba kartou",
-                      },
-                      {
-                        "const": "Platba na faktúru",
-                        "title": "Platba na faktúru",
-                      },
-                    ],
-                    "title": "Spôsob platby",
-                    "type": "string",
-                  },
+                  "required": [
+                    "fakturacia",
+                  ],
+                  "type": "object",
                 },
-                "required": [
-                  "sposobPlatby",
-                ],
-                "type": "object",
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
               },
               "telefon": {
                 "format": "ba-phone-number",
@@ -11136,7 +11411,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
               "ziadatelTyp",
               "telefon",
               "email",
-              "fakturacia",
             ],
             "title": "Žiadateľ",
             "type": "object",
@@ -12553,9 +12827,9 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:order": [
           "sposobPlatby",
+          "iban",
           "elektronickaFaktura",
           "emailPreFaktury",
-          "iban",
         ],
       },
       "icDph": {
@@ -12575,6 +12849,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       "konatel": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko konateľa",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -12658,6 +12933,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       "zastupeny": {
         "ui:label": false,
         "ui:options": {
+          "helptextHeader": "Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia",
           "inputType": "text",
         },
         "ui:widget": "Input",
@@ -26988,6 +27264,3591 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapsho
         "projektantTelefon",
         "autorizacneOsvedcenie",
         "datumSpracovania",
+      ],
+    },
+  },
+}
+`;
+
+exports[`Form definitions tsb-objednavka-vytycenia default form state should match snapshot 1`] = `
+{
+  "objednavatel": {
+    "mestoPsc": {},
+    "objednavatelTyp": "Fyzická osoba",
+  },
+  "prilohy": {
+    "informativnyZakresSieti": [],
+  },
+  "udaje": {
+    "fakturacneUdaje": {
+      "adresaSidla": {
+        "mestoPsc": {},
+      },
+    },
+    "udajeObjednavky": {
+      "viacKatastralneUzemia": false,
+    },
+  },
+}
+`;
+
+exports[`Form definitions tsb-objednavka-vytycenia schemas match snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "objednavatel": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "menoPriezvisko": {
+                      "properties": {
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaSidla": {
+                      "title": "Adresa sídla",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "email": {
+                          "format": "email",
+                          "title": "E-mail",
+                          "type": "string",
+                        },
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "telefonneCislo": {
+                          "format": "ba-phone-number",
+                          "title": "Telefónne číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "email",
+                        "telefonneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "kontaktnaOsoba",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+              "objednavatelTyp": {
+                "default": "Fyzická osoba",
+                "oneOf": [
+                  {
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
+                  },
+                  {
+                    "const": "Fyzická osoba - podnikateľ",
+                    "title": "Fyzická osoba - podnikateľ",
+                  },
+                  {
+                    "const": "Právnická osoba",
+                    "title": "Právnická osoba",
+                  },
+                ],
+                "title": "Objednávate ako",
+                "type": "string",
+              },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "objednavatelTyp",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
+            ],
+            "title": "Objednávateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "objednavatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "udaje": {
+            "properties": {
+              "fakturacneUdaje": {
+                "properties": {
+                  "adresaSidla": {
+                    "properties": {
+                      "mestoPsc": {
+                        "properties": {
+                          "mesto": {
+                            "title": "Mesto",
+                            "type": "string",
+                          },
+                          "psc": {
+                            "format": "ba-slovak-zip",
+                            "title": "PSČ",
+                            "type": "string",
+                          },
+                        },
+                        "required": [
+                          "mesto",
+                          "psc",
+                        ],
+                        "type": "object",
+                      },
+                      "ulicaACislo": {
+                        "title": "Ulica a číslo",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "ulicaACislo",
+                      "mestoPsc",
+                    ],
+                    "type": "object",
+                  },
+                  "email": {
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "adresaSidla",
+                  "email",
+                ],
+                "type": "object",
+              },
+              "udajeObjednavky": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "viacKatastralneUzemia": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "viacKatastralneUzemia",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "katastralneUzemia": {
+                          "default": [
+                            "Čunovo",
+                          ],
+                          "items": {
+                            "enum": [
+                              "Čunovo",
+                              "Devín",
+                              "Devínska Nová Ves",
+                              "Dúbravka",
+                              "Jarovce",
+                              "Karlova Ves",
+                              "Lamač",
+                              "Nové Mesto",
+                              "Vinohrady",
+                              "Petržalka",
+                              "Podunajské Biskupice",
+                              "Rača",
+                              "Rusovce",
+                              "Ružinov",
+                              "Trnávka",
+                              "Nivy",
+                              "Staré Mesto",
+                              "Vajnory",
+                              "Vrakuňa",
+                              "Záhorská Bystrica",
+                            ],
+                            "type": "string",
+                          },
+                          "minItems": 1,
+                          "title": "Katastrálne územia",
+                          "type": "array",
+                          "uniqueItems": true,
+                        },
+                      },
+                      "required": [
+                        "katastralneUzemia",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "viacKatastralneUzemia": {
+                          "const": false,
+                        },
+                      },
+                      "required": [
+                        "viacKatastralneUzemia",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "katastralneUzemie": {
+                          "default": "Čunovo",
+                          "enum": [
+                            "Čunovo",
+                            "Devín",
+                            "Devínska Nová Ves",
+                            "Dúbravka",
+                            "Jarovce",
+                            "Karlova Ves",
+                            "Lamač",
+                            "Nové Mesto",
+                            "Vinohrady",
+                            "Petržalka",
+                            "Podunajské Biskupice",
+                            "Rača",
+                            "Rusovce",
+                            "Ružinov",
+                            "Trnávka",
+                            "Nivy",
+                            "Staré Mesto",
+                            "Vajnory",
+                            "Vrakuňa",
+                            "Záhorská Bystrica",
+                          ],
+                          "title": "Katastrálne územie",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "katastralneUzemie",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
+                "properties": {
+                  "dovodVytycenia": {
+                    "title": "Dôvod vytýčenia",
+                    "type": "string",
+                  },
+                  "druhStavby": {
+                    "title": "Druh stavby",
+                    "type": "string",
+                  },
+                  "pozadovaneMiestoPlnenia": {
+                    "title": "Požadované miesto plnenia",
+                    "type": "string",
+                  },
+                  "pozadovanyTerminPlnenia": {
+                    "format": "date",
+                    "title": "Požadovaný termín plnenia",
+                    "type": "string",
+                  },
+                  "viacKatastralneUzemia": {
+                    "default": false,
+                    "oneOf": [
+                      {
+                        "const": true,
+                        "title": "Áno",
+                      },
+                      {
+                        "const": false,
+                        "title": "Nie",
+                      },
+                    ],
+                    "title": "Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?",
+                    "type": "boolean",
+                  },
+                },
+                "required": [
+                  "dovodVytycenia",
+                  "pozadovaneMiestoPlnenia",
+                  "viacKatastralneUzemia",
+                  "pozadovanyTerminPlnenia",
+                ],
+                "type": "object",
+              },
+            },
+            "required": [
+              "fakturacneUdaje",
+              "udajeObjednavky",
+            ],
+            "title": "Údaje",
+            "type": "object",
+          },
+        },
+        "required": [
+          "udaje",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "prilohy": {
+            "properties": {
+              "informativnyZakresSieti": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Informatívny zákres sietí vydaný Technickými sieťami Bratislava, a.s.",
+                "type": "array",
+              },
+            },
+            "required": [
+              "informativnyZakresSieti",
+            ],
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
+    ],
+    "title": "TEST - Objednávka vytýčenia",
+  },
+  "uiSchema": {
+    "objednavatel": {
+      "adresaPodnikania": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "icDph": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ico": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "kontaktnaOsoba": {
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Meno",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Priezvisko",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "telefonneCislo": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte +421",
+            "inputType": "tel",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Kontaktná osoba",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+          "email",
+          "telefonneCislo",
+        ],
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "mestoPsc": {
+        "mesto": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "psc": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "3/1",
+        },
+        "ui:order": [
+          "mesto",
+          "psc",
+        ],
+      },
+      "obchodneMeno": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "objednavatelTyp": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "telefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte +421",
+          "inputType": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "objednavatel",
+      },
+      "ui:order": [
+        "objednavatelTyp",
+        "menoPriezvisko",
+        "obchodneMeno",
+        "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
+        "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
+        "kontaktnaOsoba",
+      ],
+    },
+    "prilohy": {
+      "informativnyZakresSieti": {
+        "ui:options": {
+          "accept": ".pdf,.jpg,.jpeg,.png",
+          "helptextHeader": "Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby Objednávka informatívneho zákresu sietí",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
+      "ui:order": [
+        "informativnyZakresSieti",
+      ],
+    },
+    "udaje": {
+      "fakturacneUdaje": {
+        "adresaSidla": {
+          "mestoPsc": {
+            "mesto": {
+              "ui:label": false,
+              "ui:options": {
+                "inputType": "text",
+              },
+              "ui:widget": "Input",
+            },
+            "psc": {
+              "ui:label": false,
+              "ui:options": {
+                "inputType": "text",
+              },
+              "ui:widget": "Input",
+            },
+            "ui:options": {
+              "columns": true,
+              "columnsRatio": "3/1",
+            },
+            "ui:order": [
+              "mesto",
+              "psc",
+            ],
+          },
+          "ui:options": {
+            "objectDisplay": "boxed",
+            "title": "Adresa sídla",
+          },
+          "ui:order": [
+            "ulicaACislo",
+            "mestoPsc",
+          ],
+          "ulicaACislo": {
+            "ui:label": false,
+            "ui:options": {
+              "inputType": "text",
+            },
+            "ui:widget": "Input",
+          },
+        },
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Faktúra vám bude zaslaná prostredníctvom tohto emailu",
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturačné údaje",
+        },
+        "ui:order": [
+          "adresaSidla",
+          "email",
+        ],
+      },
+      "udajeObjednavky": {
+        "dovodVytycenia": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Napríklad: vytýčenie káblovej poruchy, za účelom rozkopávky, vybudovanie inžinierskych sietí...",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "druhStavby": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Napríklad: telekomunikačná líniová stavba",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "katastralneUzemia": {
+          "ui:options": {
+            "helptextHeader": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
+            "selectOptions": {
+              "Devín": {
+                "title": "Devín",
+              },
+              "Devínska Nová Ves": {
+                "title": "Devínska Nová Ves",
+              },
+              "Dúbravka": {
+                "title": "Dúbravka",
+              },
+              "Jarovce": {
+                "title": "Jarovce",
+              },
+              "Karlova Ves": {
+                "title": "Karlova Ves",
+              },
+              "Lamač": {
+                "title": "Lamač",
+              },
+              "Nivy": {
+                "title": "Nivy",
+              },
+              "Nové Mesto": {
+                "title": "Nové Mesto",
+              },
+              "Petržalka": {
+                "title": "Petržalka",
+              },
+              "Podunajské Biskupice": {
+                "title": "Podunajské Biskupice",
+              },
+              "Rača": {
+                "title": "Rača",
+              },
+              "Rusovce": {
+                "title": "Rusovce",
+              },
+              "Ružinov": {
+                "title": "Ružinov",
+              },
+              "Staré Mesto": {
+                "title": "Staré Mesto",
+              },
+              "Trnávka": {
+                "title": "Trnávka",
+              },
+              "Vajnory": {
+                "title": "Vajnory",
+              },
+              "Vinohrady": {
+                "title": "Vinohrady",
+              },
+              "Vrakuňa": {
+                "title": "Vrakuňa",
+              },
+              "Záhorská Bystrica": {
+                "title": "Záhorská Bystrica",
+              },
+              "Čunovo": {
+                "title": "Čunovo",
+              },
+            },
+          },
+          "ui:widget": "SelectMultiple",
+        },
+        "katastralneUzemie": {
+          "ui:options": {
+            "helptextHeader": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
+            "selectOptions": {
+              "Devín": {
+                "title": "Devín",
+              },
+              "Devínska Nová Ves": {
+                "title": "Devínska Nová Ves",
+              },
+              "Dúbravka": {
+                "title": "Dúbravka",
+              },
+              "Jarovce": {
+                "title": "Jarovce",
+              },
+              "Karlova Ves": {
+                "title": "Karlova Ves",
+              },
+              "Lamač": {
+                "title": "Lamač",
+              },
+              "Nivy": {
+                "title": "Nivy",
+              },
+              "Nové Mesto": {
+                "title": "Nové Mesto",
+              },
+              "Petržalka": {
+                "title": "Petržalka",
+              },
+              "Podunajské Biskupice": {
+                "title": "Podunajské Biskupice",
+              },
+              "Rača": {
+                "title": "Rača",
+              },
+              "Rusovce": {
+                "title": "Rusovce",
+              },
+              "Ružinov": {
+                "title": "Ružinov",
+              },
+              "Staré Mesto": {
+                "title": "Staré Mesto",
+              },
+              "Trnávka": {
+                "title": "Trnávka",
+              },
+              "Vajnory": {
+                "title": "Vajnory",
+              },
+              "Vinohrady": {
+                "title": "Vinohrady",
+              },
+              "Vrakuňa": {
+                "title": "Vrakuňa",
+              },
+              "Záhorská Bystrica": {
+                "title": "Záhorská Bystrica",
+              },
+              "Čunovo": {
+                "title": "Čunovo",
+              },
+            },
+          },
+          "ui:widget": "Select",
+        },
+        "pozadovaneMiestoPlnenia": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "pozadovanyTerminPlnenia": {
+          "ui:options": {
+            "helptextHeader": "Štandardný termín na vybavenie objednávky je 30 dní",
+          },
+          "ui:widget": "DatePicker",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Údaje objednávky",
+        },
+        "ui:order": [
+          "dovodVytycenia",
+          "pozadovaneMiestoPlnenia",
+          "viacKatastralneUzemia",
+          "katastralneUzemia",
+          "katastralneUzemie",
+          "druhStavby",
+          "pozadovanyTerminPlnenia",
+        ],
+        "viacKatastralneUzemia": {
+          "ui:options": {
+            "orientations": "row",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
+      },
+      "ui:options": {
+        "stepQueryParam": "udaje",
+      },
+      "ui:order": [
+        "fakturacneUdaje",
+        "udajeObjednavky",
+      ],
+    },
+    "ui:hideError": true,
+    "ui:options": {},
+  },
+}
+`;
+
+exports[`Form definitions tsb-objednavka-zakresu-sieti default form state should match snapshot 1`] = `
+{
+  "objednavatel": {
+    "mestoPsc": {},
+    "objednavatelTyp": "Fyzická osoba",
+  },
+  "prilohy": {},
+  "udaje": {
+    "fakturacneUdaje": {},
+    "udajeObjednavky": {
+      "viacKatastralneUzemia": false,
+    },
+  },
+}
+`;
+
+exports[`Form definitions tsb-objednavka-zakresu-sieti schemas match snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "objednavatel": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "menoPriezvisko": {
+                      "properties": {
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaSidla": {
+                      "title": "Adresa sídla",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "email": {
+                          "format": "email",
+                          "title": "E-mail",
+                          "type": "string",
+                        },
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "telefonneCislo": {
+                          "format": "ba-phone-number",
+                          "title": "Telefónne číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "email",
+                        "telefonneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "kontaktnaOsoba",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+              "objednavatelTyp": {
+                "default": "Fyzická osoba",
+                "oneOf": [
+                  {
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
+                  },
+                  {
+                    "const": "Fyzická osoba - podnikateľ",
+                    "title": "Fyzická osoba - podnikateľ",
+                  },
+                  {
+                    "const": "Právnická osoba",
+                    "title": "Právnická osoba",
+                  },
+                ],
+                "title": "Objednávate ako",
+                "type": "string",
+              },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "objednavatelTyp",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
+            ],
+            "title": "Objednávateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "objednavatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "udaje": {
+            "properties": {
+              "fakturacneUdaje": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "fakturacnaAdresa": {
+                    "title": "Fakturačná adresa",
+                    "type": "string",
+                  },
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "fakturacnaAdresa",
+                  "mesto",
+                  "psc",
+                  "email",
+                ],
+                "type": "object",
+              },
+              "udajeObjednavky": {
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "viacKatastralneUzemia": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "viacKatastralneUzemia",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "katastralneUzemiaMultiple": {
+                          "default": [
+                            "Čunovo",
+                          ],
+                          "items": {
+                            "enum": [
+                              "Čunovo",
+                              "Devín",
+                              "Devínska Nová Ves",
+                              "Dúbravka",
+                              "Jarovce",
+                              "Karlova Ves",
+                              "Lamač",
+                              "Nové Mesto",
+                              "Vinohrady",
+                              "Petržalka",
+                              "Podunajské Biskupice",
+                              "Rača",
+                              "Rusovce",
+                              "Ružinov",
+                              "Trnávka",
+                              "Nivy",
+                              "Staré Mesto",
+                              "Vajnory",
+                              "Vrakuňa",
+                              "Záhorská Bystrica",
+                            ],
+                            "type": "string",
+                          },
+                          "minItems": 1,
+                          "title": "Katastrálne územie",
+                          "type": "array",
+                          "uniqueItems": true,
+                        },
+                      },
+                      "required": [
+                        "katastralneUzemiaMultiple",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "viacKatastralneUzemia": {
+                          "const": false,
+                        },
+                      },
+                      "required": [
+                        "viacKatastralneUzemia",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "katastralneUzemieSingle": {
+                          "default": [
+                            "Čunovo",
+                          ],
+                          "items": {
+                            "enum": [
+                              "Čunovo",
+                              "Devín",
+                              "Devínska Nová Ves",
+                              "Dúbravka",
+                              "Jarovce",
+                              "Karlova Ves",
+                              "Lamač",
+                              "Nové Mesto",
+                              "Vinohrady",
+                              "Petržalka",
+                              "Podunajské Biskupice",
+                              "Rača",
+                              "Rusovce",
+                              "Ružinov",
+                              "Trnávka",
+                              "Nivy",
+                              "Staré Mesto",
+                              "Vajnory",
+                              "Vrakuňa",
+                              "Záhorská Bystrica",
+                            ],
+                            "type": "string",
+                          },
+                          "minItems": 1,
+                          "title": "Katastrálne územie",
+                          "type": "array",
+                          "uniqueItems": true,
+                        },
+                      },
+                      "required": [
+                        "katastralneUzemieSingle",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                ],
+                "properties": {
+                  "adresaObjednavky": {
+                    "title": "Adresa objednávky",
+                    "type": "string",
+                  },
+                  "viacKatastralneUzemia": {
+                    "default": false,
+                    "oneOf": [
+                      {
+                        "const": true,
+                        "title": "Áno",
+                      },
+                      {
+                        "const": false,
+                        "title": "Nie",
+                      },
+                    ],
+                    "title": "Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?",
+                    "type": "boolean",
+                  },
+                },
+                "required": [
+                  "adresaObjednavky",
+                  "viacKatastralneUzemia",
+                ],
+                "type": "object",
+              },
+            },
+            "required": [
+              "fakturacneUdaje",
+              "udajeObjednavky",
+            ],
+            "title": "Údaje",
+            "type": "object",
+          },
+        },
+        "required": [
+          "udaje",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "prilohy": {
+            "properties": {
+              "snimkaKatastralnejMapy": {
+                "file": true,
+                "format": "ba-file-uuid",
+                "title": "Snímka z katastrálnej mapy s vyznačeným záujmovým územím",
+                "type": "string",
+              },
+            },
+            "required": [
+              "snimkaKatastralnejMapy",
+            ],
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
+    ],
+    "title": "TEST - Objednávka zákresu sietí",
+  },
+  "uiSchema": {
+    "objednavatel": {
+      "adresaPodnikania": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "icDph": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ico": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "kontaktnaOsoba": {
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Meno",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Priezvisko",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "telefonneCislo": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte +421",
+            "inputType": "tel",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Kontaktná osoba",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+          "email",
+          "telefonneCislo",
+        ],
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "mestoPsc": {
+        "mesto": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "psc": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "3/1",
+        },
+        "ui:order": [
+          "mesto",
+          "psc",
+        ],
+      },
+      "obchodneMeno": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "objednavatelTyp": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "telefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte +421",
+          "inputType": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "objednavatel",
+      },
+      "ui:order": [
+        "objednavatelTyp",
+        "menoPriezvisko",
+        "obchodneMeno",
+        "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
+        "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
+        "kontaktnaOsoba",
+      ],
+    },
+    "prilohy": {
+      "snimkaKatastralnejMapy": {
+        "ui:options": {
+          "helptextHeader": "Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie.
+
+Ako vytvoriť snímku?
+Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájdete funkciu Meranie, ktorá Vám umožní zaznačiť Vaše záujmové územie na katastrálnej mape (zaznačenie Vám následne vypočíta výmeru plochy). Snímku vycentrujte a využite možnosť ZBGIS Tlačiť do PDF. Dokument uložte a následne nahrajte do Nahrať súbory.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
+      "ui:order": [
+        "snimkaKatastralnejMapy",
+      ],
+    },
+    "udaje": {
+      "fakturacneUdaje": {
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Faktúra vám bude zaslaná prostredníctvom tohto emailu",
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "fakturacnaAdresa": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "mesto": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "psc": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Fakturačné údaje",
+        },
+        "ui:order": [
+          "fakturacnaAdresa",
+          "mesto",
+          "psc",
+          "email",
+        ],
+      },
+      "udajeObjednavky": {
+        "adresaObjednavky": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "katastralneUzemiaMultiple": {
+          "ui:options": {
+            "helptextHeader": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
+            "selectOptions": {
+              "Devín": {
+                "title": "Devín",
+              },
+              "Devínska Nová Ves": {
+                "title": "Devínska Nová Ves",
+              },
+              "Dúbravka": {
+                "title": "Dúbravka",
+              },
+              "Jarovce": {
+                "title": "Jarovce",
+              },
+              "Karlova Ves": {
+                "title": "Karlova Ves",
+              },
+              "Lamač": {
+                "title": "Lamač",
+              },
+              "Nivy": {
+                "title": "Nivy",
+              },
+              "Nové Mesto": {
+                "title": "Nové Mesto",
+              },
+              "Petržalka": {
+                "title": "Petržalka",
+              },
+              "Podunajské Biskupice": {
+                "title": "Podunajské Biskupice",
+              },
+              "Rača": {
+                "title": "Rača",
+              },
+              "Rusovce": {
+                "title": "Rusovce",
+              },
+              "Ružinov": {
+                "title": "Ružinov",
+              },
+              "Staré Mesto": {
+                "title": "Staré Mesto",
+              },
+              "Trnávka": {
+                "title": "Trnávka",
+              },
+              "Vajnory": {
+                "title": "Vajnory",
+              },
+              "Vinohrady": {
+                "title": "Vinohrady",
+              },
+              "Vrakuňa": {
+                "title": "Vrakuňa",
+              },
+              "Záhorská Bystrica": {
+                "title": "Záhorská Bystrica",
+              },
+              "Čunovo": {
+                "title": "Čunovo",
+              },
+            },
+          },
+          "ui:widget": "SelectMultiple",
+        },
+        "katastralneUzemieSingle": {
+          "ui:options": {
+            "helptextHeader": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
+            "selectOptions": {
+              "Devín": {
+                "title": "Devín",
+              },
+              "Devínska Nová Ves": {
+                "title": "Devínska Nová Ves",
+              },
+              "Dúbravka": {
+                "title": "Dúbravka",
+              },
+              "Jarovce": {
+                "title": "Jarovce",
+              },
+              "Karlova Ves": {
+                "title": "Karlova Ves",
+              },
+              "Lamač": {
+                "title": "Lamač",
+              },
+              "Nivy": {
+                "title": "Nivy",
+              },
+              "Nové Mesto": {
+                "title": "Nové Mesto",
+              },
+              "Petržalka": {
+                "title": "Petržalka",
+              },
+              "Podunajské Biskupice": {
+                "title": "Podunajské Biskupice",
+              },
+              "Rača": {
+                "title": "Rača",
+              },
+              "Rusovce": {
+                "title": "Rusovce",
+              },
+              "Ružinov": {
+                "title": "Ružinov",
+              },
+              "Staré Mesto": {
+                "title": "Staré Mesto",
+              },
+              "Trnávka": {
+                "title": "Trnávka",
+              },
+              "Vajnory": {
+                "title": "Vajnory",
+              },
+              "Vinohrady": {
+                "title": "Vinohrady",
+              },
+              "Vrakuňa": {
+                "title": "Vrakuňa",
+              },
+              "Záhorská Bystrica": {
+                "title": "Záhorská Bystrica",
+              },
+              "Čunovo": {
+                "title": "Čunovo",
+              },
+            },
+          },
+          "ui:widget": "SelectMultiple",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Údaje objednávky",
+        },
+        "ui:order": [
+          "adresaObjednavky",
+          "viacKatastralneUzemia",
+          "katastralneUzemiaMultiple",
+          "katastralneUzemieSingle",
+        ],
+        "viacKatastralneUzemia": {
+          "ui:options": {
+            "orientations": "row",
+            "radioOptions": [],
+            "variant": "boxed",
+          },
+          "ui:widget": "RadioGroup",
+        },
+      },
+      "ui:options": {
+        "stepQueryParam": "udaje",
+      },
+      "ui:order": [
+        "fakturacneUdaje",
+        "udajeObjednavky",
+      ],
+    },
+    "ui:hideError": true,
+    "ui:options": {},
+  },
+}
+`;
+
+exports[`Form definitions tsb-umiestnenie-zariadenia default form state should match snapshot 1`] = `
+{
+  "informacieOZariadeni": {
+    "umiestnenieStoziare": [],
+    "zodpovednostZaMontaz": "Organizácia",
+  },
+  "prilohy": {
+    "fotografiaVizualizacia": [],
+  },
+  "ziadatel": {
+    "mestoPsc": {},
+    "objednavatelAko": "Fyzická osoba",
+  },
+}
+`;
+
+exports[`Form definitions tsb-umiestnenie-zariadenia schemas match snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "ziadatel": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "menoPriezvisko": {
+                      "properties": {
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaSidla": {
+                      "title": "Adresa sídla",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "email": {
+                          "format": "email",
+                          "title": "E-mail",
+                          "type": "string",
+                        },
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "telefonneCislo": {
+                          "format": "ba-phone-number",
+                          "title": "Telefónne číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "email",
+                        "telefonneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "kontaktnaOsoba",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+              "objednavatelAko": {
+                "default": "Fyzická osoba",
+                "oneOf": [
+                  {
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
+                  },
+                  {
+                    "const": "Fyzická osoba - podnikateľ",
+                    "title": "Fyzická osoba - podnikateľ",
+                  },
+                  {
+                    "const": "Právnická osoba",
+                    "title": "Právnická osoba",
+                  },
+                ],
+                "title": "Objednávateľ ako",
+                "type": "string",
+              },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "objednavatelAko",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
+            ],
+            "title": "Žiadateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "ziadatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "informacieOZariadeni": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "zodpovednostZaMontaz": {
+                      "const": "Organizácia",
+                    },
+                  },
+                  "required": [
+                    "zodpovednostZaMontaz",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "menoPriezvisko": {
+                          "properties": {
+                            "meno": {
+                              "title": "Meno",
+                              "type": "string",
+                            },
+                            "priezvisko": {
+                              "title": "Priezvisko",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "meno",
+                            "priezvisko",
+                          ],
+                          "type": "object",
+                        },
+                      },
+                      "required": [
+                        "menoPriezvisko",
+                      ],
+                      "type": "object",
+                    },
+                    "nazovOrganizacie": {
+                      "title": "Názov organizácie",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "nazovOrganizacie",
+                    "kontaktnaOsoba",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "zodpovednostZaMontaz": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "zodpovednostZaMontaz",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "menoPriezvisko": {
+                      "properties": {
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "planovanyDatumDemontaze": {
+                "format": "date",
+                "title": "Plánovaný dátum demontáže zariadenia",
+                "type": "string",
+              },
+              "planovanyDatumMontaze": {
+                "format": "date",
+                "title": "Plánovaný dátum montáže zariadenia",
+                "type": "string",
+              },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+              "umiestnenieStoziare": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Nahrajte vyplnený súbor Umiestnenie zariadení na stožiare verejného osvetlenia.xlsx",
+                "type": "array",
+              },
+              "zodpovednostZaMontaz": {
+                "default": "Organizácia",
+                "oneOf": [
+                  {
+                    "const": "Organizácia",
+                    "title": "Organizácia",
+                  },
+                  {
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
+                  },
+                ],
+                "title": "Za montáž, prevádzku a demontáž zodpovedá",
+                "type": "string",
+              },
+            },
+            "required": [
+              "umiestnenieStoziare",
+              "zodpovednostZaMontaz",
+              "email",
+              "telefonneCislo",
+              "planovanyDatumMontaze",
+              "planovanyDatumDemontaze",
+            ],
+            "title": "Informácie o zariadení",
+            "type": "object",
+          },
+        },
+        "required": [
+          "informacieOZariadeni",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "prilohy": {
+            "properties": {
+              "fotografiaVizualizacia": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Fotografia alebo vizualizácia zariadenia/zariadení",
+                "type": "array",
+              },
+            },
+            "required": [
+              "fotografiaVizualizacia",
+            ],
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
+    ],
+    "title": "TEST - Umiestnenie zariadenia",
+  },
+  "uiSchema": {
+    "informacieOZariadeni": {
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "kontaktnaOsoba": {
+        "menoPriezvisko": {
+          "meno": {
+            "ui:label": false,
+            "ui:options": {
+              "inputType": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "priezvisko": {
+            "ui:label": false,
+            "ui:options": {
+              "inputType": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "1/1",
+          },
+          "ui:order": [
+            "meno",
+            "priezvisko",
+          ],
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Kontaktná osoba",
+        },
+        "ui:order": [
+          "menoPriezvisko",
+        ],
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "nazovOrganizacie": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "planovanyDatumDemontaze": {
+        "ui:options": {
+          "helptextHeader": "Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do 15 kalendárnych dní od doručenia takejto výzvy prostredníctvom kontaktného e-mailu.",
+        },
+        "ui:widget": "DatePicker",
+      },
+      "planovanyDatumMontaze": {
+        "ui:options": {
+          "helptextHeader": "O zahájení prác je potrebné písomne informovať minimálne 1 pracovný deň vopred prostredníctvom e-mailu na info@tsb.sk.",
+        },
+        "ui:widget": "DatePicker",
+      },
+      "telefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte +421",
+          "inputType": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "informacie-o-zariadeni",
+      },
+      "ui:order": [
+        "umiestnenieStoziare",
+        "zodpovednostZaMontaz",
+        "nazovOrganizacie",
+        "kontaktnaOsoba",
+        "menoPriezvisko",
+        "email",
+        "telefonneCislo",
+        "planovanyDatumMontaze",
+        "planovanyDatumDemontaze",
+      ],
+      "umiestnenieStoziare": {
+        "ui:options": {
+          "helptextHeader": "V prípade, že požadovaný súbor na vyplnenie ešte nemáte, stiahnuť si ho viete na tomto odkaze. Dbajte na to, aby ste v súbore spomenuli všetky zariadenia, ktoré si želáte umiestniť. Bez vyplnenia a nahratia tohto súboru nebude možné vašu žiadosť spracovať.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "zodpovednostZaMontaz": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+    },
+    "prilohy": {
+      "fotografiaVizualizacia": {
+        "ui:options": {
+          "helptextHeader": "Nahrajte jednu prílohu obsahujúcu fotografie alebo vizualizácie všetkých zariadení.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
+      "ui:order": [
+        "fotografiaVizualizacia",
+      ],
+    },
+    "ui:hideError": true,
+    "ui:options": {},
+    "ziadatel": {
+      "adresaPodnikania": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "icDph": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ico": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "kontaktnaOsoba": {
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Meno",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Priezvisko",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "telefonneCislo": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte +421",
+            "inputType": "tel",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Kontaktná osoba",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+          "email",
+          "telefonneCislo",
+        ],
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "mestoPsc": {
+        "mesto": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "psc": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "3/1",
+        },
+        "ui:order": [
+          "mesto",
+          "psc",
+        ],
+      },
+      "obchodneMeno": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "objednavatelAko": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "telefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte +421",
+          "inputType": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
+      "ui:order": [
+        "objednavatelAko",
+        "menoPriezvisko",
+        "obchodneMeno",
+        "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
+        "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
+        "kontaktnaOsoba",
+      ],
+    },
+  },
+}
+`;
+
+exports[`Form definitions tsb-ziadost-o-stanovisko-pd default form state should match snapshot 1`] = `
+{
+  "prilohy": {
+    "situacnyVykresFile": [],
+    "svetelnoTechnickyVypocetFile": [],
+    "technickaSpravaFile": [],
+    "vyznaceneZaujmoveUzemieFile": [],
+  },
+  "udajeOStavbe": {
+    "katastralneUzemie": [
+      "Čunovo",
+    ],
+    "stupenProjektovejDokumentacie": "Dokumentácia pre územné rozhodnutie (DÚR)",
+  },
+  "ziadatel": {
+    "mestoPsc": {},
+    "objednavatelAko": "Fyzická osoba",
+  },
+}
+`;
+
+exports[`Form definitions tsb-ziadost-o-stanovisko-pd schemas match snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "ziadatel": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba",
+                        "Fyzická osoba - podnikateľ",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "menoPriezvisko": {
+                      "properties": {
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "menoPriezvisko",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "enum": [
+                        "Fyzická osoba - podnikateľ",
+                        "Právnická osoba",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dic": {
+                      "title": "DIČ",
+                      "type": "string",
+                    },
+                    "icDph": {
+                      "title": "IČ DPH",
+                      "type": "string",
+                    },
+                    "ico": {
+                      "title": "IČO",
+                      "type": "string",
+                    },
+                    "obchodneMeno": {
+                      "title": "Obchodné meno",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "obchodneMeno",
+                    "ico",
+                    "dic",
+                    "icDph",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaTrvalehoPobytu": {
+                      "title": "Adresa trvalého pobytu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaTrvalehoPobytu",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Fyzická osoba - podnikateľ",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPodnikania": {
+                      "title": "Miesto podnikania",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPodnikania",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaSidla": {
+                      "title": "Adresa sídla",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaSidla",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "objednavatelTyp": {
+                      "const": "Právnická osoba",
+                    },
+                  },
+                  "required": [
+                    "objednavatelTyp",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "kontaktnaOsoba": {
+                      "properties": {
+                        "email": {
+                          "format": "email",
+                          "title": "E-mail",
+                          "type": "string",
+                        },
+                        "meno": {
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "telefonneCislo": {
+                          "format": "ba-phone-number",
+                          "title": "Telefónne číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "email",
+                        "telefonneCislo",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "kontaktnaOsoba",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "properties": {
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "mestoPsc": {
+                "properties": {
+                  "mesto": {
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+              "objednavatelAko": {
+                "default": "Fyzická osoba",
+                "oneOf": [
+                  {
+                    "const": "Fyzická osoba",
+                    "title": "Fyzická osoba",
+                  },
+                  {
+                    "const": "Fyzická osoba - podnikateľ",
+                    "title": "Fyzická osoba - podnikateľ",
+                  },
+                  {
+                    "const": "Právnická osoba",
+                    "title": "Právnická osoba",
+                  },
+                ],
+                "title": "Objednávateľ ako",
+                "type": "string",
+              },
+              "telefonneCislo": {
+                "format": "ba-phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "objednavatelAko",
+              "mestoPsc",
+              "email",
+              "telefonneCislo",
+            ],
+            "title": "Žiadateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "ziadatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "udajeOStavbe": {
+            "properties": {
+              "adresaStavby": {
+                "title": "Adresa stavby",
+                "type": "string",
+              },
+              "katastralneUzemie": {
+                "default": [
+                  "Čunovo",
+                ],
+                "items": {
+                  "enum": [
+                    "Čunovo",
+                    "Devín",
+                    "Devínska Nová Ves",
+                    "Dúbravka",
+                    "Jarovce",
+                    "Karlova Ves",
+                    "Lamač",
+                    "Nové Mesto",
+                    "Vinohrady",
+                    "Petržalka",
+                    "Podunajské Biskupice",
+                    "Rača",
+                    "Rusovce",
+                    "Ružinov",
+                    "Trnávka",
+                    "Nivy",
+                    "Staré Mesto",
+                    "Vajnory",
+                    "Vrakuňa",
+                    "Záhorská Bystrica",
+                  ],
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Katastrálne územie",
+                "type": "array",
+                "uniqueItems": true,
+              },
+              "nazovStavby": {
+                "title": "Názov stavby",
+                "type": "string",
+              },
+              "predpokladanyTerminStavbyDo": {
+                "format": "date",
+                "title": "Predpokladaný termín stavby do",
+                "type": "string",
+              },
+              "predpokladanyTerminStavbyOd": {
+                "format": "date",
+                "title": "Predpokladaný termín stavby od",
+                "type": "string",
+              },
+              "stupenProjektovejDokumentacie": {
+                "default": "Dokumentácia pre územné rozhodnutie (DÚR)",
+                "oneOf": [
+                  {
+                    "const": "Dokumentácia pre územné rozhodnutie (DÚR)",
+                    "title": "Dokumentácia pre územné rozhodnutie (DÚR)",
+                  },
+                  {
+                    "const": "Dokumentácia pre stavebné povolenie (DSP)",
+                    "title": "Dokumentácia pre stavebné povolenie (DSP)",
+                  },
+                  {
+                    "const": "Dokumentácia pre realizáciu stavby (DRS)",
+                    "title": "Dokumentácia pre realizáciu stavby (DRS)",
+                  },
+                ],
+                "title": "Stupeň projektovej dokumentácie",
+                "type": "string",
+              },
+              "typProjektovejDokumentacie": {
+                "title": "Typ projektovej dokumentácie",
+                "type": "string",
+              },
+            },
+            "required": [
+              "nazovStavby",
+              "adresaStavby",
+              "katastralneUzemie",
+              "predpokladanyTerminStavbyOd",
+              "predpokladanyTerminStavbyDo",
+              "typProjektovejDokumentacie",
+              "stupenProjektovejDokumentacie",
+            ],
+            "title": "Údaje o stavbe",
+            "type": "object",
+          },
+        },
+        "required": [
+          "udajeOStavbe",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "prilohy": {
+            "properties": {
+              "situacnyVykresFile": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Situačný výkres",
+                "type": "array",
+              },
+              "svetelnoTechnickyVypocetFile": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "title": "Svetelno-technický výpočet",
+                "type": "array",
+              },
+              "technickaSpravaFile": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Technická správa",
+                "type": "array",
+              },
+              "vyznaceneZaujmoveUzemieFile": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "format": "ba-file-uuid",
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Vyznačené záujmové územie na katastrálnej mape",
+                "type": "array",
+              },
+            },
+            "required": [
+              "technickaSpravaFile",
+              "vyznaceneZaujmoveUzemieFile",
+              "situacnyVykresFile",
+            ],
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
+    ],
+    "title": "TEST - Žiadosť o stanovisko k projektovej dokumentácii",
+  },
+  "uiSchema": {
+    "prilohy": {
+      "situacnyVykresFile": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "svetelnoTechnickyVypocetFile": {
+        "ui:options": {
+          "helptextHeader": "Výpočet je nutné doložiť v prípade stavby verejného osvetlenia.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "technickaSpravaFile": {
+        "ui:options": {
+          "helptextHeader": "Technická správa s popisom navrhovaného technického riešenia.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
+      "ui:order": [
+        "technickaSpravaFile",
+        "vyznaceneZaujmoveUzemieFile",
+        "situacnyVykresFile",
+        "svetelnoTechnickyVypocetFile",
+      ],
+      "vyznaceneZaujmoveUzemieFile": {
+        "ui:options": {
+          "helptextHeader": "Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie. V katastrálnej mape zvoľte funkciu Meranie v ľavom menu a vyznačte záujmové územie. Meranie uložte cez možnosť Tlačiť do PDF.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUploadMultiple",
+      },
+    },
+    "udajeOStavbe": {
+      "adresaStavby": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "katastralneUzemie": {
+        "ui:options": {
+          "helptextHeader": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
+          "selectOptions": {
+            "Devín": {
+              "title": "Devín",
+            },
+            "Devínska Nová Ves": {
+              "title": "Devínska Nová Ves",
+            },
+            "Dúbravka": {
+              "title": "Dúbravka",
+            },
+            "Jarovce": {
+              "title": "Jarovce",
+            },
+            "Karlova Ves": {
+              "title": "Karlova Ves",
+            },
+            "Lamač": {
+              "title": "Lamač",
+            },
+            "Nivy": {
+              "title": "Nivy",
+            },
+            "Nové Mesto": {
+              "title": "Nové Mesto",
+            },
+            "Petržalka": {
+              "title": "Petržalka",
+            },
+            "Podunajské Biskupice": {
+              "title": "Podunajské Biskupice",
+            },
+            "Rača": {
+              "title": "Rača",
+            },
+            "Rusovce": {
+              "title": "Rusovce",
+            },
+            "Ružinov": {
+              "title": "Ružinov",
+            },
+            "Staré Mesto": {
+              "title": "Staré Mesto",
+            },
+            "Trnávka": {
+              "title": "Trnávka",
+            },
+            "Vajnory": {
+              "title": "Vajnory",
+            },
+            "Vinohrady": {
+              "title": "Vinohrady",
+            },
+            "Vrakuňa": {
+              "title": "Vrakuňa",
+            },
+            "Záhorská Bystrica": {
+              "title": "Záhorská Bystrica",
+            },
+            "Čunovo": {
+              "title": "Čunovo",
+            },
+          },
+        },
+        "ui:widget": "SelectMultiple",
+      },
+      "nazovStavby": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Napríklad: Polyfunkčný objekt ABC",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "predpokladanyTerminStavbyDo": {
+        "ui:options": {},
+        "ui:widget": "DatePicker",
+      },
+      "predpokladanyTerminStavbyOd": {
+        "ui:options": {},
+        "ui:widget": "DatePicker",
+      },
+      "stupenProjektovejDokumentacie": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "typProjektovejDokumentacie": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Napríklad: Ohlásenie stavby",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "udaje-o-stavbe",
+      },
+      "ui:order": [
+        "nazovStavby",
+        "adresaStavby",
+        "katastralneUzemie",
+        "predpokladanyTerminStavbyOd",
+        "predpokladanyTerminStavbyDo",
+        "typProjektovejDokumentacie",
+        "stupenProjektovejDokumentacie",
+      ],
+    },
+    "ui:hideError": true,
+    "ui:options": {},
+    "ziadatel": {
+      "adresaPodnikania": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaSidla": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "adresaTrvalehoPobytu": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte ulica a číslo",
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dic": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "icDph": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ico": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "kontaktnaOsoba": {
+        "email": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "email",
+          },
+          "ui:widget": "Input",
+        },
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Meno",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Priezvisko",
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "telefonneCislo": {
+          "ui:label": false,
+          "ui:options": {
+            "helptextHeader": "Vyplňte vo formáte +421",
+            "inputType": "tel",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Kontaktná osoba",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+          "email",
+          "telefonneCislo",
+        ],
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "mestoPsc": {
+        "mesto": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "psc": {
+          "ui:label": false,
+          "ui:options": {
+            "inputType": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "3/1",
+        },
+        "ui:order": [
+          "mesto",
+          "psc",
+        ],
+      },
+      "obchodneMeno": {
+        "ui:label": false,
+        "ui:options": {
+          "inputType": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "objednavatelAko": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "telefonneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Vyplňte vo formáte +421",
+          "inputType": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
+      "ui:order": [
+        "objednavatelAko",
+        "menoPriezvisko",
+        "obchodneMeno",
+        "ico",
+        "dic",
+        "icDph",
+        "adresaTrvalehoPobytu",
+        "adresaPodnikania",
+        "adresaSidla",
+        "mestoPsc",
+        "email",
+        "telefonneCislo",
+        "kontaktnaOsoba",
       ],
     },
   },

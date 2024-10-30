@@ -38,6 +38,7 @@
     "@prisma/client": "^5.13.0",
     "@types/mssql": "^9.1.5",
     "aws-sdk": "^2.1691.0",
+    "axios": "^1.7.7",
     "bysquare": "^2.1.0",
     "class-validator": "^0.14.1",
     "currency.js": "^2.0.4",
@@ -53,7 +54,7 @@
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.0.23",
     "@golevelup/ts-jest": "^0.5.5",
-    "@nestjs/schematics": "^10.1.1",
+    "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.6",
     "@openapitools/openapi-generator-cli": "^2.14.0",
     "@types/ejs": "^3.1.5",

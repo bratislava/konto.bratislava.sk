@@ -72,7 +72,9 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
           title: 'Presná adresa miesta odvozu',
           required: true,
         },
-        {},
+        {
+          helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+        },
       ),
     ]),
     conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'Pracovníci OLO' }]]), [

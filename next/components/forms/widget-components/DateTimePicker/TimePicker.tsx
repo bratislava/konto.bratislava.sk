@@ -43,6 +43,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       customErrorPlace,
       size,
       labelSize,
+      displayOptionalLabel,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ...rest
     },
@@ -84,6 +85,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             customErrorPlace={customErrorPlace}
             size={size}
             labelSize={labelSize}
+            displayOptionalLabel={displayOptionalLabel}
           />
         </div>
         {/* {state?.isOpen && ( */}

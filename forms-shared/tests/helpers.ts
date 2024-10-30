@@ -3,6 +3,7 @@ import {
   createCamelCaseOptionsV2,
   createCondition,
   createStringOptions,
+  createStringOptionsV2,
 } from '../src/generator/helpers'
 
 describe('createCondition', () => {
@@ -167,6 +168,75 @@ describe('createStringOptions', () => {
     expect(() => createStringOptions(['Option 1', 'Option 2', 'Option 1'])).toThrowError(
       'Options must have unique values',
     )
+  })
+})
+
+describe('createStringOptionsV2', () => {
+  it('should create options from a list of objects with default option', () => {
+    const result = createStringOptionsV2([
+      { title: 'Option 1', description: 'Description 1' },
+      { title: 'Option 2' },
+      { title: 'Option 3' },
+    ])
+    expect(result).toEqual([
+      { value: 'Option 1', title: 'Option 1', description: 'Description 1', isDefault: true },
+      { value: 'Option 2', title: 'Option 2', isDefault: undefined },
+      { value: 'Option 3', title: 'Option 3', isDefault: undefined },
+    ])
+  })
+
+  it('should create options from a list of objects without default option', () => {
+    const result = createStringOptionsV2(
+      [
+        { title: 'Option 1', description: 'Description 1' },
+        { title: 'Option 2' },
+        { title: 'Option 3' },
+      ],
+      false,
+    )
+    expect(result).toEqual([
+      { value: 'Option 1', title: 'Option 1', description: 'Description 1' },
+      { value: 'Option 2', title: 'Option 2' },
+      { value: 'Option 3', title: 'Option 3' },
+    ])
+  })
+
+  it('should handle an empty input array', () => {
+    const result = createStringOptionsV2([])
+    expect(result).toEqual([])
+  })
+
+  it('should handle a single object input', () => {
+    const result = createStringOptionsV2([{ title: 'Option 1' }])
+    expect(result).toEqual([{ value: 'Option 1', title: 'Option 1', isDefault: true }])
+  })
+
+  it('should throw an error if options have duplicate values', () => {
+    expect(() =>
+      createStringOptionsV2([{ title: 'Option 1' }, { title: 'Option 1' }]),
+    ).toThrowError('Options must have unique values')
+  })
+
+  it('should preserve additional properties from input objects', () => {
+    const result = createStringOptionsV2([
+      { title: 'Option 1', extra: 'data1', nested: { prop: 'value' } },
+      { title: 'Option 2', extra: 'data2' },
+    ])
+    expect(result).toEqual([
+      {
+        value: 'Option 1',
+        title: 'Option 1',
+        extra: 'data1',
+        nested: { prop: 'value' },
+        isDefault: true,
+      },
+      {
+        value: 'Option 2',
+        title: 'Option 2',
+        extra: 'data2',
+        isDefault: undefined,
+      },
+    ])
   })
 })
 

@@ -41,14 +41,14 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
       input(
         'konatel',
-        { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true },
+        { type: 'text', title: 'Konateľ', required: true },
         { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
         {
           type: 'text',
-          title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+          title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
         { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },

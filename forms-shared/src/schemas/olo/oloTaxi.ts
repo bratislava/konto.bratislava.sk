@@ -6,9 +6,9 @@ import {
   object,
   radioGroup,
   schema,
+  select,
   step,
   textArea,
-  timePicker,
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createStringOptions } from '../../generator/helpers'
@@ -72,16 +72,22 @@ export default schema(
             'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         },
       ),
-      timePicker(
+      select(
         'preferovanyCasOdvozu',
         {
           title: 'Preferovaný čas odvozu',
           required: true,
+          options: createStringOptions(
+            [
+              '07:00 (pondelok - sobota)',
+              '09:00 (pondelok - sobota)',
+              '11:00 (pondelok - sobota)',
+              '13:00 (pondelok - piatok)',
+            ],
+            false,
+          ),
         },
-        {
-          helptextHeader:
-            '7:00  (Pon - Sob); 9:00 (Pon - Sob); 11:00 (Pon - Sob); 13:00 (Pon - Pia)',
-        },
+        {},
       ),
       textArea(
         'mnozstvoADruhOdpadu',
@@ -94,7 +100,7 @@ export default schema(
         },
       ),
       checkbox(
-        'suhlasSDarom',
+        'suhlasSPlatbou',
         {
           title: 'Vyjadrenie súhlasu s platbou',
           required: true,

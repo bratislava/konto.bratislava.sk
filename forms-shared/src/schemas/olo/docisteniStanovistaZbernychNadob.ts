@@ -65,15 +65,19 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       ],
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
-      input('konatel', { type: 'text', title: 'Konateľ (meno, priezvisko)', required: true }, {}),
+      input(
+        'konatel',
+        { type: 'text', title: 'Konateľ', required: true },
+        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+      ),
       input(
         'zastupeny',
         {
           type: 'text',
-          title: 'Zastúpený - na základe splnomocnenia (meno, priezvisko)',
+          title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        {},
+        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -164,7 +168,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       'doplnujuceInfo',
       {
         title: 'Doplňujúce info',
-        required: true,
+        required: false,
       },
       {
         helptextHeader: 'Špecifikujte individuálne požiadavky.',

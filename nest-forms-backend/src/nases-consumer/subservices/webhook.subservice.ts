@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { getFileIdsToUrlMap, replaceFileIdsWithUrls } from 'src/utils/files'
 
 import {
   FormsErrorsEnum,
@@ -26,12 +28,16 @@ export default class WebhookSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly configService: ConfigService,
   ) {}
 
   async sendWebhook(formId: string): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
         id: formId,
+      },
+      include: {
+        files: true,
       },
     })
     if (form === null) {
@@ -55,16 +61,28 @@ export default class WebhookSubservice {
         `${WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM} Form id: ${form.id}.`,
       )
     }
+
+    // prepare file urls into the resulting json
+    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
+    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+    const fileIdUrlMap = getFileIdsToUrlMap(form, jwtSecret, selfUrl)
+
+    const formDataWithFileIds = omitExtraData(
+      formDefinition.schemas.schema,
+      form.formDataJson as GenericObjectType,
+    )
+    const formDataWithFileUrls = replaceFileIdsWithUrls(
+      formDataWithFileIds,
+      fileIdUrlMap,
+    )
+
     this.logger.log(
       `Sending webhook form ${formId} to ${formDefinition.webhookUrl}`,
     )
 
     const webhookDto: WebhookDto = {
       formId: form.id,
-      formData: omitExtraData(
-        formDefinition.schemas.schema,
-        form.formDataJson as GenericObjectType,
-      ),
+      formData: formDataWithFileUrls,
     }
     await axios.post(formDefinition.webhookUrl, webhookDto)
 

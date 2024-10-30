@@ -151,6 +151,24 @@ export const createStringOptions = (options: string[], addDefault = true) => {
 }
 
 /**
+ * Create options from a list of objects with titles. For example:
+ * [{ title: 'Option 1' }, { title: 'Option 2' }] => [{ value: 'Option 1', title: 'Option 1', isDefault: true }, ...]
+ */
+export const createStringOptionsV2 = <Option extends { title: string }>(
+  options: Option[],
+  addDefault = true,
+) => {
+  const result = options.map((option, index) => ({
+    value: option.title,
+    ...option,
+    isDefault: index === 0 && addDefault ? true : undefined,
+  }))
+
+  assertUniqueOptions(result)
+  return result
+}
+
+/**
  * Create options with camelCase value from a list of strings. For example:
  * ['Option 1', 'Option 2'] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
  */

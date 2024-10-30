@@ -8,12 +8,12 @@ import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
 
-export type RenderSummaryEmailFileIdUrlMap = Record<string, { url: string; fileName: string }>
+export type RenderSummaryEmailFileIdInfoMap = Record<string, { url: string; fileName: string }>
 
 export type RenderSummaryEmailPayload = {
   formDefinition: FormDefinition
   formData: GenericObjectType
-  fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
+  fileIdUrlMap: RenderSummaryEmailFileIdInfoMap
   serverFiles?: FormsBackendFile[]
   withHtmlBodyTags?: boolean
 }

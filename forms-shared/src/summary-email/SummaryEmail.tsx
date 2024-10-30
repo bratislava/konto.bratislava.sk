@@ -14,16 +14,16 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
-import { RenderSummaryEmailFileIdUrlMap } from './renderSummaryEmail'
+import { RenderSummaryEmailFileIdInfoMap } from './renderSummaryEmail'
 
 type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
-  fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
+  fileIdUrlMap: RenderSummaryEmailFileIdInfoMap
   withHtmlBodyTags: boolean
 }
 
-const FileIdUrlMapContext = createContext<RenderSummaryEmailFileIdUrlMap | null>(null)
+const FileIdUrlMapContext = createContext<RenderSummaryEmailFileIdInfoMap | null>(null)
 
 const useFileIdUrlMap = () => {
   const fileIdUrlMap = React.useContext(FileIdUrlMapContext)

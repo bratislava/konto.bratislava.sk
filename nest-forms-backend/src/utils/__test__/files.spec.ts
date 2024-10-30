@@ -34,7 +34,11 @@ describe('files utils', () => {
 
     it('should create a map of file IDs to download URLs', () => {
       const mockForm = {
-        files: [{ id: 'file1' }, { id: 'file2' }, { id: 'file3' }],
+        files: [
+          { id: 'file1', fileName: 'file1.pdf' },
+          { id: 'file2', fileName: 'file2.pdf' },
+          { id: 'file3', fileName: 'file3.pdf' },
+        ],
       } as FormWithFiles
 
       const result = getFileIdsToUrlMap(mockForm, mockJwtSecret, mockSelfUrl)
@@ -42,15 +46,15 @@ describe('files utils', () => {
       expect(result).toEqual({
         file1: {
           url: `${mockSelfUrl}/files/download/file/${mockJwtToken}`,
-          fileName: undefined,
+          fileName: 'file1.pdf',
         },
         file2: {
           url: `${mockSelfUrl}/files/download/file/${mockJwtToken}`,
-          fileName: undefined,
+          fileName: 'file2.pdf',
         },
         file3: {
           url: `${mockSelfUrl}/files/download/file/${mockJwtToken}`,
-          fileName: undefined,
+          fileName: 'file3.pdf',
         },
       })
 

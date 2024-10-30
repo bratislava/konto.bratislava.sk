@@ -24,9 +24,15 @@ export class TasksService {
     const variableSymbolsDb = await this.prismaService.$queryRaw<
       { variableSymbol: string; id: number }[]
     >(Prisma.sql`
+    WITH total_payments AS (
+      SELECT "taxId", SUM("amount") AS totalPayments
+      FROM "TaxPayment"
+      WHERE "status" = 'SUCCESS'
+      GROUP BY "taxId"
+    )
     SELECT t."variableSymbol", t."id"
     FROM "Tax" t
-    LEFT JOIN "TotalPaymentsView" tp ON t."id" = tp."taxId"
+    LEFT JOIN total_payments tp ON t."id" = tp."taxId"
     WHERE 
       COALESCE(tp.totalPayments, 0) < t."amount"
       AND t.year = ${year}

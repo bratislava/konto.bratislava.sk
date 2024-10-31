@@ -125,7 +125,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
 ])
 
 export const podnetyAPochvalyObcanovExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
+  safeString(formData.podnet?.email)
 
 export const podnetyAPochvalyObcanovExtractName = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.meno)
+  safeString(formData.podnet?.meno)

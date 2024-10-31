@@ -111,20 +111,6 @@ model TaxEmployee {
   email       String
 }
 
-model LoadingPaymentsFromNoris {
-  id                                Int      @id @default(autoincrement())
-  createdAt                         DateTime @default(now())
-  updatedAt                         DateTime @default(now()) @updatedAt
-  year                              Int?
-  loadingDateFrom                   DateTime @db.Date
-  loadingDateTo                     DateTime @db.Date
-  loadedPayments                    Int
-  alreadPayedPayments               Int
-  errorVariableSymbols              String[]
-  norisInconsistencyVariableSymbols String[]
-  notFound                          Int?
-}
-
 enum TaxDetailType {
   APARTMENT
   CONSTRUCTION

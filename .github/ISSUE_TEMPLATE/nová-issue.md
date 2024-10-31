@@ -20,4 +20,7 @@ _kto je cieľová skupina pre ktorú to ideme robiť_
 _z čoho vychádzame, aké dáta podporujú existenciu problému, ktorý ideme riešiť_
 
 **Akceptačné kritériá**
-_Kritériá, ktoré jasne určujú, kedy je úloha dokončená, čo potrebujeme aby riešenie robilo._
+_kritériá, ktoré jasne určujú, kedy je úloha dokončená, čo potrebujeme aby riešenie robilo._
+
+**Dokumentácia**
+_pridaj potrebné odkazy na dizajn, dokumentáciu alebo iné prílohy, ktoré sú pre danú úlohu dôležité._

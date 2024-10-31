@@ -31,7 +31,7 @@ const exampleForm: ExampleForm = {
       miestoDodania: 'Veľká 10',
       popisDarovanychVeci: 'práčka, kreslo',
       fotoDarovanychVeci: ['3e7b1557-a1ab-459f-907d-3b219255d83a'],
-      suhlasSDarom: true,
+      suhlasSPlatbou: true,
     },
   },
   serverFiles: [

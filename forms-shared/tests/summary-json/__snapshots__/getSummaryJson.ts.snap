@@ -1675,7 +1675,7 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
               "value": "Súhlasím s platbou za službu KOLO Taxi",
             },
           ],
-          "id": "root_sluzba_suhlasSDarom",
+          "id": "root_sluzba_suhlasSPlatbou",
           "label": "Vyjadrenie súhlasu s platbou",
           "type": "Field",
           "value": true,

@@ -140,7 +140,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       },
     ),
     checkbox(
-      'suhlasSDarom',
+      'suhlasSPlatbou',
       {
         title: 'Vyjadrenie súhlasu s platbou',
         required: true,

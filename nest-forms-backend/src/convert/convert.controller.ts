@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Logger,
   Post,
   Res,
   StreamableFile,
@@ -51,7 +52,11 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  constructor(private readonly convertService: ConvertService) {}
+  private readonly logger: Logger
+
+  constructor(private readonly convertService: ConvertService) {
+    this.logger = new Logger('ConvertController')
+  }
 
   @ApiOperation({
     summary: 'Convert JSON to XML',
@@ -92,11 +97,19 @@ export default class ConvertController {
     @User() user?: CognitoGetUserData,
     @UserInfo() userInfo?: ResponseGdprDataDto,
   ): Promise<string> {
-    return this.convertService.convertJsonToXmlV2(
-      data,
-      userInfo?.ico ?? null,
-      user,
-    )
+    // TODO remove try-catch & extra logging once we start logging requests
+    try {
+      return await this.convertService.convertJsonToXmlV2(
+        data,
+        userInfo?.ico ?? null,
+        user,
+      )
+    } catch (error) {
+      this.logger.log(
+        `Error during convertJsonToXmlV2, userId: ${user?.sub}, email: ${user?.email}, formId: ${data.formId}, data: ${JSON.stringify(data.jsonData)}`,
+      )
+      throw error
+    }
   }
 
   @ApiOperation({

@@ -36,7 +36,7 @@ const exampleForm: ExampleForm = {
       doplnujuceInfo: 'This is an example form for OLO',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

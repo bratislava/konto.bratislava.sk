@@ -33,6 +33,9 @@ const exampleForm: ExampleForm = {
       fotoDarovanychVeci: ['3e7b1557-a1ab-459f-907d-3b219255d83a'],
       suhlasSPlatbou: true,
     },
+    suhlasy: {
+      suhlasSVop: true,
+    },
   },
   serverFiles: [
     {

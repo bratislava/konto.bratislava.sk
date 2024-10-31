@@ -70,7 +70,9 @@ const exampleForm: ExampleForm = {
       predpokladaneMnozstvo: 1,
     },
     suhlasy: {
-      suhlas: true,
+      suhlasPodmienkyPrijatiaOdpadu: true,
+      suhlasZasadySpravavania: true,
+      suhlasSVop: true,
     },
   },
 }

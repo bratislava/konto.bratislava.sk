@@ -961,14 +961,14 @@ export const getZevoSchema = (type: ZevoType) => [
     : null,
   step('suhlasy', { title: 'Súhlasy' }, [
     checkbox(
-      'suhlas',
+      'suhlasPodmienkyPrijatiaOdpadu',
       {
-        title: 'Súhlas s TODO',
+        title: 'Súhlas s Podmienkami prijatia odpadu do ZEVO',
         required: true,
         constValue: true,
       },
       {
-        checkboxLabel: 'Súhlasím s TODO',
+        checkboxLabel: 'Súhlasím s Podmienkami prijatia odpadu do ZEVO',
         variant: 'boxed',
       },
     ),
@@ -978,8 +978,60 @@ export const getZevoSchema = (type: ZevoType) => [
         props: {
           links: [
             {
-              title: 'TODO',
-              href: 'https://olo.sk',
+              title: 'Podmienky prijatia odpadu do ZEVO',
+              href: 'https://olo.sk/zevo/podmienky-prijatia-odpadu',
+            },
+          ],
+        },
+      },
+      {},
+    ),
+    checkbox(
+      'suhlasZasadySpravavania',
+      {
+        title: 'Súhlas so Zásadami správania sa zákazníkov v ZEVO',
+        required: true,
+        constValue: true,
+      },
+      {
+        checkboxLabel: 'Súhlasím so Zásadami správania sa zákazníkov v ZEVO',
+        variant: 'boxed',
+      },
+    ),
+    customComponentsField(
+      {
+        type: 'additionalLinks',
+        props: {
+          links: [
+            {
+              title: 'Zásady správania sa zákazníkov v ZEVO',
+              href: 'https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo',
+            },
+          ],
+        },
+      },
+      {},
+    ),
+    checkbox(
+      'suhlasSVop',
+      {
+        title: 'Súhlas so Všeobecnými obchodnými podmienkami OLO',
+        required: true,
+        constValue: true,
+      },
+      {
+        checkboxLabel: 'Súhlasím s Všeobecnými obchodnými podmienkami OLO',
+        variant: 'boxed',
+      },
+    ),
+    customComponentsField(
+      {
+        type: 'additionalLinks',
+        props: {
+          links: [
+            {
+              title: 'Všeobecné obchodné podmienky OLO',
+              href: 'https://olo.sk/vseobecne-obchodne-podmienky',
             },
           ],
         },

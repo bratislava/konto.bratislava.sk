@@ -1349,19 +1349,19 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent31_gRbYIKNcAF": {
+              "customComponent35_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -1433,15 +1433,15 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       ],
     },
     "suhlasy": {
-      "customComponent31_gRbYIKNcAF": {
+      "customComponent35_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -1451,9 +1451,9 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -1462,8 +1462,8 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent31_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent35_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -3214,14 +3214,36 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   {},
                 ],
               },
-              "suhlas": {
+              "customComponent30_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "customComponent31_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "suhlasPodmienkyPrijatiaOdpadu": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
+                "type": "boolean",
+              },
+              "suhlasSVop": {
+                "const": true,
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
+                "type": "boolean",
+              },
+              "suhlasZasadySpravavania": {
+                "const": true,
+                "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasPodmienkyPrijatiaOdpadu",
+              "suhlasZasadySpravavania",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -3589,8 +3611,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/zevo/podmienky-prijatia-odpadu",
+                    "title": "Podmienky prijatia odpadu do ZEVO",
                   },
                 ],
               },
@@ -3600,9 +3622,59 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "customComponent30_gRbYIKNcAF": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
+                    "title": "Zásady správania sa zákazníkov v ZEVO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "customComponent31_gRbYIKNcAF": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "suhlasPodmienkyPrijatiaOdpadu": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasZasadySpravavania": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -3611,8 +3683,12 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
+        "suhlasPodmienkyPrijatiaOdpadu",
         "customComponent29_gRbYIKNcAF",
+        "suhlasZasadySpravavania",
+        "customComponent30_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent31_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -4542,6 +4618,7 @@ exports[`Form definitions olo-kolo-taxi default form state should match snapshot
   "sluzba": {
     "fotoDarovanychVeci": [],
   },
+  "suhlasy": {},
   "ziadatel": {
     "ziadatelTyp": "Fyzická osoba",
   },
@@ -4890,6 +4967,33 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         ],
         "type": "object",
       },
+      {
+        "properties": {
+          "suhlasy": {
+            "properties": {
+              "customComponent37_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "suhlasSVop": {
+                "const": true,
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
+                "type": "boolean",
+              },
+            },
+            "required": [
+              "suhlasSVop",
+            ],
+            "title": "Súhlasy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "suhlasy",
+        ],
+        "type": "object",
+      },
     ],
     "title": "KOLO Taxi",
   },
@@ -4932,6 +5036,40 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "popisDarovanychVeci",
         "fotoDarovanychVeci",
         "suhlasSPlatbou",
+      ],
+    },
+    "suhlasy": {
+      "customComponent37_gRbYIKNcAF": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "ui:options": {
+        "stepQueryParam": "suhlasy",
+      },
+      "ui:order": [
+        "suhlasSVop",
+        "customComponent37_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -5843,14 +5981,14 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -6082,8 +6220,8 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -6093,9 +6231,9 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -6104,7 +6242,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
+        "suhlasSVop",
         "customComponent28_gRbYIKNcAF",
       ],
     },
@@ -6609,19 +6747,19 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent34_gRbYIKNcAF": {
+              "customComponent39_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -6660,15 +6798,15 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
       ],
     },
     "suhlasy": {
-      "customComponent34_gRbYIKNcAF": {
+      "customComponent39_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -6678,9 +6816,9 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -6689,8 +6827,8 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent34_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent39_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -7315,19 +7453,19 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent32_gRbYIKNcAF": {
+              "customComponent36_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -7440,15 +7578,15 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       ],
     },
     "suhlasy": {
-      "customComponent32_gRbYIKNcAF": {
+      "customComponent36_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -7458,9 +7596,9 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -7469,8 +7607,8 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent32_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent36_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -7883,19 +8021,19 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent33_gRbYIKNcAF": {
+              "customComponent38_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -7971,15 +8109,15 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       ],
     },
     "suhlasy": {
-      "customComponent33_gRbYIKNcAF": {
+      "customComponent38_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -7989,9 +8127,9 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -8000,8 +8138,8 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent33_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent38_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -9152,19 +9290,19 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent35_gRbYIKNcAF": {
+              "customComponent40_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -9404,15 +9542,15 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       ],
     },
     "suhlasy": {
-      "customComponent35_gRbYIKNcAF": {
+      "customComponent40_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -9422,9 +9560,9 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -9433,8 +9571,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent35_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent40_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -10455,19 +10593,19 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent36_gRbYIKNcAF": {
+              "customComponent41_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "suhlasSVop": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -10625,15 +10763,15 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       ],
     },
     "suhlasy": {
-      "customComponent36_gRbYIKNcAF": {
+      "customComponent41_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
                   },
                 ],
               },
@@ -10643,9 +10781,9 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "suhlasSVop": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -10654,8 +10792,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent36_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent41_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,
@@ -11989,19 +12127,41 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent30_gRbYIKNcAF": {
+              "customComponent32_gRbYIKNcAF": {
                 "anyOf": [
                   {},
                 ],
               },
-              "suhlas": {
+              "customComponent33_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "customComponent34_gRbYIKNcAF": {
+                "anyOf": [
+                  {},
+                ],
+              },
+              "suhlasPodmienkyPrijatiaOdpadu": {
                 "const": true,
-                "title": "Súhlas s TODO",
+                "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
+                "type": "boolean",
+              },
+              "suhlasSVop": {
+                "const": true,
+                "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
+                "type": "boolean",
+              },
+              "suhlasZasadySpravavania": {
+                "const": true,
+                "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
               },
             },
             "required": [
-              "suhlas",
+              "suhlasPodmienkyPrijatiaOdpadu",
+              "suhlasZasadySpravavania",
+              "suhlasSVop",
             ],
             "title": "Súhlasy",
             "type": "object",
@@ -12030,15 +12190,15 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       ],
     },
     "suhlasy": {
-      "customComponent30_gRbYIKNcAF": {
+      "customComponent32_gRbYIKNcAF": {
         "ui:options": {
           "customComponents": [
             {
               "props": {
                 "links": [
                   {
-                    "href": "https://olo.sk",
-                    "title": "TODO",
+                    "href": "https://olo.sk/zevo/podmienky-prijatia-odpadu",
+                    "title": "Podmienky prijatia odpadu do ZEVO",
                   },
                 ],
               },
@@ -12048,9 +12208,59 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlas": {
+      "customComponent33_gRbYIKNcAF": {
         "ui:options": {
-          "checkboxLabel": "Súhlasím s TODO",
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
+                    "title": "Zásady správania sa zákazníkov v ZEVO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "customComponent34_gRbYIKNcAF": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/vseobecne-obchodne-podmienky",
+                    "title": "Všeobecné obchodné podmienky OLO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "suhlasPodmienkyPrijatiaOdpadu": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasZasadySpravavania": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
           "variant": "boxed",
         },
         "ui:widget": "Checkbox",
@@ -12059,8 +12269,12 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
-        "suhlas",
-        "customComponent30_gRbYIKNcAF",
+        "suhlasPodmienkyPrijatiaOdpadu",
+        "customComponent32_gRbYIKNcAF",
+        "suhlasZasadySpravavania",
+        "customComponent33_gRbYIKNcAF",
+        "suhlasSVop",
+        "customComponent34_gRbYIKNcAF",
       ],
     },
     "ui:hideError": true,

@@ -37,7 +37,7 @@ const exampleForm: ExampleForm = {
       druhOdpaduIne: 'Iný odpad',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

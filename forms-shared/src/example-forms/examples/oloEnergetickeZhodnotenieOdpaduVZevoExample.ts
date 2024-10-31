@@ -87,7 +87,9 @@ const exampleForm: ExampleForm = {
       fotoOdpadu: ['80fb7c4d-3b93-4f5f-b945-5e9fe7840533', '8eb499bd-3d93-4601-b428-cca8053e83e6'],
     },
     suhlasy: {
-      suhlas: true,
+      suhlasPodmienkyPrijatiaOdpadu: true,
+      suhlasZasadySpravavania: true,
+      suhlasSVop: true,
     },
   },
   serverFiles: [

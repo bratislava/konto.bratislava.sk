@@ -31,7 +31,7 @@ const exampleForm: ExampleForm = {
       doplnujuceInfo: 'I am testing OLO submissions',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

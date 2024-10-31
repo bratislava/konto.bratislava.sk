@@ -12,7 +12,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
-import { getFileIdsToUrlMap } from '../../utils/files'
+import { getFileIdsToInfoMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import WebhookDto from './dtos/webhook.dto'
@@ -65,7 +65,7 @@ export default class WebhookSubservice {
     // prepare file urls into the resulting json
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
-    const fileIdUrlMap = getFileIdsToUrlMap(form, jwtSecret, selfUrl)
+    const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
     const formData = omitExtraData(
       formDefinition.schemas.schema,
@@ -80,7 +80,7 @@ export default class WebhookSubservice {
       formId: form.id,
       slug: form.formDefinitionSlug,
       data: formData,
-      files: fileIdUrlMap,
+      files: fileIdInfoMap,
     }
     await axios.post(formDefinition.webhookUrl, webhookDto)
 

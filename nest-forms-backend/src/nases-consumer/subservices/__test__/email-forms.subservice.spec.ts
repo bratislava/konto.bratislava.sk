@@ -8,7 +8,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
-import * as jwt from 'jsonwebtoken'
 
 import prismaMock from '../../../../test/singleton'
 import ConvertService from '../../../convert/convert.service'
@@ -16,7 +15,6 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { FormWithFiles } from '../../../utils/types/prisma'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
 
@@ -28,7 +26,6 @@ jest.mock('jsonwebtoken')
 describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
   let mailgunService: jest.Mocked<MailgunService>
-  let configService: jest.Mocked<ConfigService>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   beforeEach(async () => {
@@ -57,7 +54,6 @@ describe('EmailFormsSubservice', () => {
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
     mailgunService = module.get(MailgunService) as jest.Mocked<MailgunService>
-    configService = module.get(ConfigService) as jest.Mocked<ConfigService>
     throwerErrorGuard = module.get(
       ThrowerErrorGuard,
     ) as jest.Mocked<ThrowerErrorGuard>

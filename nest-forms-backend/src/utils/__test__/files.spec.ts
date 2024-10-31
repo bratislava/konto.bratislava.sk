@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken'
 
 import {
   fileIdIsValid,
-  getFileIdsToUrlMap,
+  getFileIdsToInfoMap,
   PDF_FORM_FAKE_FILE_ID,
 } from '../files'
 import { FormWithFiles } from '../types/prisma'
@@ -22,7 +22,7 @@ describe('files utils', () => {
     })
   })
 
-  describe('getFileIdsToUrlMap', () => {
+  describe('getFileIdsToInfoMap', () => {
     const mockJwtToken = 'mock-jwt-token'
     const mockSelfUrl = 'http://example.com'
     const mockJwtSecret = 'test-secret'
@@ -41,7 +41,7 @@ describe('files utils', () => {
         ],
       } as FormWithFiles
 
-      const result = getFileIdsToUrlMap(mockForm, mockJwtSecret, mockSelfUrl)
+      const result = getFileIdsToInfoMap(mockForm, mockJwtSecret, mockSelfUrl)
 
       expect(result).toEqual({
         file1: {
@@ -69,7 +69,7 @@ describe('files utils', () => {
     it('should handle empty files array', () => {
       const mockForm = { files: [] } as unknown as FormWithFiles
 
-      const result = getFileIdsToUrlMap(mockForm, mockJwtSecret, mockSelfUrl)
+      const result = getFileIdsToInfoMap(mockForm, mockJwtSecret, mockSelfUrl)
 
       expect(result).toEqual({})
       expect(jwt.sign).not.toHaveBeenCalled()

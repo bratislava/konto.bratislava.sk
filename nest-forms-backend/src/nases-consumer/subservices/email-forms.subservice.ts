@@ -13,7 +13,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
-import { getFileIdsToUrlMap } from '../../utils/files'
+import { getFileIdsToInfoMap } from '../../utils/files'
 import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
@@ -108,7 +108,7 @@ export default class EmailFormsSubservice {
           formDefinition,
           formData: jsonDataExtraDataOmitted,
           serverFiles: form.files,
-          fileIdUrlMap: getFileIdsToUrlMap(form, jwtSecret, selfUrl),
+          fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
         }),
       },
     })

@@ -1,3 +1,4 @@
+import { FileIdInfoMap } from 'forms-shared/summary-email/renderSummaryEmail'
 import * as jwt from 'jsonwebtoken'
 
 import { FormWithFiles } from './types/prisma'
@@ -8,12 +9,12 @@ export const fileIdIsValid = (fileId: string): boolean =>
   fileId !== PDF_FORM_FAKE_FILE_ID
 export const PDF_EXPORT_FILE_NAME = 'pdf-export.pdf'
 
-export const getFileIdsToUrlMap = (
+export const getFileIdsToInfoMap = (
   form: FormWithFiles,
   jwtSecret: string,
   selfUrl: string,
-): Record<string, { url: string; fileName: string }> => {
-  const result: Record<string, { url: string; fileName: string }> = {}
+): FileIdInfoMap => {
+  const result: FileIdInfoMap = {}
   form.files?.forEach((file) => {
     const token = jwt.sign({ fileId: file.id }, jwtSecret, {
       expiresIn: '5y',

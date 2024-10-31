@@ -561,11 +561,11 @@ exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -1407,11 +1407,35 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasPodmienkyPrijatiaOdpadu",
+          "label": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
+            },
+          ],
+          "id": "root_suhlasy_suhlasZasadySpravavania",
+          "label": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+            },
+          ],
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -1685,6 +1709,25 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
       "title": "Služba",
       "type": "Step",
     },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+            },
+          ],
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
+          "type": "Field",
+          "value": true,
+        },
+      ],
+      "id": "root_suhlasy",
+      "title": "Súhlasy",
+      "type": "Step",
+    },
   ],
   "title": "KOLO Taxi",
   "type": "Form",
@@ -1928,11 +1971,11 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -2175,11 +2218,11 @@ exports[`getSummaryJson oloOdvozObjemnehoOdpaduValnikomExample summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -2494,11 +2537,11 @@ exports[`getSummaryJson oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromEx
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -2693,11 +2736,11 @@ exports[`getSummaryJson oloOloTaxiExample summary JSON should match snapshot 1`]
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -3232,11 +3275,11 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExamp
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -3528,11 +3571,11 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },
@@ -4200,11 +4243,35 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Súhlasím s TODO",
+              "value": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
             },
           ],
-          "id": "root_suhlasy_suhlas",
-          "label": "Súhlas s TODO",
+          "id": "root_suhlasy_suhlasPodmienkyPrijatiaOdpadu",
+          "label": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
+            },
+          ],
+          "id": "root_suhlasy_suhlasZasadySpravavania",
+          "label": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+            },
+          ],
+          "id": "root_suhlasy_suhlasSVop",
+          "label": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
           "type": "Field",
           "value": true,
         },

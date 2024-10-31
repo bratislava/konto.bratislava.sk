@@ -49,7 +49,7 @@ const exampleForm: ExampleForm = {
       emailPotvrdenie: 'milan@odpad.sk',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

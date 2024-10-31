@@ -27,7 +27,7 @@ const exampleForm: ExampleForm = {
       suhlasSPlatbou: true,
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

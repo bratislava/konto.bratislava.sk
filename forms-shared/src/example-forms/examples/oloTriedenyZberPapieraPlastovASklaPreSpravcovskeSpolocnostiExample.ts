@@ -39,7 +39,7 @@ const exampleForm: ExampleForm = {
       emailPotvrdenie: 'test@test.test',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

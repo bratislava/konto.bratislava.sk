@@ -177,14 +177,14 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
   ]),
   step('suhlasy', { title: 'Súhlasy' }, [
     checkbox(
-      'suhlas',
+      'suhlasSVop',
       {
-        title: 'Súhlas s TODO',
+        title: 'Súhlas so Všeobecnými obchodnými podmienkami OLO',
         required: true,
         constValue: true,
       },
       {
-        checkboxLabel: 'Súhlasím s TODO',
+        checkboxLabel: 'Súhlasím s Všeobecnými obchodnými podmienkami OLO',
         variant: 'boxed',
       },
     ),
@@ -194,8 +194,8 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         props: {
           links: [
             {
-              title: 'TODO',
-              href: 'https://olo.sk',
+              title: 'Všeobecné obchodné podmienky OLO',
+              href: 'https://olo.sk/vseobecne-obchodne-podmienky',
             },
           ],
         },

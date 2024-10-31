@@ -31,7 +31,7 @@ const exampleForm: ExampleForm = {
       preferovanyDatumPristavenia: '2024-01-05',
     },
     suhlasy: {
-      suhlas: true,
+      suhlasSVop: true,
     },
   },
 }

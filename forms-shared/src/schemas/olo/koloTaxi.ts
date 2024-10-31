@@ -1,6 +1,7 @@
 import {
   checkbox,
   conditionalFields,
+  customComponentsField,
   fileUpload,
   input,
   object,
@@ -150,6 +151,34 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         checkboxLabel: 'Súhlasím s platbou za službu KOLO Taxi',
         variant: 'boxed',
       },
+    ),
+  ]),
+  step('suhlasy', { title: 'Súhlasy' }, [
+    checkbox(
+      'suhlasSVop',
+      {
+        title: 'Súhlas so Všeobecnými obchodnými podmienkami OLO',
+        required: true,
+        constValue: true,
+      },
+      {
+        checkboxLabel: 'Súhlasím s Všeobecnými obchodnými podmienkami OLO',
+        variant: 'boxed',
+      },
+    ),
+    customComponentsField(
+      {
+        type: 'additionalLinks',
+        props: {
+          links: [
+            {
+              title: 'Všeobecné obchodné podmienky OLO',
+              href: 'https://olo.sk/vseobecne-obchodne-podmienky',
+            },
+          ],
+        },
+      },
+      {},
     ),
   ]),
 ])

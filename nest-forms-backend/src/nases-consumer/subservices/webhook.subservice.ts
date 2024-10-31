@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import axios from 'axios'
@@ -11,6 +12,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
+import { getFileIdsToInfoMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import WebhookDto from './dtos/webhook.dto'
@@ -26,12 +28,16 @@ export default class WebhookSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly configService: ConfigService,
   ) {}
 
   async sendWebhook(formId: string): Promise<void> {
     const form = await this.prismaService.forms.findUnique({
       where: {
         id: formId,
+      },
+      include: {
+        files: true,
       },
     })
     if (form === null) {
@@ -55,15 +61,26 @@ export default class WebhookSubservice {
         `${WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM} Form id: ${form.id}.`,
       )
     }
+
+    // prepare file urls into the resulting json
+    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
+    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+    const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
+
+    const formData = omitExtraData(
+      formDefinition.schemas.schema,
+      form.formDataJson as GenericObjectType,
+    )
+
     this.logger.log(
       `Sending webhook form ${formId} to ${formDefinition.webhookUrl}`,
     )
 
     const webhookDto: WebhookDto = {
-      formData: omitExtraData(
-        formDefinition.schemas.schema,
-        form.formDataJson as GenericObjectType,
-      ),
+      formId: form.id,
+      slug: form.formDefinitionSlug,
+      data: formData,
+      files: fileIdInfoMap,
     }
     await axios.post(formDefinition.webhookUrl, webhookDto)
 

@@ -6,7 +6,6 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
-import * as jwt from 'jsonwebtoken'
 
 import ConvertService from '../../convert/convert.service'
 import {
@@ -14,6 +13,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
+import { getFileIdsToInfoMap } from '../../utils/files'
 import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
@@ -22,7 +22,6 @@ import {
   getSubjectTextFromForm,
 } from '../../utils/handlers/text.handler'
 import alertError from '../../utils/logging'
-import { FormWithFiles } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
@@ -94,6 +93,9 @@ export default class EmailFormsSubservice {
       form.formDataJson as GenericObjectType,
     )
 
+    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
+    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+
     await this.mailgunService.sendOloEmail({
       to: formDefinition.email,
       template: MailgunTemplateEnum.OLO_SEND_FORM,
@@ -106,7 +108,7 @@ export default class EmailFormsSubservice {
           formDefinition,
           formData: jsonDataExtraDataOmitted,
           serverFiles: form.files,
-          fileIdUrlMap: this.getFileIdsToUrlMap(form),
+          fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
         }),
       },
     })
@@ -189,19 +191,5 @@ export default class EmailFormsSubservice {
           JSON.stringify(error),
         )
       })
-  }
-
-  private getFileIdsToUrlMap(form: FormWithFiles): Record<string, string> {
-    const result: Record<string, string> = {}
-    const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
-    const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
-
-    form.files.forEach((file) => {
-      const token = jwt.sign({ fileId: file.id }, jwtSecret, {
-        expiresIn: '5y',
-      })
-      result[file.id] = `${selfUrl}/files/download/file/${token}`
-    })
-    return result
   }
 }

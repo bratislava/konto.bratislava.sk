@@ -14,24 +14,24 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
-import { RenderSummaryEmailFileIdUrlMap } from './renderSummaryEmail'
+import { FileIdInfoMap } from './renderSummaryEmail'
 
 type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
-  fileIdUrlMap: RenderSummaryEmailFileIdUrlMap
+  fileIdInfoMap: FileIdInfoMap
   withHtmlBodyTags: boolean
 }
 
-const FileIdUrlMapContext = createContext<RenderSummaryEmailFileIdUrlMap | null>(null)
+const FileIdInfoMapContext = createContext<FileIdInfoMap | null>(null)
 
-const useFileIdUrlMap = () => {
-  const fileIdUrlMap = React.useContext(FileIdUrlMapContext)
-  if (!fileIdUrlMap) {
-    throw new Error('useFileIdUrlMap must be used within a FileIdUrlMapProvider')
+const useFileIdInfoMap = () => {
+  const fileIdInfoMap = React.useContext(FileIdInfoMapContext)
+  if (!fileIdInfoMap) {
+    throw new Error('useFileIdInfoMap must be used within a FileIdInfoMapContext.Provider')
   }
 
-  return fileIdUrlMap
+  return fileIdInfoMap
 }
 
 const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
@@ -80,8 +80,8 @@ const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps)
 )
 
 const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
-  const fileIdUrlMap = useFileIdUrlMap()
-  const fileUrl = fileIdUrlMap[fileInfo.id]
+  const fileIdInfoMap = useFileIdInfoMap()
+  const fileUrl = fileIdInfoMap[fileInfo.id].url
   return (
     <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>
       {fileUrl ? <Link href={fileUrl}>{fileInfo.fileName}</Link> : fileInfo.fileName}
@@ -140,11 +140,11 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
 export const SummaryEmail = ({
   summaryJson,
   validatedSummary,
-  fileIdUrlMap,
+  fileIdInfoMap,
   withHtmlBodyTags,
 }: SummaryEmailProps) => {
   const content = (
-    <FileIdUrlMapContext.Provider value={fileIdUrlMap}>
+    <FileIdInfoMapContext.Provider value={fileIdInfoMap}>
       <SummaryRenderer
         summaryJson={summaryJson}
         validatedSummary={validatedSummary}
@@ -158,7 +158,7 @@ export const SummaryEmail = ({
         renderNoneValue={NoneValueRenderer}
         renderInvalidValue={InvalidValueRenderer}
       />
-    </FileIdUrlMapContext.Provider>
+    </FileIdInfoMapContext.Provider>
   )
 
   if (!withHtmlBodyTags) {

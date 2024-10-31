@@ -1,5 +1,8 @@
 import { GenericObjectType } from '@rjsf/utils'
 
 export default interface WebhookDto {
-  formData: GenericObjectType
+  formId: string
+  slug: string
+  data: GenericObjectType
+  files: Record<string, { url: string; fileName: string }>
 }

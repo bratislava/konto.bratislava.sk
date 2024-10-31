@@ -13,6 +13,7 @@ import { validateXml } from '../../test-utils/validateXml'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
 import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
 import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
+import { screenshotTestTimeout } from '../../test-utils/consts'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -69,12 +70,16 @@ describe('slovenskoSkForm', () => {
           expect(extractedJson).toEqual(exampleForm.formData)
         })
 
-        it('PDF should match snapshot', async () => {
-          const xsltString = getFoXslt(formDefinition, true)
-          const pdfBuffer = await renderApacheFopPdf(xmlString, xsltString)
+        it(
+          'PDF should match snapshot',
+          async () => {
+            const xsltString = getFoXslt(formDefinition, true)
+            const pdfBuffer = await renderApacheFopPdf(xmlString, xsltString)
 
-          await expectPdfToMatchSnapshot(pdfBuffer)
-        }, /* The PDFs take a while to generate, so they need an increased timeout. */ 30000)
+            await expectPdfToMatchSnapshot(pdfBuffer)
+          },
+          screenshotTestTimeout,
+        )
 
         describe(`HTML`, () => {
           let htmlString: string

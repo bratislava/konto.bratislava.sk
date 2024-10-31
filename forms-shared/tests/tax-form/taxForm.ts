@@ -5,6 +5,7 @@ import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnaps
 import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { screenshotTestTimeout } from '../../test-utils/consts'
 
 describe('tax-form', () => {
   beforeEach(() => {
@@ -26,18 +27,22 @@ describe('tax-form', () => {
         expect(generateTaxXml(exampleForm.formData, true)).toMatchSnapshot()
       })
 
-      it(`should match snapshot for generated PDF ${exampleForm.name}`, async () => {
-        filterConsole(
-          'log',
-          (message) =>
-            message ===
-            'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',
-        )
+      it(
+        `should match snapshot for generated PDF ${exampleForm.name}`,
+        async () => {
+          filterConsole(
+            'log',
+            (message) =>
+              message ===
+              'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',
+          )
 
-        const base64Pdf = await generateTaxPdf({ formData: exampleForm.formData })
+          const base64Pdf = await generateTaxPdf({ formData: exampleForm.formData })
 
-        await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
-      }, /* The PDFs take a while to generate, so they need an increased timeout. */ 30000)
+          await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
+        },
+        screenshotTestTimeout,
+      )
     },
   )
 })

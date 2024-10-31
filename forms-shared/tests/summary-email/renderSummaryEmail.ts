@@ -3,6 +3,7 @@ import { toMatchImageSnapshot } from 'jest-image-snapshot'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { renderSummaryEmail } from '../../src/summary-email/renderSummaryEmail'
 import { mapValues } from 'lodash'
+import { screenshotTestTimeout } from '../../test-utils/consts'
 
 expect.extend({ toMatchImageSnapshot })
 
@@ -31,10 +32,14 @@ describe('renderSummaryEmail', () => {
         })
       })
       ;(['desktop', 'mobile'] as const).forEach((size) => {
-        it(`summary email should match ${size} screenshot snapshot`, async () => {
-          const screenshot = await generatePageScreenshot(emailHtml, size)
-          expect(screenshot).toMatchImageSnapshot()
-        })
+        it(
+          `summary email should match ${size} screenshot snapshot`,
+          async () => {
+            const screenshot = await generatePageScreenshot(emailHtml, size)
+            expect(screenshot).toMatchImageSnapshot()
+          },
+          screenshotTestTimeout,
+        )
       })
     })
   })

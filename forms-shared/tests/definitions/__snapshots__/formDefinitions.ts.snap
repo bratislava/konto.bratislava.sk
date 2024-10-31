@@ -4869,7 +4869,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                 "title": "Popis darovaných vecí",
                 "type": "string",
               },
-              "suhlasSDarom": {
+              "suhlasSPlatbou": {
                 "const": true,
                 "title": "Vyjadrenie súhlasu s platbou",
                 "type": "boolean",
@@ -4879,7 +4879,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
               "miestoDodania",
               "popisDarovanychVeci",
               "fotoDarovanychVeci",
-              "suhlasSDarom",
+              "suhlasSPlatbou",
             ],
             "title": "Služba",
             "type": "object",
@@ -4917,7 +4917,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "TextArea",
       },
-      "suhlasSDarom": {
+      "suhlasSPlatbou": {
         "ui:options": {
           "checkboxLabel": "Súhlasím s platbou za službu KOLO Taxi",
           "variant": "boxed",
@@ -4931,7 +4931,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "miestoDodania",
         "popisDarovanychVeci",
         "fotoDarovanychVeci",
-        "suhlasSDarom",
+        "suhlasSPlatbou",
       ],
     },
     "ui:hideError": true,

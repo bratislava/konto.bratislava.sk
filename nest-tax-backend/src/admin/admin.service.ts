@@ -281,6 +281,15 @@ export class AdminService {
     return new Map(taxesData.map((item) => [item.variableSymbol, item]))
   }
 
+  // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
+  /**
+   * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
+   *
+   * @param payedFromNoris Already paid amount in Noris.
+   * @param taxData Tax object, containing all the information about the tax.
+   * @param forPayment Left to be paid amount in Noris.
+   * @param payerDataCountAll How many payments for this tax we have in the database.
+   */
   private handlePaymentsErrors(
     payedFromNoris: number,
     taxData: Tax,

@@ -27,7 +27,7 @@ export class TasksService {
     WITH total_payments AS (
       SELECT "taxId", SUM("amount") AS totalPayments
       FROM "TaxPayment"
-      WHERE "status" = ${PaymentStatus.SUCCESS}
+      WHERE "status" = ${PaymentStatus.SUCCESS}::"PaymentStatus"
       GROUP BY "taxId"
     )
     SELECT t."variableSymbol", t."id"

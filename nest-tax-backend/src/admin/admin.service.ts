@@ -11,7 +11,6 @@ import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
-  RequestPostNorisPaymentDataLoadDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
@@ -175,14 +174,6 @@ export class AdminService {
     return { userData, dataFromNoris }
   }
 
-  private async getPaymentDataFromNoris(
-    data: RequestPostNorisPaymentDataLoadDto,
-  ) {
-    const norisResponse = await this.norisService.getPaymentDataFromNoris(data)
-
-    return norisResponse
-  }
-
   async loadDataFromNoris(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
@@ -329,7 +320,7 @@ export class AdminService {
     let alreadyCreated = 0
     const norisPaymentData: Partial<NorisPaymentsDto>[] =
       norisRequest.type === 'fromToDate'
-        ? await this.getPaymentDataFromNoris(norisRequest.data)
+        ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )

@@ -462,12 +462,20 @@ export default class NasesUtilsService {
     }`
   }
 
+  // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
-    const message = await this.createEnvelopeSendMessage(data, senderUri)
+    const message = await this.createEnvelopeSendMessage(data, senderUri).catch(
+      (error) => ({
+        status: 500,
+        data: {
+          message: `Failed to create envelope for nases message: ${error?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+        },
+      }),
+    )
     const result = await axios
       .post(
         `${this.configService.getOrThrow<string>(

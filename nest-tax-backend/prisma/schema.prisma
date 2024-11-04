@@ -59,6 +59,7 @@ model Tax {
 
   @@unique([taxPayerId, year])
   @@unique([uuid])
+  @@index([year, lastCheckedPayments])
 }
 
 model TaxPayment {
@@ -68,12 +69,13 @@ model TaxPayment {
   updatedAt      DateTime          @default(now()) @updatedAt
   taxId          Int
   tax            Tax               @relation(fields: [taxId], references: [id])
-  status         String            @default("NEW")
+  status         PaymentStatus     @default(NEW)
   amount         Int
   specificSymbol String?
   source         TaxPaymentSource?
 
   @@unique([orderId])
+  @@index([status])
 }
 
 model TaxInstallment {
@@ -111,20 +113,6 @@ model TaxEmployee {
   email       String
 }
 
-model LoadingPaymentsFromNoris {
-  id                                Int      @id @default(autoincrement())
-  createdAt                         DateTime @default(now())
-  updatedAt                         DateTime @default(now()) @updatedAt
-  year                              Int?
-  loadingDateFrom                   DateTime @db.Date
-  loadingDateTo                     DateTime @db.Date
-  loadedPayments                    Int
-  alreadPayedPayments               Int
-  errorVariableSymbols              String[]
-  norisInconsistencyVariableSymbols String[]
-  notFound                          Int?
-}
-
 enum TaxDetailType {
   APARTMENT
   CONSTRUCTION
@@ -154,4 +142,10 @@ enum TaxDetailareaType {
   jI
   byt
   nebyt
+}
+
+enum PaymentStatus {
+  NEW
+  FAIL
+  SUCCESS
 }

@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { LoadingPaymentsFromNoris } from '@prisma/client'
 import { connect } from 'mssql'
 import {
   RequestPostNorisLoadDataDto,
@@ -59,10 +58,7 @@ export class NorisService {
     return norisData.recordset
   }
 
-  async getPaymentDataFromNoris(
-    data: RequestPostNorisPaymentDataLoadDto,
-    lastLoadedPayment?: LoadingPaymentsFromNoris | null,
-  ) {
+  async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
     const connection = await connect({
       server: process.env.MSSQL_HOST,
       port: 1433,
@@ -79,12 +75,8 @@ export class NorisService {
     let { fromDate } = data
     let { toDate } = data
     if (!fromDate) {
-      if (lastLoadedPayment) {
-        fromDate = lastLoadedPayment.loadingDateTo.toDateString()
-      } else {
-        const newFromDate = new Date(`${data.year}-04-01`)
-        fromDate = newFromDate.toDateString()
-      }
+      const newFromDate = new Date(`${data.year}-04-01`)
+      fromDate = newFromDate.toDateString()
     }
     if (!toDate) {
       const newToDate = new Date()

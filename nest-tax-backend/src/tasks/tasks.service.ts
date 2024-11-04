@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Prisma } from '@prisma/client'
+import { PaymentStatus, Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -27,7 +27,7 @@ export class TasksService {
     WITH total_payments AS (
       SELECT "taxId", SUM("amount") AS totalPayments
       FROM "TaxPayment"
-      WHERE "status" = 'SUCCESS'
+      WHERE "status" = ${PaymentStatus.SUCCESS}
       GROUP BY "taxId"
     )
     SELECT t."variableSymbol", t."id"

@@ -1,6 +1,5 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-restricted-syntax */
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+import { PaymentStatus, Tax } from '@prisma/client'
 import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -19,13 +18,17 @@ import { taxDetail } from './utils/tax-detail.helper'
 
 @Injectable()
 export class AdminService {
+  private readonly logger: Logger
+
   constructor(
     private prismaService: PrismaService,
     private qrCodeSubservice: QrCodeSubservice,
     private cityAccountSubservice: CityAccountSubservice,
     private bloomreachService: BloomreachService,
     private norisService: NorisService,
-  ) {}
+  ) {
+    this.logger = new Logger(AdminService.name)
+  }
 
   private async insertTaxPayerDataToDatabase(
     dataFromNoris: NorisTaxPayersDto,
@@ -175,20 +178,7 @@ export class AdminService {
   private async getPaymentDataFromNoris(
     data: RequestPostNorisPaymentDataLoadDto,
   ) {
-    const lastLoadingPaymentNoris =
-      await this.prismaService.loadingPaymentsFromNoris.findFirst({
-        where: {
-          year: data.year,
-        },
-        orderBy: {
-          loadingDateTo: 'desc',
-        },
-      })
-
-    const norisResponse = await this.norisService.getPaymentDataFromNoris(
-      data,
-      lastLoadingPaymentNoris,
-    )
+    const norisResponse = await this.norisService.getPaymentDataFromNoris(data)
 
     return norisResponse
   }
@@ -196,239 +186,227 @@ export class AdminService {
   async loadDataFromNoris(
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
-    console.info('Start Loading data from noris')
+    this.logger.log('Start Loading data from noris')
     const norisData = (await this.norisService.getDataFromNoris(
       data,
     )) as NorisTaxPayersDto[]
     const birthNumbersResult: string[] = []
 
-    console.info(`Data loaded from noris - count ${norisData.length}`)
+    this.logger.log(`Data loaded from noris - count ${norisData.length}`)
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    for (const elem of norisData) {
-      birthNumbersResult.push(elem.ICO_RC)
-      const taxExists = await this.prismaService.tax.findFirst({
-        where: {
-          year: +data.year,
-          taxPayer: {
-            birthNumber: elem.ICO_RC,
-          },
-        },
-      })
-      if (!taxExists) {
-        const { userData, dataFromNoris } =
-          await this.insertTaxPayerDataToDatabase(elem, data.year)
-        const userFromCityAccount =
-          userDataFromCityAccount[userData.birthNumber] || null
-        if (userFromCityAccount !== null) {
-          const bloomreachTracker = await this.bloomreachService.trackEventTax(
-            {
-              amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
-                .intValue,
-              year: +data.year,
+    await Promise.all(
+      norisData.map(async (elem) => {
+        birthNumbersResult.push(elem.ICO_RC)
+        const taxExists = await this.prismaService.tax.findFirst({
+          where: {
+            year: +data.year,
+            taxPayer: {
+              birthNumber: elem.ICO_RC,
             },
-            userFromCityAccount.externalId,
-          )
-          if (!bloomreachTracker) {
-            console.error(
-              `Error in send Tax data to Bloomreach for tax with ID ${taxExists.id}`,
-            )
+          },
+        })
+        if (!taxExists) {
+          const { userData, dataFromNoris } =
+            await this.insertTaxPayerDataToDatabase(elem, data.year)
+          const userFromCityAccount =
+            userDataFromCityAccount[userData.birthNumber] || null
+          if (userFromCityAccount !== null) {
+            const bloomreachTracker =
+              await this.bloomreachService.trackEventTax(
+                {
+                  amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
+                    .intValue,
+                  year: +data.year,
+                },
+                userFromCityAccount.externalId,
+              )
+            if (!bloomreachTracker) {
+              this.logger.error(
+                `Error in send Tax data to Bloomreach for tax with ID ${taxExists.id}`,
+              )
+            }
           }
         }
-      }
-    }
+      }),
+    )
+
     return { birthNumbers: birthNumbersResult }
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
     const norisData = await this.norisService.getDataFromNoris(data)
     let count = 0
-    for (const elem of norisData as NorisTaxPayersDto[]) {
-      const taxExists = await this.prismaService.tax.findFirst({
-        where: {
-          year: +data.year,
-          taxPayer: {
-            birthNumber: elem.ICO_RC,
-          },
-        },
-      })
-      if (taxExists) {
-        await this.prismaService.taxInstallment.deleteMany({
+    await Promise.all(
+      norisData.map(async (elem) => {
+        const taxExists = await this.prismaService.tax.findFirst({
           where: {
-            taxId: taxExists.id,
+            year: +data.year,
+            taxPayer: {
+              birthNumber: elem.ICO_RC,
+            },
           },
         })
-        await this.prismaService.taxDetail.deleteMany({
-          where: {
-            taxId: taxExists.id,
-          },
-        })
-        const userData = await this.insertTaxPayerDataToDatabase(
-          elem,
-          data.year,
-        )
-        if (userData) {
-          count += 1
+        if (taxExists) {
+          await this.prismaService.taxInstallment.deleteMany({
+            where: {
+              taxId: taxExists.id,
+            },
+          })
+          await this.prismaService.taxDetail.deleteMany({
+            where: {
+              taxId: taxExists.id,
+            },
+          })
+          const userData = await this.insertTaxPayerDataToDatabase(
+            elem,
+            data.year,
+          )
+          if (userData) {
+            count += 1
+          }
         }
-      }
-    }
+      }),
+    )
+
     return { updated: count }
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  private async getTaxesDataMap(norisPaymentData: Partial<NorisPaymentsDto>[]) {
+    const taxesData = await this.prismaService.tax.findMany({
+      where: {
+        variableSymbol: {
+          in: norisPaymentData.map((item) => item.variabilny_symbol),
+        },
+      },
+      include: {
+        taxPayer: true,
+      },
+    })
+    return taxesData.map((item) => ({
+      [item.variableSymbol]: item,
+    }))
+  }
+
+  private handlePaymentsErrors(
+    payedFromNoris: number,
+    taxData: Tax,
+    forPayment: number,
+    payerDataCountAll: number,
+  ) {
+    if (payedFromNoris > taxData.amount && forPayment === 0) {
+      this.logger.error(
+        'ERROR - Status-500: ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+      )
+    } else if (
+      payerDataCountAll === 0 &&
+      payedFromNoris >= taxData.amount &&
+      forPayment > 0
+    ) {
+      this.logger.error(
+        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+      )
+    } else if (
+      payerDataCountAll > 0 &&
+      payedFromNoris >= taxData.amount &&
+      forPayment > 0
+    ) {
+      // TODO send bloomreach email
+      this.logger.error(
+        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+      )
+    } else {
+      this.logger.error('ERROR - Status-500: NEOCAKAVANY STAV')
+    }
+  }
+
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
     let created = 0
     let alreadyCreated = 0
-    let notFound = 0
-    const norisInconsistency = []
-    const norisErrorLoad = []
-    const norisPaymentData =
+    const norisPaymentData: Partial<NorisPaymentsDto>[] =
       norisRequest.type === 'fromToDate'
         ? await this.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )
+    const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
+
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
-    for (const norisPayment of norisPaymentData as Partial<NorisPaymentsDto>[]) {
-      try {
-        const taxData = await this.prismaService.tax.findFirst({
-          where: {
-            variableSymbol: norisPayment.variabilny_symbol,
-          },
-          include: {
-            taxPayer: true,
-          },
-        })
-        if (taxData) {
-          const payerData = await this.prismaService.taxPayment.aggregate({
-            _sum: {
-              amount: true,
-            },
-            _count: {
-              _all: true,
-            },
-            where: {
-              taxId: taxData.id,
-              status: 'SUCCESS',
-            },
-          })
-          const payedFromNoris =
-            typeof norisPayment.uhrazeno === 'number'
-              ? currency(norisPayment.uhrazeno).intValue
-              : currency(norisPayment.uhrazeno.replace(',', '.')).intValue
-          const forPayment =
-            typeof norisPayment.uhrazeno === 'number'
-              ? currency(norisPayment.zbyva_uhradit).intValue
-              : currency(norisPayment.zbyva_uhradit.replace(',', '.')).intValue
-          if (
-            payerData._sum.amount === null ||
-            payerData._sum.amount < payedFromNoris
-          ) {
-            created += 1
-            const createdTaxPayment =
-              await this.prismaService.taxPayment.create({
-                data: {
-                  amount: payedFromNoris - payerData._sum.amount,
-                  source: 'BANK_ACCOUNT',
-                  specificSymbol: norisPayment.specificky_symbol,
-                  taxId: taxData.id,
-                  status: 'SUCCESS',
-                },
-              })
-            const userFromCityAccount =
-              await this.cityAccountSubservice.getUserDataAdmin(
-                taxData.taxPayer.birthNumber,
-              )
-            if (userFromCityAccount) {
-              await this.bloomreachService.trackEventTaxPayment(
-                {
-                  amount: createdTaxPayment.amount,
-                  payment_source: 'BANK_ACCOUNT',
-                  year: taxData.year,
-                },
-                userFromCityAccount.externalId,
-              )
-            }
-
-            // TODO maybe all theese ifs remove, because logic will be in bloomreach
+    await Promise.all(
+      norisPaymentData.map(async (norisPayment) => {
+        try {
+          const taxData = taxesDataMap[norisPayment.variabilny_symbol]
+          if (taxData) {
+            const payerData = await this.prismaService.taxPayment.aggregate({
+              _sum: {
+                amount: true,
+              },
+              _count: {
+                _all: true,
+              },
+              where: {
+                taxId: taxData.id,
+                status: PaymentStatus.SUCCESS,
+              },
+            })
+            const payedFromNoris =
+              typeof norisPayment.uhrazeno === 'number'
+                ? currency(norisPayment.uhrazeno).intValue
+                : currency(norisPayment.uhrazeno.replace(',', '.')).intValue
+            const forPayment =
+              typeof norisPayment.zbyva_uhradit === 'number'
+                ? currency(norisPayment.zbyva_uhradit).intValue
+                : currency(norisPayment.zbyva_uhradit.replace(',', '.'))
+                    .intValue
             if (
-              payerData._count._all === 0 &&
-              payedFromNoris === taxData.amount
+              payerData._sum.amount === null ||
+              payerData._sum.amount < payedFromNoris
             ) {
-              console.info('ZAPLATENE CELE NA PRVY KRAT')
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris === taxData.amount
-            ) {
-              console.info('ZAPLATENE CELE NA X-ty KRAT')
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris < taxData.amount
-            ) {
-              console.info('ZAPLATENA X-ta splatka')
-            } else if (
-              payerData._count._all === 0 &&
-              payedFromNoris < taxData.amount
-            ) {
-              console.info('ZAPLATENA prva splatka')
-            } else if (payedFromNoris > taxData.amount && forPayment === 0) {
-              console.log(
-                'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
-            } else if (
-              payerData._count._all === 0 &&
-              payedFromNoris >= taxData.amount &&
-              forPayment > 0
-            ) {
-              console.error(
-                'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
-            } else if (
-              payerData._count._all > 0 &&
-              payedFromNoris >= taxData.amount &&
-              forPayment > 0
-            ) {
-              // TODO send bloomreach email
-              console.error(
-                'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
-              )
-              norisInconsistency.push(norisPayment.variabilny_symbol)
-            } else {
-              console.error('ERROR - Status-500: NEOCAKAVANY STAV')
-              norisErrorLoad.push(norisPayment.variabilny_symbol)
-            }
-          } else {
-            alreadyCreated += 1
-          }
-        } else {
-          notFound += 1
-        }
-      } catch (error) {
-        norisErrorLoad.push(norisPayment.variabilny_symbol)
-      }
-    }
+              created += 1
+              const createdTaxPayment =
+                await this.prismaService.taxPayment.create({
+                  data: {
+                    amount: payedFromNoris - payerData._sum.amount,
+                    source: 'BANK_ACCOUNT',
+                    specificSymbol: norisPayment.specificky_symbol,
+                    taxId: taxData.id,
+                    status: PaymentStatus.SUCCESS,
+                  },
+                })
+              const userFromCityAccount =
+                await this.cityAccountSubservice.getUserDataAdmin(
+                  taxData.taxPayer.birthNumber,
+                )
+              if (userFromCityAccount) {
+                await this.bloomreachService.trackEventTaxPayment(
+                  {
+                    amount: createdTaxPayment.amount,
+                    payment_source: 'BANK_ACCOUNT',
+                    year: taxData.year,
+                  },
+                  userFromCityAccount.externalId,
+                )
+              }
 
-    // If payments are loaded by date, save the data to loadingPaymentsFromNoris table.
-    // This table is used to retrieve the last dates for which we have loaded the payments.
-    if (norisRequest.type === 'fromToDate') {
-      await this.prismaService.loadingPaymentsFromNoris.create({
-        data: {
-          alreadPayedPayments: alreadyCreated,
-          loadingDateFrom: new Date(norisRequest.data.fromDate),
-          loadingDateTo: new Date(norisRequest.data.toDate),
-          loadedPayments: created,
-          norisInconsistencyVariableSymbols: norisInconsistency,
-          errorVariableSymbols: norisErrorLoad,
-          notFound,
-        },
-      })
-    }
+              this.handlePaymentsErrors(
+                payedFromNoris,
+                taxData,
+                forPayment,
+                payerData._count._all,
+              )
+            } else {
+              alreadyCreated += 1
+            }
+          }
+        } catch (error) {
+          this.logger.error(`ERROR - Status-500: ${(error as Error).message}`)
+        }
+      }),
+    )
 
     return {
       created,

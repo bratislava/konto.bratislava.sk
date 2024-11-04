@@ -1,6 +1,7 @@
 import path from 'node:path'
 
 import { HttpException, Injectable } from '@nestjs/common'
+import { PaymentStatus } from '@prisma/client'
 import ejs from 'ejs'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
@@ -53,8 +54,7 @@ export class TaxService {
       by: ['taxId'],
       where: {
         taxId: tax.id,
-        // TODO - status as enum
-        status: 'SUCCESS',
+        status: PaymentStatus.SUCCESS,
       },
       _sum: {
         amount: true,
@@ -123,8 +123,7 @@ export class TaxService {
             birthNumber,
           },
         },
-        // TODO - status as enum
-        status: 'SUCCESS',
+        status: PaymentStatus.SUCCESS,
       },
       _sum: {
         amount: true,

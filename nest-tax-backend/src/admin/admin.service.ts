@@ -278,9 +278,7 @@ export class AdminService {
         taxPayer: true,
       },
     })
-    return taxesData.map((item) => ({
-      [item.variableSymbol]: item,
-    }))
+    return new Map(taxesData.map((item) => [item.variableSymbol, item]))
   }
 
   private handlePaymentsErrors(
@@ -306,12 +304,9 @@ export class AdminService {
       payedFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
-      // TODO send bloomreach email
       this.logger.error(
         'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
       )
-    } else {
-      this.logger.error('ERROR - Status-500: NEOCAKAVANY STAV')
     }
   }
 
@@ -330,7 +325,7 @@ export class AdminService {
     await Promise.all(
       norisPaymentData.map(async (norisPayment) => {
         try {
-          const taxData = taxesDataMap[norisPayment.variabilny_symbol]
+          const taxData = taxesDataMap.get(norisPayment.variabilny_symbol)
           if (taxData) {
             const payerData = await this.prismaService.taxPayment.aggregate({
               _sum: {

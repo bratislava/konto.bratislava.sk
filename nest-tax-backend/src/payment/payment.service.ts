@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { Tax, TaxPayer, TaxPayment, TaxPaymentSource } from '@prisma/client'
+import {
+  PaymentStatus,
+  Tax,
+  TaxPayer,
+  TaxPayment,
+  TaxPaymentSource,
+} from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 import { BloomreachService } from 'src/bloomreach/bloomreach.service'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
-import { PAYMENT_STATUSES } from 'src/utils/subservices/dtos/gpwebpay.dto'
 import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
@@ -27,7 +32,7 @@ export class PaymentService {
     try {
       taxPayment = await this.prisma.taxPayment.findFirst({
         where: {
-          status: 'SUCCESS',
+          status: PaymentStatus.SUCCESS,
           taxId: tax.id,
         },
         include: {
@@ -172,7 +177,7 @@ export class PaymentService {
         await this.prisma.taxPayment.update({
           where: { orderId: ORDERNUMBER },
           data: {
-            status: PAYMENT_STATUSES.FAIL,
+            status: PaymentStatus.FAIL,
             source: 'CARD',
           },
         })
@@ -196,7 +201,7 @@ export class PaymentService {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_FAILED}`
       }
 
-      if (payment.status === PAYMENT_STATUSES.SUCCESS) {
+      if (payment.status === PaymentStatus.SUCCESS) {
         return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_ALREADY_PAID}`
       }
 
@@ -204,7 +209,7 @@ export class PaymentService {
         await this.prisma.taxPayment.update({
           where: { orderId: payment.orderId },
           data: {
-            status: PAYMENT_STATUSES.FAIL,
+            status: PaymentStatus.FAIL,
             source: 'CARD',
           },
         })
@@ -214,7 +219,7 @@ export class PaymentService {
       const taxPayment = await this.prisma.taxPayment.update({
         where: { orderId: payment.orderId },
         data: {
-          status: PAYMENT_STATUSES.SUCCESS,
+          status: PaymentStatus.SUCCESS,
           source: 'CARD',
         },
         include: {

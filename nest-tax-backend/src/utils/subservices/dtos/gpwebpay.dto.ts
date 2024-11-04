@@ -33,11 +33,6 @@ export enum PaymentErrorStatus {
   unknownError = 'unknown-error',
 }
 
-export const PAYMENT_STATUSES = {
-  SUCCESS: 'SUCCESS',
-  FAIL: 'FAIL',
-}
-
 export class PaymentResponseQueryDto {
   @IsNotEmpty() OPERATION!: string
 

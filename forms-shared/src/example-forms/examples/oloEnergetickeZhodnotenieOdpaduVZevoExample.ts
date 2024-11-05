@@ -20,7 +20,6 @@ const exampleForm: ExampleForm = {
           psc: '90011',
         },
       },
-      cisloOp: 'AB123456',
       preferovanyCasDovozu: '10:00',
     },
     povodcaOdpadu: {

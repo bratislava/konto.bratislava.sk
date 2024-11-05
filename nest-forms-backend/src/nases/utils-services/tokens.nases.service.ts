@@ -43,6 +43,7 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import { AxiosError } from 'axios'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -468,16 +469,19 @@ export default class NasesUtilsService {
     data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
-    const message = await this.createEnvelopeSendMessage(data, senderUri).catch(
-      (error) => ({
+    let message
+    try {
+      message = await this.createEnvelopeSendMessage(data, senderUri)
+    } catch (error) {
+      return {
         status: 500,
         data: {
-          message: `Failed to create envelope for nases message: ${error?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
+          message: `Failed to create envelope for nases message: ${(error as Error)?.message || 'Unknown error'}. Details: ${JSON.stringify(error)}`,
         },
-      }),
-    )
-    const result = await axios
-      .post(
+      }
+    }
+    try {
+      const response = await axios.post(
         `${this.configService.getOrThrow<string>(
           'SLOVENSKO_SK_CONTAINER_URI',
         )}/api/sktalk/receive_and_save_to_outbox`,
@@ -490,18 +494,8 @@ export default class NasesUtilsService {
           },
         },
       )
-      .then((response: AxiosResponse<NasesSendFormDataDto>) => {
-        if (response.data) {
-          if (response.data.receive_result !== 0) {
-            return {
-              status: 422,
-              data: {
-                message: this.getNasesError(response.data.receive_result),
-              },
-            }
-          }
-          return { status: 200, data: response.data }
-        }
+
+      if (!response.data) {
         return {
           status: 422,
           data: {
@@ -509,21 +503,29 @@ export default class NasesUtilsService {
               'Server error in response data, please contact administrator',
           },
         }
-      })
-      .catch((error) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (error.response && error.response.data) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-          return { status: error.response.status, data: error.response.data }
-        }
+      }
+
+      if (response.data.receive_result !== 0) {
         return {
-          status: 400,
+          status: 422,
           data: {
-            message: 'Other server error, please contact administrator',
+            message: this.getNasesError(response.data.receive_result),
           },
         }
-      })
-    return result
+      }
+
+      return { status: 200, data: response.data }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data) {
+        return { status: error.response.status, data: error.response.data }
+      }
+      return {
+        status: 400,
+        data: {
+          message: 'Other server error, please contact administrator',
+        },
+      }
+    }
   }
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {

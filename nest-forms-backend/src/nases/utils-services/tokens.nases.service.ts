@@ -6,7 +6,7 @@ import { Stream } from 'node:stream'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
@@ -32,7 +32,6 @@ import alertError from '../../utils/logging'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import {
   NasesIsMessageDeliveredDto,
-  NasesSendFormDataDto,
   NasesSendResponse,
   ResponseGdprDataDto,
 } from '../dtos/responses.dto'
@@ -43,7 +42,6 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
-import { AxiosError } from 'axios'
 
 @Injectable()
 export default class NasesUtilsService {

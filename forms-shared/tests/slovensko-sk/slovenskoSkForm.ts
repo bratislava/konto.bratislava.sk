@@ -24,6 +24,8 @@ describe('slovenskoSkForm', () => {
       })
 
       it(`should match Slovensko.sk data`, async () => {
+        // temp until the test pospid is removed, we don;t want to publish this form into production forms
+        if (formDefinition.pospID === 'hmba.eforms.bratislava.obec_024') return
         const metadata = await fetchSlovenskoSkFormMetadata(formDefinition)
 
         expect(metadata['dc:identifier']).toEqual([

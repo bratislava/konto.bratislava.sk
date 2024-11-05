@@ -20,7 +20,7 @@ export const generateTaxXml = (
   const jsonObj = {
     'E-form': {
       $: {
-        xmlns: `http://schemas.gov.sk/${pospID}/${version}`,
+        xmlns: `http://schemas.gov.sk/form/${pospID}/${version}`,
       },
       Meta: {
         ID: pospID,

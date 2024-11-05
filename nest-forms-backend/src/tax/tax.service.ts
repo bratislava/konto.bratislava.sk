@@ -162,7 +162,7 @@ export default class TaxService {
     return {
       objectId: 'signed_form',
       objectDescription: '',
-      objectFormatIdentifier: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+      objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       xdcXMLData: xmlData,
       xdcIdentifier: '',
       xdcVersion: '',
@@ -174,9 +174,9 @@ export default class TaxService {
 
       // all of these are hardcoded for tax form - get it from forms/schema/schema-files when doing this for other forms
       xdcUsedXSD: xsd,
-      xsdReferenceURI: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+      xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       xdcUsedXSLT: xslt,
-      xslReferenceURI: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
+      xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
       xslXSLTLanguage: 'sk',
     }
   }

@@ -9,11 +9,11 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
 import { generateTaxXml } from 'forms-shared/tax-form/generateTaxXml'
 import { TaxFormData } from 'forms-shared/tax-form/types'
-import { getTaxXsd, getTaxXslt } from 'src/utils/tax-xml-files'
 import validateSchema from 'xsd-validator'
 
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { getTaxXsd, getTaxXslt } from '../utils/tax-xml-files'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 
 @Injectable()

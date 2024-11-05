@@ -4,12 +4,14 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
 import { Job, JobId, Queue } from 'bull'
+import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
 import { generateTaxXml } from 'forms-shared/tax-form/generateTaxXml'
 import { TaxFormData } from 'forms-shared/tax-form/types'
+import { getTaxXsd, getTaxXslt } from 'src/utils/tax-xml-files'
 import validateSchema from 'xsd-validator'
 
-import { TAX_XSD, TAX_XSLT } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
@@ -101,22 +103,42 @@ export default class TaxService {
   }
 
   // TODO tests
-  convertJsonToXml(data: Prisma.JsonValue): string {
+  convertJsonToXml(
+    data: Prisma.JsonValue,
+    pospID: string,
+    version: string,
+  ): string {
     if (typeof data !== 'object' || Array.isArray(data) || !data)
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         'Form data are empty or invalid',
       )
-    return generateTaxXml(data)
+    return generateTaxXml(data, false, pospID, version)
   }
 
   // apart from getting tax specific xml data this might work for other signed forms - change this when accommodating those
-  getSignerData(formDataJson: Prisma.JsonObject): TaxSignerDataResponseDto {
-    const xmlData = this.convertJsonToXml(formDataJson)
+  getSignerData(
+    formDataJson: Prisma.JsonObject,
+    formSlug: string,
+  ): TaxSignerDataResponseDto {
+    const formDefinition = getFormDefinitionBySlug(formSlug)
+    if (formDefinition?.type !== FormDefinitionType.SlovenskoSkTax) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Not yet implemented for non-tax forms',
+      )
+    }
+    const xmlData = this.convertJsonToXml(
+      formDataJson,
+      formDefinition.pospID,
+      formDefinition.pospVersion,
+    )
+    const xsd = getTaxXsd(formDefinition.pospID, formDefinition.pospVersion)
+    const xslt = getTaxXslt(formDefinition.pospID, formDefinition.pospVersion)
 
     // TODO today we don't check against xsd when sending non-signed data, consider adding in the future if this part is getting refactored
     // TODO console.log vs Logger
-    const result = validateSchema(xmlData, TAX_XSD)
+    const result = validateSchema(xmlData, xsd)
     if (result === true) {
       console.log('Tax XSD validation successful')
     } else {
@@ -140,8 +162,7 @@ export default class TaxService {
     return {
       objectId: 'signed_form',
       objectDescription: '',
-      objectFormatIdentifier:
-        'http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2',
+      objectFormatIdentifier: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       xdcXMLData: xmlData,
       xdcIdentifier: '',
       xdcVersion: '',
@@ -152,12 +173,10 @@ export default class TaxService {
         'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
 
       // all of these are hardcoded for tax form - get it from forms/schema/schema-files when doing this for other forms
-      xdcUsedXSD: TAX_XSD,
-      xsdReferenceURI:
-        'http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2',
-      xdcUsedXSLT: TAX_XSLT,
-      xslReferenceURI:
-        'http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2/form.xslt',
+      xdcUsedXSD: xsd,
+      xsdReferenceURI: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+      xdcUsedXSLT: xslt,
+      xslReferenceURI: `http://schemas.gov.sk/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
       xslXSLTLanguage: 'sk',
     }
   }

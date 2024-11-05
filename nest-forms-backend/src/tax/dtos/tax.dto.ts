@@ -2,12 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
 import { IsBoolean, IsNotEmpty, IsObject, IsString } from 'class-validator'
 
-import {
-  JSON_FORM_EXAMPLE,
-  TAX_XSD,
-  TAX_XSLT,
-  XML_FORM_EXAMPLE,
-} from '../../utils/constants'
+import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
 export class TaxJsonToXmlRequestDto {
   @IsObject()
@@ -84,7 +79,7 @@ export class TaxSignerDataResponseDto {
 
   @ApiProperty({
     description: 'XSD validation',
-    example: TAX_XSD,
+    example: '',
   })
   @IsString()
   xdcUsedXSD!: string
@@ -100,7 +95,7 @@ export class TaxSignerDataResponseDto {
   @ApiProperty({
     description:
       'XSLT text transformation, used to convert xml into what is displayed in signer',
-    example: TAX_XSLT,
+    example: '',
   })
   @IsString()
   xdcUsedXSLT!: string

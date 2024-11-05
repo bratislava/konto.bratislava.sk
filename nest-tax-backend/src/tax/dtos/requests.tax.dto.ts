@@ -66,49 +66,49 @@ export class ResponseTaxPayerDto {
     description: 'Permanent address of tax payer',
     default: 'Bratislava, Hlavne námestie 1',
   })
-  permanentResidenceAddress: string
+  permanentResidenceAddress: string | null
 
   @ApiProperty({
     description: 'Id of tax payer from Noris',
     default: '12345',
   })
-  externalId: string
+  externalId: string | null
 
   @ApiProperty({
     description: 'Name of taxpayer',
     default: 'Bratislavčan Daňový',
   })
-  name: string
+  name: string | null
 
   @ApiProperty({
     description: 'Text of descreption of name for pdf',
     default: 'Meno daňovníka/ subjektu',
   })
-  nameTxt: string
+  nameTxt: string | null
 
   @ApiProperty({
     description: 'Text of descreption of street for pdf',
     default: 'Ulica trvalého pobytu',
   })
-  permanentResidenceStreetTxt: string
+  permanentResidenceStreetTxt: string | null
 
   @ApiProperty({
     description: 'Street of permanent residence with number',
     default: 'Uršulínska 6 3/6',
   })
-  permanentResidenceStreet: string
+  permanentResidenceStreet: string | null
 
   @ApiProperty({
     description: 'Zip of permanent residence with number',
     default: '811 01',
   })
-  permanentResidenceZip: string
+  permanentResidenceZip: string | null
 
   @ApiProperty({
     description: 'City of permanent residence with number',
     default: 'Bratislava',
   })
-  permanentResidenceCity: string
+  permanentResidenceCity: string | null
 
   // TODO more missing properties which are sent
   @ApiProperty({
@@ -160,7 +160,7 @@ export class ResponseTaxDetailInstallmentsDto {
     description: 'Text of number of installment',
     default: 1000,
   })
-  text: string
+  text: string | null
 }
 
 export class ResponseTaxDetailsDto {
@@ -208,7 +208,7 @@ export class ResponseTaxDetailsDto {
     description: 'Area of tax detail - square meters',
     default: '0,00',
   })
-  area: string
+  area: string | null
 
   @ApiProperty({
     description: 'Base of tax pare meter',
@@ -332,45 +332,45 @@ export class ResponseTaxDto {
     description: 'Tax Id from order of exact year',
     default: '1234',
   })
-  taxId: string
+  taxId: string | null
 
   @ApiProperty({
     description: 'Date of tax order.',
     default: '2022-01-01',
   })
-  dateCreateTax: string
+  dateCreateTax: string | null
 
   @ApiProperty({
     description: 'Part of tax amount for lands in cents in Eur.',
-    default: '1000',
+    default: 1000,
   })
-  taxLand: number
+  taxLand: number | null
 
   @ApiProperty({
     description: 'Part of tax amount for constructions in cents in Eur.',
-    default: '1000',
+    default: 1000,
   })
-  taxConstructions: number
+  taxConstructions: number | null
 
   @ApiProperty({
     description: 'Part of tax amount for flats in cents in Eur.',
-    default: '1000',
+    default: 1000,
   })
-  taxFlat: number
+  taxFlat: number | null
 
   @ApiProperty({
     description:
       'Qr code use for pay in web in Base64 representing image of paybysquare QRcode',
     default: 'somebase64string',
   })
-  qrCodeWeb: string
+  qrCodeWeb: string | null
 
   @ApiProperty({
     description:
       'Qr code use for pay in email in Base64 representing image of paybysquare QRcode',
     default: 'somebase64string',
   })
-  qrCodeEmail: string
+  qrCodeEmail: string | null
 
   @ApiProperty({
     description: 'Type of paid status',

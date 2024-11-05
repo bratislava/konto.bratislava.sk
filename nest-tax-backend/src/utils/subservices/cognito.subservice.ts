@@ -1,23 +1,29 @@
 import { HttpException, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import AWS from 'aws-sdk'
+
+import { CognitoTiersEnum } from '../global-dtos/cognito.dto'
 
 @Injectable()
 export class CognitoSubservice {
   cognitoIdentity: AWS.CognitoIdentityServiceProvider
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider({
       accessKeyId: process.env.AWS_COGNITO_ACCESS,
       secretAccessKey: process.env.AWS_COGNITO_SECRET,
       region: process.env.COGNITO_REGION,
     })
+    this.configService.getOrThrow<string>('COGNITO_USER_POOL_ID') // Check if exists
   }
 
-  async getDataFromCognito(userId: string): Promise<string> {
+  async getDataFromCognito(userId: string): Promise<CognitoTiersEnum> {
     const cognitoData = await this.cognitoIdentity
       .adminGetUser(
         {
-          UserPoolId: process.env.COGNITO_USER_POOL_ID,
+          UserPoolId: this.configService.getOrThrow<string>(
+            'COGNITO_USER_POOL_ID',
+          ),
           Username: userId,
         },
         (err, data) => {
@@ -37,14 +43,15 @@ export class CognitoSubservice {
         400,
       )
     } else {
-      // TODO remake for loop to forEach
-      // eslint-disable-next-line no-restricted-syntax
-      for (const elem of cognitoData.UserAttributes) {
+      let result: CognitoTiersEnum = CognitoTiersEnum.NEW
+      cognitoData.UserAttributes?.forEach((elem) => {
         if (elem.Name === 'custom:tier') {
-          return elem.Value
+          result = elem.Value
+            ? (elem.Value as CognitoTiersEnum)
+            : CognitoTiersEnum.NEW
         }
-      }
-      return null
+      })
+      return result
     }
   }
 }

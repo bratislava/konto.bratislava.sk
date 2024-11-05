@@ -1,7 +1,5 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-// TODO
 /* eslint-disable sonarjs/no-nested-template-literals */
-/* eslint-disable no-restricted-syntax */
+import { TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
 import { NorisTaxPayersDto } from '../../noris/noris.dto'
@@ -12,7 +10,16 @@ enum AreaTypesEnum {
   GROUND = 'GROUND',
 }
 
-const config = {
+const config: Record<
+  string,
+  {
+    areaType: AreaTypesEnum
+    base: string
+    amount: string
+    area: string | false
+    types: TaxDetailareaType[]
+  }
+> = {
   pozemky: {
     areaType: AreaTypesEnum.GROUND,
     base: 'ZAKLAD',
@@ -36,37 +43,53 @@ const config = {
   },
 }
 
-export const taxDetail = (data: NorisTaxPayersDto, taxId: number) => {
-  const response = []
-  for (const [keyTaxConfig, valueTaxConfig] of Object.entries(config)) {
-    for (const taxType of valueTaxConfig.types) {
+type TaxDetail = {
+  taxId: number
+  areaType: TaxDetailareaType
+  type: AreaTypesEnum
+  base: number
+  amount: number
+  area: string | null
+}
+
+export const taxDetail = (
+  data: NorisTaxPayersDto,
+  taxId: number,
+): TaxDetail[] => {
+  const response: TaxDetail[] = []
+  Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {
+    valueTaxConfig.types.forEach((taxType) => {
       response.push({
         taxId,
         areaType: taxType,
         type: valueTaxConfig.areaType,
         base: currency(
-          data[
-            `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-              valueTaxConfig.base
-            }_${taxType}`
-          ].replace(',', '.'),
+          (
+            data[
+              `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
+                valueTaxConfig.base
+              }_${taxType}` as keyof NorisTaxPayersDto
+            ] as string
+          ).replace(',', '.'),
         ).intValue,
         amount: currency(
-          data[
-            `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-              valueTaxConfig.amount
-            }_${taxType}`
-          ].replace(',', '.'),
+          (
+            data[
+              `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
+                valueTaxConfig.amount
+              }_${taxType}` as keyof NorisTaxPayersDto
+            ] as string
+          ).replace(',', '.'),
         ).intValue,
         area: valueTaxConfig.area
-          ? data[
+          ? (data[
               `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
                 valueTaxConfig.area
-              }_${taxType}`
-            ]
+              }_${taxType}` as keyof NorisTaxPayersDto
+            ] as string)
           : null,
       })
-    }
-  }
+    })
+  })
   return response
 }

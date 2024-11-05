@@ -33,7 +33,7 @@ export enum PaymentErrorStatus {
   unknownError = 'unknown-error',
 }
 
-export class PaymentResponseQueryDto {
+export class PaymentResponseQueryToVerifyDto {
   @IsNotEmpty() OPERATION!: string
 
   @IsNotEmpty() ORDERNUMBER!: string
@@ -42,9 +42,11 @@ export class PaymentResponseQueryDto {
 
   @IsNotEmpty() SRCODE!: string
 
+  @IsNotEmpty() RESULTTEXT!: string
+}
+
+export class PaymentResponseQueryDto extends PaymentResponseQueryToVerifyDto {
   @IsNotEmpty() DIGEST!: string
 
   @IsNotEmpty() DIGEST1!: string
-
-  @IsNotEmpty() RESULTTEXT!: string
 }

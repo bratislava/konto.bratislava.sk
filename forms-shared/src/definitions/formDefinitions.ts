@@ -135,6 +135,20 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
   },
+  // testing integration of new posID against GINIS&NORIS, will be removed afterwards
+  {
+    type: FormDefinitionType.SlovenskoSkTax,
+    title: 'Priznanie k dani z nehnuteľností',
+    slug: 'priznanie-k-dani-z-nehnutelnosti-test',
+    schemas: priznanieKDaniZNehnutelnosti,
+    pospID: 'hmba.eforms.bratislava.obec_024',
+    pospVersion: '201501.2',
+    publisher: 'ico://sk/00603481',
+    gestor: 'ico://sk/00603481',
+    termsAndConditions: taxTermsAndConditions,
+    messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
+    isSigned: true,
+  },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-najom-bytu',

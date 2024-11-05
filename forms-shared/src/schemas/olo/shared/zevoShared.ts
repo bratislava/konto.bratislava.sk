@@ -52,7 +52,6 @@ export const getZevoSchema = (type: ZevoType) => [
         ],
       ),
       sharedAddressField('adresaObyvatel', 'Adresa trvalého pobytu', true),
-      input('cisloOp', { type: 'text', title: 'Číslo občianskeho preukazu', required: true }, {}),
     ]),
     conditionalFields(
       createCondition([
@@ -262,11 +261,6 @@ export const getZevoSchema = (type: ZevoType) => [
             input('meno', { type: 'text', title: 'Meno', required: true }, {}),
             input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
             sharedAddressField('adresa', 'Adresa', true),
-            input(
-              'cisloOp',
-              { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
-              {},
-            ),
           ]),
           input(
             'emailPovodcuOdpadu',
@@ -325,11 +319,6 @@ export const getZevoSchema = (type: ZevoType) => [
               input('meno', { type: 'text', title: 'Meno', required: true }, {}),
               input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
               sharedAddressField('adresa', 'Adresa', true),
-              input(
-                'cisloOp',
-                { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
-                {},
-              ),
             ],
           ),
           input(

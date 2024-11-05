@@ -1828,10 +1828,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                       ],
                       "type": "object",
                     },
-                    "cisloOp": {
-                      "title": "Číslo občianskeho preukazu",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -1853,7 +1849,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                   "required": [
                     "menoPriezvisko",
                     "adresaObyvatel",
-                    "cisloOp",
                   ],
                   "type": "object",
                 },
@@ -2337,10 +2332,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                             ],
                             "type": "object",
                           },
-                          "cisloOp": {
-                            "title": "Číslo občianskeho preukazu",
-                            "type": "string",
-                          },
                           "meno": {
                             "title": "Meno",
                             "type": "string",
@@ -2354,7 +2345,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                           "meno",
                           "priezvisko",
                           "adresa",
-                          "cisloOp",
                         ],
                         "type": "object",
                       },
@@ -2544,10 +2534,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                             ],
                             "type": "object",
                           },
-                          "cisloOp": {
-                            "title": "Číslo občianskeho preukazu",
-                            "type": "string",
-                          },
                           "meno": {
                             "title": "Meno",
                             "type": "string",
@@ -2561,7 +2547,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                           "meno",
                           "priezvisko",
                           "adresa",
-                          "cisloOp",
                         ],
                         "type": "object",
                       },
@@ -3300,13 +3285,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
           "ui:widget": "Input",
         },
       },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "emailDrzitelaOdpadu": {
         "ui:label": false,
         "ui:options": {
@@ -3412,7 +3390,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "meno",
         "priezvisko",
         "adresa",
-        "cisloOp",
         "emailDrzitelaOdpadu",
       ],
     },
@@ -3486,13 +3463,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
           },
           "ui:widget": "Input",
         },
-      },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
       },
       "emailPovodcuOdpadu": {
         "ui:label": false,
@@ -3599,7 +3569,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "meno",
         "priezvisko",
         "adresa",
-        "cisloOp",
         "emailPovodcuOdpadu",
       ],
     },
@@ -4389,13 +4358,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
           "ui:widget": "Input",
         },
       },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "cisloPovoleniaNaVstup": {
         "ui:label": false,
         "ui:options": {
@@ -4566,7 +4528,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ziadatelTyp",
         "menoPriezvisko",
         "adresaObyvatel",
-        "cisloOp",
         "nazov",
         "cisloPovoleniaNaVstup",
         "adresaPravnickaOsoba",
@@ -11235,10 +11196,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                       ],
                       "type": "object",
                     },
-                    "cisloOp": {
-                      "title": "Číslo občianskeho preukazu",
-                      "type": "string",
-                    },
                     "menoPriezvisko": {
                       "properties": {
                         "meno": {
@@ -11260,7 +11217,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                   "required": [
                     "menoPriezvisko",
                     "adresaObyvatel",
-                    "cisloOp",
                   ],
                   "type": "object",
                 },
@@ -12975,13 +12931,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
           "ui:widget": "Input",
         },
       },
-      "cisloOp": {
-        "ui:label": false,
-        "ui:options": {
-          "inputType": "text",
-        },
-        "ui:widget": "Input",
-      },
       "cisloPovoleniaNaVstup": {
         "ui:label": false,
         "ui:options": {
@@ -13129,7 +13078,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "ziadatelTyp",
         "menoPriezvisko",
         "adresaObyvatel",
-        "cisloOp",
         "nazov",
         "cisloPovoleniaNaVstup",
         "adresaPravnickaOsoba",

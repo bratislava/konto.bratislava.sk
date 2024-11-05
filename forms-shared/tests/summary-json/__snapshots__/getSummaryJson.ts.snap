@@ -662,18 +662,6 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "AB123456",
-            },
-          ],
-          "id": "root_ziadatel_cisloOp",
-          "label": "Číslo občianskeho preukazu",
-          "type": "Field",
-          "value": "AB123456",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "+421999888555",
             },
           ],

@@ -261,7 +261,7 @@ export class PaymentService {
       throw this.errorThrowerGuard.paymentTaxNotFound()
     }
     if (!qrBase64.qrCodeEmail) {
-      throw this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.qrCodeNotFound()
     }
     return qrBase64.qrCodeEmail
   }

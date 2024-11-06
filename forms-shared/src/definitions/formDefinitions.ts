@@ -1,7 +1,11 @@
 import stanoviskoKInvesticnemuZameru from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
-import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndConditions'
+import {
+  generalTermsAndConditions,
+  oloTermsAndConditions,
+  taxTermsAndConditions,
+} from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
@@ -161,7 +165,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Mimoriadny odvoz a zhodnotenie odpadu',
     schemas: mimoriadnyOdvozAZhodnotenieOdpadu,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Mimoriadny odvoz a zhodnotenie odpadu',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -174,7 +178,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Energetické zhodnotenie odpadu v ZEVO',
     schemas: energetickeZhodnotenieOdpaduVZevo,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Energetické zhodnotenie odpadu v ZEVO',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -187,7 +191,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Uzatvorenie zmluvy o nakladaní s odpadom',
     schemas: uzatvorenieZmluvyONakladaniSOdpadom,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Uzatvorenie zmluvy o nakladaní s odpadom',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -200,7 +204,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Dočistenie stanovišťa zberných nádob',
     schemas: docisteniStanovistaZbernychNadob,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Dočistenie stanovišťa zberných nádob',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -213,7 +217,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     schemas: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -226,7 +230,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - KOLO Taxi',
     schemas: koloTaxi,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - KOLO Taxi',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -239,7 +243,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - OLO Taxi',
     schemas: oloTaxi,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - OLO Taxi',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -252,7 +256,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Podnety a pochvaly občanov',
     schemas: podnetyAPochvalyObcanov,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Podnety a pochvaly občanov',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -265,7 +269,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Odvoz objemného odpadu valníkom',
     schemas: odvozObjemnehoOdpaduValnikom,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Odvoz objemného odpadu valníkom',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -278,7 +282,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Triedený zber papiera, plastov a skla pre právnické osoby',
     schemas: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'TEST - Triedený zber papiera, plastov a skla pre právnické osoby',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
@@ -291,7 +295,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'TEST - Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     schemas: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     email: 'zakazka@olo.sk,barbora.puchlova@bratislava.sk',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault:
       'TEST - Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',

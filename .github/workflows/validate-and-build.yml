@@ -29,7 +29,7 @@ jobs:
 
   conditions:
     name: Check for conditions
-    needs: [test-forms-shared, build-forms-shared]
+    needs: [build-forms-shared]
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@stable
     permissions: write-all
 

@@ -1,45 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common'
-import {
-  ApiBadRequestResponse,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { Body, Controller, Param, Post } from '@nestjs/common'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { JsonConvertRequestDto } from '../convert/dtos/form.dto'
-import {
-  TaxJsonToXmlRequestDto,
-  TaxJsonToXmlResponseDto,
-  TaxSignerDataResponseDto,
-} from './dtos/tax.dto'
+import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 import TaxService from './tax.service'
 
 @Controller('tax')
 @ApiTags('Tax')
 export default class TaxController {
   constructor(private readonly taxService: TaxService) {}
-
-  @ApiOperation({
-    summary: '',
-    description: 'Generates XML for tax form from given JSON data',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Return XML form',
-    type: String,
-  })
-  @ApiBadRequestResponse({
-    status: 400,
-    description: 'Form data are empty or invalid',
-  })
-  @Post('json-to-xml')
-  async convertJsonToXml(
-    @Body() data: TaxJsonToXmlRequestDto,
-  ): Promise<TaxJsonToXmlResponseDto> {
-    return {
-      xmlForm: this.taxService.convertJsonToXml(data.jsonForm),
-    }
-  }
 
   // TODO needs much love, barebones to test E2E functionality ASAP
   @ApiOperation({
@@ -52,10 +21,11 @@ export default class TaxController {
     description: 'Valid data to be passed onto signer',
     type: TaxSignerDataResponseDto,
   })
-  @Post('signer-data')
+  @Post('signer-data/:slug')
   async signerData(
     @Body() data: JsonConvertRequestDto,
+    @Param('slug') slug: string,
   ): Promise<TaxSignerDataResponseDto> {
-    return this.taxService.getSignerData(data.jsonForm)
+    return this.taxService.getSignerData(data.jsonForm, slug)
   }
 }

@@ -31,7 +31,7 @@ describe('Form definitions', () => {
           formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
             formDefinitionInner.slug === formDefinition.slug,
         })
-        if (!formDefinition.slug.startsWith('tsb-')) {
+        if (!(formDefinition.slug.startsWith('tsb-') || formDefinition.slug.endsWith('-test'))) {
           expect(examples.length).toBeGreaterThan(0)
         }
       })

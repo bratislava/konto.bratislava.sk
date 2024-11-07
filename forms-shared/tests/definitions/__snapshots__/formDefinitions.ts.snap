@@ -1998,10 +1998,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 "if": {
                   "properties": {
                     "vyberSluzby": {
-                      "enum": [
-                        "Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
-                        "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka",
-                      ],
+                      "const": "Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
                     },
                   },
                   "required": [
@@ -2011,7 +2008,87 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 },
                 "then": {
                   "properties": {
-                    "preferovanyCasDovozu": {
+                    "preferovanyCasMechanickaVykladka": {
+                      "enum": [
+                        "06:00",
+                        "06:30",
+                        "07:00",
+                        "07:30",
+                        "08:00",
+                        "08:30",
+                        "09:00",
+                        "09:30",
+                        "10:00",
+                        "10:30",
+                        "11:00",
+                        "11:30",
+                        "12:00 (dostupné iba v pondelok až piatok)",
+                        "12:30 (dostupné iba v pondelok až piatok)",
+                        "13:00 (dostupné iba v pondelok až piatok)",
+                        "13:30 (dostupné iba v pondelok až piatok)",
+                        "14:00 (dostupné iba v pondelok až piatok)",
+                        "14:30 (dostupné iba v pondelok až piatok)",
+                        "15:00 (dostupné iba v pondelok až piatok)",
+                      ],
+                      "title": "Preferovaný čas dovozu odpadu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "preferovanyCasMechanickaVykladka",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "vyberSluzby": {
+                      "const": "Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
+                    },
+                  },
+                  "required": [
+                    "vyberSluzby",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "preferovanyCasDovozuRucnaVykladka": {
+                      "enum": [
+                        "06:00",
+                        "07:00",
+                        "08:00",
+                        "09:00",
+                        "10:00",
+                        "11:00",
+                        "12:00 (dostupné iba v utorok a štvrtok)",
+                      ],
+                      "title": "Preferovaný čas dovozu odpadu",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "preferovanyCasDovozuRucnaVykladka",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "vyberSluzby": {
+                      "const": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom",
+                    },
+                  },
+                  "required": [
+                    "vyberSluzby",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "preferovanyCasPodrvenie": {
                       "enum": [
                         "09:00",
                         "10:00",
@@ -2023,7 +2100,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                     },
                   },
                   "required": [
-                    "preferovanyCasDovozu",
+                    "preferovanyCasPodrvenie",
                   ],
                   "type": "object",
                 },
@@ -4489,7 +4566,99 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Checkbox",
       },
-      "preferovanyCasDovozu": {
+      "preferovanyCasDovozuRucnaVykladka": {
+        "ui:options": {
+          "selectOptions": {
+            "06:00": {
+              "title": "06:00",
+            },
+            "07:00": {
+              "title": "07:00",
+            },
+            "08:00": {
+              "title": "08:00",
+            },
+            "09:00": {
+              "title": "09:00",
+            },
+            "10:00": {
+              "title": "10:00",
+            },
+            "11:00": {
+              "title": "11:00",
+            },
+            "12:00 (dostupné iba v utorok a štvrtok)": {
+              "title": "12:00 (dostupné iba v utorok a štvrtok)",
+            },
+          },
+        },
+        "ui:widget": "Select",
+      },
+      "preferovanyCasMechanickaVykladka": {
+        "ui:options": {
+          "selectOptions": {
+            "06:00": {
+              "title": "06:00",
+            },
+            "06:30": {
+              "title": "06:30",
+            },
+            "07:00": {
+              "title": "07:00",
+            },
+            "07:30": {
+              "title": "07:30",
+            },
+            "08:00": {
+              "title": "08:00",
+            },
+            "08:30": {
+              "title": "08:30",
+            },
+            "09:00": {
+              "title": "09:00",
+            },
+            "09:30": {
+              "title": "09:30",
+            },
+            "10:00": {
+              "title": "10:00",
+            },
+            "10:30": {
+              "title": "10:30",
+            },
+            "11:00": {
+              "title": "11:00",
+            },
+            "11:30": {
+              "title": "11:30",
+            },
+            "12:00 (dostupné iba v pondelok až piatok)": {
+              "title": "12:00 (dostupné iba v pondelok až piatok)",
+            },
+            "12:30 (dostupné iba v pondelok až piatok)": {
+              "title": "12:30 (dostupné iba v pondelok až piatok)",
+            },
+            "13:00 (dostupné iba v pondelok až piatok)": {
+              "title": "13:00 (dostupné iba v pondelok až piatok)",
+            },
+            "13:30 (dostupné iba v pondelok až piatok)": {
+              "title": "13:30 (dostupné iba v pondelok až piatok)",
+            },
+            "14:00 (dostupné iba v pondelok až piatok)": {
+              "title": "14:00 (dostupné iba v pondelok až piatok)",
+            },
+            "14:30 (dostupné iba v pondelok až piatok)": {
+              "title": "14:30 (dostupné iba v pondelok až piatok)",
+            },
+            "15:00 (dostupné iba v pondelok až piatok)": {
+              "title": "15:00 (dostupné iba v pondelok až piatok)",
+            },
+          },
+        },
+        "ui:widget": "Select",
+      },
+      "preferovanyCasPodrvenie": {
         "ui:options": {
           "selectOptions": {
             "09:00": {
@@ -4542,13 +4711,28 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "email",
         "vyberSluzby",
         "preferovanyDatumDovozu",
-        "preferovanyCasDovozu",
+        "preferovanyCasMechanickaVykladka",
+        "preferovanyCasDovozuRucnaVykladka",
+        "preferovanyCasPodrvenie",
         "fakturacia",
       ],
       "vyberSluzby": {
         "ui:options": {
           "orientations": "column",
-          "radioOptions": [],
+          "radioOptions": [
+            {
+              "description": "Dostupné v pondelok až sobotu",
+              "value": "Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
+            },
+            {
+              "description": "Dostupné v utorok, štvrtok a sobotu",
+              "value": "Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia",
+            },
+            {
+              "description": "Dostupné v utorok",
+              "value": "Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom",
+            },
+          ],
           "variant": "boxed",
         },
         "ui:widget": "RadioGroup",

@@ -20,7 +20,7 @@ const exampleForm: ExampleForm = {
           psc: '90011',
         },
       },
-      preferovanyCasDovozu: '10:00',
+      preferovanyCasDovozuRucnaVykladka: '10:00',
     },
     povodcaOdpadu: {
       stePovodcaOdpadu: false,

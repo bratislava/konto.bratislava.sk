@@ -713,7 +713,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
               "value": "10:00",
             },
           ],
-          "id": "root_ziadatel_preferovanyCasDovozu",
+          "id": "root_ziadatel_preferovanyCasDovozuRucnaVykladka",
           "label": "Preferovaný čas dovozu odpadu",
           "type": "Field",
           "value": "10:00",

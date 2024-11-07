@@ -59,6 +59,7 @@ export const environment = {
     process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
   ),
   awsRegion: assertEnv('NEXT_PUBLIC_AWS_REGION', process.env.NEXT_PUBLIC_AWS_REGION),
+  selfUrl: assertEnv('NEXT_PUBLIC_SELF_URL', process.env.NEXT_PUBLIC_SELF_URL),
   formsUrl: assertEnv('NEXT_PUBLIC_FORMS_URL', process.env.NEXT_PUBLIC_FORMS_URL),
   cityAccountUrl: assertEnv(
     'NEXT_PUBLIC_CITY_ACCOUNT_URL',

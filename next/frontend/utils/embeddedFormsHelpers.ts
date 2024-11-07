@@ -2,6 +2,7 @@ import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { GetServerSidePropsContext } from 'next/types'
 
 import { environment } from '../../environment'
+import { isDefined } from './general'
 
 const map = {
   olo: environment.embeddedFormsOloOrigins,
@@ -15,7 +16,10 @@ const getEmbeddedFormsAllowedOrigins = (formDefinition: FormDefinition) => {
     return null
   }
 
-  return map[formDefinition.embedded]
+  return [
+    ...map[formDefinition.embedded],
+    environment.featureToggles.developmentForms ? environment.selfUrl : null,
+  ].filter(isDefined)
 }
 
 export const handleEmbeddedFormRequest = (
@@ -34,7 +38,7 @@ export const handleEmbeddedFormRequest = (
 
   const allowedOrigins = getEmbeddedFormsAllowedOrigins(formDefinition)
   // Form is not meant to be embedded.
-  if (!allowedOrigins) {
+  if (!allowedOrigins || allowedOrigins.length === 0) {
     return { success: false, isEmbedded: undefined }
   }
 

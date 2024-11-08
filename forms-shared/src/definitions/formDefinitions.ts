@@ -146,7 +146,7 @@ export const formDefinitions: FormDefinition[] = [
     slug: 'priznanie-k-dani-z-nehnutelnosti-test',
     schemas: priznanieKDaniZNehnutelnosti,
     pospID: 'hmba.eforms.bratislava.obec_024',
-    pospVersion: '201501.2',
+    pospVersion: '201501.3',
     publisher: 'ico://sk/00603481',
     gestor: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,

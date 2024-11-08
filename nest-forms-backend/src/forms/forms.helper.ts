@@ -91,6 +91,15 @@ export default class FormsHelper {
     // If no uri is assigned, allow
     if (form.mainUri === null && form.actorUri === null) return true
 
+    // TODO setup and use config module
+    // we can't login into fix slovensko.sk with the id cards we're signing the form with, so the check for uris would never match
+    // this should only happen on non-production environments
+    if (
+      process.env.SLOVENSKO_SK_CONTAINER_URI ===
+      'https://fix.slovensko-sk-api.bratislava.sk'
+    )
+      return true
+
     // The uri from token must match the uri of the form
     return mainUri === form.mainUri && actorUri === form.actorUri
   }

@@ -278,11 +278,18 @@ export class AdminService {
         taxPayer: true,
       },
     })
-    return taxesData.map((item) => ({
-      [item.variableSymbol]: item,
-    }))
+    return new Map(taxesData.map((item) => [item.variableSymbol, item]))
   }
 
+  // TODO: Eventually we want to get rid of this function, and do some better error handling, than watching these specific cases.
+  /**
+   * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
+   *
+   * @param payedFromNoris Already paid amount in Noris.
+   * @param taxData Tax object, containing all the information about the tax.
+   * @param forPayment Left to be paid amount in Noris.
+   * @param payerDataCountAll How many payments for this tax we have in the database.
+   */
   private handlePaymentsErrors(
     payedFromNoris: number,
     taxData: Tax,
@@ -306,12 +313,9 @@ export class AdminService {
       payedFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
-      // TODO send bloomreach email
       this.logger.error(
         'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
       )
-    } else {
-      this.logger.error('ERROR - Status-500: NEOCAKAVANY STAV')
     }
   }
 
@@ -330,7 +334,7 @@ export class AdminService {
     await Promise.all(
       norisPaymentData.map(async (norisPayment) => {
         try {
-          const taxData = taxesDataMap[norisPayment.variabilny_symbol]
+          const taxData = taxesDataMap.get(norisPayment.variabilny_symbol)
           if (taxData) {
             const payerData = await this.prismaService.taxPayment.aggregate({
               _sum: {

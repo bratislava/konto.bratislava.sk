@@ -12,7 +12,11 @@ import {
   selectMultiple,
   step,
 } from '../../../generator/functions'
-import { createCondition, createStringOptions } from '../../../generator/helpers'
+import {
+  createCondition,
+  createStringOptions,
+  createStringOptionsV2,
+} from '../../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../../form-utils/safeData'
@@ -52,7 +56,6 @@ export const getZevoSchema = (type: ZevoType) => [
         ],
       ),
       sharedAddressField('adresaObyvatel', 'Adresa trvalého pobytu', true),
-      input('cisloOp', { type: 'text', title: 'Číslo občianskeho preukazu', required: true }, {}),
     ]),
     conditionalFields(
       createCondition([
@@ -114,58 +117,138 @@ export const getZevoSchema = (type: ZevoType) => [
     ),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-    type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
-      ? radioGroup(
-          'vyberSluzby',
-          {
-            type: 'string',
-            title: 'Výber služby',
-            required: true,
-            options: createStringOptions([
-              'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-              'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-              'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
+    ...(type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
+      ? [
+          radioGroup(
+            'vyberSluzby',
+            {
+              type: 'string',
+              title: 'Výber služby',
+              required: true,
+              options: createStringOptionsV2([
+                {
+                  title: 'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                  description: 'Dostupné v pondelok až sobotu',
+                },
+                {
+                  title: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                  description: 'Dostupné v utorok, štvrtok a sobotu',
+                },
+                {
+                  title: 'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
+                  description: 'Dostupné v utorok',
+                },
+              ]),
+            },
+            { variant: 'boxed', orientations: 'column' },
+          ),
+          datePicker(
+            'preferovanyDatumDovozu',
+            {
+              title: 'Preferovaný dátum dovozu odpadu',
+              required: true,
+            },
+            {},
+          ),
+          conditionalFields(
+            createCondition([
+              [
+                ['vyberSluzby'],
+                {
+                  const: 'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                },
+              ],
             ]),
-          },
-          { variant: 'boxed', orientations: 'column' },
-        )
-      : null,
-    type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
-      ? datePicker(
-          'preferovanyDatumDovozu',
-          {
-            title: 'Preferovaný dátum dovozu odpadu',
-            required: true,
-          },
-          {},
-        )
-      : null,
-    type === ZevoType.EnergetickeZhodnotenieOdpaduVZevo
-      ? conditionalFields(
-          createCondition([
             [
-              ['vyberSluzby'],
-              {
-                enum: [
-                  'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
-                  'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka',
-                ],
-              },
+              select(
+                'preferovanyCasMechanickaVykladka',
+                {
+                  title: 'Preferovaný čas dovozu odpadu',
+                  required: true,
+                  options: createStringOptions(
+                    [
+                      '06:00',
+                      '06:30',
+                      '07:00',
+                      '07:30',
+                      '08:00',
+                      '08:30',
+                      '09:00',
+                      '09:30',
+                      '10:00',
+                      '10:30',
+                      '11:00',
+                      '11:30',
+                      '12:00 (dostupné iba v pondelok až piatok)',
+                      '12:30 (dostupné iba v pondelok až piatok)',
+                      '13:00 (dostupné iba v pondelok až piatok)',
+                      '13:30 (dostupné iba v pondelok až piatok)',
+                      '14:00 (dostupné iba v pondelok až piatok)',
+                      '14:30 (dostupné iba v pondelok až piatok)',
+                      '15:00 (dostupné iba v pondelok až piatok)',
+                    ],
+                    false,
+                  ),
+                },
+                {},
+              ),
             ],
-          ]),
-          [
-            select(
-              'preferovanyCasDovozu',
-              {
-                title: 'Preferovaný čas dovozu odpadu',
-                required: true,
-                options: createStringOptions(['09:00', '10:00', '11:00', '12:00'], false),
-              },
-              {},
-            ),
-          ],
-        )
-      : null,
+          ),
+          conditionalFields(
+            createCondition([
+              [
+                ['vyberSluzby'],
+                {
+                  const: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                },
+              ],
+            ]),
+            [
+              select(
+                'preferovanyCasDovozuRucnaVykladka',
+                {
+                  title: 'Preferovaný čas dovozu odpadu',
+                  required: true,
+                  options: createStringOptions(
+                    [
+                      '06:00',
+                      '07:00',
+                      '08:00',
+                      '09:00',
+                      '10:00',
+                      '11:00',
+                      '12:00 (dostupné iba v utorok a štvrtok)',
+                    ],
+                    false,
+                  ),
+                },
+                {},
+              ),
+            ],
+          ),
+          conditionalFields(
+            createCondition([
+              [
+                ['vyberSluzby'],
+                {
+                  const: 'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
+                },
+              ],
+            ]),
+            [
+              select(
+                'preferovanyCasPodrvenie',
+                {
+                  title: 'Preferovaný čas dovozu odpadu',
+                  required: true,
+                  options: createStringOptions(['09:00', '10:00', '11:00', '12:00'], false),
+                },
+                {},
+              ),
+            ],
+          ),
+        ]
+      : []),
     conditionalFields(
       createCondition([
         [
@@ -262,11 +345,6 @@ export const getZevoSchema = (type: ZevoType) => [
             input('meno', { type: 'text', title: 'Meno', required: true }, {}),
             input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
             sharedAddressField('adresa', 'Adresa', true),
-            input(
-              'cisloOp',
-              { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
-              {},
-            ),
           ]),
           input(
             'emailPovodcuOdpadu',
@@ -325,11 +403,6 @@ export const getZevoSchema = (type: ZevoType) => [
               input('meno', { type: 'text', title: 'Meno', required: true }, {}),
               input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
               sharedAddressField('adresa', 'Adresa', true),
-              input(
-                'cisloOp',
-                { type: 'text', title: 'Číslo občianskeho preukazu', required: true },
-                {},
-              ),
             ],
           ),
           input(

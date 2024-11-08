@@ -96,22 +96,25 @@ export default class EmailFormsSubservice {
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
-    await this.mailgunService.sendOloEmail({
-      to: formDefinition.email,
-      template: MailgunTemplateEnum.OLO_SEND_FORM,
-      data: {
-        formId: form.id,
-        messageSubject: formTitle,
-        firstName: null,
-        slug: formDefinition.slug,
-        htmlData: await renderSummaryEmail({
-          formDefinition,
-          formData: jsonDataExtraDataOmitted,
-          serverFiles: form.files,
-          fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
-        }),
+    await this.mailgunService.sendOloEmail(
+      {
+        to: formDefinition.email,
+        template: MailgunTemplateEnum.OLO_SEND_FORM,
+        data: {
+          formId: form.id,
+          messageSubject: formTitle,
+          firstName: null,
+          slug: formDefinition.slug,
+          htmlData: await renderSummaryEmail({
+            formDefinition,
+            formData: jsonDataExtraDataOmitted,
+            serverFiles: form.files,
+            fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
+          }),
+        },
       },
-    })
+      formDefinition.email,
+    )
 
     const userConfirmationEmail =
       userEmail ??
@@ -158,6 +161,7 @@ export default class EmailFormsSubservice {
               slug: formDefinition.slug,
             },
           },
+          formDefinition.email,
           attachments,
         )
       } catch (error) {

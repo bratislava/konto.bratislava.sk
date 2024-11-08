@@ -29,6 +29,9 @@ export const generateTaxXml = (
         RecipientId: 'ico://sk/00603481',
         Version: version,
         ZepRequired: false,
+        // EformUuid and SenderID only here to pass xsd validation of original esmao.bratislava.obec_24 form
+        EformUuid: 'not-used',
+        SenderID: 'not-used',
       },
       Body: {
         ...udajeODanovnikoviXml(data),

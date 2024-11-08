@@ -644,6 +644,8 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
     <RecipientId>ico://sk/00603481</RecipientId>
     <Version>201501.2</Version>
     <ZepRequired>false</ZepRequired>
+    <EformUuid>not-used</EformUuid>
+    <SenderID>not-used</SenderID>
   </Meta>
   <Body>
     <DruhPriznania>
@@ -833,6 +835,8 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
     <RecipientId>ico://sk/00603481</RecipientId>
     <Version>201501.2</Version>
     <ZepRequired>false</ZepRequired>
+    <EformUuid>not-used</EformUuid>
+    <SenderID>not-used</SenderID>
   </Meta>
   <Body>
     <DruhPriznania>
@@ -1098,6 +1102,8 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
     <RecipientId>ico://sk/00603481</RecipientId>
     <Version>201501.2</Version>
     <ZepRequired>false</ZepRequired>
+    <EformUuid>not-used</EformUuid>
+    <SenderID>not-used</SenderID>
   </Meta>
   <Body>
     <DruhPriznania>
@@ -1267,6 +1273,8 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
     <RecipientId>ico://sk/00603481</RecipientId>
     <Version>201501.2</Version>
     <ZepRequired>false</ZepRequired>
+    <EformUuid>not-used</EformUuid>
+    <SenderID>not-used</SenderID>
   </Meta>
   <Body>
     <DruhPriznania>
@@ -1384,6 +1392,8 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
     <RecipientId>ico://sk/00603481</RecipientId>
     <Version>201501.2</Version>
     <ZepRequired>false</ZepRequired>
+    <EformUuid>not-used</EformUuid>
+    <SenderID>not-used</SenderID>
   </Meta>
   <Body>
     <DruhPriznania>

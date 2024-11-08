@@ -27,7 +27,13 @@ const inter = Inter({
   subsets: ['latin', 'latin-ext'],
 })
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+export type GlobalAppProps = {
+  appProps?: {
+    externallyEmbedded?: boolean
+  }
+}
+
+const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const [queryClient] = useState(() => new QueryClient())
 
   return (

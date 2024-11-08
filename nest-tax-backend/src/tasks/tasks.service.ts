@@ -43,18 +43,18 @@ export class TasksService {
       LIMIT ${MAX_NORIS_PAYMENTS_BATCH_SELECT}
       `)
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === '57014') {
-          this.logger.warn('Query timed out after 10 minutes')
-          return
-        }
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === '57014'
+      ) {
+        this.logger.warn('Query timed out after 10 minutes')
+        throw error
       }
-
       this.logger.error('Failed to fetch variable symbols from database', {
         error: error instanceof Error ? error.message : 'Unknown error',
         year,
       })
-      return
+      throw error
     }
 
     if (variableSymbolsDb.length === 0) return

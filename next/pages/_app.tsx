@@ -80,7 +80,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     <div id="root">
                       <Component {...pageProps} />
                     </div>
-                    <CookieConsent />
+                    <CookieConsent externallyEmbedded={pageProps.appProps?.externallyEmbedded} />
                   </NavMenuContextProvider>
                 </PlausibleProvider>
               </SnackbarProvider>

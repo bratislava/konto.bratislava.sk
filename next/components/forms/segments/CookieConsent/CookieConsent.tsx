@@ -9,6 +9,10 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { isBrowser, isProductionDeployment } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
+type CookiesAndTrackingProps = {
+  externallyEmbedded?: boolean
+}
+
 interface CookieOptions {
   expires?: number | Date
   path?: string
@@ -31,7 +35,7 @@ const pickConsents = (consents: any) => mapValues(pick(consents, availableConsen
 
 // taken from bratislava.sk without much of a change
 // also takes care of loading all the consented 3rd parties - TODO consider better component name ?
-export const CookiesAndTracking = () => {
+export const CookiesAndTracking = ({ externallyEmbedded }: CookiesAndTrackingProps) => {
   const [consents, setConsentsState] = useState<Record<string, any> | null>(null)
   // defaults to true so that it does not flash into being in the beginning
   const [bannerDismissed, setBannerDismissed] = useState(true)
@@ -73,13 +77,16 @@ export const CookiesAndTracking = () => {
 
   const { t } = useTranslation(['common'])
 
+  const thirdPartyScriptsAllowed = isProductionDeployment()
+  const hotjarAllowed = thirdPartyScriptsAllowed && consents?.statistics && !externallyEmbedded
+
   return (
     <>
       {/* all 3rd party scrips loading here */}
       {/* don't use any of the analytics/tracking in staging/dev - change this if you need testing */}
-      {isProductionDeployment() ? (
+      {thirdPartyScriptsAllowed ? (
         <>
-          {consents?.statistics ? (
+          {hotjarAllowed ? (
             <Script
               id="hotjar"
               strategy="afterInteractive"

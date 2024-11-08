@@ -420,9 +420,9 @@ exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should matc
 
 exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti-test schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.2"
+<xs:schema xmlns="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.2" 
+           targetNamespace="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 

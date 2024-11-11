@@ -1,4 +1,4 @@
-import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
+import { ObjectFieldTemplateProps } from '@rjsf/utils'
 import cx from 'classnames'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -55,7 +55,8 @@ const BAObjectFieldTemplate = ({
   schema,
   uiSchema,
 }: ObjectFieldTemplateProps) => {
-  const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
+  debugger
+  const uiMeta = schema.uiOptions ?? ({} as ObjectFieldUiOptions)
   const { isStepObject, isFormObject } = getObjectFieldInfo(idSchema)
   const defaultSpacing = {
     wrapper: isFormObject ? { spaceTop: 'none' as const } : {},
@@ -63,14 +64,14 @@ const BAObjectFieldTemplate = ({
       spaceBottom: 'medium' as const,
       spaceTop: 'medium' as const,
     },
-  }[options.objectDisplay ?? 'wrapper']
+  }[uiMeta.objectDisplay ?? 'wrapper']
 
   const fieldsetClassname = cx({
-    'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
+    'border-grey-200 rounded-xl border p-4': uiMeta.objectDisplay === 'boxed',
   })
 
   return (
-    <WidgetWrapper id={idSchema.$id} options={options} defaultSpacing={defaultSpacing}>
+    <WidgetWrapper id={idSchema.$id} options={uiMeta} defaultSpacing={defaultSpacing}>
       <fieldset className={fieldsetClassname} data-cy={`fieldset-${idSchema.$id}`}>
         {isStepObject ? (
           <div className="mb-8 flex flex-col gap-4">
@@ -79,22 +80,22 @@ const BAObjectFieldTemplate = ({
           </div>
         ) : (
           <>
-            {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
-            {options.description && (
+            {uiMeta.title && <h3 className="text-h3 mb-3">{uiMeta.title}</h3>}
+            {uiMeta.description && (
               <div className="text-p2 mb-3 whitespace-pre-wrap">
-                <FormMarkdown>{options.description}</FormMarkdown>
+                <FormMarkdown>{uiMeta.description}</FormMarkdown>
               </div>
             )}
           </>
         )}
-        <ColumnDisplay uiOptions={options}>
+        <ColumnDisplay uiOptions={uiMeta}>
           {properties.map(({ content }, index) => {
             const isFirst = index === 0
             const isLast = index === properties.length - 1
 
             return (
               <WidgetSpacingContextProvider
-                spacing={getPropertySpacing(Boolean(options.columns), isFirst, isLast)}
+                spacing={getPropertySpacing(Boolean(uiMeta.columns), isFirst, isLast)}
                 key={index}
               >
                 {content}

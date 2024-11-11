@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
@@ -7,7 +7,8 @@ import SelectField, { SelectOption } from '../widget-components/SelectField/Sele
 import { createSelectOptionsFromEnumOptions } from './createSelectOptionsFromEnumOptions'
 
 interface SelectMultipleWidgetRJSFProps extends WidgetProps {
-  options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  schema: StrictRJSFSchema & { uiOptions: SelectUiOptions }
+  options: Pick<WidgetProps['options'], 'enumOptions'>
   value: string[] | undefined
   onChange: (value?: string[] | undefined) => void
 }
@@ -23,17 +24,11 @@ const SelectMultipleWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
+  schema,
 }: SelectMultipleWidgetRJSFProps) => {
-  const {
-    enumOptions,
-    helptext,
-    helptextHeader,
-    tooltip,
-    className,
-    size,
-    labelSize,
-    selectOptions,
-  } = options
+  const { enumOptions } = options
+  const { helptext, helptextHeader, tooltip, className, size, labelSize, selectOptions } =
+    schema.uiOptions
 
   const componentOptions = createSelectOptionsFromEnumOptions(enumOptions, selectOptions)
 
@@ -46,7 +41,7 @@ const SelectMultipleWidgetRJSF = ({
     onChange(newValue.map((option) => option.value).filter(isDefined))
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <SelectField
         isMulti
         label={label}

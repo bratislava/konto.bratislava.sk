@@ -9,19 +9,19 @@ import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 interface CheckboxRJSFProps extends WidgetProps {
   options: CheckboxUiOptions
   value: boolean | null
-  schema: StrictRJSFSchema
+  schema: StrictRJSFSchema & { uiOptions: CheckboxUiOptions }
   onChange: (value: boolean) => void
 }
 
 const CheckboxWidgetRJSF = ({
   id,
-  options,
   value,
   onChange,
   label,
   rawErrors,
   required,
   readonly,
+  schema,
 }: CheckboxRJSFProps) => {
   const {
     className,
@@ -31,7 +31,7 @@ const CheckboxWidgetRJSF = ({
     helptext,
     helptextHeader,
     checkboxLabel,
-  } = options
+  } = schema.uiOptions
 
   const checkboxGroupValue = value ? ['true'] : []
   const checkboxGroupOnChange = (value: string[]) => {
@@ -39,7 +39,7 @@ const CheckboxWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       {/* TODO: Refactor SingleCheckBox to have field properties and use it.  */}
       <CheckboxGroup
         errorMessage={rawErrors}

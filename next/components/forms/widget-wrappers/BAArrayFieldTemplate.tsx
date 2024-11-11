@@ -36,9 +36,11 @@ const BAArrayFieldTemplate = <
   registry,
   title,
   rawErrors,
-}: ArrayFieldTemplateProps<T, S, F>) => {
-  const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiOptions
+  schema,
+}: ArrayFieldTemplateProps<T, S, F> & { schema: S & { uiOptions: ArrayFieldUiOptions } }) => {
+  const uiOptions = getUiOptions(uiSchema)
+  const uiMeta = schema.uiOptions
+  const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiMeta
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
@@ -64,7 +66,7 @@ const BAArrayFieldTemplate = <
   }[variant]
 
   return (
-    <WidgetWrapper id={idSchema.$id} options={uiOptions} defaultSpacing={defaultSpacing}>
+    <WidgetWrapper id={idSchema.$id} options={uiMeta} defaultSpacing={defaultSpacing}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}
@@ -86,18 +88,18 @@ const BAArrayFieldTemplate = <
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
           {items &&
             items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-              <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
+              <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiMeta} />
             ))}
         </div>
         <div>
           <div className="flex flex-col gap-6">
             {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-            {variant === 'topLevel' && (uiOptions.addTitle || uiOptions.addDescription) && (
+            {variant === 'topLevel' && (uiMeta.addTitle || uiMeta.addDescription) && (
               <div className="flex flex-col gap-3">
                 {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                {uiOptions.addTitle && <span className="text-h3">{uiOptions.addTitle}</span>}
+                {uiMeta.addTitle && <span className="text-h3">{uiMeta.addTitle}</span>}
                 {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
+                {uiMeta.addDescription && <span>{uiMeta.addDescription}</span>}
               </div>
             )}
             <ButtonNew

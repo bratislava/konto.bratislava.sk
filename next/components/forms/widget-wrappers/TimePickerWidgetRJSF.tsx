@@ -7,10 +7,9 @@ import React from 'react'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerUiOptions
+  schema: StrictRJSFSchema & { uiOptions: TimePickerUiOptions }
   value: string | undefined
   errorMessage?: string
-  schema: StrictRJSFSchema
   onChange: (value?: string) => void
 }
 
@@ -24,11 +23,12 @@ const TimePickerWidgetRJSF = ({
   value,
   onChange,
   readonly,
+  schema,
 }: TimePickerWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, size, labelSize } = options
+  const { helptext, helptextHeader, tooltip, size, labelSize } = schema.uiOptions
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <FieldBlurWrapper value={value} onChange={onChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TimePicker

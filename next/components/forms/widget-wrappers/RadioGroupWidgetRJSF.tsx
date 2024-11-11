@@ -9,10 +9,10 @@ import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 type ValueType = string | number | boolean | undefined
 
 interface RadioGroupWidgetRJSFProps extends WidgetProps {
-  options: RadioGroupUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  options: Pick<WidgetProps['options'], 'enumOptions'>
   value: ValueType
   errorMessage?: string
-  schema: StrictRJSFSchema
+  schema: StrictRJSFSchema & { uiOptions: RadioGroupUiOptions }
   onChange: (value?: ValueType) => void
 }
 
@@ -25,9 +25,10 @@ const RadioGroupWidgetRJSF = ({
   rawErrors,
   required,
   readonly,
+  schema,
 }: RadioGroupWidgetRJSFProps) => {
+  const { enumOptions } = options
   const {
-    enumOptions,
     className,
     variant,
     radioOptions = [],
@@ -36,7 +37,7 @@ const RadioGroupWidgetRJSF = ({
     labelSize,
     helptext,
     helptextHeader,
-  } = options
+  } = schema.uiOptions
 
   if (!enumOptions) return null
 
@@ -66,7 +67,7 @@ const RadioGroupWidgetRJSF = ({
   const radioGroupHasDescription = radioOptions.some((option) => option.description)
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <RadioGroup
         errorMessage={rawErrors}
         value={valueMapped}

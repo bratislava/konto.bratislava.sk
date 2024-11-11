@@ -84,17 +84,17 @@ export const select = (
       // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
       enum: options.options.map(({ value }) => value),
       default: options.options.find(({ isDefault }) => isDefault)?.value,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Select,
-      'ui:options': {
+      uiOptions: removeUndefinedValues({
         ...uiOptions,
         selectOptions: Object.fromEntries(
           options.options.map(
             ({ value, title, description }) => [value, { title, description }] as const,
           ),
         ),
-      },
+      }),
+    }),
+    uiSchema: removeUndefinedValues({
+      'ui:widget': BaWidgetType.Select,
     }),
     required: Boolean(options.required),
   }
@@ -127,6 +127,14 @@ export const selectMultiple = (
         // Form validation failed
         // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
         enum: options.options.map(({ value }) => value),
+        uiOptions: {
+          ...uiOptions,
+          selectOptions: Object.fromEntries(
+            options.options.map(
+              ({ value, title, description }) => [value, { title, description }] as const,
+            ),
+          ),
+        },
       },
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
@@ -135,14 +143,6 @@ export const selectMultiple = (
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.SelectMultiple,
-      'ui:options': {
-        ...uiOptions,
-        selectOptions: Object.fromEntries(
-          options.options.map(
-            ({ value, title, description }) => [value, { title, description }] as const,
-          ),
-        ),
-      },
     }),
     required: Boolean(options.required),
   }
@@ -184,12 +184,11 @@ export const input = (
       title: options.title,
       format,
       default: options.default,
+      uiOptions: removeUndefinedValues({
+        'ui:options': { ...uiOptions, inputType },
+      }),
     }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Input,
-      'ui:label': false,
-      'ui:options': { ...uiOptions, inputType },
-    }),
+    uiSchema: { 'ui:widget': BaWidgetType.Input },
     required: Boolean(options.required),
   }
 }
@@ -216,12 +215,13 @@ export const number = (
       exclusiveMinimum: options.exclusiveMinimum,
       maximum: options.maximum,
       exclusiveMaximum: options.exclusiveMaximum,
+      uiOptions: removeUndefinedValues({
+        'ui:options': { ...uiOptions },
+      }),
     }),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': BaWidgetType.Number,
-      'ui:label': false,
-      'ui:options': { ...uiOptions },
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -254,17 +254,17 @@ export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
       title: options.title,
       default: options.options.find(({ isDefault }) => isDefault)?.value,
       oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.RadioGroup,
-      'ui:options': {
+      uiOptions: removeUndefinedValues({
         ...uiOptions,
         radioOptions: options.options
           // These are only used as a lookup for the description, so we need only those that have it
           .filter(({ description }) => description)
           .map(({ value, description }) => ({ value, description })),
-      },
+      }),
     }),
+    uiSchema: {
+      'ui:widget': BaWidgetType.RadioGroup,
+    },
     required: Boolean(options.required),
   }
 }
@@ -276,12 +276,14 @@ export const textArea = (
 ): Field => {
   return {
     property,
-    schema: removeUndefinedValues({ type: 'string', title: options.title }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.TextArea,
-      'ui:label': false,
-      'ui:options': uiOptions,
+    schema: removeUndefinedValues({
+      type: 'string',
+      title: options.title,
+      uiOptions: removeUndefinedValues({ ...uiOptions }),
     }),
+    uiSchema: {
+      'ui:widget': BaWidgetType.TextArea,
+    },
     required: Boolean(options.required),
   }
 }
@@ -298,11 +300,11 @@ export const checkbox = (
       title: options.title,
       default: options.default,
       const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
+      uiOptions: removeUndefinedValues({ ...uiOptions }),
     }),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': BaWidgetType.Checkbox,
-      'ui:options': uiOptions,
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -333,11 +335,11 @@ export const checkboxGroup = (
         anyOf: options.options.map(({ value, title }) => ({ const: value, title })),
       },
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
+      uiOptions: removeUndefinedValues({ ...uiOptions }),
     }),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': BaWidgetType.CheckboxGroup,
-      'ui:options': uiOptions,
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -361,18 +363,19 @@ export const fileUpload = (
             },
             minItems: options.required ? 1 : undefined,
             default: [],
+            uiOptions: removeUndefinedValues({ ...uiOptions }),
           }
         : {
             title: options.title,
             type: 'string',
             format: 'ba-file-uuid',
             file: true,
+            uiOptions: removeUndefinedValues({ ...uiOptions }),
           },
     ),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
-      'ui:options': uiOptions,
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -389,11 +392,11 @@ export const datePicker = (
       format: 'date',
       title: options.title,
       default: options.default,
+      uiOptions: removeUndefinedValues({ ...uiOptions }),
     }),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': BaWidgetType.DatePicker,
-      'ui:options': uiOptions,
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -410,11 +413,11 @@ export const timePicker = (
       format: 'ba-time',
       title: options.title,
       default: options.default,
+      uiOptions: removeUndefinedValues({ ...uiOptions }),
     }),
-    uiSchema: removeUndefinedValues({
+    uiSchema: {
       'ui:widget': BaWidgetType.TimePicker,
-      'ui:options': uiOptions,
-    }),
+    },
     required: Boolean(options.required),
   }
 }
@@ -433,16 +436,17 @@ export const customComponentsField = (
   return {
     // Random property name to avoid collisions
     property: `customComponent${customComponentCounter}_gRbYIKNcAF`,
+    // @ts-ignore
     schema: removeUndefinedValues({
       anyOf: [{}],
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.CustomComponents,
-      'ui:options': {
+      uiOptions: removeUndefinedValues({
         ...uiOptions,
         customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
-      },
+      }),
     }),
+    uiSchema: {
+      'ui:widget': BaWidgetType.CustomComponents,
+    },
     required: false,
   }
 }
@@ -495,6 +499,10 @@ export const object = (
         .filter((field) => field.required)
         .map((field) => field.property),
       allOf: allOf.length > 0 ? allOf : undefined,
+      uiOptions: removeUndefinedValues({
+        ...uiOptions,
+        order: fieldProperties,
+      }),
     })
   }
 
@@ -510,10 +518,6 @@ export const object = (
     return removeUndefinedValues({
       ...ordinaryFieldsUiSchema,
       ...conditionalFieldsUiSchema,
-      // As the order of the properties is not guaranteed in JSON and is lost when having the fields both in `properties`
-      // and `allOf`, we need to provide it manually.
-      'ui:order': fieldProperties,
-      'ui:options': uiOptions,
     })
   }
 
@@ -542,11 +546,11 @@ export const arrayField = (
       items: objectSchema,
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
+      uiOptions: removeUndefinedValues(uiOptions),
     }),
-    uiSchema: removeUndefinedValues({
-      'ui:options': uiOptions,
+    uiSchema: {
       items: objectUiSchema,
-    }),
+    },
     required: Boolean(options.required),
   }
 }

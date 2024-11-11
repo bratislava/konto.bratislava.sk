@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { FileUploadUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
@@ -7,7 +7,7 @@ import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 
 interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
-  options: FileUploadUiOptions
+  schema: StrictRJSFSchema & { uiOptions: FileUploadUiOptions }
   value: string[] | undefined
   onChange: (value?: string[] | undefined) => void
 }
@@ -22,6 +22,7 @@ const FileUploadMultipleWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
+  schema,
 }: FileUploadMultipleWidgetRJSFProps) => {
   const {
     sizeLimit,
@@ -32,7 +33,7 @@ const FileUploadMultipleWidgetRJSF = ({
     className,
     size,
     labelSize,
-  } = options
+  } = schema.uiOptions
 
   const supportedFormats = accept?.split(',')
   const constraints = { supportedFormats, maxFileSize: sizeLimit }
@@ -68,7 +69,7 @@ const FileUploadMultipleWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper id={id} options={options} className="w-full">
+    <WidgetWrapper id={id} options={schema.uiOptions} className="w-full">
       <Upload
         value={value}
         errorMessage={rawErrors}

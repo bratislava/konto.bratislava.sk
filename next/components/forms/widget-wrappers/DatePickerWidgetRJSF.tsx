@@ -6,28 +6,27 @@ import React from 'react'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string
-  options: DatePickerUiOptions
   value: string | null
   errorMessage?: string
-  schema: StrictRJSFSchema
+  schema: StrictRJSFSchema & { uiOptions: DatePickerUiOptions }
   onChange: (value?: string) => void
 }
 
 const DatePickerWidgetRJSF = ({
   id,
   label,
-  options,
   rawErrors,
   required,
   disabled,
   value,
   onChange,
   readonly,
+  schema,
 }: DatePickerWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, size, labelSize } = options
+  const { helptext, helptextHeader, tooltip, size, labelSize } = schema.uiOptions
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}

@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { InputUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -7,7 +7,7 @@ import React from 'react'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface InputWidgetRJSFProps extends WidgetProps {
-  options: InputUiOptions
+  schema: StrictRJSFSchema & { uiOptions: InputUiOptions }
   value: string | undefined
   onChange: (value?: string) => void
 }
@@ -15,7 +15,6 @@ interface InputWidgetRJSFProps extends WidgetProps {
 const InputWidgetRJSF = ({
   id,
   label,
-  options,
   placeholder = '',
   required,
   value,
@@ -24,6 +23,7 @@ const InputWidgetRJSF = ({
   rawErrors,
   readonly,
   name,
+  schema,
 }: InputWidgetRJSFProps) => {
   const {
     helptext,
@@ -35,7 +35,7 @@ const InputWidgetRJSF = ({
     inputType,
     size,
     labelSize,
-  } = options
+  } = schema.uiOptions
 
   const handleOnChange = (newValue: string | undefined) => {
     if (newValue && newValue !== '') {
@@ -46,7 +46,7 @@ const InputWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <InputField

@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { NumberUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -8,7 +8,7 @@ import { isDefined } from '../../../frontend/utils/general'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface NumberWidgetRJSFProps extends WidgetProps {
-  options: NumberUiOptions
+  schema: StrictRJSFSchema & { uiOptions: NumberUiOptions }
   value: number | undefined
   onChange: (value?: number) => void
 }
@@ -16,7 +16,6 @@ interface NumberWidgetRJSFProps extends WidgetProps {
 const NumberWidgetRJSF = ({
   id,
   label,
-  options,
   placeholder = '',
   required,
   value,
@@ -25,9 +24,10 @@ const NumberWidgetRJSF = ({
   rawErrors,
   readonly,
   name,
+  schema,
 }: NumberWidgetRJSFProps) => {
   const { helptext, helptextHeader, tooltip, className, resetIcon, leftIcon, size, labelSize } =
-    options
+    schema.uiOptions
 
   const handleOnChange = (newValue: number | undefined) => {
     if (isDefined(newValue)) {
@@ -38,7 +38,7 @@ const NumberWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           // TODO: Create a specialized NumberField component

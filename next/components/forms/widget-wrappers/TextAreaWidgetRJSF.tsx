@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import cx from 'classnames'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -8,8 +8,8 @@ import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWra
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
 interface TextAreaWidgetRJSFProps extends WidgetProps {
+  schema: StrictRJSFSchema & { uiOptions: TextAreaUiOptions }
   value: string | undefined
-  options: TextAreaUiOptions
   onChange: (value?: string) => void
 }
 
@@ -24,8 +24,9 @@ const TextAreaWidgetRJSF = ({
   options,
   onChange,
   readonly,
+  schema,
 }: TextAreaWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, className, size, labelSize } = options
+  const { helptext, helptextHeader, tooltip, className, size, labelSize } = schema.uiOptions
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -36,7 +37,7 @@ const TextAreaWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TextAreaField

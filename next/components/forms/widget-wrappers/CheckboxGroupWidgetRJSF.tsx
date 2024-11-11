@@ -7,9 +7,9 @@ import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
-  options: CheckboxGroupUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  options: Pick<WidgetProps['options'], 'enumOptions'>
   value: string[] | null
-  schema: StrictRJSFSchema
+  schema: StrictRJSFSchema & { uiOptions: CheckboxGroupUiOptions }
   onChange: (value: string[]) => void
 }
 
@@ -19,28 +19,28 @@ const CheckboxGroupWidgetRJSF = ({
   value,
   onChange,
   label,
-  schema: { maxItems },
+  schema,
   rawErrors,
   required,
   readonly,
 }: CheckboxGroupRJSFProps) => {
+  const { enumOptions } = options
   const {
-    enumOptions,
     className,
     variant = 'basic',
     size,
     labelSize,
     helptext,
     helptextHeader,
-  } = options
-  if (!enumOptions) return <div />
+  } = schema.uiOptions
+  if (!enumOptions || !schema.uiOptions) return <div />
 
   const isDisabled = (valueName: string) => {
-    return value?.length === maxItems && !value?.includes(valueName)
+    return value?.length === schema.maxItems && !value?.includes(valueName)
   }
 
   return (
-    <WidgetWrapper id={id} options={options}>
+    <WidgetWrapper id={id} options={schema.uiOptions}>
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

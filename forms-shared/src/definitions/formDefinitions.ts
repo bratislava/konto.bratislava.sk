@@ -147,7 +147,7 @@ export const formDefinitions: FormDefinition[] = [
     schemas: ziadostONajomBytu,
     // pospID contains different wording because the original form was created with a different name
     pospID: '00603481.ziadostONajomnyByt',
-    pospVersion: '1.1',
+    pospVersion: '1.2',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,

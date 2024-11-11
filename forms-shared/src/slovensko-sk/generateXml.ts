@@ -25,6 +25,7 @@ function getSlovenskoSkXmlObjectBase(
  */
 export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlovenskoSk) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
+    JsonVersion: '',
     Json: JSON.stringify({}),
     Summary: {
       Form: {
@@ -46,6 +47,9 @@ export async function generateSlovenskoSkXmlObject(
   serverFiles?: FormsBackendFile[],
 ) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
+    // Before versioning for JSON is implemented, we will hardcode the version to 1.0 as we want to have the version
+    // in Slovensko.sk XMLs beforehand to accommodate for future changes.
+    JsonVersion: '1.0',
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary(formDefinition, formData, serverFiles),
     TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),

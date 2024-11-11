@@ -17,28 +17,45 @@ export class TasksService {
     this.logger = new Logger('TasksService')
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async updatePaymentsFromNoris() {
     const year = new Date().getFullYear()
 
-    const variableSymbolsDb = await this.prismaService.$queryRaw<
-      { variableSymbol: string; id: number }[]
-    >(Prisma.sql`
-    WITH total_payments AS (
-      SELECT "taxId", SUM("amount") AS totalPayments
-      FROM "TaxPayment"
-      WHERE "status" = ${PaymentStatus.SUCCESS}::"PaymentStatus"
-      GROUP BY "taxId"
-    )
-    SELECT t."variableSymbol", t."id"
-    FROM "Tax" t
-    LEFT JOIN total_payments tp ON t."id" = tp."taxId"
-    WHERE 
-      COALESCE(tp.totalPayments, 0) < t."amount"
-      AND t.year = ${year}
-    ORDER BY t."lastCheckedPayments" ASC
-    LIMIT ${MAX_NORIS_PAYMENTS_BATCH_SELECT}
-    `)
+    let variableSymbolsDb: { variableSymbol: string; id: number }[] = []
+    try {
+      variableSymbolsDb = await this.prismaService.$queryRaw<
+        { variableSymbol: string; id: number }[]
+      >(Prisma.sql`
+      SET LOCAL statement_timeout = 600000;
+      WITH total_payments AS (
+        SELECT "taxId", SUM("amount") AS totalPayments
+        FROM "TaxPayment"
+        WHERE "status" = ${PaymentStatus.SUCCESS}::"PaymentStatus"
+        GROUP BY "taxId"
+      )
+      SELECT t."variableSymbol", t."id"
+      FROM "Tax" t
+      LEFT JOIN total_payments tp ON t."id" = tp."taxId"
+      WHERE
+        COALESCE(tp.totalPayments, 0) < t."amount"
+        AND t.year = ${year}
+      ORDER BY t."lastCheckedPayments" ASC
+      LIMIT ${MAX_NORIS_PAYMENTS_BATCH_SELECT}
+      `)
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === '57014'
+      ) {
+        this.logger.warn('Query timed out after 10 minutes')
+        throw error
+      }
+      this.logger.error('Failed to fetch variable symbols from database', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        year,
+      })
+      throw error
+    }
 
     if (variableSymbolsDb.length === 0) return
 

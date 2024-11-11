@@ -17,7 +17,6 @@ export class QrCodeSubservice {
           amount: qrCodeData.amount / 100,
           bankAccounts: [{ iban: process.env.PAYMENT_QR_IBAN }],
           currencyCode: 'EUR',
-          constantSymbol: process.env.PAYMENT_QR_CONSTANT_SYMBOL,
           variableSymbol: qrCodeData.variableSymbol,
           specificSymbol: qrCodeData.specificSymbol,
         },

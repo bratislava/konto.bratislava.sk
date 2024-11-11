@@ -65,7 +65,6 @@ const Details = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
             <div className="isolate flex flex-col items-start gap-1 self-stretch">
               <div className="text-p2">{t('bank_info.csob')}</div>
               <div className="flex w-full">
@@ -76,12 +75,13 @@ const Details = () => {
               </div>
             </div>
             <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
-            <div className="flex flex-col items-start gap-2">
-              <div className="grid grid-cols-1 gap-1 lg:grid-cols-2 lg:gap-2">
-                <div className="text-16-semibold lg:mr-4">{t('constant_symbol')}</div>
-                <div className="text-16 mb-1 lg:mb-0">{t('constant_symbol_number')}</div>
-                <div className="text-16-semibold lg:mr-4">{t('variable_symbol')}</div>
-                <div className="text-16">{taxData?.variableSymbol}</div>
+            <div className="isolate flex flex-col items-start gap-1 self-stretch">
+              <div className="text-p2">{t('variable_symbol')}</div>
+              <div className="flex w-full">
+                <div className="text-16-semibold grow">{taxData?.variableSymbol}</div>
+                <div className="hidden size-6 cursor-pointer sm:block">
+                  <ClipboardCopy copyText={taxData?.variableSymbol} />
+                </div>
               </div>
             </div>
             <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />

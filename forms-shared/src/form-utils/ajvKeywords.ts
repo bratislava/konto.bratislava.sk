@@ -13,4 +13,7 @@ export const baAjvKeywords = [
   {
     keyword: 'file',
   },
+  {
+    keyword: 'uiOptions',
+  },
 ]

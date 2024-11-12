@@ -62,4 +62,4 @@ ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./
-CMD [ "npm", "run", "test:ci" ]
+CMD [ "npm", "run", "test:update" ]

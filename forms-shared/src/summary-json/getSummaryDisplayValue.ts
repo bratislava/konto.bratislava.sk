@@ -95,7 +95,7 @@ export const getSummaryDisplayValues = (
   }
 
   if (widgetType === BaWidgetType.Select) {
-    const selectUiOptions = uiOptions as SelectUiOptions
+    const selectUiOptions = (schema as { uiOptions: SelectUiOptions }).uiOptions
 
     const option = selectUiOptions.selectOptions?.[value]
     if (!option) {
@@ -105,7 +105,7 @@ export const getSummaryDisplayValues = (
     return [createStringValue(option.title)]
   }
   if (widgetType === BaWidgetType.SelectMultiple) {
-    const selectUiOptions = uiOptions as SelectUiOptions
+    const selectUiOptions = (schema as { uiOptions: SelectUiOptions }).uiOptions
 
     if (!Array.isArray(value)) {
       return [invalidValue]

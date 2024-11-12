@@ -37,6 +37,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { JsonSchema } from '../utils/types/global'
 import { FormWithFiles } from '../utils/types/prisma'
+import { patchConvertServiceTaxFormDefinition } from './convert.helper'
 import {
   ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
@@ -85,7 +86,9 @@ export default class ConvertService {
     })) as FormWithFiles
 
     return generateSlovenskoSkXmlObject(
-      formDefinition,
+      isSlovenskoSkTaxFormDefinition(formDefinition)
+        ? patchConvertServiceTaxFormDefinition(formDefinition)
+        : formDefinition,
       formDataJson as GenericObjectType,
       formWithFiles.files,
     )
@@ -219,7 +222,9 @@ export default class ConvertService {
     if (formDefinition.newGovernmentXml) {
       try {
         const jsonForm = await extractJsonFromSlovenskoSkXml(
-          formDefinition,
+          isSlovenskoSkTaxFormDefinition(formDefinition)
+            ? patchConvertServiceTaxFormDefinition(formDefinition)
+            : formDefinition,
           data.xmlForm,
         )
         return { jsonForm }

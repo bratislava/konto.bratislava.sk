@@ -8,6 +8,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
   const validXmlString = `
     <?xml version="1.0" encoding="UTF-8"?>
     <eform xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <JsonVersion>1.0</JsonVersion>
       <Json>{"key":"value"}</Json>
     </eform>
   `
@@ -21,6 +22,15 @@ describe('extractJsonFromSlovenskoSkXml', () => {
 
   it('should successfully extract JSON from valid XML', async () => {
     const result = await extractJsonFromSlovenskoSkXml(formDefinition, validXmlString)
+    expect(result).toEqual({ key: 'value' })
+  })
+
+  it('should successfully extract JSON from valid XML without version (backwards compatibility)', async () => {
+    const xmlWithoutVersion = validXmlString
+      .split('\n')
+      .filter((line) => !line.includes('<JsonVersion>1.0</JsonVersion>'))
+      .join('\n')
+    const result = await extractJsonFromSlovenskoSkXml(formDefinition, xmlWithoutVersion)
     expect(result).toEqual({ key: 'value' })
   })
 
@@ -38,6 +48,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     const incorrectXmlStructure = `
       <?xml version="1.0" encoding="UTF-8"?>
       <wrongRoot xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <JsonVersion>1.0</JsonVersion>
         <Json>{"key":"value"}</Json>
       </wrongRoot>
     `

@@ -19,6 +19,14 @@ const baseFormXmlSchema = {
           },
           required: ['xmlns'],
         },
+        JsonVersion: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          minItems: 1,
+          maxItems: 1,
+        },
         Json: {
           type: 'array',
           items: {
@@ -39,6 +47,7 @@ type BaseFormXml = {
     $: {
       xmlns: string
     }
+    JsonVersion: [string]
     Json: [string]
   }
 }
@@ -66,8 +75,6 @@ export enum ExtractJsonFromSlovenskoSkXmlErrorType {
 
 /**
  * Extracts JSON data from Slovensko.sk XML string
- *
- * TODO: Consider adding `omitExtraData`
  */
 export async function extractJsonFromSlovenskoSkXml(
   formDefinition: FormDefinitionSlovenskoSk,

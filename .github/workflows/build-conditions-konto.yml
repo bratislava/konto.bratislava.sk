@@ -23,7 +23,7 @@ on:
 jobs:
   changes:
     name: Checking for directory changes in repository
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: ubuntu-latest
     outputs:
       forms-shared: ${{ steps.filter.outputs.forms-shared }}
       next: ${{ steps.filter.outputs.next }}
@@ -60,7 +60,7 @@ jobs:
   conditions:
     name: Checking build conditions
     needs: changes
-    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    runs-on: ubuntu-latest
     env:
       COUNT: 0
     outputs:

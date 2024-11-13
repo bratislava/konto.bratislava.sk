@@ -40,7 +40,7 @@ export default class FormsTaskSubservice {
     const fileIds = forms.flatMap((form) => form.files.map((file) => file.id))
 
     // Delete the forms along with its files
-    this.filesService.deleteFileMany(fileIds)
+    await this.filesService.deleteFileMany(fileIds)
     await this.prismaService.forms.deleteMany({
       where: {
         id: {

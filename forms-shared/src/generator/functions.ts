@@ -297,7 +297,9 @@ export const checkbox = (
       type: 'boolean',
       title: options.title,
       default: options.default,
-      const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
+      // Temporarily changed to enum until this issue is resolved:
+      // https://github.com/rjsf-team/react-jsonschema-form/issues/4344
+      enum: typeof options.constValue === 'boolean' ? [options.constValue] : undefined,
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Checkbox,

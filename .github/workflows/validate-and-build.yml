@@ -11,7 +11,7 @@ permissions:
 jobs:
   test-forms-shared:
     name: Run tests on forms-shared
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@beta
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@stable
     with:
       directory: forms-shared/
 

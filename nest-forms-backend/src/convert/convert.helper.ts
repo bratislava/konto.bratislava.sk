@@ -14,6 +14,7 @@ export const patchConvertServiceTaxFormDefinition = (
   formDefinition: FormDefinitionSlovenskoSkTax,
 ): FormDefinitionSlovenskoSkTax => ({
   ...formDefinition,
+  // eslint-disable-next-line no-secrets/no-secrets
   pospID: '00603481.priznanieKDaniZNehnutelnosti',
   pospVersion: '1.0',
 })

@@ -4,7 +4,12 @@ import * as prettier from 'prettier'
 import { get as getAppRootDir } from 'app-root-dir'
 import path from 'path'
 
-const globs = ['src/generator/uiOptionsTypes.ts', 'src/schemas/**/*.ts']
+const globs = [
+  'src/generator/uiOptionsTypes.ts',
+  'src/form-utils/ajvFormats.ts',
+  'src/form-utils/ajvKeywords.ts',
+  'src/schemas/**/*.ts',
+]
 const ignorePatterns = [
   'src/schemas/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky.ts',
   'src/schemas/olo',

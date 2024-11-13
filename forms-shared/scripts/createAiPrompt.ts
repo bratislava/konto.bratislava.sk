@@ -4,7 +4,12 @@ import * as prettier from 'prettier'
 import { get as getAppRootDir } from 'app-root-dir'
 import path from 'path'
 
-const globs = ['src/generator/uiOptionsTypes.ts', 'src/schemas/**/*.ts']
+const globs = [
+  'src/generator/uiOptionsTypes.ts',
+  'src/form-utils/ajvFormats.ts',
+  'src/form-utils/ajvKeywords.ts',
+  'src/schemas/**/*.ts',
+]
 const ignorePatterns = [
   'src/schemas/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky.ts',
   'src/schemas/olo',
@@ -22,6 +27,7 @@ async function createAiPrompt() {
 
     for (const file of files) {
       const content = await fs.readFile(file, 'utf-8')
+      // Reformats to have zero unnecessary whitespace to save tokens
       const formattedContent = await prettier.format(content, {
         ...prettierConfig,
         parser: 'typescript',

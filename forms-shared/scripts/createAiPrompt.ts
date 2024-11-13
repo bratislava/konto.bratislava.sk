@@ -27,6 +27,7 @@ async function createAiPrompt() {
 
     for (const file of files) {
       const content = await fs.readFile(file, 'utf-8')
+      // Reformats to have zero unnecessary whitespace to save tokens
       const formattedContent = await prettier.format(content, {
         ...prettierConfig,
         parser: 'typescript',

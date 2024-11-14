@@ -1,3 +1,5 @@
+import { EnumMetadata } from './optionItems'
+
 export type CustomComponentAccordionProps = {
   title: string
   content: string
@@ -73,6 +75,7 @@ export type WidgetUiOptions = WidgetSpacing & {
 }
 
 export type CheckboxGroupUiOptions = {
+  enumMetadata: EnumMetadata<string>[]
   variant?: 'basic' | 'boxed'
 } & WidgetUiOptions
 
@@ -94,25 +97,14 @@ export type InputUiOptions = {
 
 export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
 
-type RadioOption = {
-  value: string
-  description?: string
-}
-
 export type RadioGroupUiOptions = {
-  className?: string
-  radioOptions?: RadioOption[]
+  enumMetadata: EnumMetadata<string | boolean>[]
   variant?: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-type SelectOption = {
-  title: string
-  description?: string
-}
-
 export type SelectUiOptions = {
-  selectOptions?: Record<string, SelectOption>
+  enumMetadata: EnumMetadata<string>[]
   placeholder?: string
 } & WidgetUiOptions
 

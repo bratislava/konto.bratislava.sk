@@ -25,6 +25,13 @@ import {
   TimePickerUiOptions,
 } from './uiOptionsTypes'
 import { BaAjvInputFormat } from '../form-utils/ajvFormats'
+import {
+  createEnumMetadata,
+  createEnumSchemaDefault,
+  createEnumSchemaDefaultMultiple,
+  createEnumSchemaEnum,
+  OptionItem,
+} from './optionItems'
 
 export type Schemas = {
   schema: RJSFSchema
@@ -63,37 +70,23 @@ type BaseOptions = {
 export const select = (
   property: string,
   options: BaseOptions & {
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    options: OptionItem<string>[]
   },
-  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
+  uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
     schema: removeUndefinedValues({
       type: 'string',
       title: options.title,
-      // This had to be changed from oneOf to enum because of this bug:
-      // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
-      // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
-      // Form validation failed
-      // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
-      enum: options.options.map(({ value }) => value),
-      default: options.options.find(({ isDefault }) => isDefault)?.value,
+      enum: createEnumSchemaEnum(options.options),
+      default: createEnumSchemaDefault(options.options),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Select,
       'ui:options': {
         ...uiOptions,
-        selectOptions: Object.fromEntries(
-          options.options.map(
-            ({ value, title, description }) => [value, { title, description }] as const,
-          ),
-        ),
+        enumMetadata: createEnumMetadata(options.options),
       },
     }),
     required: Boolean(options.required),
@@ -105,14 +98,9 @@ export const selectMultiple = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    options: OptionItem<string>[]
   },
-  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
+  uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
@@ -121,27 +109,18 @@ export const selectMultiple = (
       title: options.title,
       items: {
         type: 'string',
-        // This had to be changed from oneOf to enum because of this bug:
-        // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
-        // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
-        // Form validation failed
-        // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
-        enum: options.options.map(({ value }) => value),
+        enum: createEnumSchemaEnum(options.options),
       },
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       uniqueItems: true,
-      default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
+      default: createEnumSchemaDefaultMultiple(options.options),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.SelectMultiple,
       'ui:options': {
         ...uiOptions,
-        selectOptions: Object.fromEntries(
-          options.options.map(
-            ({ value, title, description }) => [value, { title, description }] as const,
-          ),
-        ),
+        enumMetadata: createEnumMetadata(options.options),
       },
     }),
     required: Boolean(options.required),
@@ -226,43 +205,29 @@ export const number = (
   }
 }
 
-type StringToType<T> = T extends 'string'
-  ? string
-  : T extends 'number'
-    ? number
-    : T extends 'boolean'
-      ? boolean
-      : never
+type StringToType<T> = T extends 'string' ? string : T extends 'boolean' ? boolean : never
 
-export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
+export const radioGroup = <ValueType extends 'string' | 'boolean'>(
   property: string,
   options: BaseOptions & {
-    type: T
-    options: {
-      value: StringToType<T>
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    type: ValueType
+    options: OptionItem<StringToType<ValueType>>[]
   },
-  uiOptions: Omit<RadioGroupUiOptions, 'radioOptions'>,
+  uiOptions: Omit<RadioGroupUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
     schema: removeUndefinedValues({
       type: options.type,
       title: options.title,
-      default: options.options.find(({ isDefault }) => isDefault)?.value,
-      oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
+      enum: createEnumSchemaEnum(options.options),
+      default: createEnumSchemaDefault(options.options),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.RadioGroup,
       'ui:options': {
         ...uiOptions,
-        radioOptions: options.options
-          // These are only used as a lookup for the description, so we need only those that have it
-          .filter(({ description }) => description)
-          .map(({ value, description }) => ({ value, description })),
+        enumMetadata: createEnumMetadata(options.options),
       },
     }),
     required: Boolean(options.required),
@@ -314,14 +279,9 @@ export const checkboxGroup = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    options: OptionItem<string>[]
   },
-  uiOptions: CheckboxGroupUiOptions,
+  uiOptions: Omit<CheckboxGroupUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
@@ -332,13 +292,16 @@ export const checkboxGroup = (
       maxItems: options.maxItems,
       uniqueItems: true,
       items: {
-        anyOf: options.options.map(({ value, title }) => ({ const: value, title })),
+        enum: createEnumSchemaEnum(options.options),
       },
-      default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
+      default: createEnumSchemaDefaultMultiple(options.options),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.CheckboxGroup,
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        enumMetadata: createEnumMetadata(options.options),
+      },
     }),
     required: Boolean(options.required),
   }

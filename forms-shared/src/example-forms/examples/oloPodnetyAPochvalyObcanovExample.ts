@@ -11,7 +11,6 @@ const exampleForm: ExampleForm = {
       email: 'mrkva@jan.sk',
       sprava: 'I am testing OLO submissions.',
       prilohy: ['49c3b893-0a3a-4fdf-9f59-61aa58ed0d0e'],
-      suhlasSOchranouOsobnychUdajov: true,
       datumCasUdalosti: '2023-10-07',
     },
   },

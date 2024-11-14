@@ -8562,11 +8562,6 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
                 "title": "Správa",
                 "type": "string",
               },
-              "suhlasSOchranouOsobnychUdajov": {
-                "const": true,
-                "title": "Súhlas s ochranou osobných údajov",
-                "type": "boolean",
-              },
               "telefon": {
                 "format": "ba-phone-number",
                 "title": "Telefónne číslo",
@@ -8580,7 +8575,6 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
               "telefon",
               "email",
               "sprava",
-              "suhlasSOchranouOsobnychUdajov",
             ],
             "title": "Podať podnet",
             "type": "object",
@@ -8657,14 +8651,6 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
         },
         "ui:widget": "TextArea",
       },
-      "suhlasSOchranouOsobnychUdajov": {
-        "ui:options": {
-          "checkboxLabel": "Prečítal/a som si a oboznámil/a som sa s informáciami o spracúvaní osobných údajov.",
-          "helptextHeader": "Vaše osobné údaje používame na vybavenie vašej požiadavky.",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "telefon": {
         "ui:label": false,
         "ui:options": {
@@ -8693,7 +8679,6 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schemas match snapshot 
         "email",
         "sprava",
         "prilohy",
-        "suhlasSOchranouOsobnychUdajov",
       ],
     },
     "ui:hideError": true,

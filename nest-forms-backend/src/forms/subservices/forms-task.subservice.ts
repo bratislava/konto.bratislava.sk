@@ -41,7 +41,12 @@ export default class FormsTaskSubservice {
     })
     const formIds = forms.map((form) => form.id)
     const fileIds = forms.flatMap((form) => form.files.map((file) => file.id))
-    this.logger.log(`Found ${formIds.length} old draft forms.`)
+    this.logger.log(
+      `Found ${formIds.length} old draft forms: ${formIds.join(', ')}`,
+    )
+    this.logger.log(
+      `Found ${fileIds.length} files to delete from old draft forms: ${fileIds.join(', ')}`,
+    )
 
     // Delete the forms along with its files
     await this.filesService.deleteFileMany(fileIds)

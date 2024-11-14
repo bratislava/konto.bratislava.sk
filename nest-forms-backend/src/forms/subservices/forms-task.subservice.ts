@@ -39,6 +39,11 @@ export default class FormsTaskSubservice {
         },
       },
     })
+    if (forms.length === 0) {
+      this.logger.log('No old draft forms found to delete.')
+      return
+    }
+
     const formIds = forms.map((form) => form.id)
     const fileIds = forms.flatMap((form) => form.files.map((file) => file.id))
     this.logger.log(

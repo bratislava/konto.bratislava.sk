@@ -1,5 +1,4 @@
 import {
-  checkbox,
   checkboxGroup,
   conditionalFields,
   datePicker,
@@ -105,20 +104,6 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
       },
       {
         type: 'dragAndDrop',
-      },
-    ),
-    checkbox(
-      'suhlasSOchranouOsobnychUdajov',
-      {
-        title: 'Súhlas s ochranou osobných údajov',
-        required: true,
-        constValue: true,
-      },
-      {
-        checkboxLabel:
-          'Prečítal/a som si a oboznámil/a som sa s informáciami o spracúvaní osobných údajov.',
-        variant: 'boxed',
-        helptextHeader: 'Vaše osobné údaje používame na vybavenie vašej požiadavky.',
       },
     ),
   ]),

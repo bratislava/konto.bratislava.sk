@@ -2847,18 +2847,6 @@ exports[`getSummaryJson oloPodnetyAPochvalyObcanovExample summary JSON should ma
             "49c3b893-0a3a-4fdf-9f59-61aa58ed0d0e",
           ],
         },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Prečítal/a som si a oboznámil/a som sa s informáciami o spracúvaní osobných údajov.",
-            },
-          ],
-          "id": "root_podnet_suhlasSOchranouOsobnychUdajov",
-          "label": "Súhlas s ochranou osobných údajov",
-          "type": "Field",
-          "value": true,
-        },
       ],
       "id": "root_podnet",
       "title": "Podať podnet",

@@ -1,12 +1,14 @@
 import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
+import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
+import { useMemo } from 'react'
 
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
-import { createSelectOptionsFromEnumOptions } from './createSelectOptionsFromEnumOptions'
 
 interface SelectWidgetRJSFProps extends WidgetProps {
-  options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  options: WithEnumOptions<SelectUiOptions>
   value: string | undefined
   onChange: (value?: string | undefined) => void
 }
@@ -25,18 +27,20 @@ const SelectWidgetRJSF = ({
 }: SelectWidgetRJSFProps) => {
   const {
     enumOptions,
+    enumMetadata,
     helptext,
     helptextHeader,
     tooltip,
     className,
     size,
     labelSize,
-    selectOptions,
   } = options
 
-  const componentOptions = createSelectOptionsFromEnumOptions(enumOptions, selectOptions)
-
-  const selectValue = componentOptions.find((option) => option.value === value)
+  const mergedOptions = useMemo(
+    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
+    [enumOptions, enumMetadata],
+  )
+  const selectValue = mergedOptions.find((option) => option.value === value)
 
   const handleChange = (newValue: SelectOption | null) =>
     onChange(newValue ? newValue.value : undefined)
@@ -55,7 +59,7 @@ const SelectWidgetRJSF = ({
         className={className}
         size={size}
         labelSize={labelSize}
-        options={componentOptions}
+        options={mergedOptions}
         placeholder={placeholder}
         displayOptionalLabel
         value={selectValue}

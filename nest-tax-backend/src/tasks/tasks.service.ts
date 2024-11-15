@@ -26,7 +26,6 @@ export class TasksService {
       variableSymbolsDb = await this.prismaService.$queryRaw<
         { variableSymbol: string; id: number }[]
       >(Prisma.sql`
-      SET LOCAL statement_timeout = 600000;
       WITH total_payments AS (
         SELECT "taxId", SUM("amount") AS totalPayments
         FROM "TaxPayment"

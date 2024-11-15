@@ -184,13 +184,13 @@ export default class EmailFormsSubservice {
           id: form.id,
         },
         data: {
-          state: FormState.PROCESSING,
+          state: FormState.FINISHED,
           error: FormError.NONE,
         },
       })
       .catch((error) => {
         alertError(
-          `Setting form state with id ${formId} to PROCESSING failed.`,
+          `Setting form state with id ${formId} to FINISHED failed.`,
           this.logger,
           JSON.stringify(error),
         )

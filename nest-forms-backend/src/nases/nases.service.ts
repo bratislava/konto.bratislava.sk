@@ -450,8 +450,6 @@ export default class NasesService {
 
     if (!isSent) {
       // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
-      // TODO: This also breaks if anything throws between setting to SENDING_TO_NASES and reverting to DRAFT
-      // today, if we don't revert the state in this case, the form can't be sent again
       await this.formsService.updateForm(data.formId, {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,

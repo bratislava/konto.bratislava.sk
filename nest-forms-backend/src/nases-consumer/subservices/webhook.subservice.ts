@@ -90,12 +90,12 @@ export default class WebhookSubservice {
           id: formId,
         },
         data: {
-          state: FormState.PROCESSING,
+          state: FormState.FINISHED,
         },
       })
     } catch (error) {
       alertError(
-        `Setting form state with id ${formId} to PROCESSING failed.`,
+        `Setting form state with id ${formId} to FINISHED failed.`,
         this.logger,
         JSON.stringify(error),
       )

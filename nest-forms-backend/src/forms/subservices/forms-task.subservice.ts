@@ -19,6 +19,16 @@ export default class FormsTaskSubservice {
     this.logger.log('Deleting old draft forms.')
     const oneWeekAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
 
+    const where = {
+      state: FormState.DRAFT,
+      updatedAt: {
+        lt: oneWeekAgo,
+      },
+      formDataJson: {
+        equals: Prisma.DbNull,
+      },
+    }
+
     // Get the forms that are in DRAFT state, older than one week and have no data.
     const forms = await this.prismaService.forms.findMany({
       select: {
@@ -29,15 +39,7 @@ export default class FormsTaskSubservice {
           },
         },
       },
-      where: {
-        state: FormState.DRAFT,
-        updatedAt: {
-          lt: oneWeekAgo,
-        },
-        formDataJson: {
-          equals: Prisma.DbNull,
-        },
-      },
+      where,
     })
     if (forms.length === 0) {
       this.logger.log('No old draft forms found to delete.')
@@ -56,11 +58,10 @@ export default class FormsTaskSubservice {
     // Delete the forms along with its files
     await this.filesService.deleteFileMany(fileIds)
     const deleted = await this.prismaService.forms.deleteMany({
-      where: {
-        id: {
-          in: formIds,
-        },
-      },
+      // Delete the forms based on the same where clause as above, not by IN: formIds.
+      // The reason is that there is a LIMIT on how many ids can be passed to IN, this ensures that all forms are deleted.
+      // The result of WHERE is the same as in the findMany query above, since oneWeekAgo is a constant.
+      where,
     })
     this.logger.log(`Deleted ${deleted.count} old draft forms.`)
   }

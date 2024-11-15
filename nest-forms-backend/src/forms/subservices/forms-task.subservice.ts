@@ -56,9 +56,16 @@ export default class FormsTaskSubservice {
     // Delete the forms along with its files
     await this.filesService.deleteFileMany(fileIds)
     const deleted = await this.prismaService.forms.deleteMany({
+      // Delete the forms based on the same where clause as above, not by IN: formIds.
+      // The reason is that there is a LIMIT on how many ids can be passed to IN, this ensures that all forms are deleted.
+      // The result of WHERE is the same as in the findMany query above, since oneWeekAgo is a constant.
       where: {
-        id: {
-          in: formIds,
+        state: FormState.DRAFT,
+        updatedAt: {
+          lt: oneWeekAgo,
+        },
+        formDataJson: {
+          equals: Prisma.DbNull,
         },
       },
     })

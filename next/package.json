@@ -89,7 +89,7 @@
     "pretty-bytes": "^6.1.1",
     "qs": "^6.11.2",
     "react": "18.3.1",
-    "react-aria": "3.33.1",
+    "react-aria": "3.35.1",
     "react-aria-components": "1.2.1",
     "react-beforeunload": "^2.6.0",
     "react-cookie-consent": "7.5.0",

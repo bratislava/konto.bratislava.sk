@@ -1,13 +1,15 @@
 import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
+import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
+import { useMemo } from 'react'
 
 import { isDefined } from '../../../frontend/utils/general'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
-import { createSelectOptionsFromEnumOptions } from './createSelectOptionsFromEnumOptions'
 
 interface SelectMultipleWidgetRJSFProps extends WidgetProps {
-  options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  options: WithEnumOptions<SelectUiOptions>
   value: string[] | undefined
   onChange: (value?: string[] | undefined) => void
 }
@@ -26,21 +28,28 @@ const SelectMultipleWidgetRJSF = ({
 }: SelectMultipleWidgetRJSFProps) => {
   const {
     enumOptions,
+    enumMetadata,
     helptext,
     helptextHeader,
     tooltip,
     className,
     size,
     labelSize,
-    selectOptions,
   } = options
 
-  const componentOptions = createSelectOptionsFromEnumOptions(enumOptions, selectOptions)
+  const selectOptions = useMemo(
+    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
+    [enumOptions, enumMetadata],
+  )
+  const selectValue = useMemo(() => {
+    if (!value) {
+      return []
+    }
 
-  const selectValue =
-    value
-      ?.map((value) => componentOptions.find((option) => option.value === value))
-      .filter(isDefined) ?? []
+    return value
+      .map((value) => selectOptions.find((option) => option.value === value))
+      .filter(isDefined)
+  }, [value, selectOptions])
 
   const handleChange = (newValue: readonly SelectOption[]) =>
     onChange(newValue.map((option) => option.value).filter(isDefined))
@@ -59,7 +68,7 @@ const SelectMultipleWidgetRJSF = ({
         className={className}
         size={size}
         labelSize={labelSize}
-        options={componentOptions}
+        options={selectOptions}
         placeholder={placeholder}
         displayOptionalLabel
         value={selectValue}

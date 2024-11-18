@@ -5,7 +5,6 @@ import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWid
 import { BaFieldType, BaWidgetType } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
-import { wrapWidgetsInContext } from './useFormWidget'
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
@@ -24,7 +23,7 @@ import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 // ComponentType<WidgetProps> must be used for each widget, because the library won't accept our custom overridden
 // `options` property.
 const theme: ThemeProps = {
-  widgets: wrapWidgetsInContext({
+  widgets: {
     [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.SelectMultiple]: SelectMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
@@ -37,7 +36,7 @@ const theme: ThemeProps = {
     [BaWidgetType.FileUploadMultiple]: FileUploadMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.DatePicker]: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TimePicker]: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
-  } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>),
+  } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: CustomComponentsFieldRJSF,
   } satisfies Record<BaFieldType, ComponentType<FieldProps>>,

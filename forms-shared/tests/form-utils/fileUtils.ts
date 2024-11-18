@@ -10,7 +10,7 @@ describe('fileUtils', () => {
       'fakeFileSelect',
       {
         title: 'Fake file select',
-        options: [
+        items: [
           {
             value: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             label: 'Fake file 1',

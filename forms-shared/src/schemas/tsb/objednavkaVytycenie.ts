@@ -10,7 +10,7 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField } from '../shared/fields'
 
 export default schema(
@@ -26,7 +26,7 @@ export default schema(
           type: 'string',
           title: 'Objednávate ako',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Fyzická osoba',
             'Fyzická osoba - podnikateľ',
             'Právnická osoba',
@@ -201,7 +201,7 @@ export default schema(
               type: 'boolean',
               title: 'Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?',
               required: true,
-              options: [
+              items: [
                 { value: true, label: 'Áno' },
                 { value: false, label: 'Nie', isDefault: true },
               ],
@@ -217,7 +217,7 @@ export default schema(
               {
                 title: 'Katastrálne územia',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',
@@ -252,7 +252,7 @@ export default schema(
               {
                 title: 'Katastrálne územie',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',

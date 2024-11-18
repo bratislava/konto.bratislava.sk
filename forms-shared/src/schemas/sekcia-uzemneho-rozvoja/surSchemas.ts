@@ -8,7 +8,7 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 
 const ziadatelInvestorFields = [
@@ -18,11 +18,7 @@ const ziadatelInvestorFields = [
       type: 'string',
       title: 'Žiadate ako',
       required: true,
-      options: createStringOptions([
-        'Fyzická osoba',
-        'Fyzická osoba – podnikateľ',
-        'Právnická osoba',
-      ]),
+      items: createStringItems(['Fyzická osoba', 'Fyzická osoba – podnikateľ', 'Právnická osoba']),
     },
     { variant: 'boxed' },
   ),
@@ -68,7 +64,7 @@ export const getSurSchema = (zavazne: boolean) =>
             type: 'boolean',
             title: 'Je investor rovnaká osoba ako žiadateľ?',
             required: true,
-            options: [
+            items: [
               { value: true, label: 'Áno', isDefault: true },
               { value: false, label: 'Nie' },
             ],
@@ -116,7 +112,7 @@ export const getSurSchema = (zavazne: boolean) =>
           {
             type: 'string',
             title: 'Druh stavby',
-            options: createStringOptions([
+            items: createStringItems([
               'Bytový dom',
               'Rodinný dom',
               'Iná budova na bývanie',
@@ -140,7 +136,7 @@ export const getSurSchema = (zavazne: boolean) =>
           {
             title: 'Katastrálne územie',
             required: true,
-            options: createStringOptions(
+            items: createStringItems(
               [
                 'Čunovo',
                 'Devín',
@@ -181,7 +177,7 @@ export const getSurSchema = (zavazne: boolean) =>
                 {
                   type: 'string',
                   title: 'Typ konania',
-                  options: createStringOptions([
+                  items: createStringItems([
                     'Územné konanie',
                     'Územné konanie spojené so stavebným konaním',
                     'Zmena stavby pred dokončením',
@@ -200,7 +196,7 @@ export const getSurSchema = (zavazne: boolean) =>
                     {
                       type: 'string',
                       title: 'Upresnenie konania',
-                      options: createStringOptions([
+                      items: createStringItems([
                         'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
                         'Dodatočné povolenie zmeny stavby pred dokončením',
                       ]),

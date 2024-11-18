@@ -11,7 +11,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { createStringOptions } from '../../generator/helpers'
+import { createStringItems } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 
@@ -28,7 +28,7 @@ export default schema(
           type: 'string',
           title: 'Žiadam ako',
           required: true,
-          options: createStringOptions(['Fyzická osoba']),
+          items: createStringItems(['Fyzická osoba']),
         },
         { variant: 'boxed', orientations: 'column' },
       ),
@@ -77,7 +77,7 @@ export default schema(
         {
           title: 'Preferovaný čas odvozu',
           required: true,
-          options: createStringOptions(
+          items: createStringItems(
             [
               '07:00 (pondelok - sobota)',
               '09:00 (pondelok - sobota)',

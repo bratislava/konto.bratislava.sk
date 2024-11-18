@@ -8,7 +8,7 @@ export default step(
       'pozemky',
       {
         title: 'Pozemky',
-        options: [
+        items: [
           {
             value: 'option1',
             label: 'pozemky, na ktorých sú cintoríny, kolumbáriá, urnové háje a rozptylové lúky',
@@ -34,7 +34,7 @@ export default step(
       'stavby',
       {
         title: 'Stavby',
-        options: [
+        items: [
           {
             value: 'option1',
             label: 'stavby slúžiace detským domovom',
@@ -57,7 +57,7 @@ export default step(
       'byty',
       {
         title: 'Byty',
-        options: [
+        items: [
           {
             value: 'option1',
             label:

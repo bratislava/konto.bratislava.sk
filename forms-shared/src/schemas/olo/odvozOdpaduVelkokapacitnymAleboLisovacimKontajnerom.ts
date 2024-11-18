@@ -12,7 +12,7 @@ import {
   textArea,
   timePicker,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -25,11 +25,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions([
-          'Fyzická osoba',
-          'Právnická osoba',
-          'Správcovská spoločnosť',
-        ]),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -132,7 +128,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       {
         title: 'Druh odpadu',
         required: true,
-        options: createStringOptions(['Objemný', 'Záhradný', 'Iné'], false),
+        items: createStringItems(['Objemný', 'Záhradný', 'Iné'], false),
       },
       {},
     ),
@@ -153,7 +149,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       {
         title: 'Objem kontajnera',
         required: true,
-        options: [
+        items: [
           { value: '7m3_3t', label: 'objem: 7 m³ / nosnosť: do 3 t' },
           { value: '10m3_3t', label: 'objem: 10 m³ / nosnosť: do 3 t' },
           { value: '11m3_8t', label: 'objem: 11 m³ / nosnosť: do 8 t' },

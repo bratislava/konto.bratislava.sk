@@ -1,5 +1,5 @@
 import { markdownText, number, radioGroup, step } from '../../generator/functions'
-import { createCamelCaseOptionsV2 } from '../../generator/helpers'
+import { createCamelCaseItemsV2 } from '../../generator/helpers'
 
 export default step('druhPriznania', { title: 'Druh priznania' }, [
   radioGroup(
@@ -8,7 +8,7 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       type: 'string',
       title: 'Vyberte druh priznania',
       required: true,
-      options: createCamelCaseOptionsV2([
+      items: createCamelCaseItemsV2([
         {
           label: 'Priznanie',
           description: 'Označte, ak ste sa stali v Bratislave vlastníkom prvej nehnuteľnosti.',

@@ -11,7 +11,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -24,11 +24,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions([
-          'Fyzická osoba',
-          'Právnická osoba',
-          'Správcovská spoločnosť',
-        ]),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -137,7 +133,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       {
         title: 'Vyberte komoditu',
         required: true,
-        options: createStringOptions(
+        items: createStringItems(
           [
             'Papier',
             'Plast',

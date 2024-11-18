@@ -61,7 +61,7 @@ describe('getSummaryDisplayValues', () => {
       'selectProperty',
       {
         title: 'Select Title',
-        options: [
+        items: [
           { value: 'value-1', label: 'Label 1' },
           { value: 'value-2', label: 'Label 2' },
         ],
@@ -96,7 +96,7 @@ describe('getSummaryDisplayValues', () => {
       'selectMultipleProperty',
       {
         title: 'Select Multiple Title',
-        options: [
+        items: [
           { value: 'value-1', label: 'Label 1' },
           { value: 'value-2', label: 'Label 2' },
         ],
@@ -143,7 +143,7 @@ describe('getSummaryDisplayValues', () => {
       {
         title: 'Radio Group Title',
         type: 'string',
-        options: [
+        items: [
           { value: 'value1', label: 'Label 1' },
           { value: 'value2', label: 'Label 2' },
         ],
@@ -282,7 +282,7 @@ describe('getSummaryDisplayValues', () => {
       'checkboxGroupProperty',
       {
         title: 'Checkbox Group Title',
-        options: [
+        items: [
           { value: 'option1', label: 'Title 1' },
           { value: 'option2', label: 'Title 2' },
           { value: 'option3', label: 'Title 3' },

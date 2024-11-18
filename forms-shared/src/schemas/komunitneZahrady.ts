@@ -11,7 +11,7 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import { createCondition, createStringItems } from '../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 
 const umiestnenieADizajn = [
@@ -104,7 +104,7 @@ export default schema(
             type: 'string',
             title: 'O aký pozemok máte záujem?',
             required: true,
-            options: [
+            items: [
               {
                 value: 'predschvalenyPozemok',
                 label: 'Predschválený mestský pozemok',
@@ -124,7 +124,7 @@ export default schema(
             {
               title: 'Ponuka predschválených mestských pozemkov',
               required: true,
-              options: createStringOptions(
+              items: createStringItems(
                 [
                   'Azalková',
                   'Budatínska A',
@@ -166,7 +166,7 @@ export default schema(
             {
               title: 'Mestská časť, v ktorej sa pozemok nachádza',
               required: true,
-              options: createStringOptions(
+              items: createStringItems(
                 [
                   'Čunovo',
                   'Devín',

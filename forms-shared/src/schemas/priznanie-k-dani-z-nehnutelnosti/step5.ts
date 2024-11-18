@@ -224,7 +224,7 @@ const innerArray = (kalkulacka: boolean) =>
           title:
             'Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -263,7 +263,7 @@ const innerArray = (kalkulacka: boolean) =>
               {
                 title: 'Účel využitia stavby',
                 required: true,
-                options: [
+                items: [
                   {
                     value: 'a',
                     label:

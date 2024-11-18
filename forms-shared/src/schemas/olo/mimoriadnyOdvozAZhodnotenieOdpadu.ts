@@ -14,7 +14,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 
@@ -31,11 +31,7 @@ export default schema(
           type: 'string',
           title: 'Žiadam ako',
           required: true,
-          options: createStringOptions([
-            'Fyzická osoba',
-            'Právnická osoba',
-            'Správcovská spoločnosť',
-          ]),
+          items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
         },
         { variant: 'boxed', orientations: 'column' },
       ),
@@ -164,7 +160,7 @@ export default schema(
             {
               title: 'Vyberte druh odpadu',
               required: true,
-              options: createStringOptions([
+              items: createStringItems([
                 'Zmesový komunálny odpad',
                 'Kuchynský biologicky rozložiteľný odpad',
                 'Jedlé oleje a tuky',
@@ -183,7 +179,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -205,7 +201,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '23 l zberná nádoba',
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
@@ -224,7 +220,7 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions(['120 l zberná nádoba']),
+                items: createStringItems(['120 l zberná nádoba']),
               },
               {
                 helptextHeader: markdownText(
@@ -239,7 +235,7 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   '120 l zberná nádoba',
                   '240 l zberná nádoba',
                   '1100 l zberná nádoba',
@@ -260,7 +256,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -278,7 +274,7 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   '120 l zberná nádoba',
                   '240 l zberná nádoba',
                   '1100 l zberná nádoba',
@@ -298,7 +294,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions(['120 l zberná nádoba', '240 l zberná nádoba']),
+                  items: createStringItems(['120 l zberná nádoba', '240 l zberná nádoba']),
                 },
                 {},
               ),

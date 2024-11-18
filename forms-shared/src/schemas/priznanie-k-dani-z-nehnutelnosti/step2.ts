@@ -6,7 +6,7 @@ import {
   radioGroup,
   step,
 } from '../../generator/functions'
-import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
+import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
 import { danovnik, splnomocnenec } from './osoby'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
@@ -16,7 +16,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       type: 'boolean',
       title: 'Podávate priznanie k dani z nehnuteľností vo svojom mene?',
       required: true,
-      options: [
+      items: [
         { value: true, label: 'Áno', isDefault: true },
         {
           value: false,
@@ -54,7 +54,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
             type: 'string',
             title: 'Podávate ako oprávnená osoba (splnomocnenec)',
             required: true,
-            options: createCamelCaseOptionsV2([
+            items: createCamelCaseItemsV2([
               { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
               {
                 label: 'Právnicka osoba',
@@ -75,7 +75,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       type: 'string',
       title: 'Podávate priznanie ako',
       required: true,
-      options: createCamelCaseOptionsV2([
+      items: createCamelCaseItemsV2([
         { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
         { label: 'Fyzická osoba podnikateľ', description: 'SZČO alebo živnostník.' },
         {

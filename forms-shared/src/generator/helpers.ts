@@ -128,76 +128,76 @@ export const createCondition = (conditions: [string[], RJSFSchema][]) => {
   return result as RJSFSchema
 }
 
-const assertUniqueOptions = (options: { value: string }[]) => {
-  const uniqueValues = new Set(options.map((option) => option.value))
-  if (uniqueValues.size !== options.length) {
-    throw new Error('Options must have unique values')
+const assertUniqueItems = (items: { value: string }[]) => {
+  const uniqueValues = new Set(items.map((item) => item.value))
+  if (uniqueValues.size !== items.length) {
+    throw new Error('Items must have unique values')
   }
 }
 
 /**
- * Create options from a list of strings. For example:
- * ['Option 1', 'Option 2'] => [{ value: 'Option 1', label: 'Option 1', isDefault: true }, ...]
+ * Create items from a list of strings. For example:
+ * ['Item 1', 'Item 2'] => [{ value: 'Item 1', label: 'Item 1', isDefault: true }, ...]
  */
-export const createStringOptions = (options: string[], addDefault = true) => {
-  const result = options.map((option, index) => ({
-    value: option,
-    label: option,
+export const createStringItems = (items: string[], addDefault = true) => {
+  const result = items.map((item, index) => ({
+    value: item,
+    label: item,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
-  assertUniqueOptions(result)
+  assertUniqueItems(result)
   return result
 }
 
 /**
- * Create options from a list of objects with labels. For example:
- * [{ label: 'Option 1' }, { label: 'Option 2' }] => [{ value: 'Option 1', label: 'Option 1', isDefault: true }, ...]
+ * Create items from a list of objects with labels. For example:
+ * [{ label: 'Item 1' }, { label: 'Item 2' }] => [{ value: 'Item 1', label: 'Item 1', isDefault: true }, ...]
  */
-export const createStringOptionsV2 = <Option extends { label: string }>(
-  options: Option[],
+export const createStringItemsV2 = <Item extends { label: string }>(
+  items: Item[],
   addDefault = true,
 ) => {
-  const result = options.map((option, index) => ({
-    value: option.label,
-    ...option,
+  const result = items.map((item, index) => ({
+    value: item.label,
+    ...item,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
-  assertUniqueOptions(result)
+  assertUniqueItems(result)
   return result
 }
 
 /**
- * Create options with camelCase value from a list of strings. For example:
- * ['Option 1', 'Option 2'] => [{ value: 'option1', label: 'Option 1', isDefault: true }, ...]
+ * Create items with camelCase value from a list of strings. For example:
+ * ['Item 1', 'Item 2'] => [{ value: 'item1', label: 'Item 1', isDefault: true }, ...]
  */
-export const createCamelCaseOptions = (options: string[], addDefault = true) => {
-  const result = options.map((option, index) => ({
-    value: camelCase(option),
-    label: option,
+export const createCamelCaseItems = (items: string[], addDefault = true) => {
+  const result = items.map((item, index) => ({
+    value: camelCase(item),
+    label: item,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
-  assertUniqueOptions(result)
+  assertUniqueItems(result)
   return result
 }
 
 /**
- * Create options with camelCase value from a list of objects. For example:
- * [{ label: 'Option 1' }, { label: 'Option 2' }] => [{ value: 'option1', label: 'Option 1', isDefault: true }, ...]
+ * Create items with camelCase value from a list of objects. For example:
+ * [{ label: 'Item 1' }, { label: 'Item 2' }] => [{ value: 'item1', label: 'Item 1', isDefault: true }, ...]
  */
-export const createCamelCaseOptionsV2 = <Option extends { label: string }>(
-  options: Option[],
+export const createCamelCaseItemsV2 = <Item extends { label: string }>(
+  items: Item[],
   addDefault = true,
 ) => {
-  const result = options.map((option, index) => ({
-    value: camelCase(option.label),
-    ...option,
+  const result = items.map((item, index) => ({
+    value: camelCase(item.label),
+    ...item,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
-  assertUniqueOptions(result)
+  assertUniqueItems(result)
   return result
 }
 

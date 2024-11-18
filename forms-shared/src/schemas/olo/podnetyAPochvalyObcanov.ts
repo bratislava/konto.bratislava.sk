@@ -9,7 +9,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -22,7 +22,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         type: 'string',
         title: 'Kategória podnetu',
         required: true,
-        options: createStringOptions(
+        items: createStringItems(
           ['Nevykonaný odvoz', 'Pracovníci OLO', 'Poškodená nádoba', 'Pochvala', 'Iné'],
           false,
         ),
@@ -46,7 +46,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         {
           title: 'Vyberte druh odpadu',
           required: true,
-          options: createStringOptions(
+          items: createStringItems(
             [
               'Zmesový komunálny odpad',
               'Kuchynský biologicky rozložiteľný odpad',

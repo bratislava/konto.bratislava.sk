@@ -1,16 +1,15 @@
 import {
-  schema,
-  step,
-  radioGroup,
   conditionalFields,
-  object,
-  input,
-  selectMultiple,
   datePicker,
   fileUpload,
+  input,
+  object,
+  radioGroup,
+  schema,
+  selectMultiple,
+  step,
 } from '../../generator/functions'
-import { createStringOptions, createCondition } from '../../generator/helpers'
-import { sharedAddressField } from '../shared/fields'
+import { createCondition, createStringItems } from '../../generator/helpers'
 
 export default schema(
   {
@@ -25,7 +24,7 @@ export default schema(
           type: 'string',
           title: 'Objednávateľ ako',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Fyzická osoba',
             'Fyzická osoba - podnikateľ',
             'Právnická osoba',
@@ -178,7 +177,7 @@ export default schema(
         {
           title: 'Katastrálne územie',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Čunovo',
             'Devín',
             'Devínska Nová Ves',
@@ -227,7 +226,7 @@ export default schema(
           type: 'string',
           title: 'Stupeň projektovej dokumentácie',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Dokumentácia pre územné rozhodnutie (DÚR)',
             'Dokumentácia pre stavebné povolenie (DSP)',
             'Dokumentácia pre realizáciu stavby (DRS)',

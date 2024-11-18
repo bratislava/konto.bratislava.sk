@@ -62,7 +62,7 @@ const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
             'Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
         }[stepType],
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -156,7 +156,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           type: 'boolean',
           title: 'Bývate v mestskom nájomnom byte v Bratislave?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -173,7 +173,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           title:
             'Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -202,7 +202,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           type: 'boolean',
           title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno', isDefault: true },
             { value: false, label: 'Nie' },
           ],
@@ -279,7 +279,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           type: 'string',
           title: 'Štátna príslušnosť',
           required: true,
-          options: [
+          items: [
             { value: 'slovenska', label: 'Slovenská', isDefault: true },
             { value: 'ina', label: 'Iná' },
           ],
@@ -293,7 +293,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               {
                 title: 'Rodinný stav',
                 required: true,
-                options: [
+                items: [
                   { value: 'slobodny', label: 'Slobodný/slobodná' },
                   { value: 'zenaty', label: 'Ženatý/vydatá' },
                   { value: 'rozvedeny', label: 'Rozvedený/rozvedená' },
@@ -348,7 +348,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
                   type: 'boolean',
                   title: 'Chcem byť kontaktovaný/á emailom?',
                   required: true,
-                  options: [
+                  items: [
                     { value: true, label: 'Áno', isDefault: true },
                     { value: false, label: 'Nie' },
                   ],
@@ -414,7 +414,7 @@ const getPrijemSection = (stepType: StepType) => {
           type: 'boolean',
           title: 'Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -444,7 +444,7 @@ const getPrijemSection = (stepType: StepType) => {
           title:
             'Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -508,7 +508,7 @@ const getPrijemSection = (stepType: StepType) => {
           [StepType.InyClen]: 'Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?',
         }[stepType],
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -548,7 +548,7 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?'
             : 'Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -588,7 +588,7 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku dôchodok?'
             : 'Poberal/poberala v minulom kalendárnom roku dôchodok?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -618,7 +618,7 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?'
             : 'Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -641,7 +641,7 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?'
             : 'Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -664,7 +664,7 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku iné príjmy?'
             : 'Poberal/poberala v minulom kalendárnom roku iné príjmy?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno' },
           { value: false, label: 'Nie', isDefault: true },
         ],
@@ -793,7 +793,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             other: 'Je držiteľom preukazu ŤZP?',
           }),
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -812,7 +812,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               other: 'Má uznanú mieru funkčnej poruchy?',
             }),
             required: true,
-            options: [
+            items: [
               { value: '50az74', label: 'Od 50 % do 74 %' },
               { value: '75az100', label: 'Od 75 % do 100 %' },
             ],
@@ -830,7 +830,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               other: 'Trpí chronickým ochorením?',
             }),
             required: true,
-            options: [
+            items: [
               { value: true, label: 'Áno' },
               { value: false, label: 'Nie', isDefault: true },
             ],
@@ -847,7 +847,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
                 other: 'Má niektorú z týchto diagnóz?',
               }),
               required: true,
-              options: [
+              items: [
                 { value: 'alzheimer', label: 'Alzheimerova choroba' },
                 { value: 'anorexiaBulimia', label: 'Anorexia/Bulímia' },
                 {
@@ -977,7 +977,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               type: 'boolean',
               title: 'Uchádzate sa o pridelenie bezbariérového bytu?',
               required: true,
-              options: [
+              items: [
                 { value: true, label: 'Áno' },
                 { value: false, label: 'Nie', isDefault: true },
               ],
@@ -1048,7 +1048,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
                 'Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?',
             }[stepType],
             required: true,
-            options: [
+            items: [
               { value: true, label: 'Áno', isDefault: true },
               { value: false, label: 'Nie' },
             ],
@@ -1067,7 +1067,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             ? 'Nachádzate sa v bytovej núdzi?'
             : 'Nachádza sa v bytovej núdzi?',
         required: true,
-        options: [
+        items: [
           { value: true, label: 'Áno', isDefault: true },
           { value: false, label: 'Nie' },
         ],
@@ -1095,7 +1095,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           type: 'string',
           title: 'Typ bývania',
           required: true,
-          options: [
+          items: [
             { value: 'ulica', label: 'Bývanie na ulici' },
             {
               value: 'krizoveUbytovanie',
@@ -1146,7 +1146,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             [StepType.InyClen]: 'Uveďte, ako dlho trvá bytová núdza člena/členky domácnosti',
           }[stepType],
           required: true,
-          options: [
+          items: [
             { value: 'menejAko1', label: 'Menej ako 1 rok' },
             { value: '1az2', label: '1 - 2 roky' },
             { value: '3az5', label: '3 - 5 rokov' },
@@ -1189,7 +1189,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           title:
             'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno', isDefault: true },
             { value: false, label: 'Nie' },
           ],
@@ -1201,7 +1201,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           'zoznamRizikovychFaktorov',
           {
             title: 'Označte rizikové faktory',
-            options: [
+            items: [
               {
                 value: 'osamelyRodic',
                 label:
@@ -1246,7 +1246,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           type: 'string',
           title: 'Zvoľte vek najstaršieho člena domácnosti',
           required: true,
-          options: [
+          items: [
             { value: 'menejAko63', label: 'menej ako 63 rokov' },
             { value: '63az70', label: '63 - 70 rokov' },
             { value: '71az80', label: '71 - 80 rokov' },
@@ -1301,7 +1301,7 @@ export default schema(
           type: 'boolean',
           title: 'Bude súčasťou budúcej domácnosti aj váš manžel/manželka?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -1320,7 +1320,7 @@ export default schema(
           type: 'boolean',
           title: 'Bude súčasťou budúcej domácnosti aj váš druh/družka?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -1347,7 +1347,7 @@ export default schema(
             type: 'boolean',
             title: 'Bude súčasťou budúcej domácnosti aj vaše dieťa/deti?',
             required: true,
-            options: [
+            items: [
               { value: true, label: 'Áno' },
               { value: false, label: 'Nie', isDefault: true },
             ],
@@ -1380,7 +1380,7 @@ export default schema(
           title:
             'Budú súčasťou budúcej domácnosti aj iní členovia/členky? (zaopatrené deti, starí rodičia a pod.)',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],
@@ -1421,7 +1421,7 @@ export default schema(
         {
           title: 'Akú veľkosť nájomného bytu preferujete?',
           required: true,
-          options: [
+          items: [
             { value: 'garsonka1izbovy', label: 'garsónka/1-izbový byt' },
             { value: '2izbovy', label: '2-izbový byt' },
             { value: '3izbovy', label: '3-izbový byt' },
@@ -1435,7 +1435,7 @@ export default schema(
         {
           title: 'Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?',
           required: true,
-          options: [
+          items: [
             { value: 'stareMesto', label: 'Staré Mesto' },
             { value: 'ruzinov', label: 'Ružinov' },
             { value: 'vrakuna', label: 'Vrakuňa' },

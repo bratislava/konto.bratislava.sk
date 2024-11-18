@@ -26,7 +26,7 @@ export const vyplnitKrokRadio = ({
           type: 'boolean',
           title,
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno' },
             { value: false, label: 'Nie', isDefault: true },
           ],

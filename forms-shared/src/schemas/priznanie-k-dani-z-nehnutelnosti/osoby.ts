@@ -1,5 +1,5 @@
 import { conditionalFields, input, object, radioGroup, select } from '../../generator/functions'
-import { createCamelCaseOptions, createCondition } from '../../generator/helpers'
+import { createCamelCaseItems, createCondition } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { esbsNationalityCiselnik } from './esbsCiselniky'
 
@@ -85,7 +85,7 @@ const statField = select(
   {
     title: 'Štát',
     required: true,
-    options: esbsNationalityCiselnik.map(({ Name, Code }) => ({
+    items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
       value: Code,
       label: Name,
       isDefault: Code === '703' ? true : undefined,
@@ -115,7 +115,7 @@ const pravnaFormaField = select(
   {
     title: 'Právna forma',
     required: true,
-    options: [
+    items: [
       {
         value: '111',
         label: '111 Verejná obchodná spoločnosť',
@@ -243,7 +243,7 @@ const pravnyVztahKPOField = select(
   'pravnyVztahKPO',
   {
     title: 'Vyberte právny vzťah k právnickej osobe, za ktorú podávate priznanie',
-    options: createCamelCaseOptions(['štatutárny zástupca', 'zástupca', 'správca'], false),
+    items: createCamelCaseItems(['štatutárny zástupca', 'zástupca', 'správca'], false),
     required: true,
   },
   {},
@@ -274,7 +274,7 @@ const korespondencnaAdresaField = radioGroup(
     type: 'boolean',
     title: 'Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?',
     required: true,
-    options: [
+    items: [
       { value: true, label: 'Áno', isDefault: true },
       { value: false, label: 'Nie' },
     ],
@@ -362,7 +362,7 @@ const rovnakaAdresaField = radioGroup(
     type: 'boolean',
     title: 'Má trvalý pobyt na rovnakej adrese ako vy?',
     required: true,
-    options: [
+    items: [
       { value: true, label: 'Áno', isDefault: true },
       { value: false, label: 'Nie' },
     ],

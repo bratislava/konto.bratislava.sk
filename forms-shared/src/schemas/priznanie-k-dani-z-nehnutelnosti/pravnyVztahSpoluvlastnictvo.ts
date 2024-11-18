@@ -1,7 +1,7 @@
 import { conditionalFields, fileUpload, number, radioGroup } from '../../generator/functions'
 import {
-  createCamelCaseOptions,
-  createCamelCaseOptionsV2,
+  createCamelCaseItems,
+  createCamelCaseItemsV2,
   createCondition,
 } from '../../generator/helpers'
 import { StepEnum } from './stepEnum'
@@ -13,7 +13,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       type: 'string',
       title: 'Právny vzťah',
       required: true,
-      options: createCamelCaseOptions(
+      items: createCamelCaseItems(
         step === StepEnum.DanZBytovANebytovychPriestorov
           ? ['Vlastník', 'Správca']
           : ['Vlastník', 'Správca', 'Nájomca', 'Užívateľ'],
@@ -27,7 +27,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       type: 'string',
       title: 'Spoluvlastníctvo',
       required: true,
-      options: createCamelCaseOptionsV2([
+      items: createCamelCaseItemsV2([
         { label: 'Som jediný vlastník' },
         {
           label: 'Podielové spoluvlastníctvo',
@@ -61,7 +61,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
           type: 'boolean',
           title: 'Podávate priznanie za všetkých spoluvlastníkov na základe dohody?',
           required: true,
-          options: [
+          items: [
             { value: true, label: 'Áno', isDefault: true },
             { value: false, label: 'Nie' },
           ],

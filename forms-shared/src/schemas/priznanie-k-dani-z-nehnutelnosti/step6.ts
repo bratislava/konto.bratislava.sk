@@ -167,7 +167,7 @@ const innerArray = (kalkulacka: boolean) =>
               type: 'boolean',
               title: 'Podávate priznanie za byt?',
               required: true,
-              options: [
+              items: [
                 { value: true, label: 'Áno' },
                 { value: false, label: 'Nie', isDefault: false },
               ],
@@ -253,7 +253,7 @@ const innerArray = (kalkulacka: boolean) =>
               title:
                 'Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?',
               required: true,
-              options: [
+              items: [
                 { value: true, label: 'Áno' },
                 { value: false, label: 'Nie', isDefault: true },
               ],

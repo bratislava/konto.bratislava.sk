@@ -213,6 +213,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

@@ -185,6 +185,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
       ),
       conditionalFields(createCondition([[['pobytVBratislaveViacAkoRok'], { const: true }]]), [
         customComponentsField(
+          'pobytVBratislaveViacAkoRokAlert',
           {
             type: 'alert',
             props: {
@@ -309,6 +310,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               ]),
               [
                 customComponentsField(
+                  'rodinnyStavAlert',
                   {
                     type: 'alert',
                     props: {
@@ -426,6 +428,7 @@ const getPrijemSection = (stepType: StepType) => {
       ),
       conditionalFields(createCondition([[['student'], { const: true }]]), [
         customComponentsField(
+          'studentAlert',
           {
             type: 'alert',
             props: {
@@ -475,6 +478,7 @@ const getPrijemSection = (stepType: StepType) => {
         ),
       ]),
       customComponentsField(
+        'sucetPrijmovStudentKalkulacka',
         {
           type: 'calculator',
           props: {
@@ -684,6 +688,7 @@ const getPrijemSection = (stepType: StepType) => {
       ),
     ]),
     customComponentsField(
+      'prijmyAlert',
       {
         type: 'alert',
         props: {
@@ -703,6 +708,7 @@ const getPrijemSection = (stepType: StepType) => {
       {},
     ),
     customComponentsField(
+      'sucetPrijmovKalkulacka',
       {
         type: 'calculator',
         props: {
@@ -992,6 +998,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
           )
         : null,
       customComponentsField(
+        'zdravotnyStavAlert',
         {
           type: 'alert',
           props: {
@@ -1461,6 +1468,7 @@ export default schema(
     ]),
     step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
       customComponentsField(
+        'sucetPrijmovKalkulacka',
         {
           type: 'calculator',
           props: {
@@ -1502,6 +1510,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         {},
       ),
       customComponentsField(
+        'prijemAlert',
         {
           type: 'alert',
           props: {
@@ -1513,6 +1522,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         {},
       ),
       customComponentsField(
+        'overitPrijemLink',
         {
           type: 'additionalLinks',
           props: {

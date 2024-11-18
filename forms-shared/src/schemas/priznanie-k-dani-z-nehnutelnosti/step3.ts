@@ -56,6 +56,7 @@ const spoluvlastnickyPodiel = input(
 )
 
 const vymeraPozemkuKalkulacka = customComponentsField(
+  'vymeraPozemkuKalkulacka',
   {
     type: 'calculator',
     props: {

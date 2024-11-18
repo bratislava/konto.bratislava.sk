@@ -351,6 +351,7 @@ export default schema(
         },
       ),
       customComponentsField(
+        'suhlasSVopLink',
         {
           type: 'additionalLinks',
           props: {

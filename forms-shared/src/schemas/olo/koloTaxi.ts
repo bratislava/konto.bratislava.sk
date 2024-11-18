@@ -167,6 +167,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

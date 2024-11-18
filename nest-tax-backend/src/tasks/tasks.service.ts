@@ -17,7 +17,7 @@ export class TasksService {
     this.logger = new Logger('TasksService')
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async updatePaymentsFromNoris() {
     const year = new Date().getFullYear()
 
@@ -26,19 +26,12 @@ export class TasksService {
       variableSymbolsDb = await this.prismaService.$queryRaw<
         { variableSymbol: string; id: number }[]
       >(Prisma.sql`
-      SET LOCAL statement_timeout = 600000;
-      WITH total_payments AS (
-        SELECT "taxId", SUM("amount") AS totalPayments
-        FROM "TaxPayment"
-        WHERE "status" = ${PaymentStatus.SUCCESS}::"PaymentStatus"
-        GROUP BY "taxId"
-      )
       SELECT t."variableSymbol", t."id"
       FROM "Tax" t
-      LEFT JOIN total_payments tp ON t."id" = tp."taxId"
-      WHERE
-        COALESCE(tp.totalPayments, 0) < t."amount"
-        AND t.year = ${year}
+      LEFT JOIN "TaxPayment" tp ON t."id" = tp."taxId" AND tp.status = 'SUCCESS'
+      WHERE t.year = ${year}
+      GROUP BY t."id", t."variableSymbol", t."lastCheckedPayments"
+      HAVING COALESCE(SUM(tp."amount"), 0) < t."amount"
       ORDER BY t."lastCheckedPayments" ASC
       LIMIT ${MAX_NORIS_PAYMENTS_BATCH_SELECT}
       `)

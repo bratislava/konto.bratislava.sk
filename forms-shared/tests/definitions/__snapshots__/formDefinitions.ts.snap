@@ -20924,7 +20924,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -21520,12 +21520,12 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
 
 V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -21539,7 +21539,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -22002,12 +22002,12 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -22021,7 +22021,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu zastavanej plochy",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -22496,12 +22496,12 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).
 
 :form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -22515,7 +22515,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -23077,7 +23077,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "value": false,
               },
             ],
-            "helptextFooter": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
+            "helptext": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
 
 K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 * k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)
@@ -23086,7 +23086,7 @@ K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -34710,7 +34710,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -35306,12 +35306,12 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
 
 V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -35325,7 +35325,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -35788,12 +35788,12 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -35807,7 +35807,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu zastavanej plochy",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -36282,12 +36282,12 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 "value": false,
               },
             ],
-            "helptextFooter": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).
 
 :form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -36301,7 +36301,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
         "pouzitKalkulacku": {
           "ui:options": {
             "checkboxLabel": "Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane",
-            "helptextFooter": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.",
+            "helptext": "Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.",
             "labelSize": "h3",
             "variant": "basic",
           },
@@ -36863,7 +36863,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "value": false,
               },
             ],
-            "helptextFooter": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
+            "helptext": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
 
 K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 * k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)
@@ -36872,7 +36872,7 @@ K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}",
-            "helptextFooterMarkdown": true,
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",

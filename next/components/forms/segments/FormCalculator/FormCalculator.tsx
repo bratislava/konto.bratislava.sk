@@ -66,16 +66,17 @@ const Calculator = ({
   const { formData } = useFormData()
 
   const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])
-
-  const value = useMemo(() => {
+  const dataAtPath = useMemo(() => {
     const path = getPath(id, dataContextLevelsUp)
-    const dataAtPath = getDataAtPath(formData, path)
+    return getDataAtPath(formData, path)
+  }, [id, dataContextLevelsUp, formData])
+  const value = useMemo(() => {
     if (dataAtPath == null) {
       return null
     }
 
     return calculateFormCalculatorExpression(expression, dataAtPath, true)
-  }, [expression, formData, dataContextLevelsUp, id])
+  }, [expression, dataAtPath])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {
     'border-b-2': !isLast,

@@ -4,12 +4,12 @@ import { createCondition } from '../../generator/helpers'
 export const kalkulackaFields = ({
   title,
   checkboxLabel,
-  helptextFooter,
+  helptext,
   inner,
 }: {
   title: string
   checkboxLabel: string
-  helptextFooter: string
+  helptext: string
   inner: (kalkulacka: boolean) => Field
 }) => [
   object(
@@ -30,7 +30,7 @@ export const kalkulackaFields = ({
           variant: 'basic',
           labelSize: 'h3',
           checkboxLabel,
-          helptextFooter,
+          helptext,
         },
       ),
     ],

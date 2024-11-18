@@ -13,8 +13,8 @@ import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
 import Alert from '../info-components/Alert'
+import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import FormMarkdown from '../info-components/FormMarkdown'
 import ButtonNew from '../simple-components/ButtonNew'
 import WidgetWrapper from './WidgetWrapper'
 
@@ -38,7 +38,14 @@ const BAArrayFieldTemplate = <
   rawErrors,
 }: ArrayFieldTemplateProps<T, S, F>) => {
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiOptions
+  const {
+    variant,
+    description,
+    descriptionMarkdown,
+    addButtonLabel,
+    hideTitle,
+    cannotAddItemMessage,
+  } = uiOptions
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
@@ -77,7 +84,11 @@ const BAArrayFieldTemplate = <
         <Alert
           type="info"
           hasIcon={false}
-          message={<FormMarkdown>{description}</FormMarkdown>}
+          message={
+            <ConditionalFormMarkdown isMarkdown={descriptionMarkdown}>
+              {description}
+            </ConditionalFormMarkdown>
+          }
           fullWidth
           className="mb-6 whitespace-pre-wrap"
         />

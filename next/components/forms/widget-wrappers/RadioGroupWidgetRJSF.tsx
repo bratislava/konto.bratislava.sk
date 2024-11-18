@@ -90,7 +90,9 @@ const RadioGroupWidgetRJSF = ({
     size,
     labelSize,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
   } = options
 
   const mergedOptions = useMemo(
@@ -116,7 +118,9 @@ const RadioGroupWidgetRJSF = ({
             size={size}
             labelSize={labelSize}
             helptext={helptext}
-            helptextHeader={helptextHeader}
+            helptextMarkdown={helptextMarkdown}
+            helptextFooter={helptextFooter}
+            helptextFooterMarkdown={helptextFooterMarkdown}
             displayOptionalLabel
           >
             {mergedOptions.map((option) => {

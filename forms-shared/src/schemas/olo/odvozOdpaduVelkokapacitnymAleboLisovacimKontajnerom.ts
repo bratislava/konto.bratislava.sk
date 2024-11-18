@@ -65,7 +65,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -74,7 +74,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -98,7 +98,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
           variant: 'boxed',
@@ -121,7 +121,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
     input(
       'miestoDodania',
       { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-      { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+      { helptext: 'Vyplňte vo formáte ulica a číslo' },
     ),
     select(
       'druhOdpadu',
@@ -175,7 +175,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         required: true,
       },
       {
-        helptextHeader: 'V pracovné dni od 7.00 - 12.30',
+        helptext: 'V pracovné dni od 7.00 - 12.30',
         size: 'medium',
       },
     ),
@@ -194,7 +194,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         required: true,
       },
       {
-        helptextHeader: 'V pracovné dni od 7.00 - 12.30',
+        helptext: 'V pracovné dni od 7.00 - 12.30',
         size: 'medium',
       },
     ),

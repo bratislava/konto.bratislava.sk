@@ -36,7 +36,7 @@ export default schema(
         },
         {
           placeholder: 'Enter text here',
-          helptextHeader: 'Basic text input example',
+          helptext: 'Basic text input example',
         },
       ),
       object(
@@ -100,7 +100,7 @@ export default schema(
             },
             {
               placeholder: '+421',
-              helptextHeader: 'Slovak phone number format',
+              helptext: 'Slovak phone number format',
             },
           ),
           input(
@@ -111,7 +111,7 @@ export default schema(
               required: true,
             },
             {
-              helptextHeader: 'International Bank Account Number',
+              helptext: 'International Bank Account Number',
             },
           ),
           input(
@@ -123,7 +123,7 @@ export default schema(
             },
             {
               placeholder: '1/2',
-              helptextHeader: 'Format: number/number',
+              helptext: 'Format: number/number',
             },
           ),
         ],
@@ -136,7 +136,7 @@ export default schema(
         },
         {
           placeholder: 'Enter longer text here',
-          helptextHeader: 'Multi-line text input',
+          helptext: 'Multi-line text input',
         },
       ),
     ]),
@@ -150,7 +150,7 @@ export default schema(
         },
         {
           placeholder: 'Select an option',
-          helptextHeader: 'Single selection dropdown',
+          helptext: 'Single selection dropdown',
         },
       ),
       select(
@@ -170,7 +170,7 @@ export default schema(
           ]),
         },
         {
-          helptextHeader: 'Select with additional context',
+          helptext: 'Select with additional context',
         },
       ),
       selectMultiple(
@@ -181,7 +181,7 @@ export default schema(
           items: createStringItems(['Choice 1', 'Choice 2', 'Choice 3']),
         },
         {
-          helptextHeader: 'Select multiple options',
+          helptext: 'Select multiple options',
         },
       ),
       radioGroup(
@@ -198,7 +198,7 @@ export default schema(
         {
           variant: 'boxed',
           orientations: 'row',
-          helptextHeader: 'Yes/No selection',
+          helptext: 'Yes/No selection',
         },
       ),
       radioGroup(
@@ -221,7 +221,7 @@ export default schema(
         {
           variant: 'boxed',
           orientations: 'column',
-          helptextHeader: 'Radio selection with descriptions',
+          helptext: 'Radio selection with descriptions',
         },
       ),
     ]),
@@ -235,7 +235,7 @@ export default schema(
           maximum: 100,
         },
         {
-          helptextHeader: 'Number with min/max validation',
+          helptext: 'Number with min/max validation',
         },
       ),
       object(
@@ -295,7 +295,7 @@ export default schema(
         },
         {
           type: 'button',
-          helptextHeader: 'Click button to upload files',
+          helptext: 'Click button to upload files',
         },
       ),
       fileUpload(
@@ -309,7 +309,7 @@ export default schema(
           type: 'dragAndDrop',
           accept: '.pdf,.jpg,.png',
           sizeLimit: 5000000,
-          helptextHeader: 'Drag files here or click to upload',
+          helptext: 'Drag files here or click to upload',
         },
       ),
     ]),
@@ -322,7 +322,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader: 'Select a date',
+          helptext: 'Select a date',
         },
       ),
       timePicker(
@@ -332,7 +332,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader: 'Select a time',
+          helptext: 'Select a time',
         },
       ),
     ]),
@@ -347,7 +347,7 @@ export default schema(
         {
           checkboxLabel: 'I agree to the terms',
           variant: 'boxed',
-          helptextHeader: 'Must be checked to proceed',
+          helptext: 'Must be checked to proceed',
         },
       ),
       checkboxGroup(
@@ -362,7 +362,7 @@ export default schema(
         },
         {
           variant: 'boxed',
-          helptextHeader: 'Select multiple options',
+          helptext: 'Select multiple options',
         },
       ),
     ]),
@@ -453,7 +453,7 @@ export default schema(
         {
           variant: 'boxed',
           orientations: 'row',
-          helptextHeader: 'Additional fields and step will appear when selecting Yes',
+          helptext: 'Additional fields and step will appear when selecting Yes',
         },
       ),
       conditionalFields(createCondition([[['showExtra'], { const: true }]]), [
@@ -465,7 +465,7 @@ export default schema(
             required: true,
           },
           {
-            helptextHeader: 'This field only appears conditionally',
+            helptext: 'This field only appears conditionally',
           },
         ),
       ]),
@@ -483,7 +483,7 @@ export default schema(
             required: true,
           },
           {
-            helptextHeader: 'This entire step appears conditionally',
+            helptext: 'This entire step appears conditionally',
           },
         ),
       ],

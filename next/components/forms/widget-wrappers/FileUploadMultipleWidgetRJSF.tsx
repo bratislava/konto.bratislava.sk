@@ -27,7 +27,9 @@ const FileUploadMultipleWidgetRJSF = ({
     sizeLimit,
     accept,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     type = 'button',
     className,
     size,
@@ -78,7 +80,9 @@ const FileUploadMultipleWidgetRJSF = ({
         multiple
         className={className}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}

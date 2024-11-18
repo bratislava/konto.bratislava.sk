@@ -64,7 +64,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -73,7 +73,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -97,7 +97,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
           variant: 'boxed',
@@ -125,7 +125,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: true,
       },
       {
-        helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+        helptext: 'Vyplňte vo formáte ulica a číslo',
       },
     ),
     select(
@@ -145,7 +145,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         ),
       },
       {
-        helptextHeader: 'Poplatok je účtovaný za množstvo naložených a vysypaných nádob',
+        helptext: 'Poplatok je účtovaný za množstvo naložených a vysypaných nádob',
       },
     ),
     datePicker(
@@ -155,7 +155,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: true,
       },
       {
-        helptextHeader:
+        helptext:
           'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         size: 'medium',
       },
@@ -167,7 +167,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: false,
       },
       {
-        helptextHeader: 'Špecifikujte individuálne požiadavky.',
+        helptext: 'Špecifikujte individuálne požiadavky.',
       },
     ),
   ]),

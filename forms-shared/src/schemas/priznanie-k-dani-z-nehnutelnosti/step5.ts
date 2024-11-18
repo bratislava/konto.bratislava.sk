@@ -4,7 +4,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -22,9 +21,8 @@ const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
   { type: 'integer', title: 'Výmera podlahovej plochy', required: true, minimum: 0 },
   {
-    helptext: markdownText(
-      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
-    ),
+    helptextFooter: 'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -43,7 +41,8 @@ const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
             '**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -60,9 +59,9 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   },
   {
     placeholder: 'Napr. 4827/624441',
-    helptext: markdownText(
+    helptextFooter:
       'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}',
-    ),
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -71,9 +70,9 @@ const spoluvlastnickyPodiel = input(
   { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
-    helptext: markdownText(
+    helptextFooter:
       'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}',
-    ),
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -87,9 +86,9 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       minimum: 0,
     },
     {
-      helptext: markdownText(
+      helptextFooter:
         'Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
-      ),
+      helptextFooterMarkdown: true,
     },
   ),
   number(
@@ -101,9 +100,9 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       minimum: 0,
     },
     {
-      helptext: markdownText(
+      helptextFooter:
         'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.',
-      ),
+      helptextFooterMarkdown: true,
     },
   ),
 ])
@@ -124,7 +123,8 @@ const sumarKalkulacka = customComponentsField(
           missingFieldsMessage:
             '**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
         {
           label: 'Základ dane – celková výmera zastavanej plochy stavby',
@@ -135,7 +135,8 @@ const sumarKalkulacka = customComponentsField(
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Celková výmera zastavanej plochy viacúčelovej stavby\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -163,7 +164,7 @@ const innerArray = (kalkulacka: boolean) =>
         { type: 'text', title: 'Popis stavby', required: true },
         {
           placeholder: 'Napr. polyfunkčná budova',
-          helptext:
+          helptextFooter:
             'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV).',
         },
       ),
@@ -179,7 +180,7 @@ const innerArray = (kalkulacka: boolean) =>
             'datumVznikuDanovejPovinnosti',
             { title: 'Dátum vzniku daňovej povinnosti' },
             {
-              helptext:
+              helptextFooter:
                 'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
             },
           ),
@@ -187,7 +188,7 @@ const innerArray = (kalkulacka: boolean) =>
             'datumZanikuDanovejPovinnosti',
             { title: 'Dátum zániku daňovej povinnosti' },
             {
-              helptext:
+              helptextFooter:
                 'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
             },
           ),
@@ -201,9 +202,9 @@ const innerArray = (kalkulacka: boolean) =>
           minimum: 0,
         },
         {
-          helptext: markdownText(
+          helptextFooter:
             'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}',
-          ),
+          helptextFooterMarkdown: true,
         },
       ),
       number(
@@ -215,7 +216,7 @@ const innerArray = (kalkulacka: boolean) =>
           required: true,
         },
         {
-          helptext:
+          helptextFooter:
             'Napríklad ak máte stavbu s piatimi nadzemnými podlažiami a dvomi podzemnými podlažiami, uvádzate počet 6.',
         },
       ),
@@ -246,7 +247,7 @@ const innerArray = (kalkulacka: boolean) =>
             minimum: 0,
           },
           {
-            helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+            helptextFooter: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
           },
         ),
       ]),
@@ -340,12 +341,11 @@ export default step(
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?',
-    helptext: markdownText(
-      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.\n\nK úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):\n* k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)\n* k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}`,
-    ),
+    helptext: `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.\n\nK úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):\n* k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)\n* k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery podlahových plôch a základu dane',
-      helptextHeader:
+      helptext:
         'Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.',
       checkboxLabel:
         'Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane',

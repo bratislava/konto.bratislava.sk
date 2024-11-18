@@ -13,7 +13,7 @@ import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
-import FormMarkdown from '../../info-components/FormMarkdown'
+import ConditionalFormMarkdown from '../../info-components/ConditionalFormMarkdown'
 import { useFormWidget } from '../../useFormWidget'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
@@ -62,6 +62,7 @@ const Calculator = ({
   variant,
   missingFieldsMessage,
   unit,
+  unitMarkdown,
 }: CustomComponentCalculator & {
   isLast: boolean
   variant: CustomComponentCalculatorProps['variant']
@@ -106,7 +107,10 @@ const Calculator = ({
         <>
           <div className={labelClassName}>{label}</div>
           <div className={valueClassName}>
-            {formatter.format(value)} <FormMarkdown pAsSpan>{unit}</FormMarkdown>
+            {formatter.format(value)}{' '}
+            <ConditionalFormMarkdown isMarkdown={unitMarkdown} pAsSpan>
+              {unit}
+            </ConditionalFormMarkdown>
           </div>
         </>
       )}

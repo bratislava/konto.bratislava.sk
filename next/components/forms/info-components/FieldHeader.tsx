@@ -14,7 +14,8 @@ export type FieldHeaderProps = {
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  helptextHeader?: string
+  helptext?: string
+  helptextMarkdown?: boolean
   descriptionProps?: DOMAttributes<never>
   /**
    * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
@@ -35,14 +36,15 @@ const FieldHeader = ({
   labelProps,
   tooltip,
   labelSize = 'default',
-  helptextHeader,
+  helptext,
+  helptextMarkdown,
   descriptionProps,
   customHeaderBottomMargin = 'mb-1',
   displayOptionalLabel,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
-  const useCustomBottomMargin = labelSize === 'default' || !helptextHeader
+  const useCustomBottomMargin = labelSize === 'default' || !helptext
 
   const wrapperStyle = cx('flex w-full flex-col', {
     'gap-1': labelSize === 'default',
@@ -85,8 +87,12 @@ const FieldHeader = ({
           </div>
         )}
       </div>
-      {helptextHeader && (
-        <FieldHelptext helptext={helptextHeader} descriptionProps={descriptionProps} />
+      {helptext && (
+        <FieldHelptext
+          helptext={helptext}
+          helptextMarkdown={helptextMarkdown}
+          descriptionProps={descriptionProps}
+        />
       )}
     </div>
   )

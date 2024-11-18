@@ -7,7 +7,6 @@ import {
   datePicker,
   FieldType,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -70,14 +69,11 @@ const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           stepType === StepType.Ziadatel
-            ? markdownText(
-                'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
-              )
-            : markdownText(
-                'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
-              ),
+            ? 'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.'
+            : 'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['vlastnikNehnutelnosti'], { const: true }]]), [
@@ -240,7 +236,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             'rodnePriezvisko',
             { title: 'Rodné priezvisko', type: 'text' },
             {
-              helptextHeader:
+              helptext:
                 stepType === StepType.Ziadatel
                   ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.'
                   : 'Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.',
@@ -339,8 +335,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               'email',
               { title: 'Email', type: 'email' },
               {
-                helptextHeader:
-                  'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
+                helptext: 'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
               },
             ),
             conditionalFields(createCondition([[['email'], { type: 'string' }]]), [
@@ -370,7 +365,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             {
               size: 'medium',
               placeholder: '+421',
-              helptextHeader:
+              helptext:
                 'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.',
             },
           )
@@ -520,20 +515,17 @@ const getPrijemSection = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
-          [StepType.Ziadatel]: markdownText(
+        helptext: {
+          [StepType.Ziadatel]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.ManzelManzelka]: markdownText(
+          [StepType.ManzelManzelka]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.DruhDruzka]: markdownText(
+          [StepType.DruhDruzka]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.InyClen]: markdownText(
+          [StepType.InyClen]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
         }[stepType],
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['zamestnanie'], { const: true }]]), [
@@ -560,20 +552,17 @@ const getPrijemSection = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
-          [StepType.Ziadatel]: markdownText(
+        helptext: {
+          [StepType.Ziadatel]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.',
-          ),
-          [StepType.ManzelManzelka]: markdownText(
+          [StepType.ManzelManzelka]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
-          [StepType.DruhDruzka]: markdownText(
+          [StepType.DruhDruzka]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
-          [StepType.InyClen]: markdownText(
+          [StepType.InyClen]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
         }[stepType],
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['samostatnaZarobkovaCinnost'], { const: true }]]), [
@@ -600,7 +589,7 @@ const getPrijemSection = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           stepType === StepType.Ziadatel
             ? 'Označte áno, ak ste poberali v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.'
             : 'Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.',
@@ -676,7 +665,7 @@ const getPrijemSection = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           'Materskú, tehotenský príspevok, rodičovský príspevok, prídavky na deti, dávka v hmotnej núdzi, ochranný príspevok, opatrovateľský príspevok, kompenzačný príspevok alebo iné príspevky z Úradu práce.',
       },
     ),
@@ -772,22 +761,18 @@ const getZdravotnyStavSection = (stepType: StepType) => {
       objectDisplay: 'boxed',
       title: 'Zdravotný stav',
       description: {
-        [StepType.Ziadatel]: markdownText(
+        [StepType.Ziadatel]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.ManzelManzelka]: markdownText(
+        [StepType.ManzelManzelka]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.DruhDruzka]: markdownText(
+        [StepType.DruhDruzka]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.Dieta]: markdownText(
+        [StepType.Dieta]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.InyClen]: markdownText(
+        [StepType.InyClen]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
       }[stepType],
+      descriptionMarkdown: true,
     },
     [
       radioGroup(
@@ -991,9 +976,8 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             {
               variant: 'boxed',
               orientations: 'row',
-              helptextHeader: markdownText(
-                `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).`,
-              ),
+              helptext: `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).`,
+              helptextMarkdown: true,
             },
           )
         : null,
@@ -1082,7 +1066,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
+        helptext: {
           [StepType.Ziadatel]: undefined,
           [StepType.ManzelManzelka]:
             'Ak označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa manžela/manželky žiadna z nich nebude týkať, označte odpoveď "Nie".',
@@ -1242,7 +1226,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             required: true,
           },
           {
-            helptextHeader: 'Môžete označiť viac možností.',
+            helptext: 'Môžete označiť viac možností.',
             variant: 'boxed',
           },
         ),
@@ -1262,7 +1246,7 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
         },
         {
           variant: 'boxed',
-          helptextHeader:
+          helptext:
             'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.',
           belowComponents: [
             {
@@ -1419,7 +1403,7 @@ export default schema(
         'dovodyPodaniaZiadosti',
         { title: 'Prečo si podávate žiadosť?' },
         {
-          helptextHeader:
+          helptext:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
         },
       ),

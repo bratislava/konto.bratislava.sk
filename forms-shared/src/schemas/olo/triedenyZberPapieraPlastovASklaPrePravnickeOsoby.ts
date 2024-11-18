@@ -34,7 +34,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
           title: 'Súhlasím so zaslaním elektronickej faktúry',
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
@@ -113,7 +113,7 @@ export default schema(
           datePicker(
             'datumZmeny',
             { title: 'Dátum zmeny', required: true },
-            { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
+            { helptext: 'Uveďte dátum predpokladanej zmeny odberateľa' },
           ),
         ],
         [
@@ -132,7 +132,7 @@ export default schema(
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -141,7 +141,7 @@ export default schema(
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
       input(
         'menoKontaktnejOsoby',
@@ -207,7 +207,7 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
@@ -224,7 +224,7 @@ export default schema(
                 'Kuchynský biologicky rozložiteľný odpad (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)',
               ]),
             },
-            { helptextHeader: 'Vyberte len 1 komoditu' },
+            { helptext: 'Vyberte len 1 komoditu' },
           ),
           conditionalFields(
             createCondition([
@@ -386,7 +386,7 @@ export default schema(
                   ]),
                 },
                 {
-                  helptextHeader:
+                  helptext:
                     '23 l zberná nádoba je možná vybrať iba pre právnické osoby, ktoré majú sídlo v rodinných domoch',
                 },
               ),
@@ -398,7 +398,7 @@ export default schema(
                   items: createStringItems(['1 x do týždňa', '2 x do týždňa']),
                 },
                 {
-                  helptextHeader:
+                  helptext:
                     'Kuchynský biologicky rozložiteľný odpad sa v Bratislave zbiera celoročne. Interval odvozov sa mení sezónne, a to dvakrát ročne. Od začiatku marca do konca novembra je zber realizovaný 2x za 7 dní. Od začiatku decembra do konca februára bude zber 1x do týždňa.',
                 },
               ),
@@ -407,7 +407,7 @@ export default schema(
           number(
             'pocetNadob',
             { type: 'number', title: 'Počet nádob', required: true },
-            { helptextHeader: 'Uveďte počet nádob' },
+            { helptext: 'Uveďte počet nádob' },
           ),
         ],
       ),

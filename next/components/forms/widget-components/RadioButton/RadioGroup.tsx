@@ -36,7 +36,9 @@ const RadioGroup = (props: RadioGroupProps) => {
     disabled,
     errorMessage,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     tooltip,
     value,
     size,
@@ -74,7 +76,9 @@ const RadioGroup = (props: RadioGroupProps) => {
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         required={required}
         disabled={disabled}

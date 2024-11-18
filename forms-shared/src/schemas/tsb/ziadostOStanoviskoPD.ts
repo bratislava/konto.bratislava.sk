@@ -77,7 +77,7 @@ export default schema(
           input(
             'adresaTrvalehoPobytu',
             { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -94,7 +94,7 @@ export default schema(
           input(
             'adresaPodnikania',
             { title: 'Miesto podnikania', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -111,7 +111,7 @@ export default schema(
           input(
             'adresaSidla',
             { title: 'Adresa sídla', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -131,7 +131,7 @@ export default schema(
       input(
         'telefonneCislo',
         { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-        { helptextHeader: 'Vyplňte vo formáte +421' },
+        { helptext: 'Vyplňte vo formáte +421' },
       ),
       conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
         object(
@@ -139,21 +139,17 @@ export default schema(
           { required: true },
           { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
           [
-            input(
-              'meno',
-              { title: 'Meno', required: true, type: 'text' },
-              { helptextHeader: 'Meno' },
-            ),
+            input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
             input(
               'priezvisko',
               { title: 'Priezvisko', required: true, type: 'text' },
-              { helptextHeader: 'Priezvisko' },
+              { helptext: 'Priezvisko' },
             ),
             input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
             input(
               'telefonneCislo',
               { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-              { helptextHeader: 'Vyplňte vo formáte +421' },
+              { helptext: 'Vyplňte vo formáte +421' },
             ),
           ],
         ),
@@ -164,13 +160,13 @@ export default schema(
         'nazovStavby',
         { type: 'text', title: 'Názov stavby', required: true },
         {
-          helptextHeader: 'Napríklad: Polyfunkčný objekt ABC',
+          helptext: 'Napríklad: Polyfunkčný objekt ABC',
         },
       ),
       input(
         'adresaStavby',
         { type: 'text', title: 'Adresa stavby', required: true },
-        { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+        { helptext: 'Vyplňte vo formáte ulica a číslo' },
       ),
       selectMultiple(
         'katastralneUzemie',
@@ -201,8 +197,7 @@ export default schema(
           ]),
         },
         {
-          helptextHeader:
-            'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
+          helptext: 'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
         },
       ),
       datePicker(
@@ -218,7 +213,7 @@ export default schema(
       input(
         'typProjektovejDokumentacie',
         { type: 'text', title: 'Typ projektovej dokumentácie', required: true },
-        { helptextHeader: 'Napríklad: Ohlásenie stavby' },
+        { helptext: 'Napríklad: Ohlásenie stavby' },
       ),
       radioGroup(
         'stupenProjektovejDokumentacie',
@@ -245,7 +240,7 @@ export default schema(
         },
         {
           type: 'dragAndDrop',
-          helptextHeader: 'Technická správa s popisom navrhovaného technického riešenia.',
+          helptext: 'Technická správa s popisom navrhovaného technického riešenia.',
         },
       ),
       fileUpload(
@@ -257,7 +252,7 @@ export default schema(
         },
         {
           type: 'dragAndDrop',
-          helptextHeader:
+          helptext:
             'Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie. V katastrálnej mape zvoľte funkciu Meranie v ľavom menu a vyznačte záujmové územie. Meranie uložte cez možnosť Tlačiť do PDF.',
         },
       ),
@@ -281,7 +276,7 @@ export default schema(
         },
         {
           type: 'dragAndDrop',
-          helptextHeader: 'Výpočet je nutné doložiť v prípade stavby verejného osvetlenia.',
+          helptext: 'Výpočet je nutné doložiť v prípade stavby verejného osvetlenia.',
         },
       ),
     ]),

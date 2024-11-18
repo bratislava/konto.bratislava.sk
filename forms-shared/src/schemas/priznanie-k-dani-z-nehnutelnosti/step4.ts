@@ -4,7 +4,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -22,9 +21,9 @@ const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
   { type: 'integer', title: 'Celková zastavaná plocha', required: true, minimum: 0 },
   {
-    helptext: markdownText(
+    helptextFooter:
       'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}',
-    ),
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -37,9 +36,9 @@ const spoluvlastnickyPodiel = input(
   },
   {
     placeholder: 'Napr. 1/1',
-    helptext: markdownText(
+    helptextFooter:
       'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}',
-    ),
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -47,9 +46,9 @@ const zakladDane = number(
   'zakladDane',
   { type: 'integer', title: 'Základ dane', required: true, minimum: 0 },
   {
-    helptext: markdownText(
+    helptextFooter:
       'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',
-    ),
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -67,7 +66,8 @@ const zakladDaneKalkulacka = customComponentsField(
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Celková zastavaná plocha\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -139,7 +139,7 @@ const innerArray = (kalkulacka: boolean) =>
           ],
         },
         {
-          helptext: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
+          helptextFooter: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
         },
       ),
       kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),
@@ -155,7 +155,8 @@ const innerArray = (kalkulacka: boolean) =>
           required: true,
         },
         {
-          helptext: 'Napríklad, ak máte dom s dvomi podlažiami a s pivničným priestorom, zadáte 2.',
+          helptextFooter:
+            'Napríklad, ak máte dom s dvomi podlažiami a s pivničným priestorom, zadáte 2.',
         },
       ),
       radioGroup(
@@ -192,7 +193,7 @@ const innerArray = (kalkulacka: boolean) =>
                 minimum: 0,
               },
               {
-                helptext:
+                helptextFooter:
                   'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
@@ -205,7 +206,7 @@ const innerArray = (kalkulacka: boolean) =>
                 minimum: 0,
               },
               {
-                helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+                helptextFooter: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
           ],
@@ -223,7 +224,7 @@ const innerArray = (kalkulacka: boolean) =>
             'datumVznikuDanovejPovinnosti',
             { title: 'Dátum vzniku daňovej povinnosti' },
             {
-              helptext:
+              helptextFooter:
                 'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
             },
           ),
@@ -231,7 +232,7 @@ const innerArray = (kalkulacka: boolean) =>
             'datumZanikuDanovejPovinnosti',
             { title: 'Dátum zániku daňovej povinnosti' },
             {
-              helptext:
+              helptextFooter:
                 'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
             },
           ),
@@ -254,12 +255,11 @@ export default step(
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?',
-    helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
-    ),
+    helptext: `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery zastavanej plochy stavby',
-      helptextHeader:
+      helptext:
         'Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu zastavanej plochy',
       inner: innerArray,

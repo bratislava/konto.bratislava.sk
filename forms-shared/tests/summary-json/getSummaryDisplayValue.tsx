@@ -62,8 +62,8 @@ describe('getSummaryDisplayValues', () => {
       {
         title: 'Select Title',
         options: [
-          { value: 'value-1', title: 'Label 1' },
-          { value: 'value-2', title: 'Label 2' },
+          { value: 'value-1', label: 'Label 1' },
+          { value: 'value-2', label: 'Label 2' },
         ],
       },
       {},
@@ -97,8 +97,8 @@ describe('getSummaryDisplayValues', () => {
       {
         title: 'Select Multiple Title',
         options: [
-          { value: 'value-1', title: 'Label 1' },
-          { value: 'value-2', title: 'Label 2' },
+          { value: 'value-1', label: 'Label 1' },
+          { value: 'value-2', label: 'Label 2' },
         ],
       },
       {},
@@ -144,8 +144,8 @@ describe('getSummaryDisplayValues', () => {
         title: 'Radio Group Title',
         type: 'string',
         options: [
-          { value: 'value1', title: 'Label 1' },
-          { value: 'value2', title: 'Label 2' },
+          { value: 'value1', label: 'Label 1' },
+          { value: 'value2', label: 'Label 2' },
         ],
       },
       {},
@@ -283,9 +283,9 @@ describe('getSummaryDisplayValues', () => {
       {
         title: 'Checkbox Group Title',
         options: [
-          { value: 'option1', title: 'Title 1' },
-          { value: 'option2', title: 'Title 2' },
-          { value: 'option3', title: 'Title 3' },
+          { value: 'option1', label: 'Title 1' },
+          { value: 'option2', label: 'Title 2' },
+          { value: 'option3', label: 'Title 3' },
         ],
       },
       {},

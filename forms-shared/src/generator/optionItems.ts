@@ -4,7 +4,7 @@ type ValueTypeBase = string | boolean
 
 export type OptionItem<ValueType extends ValueTypeBase> = {
   value: ValueType
-  title: string
+  label: string
   isDefault?: boolean
   description?: string
 }
@@ -34,7 +34,7 @@ export type EnumMetadata<ValueType extends ValueTypeBase> = {
 
 export const createEnumMetadata = <ValueType extends ValueTypeBase>(
   list: OptionItem<ValueType>[],
-) => list.map(({ value, title, description }) => ({ value, label: title, description }))
+) => list.map(({ value, label, description }) => ({ value, label, description }))
 
 export const mergeEnumOptionsMetadata = <ValueType extends ValueTypeBase>(
   enumOptions: EnumOptionsType[],

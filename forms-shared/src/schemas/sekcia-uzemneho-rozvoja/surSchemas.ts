@@ -69,8 +69,8 @@ export const getSurSchema = (zavazne: boolean) =>
             title: 'Je investor rovnaká osoba ako žiadateľ?',
             required: true,
             options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           {

@@ -107,10 +107,10 @@ export default schema(
             options: [
               {
                 value: 'predschvalenyPozemok',
-                title: 'Predschválený mestský pozemok',
+                label: 'Predschválený mestský pozemok',
                 isDefault: true,
               },
-              { value: 'inyPozemok', title: 'Iný mestský pozemok' },
+              { value: 'inyPozemok', label: 'Iný mestský pozemok' },
             ],
           },
           {

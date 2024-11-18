@@ -50,8 +50,8 @@ export default schema(
             title: 'Mám záujem o',
             required: true,
             options: [
-              { value: 'nova', title: 'Vytvorenie novej predzáhradky', isDefault: true },
-              { value: 'existujuca', title: 'Registrácia existujúcej predzáhradky' },
+              { value: 'nova', label: 'Vytvorenie novej predzáhradky', isDefault: true },
+              { value: 'existujuca', label: 'Registrácia existujúcej predzáhradky' },
             ],
           },
           {

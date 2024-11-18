@@ -17,10 +17,10 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       title: 'Podávate priznanie k dani z nehnuteľností vo svojom mene?',
       required: true,
       options: [
-        { value: true, title: 'Áno', isDefault: true },
+        { value: true, label: 'Áno', isDefault: true },
         {
           value: false,
-          title: 'Nie',
+          label: 'Nie',
           description:
             'Označte v prípade, že podávate priznanie k dani z nehnuteľností ako oprávnená osoba na základe napr. plnej moci alebo ako zákonný zástupca.',
         },
@@ -55,9 +55,9 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
             title: 'Podávate ako oprávnená osoba (splnomocnenec)',
             required: true,
             options: createCamelCaseOptionsV2([
-              { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
+              { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
               {
-                title: 'Právnicka osoba',
+                label: 'Právnicka osoba',
                 description:
                   'Organizácia osôb alebo majetku vytvorená na určitý účel (napr. podnikanie).',
               },
@@ -76,10 +76,10 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       title: 'Podávate priznanie ako',
       required: true,
       options: createCamelCaseOptionsV2([
-        { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
-        { title: 'Fyzická osoba podnikateľ', description: 'SZČO alebo živnostník.' },
+        { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
+        { label: 'Fyzická osoba podnikateľ', description: 'SZČO alebo živnostník.' },
         {
-          title: 'Právnicka osoba',
+          label: 'Právnicka osoba',
           description:
             'Organizácia osôb alebo majetku vytvorená na určitý účel (napr. podnikanie).',
         },

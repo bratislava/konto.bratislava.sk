@@ -225,8 +225,8 @@ const innerArray = (kalkulacka: boolean) =>
             'Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -266,43 +266,43 @@ const innerArray = (kalkulacka: boolean) =>
                 options: [
                   {
                     value: 'a',
-                    title:
+                    label:
                       'a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu',
                   },
                   {
                     value: 'b',
-                    title:
+                    label:
                       'b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu',
                   },
                   {
                     value: 'c',
-                    title: 'c) chaty a stavby na individuálnu rekreáciu',
+                    label: 'c) chaty a stavby na individuálnu rekreáciu',
                   },
                   {
                     value: 'd',
-                    title: 'd) samostatne stojace garáže',
+                    label: 'd) samostatne stojace garáže',
                   },
                   {
                     value: 'e',
-                    title: 'e) stavby hromadných garáží',
+                    label: 'e) stavby hromadných garáží',
                   },
                   {
                     value: 'f',
-                    title: 'f) stavby hromadných garáží umiestnené pod zemou',
+                    label: 'f) stavby hromadných garáží umiestnené pod zemou',
                   },
                   {
                     value: 'g',
-                    title:
+                    label:
                       'g) priemyselné stavby, stavby slúžiace energetike, stavby slúžiace stavebníctvu, stavby využívané na skladovanie vlastnej produkcie vrátane stavieb na vlastnú administratívu',
                   },
                   {
                     value: 'h',
-                    title:
+                    label:
                       'h) stavby na ostatné podnikanie a na zárobkovú činnosť, skladovanie a administratívu súvisiacu s ostatným podnikaním a so zárobkovou činnosťou',
                   },
                   {
                     value: 'i',
-                    title: 'i) ostatné stavby neuvedené v písmenách a) až h)',
+                    label: 'i) ostatné stavby neuvedené v písmenách a) až h)',
                   },
                 ],
               },

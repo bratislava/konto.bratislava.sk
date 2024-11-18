@@ -73,19 +73,19 @@ export default schema(
           required: true,
           options: createStringOptionsV2([
             {
-              title: 'Nový',
+              label: 'Nový',
               description: 'Nemám uzavretú zmluvu',
             },
             {
-              title: 'Existujúci',
+              label: 'Existujúci',
               description: 'Mám uzavretú zmluvu',
             },
             {
-              title: 'Zmena poplatkovej povinnosti pre existujúceho zákazníka',
+              label: 'Zmena poplatkovej povinnosti pre existujúceho zákazníka',
               description: 'Spoplatnenie služby',
             },
             {
-              title: 'Zmena odberateľa',
+              label: 'Zmena odberateľa',
               description: 'Napr. preberám prevádzku alebo správu nehnuteľnosti',
             },
           ]),
@@ -189,8 +189,8 @@ export default schema(
               title: 'Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu',
               required: true,
               options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie' },
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie' },
               ],
             },
             { variant: 'boxed', orientations: 'row' },
@@ -345,7 +345,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: [{ value: '1x_do_tyzdna', title: '1 x do týždňa' }],
+                      options: [{ value: '1x_do_tyzdna', label: '1 x do týždňa' }],
                     },
                     {},
                   ),
@@ -359,7 +359,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: [{ value: '1x_za_4_tyzdne', title: '1 x za 4 týždne' }],
+                      options: [{ value: '1x_za_4_tyzdne', label: '1 x za 4 týždne' }],
                     },
                     {},
                   ),

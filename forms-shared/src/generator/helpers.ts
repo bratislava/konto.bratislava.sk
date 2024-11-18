@@ -137,12 +137,12 @@ const assertUniqueOptions = (options: { value: string }[]) => {
 
 /**
  * Create options from a list of strings. For example:
- * ['Option 1', 'Option 2'] => [{ value: 'Option 1', title: 'Option 1', isDefault: true }, ...]
+ * ['Option 1', 'Option 2'] => [{ value: 'Option 1', label: 'Option 1', isDefault: true }, ...]
  */
 export const createStringOptions = (options: string[], addDefault = true) => {
   const result = options.map((option, index) => ({
     value: option,
-    title: option,
+    label: option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
@@ -151,15 +151,15 @@ export const createStringOptions = (options: string[], addDefault = true) => {
 }
 
 /**
- * Create options from a list of objects with titles. For example:
- * [{ title: 'Option 1' }, { title: 'Option 2' }] => [{ value: 'Option 1', title: 'Option 1', isDefault: true }, ...]
+ * Create options from a list of objects with labels. For example:
+ * [{ label: 'Option 1' }, { label: 'Option 2' }] => [{ value: 'Option 1', label: 'Option 1', isDefault: true }, ...]
  */
-export const createStringOptionsV2 = <Option extends { title: string }>(
+export const createStringOptionsV2 = <Option extends { label: string }>(
   options: Option[],
   addDefault = true,
 ) => {
   const result = options.map((option, index) => ({
-    value: option.title,
+    value: option.label,
     ...option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
@@ -170,12 +170,12 @@ export const createStringOptionsV2 = <Option extends { title: string }>(
 
 /**
  * Create options with camelCase value from a list of strings. For example:
- * ['Option 1', 'Option 2'] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
+ * ['Option 1', 'Option 2'] => [{ value: 'option1', label: 'Option 1', isDefault: true }, ...]
  */
 export const createCamelCaseOptions = (options: string[], addDefault = true) => {
   const result = options.map((option, index) => ({
     value: camelCase(option),
-    title: option,
+    label: option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
@@ -185,14 +185,14 @@ export const createCamelCaseOptions = (options: string[], addDefault = true) => 
 
 /**
  * Create options with camelCase value from a list of objects. For example:
- * [{ title: 'Option 1' }, { title: 'Option 2' }] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
+ * [{ label: 'Option 1' }, { label: 'Option 2' }] => [{ value: 'option1', label: 'Option 1', isDefault: true }, ...]
  */
-export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
+export const createCamelCaseOptionsV2 = <Option extends { label: string }>(
   options: Option[],
   addDefault = true,
 ) => {
   const result = options.map((option, index) => ({
-    value: camelCase(option.title),
+    value: camelCase(option.label),
     ...option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))

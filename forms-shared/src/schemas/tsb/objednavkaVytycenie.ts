@@ -1,17 +1,16 @@
 import {
-  schema,
-  step,
-  radioGroup,
-  input,
-  object,
-  checkbox,
   conditionalFields,
-  select,
   datePicker,
   fileUpload,
+  input,
+  object,
+  radioGroup,
+  schema,
+  select,
   selectMultiple,
+  step,
 } from '../../generator/functions'
-import { createStringOptions, createCondition } from '../../generator/helpers'
+import { createCondition, createStringOptions } from '../../generator/helpers'
 import { sharedAddressField } from '../shared/fields'
 
 export default schema(
@@ -203,8 +202,8 @@ export default schema(
               title: 'Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?',
               required: true,
               options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {

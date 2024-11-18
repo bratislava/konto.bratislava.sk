@@ -63,8 +63,8 @@ const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
         }[stepType],
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
@@ -157,8 +157,8 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           title: 'Bývate v mestskom nájomnom byte v Bratislave?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -174,8 +174,8 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
             'Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -203,8 +203,8 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
           required: true,
           options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -280,8 +280,8 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           title: 'Štátna príslušnosť',
           required: true,
           options: [
-            { value: 'slovenska', title: 'Slovenská', isDefault: true },
-            { value: 'ina', title: 'Iná' },
+            { value: 'slovenska', label: 'Slovenská', isDefault: true },
+            { value: 'ina', label: 'Iná' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -294,11 +294,11 @@ const getOsobneUdajeSection = (stepType: StepType) => {
                 title: 'Rodinný stav',
                 required: true,
                 options: [
-                  { value: 'slobodny', title: 'Slobodný/slobodná' },
-                  { value: 'zenaty', title: 'Ženatý/vydatá' },
-                  { value: 'rozvedeny', title: 'Rozvedený/rozvedená' },
-                  { value: 'vdovec', title: 'Vdovec/vdova' },
-                  { value: 'ine', title: 'Iné' },
+                  { value: 'slobodny', label: 'Slobodný/slobodná' },
+                  { value: 'zenaty', label: 'Ženatý/vydatá' },
+                  { value: 'rozvedeny', label: 'Rozvedený/rozvedená' },
+                  { value: 'vdovec', label: 'Vdovec/vdova' },
+                  { value: 'ine', label: 'Iné' },
                 ],
               },
               {},
@@ -349,8 +349,8 @@ const getOsobneUdajeSection = (stepType: StepType) => {
                   title: 'Chcem byť kontaktovaný/á emailom?',
                   required: true,
                   options: [
-                    { value: true, title: 'Áno', isDefault: true },
-                    { value: false, title: 'Nie' },
+                    { value: true, label: 'Áno', isDefault: true },
+                    { value: false, label: 'Nie' },
                   ],
                 },
                 {
@@ -415,8 +415,8 @@ const getPrijemSection = (stepType: StepType) => {
           title: 'Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -445,8 +445,8 @@ const getPrijemSection = (stepType: StepType) => {
             'Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -509,8 +509,8 @@ const getPrijemSection = (stepType: StepType) => {
         }[stepType],
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
@@ -549,8 +549,8 @@ const getPrijemSection = (stepType: StepType) => {
             : 'Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
@@ -589,8 +589,8 @@ const getPrijemSection = (stepType: StepType) => {
             : 'Poberal/poberala v minulom kalendárnom roku dôchodok?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
@@ -619,8 +619,8 @@ const getPrijemSection = (stepType: StepType) => {
             : 'Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       { variant: 'boxed', orientations: 'row' },
@@ -642,8 +642,8 @@ const getPrijemSection = (stepType: StepType) => {
             : 'Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       { variant: 'boxed', orientations: 'row' },
@@ -665,8 +665,8 @@ const getPrijemSection = (stepType: StepType) => {
             : 'Poberal/poberala v minulom kalendárnom roku iné príjmy?',
         required: true,
         options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
@@ -794,8 +794,8 @@ const getZdravotnyStavSection = (stepType: StepType) => {
           }),
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -813,8 +813,8 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             }),
             required: true,
             options: [
-              { value: '50az74', title: 'Od 50 % do 74 %' },
-              { value: '75az100', title: 'Od 75 % do 100 %' },
+              { value: '50az74', label: 'Od 50 % do 74 %' },
+              { value: '75az100', label: 'Od 75 % do 100 %' },
             ],
           },
           {},
@@ -831,8 +831,8 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             }),
             required: true,
             options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
             ],
           },
           { variant: 'boxed', orientations: 'row' },
@@ -848,121 +848,121 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               }),
               required: true,
               options: [
-                { value: 'alzheimer', title: 'Alzheimerova choroba' },
-                { value: 'anorexiaBulimia', title: 'Anorexia/Bulímia' },
+                { value: 'alzheimer', label: 'Alzheimerova choroba' },
+                { value: 'anorexiaBulimia', label: 'Anorexia/Bulímia' },
                 {
                   value: 'arterialnaHypertenzia',
-                  title: 'Arteriálna hypertenzia (chronický zvýšený tlak)',
+                  label: 'Arteriálna hypertenzia (chronický zvýšený tlak)',
                 },
-                { value: 'astma', title: 'Astma' },
-                { value: 'autizmus', title: 'Autizmus' },
-                { value: 'bipolarnaPorucha', title: 'Bipolárna porucha' },
+                { value: 'astma', label: 'Astma' },
+                { value: 'autizmus', label: 'Autizmus' },
+                { value: 'bipolarnaPorucha', label: 'Bipolárna porucha' },
                 {
                   value: 'chronickaObstrukcnaChorobaPluc',
-                  title: 'Chronická obštrukčná choroba pľúc (Symptomatická)',
+                  label: 'Chronická obštrukčná choroba pľúc (Symptomatická)',
                 },
-                { value: 'chronickaParadentoza', title: 'Chronická paradentóza' },
+                { value: 'chronickaParadentoza', label: 'Chronická paradentóza' },
                 {
                   value: 'chronickeGastroenterologickeOchorenia',
-                  title:
+                  label:
                     'Chronické gastroenterologické ochorenia (Crohnova choroba, Ulcerózna kolitída, Chronická gastritída a podobné)',
                 },
                 {
                   value: 'chronickeMuskuloskeletalneChoroby',
-                  title:
+                  label:
                     'Chronické muskuloskeletálne choroby (obmedzený pohyb, chýbajúca končatina)',
                 },
                 {
                   value: 'chronickeNasledkyCMP',
-                  title: 'Chronické následky cievnej mozgovej príhody',
+                  label: 'Chronické následky cievnej mozgovej príhody',
                 },
                 {
                   value: 'chronickeOchorenieObliciek',
-                  title:
+                  label:
                     'Chronické ochorenie obličiek v dôsledku nasledovných chorôb: Cukrovka, Glomerulonefritída, Hypertenzia, prípadne iných ochorení',
                 },
                 {
                   value: 'chronickeOchoreniePecene',
-                  title: 'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
+                  label: 'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
                 },
                 {
                   value: 'chronickeOchoreniaKoze',
-                  title:
+                  label:
                     'Chronické rozsiahle ochorenia kože s komplikáciami (chronický ekzém, chronické formy parapsoriázy)',
                 },
                 {
                   value: 'chronickyZapalStrednhoUcha',
-                  title: 'Chronický zápal stredného ucha (strata sluchu, vertigo)',
+                  label: 'Chronický zápal stredného ucha (strata sluchu, vertigo)',
                 },
-                { value: 'demencia', title: 'Demencia' },
+                { value: 'demencia', label: 'Demencia' },
                 {
                   value: 'diabetesBezKomplikacii',
-                  title: 'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
+                  label: 'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
                 },
                 {
                   value: 'diabetesSKomplikaciami',
-                  title:
+                  label:
                     'Diabetes mellitus 1 a 2 typu (Cukrovka) so závažnými komplikáciami (diabetická noha, neuropatia, retinopatia)',
                 },
                 {
                   value: 'rakovinaSLiecbou',
-                  title: 'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
+                  label: 'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
                 },
-                { value: 'downovSyndrom', title: 'Downov syndróm' },
-                { value: 'dystymiaUzkost', title: 'Dystýmia + Úzkostná porucha' },
-                { value: 'encefalokela', title: 'Encefalokéla (vady mozgu)' },
-                { value: 'epilepsia', title: 'Epilepsia' },
-                { value: 'guillainBarrehoSyndrom', title: 'Guillainov-Barrého syndróm' },
-                { value: 'hepatitidaC', title: 'Hepatitída C' },
-                { value: 'hivAids', title: 'HIV/AIDS' },
-                { value: 'hluchota', title: 'Hluchota (bez posudku)' },
-                { value: 'ineChronickeOchoreniaSrdca', title: 'Iné chronické ochorenia srdca' },
-                { value: 'ischemickaChorobaSrdca', title: 'Ischemická choroba srdca' },
-                { value: 'klinefelterovSyndrom', title: 'Klinefelterov syndróm' },
+                { value: 'downovSyndrom', label: 'Downov syndróm' },
+                { value: 'dystymiaUzkost', label: 'Dystýmia + Úzkostná porucha' },
+                { value: 'encefalokela', label: 'Encefalokéla (vady mozgu)' },
+                { value: 'epilepsia', label: 'Epilepsia' },
+                { value: 'guillainBarrehoSyndrom', label: 'Guillainov-Barrého syndróm' },
+                { value: 'hepatitidaC', label: 'Hepatitída C' },
+                { value: 'hivAids', label: 'HIV/AIDS' },
+                { value: 'hluchota', label: 'Hluchota (bez posudku)' },
+                { value: 'ineChronickeOchoreniaSrdca', label: 'Iné chronické ochorenia srdca' },
+                { value: 'ischemickaChorobaSrdca', label: 'Ischemická choroba srdca' },
+                { value: 'klinefelterovSyndrom', label: 'Klinefelterov syndróm' },
                 {
                   value: 'metastatickaRakovina',
-                  title: 'Metastatická fáza rakoviny (všetky typy rakoviny)',
+                  label: 'Metastatická fáza rakoviny (všetky typy rakoviny)',
                 },
-                { value: 'ocneOchorenia', title: 'Očné ochorenia (glaukoma, katarakta a podobné)' },
-                { value: 'ochorenieMotorickychNeuronov', title: 'Ochorenie motorických neurónov' },
-                { value: 'osteoatroza', title: 'Osteoatróza (artróza)' },
-                { value: 'parkinson', title: 'Parkinsonova choroba' },
+                { value: 'ocneOchorenia', label: 'Očné ochorenia (glaukoma, katarakta a podobné)' },
+                { value: 'ochorenieMotorickychNeuronov', label: 'Ochorenie motorických neurónov' },
+                { value: 'osteoatroza', label: 'Osteoatróza (artróza)' },
+                { value: 'parkinson', label: 'Parkinsonova choroba' },
                 {
                   value: 'rakovinaVRemisii',
-                  title: 'Rakovina vo fáze remisie (všetky typy rakoviny)',
+                  label: 'Rakovina vo fáze remisie (všetky typy rakoviny)',
                 },
-                { value: 'reumatickeOchorenieSrdca', title: 'Reumatické ochorenie srdca' },
-                { value: 'reumatoidnaArtritida', title: 'Reumatoidná artritída' },
-                { value: 'sarkoidoza', title: 'Sarkoidóza' },
-                { value: 'schistosomoza', title: 'Schistosomóza (krvné motolice)' },
-                { value: 'schizofrenia', title: 'Schizofrénia' },
-                { value: 'slepota', title: 'Slepota (bez posudku)' },
+                { value: 'reumatickeOchorenieSrdca', label: 'Reumatické ochorenie srdca' },
+                { value: 'reumatoidnaArtritida', label: 'Reumatoidná artritída' },
+                { value: 'sarkoidoza', label: 'Sarkoidóza' },
+                { value: 'schistosomoza', label: 'Schistosomóza (krvné motolice)' },
+                { value: 'schizofrenia', label: 'Schizofrénia' },
+                { value: 'slepota', label: 'Slepota (bez posudku)' },
                 {
                   value: 'silikozaAzbestozaPneumokonioza',
-                  title: 'Silikóza, Azbestóza, Pneumokonióza',
+                  label: 'Silikóza, Azbestóza, Pneumokonióza',
                 },
-                { value: 'sklerozaMultiplex', title: 'Skleróza multiplex (roztrúsená)' },
-                { value: 'spinaBifida', title: 'Spina bifida (rázštep chrbtice)' },
-                { value: 'spinozaAtrezia', title: 'Spinóza a/alebo atrézia traviacého traktu' },
-                { value: 'struma', title: 'Struma (zväčšená štítna žľaza)' },
-                { value: 'syfilis', title: 'Syfilis' },
-                { value: 'tetanus', title: 'Tetanus' },
+                { value: 'sklerozaMultiplex', label: 'Skleróza multiplex (roztrúsená)' },
+                { value: 'spinaBifida', label: 'Spina bifida (rázštep chrbtice)' },
+                { value: 'spinozaAtrezia', label: 'Spinóza a/alebo atrézia traviacého traktu' },
+                { value: 'struma', label: 'Struma (zväčšená štítna žľaza)' },
+                { value: 'syfilis', label: 'Syfilis' },
+                { value: 'tetanus', label: 'Tetanus' },
                 {
                   value: 'terminalnaFazaRakoviny',
-                  title: 'Terminálna fáza rakoviny (všetky typy rakoviny)',
+                  label: 'Terminálna fáza rakoviny (všetky typy rakoviny)',
                 },
-                { value: 'tuberkuloza', title: 'Tuberkulóza' },
-                { value: 'turnerovSyndrom', title: 'Turnerov syndróm' },
-                { value: 'vrodenaChybaBranice', title: 'Vrodená chyba bránice (CDH)' },
+                { value: 'tuberkuloza', label: 'Tuberkulóza' },
+                { value: 'turnerovSyndrom', label: 'Turnerov syndróm' },
+                { value: 'vrodenaChybaBranice', label: 'Vrodená chyba bránice (CDH)' },
                 {
                   value: 'vrodeneChybyBrusnejSteny',
-                  title: 'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
+                  label: 'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
                 },
                 {
                   value: 'vrodenePoruchyPohybovehoAparatu',
-                  title: 'Vrodené poruchy a abnormality pohybového aparátu',
+                  label: 'Vrodené poruchy a abnormality pohybového aparátu',
                 },
-                { value: 'vrodeneSrdcoveChyby', title: 'Vrodené srdcové chyby (CHD)' },
+                { value: 'vrodeneSrdcoveChyby', label: 'Vrodené srdcové chyby (CHD)' },
               ],
             },
             {},
@@ -978,8 +978,8 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               title: 'Uchádzate sa o pridelenie bezbariérového bytu?',
               required: true,
               options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {
@@ -1049,8 +1049,8 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             }[stepType],
             required: true,
             options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           { variant: 'boxed', orientations: 'row' },
@@ -1068,8 +1068,8 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             : 'Nachádza sa v bytovej núdzi?',
         required: true,
         options: [
-          { value: true, title: 'Áno', isDefault: true },
-          { value: false, title: 'Nie' },
+          { value: true, label: 'Áno', isDefault: true },
+          { value: false, label: 'Nie' },
         ],
       },
       {
@@ -1096,30 +1096,30 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           title: 'Typ bývania',
           required: true,
           options: [
-            { value: 'ulica', title: 'Bývanie na ulici' },
+            { value: 'ulica', label: 'Bývanie na ulici' },
             {
               value: 'krizoveUbytovanie',
-              title: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
+              label: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
             },
             {
               value: 'zariadeniePreLudiVNudzi',
-              title: 'Bývanie v zariadení určenom pre ľudí v núdzi',
+              label: 'Bývanie v zariadení určenom pre ľudí v núdzi',
               description: 'Útulok, azylový dom, Domov na pol ceste',
             },
             {
               value: 'nestatnardneObydlie',
-              title: 'Bývanie v neštandardnom obydlí',
+              label: 'Bývanie v neštandardnom obydlí',
               description: 'Mobilné obydlia, chatky, búdy, provizórne stavby',
             },
             {
               value: 'mestskaUbytovna',
-              title: 'Bývanie v mestskej ubytovni',
+              label: 'Bývanie v mestskej ubytovni',
               description: 'Ubytovňa Fortuna, Ubytovňa Kopčany',
             },
-            { value: 'komercnaUbytovna', title: 'Bývanie v komerčnej ubytovni' },
+            { value: 'komercnaUbytovna', label: 'Bývanie v komerčnej ubytovni' },
             {
               value: 'institucionalnaStarostlivost',
-              title: 'Bývanie v inštitucionálnej starostlivosti',
+              label: 'Bývanie v inštitucionálnej starostlivosti',
               description:
                 stepType === StepType.Dieta
                   ? 'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr, Špeciálne výchovné zariadenie'
@@ -1127,7 +1127,7 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             },
             {
               value: 'neistePodmienky',
-              title: 'Bývanie v neistých/nevyhovujúcich podmienkach',
+              label: 'Bývanie v neistých/nevyhovujúcich podmienkach',
               description:
                 'Strata vlastníckych práv, výpoveď z nájmu, obydlie bez elektriny, vody, možnosti kúrenia, bez WC, extrémne preľudnene obydlie, nájom/podnájom bez zmluvy, bývanie u príbuzných/známych, neudržateľnosť nájomnej zmluvy (napr. náhly pokles príjmu)',
             },
@@ -1147,11 +1147,11 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           }[stepType],
           required: true,
           options: [
-            { value: 'menejAko1', title: 'Menej ako 1 rok' },
-            { value: '1az2', title: '1 - 2 roky' },
-            { value: '3az5', title: '3 - 5 rokov' },
-            { value: '6az9', title: '6 - 9 rokov' },
-            { value: '10aViac', title: '10 a viac rokov' },
+            { value: 'menejAko1', label: 'Menej ako 1 rok' },
+            { value: '1az2', label: '1 - 2 roky' },
+            { value: '3az5', label: '3 - 5 rokov' },
+            { value: '6az9', label: '6 - 9 rokov' },
+            { value: '10aViac', label: '10 a viac rokov' },
           ],
         },
         {},
@@ -1190,8 +1190,8 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
           required: true,
           options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1204,31 +1204,31 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
             options: [
               {
                 value: 'osamelyRodic',
-                title:
+                label:
                   'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
               },
               {
                 value: 'rodicNaDovolenke',
-                title: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
+                label: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
               },
               {
                 value: 'moznostNavratuDeti',
-                title:
+                label:
                   'Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania',
               },
               {
                 value: 'opustenieUstavnejStarostlivosti',
-                title:
+                label:
                   'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
               },
               {
                 value: 'opustenieVazby',
-                title:
+                label:
                   'Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr',
               },
               {
                 value: 'opustenieSpecialnehoZariadenia',
-                title:
+                label:
                   'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)',
               },
             ],
@@ -1247,10 +1247,10 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           title: 'Zvoľte vek najstaršieho člena domácnosti',
           required: true,
           options: [
-            { value: 'menejAko63', title: 'menej ako 63 rokov' },
-            { value: '63az70', title: '63 - 70 rokov' },
-            { value: '71az80', title: '71 - 80 rokov' },
-            { value: '81aViac', title: '81 a viac rokov' },
+            { value: 'menejAko63', label: 'menej ako 63 rokov' },
+            { value: '63az70', label: '63 - 70 rokov' },
+            { value: '71az80', label: '71 - 80 rokov' },
+            { value: '81aViac', label: '81 a viac rokov' },
           ],
         },
         {
@@ -1302,8 +1302,8 @@ export default schema(
           title: 'Bude súčasťou budúcej domácnosti aj váš manžel/manželka?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1321,8 +1321,8 @@ export default schema(
           title: 'Bude súčasťou budúcej domácnosti aj váš druh/družka?',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1348,8 +1348,8 @@ export default schema(
             title: 'Bude súčasťou budúcej domácnosti aj vaše dieťa/deti?',
             required: true,
             options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
             ],
           },
           {
@@ -1381,8 +1381,8 @@ export default schema(
             'Budú súčasťou budúcej domácnosti aj iní členovia/členky? (zaopatrené deti, starí rodičia a pod.)',
           required: true,
           options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -1422,10 +1422,10 @@ export default schema(
           title: 'Akú veľkosť nájomného bytu preferujete?',
           required: true,
           options: [
-            { value: 'garsonka1izbovy', title: 'garsónka/1-izbový byt' },
-            { value: '2izbovy', title: '2-izbový byt' },
-            { value: '3izbovy', title: '3-izbový byt' },
-            { value: '4izbovy', title: '4-izbový byt' },
+            { value: 'garsonka1izbovy', label: 'garsónka/1-izbový byt' },
+            { value: '2izbovy', label: '2-izbový byt' },
+            { value: '3izbovy', label: '3-izbový byt' },
+            { value: '4izbovy', label: '4-izbový byt' },
           ],
         },
         {},
@@ -1436,14 +1436,14 @@ export default schema(
           title: 'Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?',
           required: true,
           options: [
-            { value: 'stareMesto', title: 'Staré Mesto' },
-            { value: 'ruzinov', title: 'Ružinov' },
-            { value: 'vrakuna', title: 'Vrakuňa' },
-            { value: 'podunajskeBiskupice', title: 'Podunajské Biskupice' },
-            { value: 'noveMesto', title: 'Nové Mesto' },
-            { value: 'karlovaVes', title: 'Karlova Ves' },
-            { value: 'dubravka', title: 'Dúbravka' },
-            { value: 'petrzalka', title: 'Petržalka' },
+            { value: 'stareMesto', label: 'Staré Mesto' },
+            { value: 'ruzinov', label: 'Ružinov' },
+            { value: 'vrakuna', label: 'Vrakuňa' },
+            { value: 'podunajskeBiskupice', label: 'Podunajské Biskupice' },
+            { value: 'noveMesto', label: 'Nové Mesto' },
+            { value: 'karlovaVes', label: 'Karlova Ves' },
+            { value: 'dubravka', label: 'Dúbravka' },
+            { value: 'petrzalka', label: 'Petržalka' },
           ],
         },
         {},

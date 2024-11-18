@@ -160,11 +160,11 @@ export default schema(
           required: true,
           options: createStringOptionsV2([
             {
-              title: 'Option 1',
+              label: 'Option 1',
               description: 'Description for option 1',
             },
             {
-              title: 'Option 2',
+              label: 'Option 2',
               description: 'Description for option 2',
             },
           ]),
@@ -191,8 +191,8 @@ export default schema(
           title: 'Boolean Radio Group',
           required: true,
           options: [
-            { value: true, title: 'Yes' },
-            { value: false, title: 'No', isDefault: true },
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No', isDefault: true },
           ],
         },
         {
@@ -209,11 +209,11 @@ export default schema(
           required: true,
           options: createStringOptionsV2([
             {
-              title: 'Option 1',
+              label: 'Option 1',
               description: 'Description for option 1',
             },
             {
-              title: 'Option 2',
+              label: 'Option 2',
               description: 'Description for option 2',
             },
           ]),
@@ -354,9 +354,9 @@ export default schema(
         {
           title: 'Checkbox Group',
           options: [
-            { value: 'option1', title: 'Option 1' },
-            { value: 'option2', title: 'Option 2' },
-            { value: 'option3', title: 'Option 3' },
+            { value: 'option1', label: 'Option 1' },
+            { value: 'option2', label: 'Option 2' },
+            { value: 'option3', label: 'Option 3' },
           ],
         },
         {
@@ -445,8 +445,8 @@ export default schema(
           title: 'Show Extra Fields?',
           required: true,
           options: [
-            { value: true, title: 'Yes' },
-            { value: false, title: 'No', isDefault: true },
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No', isDefault: true },
           ],
         },
         {

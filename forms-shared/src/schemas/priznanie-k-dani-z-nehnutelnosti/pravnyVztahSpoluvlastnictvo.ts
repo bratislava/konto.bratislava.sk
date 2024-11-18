@@ -28,14 +28,14 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       title: 'Spoluvlastníctvo',
       required: true,
       options: createCamelCaseOptionsV2([
-        { title: 'Som jediný vlastník' },
+        { label: 'Som jediný vlastník' },
         {
-          title: 'Podielové spoluvlastníctvo',
+          label: 'Podielové spoluvlastníctvo',
           description:
             'Nehnuteľnosť vlastníte s ďalšou/ďalšími osobou/osobami (váš podiel na LV je napr. 1/2).',
         },
         {
-          title: 'Bezpodielové spoluvlastníctvo manželov',
+          label: 'Bezpodielové spoluvlastníctvo manželov',
           description:
             'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov. Údaje o manželovi/manželke zadáte na konci tohto formulára.',
         },
@@ -62,8 +62,8 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
           title: 'Podávate priznanie za všetkých spoluvlastníkov na základe dohody?',
           required: true,
           options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         {

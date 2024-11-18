@@ -139,18 +139,18 @@ describe('createStringOptions', () => {
   it('should create options from a list of strings with default option', () => {
     const result = createStringOptions(['Option 1', 'Option 2', 'Option 3'])
     expect(result).toEqual([
-      { value: 'Option 1', title: 'Option 1', isDefault: true },
-      { value: 'Option 2', title: 'Option 2' },
-      { value: 'Option 3', title: 'Option 3' },
+      { value: 'Option 1', label: 'Option 1', isDefault: true },
+      { value: 'Option 2', label: 'Option 2' },
+      { value: 'Option 3', label: 'Option 3' },
     ])
   })
 
   it('should create options from a list of strings without default option', () => {
     const result = createStringOptions(['Option 1', 'Option 2', 'Option 3'], false)
     expect(result).toEqual([
-      { value: 'Option 1', title: 'Option 1' },
-      { value: 'Option 2', title: 'Option 2' },
-      { value: 'Option 3', title: 'Option 3' },
+      { value: 'Option 1', label: 'Option 1' },
+      { value: 'Option 2', label: 'Option 2' },
+      { value: 'Option 3', label: 'Option 3' },
     ])
   })
 
@@ -161,7 +161,7 @@ describe('createStringOptions', () => {
 
   it('should handle a single string input', () => {
     const result = createStringOptions(['Option 1'])
-    expect(result).toEqual([{ value: 'Option 1', title: 'Option 1', isDefault: true }])
+    expect(result).toEqual([{ value: 'Option 1', label: 'Option 1', isDefault: true }])
   })
 
   it('should throw an error if options have duplicate values', () => {
@@ -174,30 +174,30 @@ describe('createStringOptions', () => {
 describe('createStringOptionsV2', () => {
   it('should create options from a list of objects with default option', () => {
     const result = createStringOptionsV2([
-      { title: 'Option 1', description: 'Description 1' },
-      { title: 'Option 2' },
-      { title: 'Option 3' },
+      { label: 'Option 1', description: 'Description 1' },
+      { label: 'Option 2' },
+      { label: 'Option 3' },
     ])
     expect(result).toEqual([
-      { value: 'Option 1', title: 'Option 1', description: 'Description 1', isDefault: true },
-      { value: 'Option 2', title: 'Option 2', isDefault: undefined },
-      { value: 'Option 3', title: 'Option 3', isDefault: undefined },
+      { value: 'Option 1', label: 'Option 1', description: 'Description 1', isDefault: true },
+      { value: 'Option 2', label: 'Option 2', isDefault: undefined },
+      { value: 'Option 3', label: 'Option 3', isDefault: undefined },
     ])
   })
 
   it('should create options from a list of objects without default option', () => {
     const result = createStringOptionsV2(
       [
-        { title: 'Option 1', description: 'Description 1' },
-        { title: 'Option 2' },
-        { title: 'Option 3' },
+        { label: 'Option 1', description: 'Description 1' },
+        { label: 'Option 2' },
+        { label: 'Option 3' },
       ],
       false,
     )
     expect(result).toEqual([
-      { value: 'Option 1', title: 'Option 1', description: 'Description 1' },
-      { value: 'Option 2', title: 'Option 2' },
-      { value: 'Option 3', title: 'Option 3' },
+      { value: 'Option 1', label: 'Option 1', description: 'Description 1' },
+      { value: 'Option 2', label: 'Option 2' },
+      { value: 'Option 3', label: 'Option 3' },
     ])
   })
 
@@ -207,32 +207,32 @@ describe('createStringOptionsV2', () => {
   })
 
   it('should handle a single object input', () => {
-    const result = createStringOptionsV2([{ title: 'Option 1' }])
-    expect(result).toEqual([{ value: 'Option 1', title: 'Option 1', isDefault: true }])
+    const result = createStringOptionsV2([{ label: 'Option 1' }])
+    expect(result).toEqual([{ value: 'Option 1', label: 'Option 1', isDefault: true }])
   })
 
   it('should throw an error if options have duplicate values', () => {
     expect(() =>
-      createStringOptionsV2([{ title: 'Option 1' }, { title: 'Option 1' }]),
+      createStringOptionsV2([{ label: 'Option 1' }, { label: 'Option 1' }]),
     ).toThrowError('Options must have unique values')
   })
 
   it('should preserve additional properties from input objects', () => {
     const result = createStringOptionsV2([
-      { title: 'Option 1', extra: 'data1', nested: { prop: 'value' } },
-      { title: 'Option 2', extra: 'data2' },
+      { label: 'Option 1', extra: 'data1', nested: { prop: 'value' } },
+      { label: 'Option 2', extra: 'data2' },
     ])
     expect(result).toEqual([
       {
         value: 'Option 1',
-        title: 'Option 1',
+        label: 'Option 1',
         extra: 'data1',
         nested: { prop: 'value' },
         isDefault: true,
       },
       {
         value: 'Option 2',
-        title: 'Option 2',
+        label: 'Option 2',
         extra: 'data2',
         isDefault: undefined,
       },
@@ -244,18 +244,18 @@ describe('createCamelCaseOptions', () => {
   it('should create options from a list of strings with default option', () => {
     const result = createCamelCaseOptions(['Option 1', 'Option 2', 'Option 3'])
     expect(result).toEqual([
-      { value: 'option1', title: 'Option 1', isDefault: true },
-      { value: 'option2', title: 'Option 2' },
-      { value: 'option3', title: 'Option 3' },
+      { value: 'option1', label: 'Option 1', isDefault: true },
+      { value: 'option2', label: 'Option 2' },
+      { value: 'option3', label: 'Option 3' },
     ])
   })
 
   it('should create options from a list of strings without default option', () => {
     const result = createCamelCaseOptions(['Option 1', 'Option 2', 'Option 3'], false)
     expect(result).toEqual([
-      { value: 'option1', title: 'Option 1' },
-      { value: 'option2', title: 'Option 2' },
-      { value: 'option3', title: 'Option 3' },
+      { value: 'option1', label: 'Option 1' },
+      { value: 'option2', label: 'Option 2' },
+      { value: 'option3', label: 'Option 3' },
     ])
   })
 
@@ -266,7 +266,7 @@ describe('createCamelCaseOptions', () => {
 
   it('should handle a single string input', () => {
     const result = createCamelCaseOptions(['Option 1'])
-    expect(result).toEqual([{ value: 'option1', title: 'Option 1', isDefault: true }])
+    expect(result).toEqual([{ value: 'option1', label: 'Option 1', isDefault: true }])
   })
 
   it('should throw an error if options have duplicate camelCase values', () => {
@@ -279,30 +279,30 @@ describe('createCamelCaseOptions', () => {
 describe('createCamelCaseOptionsV2', () => {
   it('should create options from a list of objects with default option', () => {
     const result = createCamelCaseOptionsV2([
-      { title: 'Option 1', description: 'Description 1' },
-      { title: 'Option 2' },
-      { title: 'Option 3' },
+      { label: 'Option 1', description: 'Description 1' },
+      { label: 'Option 2' },
+      { label: 'Option 3' },
     ])
     expect(result).toEqual([
-      { value: 'option1', title: 'Option 1', description: 'Description 1', isDefault: true },
-      { value: 'option2', title: 'Option 2', isDefault: undefined },
-      { value: 'option3', title: 'Option 3', isDefault: undefined },
+      { value: 'option1', label: 'Option 1', description: 'Description 1', isDefault: true },
+      { value: 'option2', label: 'Option 2', isDefault: undefined },
+      { value: 'option3', label: 'Option 3', isDefault: undefined },
     ])
   })
 
   it('should create options from a list of objects without default option', () => {
     const result = createCamelCaseOptionsV2(
       [
-        { title: 'Option 1', description: 'Description 1' },
-        { title: 'Option 2' },
-        { title: 'Option 3' },
+        { label: 'Option 1', description: 'Description 1' },
+        { label: 'Option 2' },
+        { label: 'Option 3' },
       ],
       false,
     )
     expect(result).toEqual([
-      { value: 'option1', title: 'Option 1', description: 'Description 1' },
-      { value: 'option2', title: 'Option 2' },
-      { value: 'option3', title: 'Option 3' },
+      { value: 'option1', label: 'Option 1', description: 'Description 1' },
+      { value: 'option2', label: 'Option 2' },
+      { value: 'option3', label: 'Option 3' },
     ])
   })
 
@@ -312,13 +312,13 @@ describe('createCamelCaseOptionsV2', () => {
   })
 
   it('should handle a single object input', () => {
-    const result = createCamelCaseOptionsV2([{ title: 'Option 1' }])
-    expect(result).toEqual([{ value: 'option1', title: 'Option 1', isDefault: true }])
+    const result = createCamelCaseOptionsV2([{ label: 'Option 1' }])
+    expect(result).toEqual([{ value: 'option1', label: 'Option 1', isDefault: true }])
   })
 
   it('should throw an error if options have duplicate camelCase values', () => {
     expect(() =>
-      createCamelCaseOptionsV2([{ title: 'hello_World' }, { title: 'HELLO world' }]),
+      createCamelCaseOptionsV2([{ label: 'hello_World' }, { label: 'HELLO world' }]),
     ).toThrowError('Options must have unique values')
   })
 })

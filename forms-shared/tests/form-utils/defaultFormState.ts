@@ -33,7 +33,7 @@ describe('defaultFormState', () => {
     const options = [
       {
         value: 'option',
-        title: 'Option',
+        label: 'Option',
       },
     ]
 

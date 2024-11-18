@@ -35,7 +35,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       placeholder,
       errorMessage = [],
       helptext,
-      helptextHeader,
+      helptextFooter,
       tooltip,
       required,
       value = '',
@@ -141,7 +141,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextFooter={helptextFooter}
         descriptionProps={descriptionProps}
         required={required}
         tooltip={tooltip}

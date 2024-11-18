@@ -20,7 +20,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
       placeholder,
       errorMessage = [],
       helptext,
-      helptextHeader,
+      helptextFooter,
       tooltip,
       required,
       value = '',
@@ -56,7 +56,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         placeholder={placeholder}
         errorMessage={errorMessage}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextFooter={helptextFooter}
         value={value}
         className={className}
         required={required}

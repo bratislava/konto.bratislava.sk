@@ -24,7 +24,7 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       label,
       tooltip,
       helptext,
-      helptextHeader,
+      helptextFooter,
       isOpen,
       required,
       customErrorPlace,
@@ -68,7 +68,7 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
         labelProps={labelProps}
         tooltip={tooltip}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextFooter={helptextFooter}
         descriptionProps={descriptionProps}
         required={required}
         disabled={disabled}

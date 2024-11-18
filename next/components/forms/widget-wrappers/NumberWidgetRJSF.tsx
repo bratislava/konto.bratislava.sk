@@ -26,7 +26,7 @@ const NumberWidgetRJSF = ({
   readonly,
   name,
 }: NumberWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, className, resetIcon, leftIcon, size, labelSize } =
+  const { helptext, helptextFooter, tooltip, className, resetIcon, leftIcon, size, labelSize } =
     options
 
   const handleOnChange = (newValue: number | undefined) => {
@@ -53,7 +53,7 @@ const NumberWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
-            helptextHeader={helptextHeader}
+            helptextFooter={helptextFooter}
             tooltip={tooltip}
             className={className}
             resetIcon={resetIcon}

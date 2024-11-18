@@ -21,7 +21,7 @@ const TimeField = (props: TimeFieldProps) => {
   const {
     label,
     helptext,
-    helptextHeader,
+    helptextFooter,
     tooltip,
     required,
     children,
@@ -75,7 +75,7 @@ const TimeField = (props: TimeFieldProps) => {
       labelProps={labelProps}
       tooltip={tooltip}
       helptext={helptext}
-      helptextHeader={helptextHeader}
+      helptextFooter={helptextFooter}
       descriptionProps={descriptionProps}
       required={required}
       disabled={disabled}

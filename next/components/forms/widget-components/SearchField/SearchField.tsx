@@ -20,7 +20,7 @@ const SearchField = ({
   placeholder,
   errorMessage = [],
   helptext,
-  helptextHeader,
+  helptextFooter,
   tooltip,
   required,
   value = '',
@@ -75,7 +75,7 @@ const SearchField = ({
         labelProps={labelProps}
         htmlFor={inputProps?.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextFooter={helptextFooter}
         descriptionProps={descriptionProps}
         required={required}
         tooltip={tooltip}

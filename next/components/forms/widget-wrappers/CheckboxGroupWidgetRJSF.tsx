@@ -34,7 +34,7 @@ const CheckboxGroupWidgetRJSF = ({
     size,
     labelSize,
     helptext,
-    helptextHeader,
+    helptextFooter,
   } = options
 
   const mergedOptions = useMemo(
@@ -59,7 +59,7 @@ const CheckboxGroupWidgetRJSF = ({
         size={size}
         labelSize={labelSize}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextFooter={helptextFooter}
         displayOptionalLabel
       >
         {mergedOptions.map((option) => {

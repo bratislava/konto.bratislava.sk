@@ -27,7 +27,7 @@ const InputWidgetRJSF = ({
 }: InputWidgetRJSFProps) => {
   const {
     helptext,
-    helptextHeader,
+    helptextFooter,
     tooltip,
     className,
     resetIcon,
@@ -59,7 +59,7 @@ const InputWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
-            helptextHeader={helptextHeader}
+            helptextFooter={helptextFooter}
             tooltip={tooltip}
             className={className}
             resetIcon={resetIcon}

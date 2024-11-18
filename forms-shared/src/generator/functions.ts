@@ -14,7 +14,6 @@ import {
   DatePickerUiOptions,
   FileUploadUiOptions,
   InputUiOptions,
-  markdownTextPrefix,
   NumberUiOptions,
   ObjectFieldUiOptions,
   RadioGroupUiOptions,
@@ -655,9 +654,3 @@ export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
 export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
   return { ...field, skipSchema: true }
 }
-
-/**
- * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
- * detect that it is markdown when used in component.
- */
-export const markdownText = (text: string) => `${markdownTextPrefix}${text}`

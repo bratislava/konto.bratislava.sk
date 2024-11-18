@@ -44,7 +44,7 @@
     "currency.js": "^2.0.4",
     "ejs": "^3.1.10",
     "express": "^4.21.0",
-    "form-urlencoded": "^6.1.4",
+    "form-urlencoded": "^6.1.5",
     "html-pdf": "^3.0.1",
     "mssql": "^11.0.1",
     "passport-headerapikey": "^1.2.2",

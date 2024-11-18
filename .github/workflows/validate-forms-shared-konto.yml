@@ -32,7 +32,7 @@ jobs:
 
       - name: Build Docker image on test target
         run: |
-          docker build -t test .
+          docker build --target test -t test .
 
       - name: Run tests
         run: |

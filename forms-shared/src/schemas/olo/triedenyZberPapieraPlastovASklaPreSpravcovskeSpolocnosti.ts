@@ -374,7 +374,13 @@ export default schema(
 
 export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail = (
   formData: GenericObjectType,
-) => safeString(formData.ziadatel?.email)
+) => {
+  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
+    return safeString(formData.ziadatel?.novyEmail)
+  }
+
+  return safeString(formData.ziadatel?.email)
+}
 
 export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName = (
   formData: GenericObjectType,

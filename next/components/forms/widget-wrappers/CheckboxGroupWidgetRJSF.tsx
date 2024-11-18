@@ -1,13 +1,15 @@
-import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
+import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
 import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
-  options: CheckboxGroupUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
+  options: WithEnumOptions<CheckboxGroupUiOptions>
   value: string[] | null
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
@@ -26,6 +28,7 @@ const CheckboxGroupWidgetRJSF = ({
 }: CheckboxGroupRJSFProps) => {
   const {
     enumOptions,
+    enumMetadata,
     className,
     variant = 'basic',
     size,
@@ -33,7 +36,11 @@ const CheckboxGroupWidgetRJSF = ({
     helptext,
     helptextHeader,
   } = options
-  if (!enumOptions) return <div />
+
+  const mergedOptions = useMemo(
+    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
+    [enumOptions, enumMetadata],
+  )
 
   const isDisabled = (valueName: string) => {
     return value?.length === maxItems && !value?.includes(valueName)
@@ -55,13 +62,13 @@ const CheckboxGroupWidgetRJSF = ({
         helptextHeader={helptextHeader}
         displayOptionalLabel
       >
-        {enumOptions.map((option: EnumOptionsType) => {
+        {mergedOptions.map((option) => {
           return (
             <Checkbox
               key={option.value}
               value={option.value}
               variant={variant}
-              isDisabled={isDisabled(option.value as string) || readonly}
+              isDisabled={isDisabled(option.value) || readonly}
             >
               {option.label}
             </Checkbox>

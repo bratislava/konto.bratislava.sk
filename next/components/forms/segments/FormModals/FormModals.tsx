@@ -476,23 +476,13 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="black-solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
-        </Button>,
-        <Button
-          variant="black-solid"
-          size="small"
-          onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
-          fullWidthMobile
-          isLoading={sendEidPending}
-          isLoadingText={t('eid_send_error_modal.button_title_loading')}
-        >
-          {t('eid_send_error_modal.button_title')}
-        </Button>,
+        </Button>
       ],
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,

@@ -58,7 +58,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o stanovisko k investičnému zámeru',
     schemas: stanoviskoKInvesticnemuZameru,
     pospID: '00603481.stanoviskoKInvesticnemuZameru',
-    pospVersion: '0.8',
+    pospVersion: '0.9',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
@@ -70,6 +70,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -77,7 +78,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
     schemas: zavazneStanoviskoKInvesticnejCinnosti,
     pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
-    pospVersion: '0.7',
+    pospVersion: '0.8',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
@@ -89,6 +90,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -96,7 +98,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Predzáhradky',
     schemas: predzahradky,
     pospID: '00603481.predzahradky',
-    pospVersion: '1.0',
+    pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
@@ -107,6 +109,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
+    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -114,7 +117,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Komunitné záhrady',
     schemas: komunitneZahrady,
     pospID: '00603481.komunitneZahrady',
-    pospVersion: '1.0',
+    pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,
@@ -125,6 +128,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
+    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,
@@ -138,6 +142,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+    newGovernmentXml: true,
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
   {
@@ -160,7 +165,7 @@ export const formDefinitions: FormDefinition[] = [
     schemas: ziadostONajomBytu,
     // pospID contains different wording because the original form was created with a different name
     pospID: '00603481.ziadostONajomnyByt',
-    pospVersion: '1.1',
+    pospVersion: '1.2',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
     termsAndConditions: generalTermsAndConditions,

@@ -114,7 +114,7 @@ describe('EmailFormsSubservice', () => {
       expect(mailgunService.sendOloEmail).toHaveBeenCalledTimes(2)
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
-        data: { state: FormState.PROCESSING, error: FormError.NONE },
+        data: { state: FormState.FINISHED, error: FormError.NONE },
       })
     })
 
@@ -162,7 +162,7 @@ describe('EmailFormsSubservice', () => {
       expect(mailgunService.sendOloEmail).toHaveBeenCalledTimes(2)
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
-        data: { state: FormState.PROCESSING, error: FormError.NONE },
+        data: { state: FormState.FINISHED, error: FormError.NONE },
       })
     })
 

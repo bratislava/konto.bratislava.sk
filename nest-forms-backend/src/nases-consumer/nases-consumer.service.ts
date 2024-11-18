@@ -217,12 +217,6 @@ export default class NasesConsumerService {
       formDefinition,
     )
 
-    // prisma update form status to SENDING_TO_NASES
-    await this.formsService.updateForm(data.formId, {
-      state: FormState.SENDING_TO_NASES,
-      error: FormError.NONE,
-    })
-
     const sendData = await this.nasesUtilsService.sendMessageNases(
       jwt,
       form,
@@ -251,6 +245,7 @@ export default class NasesConsumerService {
 
     // Send the form to ginis if should be sent
     if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      // TODO if this throws, the flow breaks and requires manual intervention
       await this.rabbitmqClientService.publishToGinis({
         formId: data.formId,
         tries: 0,

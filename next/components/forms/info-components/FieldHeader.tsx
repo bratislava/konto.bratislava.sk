@@ -15,6 +15,7 @@ export type FieldHeaderProps = {
   htmlFor?: string
   labelProps?: DOMAttributes<never>
   helptext?: string
+  helptextMarkdown?: boolean
   descriptionProps?: DOMAttributes<never>
   /**
    * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
@@ -36,6 +37,7 @@ const FieldHeader = ({
   tooltip,
   labelSize = 'default',
   helptext,
+  helptextMarkdown,
   descriptionProps,
   customHeaderBottomMargin = 'mb-1',
   displayOptionalLabel,
@@ -85,7 +87,13 @@ const FieldHeader = ({
           </div>
         )}
       </div>
-      {helptext && <FieldHelptext helptext={helptext} descriptionProps={descriptionProps} />}
+      {helptext && (
+        <FieldHelptext
+          helptext={helptext}
+          helptextMarkdown={helptextMarkdown}
+          descriptionProps={descriptionProps}
+        />
+      )}
     </div>
   )
 }

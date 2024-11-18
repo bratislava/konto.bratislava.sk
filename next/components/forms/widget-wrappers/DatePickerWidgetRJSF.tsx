@@ -24,7 +24,15 @@ const DatePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const { helptext, helptextFooter, tooltip, size, labelSize } = options
+  const {
+    helptext,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
+    tooltip,
+    size,
+    labelSize,
+  } = options
 
   return (
     <WidgetWrapper id={id} options={options}>
@@ -34,7 +42,9 @@ const DatePickerWidgetRJSF = ({
         required={required}
         disabled={disabled || readonly}
         helptext={helptext}
+        helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         value={value ?? null}
         onChange={(value) => onChange(value ?? undefined)}

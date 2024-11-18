@@ -30,7 +30,9 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       multiple,
       value,
       helptext,
+      helptextMarkdown,
       helptextFooter,
+      helptextFooterMarkdown,
       disabled,
       sizeLimit,
       supportedFormats,
@@ -53,7 +55,9 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
           label={label}
           required={required}
           helptext={helptext}
+          helptextMarkdown={helptextMarkdown}
           helptextFooter={helptextFooter}
+          helptextFooterMarkdown={helptextFooterMarkdown}
           disabled={disabled}
           errorMessage={errorMessage}
           size={size}

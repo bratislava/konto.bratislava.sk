@@ -30,7 +30,9 @@ const SelectMultipleWidgetRJSF = ({
     enumOptions,
     enumMetadata,
     helptext,
+    helptextMarkdown,
     helptextFooter,
+    helptextFooterMarkdown,
     tooltip,
     className,
     size,
@@ -60,7 +62,9 @@ const SelectMultipleWidgetRJSF = ({
         isMulti
         label={label}
         helptext={helptext}
+        helptextMarkdown={helptextMarkdown}
         helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         errorMessage={rawErrors}
         required={required}

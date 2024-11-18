@@ -5,6 +5,7 @@ import FieldHelptext from './FieldHelptext'
 
 export type FieldFooterProps = FieldErrorMessageProps & {
   helptextFooter?: string
+  helptextFooterMarkdown?: boolean
   disabled?: boolean
   customErrorPlace?: boolean
   descriptionProps?: DOMAttributes<never>
@@ -12,6 +13,7 @@ export type FieldFooterProps = FieldErrorMessageProps & {
 
 const FieldFooter = ({
   helptextFooter,
+  helptextFooterMarkdown,
   descriptionProps,
   disabled,
   customErrorPlace,
@@ -24,7 +26,11 @@ const FieldFooter = ({
         <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
       )}
       {helptextFooter && (
-        <FieldHelptext helptext={helptextFooter} descriptionProps={descriptionProps} />
+        <FieldHelptext
+          helptext={helptextFooter}
+          helptextMarkdown={helptextFooterMarkdown}
+          descriptionProps={descriptionProps}
+        />
       )}
     </>
   )

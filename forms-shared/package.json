@@ -56,7 +56,7 @@
     "@fontsource/inter": "^5.0.18",
     "@prettier/sync": "^0.5.2",
     "@types/app-root-dir": "^0.1.4",
-    "@types/archiver": "^6.0.2",
+    "@types/archiver": "^6.0.3",
     "@types/jest": "^29.5.13",
     "@types/jest-image-snapshot": "^6.4.0",
     "@types/jsdom": "^21.1.6",

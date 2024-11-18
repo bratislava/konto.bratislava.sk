@@ -104,7 +104,7 @@
     "eslint-plugin-jest": "^28.8.2",
     "eslint-plugin-jest-async": "^1.0.3",
     "eslint-plugin-json": "^3.1.0",
-    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-markdown": "^5.1.0",
     "eslint-plugin-no-constructor-bind": "^2.0.4",
     "eslint-plugin-no-secrets": "^1.0.2",

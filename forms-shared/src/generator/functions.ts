@@ -394,6 +394,7 @@ export const customComponentsField = (
   uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
 ): Field => ({
   property,
+  // This is probably the best way how to represent no data in the schema, but still have the field in the UI.
   schema: removeUndefinedValues({
     anyOf: [{}],
   }),

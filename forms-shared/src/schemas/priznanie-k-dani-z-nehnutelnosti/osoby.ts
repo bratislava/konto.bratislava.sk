@@ -15,7 +15,7 @@ const rodneCisloField = input(
   'rodneCislo',
   { type: 'text', title: 'Rodné číslo', required: true },
   {
-    helptext:
+    helptextFooter:
       'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.',
   },
 )
@@ -52,7 +52,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
         'ulica',
         { type: 'text', title: 'Ulica', required: true },
         {
-          helptext: {
+          helptextFooter: {
             [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
             [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
               'Zadajte ulicu miesta podnikania podľa živnostenského registra.',
@@ -98,7 +98,7 @@ const emailField = (required = true) =>
   input(
     'email',
     { title: 'E-mail', type: 'email', required },
-    { helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
+    { helptextFooter: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   )
 
 const telefonField = (required = true) =>

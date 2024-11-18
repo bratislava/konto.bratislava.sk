@@ -51,7 +51,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 1, required: true },
         {
           size: 'medium',
-          helptext:
+          helptextFooter:
             'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2).',
         },
       ),
@@ -102,7 +102,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
               },
             },
           ],
-          helptext:
+          helptextFooter:
             'Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.',
         },
       ),

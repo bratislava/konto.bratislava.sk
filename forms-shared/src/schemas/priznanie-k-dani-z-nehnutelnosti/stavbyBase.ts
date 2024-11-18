@@ -71,7 +71,7 @@ export const stavbyBase = (step: StepEnum) => [
         { type: 'text', title: 'Číslo parcely', required: true },
         {
           placeholder: 'Napr. 7986/1',
-          helptext: {
+          helptextFooter: {
             [StepEnum.DanZPozemkov]:
               'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
             [StepEnum.DanZoStaviebJedencel]:
@@ -81,7 +81,7 @@ export const stavbyBase = (step: StepEnum) => [
             [StepEnum.DanZBytovANebytovychPriestorov]:
               'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}',
           }[step],
-          helptextMarkdown: true,
+          helptextFooterMarkdown: true,
         },
       ),
     ],

@@ -46,8 +46,8 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       maximum: 2099,
     },
     {
-      helptext: `Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.`,
-      helptextMarkdown: true,
+      helptextFooter: `Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.`,
+      helptextFooterMarkdown: true,
     },
   ),
 ])

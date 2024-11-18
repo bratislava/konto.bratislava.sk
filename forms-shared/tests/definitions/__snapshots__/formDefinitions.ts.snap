@@ -660,7 +660,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "parcelneCislo": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).",
+          "helptext": "Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).",
+          "helptextMarkdown": true,
           "inputType": "text",
           "size": "medium",
         },
@@ -726,7 +727,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
               "value": "Vyšehradská",
             },
           ],
-          "helptext": "markdown_gKgflRNwdS:Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.",
+          "helptext": "Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.",
+          "helptextMarkdown": true,
         },
         "ui:widget": "Select",
       },
@@ -761,9 +763,10 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
     "prilohyInyPozemok": {
       "dizajn": {
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
+          "helptext": "Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
 
  Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
+          "helptextMarkdown": true,
           "type": "dragAndDrop",
         },
         "ui:widget": "FileUpload",
@@ -792,7 +795,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       ],
       "umiestnenie": {
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "helptextMarkdown": true,
           "type": "dragAndDrop",
         },
         "ui:widget": "FileUpload",
@@ -801,9 +805,10 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
     "prilohyPredschvalenyPozemok": {
       "dizajn": {
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
+          "helptext": "Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
 
  Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
+          "helptextMarkdown": true,
           "type": "dragAndDrop",
         },
         "ui:widget": "FileUpload",
@@ -831,7 +836,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       ],
       "umiestnenie": {
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "helptext": "Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "helptextMarkdown": true,
           "type": "dragAndDrop",
         },
         "ui:widget": "FileUpload",
@@ -843,7 +849,8 @@ exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
       "dovodyZalozenia": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.",
+          "helptext": "Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.",
+          "helptextMarkdown": true,
           "placeholder": "Popíšte",
         },
         "ui:widget": "TextArea",
@@ -6412,7 +6419,8 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
                   "value": "120 l zberná nádoba",
                 },
               ],
-              "helptext": "markdown_gKgflRNwdS:Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).",
+              "helptext": "Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Select",
           },
@@ -11075,7 +11083,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
                   "value": "Sklo (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
                 },
               ],
-              "helptext": "markdown_gKgflRNwdS:Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).",
+              "helptext": "Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Select",
           },
@@ -14087,7 +14096,8 @@ exports[`Form definitions predzahradky schemas match snapshot 1`] = `
       "parcelneCislo": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.",
+          "helptext": "Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.",
+          "helptextMarkdown": true,
           "inputType": "text",
           "size": "medium",
         },
@@ -21017,7 +21027,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                           "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                       ],
                       "variant": "black",
@@ -21053,7 +21064,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}",
+                "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 4827/624441",
               },
@@ -21089,7 +21101,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "spoluvlastnickyPodiel": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}",
+                "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 1/150",
               },
@@ -21113,7 +21126,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                "helptext": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                "helptextMarkdown": true,
               },
               "ui:widget": "Number",
             },
@@ -21150,7 +21164,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                               "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                              "unit": "markdown_gKgflRNwdS:m^2^",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
                             },
                           ],
                           "variant": "black",
@@ -21186,7 +21201,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 124827/624441",
                   },
@@ -21196,7 +21212,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   "cisloNebytovehoPriestoruVBytovomDome": {
                     "ui:label": false,
                     "ui:options": {
-                      "helptext": "markdown_gKgflRNwdS:Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}",
+                      "helptext": "Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}",
+                      "helptextMarkdown": true,
                       "inputType": "text",
                     },
                     "ui:widget": "Input",
@@ -21221,7 +21238,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                 "spoluvlastnickyPodiel": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 1/150",
                   },
@@ -21305,7 +21323,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -21501,11 +21520,12 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
 
 V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -21564,7 +21584,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "celkovaVymeraPozemku": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                  "helptext": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
@@ -21590,7 +21611,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
 - Celková výmera pozemku
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                            "unit": "markdown_gKgflRNwdS:m^2^",
+                            "unit": "m^2^",
+                            "unitMarkdown": true,
                           },
                         ],
                         "variant": "black",
@@ -21659,7 +21681,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "value": "H",
                     },
                   ],
-                  "helptext": "markdown_gKgflRNwdS:V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_druh_pozemku_dea5055c20.png"}",
+                  "helptext": "V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_druh_pozemku_dea5055c20.png"}",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Select",
               },
@@ -21771,7 +21794,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "cisloParcely": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}",
+                    "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 7986/1",
                   },
@@ -21797,7 +21821,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}",
+                  "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}",
+                  "helptextMarkdown": true,
                   "inputType": "text",
                   "placeholder": "Napr. 4827/624441",
                 },
@@ -21806,7 +21831,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "spoluvlastnickyPodiel": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}",
+                  "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}",
+                  "helptextMarkdown": true,
                   "inputType": "text",
                   "placeholder": "Napr. 1/1 alebo 1/105",
                 },
@@ -21836,7 +21862,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               },
               "znaleckyPosudok": {
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
+                  "helptext": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
+                  "helptextMarkdown": true,
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -21845,9 +21872,10 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
             "ui:options": {
               "addButtonLabel": "Pridať ďalší pozemok (na tom istom LV)",
               "cannotAddItemMessage": "Dosiahli ste maximálny počet pozemkov (17) na jedno priznanie. Pridajte ďalšie priznanie.",
-              "description": "markdown_gKgflRNwdS:Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.
+              "description": "Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.
 
 :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_c16049c4bd.png"}",
+              "descriptionMarkdown": true,
               "itemTitle": "Pozemok č. {index}",
               "variant": "nested",
             },
@@ -21974,11 +22002,12 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -22051,7 +22080,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "celkovaZastavanaPlocha": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}",
+              "helptext": "Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -22076,7 +22106,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                         "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Celková zastavaná plocha
 - Spoluvlastnícky podiel",
-                        "unit": "markdown_gKgflRNwdS:m^2^",
+                        "unit": "m^2^",
+                        "unitMarkdown": true,
                       },
                     ],
                     "variant": "black",
@@ -22243,7 +22274,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -22368,7 +22400,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "spoluvlastnickyPodiel": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}",
+              "helptext": "Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}",
+              "helptextMarkdown": true,
               "inputType": "text",
               "placeholder": "Napr. 1/1",
             },
@@ -22420,7 +22453,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "zakladDane": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.",
+              "helptext": "Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -22462,11 +22496,12 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).
 
 :form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -22515,7 +22550,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "celkovaVymera": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}",
+              "helptext": "Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -22580,7 +22616,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                           "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
                           "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                         {
                           "dataContextLevelsUp": 1,
@@ -22589,7 +22626,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                           "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Celková výmera zastavanej plochy viacúčelovej stavby
 - Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                       ],
                       "label": "Sumár",
@@ -22615,7 +22653,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                               "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                              "unit": "markdown_gKgflRNwdS:m^2^",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
                             },
                           ],
                           "variant": "black",
@@ -22629,7 +22668,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 4827/624441",
                   },
@@ -22638,7 +22678,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "spoluvlastnickyPodiel": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 1/1 alebo 1/105",
                   },
@@ -22698,7 +22739,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "vymeraPodlahovejPlochy": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                    "helptext": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                    "helptextMarkdown": true,
                   },
                   "ui:widget": "Number",
                 },
@@ -22721,14 +22763,16 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               "vymeraPodlahovychPloch": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.",
+                  "helptext": "Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
               "zakladDane": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.",
+                  "helptext": "Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
@@ -22824,7 +22868,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -23032,7 +23077,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
+            "helptext": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
 
 K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 * k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)
@@ -23041,6 +23086,7 @@ K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -23087,7 +23133,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
       "rok": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
+          "helptext": "Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
+          "helptextMarkdown": true,
         },
         "ui:widget": "Number",
       },
@@ -24357,7 +24404,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         },
         "splnomocnenie": {
           "ui:options": {
-            "helptext": "markdown_gKgflRNwdS:Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
+            "helptext": "Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
+            "helptextMarkdown": true,
             "type": "dragAndDrop",
           },
           "ui:widget": "FileUploadMultiple",
@@ -34765,7 +34813,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                           "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                       ],
                       "variant": "black",
@@ -34801,7 +34850,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
             "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}",
+                "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 4827/624441",
               },
@@ -34837,7 +34887,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
             "spoluvlastnickyPodiel": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}",
+                "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 1/150",
               },
@@ -34861,7 +34912,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                "helptext": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                "helptextMarkdown": true,
               },
               "ui:widget": "Number",
             },
@@ -34898,7 +34950,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                               "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                              "unit": "markdown_gKgflRNwdS:m^2^",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
                             },
                           ],
                           "variant": "black",
@@ -34934,7 +34987,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 124827/624441",
                   },
@@ -34944,7 +34998,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                   "cisloNebytovehoPriestoruVBytovomDome": {
                     "ui:label": false,
                     "ui:options": {
-                      "helptext": "markdown_gKgflRNwdS:Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}",
+                      "helptext": "Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}",
+                      "helptextMarkdown": true,
                       "inputType": "text",
                     },
                     "ui:widget": "Input",
@@ -34969,7 +35024,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                 "spoluvlastnickyPodiel": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 1/150",
                   },
@@ -35053,7 +35109,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -35249,11 +35306,12 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.
 
 V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -35312,7 +35370,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "celkovaVymeraPozemku": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                  "helptext": "Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
@@ -35338,7 +35397,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
 - Celková výmera pozemku
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                            "unit": "markdown_gKgflRNwdS:m^2^",
+                            "unit": "m^2^",
+                            "unitMarkdown": true,
                           },
                         ],
                         "variant": "black",
@@ -35407,7 +35467,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                       "value": "H",
                     },
                   ],
-                  "helptext": "markdown_gKgflRNwdS:V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_druh_pozemku_dea5055c20.png"}",
+                  "helptext": "V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_druh_pozemku_dea5055c20.png"}",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Select",
               },
@@ -35519,7 +35580,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "cisloParcely": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}",
+                    "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 7986/1",
                   },
@@ -35545,7 +35607,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}",
+                  "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}",
+                  "helptextMarkdown": true,
                   "inputType": "text",
                   "placeholder": "Napr. 4827/624441",
                 },
@@ -35554,7 +35617,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "spoluvlastnickyPodiel": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}",
+                  "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}",
+                  "helptextMarkdown": true,
                   "inputType": "text",
                   "placeholder": "Napr. 1/1 alebo 1/105",
                 },
@@ -35584,7 +35648,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               },
               "znaleckyPosudok": {
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
+                  "helptext": "V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.",
+                  "helptextMarkdown": true,
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",
@@ -35593,9 +35658,10 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
             "ui:options": {
               "addButtonLabel": "Pridať ďalší pozemok (na tom istom LV)",
               "cannotAddItemMessage": "Dosiahli ste maximálny počet pozemkov (17) na jedno priznanie. Pridajte ďalšie priznanie.",
-              "description": "markdown_gKgflRNwdS:Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.
+              "description": "Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.
 
 :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_c16049c4bd.png"}",
+              "descriptionMarkdown": true,
               "itemTitle": "Pozemok č. {index}",
               "variant": "nested",
             },
@@ -35722,11 +35788,12 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -35799,7 +35866,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "celkovaZastavanaPlocha": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}",
+              "helptext": "Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -35824,7 +35892,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                         "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Celková zastavaná plocha
 - Spoluvlastnícky podiel",
-                        "unit": "markdown_gKgflRNwdS:m^2^",
+                        "unit": "m^2^",
+                        "unitMarkdown": true,
                       },
                     ],
                     "variant": "black",
@@ -35991,7 +36060,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -36116,7 +36186,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "spoluvlastnickyPodiel": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}",
+              "helptext": "Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}",
+              "helptextMarkdown": true,
               "inputType": "text",
               "placeholder": "Napr. 1/1",
             },
@@ -36168,7 +36239,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "zakladDane": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.",
+              "helptext": "Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -36210,11 +36282,12 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
+            "helptext": "K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.
 
 V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).
 
 :form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -36263,7 +36336,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "celkovaVymera": {
             "ui:label": false,
             "ui:options": {
-              "helptext": "markdown_gKgflRNwdS:Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}",
+              "helptext": "Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}",
+              "helptextMarkdown": true,
             },
             "ui:widget": "Number",
           },
@@ -36328,7 +36402,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                           "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
                           "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                         {
                           "dataContextLevelsUp": 1,
@@ -36337,7 +36412,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                           "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Celková výmera zastavanej plochy viacúčelovej stavby
 - Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "markdown_gKgflRNwdS:m^2^",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
                         },
                       ],
                       "label": "Sumár",
@@ -36363,7 +36439,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                               "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
 - Spoluvlastnícky podiel",
-                              "unit": "markdown_gKgflRNwdS:m^2^",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
                             },
                           ],
                           "variant": "black",
@@ -36377,7 +36454,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu resp. nebytového priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_podiel_priestoru_077a008b66.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 4827/624441",
                   },
@@ -36386,7 +36464,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "spoluvlastnickyPodiel": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}",
+                    "helptext": "Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_spoluvlastnicky_podiel_d931ee97e7.png"}",
+                    "helptextMarkdown": true,
                     "inputType": "text",
                     "placeholder": "Napr. 1/1 alebo 1/105",
                   },
@@ -36446,7 +36525,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "vymeraPodlahovejPlochy": {
                   "ui:label": false,
                   "ui:options": {
-                    "helptext": "markdown_gKgflRNwdS:Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                    "helptext": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                    "helptextMarkdown": true,
                   },
                   "ui:widget": "Number",
                 },
@@ -36469,14 +36549,16 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               "vymeraPodlahovychPloch": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.",
+                  "helptext": "Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
               "zakladDane": {
                 "ui:label": false,
                 "ui:options": {
-                  "helptext": "markdown_gKgflRNwdS:Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.",
+                  "helptext": "Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.",
+                  "helptextMarkdown": true,
                 },
                 "ui:widget": "Number",
               },
@@ -36572,7 +36654,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "cisloParcely": {
               "ui:label": false,
               "ui:options": {
-                "helptext": "markdown_gKgflRNwdS:Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}",
+                "helptext": "Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}",
+                "helptextMarkdown": true,
                 "inputType": "text",
                 "placeholder": "Napr. 7986/1",
               },
@@ -36780,7 +36863,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
+            "helptext": "Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.
 
 K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 * k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)
@@ -36789,6 +36872,7 @@ K úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):
 V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.
 
 :form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}",
+            "helptextMarkdown": true,
             "labelSize": "h3",
             "orientations": "row",
             "variant": "boxed",
@@ -36835,7 +36919,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
       "rok": {
         "ui:label": false,
         "ui:options": {
-          "helptext": "markdown_gKgflRNwdS:Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
+          "helptext": "Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
+          "helptextMarkdown": true,
         },
         "ui:widget": "Number",
       },
@@ -38105,7 +38190,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         },
         "splnomocnenie": {
           "ui:options": {
-            "helptext": "markdown_gKgflRNwdS:Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
+            "helptext": "Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.",
+            "helptextMarkdown": true,
             "type": "dragAndDrop",
           },
           "ui:widget": "FileUploadMultiple",
@@ -52174,7 +52260,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     "value": false,
                   },
                 ],
-                "helptext": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+                "helptext": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+                "helptextMarkdown": true,
                 "orientations": "row",
                 "variant": "boxed",
               },
@@ -52718,7 +52805,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+              "descriptionMarkdown": true,
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -52813,7 +52901,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                   "value": false,
                 },
               ],
-              "helptext": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptext": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptextMarkdown": true,
               "orientations": "row",
               "variant": "boxed",
             },
@@ -53086,7 +53175,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptext": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -53158,7 +53248,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptext": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -53598,7 +53689,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "descriptionMarkdown": true,
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -53858,7 +53950,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                     "value": false,
                   },
                 ],
-                "helptext": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+                "helptext": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+                "helptextMarkdown": true,
                 "orientations": "row",
                 "variant": "boxed",
               },
@@ -54012,7 +54105,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                     "value": false,
                   },
                 ],
-                "helptext": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+                "helptext": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+                "helptextMarkdown": true,
                 "orientations": "row",
                 "variant": "boxed",
               },
@@ -54084,7 +54178,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                     "value": false,
                   },
                 ],
-                "helptext": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+                "helptext": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+                "helptextMarkdown": true,
                 "orientations": "row",
                 "variant": "boxed",
               },
@@ -54521,7 +54616,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "RadioGroup",
             },
             "ui:options": {
-              "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+              "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+              "descriptionMarkdown": true,
               "objectDisplay": "boxed",
               "title": "Zdravotný stav",
             },
@@ -54616,7 +54712,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   "value": false,
                 },
               ],
-              "helptext": "markdown_gKgflRNwdS:Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptext": "Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptextMarkdown": true,
               "orientations": "row",
               "variant": "boxed",
             },
@@ -54846,7 +54943,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptext": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -54918,7 +55016,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptext": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -55358,7 +55457,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "descriptionMarkdown": true,
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },
@@ -55635,7 +55735,8 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
                   "value": false,
                 },
               ],
-              "helptext": "markdown_gKgflRNwdS:Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptext": "Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.",
+              "helptextMarkdown": true,
               "orientations": "row",
               "variant": "boxed",
             },
@@ -55946,7 +56047,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
+            "helptext": "V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -56018,7 +56120,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptext": "Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -56252,7 +56355,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "value": false,
               },
             ],
-            "helptext": "markdown_gKgflRNwdS:Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).",
+            "helptext": "Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).",
+            "helptextMarkdown": true,
             "orientations": "row",
             "variant": "boxed",
           },
@@ -56553,7 +56657,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "RadioGroup",
         },
         "ui:options": {
-          "description": "markdown_gKgflRNwdS:Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "description": "Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).",
+          "descriptionMarkdown": true,
           "objectDisplay": "boxed",
           "title": "Zdravotný stav",
         },

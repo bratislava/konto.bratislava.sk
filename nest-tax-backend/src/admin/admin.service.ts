@@ -331,7 +331,7 @@ export class AdminService {
     const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
 
     // Get all tax IDs from taxesDataMap
-    const taxIds = Array.from(taxesDataMap.values()).map(tax => tax.id)
+    const taxIds = [...taxesDataMap.values()].map((tax) => tax.id)
 
     // Get aggregate data for all taxes at once
     const aggregateData = await this.prismaService.taxPayment.groupBy({
@@ -344,7 +344,7 @@ export class AdminService {
       },
       where: {
         taxId: {
-          in: taxIds
+          in: taxIds,
         },
         status: PaymentStatus.SUCCESS,
       },
@@ -352,13 +352,13 @@ export class AdminService {
 
     // Create a map of aggregated data for easy lookup
     const aggregateDataMap = new Map(
-      aggregateData.map(data => [
+      aggregateData.map((data) => [
         data.taxId,
         {
           sum: data._sum.amount || 0,
-          count: data._count._all
-        }
-      ])
+          count: data._count._all,
+        },
+      ]),
     )
 
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
@@ -367,7 +367,10 @@ export class AdminService {
         try {
           const taxData = taxesDataMap.get(norisPayment.variabilny_symbol)
           if (taxData) {
-            const payerData = aggregateDataMap.get(taxData.id) || { sum: 0, count: 0 }
+            const payerData = aggregateDataMap.get(taxData.id) || {
+              sum: 0,
+              count: 0,
+            }
             const payedFromNoris =
               typeof norisPayment.uhrazeno === 'number'
                 ? currency(norisPayment.uhrazeno).intValue
@@ -377,10 +380,7 @@ export class AdminService {
                 ? currency(norisPayment.zbyva_uhradit).intValue
                 : currency(norisPayment.zbyva_uhradit.replace(',', '.'))
                     .intValue
-            if (
-              payerData.sum === null ||
-              payerData.sum < payedFromNoris
-            ) {
+            if (payerData.sum === null || payerData.sum < payedFromNoris) {
               created += 1
               const createdTaxPayment =
                 await this.prismaService.taxPayment.create({

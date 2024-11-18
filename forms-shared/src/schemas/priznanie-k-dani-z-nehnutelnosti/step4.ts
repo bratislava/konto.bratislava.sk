@@ -53,6 +53,7 @@ const zakladDane = number(
 )
 
 const zakladDaneKalkulacka = customComponentsField(
+  'zakladDaneKalkulacka',
   {
     type: 'calculator',
     props: {

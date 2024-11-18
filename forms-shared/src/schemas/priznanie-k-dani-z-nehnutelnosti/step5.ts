@@ -27,6 +27,7 @@ const vymeraPodlahovejPlochy = number(
 )
 
 const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
+  'vymeraPodlahovejPlochyKalkulacka',
   {
     type: 'calculator',
     props: {
@@ -107,6 +108,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
 ])
 
 const sumarKalkulacka = customComponentsField(
+  'sumarKalkulacka',
   {
     type: 'calculator',
     props: {

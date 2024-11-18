@@ -68,6 +68,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
   )
 
 const vymeraKalkulacka = customComponentsField(
+  'vymeraKalkulacka',
   {
     type: 'calculator',
     props: {

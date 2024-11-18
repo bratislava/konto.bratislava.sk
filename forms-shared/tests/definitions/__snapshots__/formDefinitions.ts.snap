@@ -1381,17 +1381,17 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent35_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -1472,7 +1472,14 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
       ],
     },
     "suhlasy": {
-      "customComponent35_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -1490,19 +1497,12 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent35_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -3275,27 +3275,17 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent29_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
-              "customComponent30_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
-              "customComponent31_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasPodmienkyPrijatiaOdpadu": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
                 "type": "boolean",
+              },
+              "suhlasPodmienkyPrijatiaOdpaduLink": {
+                "anyOf": [
+                  {},
+                ],
               },
               "suhlasSVop": {
                 "enum": [
@@ -3304,12 +3294,22 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
+              },
               "suhlasZasadySpravavania": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
+              },
+              "suhlasZasadySpravavaniaLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -3696,7 +3696,14 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
       ],
     },
     "suhlasy": {
-      "customComponent29_gRbYIKNcAF": {
+      "suhlasPodmienkyPrijatiaOdpadu": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasPodmienkyPrijatiaOdpaduLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -3714,25 +3721,14 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "CustomComponents",
       },
-      "customComponent30_gRbYIKNcAF": {
+      "suhlasSVop": {
         "ui:options": {
-          "customComponents": [
-            {
-              "props": {
-                "links": [
-                  {
-                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
-                    "title": "Zásady správania sa zákazníkov v ZEVO",
-                  },
-                ],
-              },
-              "type": "additionalLinks",
-            },
-          ],
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
         },
-        "ui:widget": "CustomComponents",
+        "ui:widget": "Checkbox",
       },
-      "customComponent31_gRbYIKNcAF": {
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -3750,20 +3746,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasPodmienkyPrijatiaOdpadu": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "suhlasZasadySpravavania": {
         "ui:options": {
           "checkboxLabel": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
@@ -3771,16 +3753,34 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         },
         "ui:widget": "Checkbox",
       },
+      "suhlasZasadySpravavaniaLink": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
+                    "title": "Zásady správania sa zákazníkov v ZEVO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasPodmienkyPrijatiaOdpadu",
-        "customComponent29_gRbYIKNcAF",
+        "suhlasPodmienkyPrijatiaOdpaduLink",
         "suhlasZasadySpravavania",
-        "customComponent30_gRbYIKNcAF",
+        "suhlasZasadySpravavaniaLink",
         "suhlasSVop",
-        "customComponent31_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -5311,17 +5311,17 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent37_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -5381,7 +5381,14 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
       ],
     },
     "suhlasy": {
-      "customComponent37_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -5399,19 +5406,12 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent37_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -6318,17 +6318,17 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent28_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -6591,7 +6591,14 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
       ],
     },
     "suhlasy": {
-      "customComponent28_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -6609,19 +6616,12 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent28_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -7132,17 +7132,17 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent39_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -7185,7 +7185,14 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
       ],
     },
     "suhlasy": {
-      "customComponent39_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -7203,19 +7210,12 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent39_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -7840,17 +7840,17 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent36_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -7976,7 +7976,14 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
       ],
     },
     "suhlasy": {
-      "customComponent36_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -7994,19 +8001,12 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent36_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -8431,17 +8431,17 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent38_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -8525,7 +8525,14 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
       ],
     },
     "suhlasy": {
-      "customComponent38_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -8543,19 +8550,12 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent38_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -9693,17 +9693,17 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent40_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -9979,7 +9979,14 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
       ],
     },
     "suhlasy": {
-      "customComponent40_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -9997,19 +10004,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent40_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -11028,17 +11028,17 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent41_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasSVop": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
+              },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -11217,7 +11217,14 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
       ],
     },
     "suhlasy": {
-      "customComponent41_gRbYIKNcAF": {
+      "suhlasSVop": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -11235,19 +11242,12 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasSVop",
-        "customComponent41_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -12573,27 +12573,17 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "properties": {
           "suhlasy": {
             "properties": {
-              "customComponent32_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
-              "customComponent33_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
-              "customComponent34_gRbYIKNcAF": {
-                "anyOf": [
-                  {},
-                ],
-              },
               "suhlasPodmienkyPrijatiaOdpadu": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
                 "type": "boolean",
+              },
+              "suhlasPodmienkyPrijatiaOdpaduLink": {
+                "anyOf": [
+                  {},
+                ],
               },
               "suhlasSVop": {
                 "enum": [
@@ -12602,12 +12592,22 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
+              "suhlasSVopLink": {
+                "anyOf": [
+                  {},
+                ],
+              },
               "suhlasZasadySpravavania": {
                 "enum": [
                   true,
                 ],
                 "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
+              },
+              "suhlasZasadySpravavaniaLink": {
+                "anyOf": [
+                  {},
+                ],
               },
             },
             "required": [
@@ -12642,7 +12642,14 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
       ],
     },
     "suhlasy": {
-      "customComponent32_gRbYIKNcAF": {
+      "suhlasPodmienkyPrijatiaOdpadu": {
+        "ui:options": {
+          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
+          "variant": "boxed",
+        },
+        "ui:widget": "Checkbox",
+      },
+      "suhlasPodmienkyPrijatiaOdpaduLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -12660,25 +12667,14 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "CustomComponents",
       },
-      "customComponent33_gRbYIKNcAF": {
+      "suhlasSVop": {
         "ui:options": {
-          "customComponents": [
-            {
-              "props": {
-                "links": [
-                  {
-                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
-                    "title": "Zásady správania sa zákazníkov v ZEVO",
-                  },
-                ],
-              },
-              "type": "additionalLinks",
-            },
-          ],
+          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
+          "variant": "boxed",
         },
-        "ui:widget": "CustomComponents",
+        "ui:widget": "Checkbox",
       },
-      "customComponent34_gRbYIKNcAF": {
+      "suhlasSVopLink": {
         "ui:options": {
           "customComponents": [
             {
@@ -12696,20 +12692,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "CustomComponents",
       },
-      "suhlasPodmienkyPrijatiaOdpadu": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Podmienkami prijatia odpadu do ZEVO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
-      "suhlasSVop": {
-        "ui:options": {
-          "checkboxLabel": "Súhlasím s Všeobecnými obchodnými podmienkami OLO",
-          "variant": "boxed",
-        },
-        "ui:widget": "Checkbox",
-      },
       "suhlasZasadySpravavania": {
         "ui:options": {
           "checkboxLabel": "Súhlasím so Zásadami správania sa zákazníkov v ZEVO",
@@ -12717,16 +12699,34 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         },
         "ui:widget": "Checkbox",
       },
+      "suhlasZasadySpravavaniaLink": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://olo.sk/zevo/zasady-spravania-sa-zakaznikov-zevo",
+                    "title": "Zásady správania sa zákazníkov v ZEVO",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
       "ui:options": {
         "stepQueryParam": "suhlasy",
       },
       "ui:order": [
         "suhlasPodmienkyPrijatiaOdpadu",
-        "customComponent32_gRbYIKNcAF",
+        "suhlasPodmienkyPrijatiaOdpaduLink",
         "suhlasZasadySpravavania",
-        "customComponent33_gRbYIKNcAF",
+        "suhlasZasadySpravavaniaLink",
         "suhlasSVop",
-        "customComponent34_gRbYIKNcAF",
+        "suhlasSVopLink",
       ],
     },
     "ui:hideError": true,
@@ -16646,11 +16646,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                         "title": "Číslo listu vlastníctva",
                                         "type": "string",
                                       },
-                                      "customComponent1_gRbYIKNcAF": {
-                                        "anyOf": [
-                                          {},
-                                        ],
-                                      },
                                       "datumy": {
                                         "properties": {
                                           "datumVznikuDanovejPovinnosti": {
@@ -16732,6 +16727,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                         "format": "ba-ratio",
                                         "title": "Spoluvlastnícky podiel",
                                         "type": "string",
+                                      },
+                                      "vymeraPozemkuKalkulacka": {
+                                        "anyOf": [
+                                          {},
+                                        ],
                                       },
                                     },
                                     "required": [
@@ -17294,11 +17294,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                   "title": "Číslo listu vlastníctva",
                                   "type": "string",
                                 },
-                                "customComponent2_gRbYIKNcAF": {
-                                  "anyOf": [
-                                    {},
-                                  ],
-                                },
                                 "datumy": {
                                   "properties": {
                                     "datumVznikuDanovejPovinnosti": {
@@ -17421,6 +17416,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                   ],
                                   "title": "Spoluvlastníctvo",
                                   "type": "string",
+                                },
+                                "zakladDaneKalkulacka": {
+                                  "anyOf": [
+                                    {},
+                                  ],
                                 },
                               },
                               "required": [
@@ -17995,19 +17995,9 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                 },
                                 "nehnutelnosti": {
                                   "properties": {
-                                    "customComponent4_gRbYIKNcAF": {
-                                      "anyOf": [
-                                        {},
-                                      ],
-                                    },
                                     "nehnutelnosti": {
                                       "items": {
                                         "properties": {
-                                          "customComponent3_gRbYIKNcAF": {
-                                            "anyOf": [
-                                              {},
-                                            ],
-                                          },
                                           "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                                             "format": "ba-ratio",
                                             "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
@@ -18033,6 +18023,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                             "title": "Účel využitia stavby",
                                             "type": "string",
                                           },
+                                          "vymeraPodlahovejPlochyKalkulacka": {
+                                            "anyOf": [
+                                              {},
+                                            ],
+                                          },
                                         },
                                         "required": [
                                           "ucelVyuzitiaStavby",
@@ -18044,6 +18039,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                       "minItems": 1,
                                       "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
                                       "type": "array",
+                                    },
+                                    "sumarKalkulacka": {
+                                      "anyOf": [
+                                        {},
+                                      ],
                                     },
                                   },
                                   "required": [
@@ -18796,11 +18796,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                             "title": "Číslo bytu",
                                             "type": "string",
                                           },
-                                          "customComponent5_gRbYIKNcAF": {
-                                            "anyOf": [
-                                              {},
-                                            ],
-                                          },
                                           "datumy": {
                                             "properties": {
                                               "datumVznikuDanovejPovinnosti": {
@@ -18830,6 +18825,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                             "format": "ba-ratio",
                                             "title": "Spoluvlastnícky podiel",
                                             "type": "string",
+                                          },
+                                          "vymeraKalkulacka": {
+                                            "anyOf": [
+                                              {},
+                                            ],
                                           },
                                           "vymeraPodlahovejPlochyNaIneUcely": {
                                             "minimum": 0,
@@ -18910,11 +18910,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                                 },
                                               ],
                                               "properties": {
-                                                "customComponent5_gRbYIKNcAF": {
-                                                  "anyOf": [
-                                                    {},
-                                                  ],
-                                                },
                                                 "datumy": {
                                                   "properties": {
                                                     "datumVznikuDanovejPovinnosti": {
@@ -18957,6 +18952,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                                                   "format": "ba-ratio",
                                                   "title": "Spoluvlastnícky podiel",
                                                   "type": "string",
+                                                },
+                                                "vymeraKalkulacka": {
+                                                  "anyOf": [
+                                                    {},
+                                                  ],
                                                 },
                                               },
                                               "required": [
@@ -21012,33 +21012,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               },
               "ui:widget": "Input",
             },
-            "customComponent5_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
-                          "label": "Základ dane",
-                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                      ],
-                      "variant": "black",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "datumy": {
               "datumVznikuDanovejPovinnosti": {
                 "ui:options": {
@@ -21118,11 +21091,38 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
               "celkovaVymeraSpecialCase",
               "spoluvlastnickyPodiel",
-              "customComponent5_gRbYIKNcAF",
+              "vymeraKalkulacka",
               "vymeraPodlahovejPlochyBytu",
               "vymeraPodlahovejPlochyNaIneUcely",
               "datumy",
             ],
+            "vymeraKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+                          "label": "Základ dane",
+                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                      ],
+                      "variant": "black",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
               "ui:options": {
@@ -21148,33 +21148,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                     "helptextFooter": "Ak má číslo za lomkou vo vašom podiele priestoru na spoločných častiach hodnotu, napríklad, 1 000, 10 000, alebo 100 000, údaj z listu vlastníctva vám nepomôže. Správne údaje o podlahovej ploche nájdete v kúpnej zmluve alebo znaleckom posudku (celková podlahová plocha okrem balkónov, lodžií a terás).",
                   },
                   "ui:widget": "Number",
-                },
-                "customComponent5_gRbYIKNcAF": {
-                  "ui:options": {
-                    "customComponents": [
-                      {
-                        "props": {
-                          "calculators": [
-                            {
-                              "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
-                              "label": "Základ dane",
-                              "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                              "unit": "m^2^",
-                              "unitMarkdown": true,
-                            },
-                          ],
-                          "variant": "black",
-                        },
-                        "type": "calculator",
-                      },
-                    ],
-                  },
-                  "ui:widget": "CustomComponents",
                 },
                 "datumy": {
                   "datumVznikuDanovejPovinnosti": {
@@ -21251,10 +21224,37 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                   "celkovaVymeraSpecialCase",
                   "spoluvlastnickyPodiel",
-                  "customComponent5_gRbYIKNcAF",
+                  "vymeraKalkulacka",
                   "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                   "datumy",
                 ],
+                "vymeraKalkulacka": {
+                  "ui:options": {
+                    "customComponents": [
+                      {
+                        "props": {
+                          "calculators": [
+                            {
+                              "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+                              "label": "Základ dane",
+                              "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
+                            },
+                          ],
+                          "variant": "black",
+                        },
+                        "type": "calculator",
+                      },
+                    ],
+                  },
+                  "ui:widget": "CustomComponents",
+                },
                 "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome": {
                   "ui:label": false,
                   "ui:options": {
@@ -21598,31 +21598,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 },
                 "ui:widget": "Input",
               },
-              "customComponent1_gRbYIKNcAF": {
-                "ui:options": {
-                  "customComponents": [
-                    {
-                      "props": {
-                        "calculators": [
-                          {
-                            "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
-                            "label": "Vaša výmera pozemku",
-                            "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
-- Celková výmera pozemku
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                            "unit": "m^2^",
-                            "unitMarkdown": true,
-                          },
-                        ],
-                        "variant": "black",
-                      },
-                      "type": "calculator",
-                    },
-                  ],
-                },
-                "ui:widget": "CustomComponents",
-              },
               "datumy": {
                 "datumVznikuDanovejPovinnosti": {
                   "ui:options": {
@@ -21849,7 +21824,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "celkovaVymeraPozemku",
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                 "spoluvlastnickyPodiel",
-                "customComponent1_gRbYIKNcAF",
+                "vymeraPozemkuKalkulacka",
                 "vymeraPozemku",
                 "datumy",
               ],
@@ -21859,6 +21834,31 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                   "helptextFooter": "Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                 },
                 "ui:widget": "Number",
+              },
+              "vymeraPozemkuKalkulacka": {
+                "ui:options": {
+                  "customComponents": [
+                    {
+                      "props": {
+                        "calculators": [
+                          {
+                            "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
+                            "label": "Vaša výmera pozemku",
+                            "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
+- Celková výmera pozemku
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                            "unit": "m^2^",
+                            "unitMarkdown": true,
+                          },
+                        ],
+                        "variant": "black",
+                      },
+                      "type": "calculator",
+                    },
+                  ],
+                },
+                "ui:widget": "CustomComponents",
               },
               "znaleckyPosudok": {
                 "ui:options": {
@@ -22093,30 +22093,6 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "size": "medium",
             },
             "ui:widget": "Input",
-          },
-          "customComponent2_gRbYIKNcAF": {
-            "ui:options": {
-              "customComponents": [
-                {
-                  "props": {
-                    "calculators": [
-                      {
-                        "formula": "ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))",
-                        "label": "Základ dane",
-                        "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Celková zastavaná plocha
-- Spoluvlastnícky podiel",
-                        "unit": "m^2^",
-                        "unitMarkdown": true,
-                      },
-                    ],
-                    "variant": "black",
-                  },
-                  "type": "calculator",
-                },
-              ],
-            },
-            "ui:widget": "CustomComponents",
           },
           "datumy": {
             "datumVznikuDanovejPovinnosti": {
@@ -22443,7 +22419,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "celkovaZastavanaPlocha",
             "spoluvlastnickyPodiel",
             "zakladDane",
-            "customComponent2_gRbYIKNcAF",
+            "zakladDaneKalkulacka",
             "pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
             "castStavbyOslobodenaOdDane",
             "castStavbyOslobodenaOdDaneDetaily",
@@ -22457,6 +22433,30 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "helptextFooterMarkdown": true,
             },
             "ui:widget": "Number",
+          },
+          "zakladDaneKalkulacka": {
+            "ui:options": {
+              "customComponents": [
+                {
+                  "props": {
+                    "calculators": [
+                      {
+                        "formula": "ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))",
+                        "label": "Základ dane",
+                        "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Celková zastavaná plocha
+- Spoluvlastnícky podiel",
+                        "unit": "m^2^",
+                        "unitMarkdown": true,
+                      },
+                    ],
+                    "variant": "black",
+                  },
+                  "type": "calculator",
+                },
+              ],
+            },
+            "ui:widget": "CustomComponents",
           },
         },
         "ui:options": {
@@ -22604,67 +22604,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "ui:widget": "RadioGroup",
           },
           "nehnutelnosti": {
-            "customComponent4_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "dataContextLevelsUp": 1,
-                          "formula": "f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
-                          "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                          "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                        {
-                          "dataContextLevelsUp": 1,
-                          "formula": "f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
-                          "label": "Základ dane – celková výmera zastavanej plochy stavby",
-                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Celková výmera zastavanej plochy viacúčelovej stavby
-- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                      ],
-                      "label": "Sumár",
-                      "variant": "white",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "nehnutelnosti": {
               "items": {
-                "customComponent3_gRbYIKNcAF": {
-                  "ui:options": {
-                    "customComponents": [
-                      {
-                        "props": {
-                          "calculators": [
-                            {
-                              "formula": "roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)",
-                              "label": "Výmera podlahovej plochy",
-                              "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                              "unit": "m^2^",
-                              "unitMarkdown": true,
-                            },
-                          ],
-                          "variant": "black",
-                        },
-                        "type": "calculator",
-                      },
-                    ],
-                  },
-                  "ui:widget": "CustomComponents",
-                },
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
@@ -22734,7 +22675,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "vymeraPodlahovejPlochy",
                   "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                   "spoluvlastnickyPodiel",
-                  "customComponent3_gRbYIKNcAF",
+                  "vymeraPodlahovejPlochyKalkulacka",
                 ],
                 "vymeraPodlahovejPlochy": {
                   "ui:label": false,
@@ -22743,6 +22684,30 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                     "helptextFooterMarkdown": true,
                   },
                   "ui:widget": "Number",
+                },
+                "vymeraPodlahovejPlochyKalkulacka": {
+                  "ui:options": {
+                    "customComponents": [
+                      {
+                        "props": {
+                          "calculators": [
+                            {
+                              "formula": "roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)",
+                              "label": "Výmera podlahovej plochy",
+                              "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
+                            },
+                          ],
+                          "variant": "black",
+                        },
+                        "type": "calculator",
+                      },
+                    ],
+                  },
+                  "ui:widget": "CustomComponents",
                 },
               },
               "ui:options": {
@@ -22777,13 +22742,48 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "ui:widget": "Number",
               },
             },
+            "sumarKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "dataContextLevelsUp": 1,
+                          "formula": "f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
+                          "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
+                          "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                        {
+                          "dataContextLevelsUp": 1,
+                          "formula": "f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
+                          "label": "Základ dane – celková výmera zastavanej plochy stavby",
+                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Celková výmera zastavanej plochy viacúčelovej stavby
+- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                      ],
+                      "label": "Sumár",
+                      "variant": "white",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "ui:options": {
               "objectDisplay": "boxed",
             },
             "ui:order": [
               "nehnutelnosti",
               "sumar",
-              "customComponent4_gRbYIKNcAF",
+              "sumarKalkulacka",
             ],
           },
           "pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia": {
@@ -30432,11 +30432,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                         "title": "Číslo listu vlastníctva",
                                         "type": "string",
                                       },
-                                      "customComponent1_gRbYIKNcAF": {
-                                        "anyOf": [
-                                          {},
-                                        ],
-                                      },
                                       "datumy": {
                                         "properties": {
                                           "datumVznikuDanovejPovinnosti": {
@@ -30518,6 +30513,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                         "format": "ba-ratio",
                                         "title": "Spoluvlastnícky podiel",
                                         "type": "string",
+                                      },
+                                      "vymeraPozemkuKalkulacka": {
+                                        "anyOf": [
+                                          {},
+                                        ],
                                       },
                                     },
                                     "required": [
@@ -31080,11 +31080,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                   "title": "Číslo listu vlastníctva",
                                   "type": "string",
                                 },
-                                "customComponent2_gRbYIKNcAF": {
-                                  "anyOf": [
-                                    {},
-                                  ],
-                                },
                                 "datumy": {
                                   "properties": {
                                     "datumVznikuDanovejPovinnosti": {
@@ -31207,6 +31202,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                   ],
                                   "title": "Spoluvlastníctvo",
                                   "type": "string",
+                                },
+                                "zakladDaneKalkulacka": {
+                                  "anyOf": [
+                                    {},
+                                  ],
                                 },
                               },
                               "required": [
@@ -31781,19 +31781,9 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                 },
                                 "nehnutelnosti": {
                                   "properties": {
-                                    "customComponent4_gRbYIKNcAF": {
-                                      "anyOf": [
-                                        {},
-                                      ],
-                                    },
                                     "nehnutelnosti": {
                                       "items": {
                                         "properties": {
-                                          "customComponent3_gRbYIKNcAF": {
-                                            "anyOf": [
-                                              {},
-                                            ],
-                                          },
                                           "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                                             "format": "ba-ratio",
                                             "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
@@ -31819,6 +31809,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                             "title": "Účel využitia stavby",
                                             "type": "string",
                                           },
+                                          "vymeraPodlahovejPlochyKalkulacka": {
+                                            "anyOf": [
+                                              {},
+                                            ],
+                                          },
                                         },
                                         "required": [
                                           "ucelVyuzitiaStavby",
@@ -31830,6 +31825,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                       "minItems": 1,
                                       "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
                                       "type": "array",
+                                    },
+                                    "sumarKalkulacka": {
+                                      "anyOf": [
+                                        {},
+                                      ],
                                     },
                                   },
                                   "required": [
@@ -32582,11 +32582,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                             "title": "Číslo bytu",
                                             "type": "string",
                                           },
-                                          "customComponent5_gRbYIKNcAF": {
-                                            "anyOf": [
-                                              {},
-                                            ],
-                                          },
                                           "datumy": {
                                             "properties": {
                                               "datumVznikuDanovejPovinnosti": {
@@ -32616,6 +32611,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                             "format": "ba-ratio",
                                             "title": "Spoluvlastnícky podiel",
                                             "type": "string",
+                                          },
+                                          "vymeraKalkulacka": {
+                                            "anyOf": [
+                                              {},
+                                            ],
                                           },
                                           "vymeraPodlahovejPlochyNaIneUcely": {
                                             "minimum": 0,
@@ -32696,11 +32696,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                                 },
                                               ],
                                               "properties": {
-                                                "customComponent5_gRbYIKNcAF": {
-                                                  "anyOf": [
-                                                    {},
-                                                  ],
-                                                },
                                                 "datumy": {
                                                   "properties": {
                                                     "datumVznikuDanovejPovinnosti": {
@@ -32743,6 +32738,11 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                                                   "format": "ba-ratio",
                                                   "title": "Spoluvlastnícky podiel",
                                                   "type": "string",
+                                                },
+                                                "vymeraKalkulacka": {
+                                                  "anyOf": [
+                                                    {},
+                                                  ],
                                                 },
                                               },
                                               "required": [
@@ -34798,33 +34798,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
               },
               "ui:widget": "Input",
             },
-            "customComponent5_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
-                          "label": "Základ dane",
-                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                      ],
-                      "variant": "black",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "datumy": {
               "datumVznikuDanovejPovinnosti": {
                 "ui:options": {
@@ -34904,11 +34877,38 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
               "celkovaVymeraSpecialCase",
               "spoluvlastnickyPodiel",
-              "customComponent5_gRbYIKNcAF",
+              "vymeraKalkulacka",
               "vymeraPodlahovejPlochyBytu",
               "vymeraPodlahovejPlochyNaIneUcely",
               "datumy",
             ],
+            "vymeraKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+                          "label": "Základ dane",
+                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                      ],
+                      "variant": "black",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
               "ui:options": {
@@ -34934,33 +34934,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                     "helptextFooter": "Ak má číslo za lomkou vo vašom podiele priestoru na spoločných častiach hodnotu, napríklad, 1 000, 10 000, alebo 100 000, údaj z listu vlastníctva vám nepomôže. Správne údaje o podlahovej ploche nájdete v kúpnej zmluve alebo znaleckom posudku (celková podlahová plocha okrem balkónov, lodžií a terás).",
                   },
                   "ui:widget": "Number",
-                },
-                "customComponent5_gRbYIKNcAF": {
-                  "ui:options": {
-                    "customComponents": [
-                      {
-                        "props": {
-                          "calculators": [
-                            {
-                              "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
-                              "label": "Základ dane",
-                              "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                              "unit": "m^2^",
-                              "unitMarkdown": true,
-                            },
-                          ],
-                          "variant": "black",
-                        },
-                        "type": "calculator",
-                      },
-                    ],
-                  },
-                  "ui:widget": "CustomComponents",
                 },
                 "datumy": {
                   "datumVznikuDanovejPovinnosti": {
@@ -35037,10 +35010,37 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                   "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                   "celkovaVymeraSpecialCase",
                   "spoluvlastnickyPodiel",
-                  "customComponent5_gRbYIKNcAF",
+                  "vymeraKalkulacka",
                   "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                   "datumy",
                 ],
+                "vymeraKalkulacka": {
+                  "ui:options": {
+                    "customComponents": [
+                      {
+                        "props": {
+                          "calculators": [
+                            {
+                              "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+                              "label": "Základ dane",
+                              "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
+                            },
+                          ],
+                          "variant": "black",
+                        },
+                        "type": "calculator",
+                      },
+                    ],
+                  },
+                  "ui:widget": "CustomComponents",
+                },
                 "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome": {
                   "ui:label": false,
                   "ui:options": {
@@ -35384,31 +35384,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 },
                 "ui:widget": "Input",
               },
-              "customComponent1_gRbYIKNcAF": {
-                "ui:options": {
-                  "customComponents": [
-                    {
-                      "props": {
-                        "calculators": [
-                          {
-                            "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
-                            "label": "Vaša výmera pozemku",
-                            "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
-- Celková výmera pozemku
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                            "unit": "m^2^",
-                            "unitMarkdown": true,
-                          },
-                        ],
-                        "variant": "black",
-                      },
-                      "type": "calculator",
-                    },
-                  ],
-                },
-                "ui:widget": "CustomComponents",
-              },
               "datumy": {
                 "datumVznikuDanovejPovinnosti": {
                   "ui:options": {
@@ -35635,7 +35610,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "celkovaVymeraPozemku",
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                 "spoluvlastnickyPodiel",
-                "customComponent1_gRbYIKNcAF",
+                "vymeraPozemkuKalkulacka",
                 "vymeraPozemku",
                 "datumy",
               ],
@@ -35645,6 +35620,31 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                   "helptextFooter": "Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                 },
                 "ui:widget": "Number",
+              },
+              "vymeraPozemkuKalkulacka": {
+                "ui:options": {
+                  "customComponents": [
+                    {
+                      "props": {
+                        "calculators": [
+                          {
+                            "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
+                            "label": "Vaša výmera pozemku",
+                            "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
+- Celková výmera pozemku
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                            "unit": "m^2^",
+                            "unitMarkdown": true,
+                          },
+                        ],
+                        "variant": "black",
+                      },
+                      "type": "calculator",
+                    },
+                  ],
+                },
+                "ui:widget": "CustomComponents",
               },
               "znaleckyPosudok": {
                 "ui:options": {
@@ -35879,30 +35879,6 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "size": "medium",
             },
             "ui:widget": "Input",
-          },
-          "customComponent2_gRbYIKNcAF": {
-            "ui:options": {
-              "customComponents": [
-                {
-                  "props": {
-                    "calculators": [
-                      {
-                        "formula": "ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))",
-                        "label": "Základ dane",
-                        "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Celková zastavaná plocha
-- Spoluvlastnícky podiel",
-                        "unit": "m^2^",
-                        "unitMarkdown": true,
-                      },
-                    ],
-                    "variant": "black",
-                  },
-                  "type": "calculator",
-                },
-              ],
-            },
-            "ui:widget": "CustomComponents",
           },
           "datumy": {
             "datumVznikuDanovejPovinnosti": {
@@ -36229,7 +36205,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "celkovaZastavanaPlocha",
             "spoluvlastnickyPodiel",
             "zakladDane",
-            "customComponent2_gRbYIKNcAF",
+            "zakladDaneKalkulacka",
             "pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia",
             "castStavbyOslobodenaOdDane",
             "castStavbyOslobodenaOdDaneDetaily",
@@ -36243,6 +36219,30 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "helptextFooterMarkdown": true,
             },
             "ui:widget": "Number",
+          },
+          "zakladDaneKalkulacka": {
+            "ui:options": {
+              "customComponents": [
+                {
+                  "props": {
+                    "calculators": [
+                      {
+                        "formula": "ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))",
+                        "label": "Základ dane",
+                        "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Celková zastavaná plocha
+- Spoluvlastnícky podiel",
+                        "unit": "m^2^",
+                        "unitMarkdown": true,
+                      },
+                    ],
+                    "variant": "black",
+                  },
+                  "type": "calculator",
+                },
+              ],
+            },
+            "ui:widget": "CustomComponents",
           },
         },
         "ui:options": {
@@ -36390,67 +36390,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
             "ui:widget": "RadioGroup",
           },
           "nehnutelnosti": {
-            "customComponent4_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "dataContextLevelsUp": 1,
-                          "formula": "f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
-                          "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                          "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                        {
-                          "dataContextLevelsUp": 1,
-                          "formula": "f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
-                          "label": "Základ dane – celková výmera zastavanej plochy stavby",
-                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
-- Celková výmera zastavanej plochy viacúčelovej stavby
-- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
-                          "unit": "m^2^",
-                          "unitMarkdown": true,
-                        },
-                      ],
-                      "label": "Sumár",
-                      "variant": "white",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "nehnutelnosti": {
               "items": {
-                "customComponent3_gRbYIKNcAF": {
-                  "ui:options": {
-                    "customComponents": [
-                      {
-                        "props": {
-                          "calculators": [
-                            {
-                              "formula": "roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)",
-                              "label": "Výmera podlahovej plochy",
-                              "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
-- Podiel priestoru na spoločných častiach a zariadeniach domu
-- Spoluvlastnícky podiel",
-                              "unit": "m^2^",
-                              "unitMarkdown": true,
-                            },
-                          ],
-                          "variant": "black",
-                        },
-                        "type": "calculator",
-                      },
-                    ],
-                  },
-                  "ui:widget": "CustomComponents",
-                },
                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
                   "ui:label": false,
                   "ui:options": {
@@ -36520,7 +36461,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "vymeraPodlahovejPlochy",
                   "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                   "spoluvlastnickyPodiel",
-                  "customComponent3_gRbYIKNcAF",
+                  "vymeraPodlahovejPlochyKalkulacka",
                 ],
                 "vymeraPodlahovejPlochy": {
                   "ui:label": false,
@@ -36529,6 +36470,30 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                     "helptextFooterMarkdown": true,
                   },
                   "ui:widget": "Number",
+                },
+                "vymeraPodlahovejPlochyKalkulacka": {
+                  "ui:options": {
+                    "customComponents": [
+                      {
+                        "props": {
+                          "calculators": [
+                            {
+                              "formula": "roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)",
+                              "label": "Výmera podlahovej plochy",
+                              "missingFieldsMessage": "**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu
+- Spoluvlastnícky podiel",
+                              "unit": "m^2^",
+                              "unitMarkdown": true,
+                            },
+                          ],
+                          "variant": "black",
+                        },
+                        "type": "calculator",
+                      },
+                    ],
+                  },
+                  "ui:widget": "CustomComponents",
                 },
               },
               "ui:options": {
@@ -36563,13 +36528,48 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                 "ui:widget": "Number",
               },
             },
+            "sumarKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "dataContextLevelsUp": 1,
+                          "formula": "f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
+                          "label": "Celková výmera podlahových plôch všetkých podlaží stavby",
+                          "missingFieldsMessage": "**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**
+- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                        {
+                          "dataContextLevelsUp": 1,
+                          "formula": "f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)",
+                          "label": "Základ dane – celková výmera zastavanej plochy stavby",
+                          "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
+- Celková výmera zastavanej plochy viacúčelovej stavby
+- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby",
+                          "unit": "m^2^",
+                          "unitMarkdown": true,
+                        },
+                      ],
+                      "label": "Sumár",
+                      "variant": "white",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "ui:options": {
               "objectDisplay": "boxed",
             },
             "ui:order": [
               "nehnutelnosti",
               "sumar",
-              "customComponent4_gRbYIKNcAF",
+              "sumarKalkulacka",
             ],
           },
           "pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia": {
@@ -48614,7 +48614,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     },
                     "then": {
                       "properties": {
-                        "customComponent6_gRbYIKNcAF": {
+                        "rodinnyStavAlert": {
                           "anyOf": [
                             {},
                           ],
@@ -48697,7 +48697,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         },
                         "then": {
                           "properties": {
-                            "customComponent7_gRbYIKNcAF": {
+                            "pobytVBratislaveViacAkoRokAlert": {
                               "anyOf": [
                                 {},
                               ],
@@ -49057,16 +49057,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                   },
                 ],
                 "properties": {
-                  "customComponent8_gRbYIKNcAF": {
-                    "anyOf": [
-                      {},
-                    ],
-                  },
-                  "customComponent9_gRbYIKNcAF": {
-                    "anyOf": [
-                      {},
-                    ],
-                  },
                   "davkaVNezamestnanosti": {
                     "default": false,
                     "enum": [
@@ -49094,6 +49084,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     "title": "Poberali ste v minulom kalendárnom roku iné príjmy?",
                     "type": "boolean",
                   },
+                  "prijmyAlert": {
+                    "anyOf": [
+                      {},
+                    ],
+                  },
                   "samostatnaZarobkovaCinnost": {
                     "default": false,
                     "enum": [
@@ -49102,6 +49097,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     ],
                     "title": "Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                     "type": "boolean",
+                  },
+                  "sucetPrijmovKalkulacka": {
+                    "anyOf": [
+                      {},
+                    ],
                   },
                   "vyzivne": {
                     "default": false,
@@ -49429,11 +49429,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     "title": "Uchádzate sa o pridelenie bezbariérového bytu?",
                     "type": "boolean",
                   },
-                  "customComponent10_gRbYIKNcAF": {
-                    "anyOf": [
-                      {},
-                    ],
-                  },
                   "tzpPreukaz": {
                     "default": false,
                     "enum": [
@@ -49442,6 +49437,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                     ],
                     "title": "Ste držiteľom preukazu ŤZP?",
                     "type": "boolean",
+                  },
+                  "zdravotnyStavAlert": {
+                    "anyOf": [
+                      {},
+                    ],
                   },
                 },
                 "required": [
@@ -49759,16 +49759,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent11_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
-                        "customComponent12_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
                         "davkaVNezamestnanosti": {
                           "default": false,
                           "enum": [
@@ -49796,6 +49786,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
+                        "prijmyAlert": {
+                          "anyOf": [
+                            {},
+                          ],
+                        },
                         "samostatnaZarobkovaCinnost": {
                           "default": false,
                           "enum": [
@@ -49804,6 +49799,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           ],
                           "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
+                        },
+                        "sucetPrijmovKalkulacka": {
+                          "anyOf": [
+                            {},
+                          ],
                         },
                         "vyzivne": {
                           "default": false,
@@ -50086,11 +50086,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent13_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
                         "tzpPreukaz": {
                           "default": false,
                           "enum": [
@@ -50099,6 +50094,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           ],
                           "title": "Je držiteľom preukazu ŤZP?",
                           "type": "boolean",
+                        },
+                        "zdravotnyStavAlert": {
+                          "anyOf": [
+                            {},
+                          ],
                         },
                       },
                       "required": [
@@ -50179,7 +50179,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           },
                           "then": {
                             "properties": {
-                              "customComponent14_gRbYIKNcAF": {
+                              "rodinnyStavAlert": {
                                 "anyOf": [
                                   {},
                                 ],
@@ -50475,16 +50475,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent15_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
-                        "customComponent16_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
                         "davkaVNezamestnanosti": {
                           "default": false,
                           "enum": [
@@ -50512,6 +50502,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                           "type": "boolean",
                         },
+                        "prijmyAlert": {
+                          "anyOf": [
+                            {},
+                          ],
+                        },
                         "samostatnaZarobkovaCinnost": {
                           "default": false,
                           "enum": [
@@ -50520,6 +50515,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           ],
                           "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                           "type": "boolean",
+                        },
+                        "sucetPrijmovKalkulacka": {
+                          "anyOf": [
+                            {},
+                          ],
                         },
                         "vyzivne": {
                           "default": false,
@@ -50802,11 +50802,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                         },
                       ],
                       "properties": {
-                        "customComponent17_gRbYIKNcAF": {
-                          "anyOf": [
-                            {},
-                          ],
-                        },
                         "tzpPreukaz": {
                           "default": false,
                           "enum": [
@@ -50815,6 +50810,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                           ],
                           "title": "Je držiteľom preukazu ŤZP?",
                           "type": "boolean",
+                        },
+                        "zdravotnyStavAlert": {
+                          "anyOf": [
+                            {},
+                          ],
                         },
                       },
                       "required": [
@@ -50971,7 +50971,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent18_gRbYIKNcAF": {
+                                    "studentAlert": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -51009,11 +51009,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent19_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
                               "maPrijem": {
                                 "default": false,
                                 "enum": [
@@ -51031,6 +51026,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 ],
                                 "title": "Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?",
                                 "type": "boolean",
+                              },
+                              "sucetPrijmovStudentKalkulacka": {
+                                "anyOf": [
+                                  {},
+                                ],
                               },
                             },
                             "required": [
@@ -51291,11 +51291,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent20_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
                               "tzpPreukaz": {
                                 "default": false,
                                 "enum": [
@@ -51304,6 +51299,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 ],
                                 "title": "Je držiteľom preukazu ŤZP?",
                                 "type": "boolean",
+                              },
+                              "zdravotnyStavAlert": {
+                                "anyOf": [
+                                  {},
+                                ],
                               },
                             },
                             "required": [
@@ -51398,7 +51398,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 },
                                 "then": {
                                   "properties": {
-                                    "customComponent21_gRbYIKNcAF": {
+                                    "rodinnyStavAlert": {
                                       "anyOf": [
                                         {},
                                       ],
@@ -51660,16 +51660,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent22_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
-                              "customComponent23_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
                               "davkaVNezamestnanosti": {
                                 "default": false,
                                 "enum": [
@@ -51697,6 +51687,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 "title": "Poberal/poberala v minulom kalendárnom roku iné príjmy?",
                                 "type": "boolean",
                               },
+                              "prijmyAlert": {
+                                "anyOf": [
+                                  {},
+                                ],
+                              },
                               "samostatnaZarobkovaCinnost": {
                                 "default": false,
                                 "enum": [
@@ -51705,6 +51700,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 ],
                                 "title": "Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?",
                                 "type": "boolean",
+                              },
+                              "sucetPrijmovKalkulacka": {
+                                "anyOf": [
+                                  {},
+                                ],
                               },
                               "vyzivne": {
                                 "default": false,
@@ -51987,11 +51987,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                               },
                             ],
                             "properties": {
-                              "customComponent24_gRbYIKNcAF": {
-                                "anyOf": [
-                                  {},
-                                ],
-                              },
                               "tzpPreukaz": {
                                 "default": false,
                                 "enum": [
@@ -52000,6 +51995,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                 ],
                                 "title": "Je držiteľom preukazu ŤZP?",
                                 "type": "boolean",
+                              },
+                              "zdravotnyStavAlert": {
+                                "anyOf": [
+                                  {},
+                                ],
                               },
                             },
                             "required": [
@@ -52120,17 +52120,17 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 "title": "Čestné vyhlásenie",
                 "type": "boolean",
               },
-              "customComponent25_gRbYIKNcAF": {
+              "overitPrijemLink": {
                 "anyOf": [
                   {},
                 ],
               },
-              "customComponent26_gRbYIKNcAF": {
+              "prijemAlert": {
                 "anyOf": [
                   {},
                 ],
               },
-              "customComponent27_gRbYIKNcAF": {
+              "sucetPrijmovKalkulacka": {
                 "anyOf": [
                   {},
                 ],
@@ -52285,41 +52285,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
             },
           },
           "prijem": {
-            "customComponent18_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte potvrdenie o návšteve školy.",
-                      "type": "info",
-                    },
-                    "type": "alert",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
-            "customComponent19_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "formula": "maPrijem ? prijemVyska : 0",
-                          "label": "Súčet všetkých čistých mesačných príjmov dieťaťa",
-                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
-                          "unit": "€",
-                        },
-                      ],
-                      "variant": "white",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "maPrijem": {
               "ui:options": {
                 "enumMetadata": [
@@ -52371,16 +52336,51 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
               "ui:widget": "RadioGroup",
             },
+            "studentAlert": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte potvrdenie o návšteve školy.",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
+            "sucetPrijmovStudentKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "maPrijem ? prijemVyska : 0",
+                          "label": "Súčet všetkých čistých mesačných príjmov dieťaťa",
+                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                          "unit": "€",
+                        },
+                      ],
+                      "variant": "white",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "ui:options": {
               "objectDisplay": "boxed",
               "title": "Príjem",
             },
             "ui:order": [
               "student",
-              "customComponent18_gRbYIKNcAF",
+              "studentAlert",
               "maPrijem",
               "prijemVyska",
-              "customComponent19_gRbYIKNcAF",
+              "sucetPrijmovStudentKalkulacka",
             ],
           },
           "sucasneByvanie": {
@@ -52526,20 +52526,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                 "variant": "boxed",
               },
               "ui:widget": "RadioGroup",
-            },
-            "customComponent20_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav dieťaťa (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
-                      "type": "info",
-                    },
-                    "type": "alert",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
             },
             "existujuceDiagnozy": {
               "ui:options": {
@@ -52815,8 +52801,22 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent20_gRbYIKNcAF",
+              "zdravotnyStavAlert",
             ],
+            "zdravotnyStavAlert": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav dieťaťa (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
           },
         },
         "ui:options": {
@@ -52925,20 +52925,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
             "ui:widget": "Input",
           },
         },
-        "customComponent14_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "datumNarodenia": {
           "ui:options": {
             "belowComponents": [
@@ -53005,6 +52991,20 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           },
           "ui:widget": "Select",
         },
+        "rodinnyStavAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci rodinný stav druha/družky.",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
@@ -53040,52 +53040,11 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           "datumNarodenia",
           "statnaPrislusnost",
           "rodinnyStav",
-          "customComponent14_gRbYIKNcAF",
+          "rodinnyStavAlert",
           "adresaSkutocnehoPobytu",
         ],
       },
       "prijem": {
-        "customComponent15_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
-        "customComponent16_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "calculators": [
-                    {
-                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
-samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
-dochodokSum = dochodok ? dochodokVyska : 0;
-vyzivneSum = vyzivne ? vyzivneVyska : 0;
-davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
-inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
-zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
-                      "label": "Súčet všetkých čistých mesačných príjmov druha/družky",
-                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
-                      "unit": "€",
-                    },
-                  ],
-                  "variant": "white",
-                },
-                "type": "calculator",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "davkaVNezamestnanosti": {
           "ui:options": {
             "enumMetadata": [
@@ -53163,6 +53122,20 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "prijmyAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy druha/družky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
             "enumMetadata": [
@@ -53190,6 +53163,33 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "sucetPrijmovKalkulacka": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov druha/družky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "ui:options": {
           "description": "Posudzuje sa priemerný čistý mesačný príjem druha/družky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
@@ -53208,8 +53208,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent15_gRbYIKNcAF",
-          "customComponent16_gRbYIKNcAF",
+          "prijmyAlert",
+          "sucetPrijmovKalkulacka",
         ],
         "vyzivne": {
           "ui:options": {
@@ -53410,20 +53410,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             "variant": "boxed",
           },
           "ui:widget": "RadioGroup",
-        },
-        "customComponent17_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav druha/družky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
         },
         "existujuceDiagnozy": {
           "ui:options": {
@@ -53699,8 +53685,22 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent17_gRbYIKNcAF",
+          "zdravotnyStavAlert",
         ],
+        "zdravotnyStavAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav druha/družky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
       },
     },
     "ineOkolnosti": {
@@ -53819,20 +53819,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
       "zoznamInychClenov": {
         "items": {
           "osobneUdaje": {
-            "customComponent21_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.",
-                      "type": "info",
-                    },
-                    "type": "alert",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "datumNarodenia": {
               "ui:options": {
                 "belowComponents": [
@@ -53899,6 +53885,20 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "ui:widget": "Select",
             },
+            "rodinnyStavAlert": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte doklad dokazujúci rodinný stav člena/členky domácnosti.",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "rodnePriezvisko": {
               "ui:label": false,
               "ui:options": {
@@ -53934,7 +53934,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "datumNarodenia",
               "statnaPrislusnost",
               "rodinnyStav",
-              "customComponent21_gRbYIKNcAF",
+              "rodinnyStavAlert",
               "vlastnikNehnutelnosti",
               "vlastnikNehnutelnostiDovody",
             ],
@@ -53975,47 +53975,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
           },
           "prijem": {
-            "customComponent22_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
-                      "type": "info",
-                    },
-                    "type": "alert",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
-            "customComponent23_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "calculators": [
-                        {
-                          "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
-samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
-dochodokSum = dochodok ? dochodokVyska : 0;
-vyzivneSum = vyzivne ? vyzivneVyska : 0;
-davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
-inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
-zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
-                          "label": "Súčet všetkých čistých mesačných príjmov člena/členky domácnosti",
-                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
-                          "unit": "€",
-                        },
-                      ],
-                      "variant": "white",
-                    },
-                    "type": "calculator",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
-            },
             "davkaVNezamestnanosti": {
               "ui:options": {
                 "enumMetadata": [
@@ -54093,6 +54052,20 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "ui:widget": "Number",
             },
+            "prijmyAlert": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy člena/členky domácnosti (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "samostatnaZarobkovaCinnost": {
               "ui:options": {
                 "enumMetadata": [
@@ -54120,6 +54093,33 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "ui:widget": "Number",
             },
+            "sucetPrijmovKalkulacka": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "calculators": [
+                        {
+                          "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                          "label": "Súčet všetkých čistých mesačných príjmov člena/členky domácnosti",
+                          "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                          "unit": "€",
+                        },
+                      ],
+                      "variant": "white",
+                    },
+                    "type": "calculator",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
             "ui:options": {
               "description": "Posudzuje sa priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
               "objectDisplay": "boxed",
@@ -54138,8 +54138,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "davkaVNezamestnanostiVyska",
               "inePrijmy",
               "inePrijmyVyska",
-              "customComponent22_gRbYIKNcAF",
-              "customComponent23_gRbYIKNcAF",
+              "prijmyAlert",
+              "sucetPrijmovKalkulacka",
             ],
             "vyzivne": {
               "ui:options": {
@@ -54337,20 +54337,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "variant": "boxed",
               },
               "ui:widget": "RadioGroup",
-            },
-            "customComponent24_gRbYIKNcAF": {
-              "ui:options": {
-                "customComponents": [
-                  {
-                    "props": {
-                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav člena/členky domácnosti (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
-                      "type": "info",
-                    },
-                    "type": "alert",
-                  },
-                ],
-              },
-              "ui:widget": "CustomComponents",
             },
             "existujuceDiagnozy": {
               "ui:options": {
@@ -54626,8 +54612,22 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "mieraFunkcnejPoruchy",
               "chronickeOchorenie",
               "existujuceDiagnozy",
-              "customComponent24_gRbYIKNcAF",
+              "zdravotnyStavAlert",
             ],
+            "zdravotnyStavAlert": {
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav člena/členky domácnosti (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+              "ui:widget": "CustomComponents",
+            },
           },
         },
         "ui:options": {
@@ -54813,47 +54813,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         ],
       },
       "prijem": {
-        "customComponent11_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
-        "customComponent12_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "calculators": [
-                    {
-                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
-samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
-dochodokSum = dochodok ? dochodokVyska : 0;
-vyzivneSum = vyzivne ? vyzivneVyska : 0;
-davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
-inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
-zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
-                      "label": "Súčet všetkých čistých mesačných príjmov manžela/manželky",
-                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
-                      "unit": "€",
-                    },
-                  ],
-                  "variant": "white",
-                },
-                "type": "calculator",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "davkaVNezamestnanosti": {
           "ui:options": {
             "enumMetadata": [
@@ -54931,6 +54890,20 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "prijmyAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy manžela/manželky (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
             "enumMetadata": [
@@ -54958,6 +54931,33 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "sucetPrijmovKalkulacka": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov manžela/manželky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "ui:options": {
           "description": "Posudzuje sa priemerný čistý mesačný príjem manžela/manželky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
@@ -54976,8 +54976,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent11_gRbYIKNcAF",
-          "customComponent12_gRbYIKNcAF",
+          "prijmyAlert",
+          "sucetPrijmovKalkulacka",
         ],
         "vyzivne": {
           "ui:options": {
@@ -55178,20 +55178,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             "variant": "boxed",
           },
           "ui:widget": "RadioGroup",
-        },
-        "customComponent13_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav manžela/manželky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
         },
         "existujuceDiagnozy": {
           "ui:options": {
@@ -55467,8 +55453,22 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "mieraFunkcnejPoruchy",
           "chronickeOchorenie",
           "existujuceDiagnozy",
-          "customComponent13_gRbYIKNcAF",
+          "zdravotnyStavAlert",
         ],
+        "zdravotnyStavAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav manžela/manželky (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
       },
     },
     "sucetPrijmovCestneVyhlasenie": {
@@ -55479,7 +55479,39 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         },
         "ui:widget": "Checkbox",
       },
-      "customComponent25_gRbYIKNcAF": {
+      "overitPrijemLink": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "links": [
+                  {
+                    "href": "https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf",
+                    "title": "Overiť príjem",
+                  },
+                ],
+              },
+              "type": "additionalLinks",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "prijemAlert": {
+        "ui:options": {
+          "customComponents": [
+            {
+              "props": {
+                "message": "Overte si, či váš celkový čistý mesačný príjem budúcej domácnosti spĺňa podmienky. Celkový príjem nemôže prekročiť  štvornásobok, resp. päťnásobok aktuálneho životného minima.",
+                "type": "info",
+              },
+              "type": "alert",
+            },
+          ],
+        },
+        "ui:widget": "CustomComponents",
+      },
+      "sucetPrijmovKalkulacka": {
         "ui:options": {
           "customComponents": [
             {
@@ -55523,45 +55555,13 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         },
         "ui:widget": "CustomComponents",
       },
-      "customComponent26_gRbYIKNcAF": {
-        "ui:options": {
-          "customComponents": [
-            {
-              "props": {
-                "message": "Overte si, či váš celkový čistý mesačný príjem budúcej domácnosti spĺňa podmienky. Celkový príjem nemôže prekročiť  štvornásobok, resp. päťnásobok aktuálneho životného minima.",
-                "type": "info",
-              },
-              "type": "alert",
-            },
-          ],
-        },
-        "ui:widget": "CustomComponents",
-      },
-      "customComponent27_gRbYIKNcAF": {
-        "ui:options": {
-          "customComponents": [
-            {
-              "props": {
-                "links": [
-                  {
-                    "href": "https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf",
-                    "title": "Overiť príjem",
-                  },
-                ],
-              },
-              "type": "additionalLinks",
-            },
-          ],
-        },
-        "ui:widget": "CustomComponents",
-      },
       "ui:options": {
         "stepQueryParam": "sucet-prijmov-a-cestne-vyhlasenie",
       },
       "ui:order": [
-        "customComponent25_gRbYIKNcAF",
-        "customComponent26_gRbYIKNcAF",
-        "customComponent27_gRbYIKNcAF",
+        "sucetPrijmovKalkulacka",
+        "prijemAlert",
+        "overitPrijemLink",
         "cestneVyhlasenie",
       ],
     },
@@ -55645,20 +55645,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             },
             "ui:widget": "RadioGroup",
           },
-          "customComponent7_gRbYIKNcAF": {
-            "ui:options": {
-              "customComponents": [
-                {
-                  "props": {
-                    "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.",
-                    "type": "info",
-                  },
-                  "type": "alert",
-                },
-              ],
-            },
-            "ui:widget": "CustomComponents",
-          },
           "mestoPsc": {
             "mesto": {
               "ui:label": false,
@@ -55700,6 +55686,20 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             },
             "ui:widget": "RadioGroup",
           },
+          "pobytVBratislaveViacAkoRokAlert": {
+            "ui:options": {
+              "customComponents": [
+                {
+                  "props": {
+                    "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce vaše pôsobenie v Bratislave resp. skutočný pobyt. Napríklad pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom.",
+                    "type": "info",
+                  },
+                  "type": "alert",
+                },
+              ],
+            },
+            "ui:widget": "CustomComponents",
+          },
           "ui:options": {
             "description": "Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.",
             "objectDisplay": "boxed",
@@ -55712,7 +55712,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             "vlastnikNehnutelnostiDovody",
             "byvanieVMestskomNajomnomByte",
             "pobytVBratislaveViacAkoRok",
-            "customComponent7_gRbYIKNcAF",
+            "pobytVBratislaveViacAkoRokAlert",
             "adresaSkutocnehoPobytuRovnaka",
             "adresaSkutocnehoPobytu",
           ],
@@ -55758,20 +55758,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             },
             "ui:widget": "Input",
           },
-        },
-        "customComponent6_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
         },
         "datumNarodenia": {
           "ui:options": {
@@ -55864,6 +55850,20 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           },
           "ui:widget": "Select",
         },
+        "rodinnyStavAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte rozsudok o rozvode, sobášny list, prípadne iný doklad dokazujúci váš rodinný stav.",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "rodnePriezvisko": {
           "ui:label": false,
           "ui:options": {
@@ -55909,7 +55909,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           "datumNarodenia",
           "statnaPrislusnost",
           "rodinnyStav",
-          "customComponent6_gRbYIKNcAF",
+          "rodinnyStavAlert",
           "email",
           "kontaktovanyEmailom",
           "telefonneCislo",
@@ -55917,47 +55917,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         ],
       },
       "prijem": {
-        "customComponent8_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
-        "customComponent9_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "calculators": [
-                    {
-                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
-samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
-dochodokSum = dochodok ? dochodokVyska : 0;
-vyzivneSum = vyzivne ? vyzivneVyska : 0;
-davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
-inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
-zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
-                      "label": "Súčet všetkých čistých mesačných príjmov žiadateľa/žiadateľky",
-                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
-                      "unit": "€",
-                    },
-                  ],
-                  "variant": "white",
-                },
-                "type": "calculator",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "davkaVNezamestnanosti": {
           "ui:options": {
             "enumMetadata": [
@@ -56035,6 +55994,20 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "prijmyAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce všetky spomínané príjmy (napríklad doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.)",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
             "enumMetadata": [
@@ -56062,6 +56035,33 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Number",
         },
+        "sucetPrijmovKalkulacka": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "calculators": [
+                    {
+                      "formula": "zamestnaniePrijemSum = zamestnanie ? zamestnaniePrijem : 0;
+samostatnaZarobkovaCinnostPrijemSum = samostatnaZarobkovaCinnost ? samostatnaZarobkovaCinnostPrijem : 0;
+dochodokSum = dochodok ? dochodokVyska : 0;
+vyzivneSum = vyzivne ? vyzivneVyska : 0;
+davkaVNezamestnanostiSum = davkaVNezamestnanosti ? davkaVNezamestnanostiVyska : 0;
+inePrijmySum = inePrijmy ? inePrijmyVyska : 0;
+zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyzivneSum + davkaVNezamestnanostiSum + inePrijmySum",
+                      "label": "Súčet všetkých čistých mesačných príjmov žiadateľa/žiadateľky",
+                      "missingFieldsMessage": "Pre zobrazenie súčtu príjmu je potrebné vyplniť správne všetky príjmy.",
+                      "unit": "€",
+                    },
+                  ],
+                  "variant": "white",
+                },
+                "type": "calculator",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
         "ui:options": {
           "description": "Posudzuje sa váš priemerný čistý mesačný príjem za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
           "objectDisplay": "boxed",
@@ -56080,8 +56080,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "davkaVNezamestnanostiVyska",
           "inePrijmy",
           "inePrijmyVyska",
-          "customComponent8_gRbYIKNcAF",
-          "customComponent9_gRbYIKNcAF",
+          "prijmyAlert",
+          "sucetPrijmovKalkulacka",
         ],
         "vyzivne": {
           "ui:options": {
@@ -56379,20 +56379,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "RadioGroup",
         },
-        "customComponent10_gRbYIKNcAF": {
-          "ui:options": {
-            "customComponents": [
-              {
-                "props": {
-                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
-                  "type": "info",
-                },
-                "type": "alert",
-              },
-            ],
-          },
-          "ui:widget": "CustomComponents",
-        },
         "existujuceDiagnozy": {
           "ui:options": {
             "enumMetadata": [
@@ -56668,8 +56654,22 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "chronickeOchorenie",
           "existujuceDiagnozy",
           "bezbarierovyByt",
-          "customComponent10_gRbYIKNcAF",
+          "zdravotnyStavAlert",
         ],
+        "zdravotnyStavAlert": {
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedený zdravotný stav (napríklad potvrdenie o chronickom ochorení od ošetrujúceho lekára).",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+          "ui:widget": "CustomComponents",
+        },
       },
     },
   },

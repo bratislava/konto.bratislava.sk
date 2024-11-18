@@ -119,6 +119,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

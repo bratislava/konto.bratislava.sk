@@ -1,11 +1,4 @@
-import {
-  conditionalFields,
-  fileUpload,
-  markdownText,
-  object,
-  radioGroup,
-  step,
-} from '../../generator/functions'
+import { conditionalFields, fileUpload, object, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
 import { danovnik, splnomocnenec } from './osoby'
 
@@ -43,9 +36,9 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
           { title: 'Nahrajte splnomocnenie', multiple: true },
           {
             type: 'dragAndDrop',
-            helptext: markdownText(
+            helptext:
               'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.',
-            ),
+            helptextMarkdown: true,
           },
         ),
         radioGroup(

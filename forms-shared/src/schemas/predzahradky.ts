@@ -2,7 +2,6 @@ import {
   conditionalFields,
   fileUpload,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -102,9 +101,10 @@ export default schema(
           'parcelneCislo',
           { title: 'Číslo parcely', required: true, type: 'text' },
           {
-            helptext: markdownText(
+            helptext:
               'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.',
-            ),
+            helptextMarkdown: true,
+
             size: 'medium',
           },
         ),

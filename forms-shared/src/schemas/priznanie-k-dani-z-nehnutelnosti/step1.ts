@@ -1,4 +1,4 @@
-import { markdownText, number, radioGroup, step } from '../../generator/functions'
+import { number, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseItemsV2 } from '../../generator/helpers'
 
 export default step('druhPriznania', { title: 'Druh priznania' }, [
@@ -46,9 +46,8 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       maximum: 2099,
     },
     {
-      helptext: markdownText(
-        `Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.`,
-      ),
+      helptext: `Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.`,
+      helptextMarkdown: true,
     },
   ),
 ])

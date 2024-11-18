@@ -5,7 +5,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -222,9 +221,9 @@ export default schema(
                 items: createStringItems(['120 l zberná nádoba']),
               },
               {
-                helptext: markdownText(
+                helptext:
                   'Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).',
-                ),
+                helptextMarkdown: true,
               },
             ),
           ]),

@@ -3,7 +3,6 @@ import {
   conditionalStep,
   fileUpload,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -23,9 +22,9 @@ const umiestnenieADizajn = [
     },
     {
       type: 'dragAndDrop',
-      helptext: markdownText(
+      helptext:
         'Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.',
-      ),
+      helptextMarkdown: true,
     },
   ),
   fileUpload(
@@ -36,9 +35,9 @@ const umiestnenieADizajn = [
     },
     {
       type: 'dragAndDrop',
-      helptext: markdownText(
+      helptext:
         'Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.\n\n Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.',
-      ),
+      helptextMarkdown: true,
     },
   ),
 ]
@@ -145,9 +144,9 @@ export default schema(
               ),
             },
             {
-              helptext: markdownText(
+              helptext:
                 'Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.',
-              ),
+              helptextMarkdown: true,
             },
           ),
         ]),
@@ -200,9 +199,10 @@ export default schema(
             },
             {
               size: 'medium',
-              helptext: markdownText(
+              helptext:
                 'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).',
-              ),
+
+              helptextMarkdown: true,
             },
           ),
         ]),
@@ -222,9 +222,9 @@ export default schema(
           },
           {
             placeholder: 'Popíšte',
-            helptext: markdownText(
+            helptext:
               'Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.',
-            ),
+            helptextMarkdown: true,
           },
         ),
         textArea(

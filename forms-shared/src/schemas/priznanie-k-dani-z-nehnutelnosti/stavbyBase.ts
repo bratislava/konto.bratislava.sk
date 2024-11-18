@@ -1,4 +1,4 @@
-import { input, markdownText, number, object, select } from '../../generator/functions'
+import { input, number, object, select } from '../../generator/functions'
 import { createStringItems } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
@@ -71,18 +71,17 @@ export const stavbyBase = (step: StepEnum) => [
         { type: 'text', title: 'Číslo parcely', required: true },
         {
           placeholder: 'Napr. 7986/1',
-          helptext: markdownText(
-            {
-              [StepEnum.DanZPozemkov]:
-                'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
-              [StepEnum.DanZoStaviebJedencel]:
-                'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}',
-              [StepEnum.DanZoStaviebViacereUcely]:
-                'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}',
-              [StepEnum.DanZBytovANebytovychPriestorov]:
-                'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}',
-            }[step],
-          ),
+          helptext: {
+            [StepEnum.DanZPozemkov]:
+              'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
+            [StepEnum.DanZoStaviebJedencel]:
+              'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_cislo_parcely_ec11c9dbb0.png"}',
+            [StepEnum.DanZoStaviebViacereUcely]:
+              'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_cislo_parcely_f37ad2e4f7.png"}',
+            [StepEnum.DanZBytovANebytovychPriestorov]:
+              'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_cislo_parcely_a7124f13a3.png"}',
+          }[step],
+          helptextMarkdown: true,
         },
       ),
     ],

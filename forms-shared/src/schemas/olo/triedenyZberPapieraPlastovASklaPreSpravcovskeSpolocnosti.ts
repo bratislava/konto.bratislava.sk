@@ -5,7 +5,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -223,9 +222,9 @@ export default schema(
               ]),
             },
             {
-              helptext: markdownText(
+              helptext:
                 'Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).',
-              ),
+              helptextMarkdown: true,
             },
           ),
           conditionalFields(

@@ -4,7 +4,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -45,9 +44,8 @@ const vymeraPodlahovejPlochyBytu = number(
     minimum: 0,
   },
   {
-    helptext: markdownText(
-      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
-    ),
+    helptext: 'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+    helptextMarkdown: true,
   },
 )
 
@@ -86,7 +84,8 @@ const vymeraKalkulacka = customComponentsField(
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -104,11 +103,11 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
-      helptext: markdownText(
+      helptext:
         typ === Typ.Byt
           ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}'
           : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
-      ),
+      helptextMarkdown: true,
     },
   )
 
@@ -118,11 +117,11 @@ const spoluvlastnickyPodiel = (typ: Typ) =>
     { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
     {
       placeholder: 'Napr. 1/150',
-      helptext: markdownText(
+      helptext:
         typ === Typ.Byt
           ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}'
           : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
-      ),
+      helptextMarkdown: true,
     },
   )
 
@@ -304,9 +303,9 @@ const innerArray = (kalkulacka: boolean) =>
                         required: true,
                       },
                       {
-                        helptext: markdownText(
+                        helptext:
                           'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
-                        ),
+                        helptextMarkdown: true,
                       },
                     ),
                   ],
@@ -375,9 +374,8 @@ export default step(
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?',
-    helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}`,
-    ),
+    helptext: `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery podlahových plôch bytov a nebytových priestorov',
       helptext:

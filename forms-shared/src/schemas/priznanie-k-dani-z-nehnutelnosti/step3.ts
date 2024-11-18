@@ -5,7 +5,6 @@ import {
   datePicker,
   fileUpload,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -23,9 +22,9 @@ const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
   { title: 'Celková výmera pozemku', required: true, minimum: 0 },
   {
-    helptext: markdownText(
+    helptext:
       'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -38,9 +37,9 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   },
   {
     placeholder: 'Napr. 4827/624441',
-    helptext: markdownText(
+    helptext:
       'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -49,9 +48,9 @@ const spoluvlastnickyPodiel = input(
   { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
-    helptext: markdownText(
+    helptext:
       'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_spoluvlastnicky_podiel_a8753d1b69.png"}',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -70,7 +69,8 @@ const vymeraPozemkuKalkulacka = customComponentsField(
             '- Celková výmera pozemku\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -109,9 +109,9 @@ const innerArray = (kalkulacka: boolean) =>
           variant: 'nested',
           addButtonLabel: 'Pridať ďalší pozemok (na tom istom LV)',
           itemTitle: 'Pozemok č. {index}',
-          description: markdownText(
+          description:
             'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.\n\n:form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_c16049c4bd.png"}',
-          ),
+          descriptionMarkdown: true,
           cannotAddItemMessage:
             'Dosiahli ste maximálny počet pozemkov (17) na jedno priznanie. Pridajte ďalšie priznanie.',
         },
@@ -167,9 +167,9 @@ const innerArray = (kalkulacka: boolean) =>
                 { type: 'text', title: 'Číslo parcely', required: true },
                 {
                   placeholder: 'Napr. 7986/1',
-                  helptext: markdownText(
+                  helptext:
                     'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
-                  ),
+                  helptextMarkdown: true,
                 },
               ),
               input(
@@ -223,9 +223,9 @@ const innerArray = (kalkulacka: boolean) =>
               ],
             },
             {
-              helptext: markdownText(
+              helptext:
                 'V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_druh_pozemku_dea5055c20.png"}',
-              ),
+              helptextMarkdown: true,
             },
           ),
           conditionalFields(createCondition([[['druhPozemku'], { enum: ['D', 'G'] }]]), [
@@ -261,9 +261,9 @@ const innerArray = (kalkulacka: boolean) =>
                 },
                 {
                   type: 'dragAndDrop',
-                  helptext: markdownText(
+                  helptext:
                     'V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.',
-                  ),
+                  helptextMarkdown: true,
                 },
               ),
             ],
@@ -316,9 +316,8 @@ export default step(
   { title: 'Priznanie k dani z pozemkov', stepperTitle: 'Daň z pozemkov' },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani z pozemkov?',
-    helptext: markdownText(
-      `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}`,
-    ),
+    helptext: `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte nadpis “Parcely registra "C", resp. "E" evidované na katastrálnej mape” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_priznanie_376b4c7a44.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery pozemkov',
       helptext:

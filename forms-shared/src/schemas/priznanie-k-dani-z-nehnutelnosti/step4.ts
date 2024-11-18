@@ -4,7 +4,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -22,9 +21,9 @@ const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
   { type: 'integer', title: 'Celková zastavaná plocha', required: true, minimum: 0 },
   {
-    helptext: markdownText(
+    helptext:
       'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -37,9 +36,9 @@ const spoluvlastnickyPodiel = input(
   },
   {
     placeholder: 'Napr. 1/1',
-    helptext: markdownText(
+    helptext:
       'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_spoluvlastnicky_podiel_41513cd88b.png"}',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -47,9 +46,9 @@ const zakladDane = number(
   'zakladDane',
   { type: 'integer', title: 'Základ dane', required: true, minimum: 0 },
   {
-    helptext: markdownText(
+    helptext:
       'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',
-    ),
+    helptextMarkdown: true,
   },
 )
 
@@ -66,7 +65,8 @@ const zakladDaneKalkulacka = customComponentsField(
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Celková zastavaná plocha\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -253,9 +253,8 @@ export default step(
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?',
-    helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
-    ),
+    helptext: `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery zastavanej plochy stavby',
       helptext:

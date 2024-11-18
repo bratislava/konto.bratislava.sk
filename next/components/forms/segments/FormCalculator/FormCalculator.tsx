@@ -14,32 +14,25 @@ import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
 import ConditionalFormMarkdown from '../../info-components/ConditionalFormMarkdown'
-import { useFormWidget } from '../../useFormWidget'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 /**
  * Extracts the path of the RJSF component position, e.g.
- * "root_danZPozemkov_danZPozemkov_0_pozemky_0_customComponent1_gRbYIKNcAF__anyof_select"
+ * `"root_danZPozemkov_danZPozemkov_0_pozemky_0_kalkulacka" is converted`
  * to
- * ["danZPozemkov", "danZPozemkov", 0, "pozemky", 0, 0]
+ * `["danZPozemkov", "danZPozemkov", "0", "pozemky", "0"]`
  *
  * If `levelsUp` is provided, the last `levelsUp` elements are removed.
  */
-function getPath(inputString: string, levelsUp = 0) {
-  const customComponentIndex = inputString.indexOf('_customComponent')
-  if (customComponentIndex === -1 || !inputString.startsWith('root_')) {
-    return null
-  }
+function getPath(id: string, levelsUp = 0) {
+  const idParts = id.split('_')
+  const withoutRootAndSelf = idParts.slice(1, -1)
 
-  // Extract the substring up to 'customComponent'
-  const relevantPart = inputString.slice(0, Math.max(0, customComponentIndex))
-
-  const withoutRoot = relevantPart.split('_').slice(1)
   if (levelsUp > 0) {
-    return withoutRoot.slice(0, -levelsUp)
+    return withoutRootAndSelf.slice(0, -levelsUp)
   }
 
-  return withoutRoot
+  return withoutRootAndSelf
 }
 
 const getDataAtPath = (formData: GenericObjectType, path: string[] | null) => {
@@ -58,30 +51,31 @@ const Calculator = ({
   label,
   formula,
   dataContextLevelsUp,
+  id,
   isLast,
   variant,
   missingFieldsMessage,
   unit,
   unitMarkdown,
 }: CustomComponentCalculator & {
+  id: string
   isLast: boolean
   variant: CustomComponentCalculatorProps['variant']
 }) => {
   const formatter = useNumberFormatter()
   const { formData } = useFormData()
-  const { widget } = useFormWidget()
 
   const expression = useMemo(() => getFormCalculatorExpression(formula, true), [formula])
 
   const value = useMemo(() => {
-    const path = getPath(widget?.id ?? '', dataContextLevelsUp)
+    const path = getPath(id, dataContextLevelsUp)
     const dataAtPath = getDataAtPath(formData, path)
     if (dataAtPath == null) {
       return null
     }
 
     return calculateFormCalculatorExpression(expression, dataAtPath, true)
-  }, [expression, formData, dataContextLevelsUp, widget?.id])
+  }, [expression, formData, dataContextLevelsUp, id])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {
     'border-b-2': !isLast,
@@ -118,7 +112,12 @@ const Calculator = ({
   )
 }
 
-const FormCalculator = ({ variant, label, calculators = [] }: CustomComponentCalculatorProps) => {
+const FormCalculator = ({
+  id,
+  variant,
+  label,
+  calculators = [],
+}: CustomComponentCalculatorProps & { id: string }) => {
   const labelClassName = cx('text-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',
@@ -142,6 +141,7 @@ const FormCalculator = ({ variant, label, calculators = [] }: CustomComponentCal
             <Calculator
               key={index}
               {...calculator}
+              id={id}
               isLast={index === calculators.length - 1}
               variant={variant}
             />

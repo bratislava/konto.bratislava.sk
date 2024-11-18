@@ -189,6 +189,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

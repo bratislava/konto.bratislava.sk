@@ -384,33 +384,28 @@ export const timePicker = (
   }
 }
 
-let customComponentCounter = 0
-
 /**
  * This is a special field that represents no data in the schema. It is a "hacky way", but the easiest how to display
  * custom components in the UI anywhere we need.
  */
 export const customComponentsField = (
+  property: string,
   customComponents: CustomComponentType | CustomComponentType[],
   uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
-): Field => {
-  customComponentCounter += 1
-  return {
-    // Random property name to avoid collisions
-    property: `customComponent${customComponentCounter}_gRbYIKNcAF`,
-    schema: removeUndefinedValues({
-      anyOf: [{}],
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.CustomComponents,
-      'ui:options': {
-        ...uiOptions,
-        customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
-      },
-    }),
-    required: false,
-  }
-}
+): Field => ({
+  property,
+  schema: removeUndefinedValues({
+    anyOf: [{}],
+  }),
+  uiSchema: removeUndefinedValues({
+    'ui:widget': BaWidgetType.CustomComponents,
+    'ui:options': {
+      ...uiOptions,
+      customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
+    },
+  }),
+  required: false,
+})
 
 /**
  * Object is the most complex field type to handle. For example, step is an instance of object. In JSONSchema, ordinary

@@ -1046,6 +1046,7 @@ export const getZevoSchema = (type: ZevoType) => [
       },
     ),
     customComponentsField(
+      'suhlasPodmienkyPrijatiaOdpaduLink',
       {
         type: 'additionalLinks',
         props: {
@@ -1072,6 +1073,7 @@ export const getZevoSchema = (type: ZevoType) => [
       },
     ),
     customComponentsField(
+      'suhlasZasadySpravavaniaLink',
       {
         type: 'additionalLinks',
         props: {
@@ -1098,6 +1100,7 @@ export const getZevoSchema = (type: ZevoType) => [
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

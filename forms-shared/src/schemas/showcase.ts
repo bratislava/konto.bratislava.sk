@@ -265,6 +265,7 @@ export default schema(
             {},
           ),
           customComponentsField(
+            'calculator',
             {
               type: 'calculator',
               props: {
@@ -489,6 +490,7 @@ export default schema(
     ),
     step('customComponents', { title: 'Custom Components' }, [
       customComponentsField(
+        'alert',
         {
           type: 'alert',
           props: {
@@ -499,6 +501,7 @@ export default schema(
         {},
       ),
       customComponentsField(
+        'accordion',
         {
           type: 'accordion',
           props: {
@@ -509,6 +512,7 @@ export default schema(
         {},
       ),
       customComponentsField(
+        'additionalLinks',
         {
           type: 'additionalLinks',
           props: {

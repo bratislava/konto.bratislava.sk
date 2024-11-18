@@ -18,7 +18,7 @@ import {
   textArea,
   timePicker,
 } from '../generator/functions'
-import { createCondition, createStringOptions, createStringOptionsV2 } from '../generator/helpers'
+import { createCondition, createStringItems, createStringItemsV2 } from '../generator/helpers'
 
 export default schema(
   {
@@ -146,7 +146,7 @@ export default schema(
         {
           title: 'Basic Select',
           required: true,
-          options: createStringOptions(['Option 1', 'Option 2', 'Option 3']),
+          items: createStringItems(['Option 1', 'Option 2', 'Option 3']),
         },
         {
           placeholder: 'Select an option',
@@ -158,13 +158,13 @@ export default schema(
         {
           title: 'Select with Descriptions',
           required: true,
-          options: createStringOptionsV2([
+          items: createStringItemsV2([
             {
-              title: 'Option 1',
+              label: 'Option 1',
               description: 'Description for option 1',
             },
             {
-              title: 'Option 2',
+              label: 'Option 2',
               description: 'Description for option 2',
             },
           ]),
@@ -178,7 +178,7 @@ export default schema(
         {
           title: 'Multiple Select',
           required: true,
-          options: createStringOptions(['Choice 1', 'Choice 2', 'Choice 3']),
+          items: createStringItems(['Choice 1', 'Choice 2', 'Choice 3']),
         },
         {
           helptextHeader: 'Select multiple options',
@@ -190,9 +190,9 @@ export default schema(
           type: 'boolean',
           title: 'Boolean Radio Group',
           required: true,
-          options: [
-            { value: true, title: 'Yes' },
-            { value: false, title: 'No', isDefault: true },
+          items: [
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No', isDefault: true },
           ],
         },
         {
@@ -207,13 +207,13 @@ export default schema(
           type: 'string',
           title: 'String Radio Group',
           required: true,
-          options: createStringOptionsV2([
+          items: createStringItemsV2([
             {
-              title: 'Option 1',
+              label: 'Option 1',
               description: 'Description for option 1',
             },
             {
-              title: 'Option 2',
+              label: 'Option 2',
               description: 'Description for option 2',
             },
           ]),
@@ -353,10 +353,10 @@ export default schema(
         'checkboxGroup',
         {
           title: 'Checkbox Group',
-          options: [
-            { value: 'option1', title: 'Option 1' },
-            { value: 'option2', title: 'Option 2' },
-            { value: 'option3', title: 'Option 3' },
+          items: [
+            { value: 'option1', label: 'Option 1' },
+            { value: 'option2', label: 'Option 2' },
+            { value: 'option3', label: 'Option 3' },
           ],
         },
         {
@@ -444,9 +444,9 @@ export default schema(
           type: 'boolean',
           title: 'Show Extra Fields?',
           required: true,
-          options: [
-            { value: true, title: 'Yes' },
-            { value: false, title: 'No', isDefault: true },
+          items: [
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No', isDefault: true },
           ],
         },
         {

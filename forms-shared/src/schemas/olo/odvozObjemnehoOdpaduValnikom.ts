@@ -9,7 +9,7 @@ import {
   schema,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -22,7 +22,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Právnická osoba', 'Správcovská spoločnosť']),
+        items: createStringItems(['Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),

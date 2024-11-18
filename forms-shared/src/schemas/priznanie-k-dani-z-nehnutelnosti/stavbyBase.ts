@@ -1,5 +1,5 @@
 import { input, markdownText, number, object, select } from '../../generator/functions'
-import { createStringOptions } from '../../generator/helpers'
+import { createStringItems } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 
@@ -38,7 +38,7 @@ export const stavbyBase = (step: StepEnum) => [
         {
           title: 'Názov katastrálneho územia',
           required: true,
-          options: createStringOptions(
+          items: createStringItems(
             [
               'Čunovo',
               'Devín',

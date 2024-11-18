@@ -10,7 +10,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -23,7 +23,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),

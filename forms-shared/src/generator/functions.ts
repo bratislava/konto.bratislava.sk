@@ -70,7 +70,7 @@ type BaseOptions = {
 export const select = (
   property: string,
   options: BaseOptions & {
-    options: OptionItem<string>[]
+    items: OptionItem<string>[]
   },
   uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
@@ -79,14 +79,14 @@ export const select = (
     schema: removeUndefinedValues({
       type: 'string',
       title: options.title,
-      enum: createEnumSchemaEnum(options.options),
-      default: createEnumSchemaDefault(options.options),
+      enum: createEnumSchemaEnum(options.items),
+      default: createEnumSchemaDefault(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Select,
       'ui:options': {
         ...uiOptions,
-        enumMetadata: createEnumMetadata(options.options),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -98,7 +98,7 @@ export const selectMultiple = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: OptionItem<string>[]
+    items: OptionItem<string>[]
   },
   uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
@@ -109,18 +109,18 @@ export const selectMultiple = (
       title: options.title,
       items: {
         type: 'string',
-        enum: createEnumSchemaEnum(options.options),
+        enum: createEnumSchemaEnum(options.items),
       },
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       uniqueItems: true,
-      default: createEnumSchemaDefaultMultiple(options.options),
+      default: createEnumSchemaDefaultMultiple(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.SelectMultiple,
       'ui:options': {
         ...uiOptions,
-        enumMetadata: createEnumMetadata(options.options),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -211,7 +211,7 @@ export const radioGroup = <ValueType extends 'string' | 'boolean'>(
   property: string,
   options: BaseOptions & {
     type: ValueType
-    options: OptionItem<StringToType<ValueType>>[]
+    items: OptionItem<StringToType<ValueType>>[]
   },
   uiOptions: Omit<RadioGroupUiOptions, 'enumMetadata'>,
 ): Field => {
@@ -220,14 +220,14 @@ export const radioGroup = <ValueType extends 'string' | 'boolean'>(
     schema: removeUndefinedValues({
       type: options.type,
       title: options.title,
-      enum: createEnumSchemaEnum(options.options),
-      default: createEnumSchemaDefault(options.options),
+      enum: createEnumSchemaEnum(options.items),
+      default: createEnumSchemaDefault(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.RadioGroup,
       'ui:options': {
         ...uiOptions,
-        enumMetadata: createEnumMetadata(options.options),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -279,7 +279,7 @@ export const checkboxGroup = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: OptionItem<string>[]
+    items: OptionItem<string>[]
   },
   uiOptions: Omit<CheckboxGroupUiOptions, 'enumMetadata'>,
 ): Field => {
@@ -292,15 +292,15 @@ export const checkboxGroup = (
       maxItems: options.maxItems,
       uniqueItems: true,
       items: {
-        enum: createEnumSchemaEnum(options.options),
+        enum: createEnumSchemaEnum(options.items),
       },
-      default: createEnumSchemaDefaultMultiple(options.options),
+      default: createEnumSchemaDefaultMultiple(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.CheckboxGroup,
       'ui:options': {
         ...uiOptions,
-        enumMetadata: createEnumMetadata(options.options),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),

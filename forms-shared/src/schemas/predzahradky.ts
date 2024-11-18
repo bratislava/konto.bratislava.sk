@@ -10,7 +10,7 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import { createCondition, createStringItems } from '../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 
 export default schema(
@@ -49,9 +49,9 @@ export default schema(
             type: 'string',
             title: 'Mám záujem o',
             required: true,
-            options: [
-              { value: 'nova', title: 'Vytvorenie novej predzáhradky', isDefault: true },
-              { value: 'existujuca', title: 'Registrácia existujúcej predzáhradky' },
+            items: [
+              { value: 'nova', label: 'Vytvorenie novej predzáhradky', isDefault: true },
+              { value: 'existujuca', label: 'Registrácia existujúcej predzáhradky' },
             ],
           },
           {
@@ -73,7 +73,7 @@ export default schema(
           {
             title: 'Mestská časť, v ktorej sa pozemok nachádza',
             required: true,
-            options: createStringOptions(
+            items: createStringItems(
               [
                 'Čunovo',
                 'Devín',

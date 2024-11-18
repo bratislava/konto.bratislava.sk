@@ -12,11 +12,7 @@ import {
   selectMultiple,
   step,
 } from '../../../generator/functions'
-import {
-  createCondition,
-  createStringOptions,
-  createStringOptionsV2,
-} from '../../../generator/helpers'
+import { createCondition, createStringItems, createStringItemsV2 } from '../../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../../form-utils/safeData'
@@ -34,7 +30,7 @@ export const getZevoSchema = (type: ZevoType) => [
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions([
+        items: createStringItems([
           'Fyzická osoba',
           'Právnická osoba',
           'Právnická osoba s povolením na vstup do ZEVO',
@@ -125,17 +121,17 @@ export const getZevoSchema = (type: ZevoType) => [
               type: 'string',
               title: 'Výber služby',
               required: true,
-              options: createStringOptionsV2([
+              items: createStringItemsV2([
                 {
-                  title: 'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                  label: 'Mechanická vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
                   description: 'Dostupné v pondelok až sobotu',
                 },
                 {
-                  title: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
+                  label: 'Ručná vykládka a zhodnotenie odpadu podľa integrovaného povolenia',
                   description: 'Dostupné v utorok, štvrtok a sobotu',
                 },
                 {
-                  title: 'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
+                  label: 'Podrvenie a zhodnotenie odpadu vysypaním do zásobníka pod dozorom',
                   description: 'Dostupné v utorok',
                 },
               ]),
@@ -165,7 +161,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {
                   title: 'Preferovaný čas dovozu odpadu',
                   required: true,
-                  options: createStringOptions(
+                  items: createStringItems(
                     [
                       '06:00',
                       '06:30',
@@ -209,7 +205,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {
                   title: 'Preferovaný čas dovozu odpadu',
                   required: true,
-                  options: createStringOptions(
+                  items: createStringItems(
                     [
                       '06:00',
                       '07:00',
@@ -241,7 +237,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 {
                   title: 'Preferovaný čas dovozu odpadu',
                   required: true,
-                  options: createStringOptions(['09:00', '10:00', '11:00', '12:00'], false),
+                  items: createStringItems(['09:00', '10:00', '11:00', '12:00'], false),
                 },
                 {},
               ),
@@ -264,7 +260,7 @@ export const getZevoSchema = (type: ZevoType) => [
               type: 'string',
               title: 'Spôsob platby',
               required: true,
-              options: createStringOptions(['Platba kartou', 'Platba na faktúru']),
+              items: createStringItems(['Platba kartou', 'Platba na faktúru']),
             },
             { variant: 'boxed', orientations: 'column' },
           ),
@@ -306,9 +302,9 @@ export const getZevoSchema = (type: ZevoType) => [
             type: 'boolean',
             title: 'Ste zároveň aj pôvodca odpadu?',
             required: true,
-            options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+            items: [
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           {
@@ -325,7 +321,7 @@ export const getZevoSchema = (type: ZevoType) => [
               type: 'string',
               title: 'Typ pôvodcu odpadu',
               required: true,
-              options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+              items: createStringItems(['Fyzická osoba', 'Právnická osoba']),
             },
             { variant: 'boxed', orientations: 'column' },
           ),
@@ -362,9 +358,9 @@ export const getZevoSchema = (type: ZevoType) => [
             type: 'boolean',
             title: 'Ste zároveň aj držiteľ odpadu?',
             required: true,
-            options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+            items: [
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           {
@@ -381,7 +377,7 @@ export const getZevoSchema = (type: ZevoType) => [
               type: 'string',
               title: 'Typ držiteľa odpadu',
               required: true,
-              options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+              items: createStringItems(['Fyzická osoba', 'Právnická osoba']),
             },
             { variant: 'boxed', orientations: 'column' },
           ),
@@ -418,24 +414,24 @@ export const getZevoSchema = (type: ZevoType) => [
       'separovaneZlozky',
       {
         title: '20 01 Separovane zbierané zložky komunálnych odpadov (okrem 15 01)',
-        options: [
-          { value: '20_01_01', title: '20 01 01 Papier a lepenka' },
+        items: [
+          { value: '20_01_01', label: '20 01 01 Papier a lepenka' },
           {
             value: '20_01_08',
-            title: '20 01 08 Biologicky rozložiteľný kuchynský a reštauračný odpad',
+            label: '20 01 08 Biologicky rozložiteľný kuchynský a reštauračný odpad',
           },
-          { value: '20_01_10', title: '20 01 10 Šatstvo' },
-          { value: '20_01_11', title: '20 01 11 Textílie' },
-          { value: '20_01_25', title: '20 01 25 Jedlé oleje a tuky' },
+          { value: '20_01_10', label: '20 01 10 Šatstvo' },
+          { value: '20_01_11', label: '20 01 11 Textílie' },
+          { value: '20_01_25', label: '20 01 25 Jedlé oleje a tuky' },
           {
             value: '20_01_28',
-            title:
+            label:
               '20 01 28 Farby, tlačiarenské farby, lepidlá a živice iné ako uvedené v 20 01 27',
           },
-          { value: '20_01_30', title: '20 01 30 Detergenty iné ako uvedené v 20 01 29' },
-          { value: '20_01_32', title: '20 01 32 Liečivá iné ako uvedené v 20 01 31' },
-          { value: '20_01_38', title: '20 01 38 Drevo iné ako uvedené v 20 01 37' },
-          { value: '20_01_39', title: '20 01 39 Plasty' },
+          { value: '20_01_30', label: '20 01 30 Detergenty iné ako uvedené v 20 01 29' },
+          { value: '20_01_32', label: '20 01 32 Liečivá iné ako uvedené v 20 01 31' },
+          { value: '20_01_38', label: '20 01 38 Drevo iné ako uvedené v 20 01 37' },
+          { value: '20_01_39', label: '20 01 39 Plasty' },
         ],
       },
       {},
@@ -444,12 +440,12 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZoZahrad',
       {
         title: '20 02 Odpady zo záhrad a z parkov (vrátane odpadu z cintorínov)',
-        options: [
+        items: [
           {
             value: '20_02_01',
-            title: '20 02 01 Biologicky rozložiteľný odpad s max. obsahom biologickej zložky 40%',
+            label: '20 02 01 Biologicky rozložiteľný odpad s max. obsahom biologickej zložky 40%',
           },
-          { value: '20_02_03', title: '20 02 03 Iné biologicky nerozložiteľné odpady' },
+          { value: '20_02_03', label: '20 02 03 Iné biologicky nerozložiteľné odpady' },
         ],
       },
       {},
@@ -458,11 +454,11 @@ export const getZevoSchema = (type: ZevoType) => [
       'ineKomunalneOdpady',
       {
         title: '20 03 Iné komunálne odpady',
-        options: [
-          { value: '20_03_01', title: '20 03 01 Zmesový komunálny odpad' },
-          { value: '20_03_02', title: '20 03 02 Odpad z trhovísk' },
-          { value: '20_03_03', title: '20 03 03 Odpad z čistenia ulíc' },
-          { value: '20_03_07', title: '20 03 07 Objemný odpad' },
+        items: [
+          { value: '20_03_01', label: '20 03 01 Zmesový komunálny odpad' },
+          { value: '20_03_02', label: '20 03 02 Odpad z trhovísk' },
+          { value: '20_03_03', label: '20 03 03 Odpad z čistenia ulíc' },
+          { value: '20_03_07', label: '20 03 07 Objemný odpad' },
         ],
       },
       {},
@@ -471,14 +467,14 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZAerobnejUpravy',
       {
         title: '19 05 Odpady z aeróbnej úpravy tuhých odpadov',
-        options: [
+        items: [
           {
             value: '19_05_01',
-            title: '19 05 01 Nekompostované zložky komunálnych odpadov a podobných odpadov',
+            label: '19 05 01 Nekompostované zložky komunálnych odpadov a podobných odpadov',
           },
           {
             value: '19_05_02',
-            title: '19 05 02 Nekompostované zložky živočíšneho a rastlinného odpadu',
+            label: '19 05 02 Nekompostované zložky živočíšneho a rastlinného odpadu',
           },
         ],
       },
@@ -488,9 +484,9 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZCistiarni',
       {
         title: '19 08 Odpady z čistiarní odpadových vôd inak nešpecifikované',
-        options: [
-          { value: '19_08_01', title: '19 08 01 Zhrabky z hrablíc' },
-          { value: '19_08_02', title: '19 08 02 Odpad z lapačov piesku' },
+        items: [
+          { value: '19_08_01', label: '19 08 01 Zhrabky z hrablíc' },
+          { value: '19_08_02', label: '19 08 02 Odpad z lapačov piesku' },
         ],
       },
       {},
@@ -499,10 +495,10 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZUpravyVody',
       {
         title: '19 09 Odpady z úpravy pitnej vody alebo vody na priemyselné použitie',
-        options: [
-          { value: '19_09_01', title: '19 09 01 Tuhé odpady z primárnych filtrov a hrablíc' },
-          { value: '19_09_04', title: '19 09 04 Použité aktívne uhlie' },
-          { value: '19_09_05', title: '19 09 05 Nasýtené alebo použité iontomeničové živice' },
+        items: [
+          { value: '19_09_01', label: '19 09 01 Tuhé odpady z primárnych filtrov a hrablíc' },
+          { value: '19_09_04', label: '19 09 04 Použité aktívne uhlie' },
+          { value: '19_09_05', label: '19 09 05 Nasýtené alebo použité iontomeničové živice' },
         ],
       },
       {},
@@ -512,15 +508,15 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '19 12 Odpady z mechanického spracovania odpadu (napr. triedenia, drvenia, lisovania, hutnenia a peletizovania) inak nešpecifikované',
-        options: [
-          { value: '19_12_01', title: '19 12 01 Papier a lepenka' },
-          { value: '19_12_04', title: '19 12 04 Plasty a guma' },
-          { value: '19_12_07', title: '19 12 07 Drevo iné ako uvedené v 19 12 06' },
-          { value: '19_12_08', title: '19 12 08 Textílie' },
-          { value: '19_12_10', title: '19 12 10 Horľavý odpad (palivo z odpadov)' },
+        items: [
+          { value: '19_12_01', label: '19 12 01 Papier a lepenka' },
+          { value: '19_12_04', label: '19 12 04 Plasty a guma' },
+          { value: '19_12_07', label: '19 12 07 Drevo iné ako uvedené v 19 12 06' },
+          { value: '19_12_08', label: '19 12 08 Textílie' },
+          { value: '19_12_10', label: '19 12 10 Horľavý odpad (palivo z odpadov)' },
           {
             value: '19_12_12',
-            title:
+            label:
               '19 12 12 Iné odpady vrátane zmiešaných materiálov z mechanického spracovania odpadu iné ako uvedené v 19 12 11',
           },
         ],
@@ -532,13 +528,13 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '18 01 Odpady z pôrodníckej starostlivosti, diagnostiky, liečby alebo zdravotnej prevencie',
-        options: [
+        items: [
           {
             value: '18_01_04',
-            title:
+            label:
               '18 01 04 Odpady, ktorých zber a zneškodňovanie nepodliehajú osobitným požiadavkám z hľadiska prevencie nákazy (napr. obväzy, sadrové odtlačky a obväzy, posteľná bielizeň, jednorazové odevy, plienky)',
           },
-          { value: '18_01_09', title: '18 01 09 Liečivá iné ako uvedené v 18 01 08' },
+          { value: '18_01_09', label: '18 01 09 Liečivá iné ako uvedené v 18 01 08' },
         ],
       },
       {},
@@ -548,13 +544,13 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '18 02 Odpady z veterinárneho výskumu, diagnostiky, liečby a preventívnej starostlivosti',
-        options: [
+        items: [
           {
             value: '18_02_03',
-            title:
+            label:
               '18 02 03 Odpady, ktorých zber a zneškodňovanie nepodliehajú osobitným požiadavkám z hľadiska prevencie nákazy',
           },
-          { value: '18_02_08', title: '18 02 08 Liečivá iné ako uvedené v 18 02 07' },
+          { value: '18_02_08', label: '18 02 08 Liečivá iné ako uvedené v 18 02 07' },
         ],
       },
       {},
@@ -563,9 +559,9 @@ export const getZevoSchema = (type: ZevoType) => [
       'drevoSkloPlasty',
       {
         title: '17 02 Drevo, sklo a plasty',
-        options: [
-          { value: '17_02_01', title: '17 02 01 Drevo' },
-          { value: '17_02_03', title: '17 02 03 Plasty' },
+        items: [
+          { value: '17_02_01', label: '17 02 01 Drevo' },
+          { value: '17_02_03', label: '17 02 03 Plasty' },
         ],
       },
       {},
@@ -574,10 +570,10 @@ export const getZevoSchema = (type: ZevoType) => [
       'izolacneMaterialy',
       {
         title: '17 06 Izolačné materiály a stavebné materiály obsahujúce azbest',
-        options: [
+        items: [
           {
             value: '17_06_04',
-            title: '17 06 04 Izolačné materiály iné ako uvedené v 17 06 01 a 17 06 03',
+            label: '17 06 04 Izolačné materiály iné ako uvedené v 17 06 01 a 17 06 03',
           },
         ],
       },
@@ -587,10 +583,10 @@ export const getZevoSchema = (type: ZevoType) => [
       'ineOdpadyZoStavieb',
       {
         title: '17 09 Iné odpady zo stavieb a demolácií',
-        options: [
+        items: [
           {
             value: '17_09_04',
-            title:
+            label:
               '17 09 04 Zmiešané odpady zo stavieb a demolácií iné ako uvedené v 17 09 01, 17 09 02, a 17 09 03',
           },
         ],
@@ -602,9 +598,9 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '16 01 Staré vozidlá z rozličných dopravných prostriedkov (vrátane strojov neurčených na cestnú premávku) a odpady z demontáže starých vozidiel a údržby vozidiel (okrem 13, 14, 16 06 a 16 08)',
-        options: [
-          { value: '16_01_19', title: '16 01 19 Plasty' },
-          { value: '16_01_22', title: '16 01 22 Časti inak nešpecifikované' },
+        items: [
+          { value: '16_01_19', label: '16 01 19 Plasty' },
+          { value: '16_01_22', label: '16 01 22 Časti inak nešpecifikované' },
         ],
       },
       {},
@@ -613,9 +609,9 @@ export const getZevoSchema = (type: ZevoType) => [
       'vyrobneZarze',
       {
         title: '16 03 Výrobné šarže a výrobky nevyhovujúcej kvality',
-        options: [
-          { value: '16_03_04', title: '16 03 04 Anorganické výrobky iné ako uvedené v 16 03 03' },
-          { value: '16_03_06', title: '16 03 06 Organické výrobky iné ako uvedené v 16 03 05' },
+        items: [
+          { value: '16_03_04', label: '16 03 04 Anorganické výrobky iné ako uvedené v 16 03 03' },
+          { value: '16_03_06', label: '16 03 06 Organické výrobky iné ako uvedené v 16 03 05' },
         ],
       },
       {},
@@ -624,14 +620,14 @@ export const getZevoSchema = (type: ZevoType) => [
       'obaly',
       {
         title: '15 01 Obaly (vrátane odpadových obalov zo separovaného zberu komunálnych odpadov)',
-        options: [
-          { value: '15_01_01', title: '15 01 01 Obaly z papiera a lepenky' },
-          { value: '15_01_02', title: '15 01 02 Obaly z plastov' },
-          { value: '15_01_03', title: '15 01 03 Obaly z dreva' },
-          { value: '15_01_04', title: '15 01 04 Obaly z kovu' },
-          { value: '15_01_05', title: '15 01 05 Kompozitné obaly' },
-          { value: '15_01_06', title: '15 01 06 Zmiešané obaly' },
-          { value: '15_01_09', title: '15 01 09 Obaly z textilu' },
+        items: [
+          { value: '15_01_01', label: '15 01 01 Obaly z papiera a lepenky' },
+          { value: '15_01_02', label: '15 01 02 Obaly z plastov' },
+          { value: '15_01_03', label: '15 01 03 Obaly z dreva' },
+          { value: '15_01_04', label: '15 01 04 Obaly z kovu' },
+          { value: '15_01_05', label: '15 01 05 Kompozitné obaly' },
+          { value: '15_01_06', label: '15 01 06 Zmiešané obaly' },
+          { value: '15_01_09', label: '15 01 09 Obaly z textilu' },
         ],
       },
       {},
@@ -640,10 +636,10 @@ export const getZevoSchema = (type: ZevoType) => [
       'absorbenty',
       {
         title: '15 02 Absorbenty, filtračné materiály, handry na čistenie a ochranné odevy',
-        options: [
+        items: [
           {
             value: '15_02_03',
-            title:
+            label:
               '15 02 03 Absorbenty, filtračné materiály, handry na čistenie a ochranné odevy iné ako uvedené v 15 02 02',
           },
         ],
@@ -655,11 +651,11 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '12 01 Odpady z tvarovania a fyzikálnej a mechanickej úpravy povrchov kovov a plastov',
-        options: [
-          { value: '12_01_05', title: '12 01 05 Hobliny a triesky z plastov' },
+        items: [
+          { value: '12_01_05', label: '12 01 05 Hobliny a triesky z plastov' },
           {
             value: '12_01_21',
-            title: '12 01 21 Použité brúsne nástroje a brúsne materiály iné ako uvedené v 12 01 20',
+            label: '12 01 21 Použité brúsne nástroje a brúsne materiály iné ako uvedené v 12 01 20',
           },
         ],
       },
@@ -669,7 +665,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZElektrarni',
       {
         title: '10 01 Odpady z elektrární a iných spaľovacích zariadení (okrem 19)',
-        options: [{ value: '10_01_26', title: '10 01 26 Odpady z úpravy chladiacej vody' }],
+        items: [{ value: '10_01_26', label: '10 01 26 Odpady z úpravy chladiacej vody' }],
       },
       {},
     ),
@@ -677,9 +673,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZVyrobySkla',
       {
         title: '10 11 Odpady z výroby skla a sklených výrobkov',
-        options: [
-          { value: '10_11_03', title: '10 11 03 Odpadové vláknité materiály na báze skla' },
-        ],
+        items: [{ value: '10_11_03', label: '10 11 03 Odpadové vláknité materiály na báze skla' }],
       },
       {},
     ),
@@ -687,21 +681,21 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZFotografickehoPriemyslu',
       {
         title: '09 01 Odpady z fotografického priemyslu',
-        options: [
+        items: [
           {
             value: '09_01_07',
-            title:
+            label:
               '09 01 07 Fotografický film a papiere obsahujúce striebro alebo zlúčeniny striebra',
           },
           {
             value: '09_01_08',
-            title:
+            label:
               '09 01 08 Fotografický film a papiere neobsahujúce striebro alebo zlúčeniny striebra',
           },
-          { value: '09_01_10', title: '09 01 10 Jednorázové kamery bez batérií' },
+          { value: '09_01_10', label: '09 01 10 Jednorázové kamery bez batérií' },
           {
             value: '09_01_12',
-            title: '09 01 12 Jednorázové kamery s batériami iné ako uvedené 09 01 11',
+            label: '09 01 12 Jednorázové kamery s batériami iné ako uvedené 09 01 11',
           },
         ],
       },
@@ -712,18 +706,18 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '08 01 Odpady z výroby, spracovania, distribúcie, používania a odstraňovania farieb a lakov',
-        options: [
+        items: [
           {
             value: '08_01_12',
-            title: '08 01 12 Odpadové farby a laky iné ako uvedené v 08 01 11',
+            label: '08 01 12 Odpadové farby a laky iné ako uvedené v 08 01 11',
           },
           {
             value: '08_01_18',
-            title: '08 01 18 Odpady z odstraňovania farby alebo laku iné ako uvedené v 08 01 17',
+            label: '08 01 18 Odpady z odstraňovania farby alebo laku iné ako uvedené v 08 01 17',
           },
           {
             value: '08_01_20',
-            title:
+            label:
               '08 01 20 Vodné suspenzie obsahujúce farby alebo laky iné ako uvedené v 08 01 19',
           },
         ],
@@ -735,7 +729,7 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '08 02 Odpady z výroby, spracovania, distribúcie a používania iných náterových hmôt (vrátane keramických materiálov)',
-        options: [{ value: '08_02_01', title: '08 02 01 Odpadové náterové prášky' }],
+        items: [{ value: '08_02_01', label: '08 02 01 Odpadové náterové prášky' }],
       },
       {},
     ),
@@ -743,14 +737,14 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZTlaciarenskychFarieb',
       {
         title: '08 03 Odpady z výroby, spracovania, distribúcie a používania tlačiarenských farieb',
-        options: [
+        items: [
           {
             value: '08_03_13',
-            title: '08 03 13 Odpadová tlačiarenská farba iná ako uvedená v 08 03 12',
+            label: '08 03 13 Odpadová tlačiarenská farba iná ako uvedená v 08 03 12',
           },
           {
             value: '08_03_18',
-            title: '08 03 18 Odpadový toner do tlačiarne iný ako uvedený v 08 03 17',
+            label: '08 03 18 Odpadový toner do tlačiarne iný ako uvedený v 08 03 17',
           },
         ],
       },
@@ -761,10 +755,10 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '08 04 Odpady z výroby, spracovania, distribúcie a používania lepidiel a tesniacich materiálov (vrátane vodotesniacich výrobkov)',
-        options: [
+        items: [
           {
             value: '08_04_10',
-            title: '08 04 10 Odpadové lepidlá a tesniace materiály iné ako uvedené v 08 04 09',
+            label: '08 04 10 Odpadové lepidlá a tesniace materiály iné ako uvedené v 08 04 09',
           },
         ],
       },
@@ -775,12 +769,12 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '07 02 Odpady z výroby, spracovania, distribúcie a používania plastov, syntetického kaučuku a syntetických vlákien',
-        options: [
-          { value: '07_02_13', title: '07 02 13 Odpadový plast' },
-          { value: '07_02_15', title: '07 02 15 Odpadové prísady iné ako uvedené v 07 02 14' },
+        items: [
+          { value: '07_02_13', label: '07 02 13 Odpadový plast' },
+          { value: '07_02_15', label: '07 02 15 Odpadové prísady iné ako uvedené v 07 02 14' },
           {
             value: '07_02_17',
-            title: '07 02 17 Odpady obsahujúce silikóny iné ako uvedené v 07 02 16',
+            label: '07 02 17 Odpady obsahujúce silikóny iné ako uvedené v 07 02 16',
           },
         ],
       },
@@ -791,7 +785,7 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '07 05 Odpady z výroby, spracovania, distribúcie a používania farmaceutických výrobkov',
-        options: [{ value: '07_05_14', title: '07 05 14 Tuhé odpady iné ako uvedené v 07 05 13' }],
+        items: [{ value: '07_05_14', label: '07 05 14 Tuhé odpady iné ako uvedené v 07 05 13' }],
       },
       {},
     ),
@@ -800,10 +794,10 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '07 06 Odpady z výroby, spracovania, distribúcie a používania tukov, mazív, mydiel, detergentov, dezinfekčných a kozmetických prostriedkov',
-        options: [
+        items: [
           {
             value: '07_06_12',
-            title:
+            label:
               '07 06 12 Kaly zo spracovania odpadu v mieste jeho vzniku iné ako uvedené v 07 06 11',
           },
         ],
@@ -815,10 +809,10 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '07 07 Odpady z výroby, spracovania, distribúcie a používania čistých chemikálií a chemických výrobkov inak nešpecifikovaných',
-        options: [
+        items: [
           {
             value: '07_07_12',
-            title:
+            label:
               '07 07 12 Kaly zo spracovania odpadu v mieste jeho vzniku iné ako uvedené v 07 07 11',
           },
         ],
@@ -829,7 +823,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZPyrolyznehoSpracovania',
       {
         title: '05 06 Odpady z pyrolýzneho spracovania uhlia',
-        options: [{ value: '05_06_04', title: '05 06 04 Odpad z chladiacich kolón' }],
+        items: [{ value: '05_06_04', label: '05 06 04 Odpad z chladiacich kolón' }],
       },
       {},
     ),
@@ -837,7 +831,7 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZKoziarskehoPriemyslu',
       {
         title: '04 01 Odpady z kožiarskeho a kožušníckeho priemyslu',
-        options: [{ value: '04_01_09', title: '04 01 09 Odpady z vypracúvania a apretácie' }],
+        items: [{ value: '04_01_09', label: '04 01 09 Odpady z vypracúvania a apretácie' }],
       },
       {},
     ),
@@ -845,20 +839,20 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZTextilnehoPriemyslu',
       {
         title: '04 02 Odpady z textilného priemyslu',
-        options: [
+        items: [
           {
             value: '04_02_09',
-            title:
+            label:
               '04 02 09 Odpad z kompozitných materiálov (impregnovaný textil, elastomer, plastomér)',
           },
           {
             value: '04_02_10',
-            title: '04 02 10 Organické látky prírodného pôvodu (napr. tuky, vosky)',
+            label: '04 02 10 Organické látky prírodného pôvodu (napr. tuky, vosky)',
           },
-          { value: '04_02_15', title: '04 02 15 Odpad z apretácie iný ako uvedený v 04 02 14' },
-          { value: '04_02_17', title: '04 02 17 Farbivá a pigmenty iné ako uvedené v 04 02 16' },
-          { value: '04_02_21', title: '04 02 21 Odpady z nespracovaných textilných vlákien' },
-          { value: '04_02_22', title: '04 02 22 Odpady zo spracovaných textilných vlákien' },
+          { value: '04_02_15', label: '04 02 15 Odpad z apretácie iný ako uvedený v 04 02 14' },
+          { value: '04_02_17', label: '04 02 17 Farbivá a pigmenty iné ako uvedené v 04 02 16' },
+          { value: '04_02_21', label: '04 02 21 Odpady z nespracovaných textilných vlákien' },
+          { value: '04_02_22', label: '04 02 22 Odpady zo spracovaných textilných vlákien' },
         ],
       },
       {},
@@ -867,11 +861,11 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZoSpracovaniaDreva',
       {
         title: '03 01 Odpady zo spracovania dreva a z výroby reziva a nábytku',
-        options: [
-          { value: '03_01_01', title: '03 01 01 Odpadová kôra a korok' },
+        items: [
+          { value: '03_01_01', label: '03 01 01 Odpadová kôra a korok' },
           {
             value: '03_01_05',
-            title:
+            label:
               '03 01 05 Piliny, hobliny, odrezky, odpadové rezivo alebo drevotrieskové/drevovláknité dosky, dyhy iné ako uvedené v 03 01 04',
           },
         ],
@@ -882,19 +876,19 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZVyrobyPapiera',
       {
         title: '03 03 Odpady z výroby a spracovania celulózy, papiera a lepenky',
-        options: [
-          { value: '03_03_01', title: '03 03 01 Odpadová kôra a drevo' },
+        items: [
+          { value: '03_03_01', label: '03 03 01 Odpadová kôra a drevo' },
           {
             value: '03_03_07',
-            title: '03 03 07 Mechanicky oddelené výmety z recyklácie papiera a lepenky',
+            label: '03 03 07 Mechanicky oddelené výmety z recyklácie papiera a lepenky',
           },
           {
             value: '03_03_08',
-            title: '03 03 08 Odpady z triedenia papiera a lepenky určených na recykláciu',
+            label: '03 03 08 Odpady z triedenia papiera a lepenky určených na recykláciu',
           },
           {
             value: '03_03_10',
-            title: '03 03 10 Výmety z vlákien, plnív a náterov z mechanickej separácie',
+            label: '03 03 10 Výmety z vlákien, plnív a náterov z mechanickej separácie',
           },
         ],
       },
@@ -904,18 +898,18 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZPolnohospodarstva',
       {
         title: '02 01 Odpady z poľnohospodárstva, záhradníctva, lesníctva, poľovníctva a rybárstva',
-        options: [
-          { value: '02_01_02', title: '02 01 02 Odpadové živočíšne tkanivá' },
-          { value: '02_01_03', title: '02 01 03 Odpadové rastlinné tkanivá' },
-          { value: '02_01_04', title: '02 01 04 Odpadové plasty (okrem obalov)' },
+        items: [
+          { value: '02_01_02', label: '02 01 02 Odpadové živočíšne tkanivá' },
+          { value: '02_01_03', label: '02 01 03 Odpadové rastlinné tkanivá' },
+          { value: '02_01_04', label: '02 01 04 Odpadové plasty (okrem obalov)' },
           {
             value: '02_01_06',
-            title:
+            label:
               '02 01 06 Zvierací trus, moč a hnoj (vrátane znečistenej slamy), kvapalné odpady, oddelene zhromažďované a spracúvané mimo miesta ich vzniku',
           },
-          { value: '02_01_07', title: '02 01 07 Odpady z lesného hospodárstva' },
-          { value: '02_01_09', title: '02 01 09 Agrochemické odpady iné ako uvedené v 02 01 08' },
-          { value: '02_01_10', title: '02 01 10 Odpadové kovy' },
+          { value: '02_01_07', label: '02 01 07 Odpady z lesného hospodárstva' },
+          { value: '02_01_09', label: '02 01 09 Agrochemické odpady iné ako uvedené v 02 01 08' },
+          { value: '02_01_10', label: '02 01 10 Odpadové kovy' },
         ],
       },
       {},
@@ -925,10 +919,10 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '02 02 Odpady z prípravy a spracovania mäsa, rýb a ostatných potravín živočíšneho pôvodu',
-        options: [
+        items: [
           {
             value: '02_02_03',
-            title: '02 02 03 Materiál nevhodný na spotrebu alebo spracovanie',
+            label: '02 02 03 Materiál nevhodný na spotrebu alebo spracovanie',
           },
         ],
       },
@@ -939,9 +933,9 @@ export const getZevoSchema = (type: ZevoType) => [
       {
         title:
           '02 03 Odpady zo spracovania ovocia, zeleniny, obilnín, jedlých olejov, kávy, čaju a tabaku',
-        options: [
-          { value: '02_03_02', title: '02 03 02 Odpady z konzervačných činidiel' },
-          { value: '02_03_04', title: '02 03 04 Látky nevhodné na spotrebu alebo spracovanie' },
+        items: [
+          { value: '02_03_02', label: '02 03 02 Odpady z konzervačných činidiel' },
+          { value: '02_03_04', label: '02 03 04 Látky nevhodné na spotrebu alebo spracovanie' },
         ],
       },
       {},
@@ -950,8 +944,8 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZPriemysluMliecnychVyrobkov',
       {
         title: '02 05 Odpady z priemyslu mliečnych výrobkov',
-        options: [
-          { value: '02_05_01', title: '02 05 01 Látky nevhodné na spotrebu alebo spracovanie' },
+        items: [
+          { value: '02_05_01', label: '02 05 01 Látky nevhodné na spotrebu alebo spracovanie' },
         ],
       },
       {},
@@ -960,12 +954,12 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZPekarenskehoACukrovinkarskeho',
       {
         title: '02 06 Odpady z pekárenského a cukrovinkárskeho priemyslu',
-        options: [
+        items: [
           {
             value: '02_06_01',
-            title: '02 06 01 Materiály nevhodné na spotrebu alebo spracovanie',
+            label: '02 06 01 Materiály nevhodné na spotrebu alebo spracovanie',
           },
-          { value: '02_06_02', title: '02 06 02 Odpady z konzervačných činidiel' },
+          { value: '02_06_02', label: '02 06 02 Odpady z konzervačných činidiel' },
         ],
       },
       {},
@@ -974,10 +968,10 @@ export const getZevoSchema = (type: ZevoType) => [
       'odpadyZVyrobyNapojov',
       {
         title: '02 07 Odpady z výroby alkoholických a nealkoholických nápojov',
-        options: [
+        items: [
           {
             value: '02_07_04',
-            title: '02 07 04 Materiály nevhodné na spotrebu alebo spracovanie',
+            label: '02 07 04 Materiály nevhodné na spotrebu alebo spracovanie',
           },
         ],
       },

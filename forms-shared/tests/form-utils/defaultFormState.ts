@@ -30,10 +30,10 @@ describe('defaultFormState', () => {
   })
 
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
-    const options = [
+    const items = [
       {
         value: 'option',
-        title: 'Option',
+        label: 'Option',
       },
     ]
 
@@ -48,7 +48,7 @@ describe('defaultFormState', () => {
         'select',
         {
           title: 'Select multiple',
-          options,
+          items,
         },
         {},
       ),
@@ -56,7 +56,7 @@ describe('defaultFormState', () => {
         'selectRequired',
         {
           title: 'Select multiple required',
-          options,
+          items,
           required: true,
         },
         {},
@@ -65,7 +65,7 @@ describe('defaultFormState', () => {
         'checkboxGroup',
         {
           title: 'Checkbox group',
-          options,
+          items,
         },
         {},
       ),
@@ -73,7 +73,7 @@ describe('defaultFormState', () => {
         'checkboxGroupRequired',
         {
           title: 'Checkbox group required',
-          options,
+          items,
           required: true,
         },
         {},

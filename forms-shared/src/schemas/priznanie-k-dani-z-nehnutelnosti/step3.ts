@@ -13,7 +13,7 @@ import {
   skipSchema,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
@@ -126,7 +126,7 @@ const innerArray = (kalkulacka: boolean) =>
             {
               title: 'Názov katastrálneho územia',
               required: true,
-              options: createStringOptions(
+              items: createStringItems(
                 [
                   'Čunovo',
                   'Devín',
@@ -187,38 +187,38 @@ const innerArray = (kalkulacka: boolean) =>
             {
               title: 'Druh pozemku',
               required: true,
-              options: [
+              items: [
                 {
                   value: 'A',
-                  title: 'A – orná pôda, vinice, chmeľnice, ovocné sady',
+                  label: 'A – orná pôda, vinice, chmeľnice, ovocné sady',
                 },
                 {
                   value: 'B',
-                  title: 'B – trvalé trávnaté porasty',
+                  label: 'B – trvalé trávnaté porasty',
                 },
                 {
                   value: 'C',
-                  title: 'C – záhrady',
+                  label: 'C – záhrady',
                 },
                 {
                   value: 'D',
-                  title: 'D – lesné pozemky, na ktorých sú hospodárske lesy',
+                  label: 'D – lesné pozemky, na ktorých sú hospodárske lesy',
                 },
                 {
                   value: 'E',
-                  title: 'E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
+                  label: 'E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
                 },
                 {
                   value: 'F',
-                  title: 'F – zastavané plochy a nádvoria',
+                  label: 'F – zastavané plochy a nádvoria',
                 },
                 {
                   value: 'G',
-                  title: 'G – stavebné pozemky',
+                  label: 'G – stavebné pozemky',
                 },
                 {
                   value: 'H',
-                  title: 'H – ostatné plochy',
+                  label: 'H – ostatné plochy',
                 },
               ],
             },
@@ -235,9 +235,9 @@ const innerArray = (kalkulacka: boolean) =>
                 type: 'boolean',
                 title: 'Je hodnota pozemku určená znaleckým posudkom?',
                 required: true,
-                options: [
-                  { value: true, title: 'Áno' },
-                  { value: false, title: 'Nie', isDefault: true },
+                items: [
+                  { value: true, label: 'Áno' },
+                  { value: false, label: 'Nie', isDefault: true },
                 ],
               },
               {

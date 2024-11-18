@@ -1,15 +1,14 @@
 import {
-  schema,
-  step,
-  radioGroup,
+  conditionalFields,
+  datePicker,
+  fileUpload,
   input,
   object,
-  fileUpload,
-  datePicker,
-  conditionalFields,
+  radioGroup,
+  schema,
+  step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
-import { sharedAddressField } from '../shared/fields'
+import { createCondition, createStringItems } from '../../generator/helpers'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -19,7 +18,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         type: 'string',
         title: 'Objednávateľ ako',
         required: true,
-        options: createStringOptions([
+        items: createStringItems([
           'Fyzická osoba',
           'Fyzická osoba - podnikateľ',
           'Právnická osoba',
@@ -175,7 +174,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         type: 'string',
         title: 'Za montáž, prevádzku a demontáž zodpovedá',
         required: true,
-        options: createStringOptions(['Organizácia', 'Fyzická osoba']),
+        items: createStringItems(['Organizácia', 'Fyzická osoba']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),

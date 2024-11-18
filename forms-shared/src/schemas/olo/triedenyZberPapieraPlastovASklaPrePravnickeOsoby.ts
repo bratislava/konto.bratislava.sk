@@ -12,11 +12,7 @@ import {
   select,
   step,
 } from '../../generator/functions'
-import {
-  createCondition,
-  createStringOptions,
-  createStringOptionsV2,
-} from '../../generator/helpers'
+import { createCondition, createStringItems, createStringItemsV2 } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -71,21 +67,21 @@ export default schema(
           type: 'string',
           title: 'Typ odberateľa',
           required: true,
-          options: createStringOptionsV2([
+          items: createStringItemsV2([
             {
-              title: 'Nový',
+              label: 'Nový',
               description: 'Nemám uzavretú zmluvu',
             },
             {
-              title: 'Existujúci',
+              label: 'Existujúci',
               description: 'Mám uzavretú zmluvu',
             },
             {
-              title: 'Zmena poplatkovej povinnosti pre existujúceho zákazníka',
+              label: 'Zmena poplatkovej povinnosti pre existujúceho zákazníka',
               description: 'Spoplatnenie služby',
             },
             {
-              title: 'Zmena odberateľa',
+              label: 'Zmena odberateľa',
               description: 'Napr. preberám prevádzku alebo správu nehnuteľnosti',
             },
           ]),
@@ -188,9 +184,9 @@ export default schema(
               type: 'boolean',
               title: 'Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie' },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie' },
               ],
             },
             { variant: 'boxed', orientations: 'row' },
@@ -218,7 +214,7 @@ export default schema(
             {
               title: 'Vyberte druh odpadu',
               required: true,
-              options: createStringOptions([
+              items: createStringItems([
                 'Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)',
                 'Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)',
                 'Plasty (Pravidelný odvoz odpadových obalov kat. číslo 15)',
@@ -248,7 +244,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -263,7 +259,7 @@ export default schema(
                 {
                   title: 'Frekvencia odvozov',
                   required: true,
-                  options: createStringOptions(['1 x do týždňa', '2 x do týždňa']),
+                  items: createStringItems(['1 x do týždňa', '2 x do týždňa']),
                 },
                 {},
               ),
@@ -287,7 +283,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -302,7 +298,7 @@ export default schema(
                 {
                   title: 'Frekvencia odvozov',
                   required: true,
-                  options: createStringOptions(['1 x do týždňa', '2 x do týždňa']),
+                  items: createStringItems(['1 x do týždňa', '2 x do týždňa']),
                 },
                 {},
               ),
@@ -326,7 +322,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1800 l zvon na sklo',
@@ -345,7 +341,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: [{ value: '1x_do_tyzdna', title: '1 x do týždňa' }],
+                      items: [{ value: '1x_do_tyzdna', label: '1 x do týždňa' }],
                     },
                     {},
                   ),
@@ -359,7 +355,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: [{ value: '1x_za_4_tyzdne', title: '1 x za 4 týždne' }],
+                      items: [{ value: '1x_za_4_tyzdne', label: '1 x za 4 týždne' }],
                     },
                     {},
                   ),
@@ -383,7 +379,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '23 l zberná nádoba',
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
@@ -399,7 +395,7 @@ export default schema(
                 {
                   title: 'Frekvencia odvozov',
                   required: true,
-                  options: createStringOptions(['1 x do týždňa', '2 x do týždňa']),
+                  items: createStringItems(['1 x do týždňa', '2 x do týždňa']),
                 },
                 {
                   helptextHeader:

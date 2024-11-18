@@ -4,7 +4,7 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { PropsWithChildren } from 'react'
 
-import FormMarkdown from '../info-components/FormMarkdown'
+import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import { WidgetSpacingContextProvider } from './useWidgetSpacingContext'
 import WidgetWrapper from './WidgetWrapper'
 
@@ -82,7 +82,9 @@ const BAObjectFieldTemplate = ({
             {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
             {options.description && (
               <div className="text-p2 mb-3 whitespace-pre-wrap">
-                <FormMarkdown>{options.description}</FormMarkdown>
+                <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
+                  {options.description}
+                </ConditionalFormMarkdown>
               </div>
             )}
           </>

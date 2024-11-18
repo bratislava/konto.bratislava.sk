@@ -17,6 +17,7 @@ export type CustomComponentCalculator = {
   formula: string
   missingFieldsMessage: string
   unit: string
+  unitMarkdown?: boolean
   /**
    * The dataContextLevelsUp is an optional parameter that specifies the number of levels to go up in the JSON data
    * context for formula in hierarchy from the current position. This is useful when you want to retrieve or access data
@@ -127,6 +128,7 @@ export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | '
 export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
   hideTitle?: boolean
   description?: string
+  descriptionMarkdown?: boolean
   addButtonLabel: string
   itemTitle?: string
   cannotAddItemMessage?: string
@@ -147,6 +149,7 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
     objectDisplay?: 'wrapper' | 'boxed'
     title?: string
     description?: string
+    descriptionMarkdown?: boolean
   } & (
     | {
         columns?: false

@@ -73,7 +73,7 @@ export default schema(
         input(
           'konatel',
           { type: 'text', title: 'Konateľ', required: true },
-          { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+          { helptext: 'Uveďte meno a priezvisko konateľa' },
         ),
         input(
           'zastupeny',
@@ -83,7 +83,7 @@ export default schema(
             required: true,
           },
           {
-            helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+            helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
           },
         ),
       ]),
@@ -118,7 +118,7 @@ export default schema(
                   title: 'Zasielanie faktúry elektronicky',
                 },
                 {
-                  helptextHeader:
+                  helptext:
                     'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
                   checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
                   variant: 'boxed',
@@ -153,7 +153,7 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
@@ -208,8 +208,7 @@ export default schema(
                   ]),
                 },
                 {
-                  helptextHeader:
-                    '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.',
+                  helptext: '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.',
                 },
               ),
             ],
@@ -223,7 +222,7 @@ export default schema(
                 items: createStringItems(['120 l zberná nádoba']),
               },
               {
-                helptextHeader: markdownText(
+                helptext: markdownText(
                   'Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).',
                 ),
               },
@@ -309,7 +308,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         },
       ),
@@ -320,7 +319,7 @@ export default schema(
           required: false,
         },
         {
-          helptextHeader: 'Špecifikujte individuálne požiadavky.',
+          helptext: 'Špecifikujte individuálne požiadavky.',
         },
       ),
     ]),

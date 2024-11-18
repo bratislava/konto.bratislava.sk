@@ -35,7 +35,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
           title: 'Súhlasím so zaslaním elektronickej faktúry',
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
@@ -142,7 +142,7 @@ export default schema(
           datePicker(
             'datumZmeny',
             { title: 'Dátum zmeny', required: true },
-            { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
+            { helptext: 'Uveďte dátum predpokladanej zmeny odberateľa' },
           ),
         ],
         [input('dic', { type: 'text', title: 'DIČ', required: true }, {})],
@@ -209,7 +209,7 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
@@ -223,7 +223,7 @@ export default schema(
               ]),
             },
             {
-              helptextHeader: markdownText(
+              helptext: markdownText(
                 'Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).',
               ),
             },
@@ -327,7 +327,7 @@ export default schema(
           number(
             'pocetNadob',
             { type: 'number', title: 'Počet nádob', required: true },
-            { helptextHeader: 'Uveďte počet nádob' },
+            { helptext: 'Uveďte počet nádob' },
           ),
         ],
       ),

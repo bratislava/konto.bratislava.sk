@@ -35,7 +35,7 @@ export const vyplnitKrokRadio = ({
           variant: 'boxed',
           orientations: 'row',
           labelSize: 'h3',
-          helptextHeader: helptext,
+          helptext,
         },
       ),
     ],

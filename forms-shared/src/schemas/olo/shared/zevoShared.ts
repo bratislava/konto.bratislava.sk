@@ -71,8 +71,7 @@ export const getZevoSchema = (type: ZevoType) => [
               'cisloPovoleniaNaVstup',
               { type: 'text', title: 'Číslo povolenia na vstup', required: true },
               {
-                helptextHeader:
-                  'Vo formáte: 123/45 alebo 1234/45/2026 (číslo Objednávky alebo Zmluvy)',
+                helptext: 'Vo formáte: 123/45 alebo 1234/45/2026 (číslo Objednávky alebo Zmluvy)',
               },
             ),
           ],
@@ -91,7 +90,7 @@ export const getZevoSchema = (type: ZevoType) => [
         input(
           'konatel',
           { type: 'text', title: 'Konateľ', required: true },
-          { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+          { helptext: 'Uveďte meno a priezvisko konateľa' },
         ),
         input(
           'zastupeny',
@@ -101,7 +100,7 @@ export const getZevoSchema = (type: ZevoType) => [
             required: true,
           },
           {
-            helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+            helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
           },
         ),
         input(
@@ -272,7 +271,7 @@ export const getZevoSchema = (type: ZevoType) => [
                 title: 'Súhlasím so zaslaním elektronickej faktúry',
               },
               {
-                helptextHeader:
+                helptext:
                   'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
                 checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
                 variant: 'boxed',
@@ -310,7 +309,7 @@ export const getZevoSchema = (type: ZevoType) => [
           {
             variant: 'boxed',
             orientations: 'row',
-            helptextHeader:
+            helptext:
               'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
           },
         ),
@@ -366,7 +365,7 @@ export const getZevoSchema = (type: ZevoType) => [
           {
             variant: 'boxed',
             orientations: 'row',
-            helptextHeader:
+            helptext:
               'Definícia zo Zákona č. 79/2015 Z. z. o odpadoch v znení neskorších predpisov',
           },
         ),
@@ -1007,7 +1006,7 @@ export const getZevoSchema = (type: ZevoType) => [
           },
           {
             type: 'dragAndDrop',
-            helptextHeader:
+            helptext:
               'Nahrajte fotografie odpadu, ktorý priveziete na zhodnotenie (povolené typy súborov jpg, gif, png, max. veľkosť 1 súboru 10 MB, maximálne 5 súborov.)',
           },
         ),

@@ -321,7 +321,7 @@ export default step(
     ),
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery pozemkov',
-      helptextHeader:
+      helptext:
         'Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov',
       inner: innerArray,

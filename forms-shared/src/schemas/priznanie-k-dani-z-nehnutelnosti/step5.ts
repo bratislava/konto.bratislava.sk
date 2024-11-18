@@ -343,7 +343,7 @@ export default step(
     ),
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery podlahových plôch a základu dane',
-      helptextHeader:
+      helptext:
         'Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.',
       checkboxLabel:
         'Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane',

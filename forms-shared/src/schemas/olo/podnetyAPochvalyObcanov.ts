@@ -61,7 +61,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         },
         {
           variant: 'boxed',
-          helptextHeader: 'Vyberte aspoň jednu možnosť',
+          helptext: 'Vyberte aspoň jednu možnosť',
         },
       ),
       input(
@@ -72,7 +72,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
           required: true,
         },
         {
-          helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+          helptext: 'Vyplňte vo formáte ulica a číslo',
         },
       ),
     ]),
@@ -90,11 +90,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
     input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
-    textArea(
-      'sprava',
-      { title: 'Správa', required: true },
-      { helptextHeader: 'Napíšte svoje podnety' },
-    ),
+    textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
     fileUpload(
       'prilohy',
       {

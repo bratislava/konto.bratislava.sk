@@ -1,7 +1,6 @@
 import { DateFormatter, parseDate } from '@internationalized/date'
 
 import { JSONSchema7 } from 'json-schema'
-import { validate, version } from 'uuid'
 
 import {
   BaWidgetType,
@@ -11,14 +10,9 @@ import {
   SelectUiOptions,
 } from '../generator/uiOptionsTypes'
 import { EnumOptionsType, WidgetProps } from '@rjsf/utils'
-import { baTimeRegex } from '../form-utils/ajvFormats'
+import { baTimeRegex, validateBaFileUuid } from '../form-utils/ajvFormats'
 import { mergeEnumOptionsMetadata } from '../generator/optionItems'
 import { WithEnumOptions } from '../form-utils/WithEnumOptions'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isFileUuid(value: any): boolean {
-  return typeof value === 'string' && validate(value) && version(value) === 4
-}
 
 export enum SummaryDisplayValueType {
   String = 'String',
@@ -172,7 +166,7 @@ export const getSummaryDisplayValues = (
     return value ? [createStringValue(checkboxUiOptions.checkboxLabel)] : [noneValue]
   }
   if (widgetType === BaWidgetType.FileUpload) {
-    if (isFileUuid(value)) {
+    if (validateBaFileUuid(value)) {
       return [createFileValue(value)]
     }
 
@@ -188,7 +182,7 @@ export const getSummaryDisplayValues = (
     }
 
     return value.map((item) => {
-      if (!isFileUuid(item)) {
+      if (!validateBaFileUuid(item)) {
         return invalidValue
       }
 

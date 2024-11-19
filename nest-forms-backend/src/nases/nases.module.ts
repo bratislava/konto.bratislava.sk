@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
-import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesHelper from '../files/files.helper'
 import FilesModule from '../files/files.module'
@@ -34,7 +33,6 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     NasesService,
     NasesUtilsService,
     ThrowerErrorGuard,
-    JsonXmlConvertService,
     FormsHelper,
     FilesService,
     FilesHelper,

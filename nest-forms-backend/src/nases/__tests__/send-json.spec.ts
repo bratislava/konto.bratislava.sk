@@ -5,7 +5,6 @@ import { Forms } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import ConvertService from '../../convert/convert.service'
-import JsonXmlConvertService from '../../convert/utils-services/json-xml.convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
@@ -93,7 +92,6 @@ describe('SendJsonToNases', () => {
         { provide: PrismaService, useValue: prismaMock },
         ThrowerErrorGuard,
         ConvertService,
-        JsonXmlConvertService,
       ],
     }).compile()
 

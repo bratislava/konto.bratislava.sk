@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
-import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaModule from '../prisma/prisma.module'
 import TaxModule from '../tax/tax.module'
@@ -11,12 +10,7 @@ import AdminController from './admin.controller'
 
 @Module({
   imports: [PrismaModule, ConvertModule, TaxModule],
-  providers: [
-    ThrowerErrorGuard,
-    NasesUtilsService,
-    JsonXmlConvertService,
-    MinioClientSubservice,
-  ],
+  providers: [ThrowerErrorGuard, NasesUtilsService, MinioClientSubservice],
   exports: [],
   controllers: [AdminController],
 })

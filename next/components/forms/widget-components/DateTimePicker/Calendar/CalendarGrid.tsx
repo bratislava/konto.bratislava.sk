@@ -49,8 +49,8 @@ const CalendarGrid = ({ state, offset = {}, ...rest }: CalendarGridBase) => {
                 date ? (
                   <CalendarCell
                     isDisabled={
-                      (state.minValue && date < state.minValue) ||
-                      (state.maxValue && date > state.maxValue)
+                      (state.minValue ? date < state.minValue : false) ||
+                      (state.maxValue ? date > state.maxValue : false)
                     }
                     key={i}
                     state={state}

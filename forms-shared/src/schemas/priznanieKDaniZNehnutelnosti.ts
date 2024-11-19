@@ -5,8 +5,8 @@ import step3 from './priznanie-k-dani-z-nehnutelnosti/step3'
 import step4 from './priznanie-k-dani-z-nehnutelnosti/step4'
 import step5 from './priznanie-k-dani-z-nehnutelnosti/step5'
 import step6 from './priznanie-k-dani-z-nehnutelnosti/step6'
-import step7 from './priznanie-k-dani-z-nehnutelnosti/step7'
 import step8 from './priznanie-k-dani-z-nehnutelnosti/step8'
+import step7 from './priznanie-k-dani-z-nehnutelnosti/step7'
 
 export default schema(
   {

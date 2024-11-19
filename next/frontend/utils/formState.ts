@@ -1,6 +1,7 @@
 import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
-import { baRjsfValidator } from 'forms-shared/form-utils/validators'
+import { fastMergeAllOf } from 'forms-shared/form-utils/defaultFormState'
+import { baRjsfValidator2 } from 'forms-shared/form-utils/validators'
 import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
@@ -23,7 +24,13 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(baRjsfValidator, step, schema, formData)
+      const retrievedSchema = retrieveSchema(
+        baRjsfValidator2,
+        step,
+        schema,
+        formData,
+        fastMergeAllOf,
+      )
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []

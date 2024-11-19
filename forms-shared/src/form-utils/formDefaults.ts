@@ -7,4 +7,5 @@ import { baDefaultFormStateBehavior } from './defaultFormState'
 export const baFormDefaults = {
   validator: baRjsfValidator,
   experimental_defaultFormStateBehavior: baDefaultFormStateBehavior,
+  // experimental_customMergeAllOf: fastMergeAllOf,
 }

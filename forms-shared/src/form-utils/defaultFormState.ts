@@ -19,6 +19,36 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
   typeof schema?.items !== 'boolean' &&
   schema?.items?.file === true
 
+export function fastMergeAllOf(schema: GenericObjectType) {
+  const newSchema: GenericObjectType = {
+    ...schema,
+    properties: { ...schema.properties },
+    required: [...(schema.required || [])],
+  }
+
+  delete newSchema.allOf
+
+  if (schema.allOf && Array.isArray(schema.allOf)) {
+    schema.allOf.forEach((item) => {
+      if (item.properties) {
+        newSchema.properties = {
+          ...newSchema.properties,
+          ...item.properties,
+        }
+      }
+      if (item.required) {
+        newSchema.required.push(...item.required)
+      }
+    })
+  }
+
+  if (newSchema.required.length > 0) {
+    newSchema.required = [...new Set(newSchema.required)]
+  }
+
+  return newSchema
+}
+
 /**
  * This is the most important setting for RJSF, make sure to pass it to all RJSF components / functions. Anytime user
  * open a form, to display proper fields the data are prefilled by the library.

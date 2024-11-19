@@ -44,7 +44,6 @@
     "aws-sdk": "^2.1691.0",
     "axios": "^1.6.8",
     "bull": "^4.12.2",
-    "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "forms-shared": "file:../forms-shared",

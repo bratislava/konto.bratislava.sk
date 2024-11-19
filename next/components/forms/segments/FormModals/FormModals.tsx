@@ -482,7 +482,7 @@ const FormModals = () => {
           fullWidthMobile
         >
           {t('modals_back_button_title')}
-        </Button>
+        </Button>,
       ],
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,

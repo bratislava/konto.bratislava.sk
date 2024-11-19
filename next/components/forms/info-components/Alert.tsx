@@ -20,7 +20,11 @@ const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
       {buttons?.map((button, i) => (
         <React.Fragment key={i}>
           {button.link ? (
-            <Link className="text-16-medium w-max underline underline-offset-4" href={button.link} data-cy="alert-container-button">
+            <Link
+              className="text-16-medium w-max underline underline-offset-4"
+              href={button.link}
+              data-cy="alert-container-button"
+            >
               {button.title}
             </Link>
           ) : (
@@ -101,7 +105,9 @@ const Alert = ({
       <div className="flex w-full justify-between">
         <div className="flex w-full gap-[14px]">
           {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
-          <div className={contentStyle} data-cy="alert-container-title">{title || message}</div>
+          <div className={contentStyle} data-cy="alert-container-title">
+            {title || message}
+          </div>
         </div>
         {close && (
           <span className="flex size-6 cursor-pointer items-center justify-center">

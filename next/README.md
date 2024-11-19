@@ -71,6 +71,7 @@ City account Strapi:
 ## TODOs
 
 After removing a snackbar plugin, these overrides can be safely removed from package.json:
+
 ```json
 "overrides": {
 "react": "18.3.1",

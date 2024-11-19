@@ -28,7 +28,7 @@ const FormRenderer = ({ children }: SummaryFormRendererProps) => (
 const StepRenderer = ({ step, children }: SummaryStepRendererProps) => {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-h3-bold">{step.title}</h2>
+      <h3 className="text-h3-bold">{step.title}</h3>
       <div>{children}</div>
     </div>
   )

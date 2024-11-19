@@ -40,7 +40,7 @@ const UploadWrapped = ({
     setValue([])
   }
 
-  const valueMapped = multiple ? value : value?.[0] ?? null
+  const valueMapped = multiple ? value : (value?.[0] ?? null)
 
   const getFileInfoById = (id: string) => {
     const file = filesMap[id]

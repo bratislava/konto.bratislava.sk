@@ -152,9 +152,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
                 onScrollToBottom={() => field.onChange(true)}
                 agreementContent={agreementContent}
               />
-              <p className="text-p2">
-                Pre pokračovanie je nutné prečítať celý text súhlasu.
-              </p>
+              <p className="text-p2">Pre pokračovanie je nutné prečítať celý text súhlasu.</p>
             </div>
           )}
         />

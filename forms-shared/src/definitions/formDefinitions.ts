@@ -315,8 +315,7 @@ export const formDefinitions: FormDefinition[] = [
     schemas: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     email: 'zakazka@olo.sk',
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault:
-      'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
+    messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,

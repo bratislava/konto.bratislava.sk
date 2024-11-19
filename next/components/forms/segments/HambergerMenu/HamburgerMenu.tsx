@@ -47,7 +47,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
             'bg-main-100 text-main-700': isSelected,
           },
         )}
-        data-cy={`${menuItem.url.replaceAll("/", "")}-menu-item`}
+        data-cy={`${menuItem.url.replaceAll('/', '')}-menu-item`}
       >
         <div aria-hidden>{menuItem.icon}</div>
         <span>{t(menuItem?.title)}</span>
@@ -111,7 +111,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
                     className={cx(
                       'text-p2-semibold flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
                     )}
-                    data-cy={`${(sectionItem.url ? sectionItem.url.replaceAll("/", "") : sectionItem.title.replaceAll(" ", "-"))}-menu-item`}
+                    data-cy={`${sectionItem.url ? sectionItem.url.replaceAll('/', '') : sectionItem.title.replaceAll(' ', '-')}-menu-item`}
                     onClick={() => {
                       if (sectionItem.onPress) {
                         sectionItem.onPress()?.catch((error) => logger.error(error))
@@ -129,7 +129,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
               )
             }
             return sectionItem.url ? (
-              <NavigationMenu.Item key={sectionItem.id} >
+              <NavigationMenu.Item key={sectionItem.id}>
                 <NavigationMenu.Link asChild onClick={closeMenu}>
                   <ItemLink menuItem={sectionItem} onClick={closeMenu} />
                 </NavigationMenu.Link>

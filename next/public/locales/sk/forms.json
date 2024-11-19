@@ -218,12 +218,6 @@
     "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
     "button_title": "Vymazať"
   },
-  "tax_form_landing_page": {
-    "title": "Priznanie k dani z nehnuteľností",
-    "instructions": "## Budete potrebovať:\n- **listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napríklad, byt a aj garážové státie, máte pravdepodobne viaceré listy vlastníctva),\n- **kúpnu zmluvu na nehnuteľnosť**,\n- v prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom či manželkou a podávate priznanie za vás oboch, **rodné číslo manžela alebo manželky**,\n- v prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov a spoluvlastníčky, [dohodu o určení zástupcu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf),\n- v prípade, že priznanie nepodávate vo vlastnom mene, **splnomocnenie na podanie daňového priznania**.",
-    "redirect_info": "Presmerovávam na formulár.",
-    "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
-  },
   "tax_form_pdf_export_modal": {
     "preparing": "Pripravujeme vaše priznanie",
     "preparing_description": "Sťahovanie PDF začne automaticky po pripravení priznania.",

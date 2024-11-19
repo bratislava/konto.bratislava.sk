@@ -191,5 +191,8 @@ export enum BaWidgetType {
   FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
+}
+
+export enum BaFieldType {
   CustomComponents = 'CustomComponents',
 }

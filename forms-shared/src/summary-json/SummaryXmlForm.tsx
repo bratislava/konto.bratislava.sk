@@ -1,7 +1,8 @@
-import { FormProps, getDefaultRegistry, ThemeProps, withTheme } from '@rjsf/core'
+import { FormProps, ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
+  FieldProps,
   getTemplate,
   getUiOptions,
   ObjectFieldTemplateProps,
@@ -16,7 +17,7 @@ import React, {
 } from 'react'
 
 import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
-import { ArrayFieldUiOptions, BaWidgetType } from '../generator/uiOptionsTypes'
+import { ArrayFieldUiOptions, BaFieldType, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
 import { baFormDefaults } from '../form-utils/formDefaults'
 import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
@@ -179,25 +180,10 @@ const theme: ThemeProps = {
     [BaWidgetType.FileUploadMultiple]: wrapWidget(BaWidgetType.FileUploadMultiple),
     [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
     [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
-    [BaWidgetType.CustomComponents]: () => {
-      return null
-    },
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
-    AnyOfField: (props) => {
-      // RJSF renders unnecessary <div>s for MultiSchemaField, which breaks the XML structure.
-      // https://github.com/rjsf-team/react-jsonschema-form/blob/ec932db942dd046640303056c89e3501b16ec469/packages/core/src/components/fields/MultiSchemaField.tsx#L217
-      const options = getUiOptions(props.uiSchema)
-      if (options?.widget === 'CustomComponents') {
-        return null
-      }
-
-      const defaultRegistry = getDefaultRegistry()
-      const DefaultAnyOfField = defaultRegistry.fields.AnyOfField
-
-      return <DefaultAnyOfField {...props} />
-    },
-  },
+    [BaFieldType.CustomComponents]: () => null,
+  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)

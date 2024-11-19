@@ -68,13 +68,13 @@ const WidgetWrapper = ({
         <div className="sm:grid sm:grid-cols-2 sm:gap-4">
           <div>{children}</div>
           <div>
-            <CustomComponents components={rightComponents} />
+            <CustomComponents id={id} components={rightComponents} />
           </div>
         </div>
       ) : (
         <div>{children}</div>
       )}
-      {hasBelowComponents && <CustomComponents components={belowComponents} />}
+      {hasBelowComponents && <CustomComponents id={id} components={belowComponents} />}
     </div>
   )
 }

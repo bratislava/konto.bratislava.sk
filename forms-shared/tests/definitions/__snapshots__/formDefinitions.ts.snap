@@ -1480,6 +1480,8 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -1495,7 +1497,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -3704,6 +3705,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:widget": "Checkbox",
       },
       "suhlasPodmienkyPrijatiaOdpaduLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -3719,7 +3722,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "suhlasSVop": {
         "ui:options": {
@@ -3729,6 +3731,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -3744,7 +3748,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "suhlasZasadySpravavania": {
         "ui:options": {
@@ -3754,6 +3757,8 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
         "ui:widget": "Checkbox",
       },
       "suhlasZasadySpravavaniaLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -3769,7 +3774,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -5389,6 +5393,8 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -5404,7 +5410,6 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -6599,6 +6604,8 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -6614,7 +6621,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -7193,6 +7199,8 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -7208,7 +7216,6 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -7984,6 +7991,8 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -7999,7 +8008,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -8533,6 +8541,8 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -8548,7 +8558,6 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -9987,6 +9996,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -10002,7 +10013,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -11225,6 +11235,8 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -11240,7 +11252,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -12650,6 +12661,8 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "ui:widget": "Checkbox",
       },
       "suhlasPodmienkyPrijatiaOdpaduLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -12665,7 +12678,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "suhlasSVop": {
         "ui:options": {
@@ -12675,6 +12687,8 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "ui:widget": "Checkbox",
       },
       "suhlasSVopLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -12690,7 +12704,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "suhlasZasadySpravavania": {
         "ui:options": {
@@ -12700,6 +12713,8 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
         "ui:widget": "Checkbox",
       },
       "suhlasZasadySpravavaniaLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -12715,7 +12730,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "suhlasy",
@@ -21097,6 +21111,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
               "datumy",
             ],
             "vymeraKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -21121,7 +21137,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
@@ -21229,6 +21244,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                   "datumy",
                 ],
                 "vymeraKalkulacka": {
+                  "ui:field": "CustomComponents",
+                  "ui:fieldReplacesAnyOrOneOf": true,
                   "ui:options": {
                     "customComponents": [
                       {
@@ -21253,7 +21270,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapsho
                       },
                     ],
                   },
-                  "ui:widget": "CustomComponents",
                 },
                 "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome": {
                   "ui:label": false,
@@ -21836,6 +21852,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "ui:widget": "Number",
               },
               "vymeraPozemkuKalkulacka": {
+                "ui:field": "CustomComponents",
+                "ui:fieldReplacesAnyOrOneOf": true,
                 "ui:options": {
                   "customComponents": [
                     {
@@ -21858,7 +21876,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                     },
                   ],
                 },
-                "ui:widget": "CustomComponents",
               },
               "znaleckyPosudok": {
                 "ui:options": {
@@ -22435,6 +22452,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "ui:widget": "Number",
           },
           "zakladDaneKalkulacka": {
+            "ui:field": "CustomComponents",
+            "ui:fieldReplacesAnyOrOneOf": true,
             "ui:options": {
               "customComponents": [
                 {
@@ -22456,7 +22475,6 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 },
               ],
             },
-            "ui:widget": "CustomComponents",
           },
         },
         "ui:options": {
@@ -22686,6 +22704,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "ui:widget": "Number",
                 },
                 "vymeraPodlahovejPlochyKalkulacka": {
+                  "ui:field": "CustomComponents",
+                  "ui:fieldReplacesAnyOrOneOf": true,
                   "ui:options": {
                     "customComponents": [
                       {
@@ -22707,7 +22727,6 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                       },
                     ],
                   },
-                  "ui:widget": "CustomComponents",
                 },
               },
               "ui:options": {
@@ -22743,6 +22762,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               },
             },
             "sumarKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -22775,7 +22796,6 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "ui:options": {
               "objectDisplay": "boxed",
@@ -34883,6 +34903,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
               "datumy",
             ],
             "vymeraKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -34907,7 +34929,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "vymeraPodlahovejPlochyBytu": {
               "ui:label": false,
@@ -35015,6 +35036,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                   "datumy",
                 ],
                 "vymeraKalkulacka": {
+                  "ui:field": "CustomComponents",
+                  "ui:fieldReplacesAnyOrOneOf": true,
                   "ui:options": {
                     "customComponents": [
                       {
@@ -35039,7 +35062,6 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schemas match sn
                       },
                     ],
                   },
-                  "ui:widget": "CustomComponents",
                 },
                 "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome": {
                   "ui:label": false,
@@ -35622,6 +35644,8 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                 "ui:widget": "Number",
               },
               "vymeraPozemkuKalkulacka": {
+                "ui:field": "CustomComponents",
+                "ui:fieldReplacesAnyOrOneOf": true,
                 "ui:options": {
                   "customComponents": [
                     {
@@ -35644,7 +35668,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
                     },
                   ],
                 },
-                "ui:widget": "CustomComponents",
               },
               "znaleckyPosudok": {
                 "ui:options": {
@@ -36221,6 +36244,8 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
             "ui:widget": "Number",
           },
           "zakladDaneKalkulacka": {
+            "ui:field": "CustomComponents",
+            "ui:fieldReplacesAnyOrOneOf": true,
             "ui:options": {
               "customComponents": [
                 {
@@ -36242,7 +36267,6 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                 },
               ],
             },
-            "ui:widget": "CustomComponents",
           },
         },
         "ui:options": {
@@ -36472,6 +36496,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   "ui:widget": "Number",
                 },
                 "vymeraPodlahovejPlochyKalkulacka": {
+                  "ui:field": "CustomComponents",
+                  "ui:fieldReplacesAnyOrOneOf": true,
                   "ui:options": {
                     "customComponents": [
                       {
@@ -36493,7 +36519,6 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                       },
                     ],
                   },
-                  "ui:widget": "CustomComponents",
                 },
               },
               "ui:options": {
@@ -36529,6 +36554,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               },
             },
             "sumarKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -36561,7 +36588,6 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "ui:options": {
               "objectDisplay": "boxed",
@@ -52337,6 +52363,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "ui:widget": "RadioGroup",
             },
             "studentAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -52348,9 +52376,10 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "sucetPrijmovStudentKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -52369,7 +52398,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "ui:options": {
               "objectDisplay": "boxed",
@@ -52804,6 +52832,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "zdravotnyStavAlert",
             ],
             "zdravotnyStavAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -52815,7 +52845,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
           },
         },
@@ -52992,6 +53021,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           "ui:widget": "Select",
         },
         "rodinnyStavAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -53003,7 +53034,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "rodnePriezvisko": {
           "ui:label": false,
@@ -53123,6 +53153,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           "ui:widget": "Number",
         },
         "prijmyAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -53134,7 +53166,6 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
@@ -53164,6 +53195,8 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           "ui:widget": "Number",
         },
         "sucetPrijmovKalkulacka": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -53188,7 +53221,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "ui:options": {
           "description": "Posudzuje sa priemerný čistý mesačný príjem druha/družky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
@@ -53688,6 +53720,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "zdravotnyStavAlert",
         ],
         "zdravotnyStavAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -53699,7 +53733,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
       },
     },
@@ -53886,6 +53919,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Select",
             },
             "rodinnyStavAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -53897,7 +53932,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "rodnePriezvisko": {
               "ui:label": false,
@@ -54053,6 +54087,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Number",
             },
             "prijmyAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -54064,7 +54100,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "samostatnaZarobkovaCinnost": {
               "ui:options": {
@@ -54094,6 +54129,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "ui:widget": "Number",
             },
             "sucetPrijmovKalkulacka": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -54118,7 +54155,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
             "ui:options": {
               "description": "Posudzuje sa priemerný čistý mesačný príjem člena/členky domácnosti za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
@@ -54615,6 +54651,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "zdravotnyStavAlert",
             ],
             "zdravotnyStavAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
               "ui:options": {
                 "customComponents": [
                   {
@@ -54626,7 +54664,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                   },
                 ],
               },
-              "ui:widget": "CustomComponents",
             },
           },
         },
@@ -54891,6 +54928,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "prijmyAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -54902,7 +54941,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
@@ -54932,6 +54970,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "ui:widget": "Number",
         },
         "sucetPrijmovKalkulacka": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -54956,7 +54996,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "ui:options": {
           "description": "Posudzuje sa priemerný čistý mesačný príjem manžela/manželky za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
@@ -55456,6 +55495,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "zdravotnyStavAlert",
         ],
         "zdravotnyStavAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -55467,7 +55508,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
       },
     },
@@ -55480,6 +55520,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         "ui:widget": "Checkbox",
       },
       "overitPrijemLink": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -55495,9 +55537,10 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "prijemAlert": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -55509,9 +55552,10 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "sucetPrijmovKalkulacka": {
+        "ui:field": "CustomComponents",
+        "ui:fieldReplacesAnyOrOneOf": true,
         "ui:options": {
           "customComponents": [
             {
@@ -55553,7 +55597,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             },
           ],
         },
-        "ui:widget": "CustomComponents",
       },
       "ui:options": {
         "stepQueryParam": "sucet-prijmov-a-cestne-vyhlasenie",
@@ -55687,6 +55730,8 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             "ui:widget": "RadioGroup",
           },
           "pobytVBratislaveViacAkoRokAlert": {
+            "ui:field": "CustomComponents",
+            "ui:fieldReplacesAnyOrOneOf": true,
             "ui:options": {
               "customComponents": [
                 {
@@ -55698,7 +55743,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
                 },
               ],
             },
-            "ui:widget": "CustomComponents",
           },
           "ui:options": {
             "description": "Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.",
@@ -55851,6 +55895,8 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           "ui:widget": "Select",
         },
         "rodinnyStavAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -55862,7 +55908,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "rodnePriezvisko": {
           "ui:label": false,
@@ -55995,6 +56040,8 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           "ui:widget": "Number",
         },
         "prijmyAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -56006,7 +56053,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "samostatnaZarobkovaCinnost": {
           "ui:options": {
@@ -56036,6 +56082,8 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
           "ui:widget": "Number",
         },
         "sucetPrijmovKalkulacka": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -56060,7 +56108,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
         "ui:options": {
           "description": "Posudzuje sa váš priemerný čistý mesačný príjem za celý minulý kalendárny rok. Priemerný mesačný príjem sa vypočíta ako podiel príjmu za daný kalendárny rok a príslušného počtu mesiacov, počas ktorých sa príjem poberal.",
@@ -56657,6 +56704,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "zdravotnyStavAlert",
         ],
         "zdravotnyStavAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
           "ui:options": {
             "customComponents": [
               {
@@ -56668,7 +56717,6 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
             ],
           },
-          "ui:widget": "CustomComponents",
         },
       },
     },

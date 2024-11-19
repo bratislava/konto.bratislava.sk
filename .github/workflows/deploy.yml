@@ -20,6 +20,7 @@ jobs:
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   conditions:
     name: Check for cluster conditions
@@ -42,6 +43,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-next:
     name: dev Next
@@ -60,6 +62,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-strapi:
     name: dev Strapi
@@ -77,6 +80,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-nest-forms-backend:
     name: dev nest-forms-backend
@@ -95,6 +99,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-cvdmirror:
     name: dev cvdmirror
@@ -112,6 +117,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-clamav:
     name: dev clamav
@@ -129,6 +135,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-nest-clamav-scanner:
     name: dev nest-clamav-scanner
@@ -146,6 +153,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-dev-nest-tax-backend:
     name: dev nest-tax-backend
@@ -162,6 +170,7 @@ jobs:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging:
     name: after staging Backends deploy Next
@@ -180,6 +189,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-next:
     name: staging Next
@@ -198,6 +208,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-strapi:
     name: staging Strapi
@@ -215,6 +226,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-nest-forms-backend:
     name: staging nest-forms-backend
@@ -233,6 +245,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-cvdmirror:
     name: staging cvdmirror
@@ -250,6 +263,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-clamav:
     name: staging clamav
@@ -267,6 +281,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-nest-clamav-scanner:
     name: staging nest-clamav-scanner
@@ -284,6 +299,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging-nest-tax-backend:
     name: staging nest-tax-backend
@@ -300,6 +316,7 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod:
     name: after prod Backends deploy Next
@@ -318,6 +335,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-next:
     name: prod Next
@@ -336,6 +354,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-strapi:
     name: prod Strapi
@@ -353,6 +372,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-nest-forms-backend:
     name: prod nest-forms-backend
@@ -371,6 +391,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-cvdmirror:
     name: prod cvdmirror
@@ -388,6 +409,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-clamav:
     name: prod clamav
@@ -405,6 +427,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-nest-clamav-scanner:
     name: prod nest-clamav-scanner
@@ -422,6 +445,7 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod-nest-tax-backend:
     name: prod nest-tax-backend
@@ -438,3 +462,4 @@ jobs:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}

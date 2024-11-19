@@ -482,7 +482,7 @@ const FormModals = () => {
           fullWidthMobile
         >
           {t('modals_back_button_title')}
-        </Button>
+        </Button>,
       ],
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,
@@ -556,9 +556,11 @@ const FormModals = () => {
         onOpenChange={setIdentityVerificationModal}
         accountType={accountType}
       />
-      {messageModals.map((modalProps) => (
-        <MessageModal {...modalProps} />
-      ))}
+      {messageModals.map((modalProps) => {
+        // To avoid "A props object containing a "key" prop is being spread into JSX" error
+        const { key, ...restModalProps } = modalProps
+        return <MessageModal key={key} {...restModalProps} />
+      })}
     </>
   )
 }

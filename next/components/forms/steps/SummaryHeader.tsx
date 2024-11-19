@@ -16,7 +16,7 @@ const SummaryHeader = () => {
 
   return (
     <>
-      <h1 className="text-h1-medium font-semibold">{t('summary.title')}</h1>
+      <h2 className="text-h2">{t('summary.title')}</h2>
       {hasErrors && (
         <Alert
           type="error"

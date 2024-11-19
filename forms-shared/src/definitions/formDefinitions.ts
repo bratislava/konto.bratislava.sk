@@ -70,7 +70,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
-    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -90,7 +89,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
-    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -109,7 +107,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
-    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -128,7 +125,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
-    newGovernmentXml: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,
@@ -142,7 +138,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
-    newGovernmentXml: true,
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
   {
@@ -175,7 +170,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'SNB',
     },
     isSigned: false,
-    newGovernmentXml: true,
     additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
   },
   {
@@ -315,8 +309,7 @@ export const formDefinitions: FormDefinition[] = [
     schemas: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     email: 'zakazka@olo.sk',
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault:
-      'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
+    messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
     extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,

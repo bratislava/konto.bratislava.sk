@@ -1,6 +1,5 @@
 import { FormError } from '@prisma/client'
 
-import { ConvertErrorsEnum } from '../../convert/errors/convert.errors.enum'
 import { FilesErrorsEnum } from '../../files/files.errors.enum'
 import { NasesErrorsEnum } from '../../nases/nases.errors.enum'
 import { ScannerClientErrorsEnum } from '../../scanner-client/scanner-client.errors.enum'
@@ -13,8 +12,6 @@ import { ErrorsEnum } from '../global-enums/errors.enum'
  * invoked when a client tries to retrieve a form with nonexistent uuid.
  */
 export default [
-  ConvertErrorsEnum.ELEMENT_NOT_FOUND,
-  ConvertErrorsEnum.UNPROCESSABLE_TYPE,
   FilesErrorsEnum.FILE_WRONG_STATUS_NOT_ACCEPTED_ERROR,
   FilesErrorsEnum.SCANNER_NO_RESPONSE_ERROR,
   FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,

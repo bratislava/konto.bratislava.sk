@@ -88,6 +88,15 @@ describe('NasesUtilsService', () => {
   })
 
   describe('createEnvelopeSendMessage', () => {
+    const createMockReadableStream = (content: string): Readable => {
+      const readableStream = new Readable()
+      // eslint-disable-next-line no-underscore-dangle
+      readableStream._read = () => {}
+      readableStream.push(content)
+      readableStream.push(null)
+      return readableStream
+    }
+
     it('should create XML', async () => {
       const mockFiles = [
         {
@@ -141,18 +150,9 @@ describe('NasesUtilsService', () => {
 
       service['minioClientSubservice'].loadFileStream = jest
         .fn()
-        .mockImplementation(async (_: string, filename: string) => {
-          const streamData = `test string for input: ${filename}`
-
-          const readableStream = new Readable()
-          // eslint-disable-next-line no-underscore-dangle
-          readableStream._read = () => {}
-          readableStream.push(streamData)
-          // eslint-disable-next-line unicorn/no-array-push-push
-          readableStream.push(null)
-
-          return readableStream
-        })
+        .mockImplementation(async (_: string, filename: string) => 
+          createMockReadableStream(`test string for input: ${filename}`)
+        )
 
       service['taxService'].getFilledInPdfBase64 = jest
         .fn()
@@ -160,16 +160,9 @@ describe('NasesUtilsService', () => {
 
       service['convertService'].generatePdf = jest
         .fn()
-        .mockImplementation(async () => {
-          const readableStream = new Readable()
-          // eslint-disable-next-line no-underscore-dangle
-          readableStream._read = () => {}
-          readableStream.push('Summary PDF content with form details')
-          // eslint-disable-next-line unicorn/no-array-push-push
-          readableStream.push(null)
-
-          return readableStream
-        })
+        .mockImplementation(async () => 
+          createMockReadableStream('Summary PDF content with form details')
+        )
 
       let returnXmlString = await service['createEnvelopeSendMessage']({
         id: '123456678901234567890',

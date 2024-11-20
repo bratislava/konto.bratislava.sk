@@ -206,6 +206,7 @@ export default class ConvertService {
     formId: string,
     formDefinition: FormDefinition,
     clientFiles?: ClientFileInfo[],
+    forceSummaryForTaxPdf?: boolean,
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -222,7 +223,10 @@ export default class ConvertService {
       )
     }
 
-    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
+    if (
+      isSlovenskoSkTaxFormDefinition(formDefinition) &&
+      !forceSummaryForTaxPdf
+    ) {
       return this.generateTaxPdf(jsonForm, formId)
     }
 

@@ -10,9 +10,6 @@ import TaxService from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertService from './convert.service'
-import JsonXmlConvertService from './utils-services/json-xml.convert.service'
-
-jest.mock('./utils-services/json-xml.convert.service')
 
 describe('ConvertService', () => {
   let service: ConvertService
@@ -22,7 +19,6 @@ describe('ConvertService', () => {
       providers: [
         ConvertService,
         TaxService,
-        JsonXmlConvertService,
         ThrowerErrorGuard,
         {
           provide: getQueueToken('tax'),

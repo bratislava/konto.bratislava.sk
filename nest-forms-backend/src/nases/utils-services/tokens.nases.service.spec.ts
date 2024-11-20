@@ -123,7 +123,10 @@ describe('NasesUtilsService', () => {
       ]
 
       ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
-      ;(v1 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
+      ;(v1 as jest.Mock)
+        .mockReturnValueOnce('12345678-1234-1234-1234-123456789012')
+        .mockReturnValueOnce('98765432-9876-9876-9876-987654321098')
+
       service['convertService'].convertJsonToXmlObjectForForm = jest
         .fn()
         .mockResolvedValue({
@@ -147,17 +150,26 @@ describe('NasesUtilsService', () => {
           readableStream.push(streamData)
           // eslint-disable-next-line unicorn/no-array-push-push
           readableStream.push(null)
+
+          return readableStream
         })
 
       service['taxService'].getFilledInPdfBase64 = jest
         .fn()
         .mockResolvedValue('AWUKDHLAIUWDHU=====')
 
-      // eslint-disable-next-line xss/no-mixed-html
-      service['stream2buffer'] = jest
+      service['convertService'].generatePdf = jest
         .fn()
-        // eslint-disable-next-line xss/no-mixed-html
-        .mockResolvedValue(Buffer.from('Mock file data <tag> string </tag>>'))
+        .mockImplementation(async () => {
+          const readableStream = new Readable()
+          // eslint-disable-next-line no-underscore-dangle
+          readableStream._read = () => {}
+          readableStream.push('Summary PDF content with form details')
+          // eslint-disable-next-line unicorn/no-array-push-push
+          readableStream.push(null)
+
+          return readableStream
+        })
 
       let returnXmlString = await service['createEnvelopeSendMessage']({
         id: '123456678901234567890',
@@ -216,9 +228,10 @@ describe('NasesUtilsService', () => {
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
             `          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n` +
-            `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
-            `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">TW9jayBmaWxlIGRhdGEgPHRhZz4gc3RyaW5nIDwvdGFnPj4=</Object>\n` +
+            `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">dGVzdCBzdHJpbmcgZm9yIGlucHV0OiBwb3NwMDAwMS8xMjM0NTY2Nzg5MDEyMzQ1Njc4OTAvbWluaW9maWxlMDAwMQ==</Object>\n` +
+            `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">dGVzdCBzdHJpbmcgZm9yIGlucHV0OiBwb3NwMDAwMi8xMjM0NTY2Nzg5MDEyMzQ1Njc4OTAvbWluaW9maWxlMDAwMg==</Object>\n` +
             `          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n` +
+            `          <Object Id="98765432-9876-9876-9876-987654321098" IsSigned="false" Name="summary-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">U3VtbWFyeSBQREYgY29udGVudCB3aXRoIGZvcm0gZGV0YWlscw==</Object>\n` +
             `          <Object Id="123456678901234567890" IsSigned="true" Name="Priznanie k dani z nehnuteľností" Description="" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">L:UHIOQWALIUil&lt;tag&gt;uh&lt;\\tag&gt;liaUWHDL====</Object>\n` +
             `        </MessageContainer>\n` +
             `      </Body>\n` +

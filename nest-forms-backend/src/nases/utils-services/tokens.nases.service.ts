@@ -129,7 +129,7 @@ export default class NasesUtilsService {
     }
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
-        const base64FormPdf = await this.taxService.getFilledInPdfBase64(
+        const formPdfBase64 = await this.taxService.getFilledInPdfBase64(
           form.formDataJson,
           form.id,
         )
@@ -143,11 +143,41 @@ export default class NasesUtilsService {
             MimeType: 'application/pdf',
             Encoding: 'Base64',
           },
-          _: base64FormPdf,
+          _: formPdfBase64,
         })
       } catch (error) {
         console.error(
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
+          error,
+        )
+      }
+      try {
+        const summaryPdfReadable = await this.convertService.generatePdf(
+          form.formDataJson,
+          form.id,
+          formDefinition,
+          undefined,
+          true,
+        )
+        const summaryPdfBase64 = (
+          await this.stream2buffer(summaryPdfReadable)
+        ).toString('base64')
+
+        result.push({
+          $: {
+            Id: uuidv1(),
+            IsSigned: 'false',
+            Name: 'summary-form.pdf',
+            Description: 'ATTACHMENT',
+            Class: 'ATTACHMENT',
+            MimeType: 'application/pdf',
+            Encoding: 'Base64',
+          },
+          _: summaryPdfBase64,
+        })
+      } catch (error) {
+        console.error(
+          `ERROR - Printing summary to attachment to Nases and Noris error for form id ${form.id}`,
           error,
         )
       }

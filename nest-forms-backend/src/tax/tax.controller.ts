@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common'
+import { Body, Controller, Logger, Param, Post } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { JsonConvertRequestDto } from '../convert/dtos/form.dto'
@@ -8,7 +8,11 @@ import TaxService from './tax.service'
 @Controller('tax')
 @ApiTags('Tax')
 export default class TaxController {
-  constructor(private readonly taxService: TaxService) {}
+  private readonly logger: Logger
+
+  constructor(private readonly taxService: TaxService) {
+    this.logger = new Logger('TaxController')
+  }
 
   // TODO needs much love, barebones to test E2E functionality ASAP
   @ApiOperation({
@@ -26,6 +30,14 @@ export default class TaxController {
     @Body() data: JsonConvertRequestDto,
     @Param('slug') slug: string,
   ): Promise<TaxSignerDataResponseDto> {
-    return this.taxService.getSignerData(data.jsonForm, slug)
+    // TODO remove try-catch & extra logging once we start logging requests
+    try {
+      return this.taxService.getSignerData(data.jsonForm, slug)
+    } catch (error) {
+      this.logger.log(
+        `Error during signerData, slug: ${slug}, data: ${JSON.stringify(data.jsonForm)}`,
+      )
+      throw error
+    }
   }
 }

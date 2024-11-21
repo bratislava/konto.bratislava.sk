@@ -1126,6 +1126,23 @@ const getSucasneByvanieSection = (stepType: StepType) => {
         },
         { variant: 'boxed' },
       ),
+      conditionalFields(
+        createCondition([[['typByvania'], { const: 'institucionalnaStarostlivost' }]]),
+        [
+          customComponentsField(
+            'institucionalnaStarostlivostAlert',
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message:
+                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.',
+              },
+            },
+            {},
+          ),
+        ],
+      ),
       select(
         'dlzkaBytovejNudze',
         {
@@ -1443,7 +1460,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
+            'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
           required: true,
           minimum: 0,
         },
@@ -1540,6 +1557,25 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
 export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
 <% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>
 <% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && ['zenaty', 'rozvedeny', 'vdovec', 'ine'].includes(osobneUdaje?.rodinnyStav) %>
+<% let maRizikovyFaktorVyzadujuciDoklad = (rizikoveFaktory) => {
+  const zoznam = it.helpers.safeArray(rizikoveFaktory?.zoznamRizikovychFaktorov);
+  return zoznam.includes('opustenieUstavnejStarostlivosti') || zoznam.includes('opustenieVazby') || zoznam.includes('opustenieSpecialnehoZariadenia');
+} %>
+<% let getRizikoveFaktoryDokumentyArray = (rizikoveFaktory) => {
+  const dokumenty = [];
+  const zoznam = it.helpers.safeArray(rizikoveFaktory?.zoznamRizikovychFaktorov);
+  
+  if (zoznam.includes('opustenieUstavnejStarostlivosti')) {
+    dokumenty.push('prepúšťacia správa zo zariadenia ústavnej starostlivosti');
+  }
+  if (zoznam.includes('opustenieVazby')) {
+    dokumenty.push('rozhodnutie/doklad o prepustení z Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody alebo resocializačného zariadenia v uplynulých 3 rokoch');
+  }
+  if (zoznam.includes('opustenieSpecialnehoZariadenia')) {
+    dokumenty.push('doklad o opustení špeciálneho výchovného zariadenia v uplynulých 3 rokoch, iba v prípade dobrovoľného pobytu');
+  }
+  return dokumenty;
+} %>
 
 #### Žiadateľ/žiadateľka
 
@@ -1553,14 +1589,17 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>
+<% if (it.helpers.safeString(it.formData.ziadatelZiadatelka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
+<% } %>
 <% if (maPrijem(it.formData.ziadatelZiadatelka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie)) { %>
 - Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
-<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.rizikoveFaktory?.rizikoveFaktoryPritomne)) { %>
-- Rizikové faktory - dokumenty dokazujúce rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti, napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.
+<% if (maRizikovyFaktorVyzadujuciDoklad(it.formData.ziadatelZiadatelka?.rizikoveFaktory)) { %>
+- Rizikové faktory - <%= getRizikoveFaktoryDokumentyArray(it.formData.ziadatelZiadatelka?.rizikoveFaktory).join(', ') %>
 <% } %>
 
 <% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.manzelManzelkaSucastouDomacnosti)) { %>
@@ -1570,6 +1609,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 - Osobné údaje - sobášny list
 <% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(it.formData.manzelManzelka?.situaciaRovnakaAkoVasa) && it.helpers.safeString(it.formData.manzelManzelka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (maPrijem(it.formData.manzelManzelka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy manžela/manželky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
@@ -1589,6 +1631,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% if (it.helpers.safeBoolean(it.formData.druhDruzka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>
+<% if (!it.helpers.safeBoolean(it.formData.druhDruzka?.situaciaRovnakaAkoVasa) && it.helpers.safeString(it.formData.druhDruzka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
+<% } %>
 <% if (maPrijem(it.formData.druhDruzka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy druha/družky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
@@ -1607,6 +1652,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
 <% if (it.helpers.safeBoolean(dieta.osobneUdaje?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(dieta.situaciaRovnakaAkoVasa) && it.helpers.safeString(dieta.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (it.helpers.safeBoolean(dieta.prijem?.student)) { %>
 - Príjem - potvrdenie o návšteve školy
@@ -1633,6 +1681,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% } %>
 <% if (it.helpers.safeBoolean(clen.osobneUdaje?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(clen.situaciaRovnakaAkoVasa) && it.helpers.safeString(clen.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (maPrijem(clen.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy člena/členky domácnosti, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.

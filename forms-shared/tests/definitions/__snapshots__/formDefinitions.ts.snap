@@ -49241,6 +49241,32 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                       "type": "object",
                     },
                     "then": {
+                      "allOf": [
+                        {
+                          "if": {
+                            "properties": {
+                              "typByvania": {
+                                "const": "institucionalnaStarostlivost",
+                              },
+                            },
+                            "required": [
+                              "typByvania",
+                            ],
+                            "type": "object",
+                          },
+                          "then": {
+                            "properties": {
+                              "institucionalnaStarostlivostAlert": {
+                                "anyOf": [
+                                  {},
+                                ],
+                              },
+                            },
+                            "required": [],
+                            "type": "object",
+                          },
+                        },
+                      ],
                       "properties": {
                         "dlzkaBytovejNudze": {
                           "enum": [
@@ -49889,6 +49915,32 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "type": "object",
                                 },
                                 "then": {
+                                  "allOf": [
+                                    {
+                                      "if": {
+                                        "properties": {
+                                          "typByvania": {
+                                            "const": "institucionalnaStarostlivost",
+                                          },
+                                        },
+                                        "required": [
+                                          "typByvania",
+                                        ],
+                                        "type": "object",
+                                      },
+                                      "then": {
+                                        "properties": {
+                                          "institucionalnaStarostlivostAlert": {
+                                            "anyOf": [
+                                              {},
+                                            ],
+                                          },
+                                        },
+                                        "required": [],
+                                        "type": "object",
+                                      },
+                                    },
+                                  ],
                                   "properties": {
                                     "dlzkaBytovejNudze": {
                                       "enum": [
@@ -50605,6 +50657,32 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                   "type": "object",
                                 },
                                 "then": {
+                                  "allOf": [
+                                    {
+                                      "if": {
+                                        "properties": {
+                                          "typByvania": {
+                                            "const": "institucionalnaStarostlivost",
+                                          },
+                                        },
+                                        "required": [
+                                          "typByvania",
+                                        ],
+                                        "type": "object",
+                                      },
+                                      "then": {
+                                        "properties": {
+                                          "institucionalnaStarostlivostAlert": {
+                                            "anyOf": [
+                                              {},
+                                            ],
+                                          },
+                                        },
+                                        "required": [],
+                                        "type": "object",
+                                      },
+                                    },
+                                  ],
                                   "properties": {
                                     "dlzkaBytovejNudze": {
                                       "enum": [
@@ -51094,6 +51172,32 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                         "type": "object",
                                       },
                                       "then": {
+                                        "allOf": [
+                                          {
+                                            "if": {
+                                              "properties": {
+                                                "typByvania": {
+                                                  "const": "institucionalnaStarostlivost",
+                                                },
+                                              },
+                                              "required": [
+                                                "typByvania",
+                                              ],
+                                              "type": "object",
+                                            },
+                                            "then": {
+                                              "properties": {
+                                                "institucionalnaStarostlivostAlert": {
+                                                  "anyOf": [
+                                                    {},
+                                                  ],
+                                                },
+                                              },
+                                              "required": [],
+                                              "type": "object",
+                                            },
+                                          },
+                                        ],
                                         "properties": {
                                           "dlzkaBytovejNudze": {
                                             "enum": [
@@ -51790,6 +51894,32 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
                                         "type": "object",
                                       },
                                       "then": {
+                                        "allOf": [
+                                          {
+                                            "if": {
+                                              "properties": {
+                                                "typByvania": {
+                                                  "const": "institucionalnaStarostlivost",
+                                                },
+                                              },
+                                              "required": [
+                                                "typByvania",
+                                              ],
+                                              "type": "object",
+                                            },
+                                            "then": {
+                                              "properties": {
+                                                "institucionalnaStarostlivostAlert": {
+                                                  "anyOf": [
+                                                    {},
+                                                  ],
+                                                },
+                                              },
+                                              "required": [],
+                                              "type": "object",
+                                            },
+                                          },
+                                        ],
                                         "properties": {
                                           "dlzkaBytovejNudze": {
                                             "enum": [
@@ -52087,7 +52217,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
               "maximalnaVyskaNajomneho": {
                 "minimum": 0,
-                "title": "Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
+                "title": "Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť",
                 "type": "number",
               },
               "preferovanaLokalita": {
@@ -52457,6 +52587,21 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
               "ui:widget": "Select",
             },
+            "institucionalnaStarostlivostAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+            },
             "situaciaRovnakaAkoVasa": {
               "ui:options": {
                 "enumMetadata": [
@@ -52527,6 +52672,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               "situaciaRovnakaAkoVasa",
               "bytovaNudza",
               "typByvania",
+              "institucionalnaStarostlivostAlert",
               "dlzkaBytovejNudze",
             ],
           },
@@ -53342,6 +53488,21 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Select",
         },
+        "institucionalnaStarostlivostAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+        },
         "situaciaRovnakaAkoVasa": {
           "ui:options": {
             "enumMetadata": [
@@ -53412,6 +53573,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "situaciaRovnakaAkoVasa",
           "bytovaNudza",
           "typByvania",
+          "institucionalnaStarostlivostAlert",
           "dlzkaBytovejNudze",
         ],
       },
@@ -54276,6 +54438,21 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               },
               "ui:widget": "Select",
             },
+            "institucionalnaStarostlivostAlert": {
+              "ui:field": "CustomComponents",
+              "ui:fieldReplacesAnyOrOneOf": true,
+              "ui:options": {
+                "customComponents": [
+                  {
+                    "props": {
+                      "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.",
+                      "type": "info",
+                    },
+                    "type": "alert",
+                  },
+                ],
+              },
+            },
             "situaciaRovnakaAkoVasa": {
               "ui:options": {
                 "enumMetadata": [
@@ -54346,6 +54523,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
               "situaciaRovnakaAkoVasa",
               "bytovaNudza",
               "typByvania",
+              "institucionalnaStarostlivostAlert",
               "dlzkaBytovejNudze",
             ],
           },
@@ -55117,6 +55295,21 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Select",
         },
+        "institucionalnaStarostlivostAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+        },
         "situaciaRovnakaAkoVasa": {
           "ui:options": {
             "enumMetadata": [
@@ -55187,6 +55380,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "situaciaRovnakaAkoVasa",
           "bytovaNudza",
           "typByvania",
+          "institucionalnaStarostlivostAlert",
           "dlzkaBytovejNudze",
         ],
       },
@@ -56323,6 +56517,21 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           },
           "ui:widget": "Select",
         },
+        "institucionalnaStarostlivostAlert": {
+          "ui:field": "CustomComponents",
+          "ui:fieldReplacesAnyOrOneOf": true,
+          "ui:options": {
+            "customComponents": [
+              {
+                "props": {
+                  "message": "V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.",
+                  "type": "info",
+                },
+                "type": "alert",
+              },
+            ],
+          },
+        },
         "typByvania": {
           "ui:options": {
             "enumMetadata": [
@@ -56376,6 +56585,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
         "ui:order": [
           "bytovaNudza",
           "typByvania",
+          "institucionalnaStarostlivostAlert",
           "dlzkaBytovejNudze",
         ],
       },

@@ -30,8 +30,9 @@ exports[`getValuesForFields should match snapshots 2`] = `
   "RizikoveFaktory": true,
   "Vek": "menejAko63",
   "ZiadatelBezbarierovyByt": false,
-  "ZiadatelBytovaNudza": false,
+  "ZiadatelBytovaNudza": true,
   "ZiadatelDatumNarodenia": "1985-03-15",
+  "ZiadatelDlzkaBytovejNudze": "menejAko1",
   "ZiadatelEmail": "jana.novakova@email.com",
   "ZiadatelExistujuceDiagnozy": "astma, chronickaParadentoza",
   "ZiadatelFunkcnaPorucha": false,
@@ -48,9 +49,10 @@ exports[`getValuesForFields should match snapshots 2`] = `
   "ZiadatelTrvalyPobytPsc": "81101",
   "ZiadatelTrvalyPobytUlicaACislo": "Hlavná 123",
   "ZiadatelTrvalyPobytVlastnikNehnu": false,
+  "ZiadatelTypSkutocnehoByvania": "institucionalnaStarostlivost",
   "ZiadatelVyzivneVyska": 200,
   "ZiadatelZamestnaniePrijem": 1200,
-  "ZoznamRizikovychFaktorov": "osamelyRodic",
+  "ZoznamRizikovychFaktorov": "opustenieUstavnejStarostlivosti, osamelyRodic",
 }
 `;
 

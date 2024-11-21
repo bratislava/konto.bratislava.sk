@@ -27,6 +27,16 @@ jest.mock('uuid', () => ({
   v1: jest.fn(),
 }))
 
+const createMockReadableStream = (content: string): Readable => {
+  const readableStream = new Readable()
+  // eslint-disable-next-line no-underscore-dangle
+  readableStream._read = () => {}
+  readableStream.push(content)
+  // eslint-disable-next-line unicorn/no-array-push-push
+  readableStream.push(null)
+  return readableStream
+}
+
 describe('NasesUtilsService', () => {
   let service: NasesUtilsService
 
@@ -88,15 +98,6 @@ describe('NasesUtilsService', () => {
   })
 
   describe('createEnvelopeSendMessage', () => {
-    const createMockReadableStream = (content: string): Readable => {
-      const readableStream = new Readable()
-      // eslint-disable-next-line no-underscore-dangle
-      readableStream._read = () => {}
-      readableStream.push(content)
-      readableStream.push(null)
-      return readableStream
-    }
-
     it('should create XML', async () => {
       const mockFiles = [
         {
@@ -150,8 +151,8 @@ describe('NasesUtilsService', () => {
 
       service['minioClientSubservice'].loadFileStream = jest
         .fn()
-        .mockImplementation(async (_: string, filename: string) => 
-          createMockReadableStream(`test string for input: ${filename}`)
+        .mockImplementation(async (_: string, filename: string) =>
+          createMockReadableStream(`test string for input: ${filename}`),
         )
 
       service['taxService'].getFilledInPdfBase64 = jest
@@ -160,8 +161,8 @@ describe('NasesUtilsService', () => {
 
       service['convertService'].generatePdf = jest
         .fn()
-        .mockImplementation(async () => 
-          createMockReadableStream('Summary PDF content with form details')
+        .mockImplementation(async () =>
+          createMockReadableStream('Summary PDF content with form details'),
         )
 
       let returnXmlString = await service['createEnvelopeSendMessage']({

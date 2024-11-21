@@ -159,9 +159,8 @@ export default class NasesUtilsService {
           undefined,
           true,
         )
-        const summaryPdfBase64 = (
-          await this.stream2buffer(summaryPdfReadable)
-        ).toString('base64')
+        const summaryPdfBuffer = await this.stream2buffer(summaryPdfReadable)
+        const summaryPdfBase64 = summaryPdfBuffer.toString('base64')
 
         result.push({
           $: {

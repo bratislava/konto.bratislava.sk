@@ -430,14 +430,11 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
@@ -483,14 +480,11 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
@@ -827,14 +821,11 @@ export const ResponseVerificationDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseVerificationDtoErrorNameEnum =
@@ -893,14 +884,11 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =

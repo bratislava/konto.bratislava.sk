@@ -2317,6 +2317,25 @@ export interface GetFormsResponseDto {
 /**
  *
  * @export
+ * @interface GetSignerDataRequestDto
+ */
+export interface GetSignerDataRequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof GetSignerDataRequestDto
+   */
+  formId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof GetSignerDataRequestDto
+   */
+  jsonForm: object
+}
+/**
+ *
+ * @export
  * @interface GinisDocumentDetailResponseDto
  */
 export interface GinisDocumentDetailResponseDto {
@@ -2626,19 +2645,6 @@ export const InvalidXmlErrorDtoErrorNameEnum = {
 export type InvalidXmlErrorDtoErrorNameEnum =
   (typeof InvalidXmlErrorDtoErrorNameEnum)[keyof typeof InvalidXmlErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface JsonConvertRequestDto
- */
-export interface JsonConvertRequestDto {
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof JsonConvertRequestDto
-   */
-  jsonForm: object
-}
 /**
  *
  * @export
@@ -7450,19 +7456,23 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
      * @param {string} slug
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     taxControllerSignerData: async (
       slug: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'slug' is not null or undefined
       assertParamExists('taxControllerSignerData', 'slug', slug)
-      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
-      assertParamExists('taxControllerSignerData', 'jsonConvertRequestDto', jsonConvertRequestDto)
+      // verify required parameter 'getSignerDataRequestDto' is not null or undefined
+      assertParamExists(
+        'taxControllerSignerData',
+        'getSignerDataRequestDto',
+        getSignerDataRequestDto,
+      )
       const localVarPath = `/tax/signer-data/{slug}`.replace(
         `{${'slug'}}`,
         encodeURIComponent(String(slug)),
@@ -7488,7 +7498,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        jsonConvertRequestDto,
+        getSignerDataRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -7512,20 +7522,20 @@ export const TaxApiFp = function (configuration?: Configuration) {
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
      * @param {string} slug
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async taxControllerSignerData(
       slug: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerSignerData(
         slug,
-        jsonConvertRequestDto,
+        getSignerDataRequestDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -7557,17 +7567,17 @@ export const TaxApiFactory = function (
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
      * @param {string} slug
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     taxControllerSignerData(
       slug: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<TaxSignerDataResponseDto> {
       return localVarFp
-        .taxControllerSignerData(slug, jsonConvertRequestDto, options)
+        .taxControllerSignerData(slug, getSignerDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -7584,18 +7594,18 @@ export class TaxApi extends BaseAPI {
    * Returns input data for ditec signer from JSON data and shcema version id
    * @summary
    * @param {string} slug
-   * @param {JsonConvertRequestDto} jsonConvertRequestDto
+   * @param {GetSignerDataRequestDto} getSignerDataRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof TaxApi
    */
   public taxControllerSignerData(
     slug: string,
-    jsonConvertRequestDto: JsonConvertRequestDto,
+    getSignerDataRequestDto: GetSignerDataRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return TaxApiFp(this.configuration)
-      .taxControllerSignerData(slug, jsonConvertRequestDto, options)
+      .taxControllerSignerData(slug, getSignerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

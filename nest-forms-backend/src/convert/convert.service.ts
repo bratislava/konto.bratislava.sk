@@ -206,6 +206,10 @@ export default class ConvertService {
     formId: string,
     formDefinition: FormDefinition,
     clientFiles?: ClientFileInfo[],
+    /**
+     * If true, the summary PDF instead of government sheet will be generated for tax form.
+     */
+    forceSummaryPdfForTaxForm?: boolean,
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -222,7 +226,10 @@ export default class ConvertService {
       )
     }
 
-    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
+    if (
+      isSlovenskoSkTaxFormDefinition(formDefinition) &&
+      !forceSummaryPdfForTaxForm
+    ) {
       return this.generateTaxPdf(jsonForm, formId)
     }
 

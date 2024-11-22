@@ -118,6 +118,7 @@ export default class TaxService {
 
   // apart from getting tax specific xml data this might work for other signed forms - change this when accommodating those
   getSignerData(
+    formId: string,
     formDataJson: Prisma.JsonObject,
     formSlug: string,
   ): TaxSignerDataResponseDto {
@@ -160,7 +161,7 @@ export default class TaxService {
     }
 
     return {
-      objectId: 'signed_form',
+      objectId: `object_${formId}`,
       objectDescription: '',
       objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       xdcXMLData: xmlData,

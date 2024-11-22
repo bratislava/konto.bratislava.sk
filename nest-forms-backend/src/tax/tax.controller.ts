@@ -1,7 +1,7 @@
 import { Body, Controller, Logger, Param, Post } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
-import { JsonConvertRequestDto } from '../convert/dtos/form.dto'
+import { GetSignerDataRequestDto } from '../convert/dtos/form.dto'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 import TaxService from './tax.service'
 
@@ -27,12 +27,12 @@ export default class TaxController {
   })
   @Post('signer-data/:slug')
   async signerData(
-    @Body() data: JsonConvertRequestDto,
+    @Body() data: GetSignerDataRequestDto,
     @Param('slug') slug: string,
   ): Promise<TaxSignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
-      return this.taxService.getSignerData(data.jsonForm, slug)
+      return this.taxService.getSignerData(data.formId, data.jsonForm, slug)
     } catch (error) {
       this.logger.log(
         `Error during signerData, slug: ${slug}, data: ${JSON.stringify(data.jsonForm)}`,

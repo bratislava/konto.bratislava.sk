@@ -1,5 +1,6 @@
 import {
   arrayField,
+  checkbox,
   checkboxGroup,
   conditionalFields,
   fileUpload,
@@ -103,6 +104,18 @@ describe('defaultFormState', () => {
       checkboxGroupRequired: [],
       arrayFieldRequired: [{}],
     })
+  })
+
+  it('getDefaultForm should not prefill const values', () => {
+    const definition = object('defaultFormState', {}, {}, [
+      checkbox(
+        'checkboxWithConstValue',
+        { title: 'Checkbox with const value', required: true, constValue: true },
+        { checkboxLabel: 'I agree' },
+      ),
+    ])
+
+    expect(baGetDefaultFormState(definition.schema, {})).toEqual({})
   })
 })
 

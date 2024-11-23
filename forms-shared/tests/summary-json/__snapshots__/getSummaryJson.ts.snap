@@ -10566,7 +10566,7 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
             },
           ],
           "id": "root_ineOkolnosti_maximalnaVyskaNajomneho",
-          "label": "Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť",
+          "label": "Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
           "type": "Field",
           "value": 700,
         },

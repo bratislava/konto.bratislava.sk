@@ -2382,7 +2382,7 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť">
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
           <StringValue>700</StringValue>
         </Field>
       </Step>

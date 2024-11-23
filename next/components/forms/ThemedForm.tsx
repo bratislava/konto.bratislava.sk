@@ -1,4 +1,4 @@
-import { ThemeProps, withTheme } from '@rjsf/core'
+import { getDefaultRegistry, ThemeProps, withTheme } from '@rjsf/core'
 import { ArrayFieldTemplateItemType, FieldProps, WidgetProps } from '@rjsf/utils'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
@@ -20,6 +20,11 @@ import SelectMultipleWidgetRJSF from './widget-wrappers/SelectMultipleWidgetRJSF
 import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
 import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
+const defaultRegistry = getDefaultRegistry()
+const { SchemaField } = defaultRegistry.fields
+
+const prev = {}
+
 // ComponentType<WidgetProps> must be used for each widget, because the library won't accept our custom overridden
 // `options` property.
 const theme: ThemeProps = {
@@ -39,7 +44,15 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: CustomComponentsFieldRJSF,
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    SchemaField: (props: FieldProps) => {
+      // const { schema, uiSchema } = props
+      // const { schema: newSchema, uiSchema: newUiSchema } = useMemo(() => {
+      //   return mergeUiSchema(schema as any, uiSchema as any)
+      // }, [schema, uiSchema])
+
+      return <SchemaField {...props} uiSchema={props.schema.uiSchema} />
+    },
+  } satisfies Record<BaFieldType & 'SchemaField', ComponentType<FieldProps>>,
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

@@ -1,4 +1,4 @@
-import { FormProps, ThemeProps, withTheme } from '@rjsf/core'
+import { FormProps, getDefaultRegistry, ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
@@ -61,6 +61,9 @@ type SummaryXmlFormFieldAttributes = {
 }
 
 type CustomElement<P = {}> = DetailedHTMLProps<HTMLAttributes<HTMLElement> & P, HTMLElement>
+
+const defaultRegistry = getDefaultRegistry()
+const { SchemaField } = defaultRegistry.fields
 
 declare module 'react' {
   namespace JSX {
@@ -183,7 +186,15 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: () => null,
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    SchemaField: (props: FieldProps) => {
+      // const { schema, uiSchema } = props
+      // const { schema: newSchema, uiSchema: newUiSchema } = useMemo(() => {
+      //   return mergeUiSchema(schema as any, uiSchema as any)
+      // }, [schema, uiSchema])
+
+      return <SchemaField {...props} uiSchema={props.schema.uiSchema} />
+    },
+  } satisfies Record<BaFieldType & 'SchemaField', ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)

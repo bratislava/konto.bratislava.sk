@@ -2,7 +2,7 @@ import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
+import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
 import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
@@ -31,7 +31,9 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <h6 className="text-h6 grow">{t('all_steps')}</h6>
+                <Heading slot="title" className="text-h6 grow">
+                  {t('all_steps')}
+                </Heading>
                 <AriaButton
                   className="flex h-full cursor-pointer flex-col justify-center"
                   onPress={close}

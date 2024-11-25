@@ -218,6 +218,10 @@
     "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
     "button_title": "Vymazať"
   },
+  "form_landing_page": {
+    "redirect_info": "Presmerovávam na formulár.",
+    "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
+  },
   "tax_form_pdf_export_modal": {
     "preparing": "Pripravujeme vaše priznanie",
     "preparing_description": "Sťahovanie PDF začne automaticky po pripravení priznania.",

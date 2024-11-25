@@ -44,7 +44,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
       ),
     networkMode: 'always',
     onMutate: () => {
-      openSnackbarInfo(t('tax_form_landing_page.redirect_info'))
+      openSnackbarInfo(t('form_landing_page.redirect_info'))
     },
     onSuccess: async (response) => {
       closeSnackbarInfo()
@@ -54,7 +54,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     },
     onError: () => {
       closeSnackbarInfo()
-      openSnackbarError(t('tax_form_landing_page.redirect_error'))
+      openSnackbarError(t('form_landing_page.redirect_error'))
     },
   })
 

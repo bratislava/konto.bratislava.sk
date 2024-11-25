@@ -52,6 +52,14 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
  *
  * This should be a default behavior, but the maintainers decided to keep it as an experimental feature as it would be
  * a breaking change.
+ *
+ * `constAsDefaults` strategy:
+ * According to JSON Schema spec, the only suitable value for const is the value itself, therefore RJSF adopted that
+ * the const fields would be pre-filled with the value itself. This is not suitable for our use case, as we use the const
+ * for agreement checkboxes and user has to explicitly check them.
+ *
+ * Context:
+ * https://github.com/rjsf-team/react-jsonschema-form/issues/4344
  */
 export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: {
@@ -59,6 +67,7 @@ export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior =
     computeSkipPopulate: (validator, schema) => isFileMultipleSchema(schema),
   },
   allOf: 'populateDefaults',
+  constAsDefaults: 'never',
 }
 
 export const baGetDefaultFormState = (

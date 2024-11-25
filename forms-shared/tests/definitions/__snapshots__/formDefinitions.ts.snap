@@ -1382,9 +1382,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schemas match
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -3277,9 +3275,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
           "suhlasy": {
             "properties": {
               "suhlasPodmienkyPrijatiaOdpadu": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
                 "type": "boolean",
               },
@@ -3289,9 +3285,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 ],
               },
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -3301,9 +3295,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schemas matc
                 ],
               },
               "suhlasZasadySpravavania": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
               },
@@ -5289,9 +5281,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
                 "type": "string",
               },
               "suhlasSPlatbou": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Vyjadrenie súhlasu s platbou",
                 "type": "boolean",
               },
@@ -5316,9 +5306,7 @@ exports[`Form definitions olo-kolo-taxi schemas match snapshot 1`] = `
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -6324,9 +6312,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schemas matc
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -7139,9 +7125,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schemas match snap
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -7848,9 +7832,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -8412,9 +8394,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
                 "type": "string",
               },
               "suhlasSPlatbou": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Vyjadrenie súhlasu s platbou",
                 "type": "boolean",
               },
@@ -8440,9 +8420,7 @@ exports[`Form definitions olo-olo-taxi schemas match snapshot 1`] = `
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -9703,9 +9681,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -11039,9 +11015,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
           "suhlasy": {
             "properties": {
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -12585,9 +12559,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
           "suhlasy": {
             "properties": {
               "suhlasPodmienkyPrijatiaOdpadu": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas s Podmienkami prijatia odpadu do ZEVO",
                 "type": "boolean",
               },
@@ -12597,9 +12569,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                 ],
               },
               "suhlasSVop": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Všeobecnými obchodnými podmienkami OLO",
                 "type": "boolean",
               },
@@ -12609,9 +12579,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schemas m
                 ],
               },
               "suhlasZasadySpravavania": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Súhlas so Zásadami správania sa zákazníkov v ZEVO",
                 "type": "boolean",
               },
@@ -52270,9 +52238,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
           "sucetPrijmovCestneVyhlasenie": {
             "properties": {
               "cestneVyhlasenie": {
-                "enum": [
-                  true,
-                ],
+                "const": true,
                 "title": "Čestné vyhlásenie",
                 "type": "boolean",
               },

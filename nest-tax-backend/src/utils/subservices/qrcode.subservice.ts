@@ -19,6 +19,7 @@ export class QrCodeSubservice {
           currencyCode: 'EUR',
           variableSymbol: qrCodeData.variableSymbol,
           specificSymbol: qrCodeData.specificSymbol,
+          paymentNote: 'QR_WEB',
         },
       ],
     }

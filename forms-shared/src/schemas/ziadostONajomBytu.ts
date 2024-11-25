@@ -1460,7 +1460,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
+            'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
           required: true,
           minimum: 0,
         },

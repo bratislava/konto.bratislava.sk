@@ -52185,7 +52185,7 @@ exports[`Form definitions ziadost-o-najom-bytu schemas match snapshot 1`] = `
               },
               "maximalnaVyskaNajomneho": {
                 "minimum": 0,
-                "title": "Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
+                "title": "Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť",
                 "type": "number",
               },
               "preferovanaLokalita": {

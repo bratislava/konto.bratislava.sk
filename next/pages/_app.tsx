@@ -35,6 +35,7 @@ export type GlobalAppProps = {
 
 const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const [queryClient] = useState(() => new QueryClient())
+  const allowCookies = !pageProps.appProps?.externallyEmbedded
 
   return (
     <>
@@ -80,7 +81,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                     <div id="root">
                       <Component {...pageProps} />
                     </div>
-                    <CookieConsent externallyEmbedded={pageProps.appProps?.externallyEmbedded} />
+                    {allowCookies ? <CookieConsent /> : null}
                   </NavMenuContextProvider>
                 </PlausibleProvider>
               </SnackbarProvider>

@@ -58,6 +58,8 @@ export function baFastMergeAllOf(schema: BAJSONSchema7): BAJSONSchema7 {
   }
 
   const newSchema = {
+    // The retrieved schemas from RJSF don't have type defined, but the merge implementation adds it, so it is
+    // consistent to add it here as well.
     type: 'object',
     ...schema,
     properties: { ...schema.properties },

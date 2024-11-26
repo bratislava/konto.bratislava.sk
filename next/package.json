@@ -129,7 +129,7 @@
     "@next/bundle-analyzer": "14.2.3",
     "@svgr/webpack": "6.5.1",
     "@tanstack/eslint-plugin-query": "5.27.7",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^13.4.0",
     "@types/adm-zip": "^0.5.5",
     "@types/js-cookie": "^3.0.6",

@@ -13,23 +13,6 @@ type CookiesAndTrackingProps = {
   externallyEmbedded?: boolean
 }
 
-interface CookieOptions {
-  expires?: number | Date
-  path?: string
-  domain?: string
-  secure?: boolean
-  httpOnly?: boolean
-  sameSite?: 'strict' | 'lax' | 'none'
-}
-
-interface CookiesHandler {
-  get(name: string): string | undefined
-  set(name: string, value: string, options?: CookieOptions): void
-  remove(name: string, options?: CookieOptions): void
-}
-
-const cookiesHandler: CookiesHandler = Cookies as unknown as CookiesHandler
-
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)
 
@@ -43,7 +26,7 @@ export const CookiesAndTracking = ({ externallyEmbedded }: CookiesAndTrackingPro
 
   const refresh = useCallback(async () => {
     try {
-      const consentValue = cookiesHandler.get('gdpr-consents')
+      const consentValue = Cookies.get('gdpr-consents')
       if (!consentValue || typeof consentValue !== 'string') {
         setBannerDismissed(false)
         return
@@ -69,7 +52,7 @@ export const CookiesAndTracking = ({ externallyEmbedded }: CookiesAndTrackingPro
       if (typeof value !== 'object') return
       const consentValue = pickConsents(value)
       const mergedConsents = { ...consents, ...consentValue }
-      cookiesHandler.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
+      Cookies.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
       setConsentsState(mergedConsents)
     },
     [consents],

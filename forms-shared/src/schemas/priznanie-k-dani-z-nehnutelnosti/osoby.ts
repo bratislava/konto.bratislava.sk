@@ -1,5 +1,5 @@
 import { conditionalFields, input, object, radioGroup, select } from '../../generator/functions'
-import { createCamelCaseOptions, createCondition } from '../../generator/helpers'
+import { createCamelCaseItems, createCondition } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { esbsNationalityCiselnik } from './esbsCiselniky'
 
@@ -15,7 +15,7 @@ const rodneCisloField = input(
   'rodneCislo',
   { type: 'text', title: 'Rodné číslo', required: true },
   {
-    helptext:
+    helptextFooter:
       'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.',
   },
 )
@@ -52,7 +52,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
         'ulica',
         { type: 'text', title: 'Ulica', required: true },
         {
-          helptext: {
+          helptextFooter: {
             [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
             [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
               'Zadajte ulicu miesta podnikania podľa živnostenského registra.',
@@ -85,9 +85,9 @@ const statField = select(
   {
     title: 'Štát',
     required: true,
-    options: esbsNationalityCiselnik.map(({ Name, Code }) => ({
+    items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
       value: Code,
-      title: Name,
+      label: Name,
       isDefault: Code === '703' ? true : undefined,
     })),
   },
@@ -98,7 +98,7 @@ const emailField = (required = true) =>
   input(
     'email',
     { title: 'E-mail', type: 'email', required },
-    { helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
+    { helptextFooter: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   )
 
 const telefonField = (required = true) =>
@@ -115,118 +115,118 @@ const pravnaFormaField = select(
   {
     title: 'Právna forma',
     required: true,
-    options: [
+    items: [
       {
         value: '111',
-        title: '111 Verejná obchodná spoločnosť',
+        label: '111 Verejná obchodná spoločnosť',
       },
       {
         value: '112',
-        title: '112 Spoločnosť s ručením obmedzeným',
+        label: '112 Spoločnosť s ručením obmedzeným',
       },
       {
         value: '113',
-        title: '113 Komanditná spoločnosť',
+        label: '113 Komanditná spoločnosť',
       },
       {
         value: '117',
-        title: '117 Nadácia',
+        label: '117 Nadácia',
       },
       {
         value: '118',
-        title: '118 Neinvestičný fond',
+        label: '118 Neinvestičný fond',
       },
       {
         value: '119',
-        title: '119 Nezisková organizácia',
+        label: '119 Nezisková organizácia',
       },
       {
         value: '121',
-        title: '121 Akciová spoločnosť',
+        label: '121 Akciová spoločnosť',
       },
       {
         value: '205',
-        title: '205 Družstvo',
+        label: '205 Družstvo',
       },
       {
         value: '271',
-        title: '271 Spoločenstvá vlastníkov pozemkov, bytov a pod.',
+        label: '271 Spoločenstvá vlastníkov pozemkov, bytov a pod.',
       },
       {
         value: '301',
-        title: '301 Štátny podnik',
+        label: '301 Štátny podnik',
       },
       {
         value: '311',
-        title: '311 Národná banka Slovenska',
+        label: '311 Národná banka Slovenska',
       },
       {
         value: '312',
-        title: '312 Banka – štátny peňažný ústav',
+        label: '312 Banka – štátny peňažný ústav',
       },
       {
         value: '321',
-        title: '321 Rozpočtová organizácia',
+        label: '321 Rozpočtová organizácia',
       },
       {
         value: '331',
-        title: '331 Príspevková organizácia',
+        label: '331 Príspevková organizácia',
       },
       {
         value: '381',
-        title: '381 Fondy',
+        label: '381 Fondy',
       },
       {
         value: '382',
-        title: '382 Verejnoprávna inštitúcia',
+        label: '382 Verejnoprávna inštitúcia',
       },
       {
         value: '421',
-        title: '421 Zahraničná osoba',
+        label: '421 Zahraničná osoba',
       },
       {
         value: '434',
-        title: '434 Doplnková dôchodková poisťovňa',
+        label: '434 Doplnková dôchodková poisťovňa',
       },
       {
         value: '445',
-        title: '445 Komoditná burza',
+        label: '445 Komoditná burza',
       },
       {
         value: '701',
-        title: '701 Združenie (zväz, spolok, spoločnosť, klub a iné)',
+        label: '701 Združenie (zväz, spolok, spoločnosť, klub a iné)',
       },
       {
         value: '711',
-        title: '711 Politická strana, politické hnutie',
+        label: '711 Politická strana, politické hnutie',
       },
       {
         value: '721',
-        title: '721 Cirkevná organizácia',
+        label: '721 Cirkevná organizácia',
       },
       {
         value: '741',
-        title: '741 Stavovská organizácia – profesná komora',
+        label: '741 Stavovská organizácia – profesná komora',
       },
       {
         value: '745',
-        title: '745 Komora (s vynimkou profesných komôr)',
+        label: '745 Komora (s vynimkou profesných komôr)',
       },
       {
         value: '751',
-        title: '751 Záujmové združenie právnických osôb',
+        label: '751 Záujmové združenie právnických osôb',
       },
       {
         value: '801',
-        title: '801 Obec (obecný úrad)',
+        label: '801 Obec (obecný úrad)',
       },
       {
         value: '921',
-        title: '921 Medzinárodné organizácie a združenia',
+        label: '921 Medzinárodné organizácie a združenia',
       },
       {
         value: '931',
-        title: '931 Zastúpenie zahraničnej právnickej osoby',
+        label: '931 Zastúpenie zahraničnej právnickej osoby',
       },
     ],
   },
@@ -243,7 +243,7 @@ const pravnyVztahKPOField = select(
   'pravnyVztahKPO',
   {
     title: 'Vyberte právny vzťah k právnickej osobe, za ktorú podávate priznanie',
-    options: createCamelCaseOptions(['štatutárny zástupca', 'zástupca', 'správca'], false),
+    items: createCamelCaseItems(['štatutárny zástupca', 'zástupca', 'správca'], false),
     required: true,
   },
   {},
@@ -274,9 +274,9 @@ const korespondencnaAdresaField = radioGroup(
     type: 'boolean',
     title: 'Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?',
     required: true,
-    options: [
-      { value: true, title: 'Áno', isDefault: true },
-      { value: false, title: 'Nie' },
+    items: [
+      { value: true, label: 'Áno', isDefault: true },
+      { value: false, label: 'Nie' },
     ],
   },
   {
@@ -362,9 +362,9 @@ const rovnakaAdresaField = radioGroup(
     type: 'boolean',
     title: 'Má trvalý pobyt na rovnakej adrese ako vy?',
     required: true,
-    options: [
-      { value: true, title: 'Áno', isDefault: true },
-      { value: false, title: 'Nie' },
+    items: [
+      { value: true, label: 'Áno', isDefault: true },
+      { value: false, label: 'Nie' },
     ],
   },
   {

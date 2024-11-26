@@ -5,7 +5,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -14,7 +13,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 
@@ -31,11 +30,7 @@ export default schema(
           type: 'string',
           title: 'Žiadam ako',
           required: true,
-          options: createStringOptions([
-            'Fyzická osoba',
-            'Právnická osoba',
-            'Správcovská spoločnosť',
-          ]),
+          items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
         },
         { variant: 'boxed', orientations: 'column' },
       ),
@@ -77,7 +72,7 @@ export default schema(
         input(
           'konatel',
           { type: 'text', title: 'Konateľ', required: true },
-          { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+          { helptext: 'Uveďte meno a priezvisko konateľa' },
         ),
         input(
           'zastupeny',
@@ -87,7 +82,7 @@ export default schema(
             required: true,
           },
           {
-            helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+            helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
           },
         ),
       ]),
@@ -122,7 +117,7 @@ export default schema(
                   title: 'Zasielanie faktúry elektronicky',
                 },
                 {
-                  helptextHeader:
+                  helptext:
                     'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
                   checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
                   variant: 'boxed',
@@ -157,14 +152,14 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
             {
               title: 'Vyberte druh odpadu',
               required: true,
-              options: createStringOptions([
+              items: createStringItems([
                 'Zmesový komunálny odpad',
                 'Kuchynský biologicky rozložiteľný odpad',
                 'Jedlé oleje a tuky',
@@ -183,7 +178,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -205,15 +200,14 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '23 l zberná nádoba',
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                   ]),
                 },
                 {
-                  helptextHeader:
-                    '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.',
+                  helptext: '23 l zberná nádoba sa poskytuje iba pre odvoz z rodinných domov.',
                 },
               ),
             ],
@@ -224,12 +218,12 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions(['120 l zberná nádoba']),
+                items: createStringItems(['120 l zberná nádoba']),
               },
               {
-                helptextHeader: markdownText(
+                helptext:
                   'Služba sa poskytuje iba pre bytové doby a firmy. Pre rodinné domy sú určené nádoby na [zberné hniezda](https://www.olo.sk/zberne-hniezda/).',
-                ),
+                helptextMarkdown: true,
               },
             ),
           ]),
@@ -239,7 +233,7 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   '120 l zberná nádoba',
                   '240 l zberná nádoba',
                   '1100 l zberná nádoba',
@@ -260,7 +254,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -278,7 +272,7 @@ export default schema(
               {
                 title: 'Vyberte objem nádoby',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   '120 l zberná nádoba',
                   '240 l zberná nádoba',
                   '1100 l zberná nádoba',
@@ -298,7 +292,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions(['120 l zberná nádoba', '240 l zberná nádoba']),
+                  items: createStringItems(['120 l zberná nádoba', '240 l zberná nádoba']),
                 },
                 {},
               ),
@@ -313,7 +307,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         },
       ),
@@ -324,7 +318,7 @@ export default schema(
           required: false,
         },
         {
-          helptextHeader: 'Špecifikujte individuálne požiadavky.',
+          helptext: 'Špecifikujte individuálne požiadavky.',
         },
       ),
     ]),
@@ -342,6 +336,7 @@ export default schema(
         },
       ),
       customComponentsField(
+        'suhlasSVopLink',
         {
           type: 'additionalLinks',
           props: {

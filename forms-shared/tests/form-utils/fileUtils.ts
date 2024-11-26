@@ -10,14 +10,14 @@ describe('fileUtils', () => {
       'fakeFileSelect',
       {
         title: 'Fake file select',
-        options: [
+        items: [
           {
             value: 'e37359e2-2547-42a9-82d6-d40054f17da0',
-            title: 'Fake file 1',
+            label: 'Fake file 1',
           },
           {
             value: '8bc77372-b48c-4b99-ae46-0df42bf7f1bb',
-            title: 'Fake file 2',
+            label: 'Fake file 2',
           },
         ],
       },

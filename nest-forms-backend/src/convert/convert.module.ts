@@ -12,14 +12,12 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertController from './convert.controller'
 import ConvertService from './convert.service'
-import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Module({
   controllers: [ConvertController],
   imports: [FormsModule, ScannerClientModule, FilesModule, TaxModule],
   providers: [
     ConvertService,
-    JsonXmlConvertService,
     ThrowerErrorGuard,
     PrismaService,
     FormsService,

@@ -5,7 +5,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -13,11 +12,7 @@ import {
   select,
   step,
 } from '../../generator/functions'
-import {
-  createCondition,
-  createStringOptions,
-  createStringOptionsV2,
-} from '../../generator/helpers'
+import { createCondition, createStringItems, createStringItemsV2 } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { safeString } from '../../form-utils/safeData'
 import { GenericObjectType } from '@rjsf/utils'
@@ -39,7 +34,7 @@ const getFakturacia = (novyOdberatel: boolean) =>
           title: 'Súhlasím so zaslaním elektronickej faktúry',
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
@@ -72,17 +67,17 @@ export default schema(
           type: 'string',
           title: 'Typ odberateľa',
           required: true,
-          options: createStringOptionsV2([
+          items: createStringItemsV2([
             {
-              title: 'Nový',
+              label: 'Nový',
               description: 'Nemám uzavretú zmluvu',
             },
             {
-              title: 'Existujúci',
+              label: 'Existujúci',
               description: 'Mám uzavretú zmluvu',
             },
             {
-              title: 'Zmena odberateľa',
+              label: 'Zmena odberateľa',
               description: 'Napr. preberám prevádzku alebo správu nehnuteľnosti',
             },
           ]),
@@ -146,7 +141,7 @@ export default schema(
           datePicker(
             'datumZmeny',
             { title: 'Dátum zmeny', required: true },
-            { helptextHeader: 'Uveďte dátum predpokladanej zmeny odberateľa' },
+            { helptext: 'Uveďte dátum predpokladanej zmeny odberateľa' },
           ),
         ],
         [input('dic', { type: 'text', title: 'DIČ', required: true }, {})],
@@ -191,9 +186,9 @@ export default schema(
             type: 'boolean',
             title: 'Chcem vykonať zmeny v počte nádob alebo ohľadom frekvencie odvozu',
             required: true,
-            options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie' },
+            items: [
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie' },
             ],
           },
           { variant: 'boxed', orientations: 'row' },
@@ -213,23 +208,23 @@ export default schema(
           input(
             'miestoDodania',
             { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           select(
             'druhOdpadu',
             {
               title: 'Vyberte druh odpadu',
               required: true,
-              options: createStringOptions([
+              items: createStringItems([
                 'Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)',
                 'Plasty (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)',
                 'Sklo (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)',
               ]),
             },
             {
-              helptextHeader: markdownText(
+              helptext:
                 'Vyberte len 1 komoditu. Správcovia nehnuteľností v prípade Kuchynského biologicky rozložiteľného odpadu riešia zapojenie a zmeny v systéme zapojenia na Magistráte hlavného mesta. **Zmesový komunálny odpad sa rieši na** [Magistráte hlavného mesta](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/poplatok-za-komunalne-odpady-a-drobne-stavebne-odpady).',
-              ),
+              helptextMarkdown: true,
             },
           ),
           conditionalFields(
@@ -250,7 +245,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1100 l zberná nádoba',
@@ -265,7 +260,7 @@ export default schema(
                 {
                   title: 'Frekvencia odvozov',
                   required: true,
-                  options: createStringOptions(['1 x do týždňa', '2 x do týždňa']),
+                  items: createStringItems(['1 x do týždňa', '2 x do týždňa']),
                 },
                 {},
               ),
@@ -287,7 +282,7 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  options: createStringOptions([
+                  items: createStringItems([
                     '120 l zberná nádoba',
                     '240 l zberná nádoba',
                     '1800 l zvon na sklo',
@@ -306,7 +301,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: createStringOptions(['1 x do týždňa']),
+                      items: createStringItems(['1 x do týždňa']),
                     },
                     {},
                   ),
@@ -320,7 +315,7 @@ export default schema(
                     {
                       title: 'Frekvencia odvozov',
                       required: true,
-                      options: [{ value: '1x_za_4_tyzdne', title: '1 x za 4 týždne' }],
+                      items: [{ value: '1x_za_4_tyzdne', label: '1 x za 4 týždne' }],
                     },
                     {},
                   ),
@@ -331,7 +326,7 @@ export default schema(
           number(
             'pocetNadob',
             { type: 'number', title: 'Počet nádob', required: true },
-            { helptextHeader: 'Uveďte počet nádob' },
+            { helptext: 'Uveďte počet nádob' },
           ),
         ],
       ),
@@ -355,6 +350,7 @@ export default schema(
         },
       ),
       customComponentsField(
+        'suhlasSVopLink',
         {
           type: 'additionalLinks',
           props: {
@@ -374,7 +370,13 @@ export default schema(
 
 export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail = (
   formData: GenericObjectType,
-) => safeString(formData.ziadatel?.email)
+) => {
+  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
+    return safeString(formData.ziadatel?.novyEmail)
+  }
+
+  return safeString(formData.ziadatel?.email)
+}
 
 export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName = (
   formData: GenericObjectType,

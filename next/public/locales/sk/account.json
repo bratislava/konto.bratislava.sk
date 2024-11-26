@@ -571,8 +571,6 @@
   "land_tax": "Daň z pozemkov",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné metódy a spôsob oznámenia výšky dane",
-  "constant_symbol": "Konštantný symbol",
-  "constant_symbol_number": "8148",
   "variable_symbol": "Variabilný symbol",
   "tax_due": "Splatnosť dane",
   "card_payment": "Platba kartou",

@@ -3,7 +3,6 @@ import {
   conditionalStep,
   fileUpload,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -11,7 +10,7 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import { createCondition, createStringItems } from '../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 
 const umiestnenieADizajn = [
@@ -23,9 +22,9 @@ const umiestnenieADizajn = [
     },
     {
       type: 'dragAndDrop',
-      helptextHeader: markdownText(
+      helptext:
         'Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.',
-      ),
+      helptextMarkdown: true,
     },
   ),
   fileUpload(
@@ -36,9 +35,9 @@ const umiestnenieADizajn = [
     },
     {
       type: 'dragAndDrop',
-      helptextHeader: markdownText(
+      helptext:
         'Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.\n\n Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.',
-      ),
+      helptextMarkdown: true,
     },
   ),
 ]
@@ -104,13 +103,13 @@ export default schema(
             type: 'string',
             title: 'O aký pozemok máte záujem?',
             required: true,
-            options: [
+            items: [
               {
                 value: 'predschvalenyPozemok',
-                title: 'Predschválený mestský pozemok',
+                label: 'Predschválený mestský pozemok',
                 isDefault: true,
               },
-              { value: 'inyPozemok', title: 'Iný mestský pozemok' },
+              { value: 'inyPozemok', label: 'Iný mestský pozemok' },
             ],
           },
           {
@@ -124,7 +123,7 @@ export default schema(
             {
               title: 'Ponuka predschválených mestských pozemkov',
               required: true,
-              options: createStringOptions(
+              items: createStringItems(
                 [
                   'Azalková',
                   'Budatínska A',
@@ -145,9 +144,9 @@ export default schema(
               ),
             },
             {
-              helptextHeader: markdownText(
+              helptext:
                 'Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.',
-              ),
+              helptextMarkdown: true,
             },
           ),
         ]),
@@ -166,7 +165,7 @@ export default schema(
             {
               title: 'Mestská časť, v ktorej sa pozemok nachádza',
               required: true,
-              options: createStringOptions(
+              items: createStringItems(
                 [
                   'Čunovo',
                   'Devín',
@@ -200,9 +199,10 @@ export default schema(
             },
             {
               size: 'medium',
-              helptextHeader: markdownText(
+              helptext:
                 'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).',
-              ),
+
+              helptextMarkdown: true,
             },
           ),
         ]),
@@ -222,9 +222,9 @@ export default schema(
           },
           {
             placeholder: 'Popíšte',
-            helptextHeader: markdownText(
+            helptext:
               'Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.',
-            ),
+            helptextMarkdown: true,
           },
         ),
         textArea(
@@ -232,7 +232,7 @@ export default schema(
           { title: 'Súhlas miestnej komunity', required: true },
           {
             placeholder: 'Popíšte',
-            helptextHeader:
+            helptext:
               'Dôležitý aspekt legitimity je zapojenie okolitej komunity – organizačný tím by mal získať súhlas miestnych obyvateľov a obyvateliek, ktorí priestor v súčasnosti využívajú.',
           },
         ),
@@ -252,7 +252,7 @@ export default schema(
           },
           {
             placeholder: 'Popíšte',
-            helptextHeader:
+            helptext:
               'Kto a akým spôsobom bude zabezpečovať prevádzku záhrady z hľadiska údržby zelene (napríklad kosenie) a starostlivosti o poriadok? Ako bude zabezpečený odpad? Ideálne je, napríklad, zaviazať sa ku zero-waste režimu a každý, kto vytvorí odpad bude zodpovedný za jeho likvidáciu.',
           },
         ),
@@ -264,7 +264,7 @@ export default schema(
           },
           {
             placeholder: 'Popíšte',
-            helptextHeader:
+            helptext:
               'Ako zabezpečíte otvorenosť projektu, kto bude mať priamy či nepriamy úžitok z projektu, ako vyberiete, kto bude záhradkár? Ako sa vysporiadate so situáciou, ak budete mať väčší záujem o záhradkárčenie, než budete mať kapacitu nasýtiť?',
           },
         ),
@@ -276,7 +276,7 @@ export default schema(
           },
           {
             placeholder: 'Popíšte',
-            helptextHeader:
+            helptext:
               'Aké budete mať členské poplatky? Využijete na tvorbu záhrady granty? Aké zdroje už máte a aké plánujete získať? V prípade, že už máte (predbežný) rozpočet, nahrajte ho do poľa nižšie.',
           },
         ),
@@ -327,7 +327,7 @@ export default schema(
           },
           {
             type: 'dragAndDrop',
-            helptextHeader:
+            helptext:
               'Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.',
           },
         ),

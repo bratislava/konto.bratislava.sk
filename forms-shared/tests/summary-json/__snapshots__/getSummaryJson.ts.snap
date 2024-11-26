@@ -662,18 +662,6 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
           "displayValues": [
             {
               "type": "String",
-              "value": "AB123456",
-            },
-          ],
-          "id": "root_ziadatel_cisloOp",
-          "label": "Číslo občianskeho preukazu",
-          "type": "Field",
-          "value": "AB123456",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "+421999888555",
             },
           ],
@@ -725,7 +713,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
               "value": "10:00",
             },
           ],
-          "id": "root_ziadatel_preferovanyCasDovozu",
+          "id": "root_ziadatel_preferovanyCasDovozuRucnaVykladka",
           "label": "Preferovaný čas dovozu odpadu",
           "type": "Field",
           "value": "10:00",
@@ -2858,18 +2846,6 @@ exports[`getSummaryJson oloPodnetyAPochvalyObcanovExample summary JSON should ma
           "value": [
             "49c3b893-0a3a-4fdf-9f59-61aa58ed0d0e",
           ],
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Prečítal/a som si a oboznámil/a som sa s informáciami o spracúvaní osobných údajov.",
-            },
-          ],
-          "id": "root_podnet_suhlasSOchranouOsobnychUdajov",
-          "label": "Súhlas s ochranou osobných údajov",
-          "type": "Field",
-          "value": true,
         },
       ],
       "id": "root_podnet",
@@ -9475,13 +9451,37 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
           "displayValues": [
             {
               "type": "String",
-              "value": "Nie",
+              "value": "Áno",
             },
           ],
           "id": "root_ziadatelZiadatelka_sucasneByvanie_bytovaNudza",
           "label": "Nachádzate sa v bytovej núdzi?",
           "type": "Field",
-          "value": false,
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bývanie v inštitucionálnej starostlivosti",
+            },
+          ],
+          "id": "root_ziadatelZiadatelka_sucasneByvanie_typByvania",
+          "label": "Typ bývania",
+          "type": "Field",
+          "value": "institucionalnaStarostlivost",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Menej ako 1 rok",
+            },
+          ],
+          "id": "root_ziadatelZiadatelka_sucasneByvanie_dlzkaBytovejNudze",
+          "label": "Uveďte, ako dlho trvá vaša bytová núdza",
+          "type": "Field",
+          "value": "menejAko1",
         },
         {
           "displayValues": [
@@ -9662,6 +9662,10 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
           "displayValues": [
             {
               "type": "String",
+              "value": "Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko",
+            },
+            {
+              "type": "String",
               "value": "Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.",
             },
           ],
@@ -9669,6 +9673,7 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
           "label": "Označte rizikové faktory",
           "type": "Field",
           "value": [
+            "opustenieUstavnejStarostlivosti",
             "osamelyRodic",
           ],
         },
@@ -10561,7 +10566,7 @@ exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snaps
             },
           ],
           "id": "root_ineOkolnosti_maximalnaVyskaNajomneho",
-          "label": "Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť",
+          "label": "Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť",
           "type": "Field",
           "value": 700,
         },

@@ -10,7 +10,10 @@ interface UserProfileDetailViewRowProps {
 }
 const UserProfileDetailViewRow = ({ label, value, tooltip }: UserProfileDetailViewRowProps) => {
   return (
-    <div className={cx('flex w-full flex-col gap-2', 'md:flex-row')} data-cy={`${label.replaceAll(" ", "-").toLowerCase()}-profile-row`}>
+    <div
+      className={cx('flex w-full flex-col gap-2', 'md:flex-row')}
+      data-cy={`${label.replaceAll(' ', '-').toLowerCase()}-profile-row`}
+    >
       <div className={cx('flex flex-row items-center gap-3', 'md:w-1/2')}>
         <span className="text-p2-semibold">{label}</span>
         {tooltip && <BATooltip placement="top right">{tooltip}</BATooltip>}

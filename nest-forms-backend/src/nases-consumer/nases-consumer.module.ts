@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
-import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
 import FormsModule from '../forms/forms.module'
@@ -32,7 +31,6 @@ import WebhookSubservice from './subservices/webhook.subservice'
     NasesUtilsService,
     NasesConsumerHelper,
     ThrowerErrorGuard,
-    JsonXmlConvertService,
     MailgunService,
     MinioClientSubservice,
     EmailFormsSubservice,

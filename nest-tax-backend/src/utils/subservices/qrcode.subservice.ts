@@ -25,9 +25,9 @@ export class QrCodeSubservice {
             { iban: this.configService.getOrThrow<string>('PAYMENT_QR_IBAN') },
           ],
           currencyCode: 'EUR',
-          constantSymbol: process.env.PAYMENT_QR_CONSTANT_SYMBOL,
           variableSymbol: qrCodeData.variableSymbol,
           specificSymbol: qrCodeData.specificSymbol,
+          paymentNote: 'QR_WEB',
         },
       ],
     }

@@ -7,7 +7,6 @@ import {
   datePicker,
   FieldType,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -62,22 +61,19 @@ const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
             'Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?',
         }[stepType],
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           stepType === StepType.Ziadatel
-            ? markdownText(
-                'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
-              )
-            : markdownText(
-                'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
-              ),
+            ? 'Ak ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.'
+            : 'Ak je vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti, ale nemôžete v nej bývať, napr. kvôli stavebným, hygienickým nedostatkom alebo právnym prekážkam brániacim riadnemu užívaniu nehnuteľnosti, označte "Áno" a uveďte túto skutočnosť pod otázkou *Napíšte dôvody, pre ktoré nemôžete využívať túto nehnuteľnosť na bývanie*.',
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['vlastnikNehnutelnosti'], { const: true }]]), [
@@ -156,9 +152,9 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           type: 'boolean',
           title: 'Bývate v mestskom nájomnom byte v Bratislave?',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -173,9 +169,9 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           title:
             'Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -185,6 +181,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
       ),
       conditionalFields(createCondition([[['pobytVBratislaveViacAkoRok'], { const: true }]]), [
         customComponentsField(
+          'pobytVBratislaveViacAkoRokAlert',
           {
             type: 'alert',
             props: {
@@ -202,9 +199,9 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
           type: 'boolean',
           title: 'Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?',
           required: true,
-          options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+          items: [
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -239,7 +236,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             'rodnePriezvisko',
             { title: 'Rodné priezvisko', type: 'text' },
             {
-              helptextHeader:
+              helptext:
                 stepType === StepType.Ziadatel
                   ? 'Vyplňte iba v prípade, ak je vaše priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.'
                   : 'Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.',
@@ -279,9 +276,9 @@ const getOsobneUdajeSection = (stepType: StepType) => {
           type: 'string',
           title: 'Štátna príslušnosť',
           required: true,
-          options: [
-            { value: 'slovenska', title: 'Slovenská', isDefault: true },
-            { value: 'ina', title: 'Iná' },
+          items: [
+            { value: 'slovenska', label: 'Slovenská', isDefault: true },
+            { value: 'ina', label: 'Iná' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -293,12 +290,12 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               {
                 title: 'Rodinný stav',
                 required: true,
-                options: [
-                  { value: 'slobodny', title: 'Slobodný/slobodná' },
-                  { value: 'zenaty', title: 'Ženatý/vydatá' },
-                  { value: 'rozvedeny', title: 'Rozvedený/rozvedená' },
-                  { value: 'vdovec', title: 'Vdovec/vdova' },
-                  { value: 'ine', title: 'Iné' },
+                items: [
+                  { value: 'slobodny', label: 'Slobodný/slobodná' },
+                  { value: 'zenaty', label: 'Ženatý/vydatá' },
+                  { value: 'rozvedeny', label: 'Rozvedený/rozvedená' },
+                  { value: 'vdovec', label: 'Vdovec/vdova' },
+                  { value: 'ine', label: 'Iné' },
                 ],
               },
               {},
@@ -309,6 +306,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               ]),
               [
                 customComponentsField(
+                  'rodinnyStavAlert',
                   {
                     type: 'alert',
                     props: {
@@ -337,8 +335,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
               'email',
               { title: 'Email', type: 'email' },
               {
-                helptextHeader:
-                  'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
+                helptext: 'Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.',
               },
             ),
             conditionalFields(createCondition([[['email'], { type: 'string' }]]), [
@@ -348,9 +345,9 @@ const getOsobneUdajeSection = (stepType: StepType) => {
                   type: 'boolean',
                   title: 'Chcem byť kontaktovaný/á emailom?',
                   required: true,
-                  options: [
-                    { value: true, title: 'Áno', isDefault: true },
-                    { value: false, title: 'Nie' },
+                  items: [
+                    { value: true, label: 'Áno', isDefault: true },
+                    { value: false, label: 'Nie' },
                   ],
                 },
                 {
@@ -368,7 +365,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
             {
               size: 'medium',
               placeholder: '+421',
-              helptextHeader:
+              helptext:
                 'Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.',
             },
           )
@@ -414,9 +411,9 @@ const getPrijemSection = (stepType: StepType) => {
           type: 'boolean',
           title: 'Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -426,6 +423,7 @@ const getPrijemSection = (stepType: StepType) => {
       ),
       conditionalFields(createCondition([[['student'], { const: true }]]), [
         customComponentsField(
+          'studentAlert',
           {
             type: 'alert',
             props: {
@@ -444,9 +442,9 @@ const getPrijemSection = (stepType: StepType) => {
           title:
             'Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -475,6 +473,7 @@ const getPrijemSection = (stepType: StepType) => {
         ),
       ]),
       customComponentsField(
+        'sucetPrijmovStudentKalkulacka',
         {
           type: 'calculator',
           props: {
@@ -508,28 +507,25 @@ const getPrijemSection = (stepType: StepType) => {
           [StepType.InyClen]: 'Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?',
         }[stepType],
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
-          [StepType.Ziadatel]: markdownText(
+        helptext: {
+          [StepType.Ziadatel]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Váš zamestnávateľ vám na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť váš priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.ManzelManzelka]: markdownText(
+          [StepType.ManzelManzelka]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu manželovi/manželke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.DruhDruzka]: markdownText(
+          [StepType.DruhDruzka]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ vášmu druhovi/družke na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
-          [StepType.InyClen]: markdownText(
+          [StepType.InyClen]:
             'Pri príjme zo zamestnania ide o čistú mzdu, t. j. príjem očistený od dane z príjmu a odvodov na zdravotné a sociálne poistenie, príp. dôchodkového sporenia. Zamestnávateľ člena/členky domácnosti na základe žiadosti vystaví [potvrdenie o výške príjmu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_o_vyske_prijmu_Priloha3_0eceac9a76.pdf). Je potrebné uviesť priemerný mesačný čistý príjem za minulý kalendárny rok.',
-          ),
         }[stepType],
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['zamestnanie'], { const: true }]]), [
@@ -548,28 +544,25 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?'
             : 'Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?',
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
-          [StepType.Ziadatel]: markdownText(
+        helptext: {
+          [StepType.Ziadatel]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu Vášho čistého príjmu podľa potvrdenia, ktoré vám vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemáte podané daňové priznanie, resp. nepoznáte sumu vášho príjmu, vyplňte prosím váš čistý príjem za posledný známy rok.',
-          ),
-          [StepType.ManzelManzelka]: markdownText(
+          [StepType.ManzelManzelka]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu manžela/manželky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
-          [StepType.DruhDruzka]: markdownText(
+          [StepType.DruhDruzka]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu druha/družky podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
-          [StepType.InyClen]: markdownText(
+          [StepType.InyClen]:
             'V prípade príjmu z podnikania, resp. zo samostatnej zárobkovej činnosti (vrátane živnosti) je potrebné uviesť čistý príjem SZČO po odpočítaní výdavkov, odvodov poistného na [sociálne poistenie](https://sk.wikipedia.org/wiki/Soci%C3%A1lne_poistenie) a [zdravotné poistenie](https://sk.wikipedia.org/wiki/Zdravotn%C3%A9_poistenie) a zaplatenej dane z príjmu. V tomto prípade prosím uveďte sumu čistého príjmu člena/členky domácnosti podľa potvrdenia, ktoré mu/jej vydá daňový úrad. Ak v čase podávania tejto žiadosti ešte nemá podané daňové priznanie, resp. nepozná sumu jeho/jej príjmu, vyplňte prosím čistý príjem za posledný známy rok.',
-          ),
         }[stepType],
+        helptextMarkdown: true,
       },
     ),
     conditionalFields(createCondition([[['samostatnaZarobkovaCinnost'], { const: true }]]), [
@@ -588,15 +581,15 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku dôchodok?'
             : 'Poberal/poberala v minulom kalendárnom roku dôchodok?',
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           stepType === StepType.Ziadatel
             ? 'Označte áno, ak ste poberali v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.'
             : 'Označte áno, ak poberal/poberala v minulom kalendárnom roku niektorý z dôchodkov, resp. dôchodkových dávok v rámci systému sociálneho zabezpečenia, napr. invalidný dôchodok, starobný / predčasný starobný dôchodok, vdovský / vdovecký dôchodok, sirotský dôchodok, výsluhový dôchodok.',
@@ -618,9 +611,9 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?'
             : 'Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?',
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       { variant: 'boxed', orientations: 'row' },
@@ -641,9 +634,9 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?'
             : 'Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?',
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       { variant: 'boxed', orientations: 'row' },
@@ -664,15 +657,15 @@ const getPrijemSection = (stepType: StepType) => {
             ? 'Poberali ste v minulom kalendárnom roku iné príjmy?'
             : 'Poberal/poberala v minulom kalendárnom roku iné príjmy?',
         required: true,
-        options: [
-          { value: true, title: 'Áno' },
-          { value: false, title: 'Nie', isDefault: true },
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie', isDefault: true },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader:
+        helptext:
           'Materskú, tehotenský príspevok, rodičovský príspevok, prídavky na deti, dávka v hmotnej núdzi, ochranný príspevok, opatrovateľský príspevok, kompenzačný príspevok alebo iné príspevky z Úradu práce.',
       },
     ),
@@ -684,6 +677,7 @@ const getPrijemSection = (stepType: StepType) => {
       ),
     ]),
     customComponentsField(
+      'prijmyAlert',
       {
         type: 'alert',
         props: {
@@ -703,6 +697,7 @@ const getPrijemSection = (stepType: StepType) => {
       {},
     ),
     customComponentsField(
+      'sucetPrijmovKalkulacka',
       {
         type: 'calculator',
         props: {
@@ -766,22 +761,18 @@ const getZdravotnyStavSection = (stepType: StepType) => {
       objectDisplay: 'boxed',
       title: 'Zdravotný stav',
       description: {
-        [StepType.Ziadatel]: markdownText(
+        [StepType.Ziadatel]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené vašim (všeobecným) lekárom - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.ManzelManzelka]: markdownText(
+        [StepType.ManzelManzelka]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom manžela/manželky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.DruhDruzka]: markdownText(
+        [StepType.DruhDruzka]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom druha/družky - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.Dieta]: markdownText(
+        [StepType.Dieta]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom dieťaťa - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
-        [StepType.InyClen]: markdownText(
+        [StepType.InyClen]:
           'Diagnózy vypĺňajte až po tom, ako ich budete mať odkonzultované a následne potvrdené (všeobecným) lekárom člena/členky domácnosti - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_zoznam_diagnoz_Priloha1_3cb11640e7.pdf).',
-        ),
       }[stepType],
+      descriptionMarkdown: true,
     },
     [
       radioGroup(
@@ -793,9 +784,9 @@ const getZdravotnyStavSection = (stepType: StepType) => {
             other: 'Je držiteľom preukazu ŤZP?',
           }),
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -812,9 +803,9 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               other: 'Má uznanú mieru funkčnej poruchy?',
             }),
             required: true,
-            options: [
-              { value: '50az74', title: 'Od 50 % do 74 %' },
-              { value: '75az100', title: 'Od 75 % do 100 %' },
+            items: [
+              { value: '50az74', label: 'Od 50 % do 74 %' },
+              { value: '75az100', label: 'Od 75 % do 100 %' },
             ],
           },
           {},
@@ -830,9 +821,9 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               other: 'Trpí chronickým ochorením?',
             }),
             required: true,
-            options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
+            items: [
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
             ],
           },
           { variant: 'boxed', orientations: 'row' },
@@ -847,122 +838,122 @@ const getZdravotnyStavSection = (stepType: StepType) => {
                 other: 'Má niektorú z týchto diagnóz?',
               }),
               required: true,
-              options: [
-                { value: 'alzheimer', title: 'Alzheimerova choroba' },
-                { value: 'anorexiaBulimia', title: 'Anorexia/Bulímia' },
+              items: [
+                { value: 'alzheimer', label: 'Alzheimerova choroba' },
+                { value: 'anorexiaBulimia', label: 'Anorexia/Bulímia' },
                 {
                   value: 'arterialnaHypertenzia',
-                  title: 'Arteriálna hypertenzia (chronický zvýšený tlak)',
+                  label: 'Arteriálna hypertenzia (chronický zvýšený tlak)',
                 },
-                { value: 'astma', title: 'Astma' },
-                { value: 'autizmus', title: 'Autizmus' },
-                { value: 'bipolarnaPorucha', title: 'Bipolárna porucha' },
+                { value: 'astma', label: 'Astma' },
+                { value: 'autizmus', label: 'Autizmus' },
+                { value: 'bipolarnaPorucha', label: 'Bipolárna porucha' },
                 {
                   value: 'chronickaObstrukcnaChorobaPluc',
-                  title: 'Chronická obštrukčná choroba pľúc (Symptomatická)',
+                  label: 'Chronická obštrukčná choroba pľúc (Symptomatická)',
                 },
-                { value: 'chronickaParadentoza', title: 'Chronická paradentóza' },
+                { value: 'chronickaParadentoza', label: 'Chronická paradentóza' },
                 {
                   value: 'chronickeGastroenterologickeOchorenia',
-                  title:
+                  label:
                     'Chronické gastroenterologické ochorenia (Crohnova choroba, Ulcerózna kolitída, Chronická gastritída a podobné)',
                 },
                 {
                   value: 'chronickeMuskuloskeletalneChoroby',
-                  title:
+                  label:
                     'Chronické muskuloskeletálne choroby (obmedzený pohyb, chýbajúca končatina)',
                 },
                 {
                   value: 'chronickeNasledkyCMP',
-                  title: 'Chronické následky cievnej mozgovej príhody',
+                  label: 'Chronické následky cievnej mozgovej príhody',
                 },
                 {
                   value: 'chronickeOchorenieObliciek',
-                  title:
+                  label:
                     'Chronické ochorenie obličiek v dôsledku nasledovných chorôb: Cukrovka, Glomerulonefritída, Hypertenzia, prípadne iných ochorení',
                 },
                 {
                   value: 'chronickeOchoreniePecene',
-                  title: 'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
+                  label: 'Chronické ochorenie pečene (cirhóza, hepatitídy atď., okrem rakoviny)',
                 },
                 {
                   value: 'chronickeOchoreniaKoze',
-                  title:
+                  label:
                     'Chronické rozsiahle ochorenia kože s komplikáciami (chronický ekzém, chronické formy parapsoriázy)',
                 },
                 {
                   value: 'chronickyZapalStrednhoUcha',
-                  title: 'Chronický zápal stredného ucha (strata sluchu, vertigo)',
+                  label: 'Chronický zápal stredného ucha (strata sluchu, vertigo)',
                 },
-                { value: 'demencia', title: 'Demencia' },
+                { value: 'demencia', label: 'Demencia' },
                 {
                   value: 'diabetesBezKomplikacii',
-                  title: 'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
+                  label: 'Diabetes mellitus 1 a 2 typu (Cukrovka) bez závažných komplikácií',
                 },
                 {
                   value: 'diabetesSKomplikaciami',
-                  title:
+                  label:
                     'Diabetes mellitus 1 a 2 typu (Cukrovka) so závažnými komplikáciami (diabetická noha, neuropatia, retinopatia)',
                 },
                 {
                   value: 'rakovinaSLiecbou',
-                  title: 'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
+                  label: 'Diagnostikovaná rakovina s nastavenou liečbou (všetky typy rakoviny)',
                 },
-                { value: 'downovSyndrom', title: 'Downov syndróm' },
-                { value: 'dystymiaUzkost', title: 'Dystýmia + Úzkostná porucha' },
-                { value: 'encefalokela', title: 'Encefalokéla (vady mozgu)' },
-                { value: 'epilepsia', title: 'Epilepsia' },
-                { value: 'guillainBarrehoSyndrom', title: 'Guillainov-Barrého syndróm' },
-                { value: 'hepatitidaC', title: 'Hepatitída C' },
-                { value: 'hivAids', title: 'HIV/AIDS' },
-                { value: 'hluchota', title: 'Hluchota (bez posudku)' },
-                { value: 'ineChronickeOchoreniaSrdca', title: 'Iné chronické ochorenia srdca' },
-                { value: 'ischemickaChorobaSrdca', title: 'Ischemická choroba srdca' },
-                { value: 'klinefelterovSyndrom', title: 'Klinefelterov syndróm' },
+                { value: 'downovSyndrom', label: 'Downov syndróm' },
+                { value: 'dystymiaUzkost', label: 'Dystýmia + Úzkostná porucha' },
+                { value: 'encefalokela', label: 'Encefalokéla (vady mozgu)' },
+                { value: 'epilepsia', label: 'Epilepsia' },
+                { value: 'guillainBarrehoSyndrom', label: 'Guillainov-Barrého syndróm' },
+                { value: 'hepatitidaC', label: 'Hepatitída C' },
+                { value: 'hivAids', label: 'HIV/AIDS' },
+                { value: 'hluchota', label: 'Hluchota (bez posudku)' },
+                { value: 'ineChronickeOchoreniaSrdca', label: 'Iné chronické ochorenia srdca' },
+                { value: 'ischemickaChorobaSrdca', label: 'Ischemická choroba srdca' },
+                { value: 'klinefelterovSyndrom', label: 'Klinefelterov syndróm' },
                 {
                   value: 'metastatickaRakovina',
-                  title: 'Metastatická fáza rakoviny (všetky typy rakoviny)',
+                  label: 'Metastatická fáza rakoviny (všetky typy rakoviny)',
                 },
-                { value: 'ocneOchorenia', title: 'Očné ochorenia (glaukoma, katarakta a podobné)' },
-                { value: 'ochorenieMotorickychNeuronov', title: 'Ochorenie motorických neurónov' },
-                { value: 'osteoatroza', title: 'Osteoatróza (artróza)' },
-                { value: 'parkinson', title: 'Parkinsonova choroba' },
+                { value: 'ocneOchorenia', label: 'Očné ochorenia (glaukoma, katarakta a podobné)' },
+                { value: 'ochorenieMotorickychNeuronov', label: 'Ochorenie motorických neurónov' },
+                { value: 'osteoatroza', label: 'Osteoatróza (artróza)' },
+                { value: 'parkinson', label: 'Parkinsonova choroba' },
                 {
                   value: 'rakovinaVRemisii',
-                  title: 'Rakovina vo fáze remisie (všetky typy rakoviny)',
+                  label: 'Rakovina vo fáze remisie (všetky typy rakoviny)',
                 },
-                { value: 'reumatickeOchorenieSrdca', title: 'Reumatické ochorenie srdca' },
-                { value: 'reumatoidnaArtritida', title: 'Reumatoidná artritída' },
-                { value: 'sarkoidoza', title: 'Sarkoidóza' },
-                { value: 'schistosomoza', title: 'Schistosomóza (krvné motolice)' },
-                { value: 'schizofrenia', title: 'Schizofrénia' },
-                { value: 'slepota', title: 'Slepota (bez posudku)' },
+                { value: 'reumatickeOchorenieSrdca', label: 'Reumatické ochorenie srdca' },
+                { value: 'reumatoidnaArtritida', label: 'Reumatoidná artritída' },
+                { value: 'sarkoidoza', label: 'Sarkoidóza' },
+                { value: 'schistosomoza', label: 'Schistosomóza (krvné motolice)' },
+                { value: 'schizofrenia', label: 'Schizofrénia' },
+                { value: 'slepota', label: 'Slepota (bez posudku)' },
                 {
                   value: 'silikozaAzbestozaPneumokonioza',
-                  title: 'Silikóza, Azbestóza, Pneumokonióza',
+                  label: 'Silikóza, Azbestóza, Pneumokonióza',
                 },
-                { value: 'sklerozaMultiplex', title: 'Skleróza multiplex (roztrúsená)' },
-                { value: 'spinaBifida', title: 'Spina bifida (rázštep chrbtice)' },
-                { value: 'spinozaAtrezia', title: 'Spinóza a/alebo atrézia traviacého traktu' },
-                { value: 'struma', title: 'Struma (zväčšená štítna žľaza)' },
-                { value: 'syfilis', title: 'Syfilis' },
-                { value: 'tetanus', title: 'Tetanus' },
+                { value: 'sklerozaMultiplex', label: 'Skleróza multiplex (roztrúsená)' },
+                { value: 'spinaBifida', label: 'Spina bifida (rázštep chrbtice)' },
+                { value: 'spinozaAtrezia', label: 'Spinóza a/alebo atrézia traviacého traktu' },
+                { value: 'struma', label: 'Struma (zväčšená štítna žľaza)' },
+                { value: 'syfilis', label: 'Syfilis' },
+                { value: 'tetanus', label: 'Tetanus' },
                 {
                   value: 'terminalnaFazaRakoviny',
-                  title: 'Terminálna fáza rakoviny (všetky typy rakoviny)',
+                  label: 'Terminálna fáza rakoviny (všetky typy rakoviny)',
                 },
-                { value: 'tuberkuloza', title: 'Tuberkulóza' },
-                { value: 'turnerovSyndrom', title: 'Turnerov syndróm' },
-                { value: 'vrodenaChybaBranice', title: 'Vrodená chyba bránice (CDH)' },
+                { value: 'tuberkuloza', label: 'Tuberkulóza' },
+                { value: 'turnerovSyndrom', label: 'Turnerov syndróm' },
+                { value: 'vrodenaChybaBranice', label: 'Vrodená chyba bránice (CDH)' },
                 {
                   value: 'vrodeneChybyBrusnejSteny',
-                  title: 'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
+                  label: 'Vrodené chyby brušnej steny a/alebo tráviaceho traktu',
                 },
                 {
                   value: 'vrodenePoruchyPohybovehoAparatu',
-                  title: 'Vrodené poruchy a abnormality pohybového aparátu',
+                  label: 'Vrodené poruchy a abnormality pohybového aparátu',
                 },
-                { value: 'vrodeneSrdcoveChyby', title: 'Vrodené srdcové chyby (CHD)' },
+                { value: 'vrodeneSrdcoveChyby', label: 'Vrodené srdcové chyby (CHD)' },
               ],
             },
             {},
@@ -977,21 +968,21 @@ const getZdravotnyStavSection = (stepType: StepType) => {
               type: 'boolean',
               title: 'Uchádzate sa o pridelenie bezbariérového bytu?',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {
               variant: 'boxed',
               orientations: 'row',
-              helptextHeader: markdownText(
-                `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).`,
-              ),
+              helptext: `Podmienkou pridelenia bezbariérového bytu je, že žiadateľ alebo člen domácnosti musí mať lekárom potvrdené, že má diagnostikované zdravotné postihnutie, v zmysle [prílohy č. 2 zákona 443/2010 Z. z.](https://www.slov-lex.sk/pravne-predpisy/SK/ZZ/2010/443/20180101#prilohy) - [vzor tlačiva pre lekára](https://cdn-api.bratislava.sk/strapi-homepage/upload/Potvrdenie_od_lekara_bezbarierovy_byt_Priloha2_94fc7ae8e6.pdf).`,
+              helptextMarkdown: true,
             },
           )
         : null,
       customComponentsField(
+        'zdravotnyStavAlert',
         {
           type: 'alert',
           props: {
@@ -1048,9 +1039,9 @@ const getSucasneByvanieSection = (stepType: StepType) => {
                 'Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?',
             }[stepType],
             required: true,
-            options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+            items: [
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           { variant: 'boxed', orientations: 'row' },
@@ -1067,15 +1058,15 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             ? 'Nachádzate sa v bytovej núdzi?'
             : 'Nachádza sa v bytovej núdzi?',
         required: true,
-        options: [
-          { value: true, title: 'Áno', isDefault: true },
-          { value: false, title: 'Nie' },
+        items: [
+          { value: true, label: 'Áno', isDefault: true },
+          { value: false, label: 'Nie' },
         ],
       },
       {
         variant: 'boxed',
         orientations: 'row',
-        helptextHeader: {
+        helptext: {
           [StepType.Ziadatel]: undefined,
           [StepType.ManzelManzelka]:
             'Ak označíte odpoveď  "Áno", zobrazia sa vám konkrétne možnosti bývania. Ak sa manžela/manželky žiadna z nich nebude týkať, označte odpoveď "Nie".',
@@ -1095,31 +1086,31 @@ const getSucasneByvanieSection = (stepType: StepType) => {
           type: 'string',
           title: 'Typ bývania',
           required: true,
-          options: [
-            { value: 'ulica', title: 'Bývanie na ulici' },
+          items: [
+            { value: 'ulica', label: 'Bývanie na ulici' },
             {
               value: 'krizoveUbytovanie',
-              title: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
+              label: 'Bývanie v krízovom ubytovaní za účelom prenocovania',
             },
             {
               value: 'zariadeniePreLudiVNudzi',
-              title: 'Bývanie v zariadení určenom pre ľudí v núdzi',
+              label: 'Bývanie v zariadení určenom pre ľudí v núdzi',
               description: 'Útulok, azylový dom, Domov na pol ceste',
             },
             {
               value: 'nestatnardneObydlie',
-              title: 'Bývanie v neštandardnom obydlí',
+              label: 'Bývanie v neštandardnom obydlí',
               description: 'Mobilné obydlia, chatky, búdy, provizórne stavby',
             },
             {
               value: 'mestskaUbytovna',
-              title: 'Bývanie v mestskej ubytovni',
+              label: 'Bývanie v mestskej ubytovni',
               description: 'Ubytovňa Fortuna, Ubytovňa Kopčany',
             },
-            { value: 'komercnaUbytovna', title: 'Bývanie v komerčnej ubytovni' },
+            { value: 'komercnaUbytovna', label: 'Bývanie v komerčnej ubytovni' },
             {
               value: 'institucionalnaStarostlivost',
-              title: 'Bývanie v inštitucionálnej starostlivosti',
+              label: 'Bývanie v inštitucionálnej starostlivosti',
               description:
                 stepType === StepType.Dieta
                   ? 'Ústav na výkon väzby a Ústav na výkon trestu odňatia slobody – prepustenie o 3 mesiace a skôr, Centrum pre deti a rodiny, Resocializačné stredisko – prepustenie o 3 mesiace a skôr, Špeciálne výchovné zariadenie'
@@ -1127,13 +1118,30 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             },
             {
               value: 'neistePodmienky',
-              title: 'Bývanie v neistých/nevyhovujúcich podmienkach',
+              label: 'Bývanie v neistých/nevyhovujúcich podmienkach',
               description:
                 'Strata vlastníckych práv, výpoveď z nájmu, obydlie bez elektriny, vody, možnosti kúrenia, bez WC, extrémne preľudnene obydlie, nájom/podnájom bez zmluvy, bývanie u príbuzných/známych, neudržateľnosť nájomnej zmluvy (napr. náhly pokles príjmu)',
             },
           ],
         },
         { variant: 'boxed' },
+      ),
+      conditionalFields(
+        createCondition([[['typByvania'], { const: 'institucionalnaStarostlivost' }]]),
+        [
+          customComponentsField(
+            'institucionalnaStarostlivostAlert',
+            {
+              type: 'alert',
+              props: {
+                type: 'info',
+                message:
+                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty potvrdzujúce zvolený typ bývania - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia.',
+              },
+            },
+            {},
+          ),
+        ],
       ),
       select(
         'dlzkaBytovejNudze',
@@ -1146,12 +1154,12 @@ const getSucasneByvanieSection = (stepType: StepType) => {
             [StepType.InyClen]: 'Uveďte, ako dlho trvá bytová núdza člena/členky domácnosti',
           }[stepType],
           required: true,
-          options: [
-            { value: 'menejAko1', title: 'Menej ako 1 rok' },
-            { value: '1az2', title: '1 - 2 roky' },
-            { value: '3az5', title: '3 - 5 rokov' },
-            { value: '6az9', title: '6 - 9 rokov' },
-            { value: '10aViac', title: '10 a viac rokov' },
+          items: [
+            { value: 'menejAko1', label: 'Menej ako 1 rok' },
+            { value: '1az2', label: '1 - 2 roky' },
+            { value: '3az5', label: '3 - 5 rokov' },
+            { value: '6az9', label: '6 - 9 rokov' },
+            { value: '10aViac', label: '10 a viac rokov' },
           ],
         },
         {},
@@ -1189,9 +1197,9 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           title:
             'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
           required: true,
-          options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+          items: [
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1201,41 +1209,41 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           'zoznamRizikovychFaktorov',
           {
             title: 'Označte rizikové faktory',
-            options: [
+            items: [
               {
                 value: 'osamelyRodic',
-                title:
+                label:
                   'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
               },
               {
                 value: 'rodicNaDovolenke',
-                title: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
+                label: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
               },
               {
                 value: 'moznostNavratuDeti',
-                title:
+                label:
                   'Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania',
               },
               {
                 value: 'opustenieUstavnejStarostlivosti',
-                title:
+                label:
                   'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
               },
               {
                 value: 'opustenieVazby',
-                title:
+                label:
                   'Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr',
               },
               {
                 value: 'opustenieSpecialnehoZariadenia',
-                title:
+                label:
                   'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)',
               },
             ],
             required: true,
           },
           {
-            helptextHeader: 'Môžete označiť viac možností.',
+            helptext: 'Môžete označiť viac možností.',
             variant: 'boxed',
           },
         ),
@@ -1246,16 +1254,16 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
           type: 'string',
           title: 'Zvoľte vek najstaršieho člena domácnosti',
           required: true,
-          options: [
-            { value: 'menejAko63', title: 'menej ako 63 rokov' },
-            { value: '63az70', title: '63 - 70 rokov' },
-            { value: '71az80', title: '71 - 80 rokov' },
-            { value: '81aViac', title: '81 a viac rokov' },
+          items: [
+            { value: 'menejAko63', label: 'menej ako 63 rokov' },
+            { value: '63az70', label: '63 - 70 rokov' },
+            { value: '71az80', label: '71 - 80 rokov' },
+            { value: '81aViac', label: '81 a viac rokov' },
           ],
         },
         {
           variant: 'boxed',
-          helptextHeader:
+          helptext:
             'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.',
           belowComponents: [
             {
@@ -1301,9 +1309,9 @@ export default schema(
           type: 'boolean',
           title: 'Bude súčasťou budúcej domácnosti aj váš manžel/manželka?',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1320,9 +1328,9 @@ export default schema(
           type: 'boolean',
           title: 'Bude súčasťou budúcej domácnosti aj váš druh/družka?',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         { variant: 'boxed', orientations: 'row' },
@@ -1347,9 +1355,9 @@ export default schema(
             type: 'boolean',
             title: 'Bude súčasťou budúcej domácnosti aj vaše dieťa/deti?',
             required: true,
-            options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
+            items: [
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
             ],
           },
           {
@@ -1380,9 +1388,9 @@ export default schema(
           title:
             'Budú súčasťou budúcej domácnosti aj iní členovia/členky? (zaopatrené deti, starí rodičia a pod.)',
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
@@ -1412,7 +1420,7 @@ export default schema(
         'dovodyPodaniaZiadosti',
         { title: 'Prečo si podávate žiadosť?' },
         {
-          helptextHeader:
+          helptext:
             'Priestor pre vyjadrenie akýchkoľvek informácií, ktoré si myslíte, že by sme mali vedieť, ale neboli súčasťou otázok.',
         },
       ),
@@ -1421,11 +1429,11 @@ export default schema(
         {
           title: 'Akú veľkosť nájomného bytu preferujete?',
           required: true,
-          options: [
-            { value: 'garsonka1izbovy', title: 'garsónka/1-izbový byt' },
-            { value: '2izbovy', title: '2-izbový byt' },
-            { value: '3izbovy', title: '3-izbový byt' },
-            { value: '4izbovy', title: '4-izbový byt' },
+          items: [
+            { value: 'garsonka1izbovy', label: 'garsónka/1-izbový byt' },
+            { value: '2izbovy', label: '2-izbový byt' },
+            { value: '3izbovy', label: '3-izbový byt' },
+            { value: '4izbovy', label: '4-izbový byt' },
           ],
         },
         {},
@@ -1435,15 +1443,15 @@ export default schema(
         {
           title: 'Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?',
           required: true,
-          options: [
-            { value: 'stareMesto', title: 'Staré Mesto' },
-            { value: 'ruzinov', title: 'Ružinov' },
-            { value: 'vrakuna', title: 'Vrakuňa' },
-            { value: 'podunajskeBiskupice', title: 'Podunajské Biskupice' },
-            { value: 'noveMesto', title: 'Nové Mesto' },
-            { value: 'karlovaVes', title: 'Karlova Ves' },
-            { value: 'dubravka', title: 'Dúbravka' },
-            { value: 'petrzalka', title: 'Petržalka' },
+          items: [
+            { value: 'stareMesto', label: 'Staré Mesto' },
+            { value: 'ruzinov', label: 'Ružinov' },
+            { value: 'vrakuna', label: 'Vrakuňa' },
+            { value: 'podunajskeBiskupice', label: 'Podunajské Biskupice' },
+            { value: 'noveMesto', label: 'Nové Mesto' },
+            { value: 'karlovaVes', label: 'Karlova Ves' },
+            { value: 'dubravka', label: 'Dúbravka' },
+            { value: 'petrzalka', label: 'Petržalka' },
           ],
         },
         {},
@@ -1452,7 +1460,7 @@ export default schema(
         'maximalnaVyskaNajomneho',
         {
           title:
-            'Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť',
+            'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
           required: true,
           minimum: 0,
         },
@@ -1461,6 +1469,7 @@ export default schema(
     ]),
     step('sucetPrijmovCestneVyhlasenie', { title: 'Súčet príjmov a čestné výhlásenie' }, [
       customComponentsField(
+        'sucetPrijmovKalkulacka',
         {
           type: 'calculator',
           props: {
@@ -1502,6 +1511,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         {},
       ),
       customComponentsField(
+        'prijemAlert',
         {
           type: 'alert',
           props: {
@@ -1513,6 +1523,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
         {},
       ),
       customComponentsField(
+        'overitPrijemLink',
         {
           type: 'additionalLinks',
           props: {
@@ -1546,6 +1557,25 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
 export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných dokumentov
 <% let maPrijem = (prijem) => it.helpers.safeBoolean(prijem?.zamestnanie) || it.helpers.safeBoolean(prijem?.samostatnaZarobkovaCinnost) || it.helpers.safeBoolean(prijem?.dochodok) || it.helpers.safeBoolean(prijem?.vyzivne) || it.helpers.safeBoolean(prijem?.davkaVNezamestnanosti) || it.helpers.safeBoolean(prijem?.inePrijmy) %>
 <% let dokladRodinnyStav = (osobneUdaje) => it.helpers.safeString(osobneUdaje?.rodinnyStav) && ['zenaty', 'rozvedeny', 'vdovec', 'ine'].includes(osobneUdaje?.rodinnyStav) %>
+<% let maRizikovyFaktorVyzadujuciDoklad = (rizikoveFaktory) => {
+  const zoznam = it.helpers.safeArray(rizikoveFaktory?.zoznamRizikovychFaktorov);
+  return zoznam.includes('opustenieUstavnejStarostlivosti') || zoznam.includes('opustenieVazby') || zoznam.includes('opustenieSpecialnehoZariadenia');
+} %>
+<% let getRizikoveFaktoryDokumentyArray = (rizikoveFaktory) => {
+  const dokumenty = [];
+  const zoznam = it.helpers.safeArray(rizikoveFaktory?.zoznamRizikovychFaktorov);
+  
+  if (zoznam.includes('opustenieUstavnejStarostlivosti')) {
+    dokumenty.push('prepúšťacia správa zo zariadenia ústavnej starostlivosti');
+  }
+  if (zoznam.includes('opustenieVazby')) {
+    dokumenty.push('rozhodnutie/doklad o prepustení z Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody alebo resocializačného zariadenia v uplynulých 3 rokoch');
+  }
+  if (zoznam.includes('opustenieSpecialnehoZariadenia')) {
+    dokumenty.push('doklad o opustení špeciálneho výchovného zariadenia v uplynulých 3 rokoch, iba v prípade dobrovoľného pobytu');
+  }
+  return dokumenty;
+} %>
 
 #### Žiadateľ/žiadateľka
 
@@ -1559,14 +1589,17 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.osobneUdaje?.adresaTrvalehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>
+<% if (it.helpers.safeString(it.formData.ziadatelZiadatelka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
+<% } %>
 <% if (maPrijem(it.formData.ziadatelZiadatelka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
 <% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.tzpPreukaz) || it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.zdravotnyStav?.chronickeOchorenie)) { %>
 - Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
 <% } %>
-<% if (it.helpers.safeBoolean(it.formData.ziadatelZiadatelka?.rizikoveFaktory?.rizikoveFaktoryPritomne)) { %>
-- Rizikové faktory - dokumenty dokazujúce rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti, napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.
+<% if (maRizikovyFaktorVyzadujuciDoklad(it.formData.ziadatelZiadatelka?.rizikoveFaktory)) { %>
+- Rizikové faktory - <%= getRizikoveFaktoryDokumentyArray(it.formData.ziadatelZiadatelka?.rizikoveFaktory).join(', ') %>
 <% } %>
 
 <% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.manzelManzelkaSucastouDomacnosti)) { %>
@@ -1576,6 +1609,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 - Osobné údaje - sobášny list
 <% if (it.helpers.safeBoolean(it.formData.manzelManzelka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(it.formData.manzelManzelka?.situaciaRovnakaAkoVasa) && it.helpers.safeString(it.formData.manzelManzelka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (maPrijem(it.formData.manzelManzelka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy manžela/manželky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
@@ -1595,6 +1631,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% if (it.helpers.safeBoolean(it.formData.druhDruzka?.osobneUdaje?.adresaSkutocnehoPobytu?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
 <% } %>
+<% if (!it.helpers.safeBoolean(it.formData.druhDruzka?.situaciaRovnakaAkoVasa) && it.helpers.safeString(it.formData.druhDruzka?.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
+<% } %>
 <% if (maPrijem(it.formData.druhDruzka?.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy druha/družky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
 <% } %>
@@ -1613,6 +1652,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
 <% if (it.helpers.safeBoolean(dieta.osobneUdaje?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(dieta.situaciaRovnakaAkoVasa) && it.helpers.safeString(dieta.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (it.helpers.safeBoolean(dieta.prijem?.student)) { %>
 - Príjem - potvrdenie o návšteve školy
@@ -1639,6 +1681,9 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 <% } %>
 <% if (it.helpers.safeBoolean(clen.osobneUdaje?.vlastnikNehnutelnosti)) { %>
 - Adresa - list vlastníctva
+<% } %>
+<% if (!it.helpers.safeBoolean(clen.situaciaRovnakaAkoVasa) && it.helpers.safeString(clen.sucasneByvanie?.typByvania) === 'institucionalnaStarostlivost') { %>
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
 <% } %>
 <% if (maPrijem(clen.prijem)) { %>
 - Príjem - dokumenty dokazujúce všetky príjmy člena/členky domácnosti, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.

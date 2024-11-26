@@ -27,7 +27,13 @@ const inter = Inter({
   subsets: ['latin', 'latin-ext'],
 })
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+export type GlobalAppProps = {
+  appProps?: {
+    externallyEmbedded?: boolean
+  }
+}
+
+const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const [queryClient] = useState(() => new QueryClient())
 
   return (
@@ -74,7 +80,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                     <div id="root">
                       <Component {...pageProps} />
                     </div>
-                    <CookieConsent />
+                    <CookieConsent externallyEmbedded={pageProps.appProps?.externallyEmbedded} />
                   </NavMenuContextProvider>
                 </PlausibleProvider>
               </SnackbarProvider>

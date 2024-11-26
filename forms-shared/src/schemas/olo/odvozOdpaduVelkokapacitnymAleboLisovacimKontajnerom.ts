@@ -12,7 +12,7 @@ import {
   textArea,
   timePicker,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -25,11 +25,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions([
-          'Fyzická osoba',
-          'Právnická osoba',
-          'Správcovská spoločnosť',
-        ]),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -69,7 +65,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -78,7 +74,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -102,7 +98,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
           variant: 'boxed',
@@ -125,14 +121,14 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
     input(
       'miestoDodania',
       { type: 'text', title: 'Miesto dodania / výkonu služby', required: true },
-      { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+      { helptext: 'Vyplňte vo formáte ulica a číslo' },
     ),
     select(
       'druhOdpadu',
       {
         title: 'Druh odpadu',
         required: true,
-        options: createStringOptions(['Objemný', 'Záhradný', 'Iné'], false),
+        items: createStringItems(['Objemný', 'Záhradný', 'Iné'], false),
       },
       {},
     ),
@@ -153,13 +149,13 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       {
         title: 'Objem kontajnera',
         required: true,
-        options: [
-          { value: '7m3_3t', title: 'objem: 7 m³ / nosnosť: do 3 t' },
-          { value: '10m3_3t', title: 'objem: 10 m³ / nosnosť: do 3 t' },
-          { value: '11m3_8t', title: 'objem: 11 m³ / nosnosť: do 8 t' },
-          { value: '16m3_8t', title: 'objem: 16 m³ / nosnosť: do 8 t' },
-          { value: '27m3_8t', title: 'objem: 27 m³ / nosnosť: do 8 t' },
-          { value: '30m3_8t', title: 'objem: 30 m³ / nosnosť: do 8 t' },
+        items: [
+          { value: '7m3_3t', label: 'objem: 7 m³ / nosnosť: do 3 t' },
+          { value: '10m3_3t', label: 'objem: 10 m³ / nosnosť: do 3 t' },
+          { value: '11m3_8t', label: 'objem: 11 m³ / nosnosť: do 8 t' },
+          { value: '16m3_8t', label: 'objem: 16 m³ / nosnosť: do 8 t' },
+          { value: '27m3_8t', label: 'objem: 27 m³ / nosnosť: do 8 t' },
+          { value: '30m3_8t', label: 'objem: 30 m³ / nosnosť: do 8 t' },
         ],
       },
       {},
@@ -179,7 +175,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         required: true,
       },
       {
-        helptextHeader: 'V pracovné dni od 7.00 - 12.30',
+        helptext: 'V pracovné dni od 7.00 - 12.30',
         size: 'medium',
       },
     ),
@@ -198,7 +194,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
         required: true,
       },
       {
-        helptextHeader: 'V pracovné dni od 7.00 - 12.30',
+        helptext: 'V pracovné dni od 7.00 - 12.30',
         size: 'medium',
       },
     ),
@@ -217,6 +213,7 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

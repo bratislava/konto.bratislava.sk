@@ -1,5 +1,4 @@
 import {
-  checkbox,
   checkboxGroup,
   conditionalFields,
   datePicker,
@@ -10,7 +9,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -23,7 +22,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         type: 'string',
         title: 'Kategória podnetu',
         required: true,
-        options: createStringOptions(
+        items: createStringItems(
           ['Nevykonaný odvoz', 'Pracovníci OLO', 'Poškodená nádoba', 'Pochvala', 'Iné'],
           false,
         ),
@@ -47,7 +46,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         {
           title: 'Vyberte druh odpadu',
           required: true,
-          options: createStringOptions(
+          items: createStringItems(
             [
               'Zmesový komunálny odpad',
               'Kuchynský biologicky rozložiteľný odpad',
@@ -62,7 +61,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         },
         {
           variant: 'boxed',
-          helptextHeader: 'Vyberte aspoň jednu možnosť',
+          helptext: 'Vyberte aspoň jednu možnosť',
         },
       ),
       input(
@@ -73,7 +72,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
           required: true,
         },
         {
-          helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+          helptext: 'Vyplňte vo formáte ulica a číslo',
         },
       ),
     ]),
@@ -91,11 +90,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
     input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
-    textArea(
-      'sprava',
-      { title: 'Správa', required: true },
-      { helptextHeader: 'Napíšte svoje podnety' },
-    ),
+    textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
     fileUpload(
       'prilohy',
       {
@@ -105,20 +100,6 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
       },
       {
         type: 'dragAndDrop',
-      },
-    ),
-    checkbox(
-      'suhlasSOchranouOsobnychUdajov',
-      {
-        title: 'Súhlas s ochranou osobných údajov',
-        required: true,
-        constValue: true,
-      },
-      {
-        checkboxLabel:
-          'Prečítal/a som si a oboznámil/a som sa s informáciami o spracúvaní osobných údajov.',
-        variant: 'boxed',
-        helptextHeader: 'Vaše osobné údaje používame na vybavenie vašej požiadavky.',
       },
     ),
   ]),

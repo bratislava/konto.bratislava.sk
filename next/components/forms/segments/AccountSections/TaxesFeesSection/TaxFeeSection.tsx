@@ -1,4 +1,3 @@
-import Alert from 'components/forms/info-components/Alert'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
 import React from 'react'
 
@@ -29,12 +28,6 @@ const TaxFeeSection = () => {
         <TaxFeeSectionHeader />
         <div className="m-auto flex w-full max-w-screen-lg flex-col items-center gap-6 py-6 lg:gap-12 lg:py-12">
           <div className="flex w-full flex-col px-4 lg:px-0">
-            <Alert
-              type="warning"
-              className="mb-8"
-              fullWidth
-              message="Ak ste platili prevodom alebo QR kódom platbu pravdepodobne zaznamenáme až po 24.5."
-            />
             <TaxesFeesDeliveryMethodCard
               onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
             />

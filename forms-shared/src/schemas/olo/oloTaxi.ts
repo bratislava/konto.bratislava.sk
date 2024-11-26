@@ -11,7 +11,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { createStringOptions } from '../../generator/helpers'
+import { createStringItems } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 
@@ -28,7 +28,7 @@ export default schema(
           type: 'string',
           title: 'Žiadam ako',
           required: true,
-          options: createStringOptions(['Fyzická osoba']),
+          items: createStringItems(['Fyzická osoba']),
         },
         { variant: 'boxed', orientations: 'column' },
       ),
@@ -58,7 +58,7 @@ export default schema(
         },
         {
           placeholder: 'Zadajte presnú adresu',
-          helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+          helptext: 'Vyplňte vo formáte ulica a číslo',
         },
       ),
       datePicker(
@@ -68,7 +68,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         },
       ),
@@ -77,7 +77,7 @@ export default schema(
         {
           title: 'Preferovaný čas odvozu',
           required: true,
-          options: createStringOptions(
+          items: createStringItems(
             [
               '07:00 (pondelok - sobota)',
               '09:00 (pondelok - sobota)',
@@ -96,7 +96,7 @@ export default schema(
           required: true,
         },
         {
-          helptextHeader: 'Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.',
+          helptext: 'Špecifikujte druh odpadu, uveďte počet kusov alebo množstvo v m³.',
         },
       ),
       checkbox(
@@ -126,6 +126,7 @@ export default schema(
         },
       ),
       customComponentsField(
+        'suhlasSVopLink',
         {
           type: 'additionalLinks',
           props: {

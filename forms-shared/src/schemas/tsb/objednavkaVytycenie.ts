@@ -1,17 +1,16 @@
 import {
-  schema,
-  step,
-  radioGroup,
-  input,
-  object,
-  checkbox,
   conditionalFields,
-  select,
   datePicker,
   fileUpload,
+  input,
+  object,
+  radioGroup,
+  schema,
+  select,
   selectMultiple,
+  step,
 } from '../../generator/functions'
-import { createStringOptions, createCondition } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField } from '../shared/fields'
 
 export default schema(
@@ -27,7 +26,7 @@ export default schema(
           type: 'string',
           title: 'Objednávate ako',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Fyzická osoba',
             'Fyzická osoba - podnikateľ',
             'Právnická osoba',
@@ -80,7 +79,7 @@ export default schema(
           input(
             'adresaTrvalehoPobytu',
             { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -97,7 +96,7 @@ export default schema(
           input(
             'adresaPodnikania',
             { title: 'Miesto podnikania', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -114,7 +113,7 @@ export default schema(
           input(
             'adresaSidla',
             { title: 'Adresa sídla', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -134,7 +133,7 @@ export default schema(
       input(
         'telefonneCislo',
         { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-        { helptextHeader: 'Vyplňte vo formáte +421' },
+        { helptext: 'Vyplňte vo formáte +421' },
       ),
       conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
         object(
@@ -142,21 +141,17 @@ export default schema(
           { required: true },
           { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
           [
-            input(
-              'meno',
-              { title: 'Meno', required: true, type: 'text' },
-              { helptextHeader: 'Meno' },
-            ),
+            input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
             input(
               'priezvisko',
               { title: 'Priezvisko', required: true, type: 'text' },
-              { helptextHeader: 'Priezvisko' },
+              { helptext: 'Priezvisko' },
             ),
             input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
             input(
               'telefonneCislo',
               { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-              { helptextHeader: 'Vyplňte vo formáte +421' },
+              { helptext: 'Vyplňte vo formáte +421' },
             ),
           ],
         ),
@@ -173,7 +168,7 @@ export default schema(
             'email',
             { title: 'E-mail', required: true, type: 'email' },
             {
-              helptextHeader: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
+              helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
             },
           ),
         ],
@@ -187,14 +182,14 @@ export default schema(
             'dovodVytycenia',
             { title: 'Dôvod vytýčenia', required: true, type: 'text' },
             {
-              helptextHeader:
+              helptext:
                 'Napríklad: vytýčenie káblovej poruchy, za účelom rozkopávky, vybudovanie inžinierskych sietí...',
             },
           ),
           input(
             'pozadovaneMiestoPlnenia',
             { title: 'Požadované miesto plnenia', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           radioGroup(
             'viacKatastralneUzemia',
@@ -202,9 +197,9 @@ export default schema(
               type: 'boolean',
               title: 'Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {
@@ -218,7 +213,7 @@ export default schema(
               {
                 title: 'Katastrálne územia',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',
@@ -242,7 +237,7 @@ export default schema(
                 ]),
               },
               {
-                helptextHeader:
+                helptext:
                   'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
               },
             ),
@@ -253,7 +248,7 @@ export default schema(
               {
                 title: 'Katastrálne územie',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',
@@ -277,7 +272,7 @@ export default schema(
                 ]),
               },
               {
-                helptextHeader:
+                helptext:
                   'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
               },
             ),
@@ -285,12 +280,12 @@ export default schema(
           input(
             'druhStavby',
             { title: 'Druh stavby', required: false, type: 'text' },
-            { helptextHeader: 'Napríklad: telekomunikačná líniová stavba' },
+            { helptext: 'Napríklad: telekomunikačná líniová stavba' },
           ),
           datePicker(
             'pozadovanyTerminPlnenia',
             { title: 'Požadovaný termín plnenia', required: true },
-            { helptextHeader: 'Štandardný termín na vybavenie objednávky je 30 dní' },
+            { helptext: 'Štandardný termín na vybavenie objednávky je 30 dní' },
           ),
         ],
       ),
@@ -305,7 +300,7 @@ export default schema(
         },
         {
           type: 'dragAndDrop',
-          helptextHeader:
+          helptext:
             'Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby Objednávka informatívneho zákresu sietí',
           accept: '.pdf,.jpg,.jpeg,.png',
         },

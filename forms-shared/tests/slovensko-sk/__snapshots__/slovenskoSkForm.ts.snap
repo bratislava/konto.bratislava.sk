@@ -2,15 +2,16 @@
 
 exports[`slovenskoSkForm komunitne-zahrady schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.0"
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.0" 
+           targetNamespace="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -85,7 +86,8 @@ exports[`slovenskoSkForm komunitne-zahrady schema XSD should match snapshot 1`] 
 
 exports[`slovenskoSkForm komunitneZahradyExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<eform xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<eform xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"obcianskeZdruzenie":{"nazovObcianskehoZdruzenia":"Zelená Bratislava","ico":"12345678","adresaSidla":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}},"statutar":{"menoStatutara":"Marta","priezviskoStatutara":"Nováková"}},"pozemok":{"typPozemku":"predschvalenyPozemok","predschvalenyPozemokVyber":"Azalková"},"zahrada":{"dovodyZalozenia":"Priestor je v súčasnosti nevyužívaný a zanedbaný. Komunitná záhrada by poskytla miesto pre miestnych obyvateľov na pestovanie rastlín a stretávanie sa.","suhlasKomunity":"Získali sme podporu od miestnych obyvateľov prostredníctvom petície a verejných stretnutí.","organizacnyTim":"Tím bude pozostávať z miestnych dobrovoľníkov, ktorí sa budú starať o záhradu a organizovať komunitné aktivity.","prevadzka":"Údržbu zelene budú zabezpečovať dobrovoľníci. Odpad bude separovaný a recyklovaný, pričom sa budeme snažiť o zero-waste režim.","inkluzivnost":"Projekt bude otvorený pre všetkých miestnych obyvateľov. Záujemcovia o záhradkárčenie budú vybraní na základe transparentného procesu.","financovanie":"Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje."},"prilohyPredschvalenyPozemok":{"umiestnenie":"ace1a8c2-f96e-4583-bdf9-64233b582572","dizajn":"27766841-1f8f-4daa-b6e9-df826b294ae0","fotografie":"7510f8c5-c777-4426-8166-90f253eb0738","ine":"1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0"}}</Json>
   <Summary>
     <Form title="Komunitné záhrady">
@@ -185,15 +187,16 @@ exports[`slovenskoSkForm komunitneZahradyExample XML should match snapshot 1`] =
 
 exports[`slovenskoSkForm predzahradky schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.0"
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/00603481.predzahradky/1.0" 
+           targetNamespace="http://schemas.gov.sk/form/00603481.predzahradky/1.1" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -268,7 +271,8 @@ exports[`slovenskoSkForm predzahradky schema XSD should match snapshot 1`] = `
 
 exports[`slovenskoSkForm predzahradkyExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<eform xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<eform xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"predzahradka":{"typRegistracie":"nova","adresa":"Dunajská 34","mestskaCast":"Devín","parcelneCislo":"46549/435413","ine":"Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.","rozlozenieNova":"Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede."},"prilohy":{"mapa":"4f01b72e-f5d6-429e-a4b4-ecb6432f05f7","fotografie":"6f306cec-29c4-45dd-97b8-f9bedcb7d72d","projekt":"88b55eff-ebb4-4d17-bc5a-cdbe6d8eb923","inePrilohy":"7f3e5eeb-215d-4e55-ac78-44f7d60a699c"}}</Json>
   <Summary>
     <Form title="Predzáhradky">
@@ -346,6 +350,91 @@ exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should matc
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti-test schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -421,6 +510,7 @@ exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should matc
 exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample1 XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"danZPozemkov":{"priznania":[{"pozemky":[{"kataster":"Nové Mesto","druhPozemku":"E","celkovaVymeraPozemku":215,"cisloListuVlastnictva":"0000","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"2567/0"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2569/15897"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"somJedinyVlastnik"}],"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true}},"druhPriznania":{"rok":2024,"druh":"priznanie"},"udajeODanovnikovi":{"stat":"703","email":"meno@gmail.com","obecPsc":{"psc":"83103","obec":"Bratislava"},"telefon":"+421948111111","menoTitul":{"meno":"Peter"},"priezvisko":"AAA Skúšobné s r .o","rodneCislo":"920314/6326","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true},"ulicaCisloFyzickaOsoba":{"cislo":"6","ulica":"Robotnícka"}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":["option2","option4"]}}</Json>
   <Summary>
     <Form title="Priznanie k dani z nehnuteľností">
@@ -570,6 +660,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample1 XML should match s
 exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample2 XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"druhPriznania":{"rok":2024,"druh":"ciastkovePriznanie"},"udajeODanovnikovi":{"stat":"703","email":"test@test.ts","obecPsc":{"psc":"84106","obec":"Bratislava"},"telefon":"+42191111111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Test"},"priezvisko":"Test","rodneCislo":"1.1.1993","ulicaCisloFyzickaOsoba":{"cislo":"15A","ulica":"Ulica "},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true}},"danZPozemkov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"pozemky":[{"kataster":"Záhorská Bystrica","druhPozemku":"F","celkovaVymeraPozemku":2,"cisloListuVlastnictva":"1111","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"730/2"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"1/1"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov"},{"pozemky":[{"kataster":"Záhorská Bystrica","druhPozemku":"C","celkovaVymeraPozemku":24,"cisloListuVlastnictva":"1111","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"755/4"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"1/1"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov"}]},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"bezpodieloveSpoluvlastnictvoManzelov":{"email":"test@test.ts","telefon":"+42191111111","menoTitul":{"meno":"Test","titul":"Ing"},"priezvisko":"Test","rodneCislo":"123232/1234","rovnakaAdresa":true},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
   <Summary>
     <Form title="Priznanie k dani z nehnuteľností">
@@ -786,6 +877,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample2 XML should match s
 exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample3 XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"druhPriznania":{"rok":2024,"druh":"priznanie"},"udajeODanovnikovi":{"stat":"703","email":"test@mail.com","obecPsc":{"psc":"85103","obec":"Bratislava"},"telefon":"+421901111111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Test","titul":"Ing."},"priezvisko":"Test","rodneCislo":"910101/1111","ulicaCisloFyzickaOsoba":{"cislo":"1","ulica":"Test"},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true}},"danZPozemkov":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"riadok1":{"supisneCislo":1,"ulicaACisloDomu":"Jána Smreka 1"},"riadok2":{"kataster":"Devínska Nová Ves","cisloParcely":"1234/10"},"pravnyVztah":"vlastnik","priznanieZaByt":{"priznanieZaByt":true,"cisloBytu":"23","spoluvlastnickyPodiel":"1/2","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"3468/246230"},"spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"3385","priznanieZaNebytovyPriestor":{"priznanieZaNebytovyPriestor":false},"naZakladeDohody":true,"pocetSpoluvlastnikov":2,"splnomocnenie":[]}]},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
   <Summary>
     <Form title="Priznanie k dani z nehnuteľností">
@@ -951,6 +1043,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample3 XML should match s
 exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample4 XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"druhPriznania":{"rok":2024,"druh":"ciastkovePriznanieNaZanikDanovejPovinnosti"},"danZPozemkov":{"vyplnitObject":{"vyplnit":false}},"udajeODanovnikovi":{"stat":"703","email":"test@test.sk","obecPsc":{"psc":"91701","obec":"Trnava"},"telefon":"+421911111111","menoTitul":{"meno":"Test"},"priezvisko":"Test ","rodneCislo":"93823741111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true},"ulicaCisloFyzickaOsoba":{"cislo":"1111/61","ulica":"Test"}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
   <Summary>
     <Form title="Priznanie k dani z nehnuteľností">
@@ -1049,6 +1142,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample4 XML should match s
 exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample5 XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"druhPriznania":{"rok":2024,"druh":"opravnePriznanie"},"udajeODanovnikovi":{"stat":"686","email":"test@test.com","obecPsc":{"psc":"83103","obec":"Bratislava"},"telefon":"+421948417711","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Lincoln","titul":"Mgr."},"priezvisko":"Abraham","rodneCislo":"9203146326","ulicaCisloFyzickaOsoba":{"cislo":"6","ulica":"Robotnícka"},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":false,"stat":"703","obecPsc":{"psc":"83106","obec":"Bratislava"},"ulicaCisloKorespondencnaAdresa":{"cislo":"7","ulica":"Prašivá"}}},"danZPozemkov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"pozemky":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-13","datumZanikuDanovejPovinnosti":"2024-01-04"},"kataster":"Devínska Nová Ves","druhPozemku":"B","celkovaVymeraPozemku":218,"cisloListuVlastnictva":"4589","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"7986/1","sposobVyuzitiaPozemku":"Ložisko"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"4587/53994"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"somJedinyVlastnik"}]},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-04","datumZanikuDanovejPovinnosti":"2024-01-06"},"riadok1":{"supisneCislo":2526,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Jarovce","cisloParcely":"7859/1"},"pravnyVztah":"vlastnik","predmetDane":"a","spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"4597","spoluvlastnickyPodiel":"1/2","celkovaZastavanaPlocha":2659,"castStavbyOslobodenaOdDane":true,"pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia":5,"naZakladeDohody":true,"pocetSpoluvlastnikov":2,"splnomocnenie":[],"castStavbyOslobodenaOdDaneDetaily":{"celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby":26,"vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb":89}}]},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-05","datumZanikuDanovejPovinnosti":"2024-01-04"},"riadok1":{"supisneCislo":35,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Devín","cisloParcely":"5697/1"},"poznamka":"Príkladná 35","popisStavby":"Príkladná stavba","pravnyVztah":"najomca","celkovaVymera":25648,"nehnutelnosti":{"nehnutelnosti":[{"ucelVyuzitiaStavby":"b","spoluvlastnickyPodiel":"1/1","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"4598/26594"}]},"spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov","cisloListuVlastnictva":"4597","castStavbyOslobodenaOdDane":true,"pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia":4,"vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb":26}]},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"riadok1":{"supisneCislo":3694,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Karlova Ves","cisloParcely":"6975/2"},"poznamka":"Príkladná 35","pravnyVztah":"spravca","priznanieZaByt":{"priznanieZaByt":true,"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-16","datumZanikuDanovejPovinnosti":"2024-01-07"},"cisloBytu":"3","popisBytu":"Dvojizbak","spoluvlastnickyPodiel":"1/1","vymeraPodlahovejPlochyNaIneUcely":18,"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2654/36594"},"spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"2648","priznanieZaNebytovyPriestor":{"priznanieZaNebytovyPriestor":true,"nebytovePriestory":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-05","datumZanikuDanovejPovinnosti":"2024-01-12"},"riadok":{"cisloNebytovehoPriestoruVBytovomDome":"G05","ucelVyuzitiaNebytovehoPriestoruVBytovomDome":"Garáž"},"spoluvlastnickyPodiel":"1/5","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2659/86569"}]},"naZakladeDohody":false,"pocetSpoluvlastnikov":3}]},"bezpodieloveSpoluvlastnictvoManzelov":{"email":"test@test.com","telefon":"+421948417711","menoTitul":{"meno":"Petra","titul":"Bsc"},"priezvisko":"Príkladná","rodneCislo":"920314/2634","rovnakaAdresa":false,"stat":"703","obecPsc":{"psc":"83106","obec":"Abelova"},"ulicaCisloBezpodieloveSpoluvlastnictvoManzelov":{"cislo":"25","ulica":"Príkladná 35"}},"znizenieAleboOslobodenieOdDane":{"byty":["option1","option2"],"stavby":["option1","option2","option3"],"pozemky":["option1","option2","option3","option4"],"poznamka":"Príkladná 35"}}</Json>
   <Summary>
     <Form title="Priznanie k dani z nehnuteľností">
@@ -1473,15 +1567,16 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample5 XML should match s
 
 exports[`slovenskoSkForm stanovisko-k-investicnemu-zameru schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.8"
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.8" 
+           targetNamespace="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -1556,7 +1651,8 @@ exports[`slovenskoSkForm stanovisko-k-investicnemu-zameru schema XSD should matc
 
 exports[`slovenskoSkForm stanoviskoKInvesticnemuZameruExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<eform xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<eform xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"ziadatel":{"typ":"Fyzická osoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","menoPriezvisko":"Ján Kováč","adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}}},"investor":{"investorZiadatelom":false,"splnomocnenie":"c6bd9718-97ea-4601-b79f-c70e7064943d","typ":"Fyzická osoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","menoPriezvisko":"Marta Nováková","adresa":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}}},"zodpovednyProjektant":{"menoPriezvisko":"Peter Horváth","email":"peter.horvath@priklad.sk","projektantTelefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-03"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"Bytový dom","ulica":"Dunajská","supisneCislo":"464","parcelneCislo":"56789","kataster":["Dúbravka","Karlova Ves"]},"prilohy":{"architektonickaStudia":["cb1e3a95-f9d2-4e55-b482-8e7919f2b43f"]}}</Json>
   <Summary>
     <Form title="Žiadosť o stanovisko k investičnému zámeru">
@@ -1663,15 +1759,16 @@ exports[`slovenskoSkForm stanoviskoKInvesticnemuZameruExample XML should match s
 
 exports[`slovenskoSkForm zavazne-stanovisko-k-investicnej-cinnosti schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.7"
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.7" 
+           targetNamespace="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -1746,7 +1843,8 @@ exports[`slovenskoSkForm zavazne-stanovisko-k-investicnej-cinnosti schema XSD sh
 
 exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
   <Json>{"ziadatel":{"typ":"Fyzická osoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","menoPriezvisko":"Ján Kováč","adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}}},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","typ":"Fyzická osoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","menoPriezvisko":"Marta Nováková","adresa":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}}},"zodpovednyProjektant":{"menoPriezvisko":"Peter Horváth","email":"peter.horvath@priklad.sk","projektantTelefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"Bytový dom","ulica":"Dunajská","supisneCislo":"1234","parcelneCislo":"56789","kataster":["Karlova Ves","Dúbravka"]},"konanieTyp":{"typ":"Konanie o dodatočnom povolení stavby","ziadostOdovodnenie":"Dodatočné povolenie zmeny stavby pred dokončením","stavbaPisomnosti":["4110b6da-0dd7-4007-8c13-896134f1eaa0"],"stavbaFotodokumentacia":["8bfd16c6-49d5-45d2-987e-cba0ff0ebdd9"]},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
   <Summary>
     <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
@@ -1868,15 +1966,16 @@ exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should
 
 exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.1"
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.1" 
+           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" 
            elementFormDefault="qualified" 
            attributeFormDefault="unqualified">
 
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>
@@ -1951,8 +2050,9 @@ exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1
 
 exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
-<eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":false},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"mieraFunkcnejPoruchy":"50az74","tzpPreukaz":true}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"tzpPreukaz":false,"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"75az100"}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"50az74"}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
+<eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["opustenieUstavnejStarostlivosti","osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":true,"typByvania":"institucionalnaStarostlivost","dlzkaBytovejNudze":"menejAko1"},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"mieraFunkcnejPoruchy":"50az74","tzpPreukaz":true}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"tzpPreukaz":false,"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"75az100"}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"50az74"}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
   <Summary>
     <Form title="Žiadosť o nájom bytu">
       <Step id="root_ziadatelZiadatelka" title="Žiadateľ/žiadateľka">
@@ -2005,7 +2105,13 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_sucasneByvanie_bytovaNudza" label="Nachádzate sa v bytovej núdzi?">
-          <StringValue>Nie</StringValue>
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_sucasneByvanie_typByvania" label="Typ bývania">
+          <StringValue>Bývanie v inštitucionálnej starostlivosti</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_sucasneByvanie_dlzkaBytovejNudze" label="Uveďte, ako dlho trvá vaša bytová núdza">
+          <StringValue>Menej ako 1 rok</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_prijem_zamestnanie" label="Boli ste v minulom kalendárnom roku zamestnaný/á?">
           <StringValue>Áno</StringValue>
@@ -2051,6 +2157,7 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_rizikoveFaktory_zoznamRizikovychFaktorov" label="Označte rizikové faktory">
+          <StringValue>Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko</StringValue>
           <StringValue>Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_rizikoveFaktory_vekNajstarsiehoClena" label="Zvoľte vek najstaršieho člena domácnosti">
@@ -2275,7 +2382,7 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (bez energií), ktorú dokážete mesačne platiť">
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť">
           <StringValue>700</StringValue>
         </Field>
       </Step>

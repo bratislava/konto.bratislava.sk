@@ -11,7 +11,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -24,11 +24,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions([
-          'Fyzická osoba',
-          'Právnická osoba',
-          'Správcovská spoločnosť',
-        ]),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -68,7 +64,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -77,7 +73,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     conditionalFields(
@@ -101,7 +97,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
           required: true,
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej fakúry',
           variant: 'boxed',
@@ -129,7 +125,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: true,
       },
       {
-        helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+        helptext: 'Vyplňte vo formáte ulica a číslo',
       },
     ),
     select(
@@ -137,7 +133,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       {
         title: 'Vyberte komoditu',
         required: true,
-        options: createStringOptions(
+        items: createStringItems(
           [
             'Papier',
             'Plast',
@@ -149,7 +145,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         ),
       },
       {
-        helptextHeader: 'Poplatok je účtovaný za množstvo naložených a vysypaných nádob',
+        helptext: 'Poplatok je účtovaný za množstvo naložených a vysypaných nádob',
       },
     ),
     datePicker(
@@ -159,7 +155,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: true,
       },
       {
-        helptextHeader:
+        helptext:
           'Vami zvolený dátum má iba informačný charakter. Objednávku je potrebné podať minimálne 2 pracovné dni pred zvoleným termínom. V prípade, ak vami zvolený termín nebude voľný, budeme vás kontaktovať.',
         size: 'medium',
       },
@@ -171,7 +167,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
         required: false,
       },
       {
-        helptextHeader: 'Špecifikujte individuálne požiadavky.',
+        helptext: 'Špecifikujte individuálne požiadavky.',
       },
     ),
   ]),
@@ -189,6 +185,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, {}
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

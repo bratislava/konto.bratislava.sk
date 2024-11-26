@@ -286,6 +286,7 @@ export const CreateFormResponseDtoStateEnum = {
   SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
@@ -302,6 +303,9 @@ export const CreateFormResponseDtoErrorEnum = {
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
 } as const
 
 export type CreateFormResponseDtoErrorEnum =
@@ -1806,6 +1810,7 @@ export const FormState = {
   SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
@@ -2154,6 +2159,7 @@ export const GetFormResponseDtoStateEnum = {
   SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
@@ -2170,6 +2176,9 @@ export const GetFormResponseDtoErrorEnum = {
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
 } as const
 
 export type GetFormResponseDtoErrorEnum =
@@ -2243,6 +2252,7 @@ export const GetFormResponseSimpleDtoStateEnum = {
   SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
+  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
   Processing: 'PROCESSING',
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
@@ -2259,6 +2269,9 @@ export const GetFormResponseSimpleDtoErrorEnum = {
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
   GinisSendError: 'GINIS_SEND_ERROR',
+  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
+  EmailSendError: 'EMAIL_SEND_ERROR',
+  WebhookSendError: 'WEBHOOK_SEND_ERROR',
 } as const
 
 export type GetFormResponseSimpleDtoErrorEnum =
@@ -2300,6 +2313,25 @@ export interface GetFormsResponseDto {
    * @memberof GetFormsResponseDto
    */
   meta: GetFormMetaDto
+}
+/**
+ *
+ * @export
+ * @interface GetSignerDataRequestDto
+ */
+export interface GetSignerDataRequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof GetSignerDataRequestDto
+   */
+  formId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof GetSignerDataRequestDto
+   */
+  jsonForm: object
 }
 /**
  *
@@ -2613,19 +2645,6 @@ export const InvalidXmlErrorDtoErrorNameEnum = {
 export type InvalidXmlErrorDtoErrorNameEnum =
   (typeof InvalidXmlErrorDtoErrorNameEnum)[keyof typeof InvalidXmlErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface JsonConvertRequestDto
- */
-export interface JsonConvertRequestDto {
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof JsonConvertRequestDto
-   */
-  jsonForm: object
-}
 /**
  *
  * @export
@@ -3325,32 +3344,6 @@ export interface StatusResponseDto {
    * @memberof StatusResponseDto
    */
   scanner: ServiceRunningDto
-}
-/**
- *
- * @export
- * @interface TaxJsonToXmlRequestDto
- */
-export interface TaxJsonToXmlRequestDto {
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof TaxJsonToXmlRequestDto
-   */
-  jsonForm: object
-}
-/**
- *
- * @export
- * @interface TaxJsonToXmlResponseDto
- */
-export interface TaxJsonToXmlResponseDto {
-  /**
-   * Form values in XML
-   * @type {string}
-   * @memberof TaxJsonToXmlResponseDto
-   */
-  xmlForm: string
 }
 /**
  *
@@ -7460,68 +7453,30 @@ export class StatusesApi extends BaseAPI {
 export const TaxApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML for tax form from given JSON data
-     * @summary
-     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerConvertJsonToXml: async (
-      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'taxJsonToXmlRequestDto' is not null or undefined
-      assertParamExists(
-        'taxControllerConvertJsonToXml',
-        'taxJsonToXmlRequestDto',
-        taxJsonToXmlRequestDto,
-      )
-      const localVarPath = `/tax/json-to-xml`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        taxJsonToXmlRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {string} slug
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     taxControllerSignerData: async (
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      slug: string,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
-      assertParamExists('taxControllerSignerData', 'jsonConvertRequestDto', jsonConvertRequestDto)
-      const localVarPath = `/tax/signer-data`
+      // verify required parameter 'slug' is not null or undefined
+      assertParamExists('taxControllerSignerData', 'slug', slug)
+      // verify required parameter 'getSignerDataRequestDto' is not null or undefined
+      assertParamExists(
+        'taxControllerSignerData',
+        'getSignerDataRequestDto',
+        getSignerDataRequestDto,
+      )
+      const localVarPath = `/tax/signer-data/{slug}`.replace(
+        `{${'slug'}}`,
+        encodeURIComponent(String(slug)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -7543,7 +7498,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        jsonConvertRequestDto,
+        getSignerDataRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -7564,47 +7519,23 @@ export const TaxApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = TaxApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML for tax form from given JSON data
-     * @summary
-     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async taxControllerConvertJsonToXml(
-      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerConvertJsonToXml(
-        taxJsonToXmlRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['TaxApi.taxControllerConvertJsonToXml']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {string} slug
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async taxControllerSignerData(
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      slug: string,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerSignerData(
-        jsonConvertRequestDto,
+        slug,
+        getSignerDataRequestDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -7633,33 +7564,20 @@ export const TaxApiFactory = function (
   const localVarFp = TaxApiFp(configuration)
   return {
     /**
-     * Generates XML for tax form from given JSON data
-     * @summary
-     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerConvertJsonToXml(
-      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<string> {
-      return localVarFp
-        .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Returns input data for ditec signer from JSON data and shcema version id
      * @summary
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {string} slug
+     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     taxControllerSignerData(
-      jsonConvertRequestDto: JsonConvertRequestDto,
+      slug: string,
+      getSignerDataRequestDto: GetSignerDataRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<TaxSignerDataResponseDto> {
       return localVarFp
-        .taxControllerSignerData(jsonConvertRequestDto, options)
+        .taxControllerSignerData(slug, getSignerDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -7673,36 +7591,21 @@ export const TaxApiFactory = function (
  */
 export class TaxApi extends BaseAPI {
   /**
-   * Generates XML for tax form from given JSON data
-   * @summary
-   * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof TaxApi
-   */
-  public taxControllerConvertJsonToXml(
-    taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return TaxApiFp(this.configuration)
-      .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Returns input data for ditec signer from JSON data and shcema version id
    * @summary
-   * @param {JsonConvertRequestDto} jsonConvertRequestDto
+   * @param {string} slug
+   * @param {GetSignerDataRequestDto} getSignerDataRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof TaxApi
    */
   public taxControllerSignerData(
-    jsonConvertRequestDto: JsonConvertRequestDto,
+    slug: string,
+    getSignerDataRequestDto: GetSignerDataRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return TaxApiFp(this.configuration)
-      .taxControllerSignerData(jsonConvertRequestDto, options)
+      .taxControllerSignerData(slug, getSignerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

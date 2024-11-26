@@ -332,6 +332,37 @@ export class AdminService {
           )
     const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
 
+    // Get all tax IDs from taxesDataMap
+    const taxIds = [...taxesDataMap.values()].map((tax) => tax.id)
+
+    // Get aggregate data for all taxes at once
+    const aggregateData = await this.prismaService.taxPayment.groupBy({
+      by: ['taxId'],
+      _sum: {
+        amount: true,
+      },
+      _count: {
+        _all: true,
+      },
+      where: {
+        taxId: {
+          in: taxIds,
+        },
+        status: PaymentStatus.SUCCESS,
+      },
+    })
+
+    // Create a map of aggregated data for easy lookup
+    const aggregateDataMap = new Map(
+      aggregateData.map((data) => [
+        data.taxId,
+        {
+          sum: data._sum.amount || 0,
+          count: data._count._all,
+        },
+      ]),
+    )
+
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
     await Promise.all(
       norisPaymentData
@@ -346,18 +377,10 @@ export class AdminService {
           try {
             const taxData = taxesDataMap.get(norisPayment.variabilny_symbol!) // we know it's not undefined from filter
             if (taxData) {
-              const payerData = await this.prismaService.taxPayment.aggregate({
-                _sum: {
-                  amount: true,
-                },
-                _count: {
-                  _all: true,
-                },
-                where: {
-                  taxId: taxData.id,
-                  status: PaymentStatus.SUCCESS,
-                },
-              })
+              const payerData = aggregateDataMap.get(taxData.id) || {
+                sum: 0,
+                count: 0,
+              }
               const payedFromNoris =
                 typeof norisPayment.uhrazeno === 'number'
                   ? currency(norisPayment.uhrazeno).intValue
@@ -368,14 +391,14 @@ export class AdminService {
                   : currency(norisPayment.zbyva_uhradit!.replace(',', '.')) // we know it's not undefined from filter
                       .intValue
               if (
-                payerData._sum.amount === null ||
-                payerData._sum.amount < payedFromNoris
+                payerData.sum === null ||
+                payerData.sum < payedFromNoris
               ) {
                 created += 1
                 const createdTaxPayment =
                   await this.prismaService.taxPayment.create({
                     data: {
-                      amount: payedFromNoris - (payerData._sum.amount ?? 0),
+                      amount: payedFromNoris - (payerData.sum ?? 0),
                       source: 'BANK_ACCOUNT',
                       specificSymbol: norisPayment.specificky_symbol,
                       taxId: taxData.id,
@@ -401,7 +424,7 @@ export class AdminService {
                   payedFromNoris,
                   taxData,
                   forPayment,
-                  payerData._count._all,
+                  payerData.count,
                 )
               } else {
                 alreadyCreated += 1

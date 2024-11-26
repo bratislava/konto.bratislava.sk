@@ -18,7 +18,9 @@ const TextAreaField = ({
   placeholder,
   errorMessage = [],
   helptext,
-  helptextHeader,
+  helptextMarkdown,
+  helptextFooter,
+  helptextFooterMarkdown,
   tooltip,
   required,
   value,
@@ -88,7 +90,9 @@ const TextAreaField = ({
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
         tooltip={tooltip}

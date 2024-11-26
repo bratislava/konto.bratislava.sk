@@ -1,3 +1,5 @@
+import { EnumMetadata } from './optionItems'
+
 export type CustomComponentAccordionProps = {
   title: string
   content: string
@@ -15,6 +17,7 @@ export type CustomComponentCalculator = {
   formula: string
   missingFieldsMessage: string
   unit: string
+  unitMarkdown?: boolean
   /**
    * The dataContextLevelsUp is an optional parameter that specifies the number of levels to go up in the JSON data
    * context for formula in hierarchy from the current position. This is useful when you want to retrieve or access data
@@ -64,7 +67,9 @@ export type WidgetSpacing = {
 export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
-  helptextHeader?: string
+  helptextMarkdown?: boolean
+  helptextFooter?: string
+  helptextFooterMarkdown?: boolean
   className?: string
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
@@ -73,6 +78,7 @@ export type WidgetUiOptions = WidgetSpacing & {
 }
 
 export type CheckboxGroupUiOptions = {
+  enumMetadata: EnumMetadata<string>[]
   variant?: 'basic' | 'boxed'
 } & WidgetUiOptions
 
@@ -94,25 +100,14 @@ export type InputUiOptions = {
 
 export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
 
-type RadioOption = {
-  value: string
-  description?: string
-}
-
 export type RadioGroupUiOptions = {
-  className?: string
-  radioOptions?: RadioOption[]
+  enumMetadata: EnumMetadata<string | boolean>[]
   variant?: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-type SelectOption = {
-  title: string
-  description?: string
-}
-
 export type SelectUiOptions = {
-  selectOptions?: Record<string, SelectOption>
+  enumMetadata: EnumMetadata<string>[]
   placeholder?: string
 } & WidgetUiOptions
 
@@ -133,6 +128,7 @@ export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | '
 export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
   hideTitle?: boolean
   description?: string
+  descriptionMarkdown?: boolean
   addButtonLabel: string
   itemTitle?: string
   cannotAddItemMessage?: string
@@ -153,6 +149,7 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
     objectDisplay?: 'wrapper' | 'boxed'
     title?: string
     description?: string
+    descriptionMarkdown?: boolean
   } & (
     | {
         columns?: false
@@ -194,5 +191,8 @@ export enum BaWidgetType {
   FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
+}
+
+export enum BaFieldType {
   CustomComponents = 'CustomComponents',
 }

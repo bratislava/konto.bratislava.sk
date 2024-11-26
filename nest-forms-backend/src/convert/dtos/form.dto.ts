@@ -11,7 +11,14 @@ import {
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
-export class JsonConvertRequestDto {
+export class GetSignerDataRequestDto {
+  @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
   @IsObject()
   @ApiProperty({
     description: 'Form values in JSON',

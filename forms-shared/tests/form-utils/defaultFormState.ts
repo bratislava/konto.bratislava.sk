@@ -1,5 +1,6 @@
 import {
   arrayField,
+  checkbox,
   checkboxGroup,
   conditionalFields,
   fileUpload,
@@ -30,10 +31,10 @@ describe('defaultFormState', () => {
   })
 
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
-    const options = [
+    const items = [
       {
         value: 'option',
-        title: 'Option',
+        label: 'Option',
       },
     ]
 
@@ -48,7 +49,7 @@ describe('defaultFormState', () => {
         'select',
         {
           title: 'Select multiple',
-          options,
+          items,
         },
         {},
       ),
@@ -56,7 +57,7 @@ describe('defaultFormState', () => {
         'selectRequired',
         {
           title: 'Select multiple required',
-          options,
+          items,
           required: true,
         },
         {},
@@ -65,7 +66,7 @@ describe('defaultFormState', () => {
         'checkboxGroup',
         {
           title: 'Checkbox group',
-          options,
+          items,
         },
         {},
       ),
@@ -73,7 +74,7 @@ describe('defaultFormState', () => {
         'checkboxGroupRequired',
         {
           title: 'Checkbox group required',
-          options,
+          items,
           required: true,
         },
         {},
@@ -103,6 +104,18 @@ describe('defaultFormState', () => {
       checkboxGroupRequired: [],
       arrayFieldRequired: [{}],
     })
+  })
+
+  it('getDefaultForm should not prefill const values', () => {
+    const definition = object('defaultFormState', {}, {}, [
+      checkbox(
+        'checkboxWithConstValue',
+        { title: 'Checkbox with const value', required: true, constValue: true },
+        { checkboxLabel: 'I agree' },
+      ),
+    ])
+
+    expect(baGetDefaultFormState(definition.schema, {})).toEqual({})
   })
 })
 

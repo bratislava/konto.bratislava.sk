@@ -36,9 +36,13 @@ const ziadostONajomBytuExample: ExampleForm = {
       rizikoveFaktory: {
         rizikoveFaktoryPritomne: true,
         vekNajstarsiehoClena: 'menejAko63',
-        zoznamRizikovychFaktorov: ['osamelyRodic'],
+        zoznamRizikovychFaktorov: ['opustenieUstavnejStarostlivosti', 'osamelyRodic'],
       },
-      sucasneByvanie: { bytovaNudza: false },
+      sucasneByvanie: {
+        bytovaNudza: true,
+        typByvania: 'institucionalnaStarostlivost',
+        dlzkaBytovejNudze: 'menejAko1',
+      },
       zdravotnyStav: {
         bezbarierovyByt: false,
         chronickeOchorenie: true,

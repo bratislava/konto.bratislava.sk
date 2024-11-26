@@ -40,7 +40,7 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             it('1. Choosing how to fill out the return.', () => {
-              cy.dataCy('tax-form-landing-page-card-bratislavske-konto').click()
+              cy.dataCy('form-landing-page-fill-form-button').click()
             })
 
             it('2. Checking "Type of tax return" step validation.', () => {

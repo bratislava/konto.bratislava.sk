@@ -1,15 +1,14 @@
 import {
-  schema,
-  step,
-  radioGroup,
+  conditionalFields,
+  datePicker,
+  fileUpload,
   input,
   object,
-  fileUpload,
-  datePicker,
-  conditionalFields,
+  radioGroup,
+  schema,
+  step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
-import { sharedAddressField } from '../shared/fields'
+import { createCondition, createStringItems } from '../../generator/helpers'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -19,7 +18,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         type: 'string',
         title: 'Objednávateľ ako',
         required: true,
-        options: createStringOptions([
+        items: createStringItems([
           'Fyzická osoba',
           'Fyzická osoba - podnikateľ',
           'Právnická osoba',
@@ -72,7 +71,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         input(
           'adresaTrvalehoPobytu',
           { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
-          { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
         ),
       ],
     ),
@@ -89,7 +88,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         input(
           'adresaPodnikania',
           { title: 'Miesto podnikania', required: true, type: 'text' },
-          { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
         ),
       ],
     ),
@@ -106,7 +105,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         input(
           'adresaSidla',
           { title: 'Adresa sídla', required: true, type: 'text' },
-          { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
         ),
       ],
     ),
@@ -126,7 +125,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     input(
       'telefonneCislo',
       { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-      { helptextHeader: 'Vyplňte vo formáte +421' },
+      { helptext: 'Vyplňte vo formáte +421' },
     ),
     conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
       object(
@@ -134,21 +133,17 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         { required: true },
         { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
         [
-          input(
-            'meno',
-            { title: 'Meno', required: true, type: 'text' },
-            { helptextHeader: 'Meno' },
-          ),
+          input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
           input(
             'priezvisko',
             { title: 'Priezvisko', required: true, type: 'text' },
-            { helptextHeader: 'Priezvisko' },
+            { helptext: 'Priezvisko' },
           ),
           input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
           input(
             'telefonneCislo',
             { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-            { helptextHeader: 'Vyplňte vo formáte +421' },
+            { helptext: 'Vyplňte vo formáte +421' },
           ),
         ],
       ),
@@ -165,7 +160,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
       },
       {
         type: 'dragAndDrop',
-        helptextHeader:
+        helptext:
           'V prípade, že požadovaný súbor na vyplnenie ešte nemáte, stiahnuť si ho viete na tomto odkaze. Dbajte na to, aby ste v súbore spomenuli všetky zariadenia, ktoré si želáte umiestniť. Bez vyplnenia a nahratia tohto súboru nebude možné vašu žiadosť spracovať.',
       },
     ),
@@ -175,7 +170,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         type: 'string',
         title: 'Za montáž, prevádzku a demontáž zodpovedá',
         required: true,
-        options: createStringOptions(['Organizácia', 'Fyzická osoba']),
+        items: createStringItems(['Organizácia', 'Fyzická osoba']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -219,7 +214,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     input(
       'telefonneCislo',
       { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-      { helptextHeader: 'Vyplňte vo formáte +421' },
+      { helptext: 'Vyplňte vo formáte +421' },
     ),
     datePicker(
       'planovanyDatumMontaze',
@@ -228,7 +223,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         required: true,
       },
       {
-        helptextHeader:
+        helptext:
           'O zahájení prác je potrebné písomne informovať minimálne 1 pracovný deň vopred prostredníctvom e-mailu na info@tsb.sk.',
       },
     ),
@@ -239,7 +234,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         required: true,
       },
       {
-        helptextHeader:
+        helptext:
           'Žiadateľ je povinný na základe písomnej výzvy zabezpečiť demontáž svojho zariadenia na vlastné náklady, a to v lehote najneskôr do 15 kalendárnych dní od doručenia takejto výzvy prostredníctvom kontaktného e-mailu.',
       },
     ),
@@ -254,7 +249,7 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
       },
       {
         type: 'dragAndDrop',
-        helptextHeader:
+        helptext:
           'Nahrajte jednu prílohu obsahujúcu fotografie alebo vizualizácie všetkých zariadení.',
       },
     ),

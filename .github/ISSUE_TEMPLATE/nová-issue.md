@@ -19,6 +19,9 @@ _kto je cieľová skupina pre ktorú to ideme robiť_
 **Dáta**
 _z čoho vychádzame, aké dáta podporujú existenciu problému, ktorý ideme riešiť_
 
+**Prerekvizity, závislosti**
+_čo musí byť vyriešené, aby sme sa našej úlohe mohli venovať?_
+
 **Akceptačné kritériá**
 _kritériá, ktoré jasne určujú, kedy je úloha dokončená, čo potrebujeme aby riešenie robilo._
 

@@ -10,7 +10,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -23,7 +23,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Fyzická osoba', 'Právnická osoba']),
+        items: createStringItems(['Fyzická osoba', 'Právnická osoba']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -58,7 +58,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -67,7 +67,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
       input(
         'menoKontaktnejOsoby',
@@ -86,7 +86,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
             title: 'Súhlasím so zaslaním elektronickej faktúry',
           },
           {
-            helptextHeader:
+            helptext:
               'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH.',
             checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
             variant: 'boxed',
@@ -115,7 +115,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         required: true,
       },
       {
-        helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+        helptext: 'Vyplňte vo formáte ulica a číslo',
       },
     ),
     textArea(
@@ -125,7 +125,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         required: true,
       },
       {
-        helptextHeader: 'Okrem čalúneného nábytku a elektrospotrebičov',
+        helptext: 'Okrem čalúneného nábytku a elektrospotrebičov',
       },
     ),
     fileUpload(
@@ -137,7 +137,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       },
       {
         type: 'dragAndDrop',
-        helptextHeader: 'Nahrajte fotografiu vecí, ktoré chcete darovať (jpg, jpeg, png, max. 5MB)',
+        helptext: 'Nahrajte fotografiu vecí, ktoré chcete darovať (jpg, jpeg, png, max. 5MB)',
       },
     ),
     checkbox(
@@ -167,6 +167,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

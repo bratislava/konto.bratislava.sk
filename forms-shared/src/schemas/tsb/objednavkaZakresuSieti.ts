@@ -1,5 +1,4 @@
 import {
-  checkbox,
   conditionalFields,
   fileUpload,
   input,
@@ -9,8 +8,7 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
-import { sharedAddressField } from '../shared/fields'
+import { createCondition, createStringItems } from '../../generator/helpers'
 
 export default schema(
   {
@@ -25,7 +23,7 @@ export default schema(
           type: 'string',
           title: 'Objednávate ako',
           required: true,
-          options: createStringOptions([
+          items: createStringItems([
             'Fyzická osoba',
             'Fyzická osoba - podnikateľ',
             'Právnická osoba',
@@ -78,7 +76,7 @@ export default schema(
           input(
             'adresaTrvalehoPobytu',
             { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -95,7 +93,7 @@ export default schema(
           input(
             'adresaPodnikania',
             { title: 'Miesto podnikania', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -112,7 +110,7 @@ export default schema(
           input(
             'adresaSidla',
             { title: 'Adresa sídla', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
         ],
       ),
@@ -132,7 +130,7 @@ export default schema(
       input(
         'telefonneCislo',
         { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-        { helptextHeader: 'Vyplňte vo formáte +421' },
+        { helptext: 'Vyplňte vo formáte +421' },
       ),
       conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
         object(
@@ -140,21 +138,17 @@ export default schema(
           { required: true },
           { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
           [
-            input(
-              'meno',
-              { title: 'Meno', required: true, type: 'text' },
-              { helptextHeader: 'Meno' },
-            ),
+            input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
             input(
               'priezvisko',
               { title: 'Priezvisko', required: true, type: 'text' },
-              { helptextHeader: 'Priezvisko' },
+              { helptext: 'Priezvisko' },
             ),
             input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
             input(
               'telefonneCislo',
               { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-              { helptextHeader: 'Vyplňte vo formáte +421' },
+              { helptext: 'Vyplňte vo formáte +421' },
             ),
           ],
         ),
@@ -169,14 +163,14 @@ export default schema(
           input(
             'fakturacnaAdresa',
             { title: 'Fakturačná adresa', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           input('mesto', { title: 'Mesto', required: true, type: 'text' }, {}),
           input('psc', { title: 'PSČ', required: true, type: 'text' }, {}),
           input(
             'email',
             { title: 'E-mail', required: true, type: 'email' },
-            { helptextHeader: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
+            { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
           ),
         ],
       ),
@@ -188,7 +182,7 @@ export default schema(
           input(
             'adresaObjednavky',
             { title: 'Adresa objednávky', required: true, type: 'text' },
-            { helptextHeader: 'Vyplňte vo formáte ulica a číslo' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
           radioGroup(
             'viacKatastralneUzemia',
@@ -196,9 +190,9 @@ export default schema(
               type: 'boolean',
               title: 'Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {
@@ -212,7 +206,7 @@ export default schema(
               {
                 title: 'Katastrálne územie',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',
@@ -236,7 +230,7 @@ export default schema(
                 ]),
               },
               {
-                helptextHeader:
+                helptext:
                   'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
               },
             ),
@@ -247,7 +241,7 @@ export default schema(
               {
                 title: 'Katastrálne územie',
                 required: true,
-                options: createStringOptions([
+                items: createStringItems([
                   'Čunovo',
                   'Devín',
                   'Devínska Nová Ves',
@@ -271,7 +265,7 @@ export default schema(
                 ]),
               },
               {
-                helptextHeader:
+                helptext:
                   'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
               },
             ),
@@ -288,7 +282,7 @@ export default schema(
         },
         {
           type: 'dragAndDrop',
-          helptextHeader: `Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie.
+          helptext: `Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie.
 
 Ako vytvoriť snímku?
 Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájdete funkciu Meranie, ktorá Vám umožní zaznačiť Vaše záujmové územie na katastrálnej mape (zaznačenie Vám následne vypočíta výmeru plochy). Snímku vycentrujte a využite možnosť ZBGIS Tlačiť do PDF. Dokument uložte a následne nahrajte do Nahrať súbory.`,

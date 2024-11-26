@@ -9,7 +9,7 @@ import {
   schema,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
@@ -22,7 +22,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
         type: 'string',
         title: 'Žiadam ako',
         required: true,
-        options: createStringOptions(['Právnická osoba', 'Správcovská spoločnosť']),
+        items: createStringItems(['Právnická osoba', 'Správcovská spoločnosť']),
       },
       { variant: 'boxed', orientations: 'column' },
     ),
@@ -42,7 +42,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
       input(
         'konatel',
         { type: 'text', title: 'Konateľ', required: true },
-        { helptextHeader: 'Uveďte meno a priezvisko konateľa' },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
       ),
       input(
         'zastupeny',
@@ -51,7 +51,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
           title: 'Zastúpený - na základe splnomocnenia',
           required: true,
         },
-        { helptextHeader: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
+        { helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia' },
       ),
     ]),
     input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
@@ -65,7 +65,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
           title: 'Súhlasím so zaslaním elektronickej faktúry',
         },
         {
-          helptextHeader:
+          helptext:
             'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
           checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
           variant: 'boxed',
@@ -93,7 +93,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
         required: true,
       },
       {
-        helptextHeader: 'Vyplňte vo formáte ulica a číslo',
+        helptext: 'Vyplňte vo formáte ulica a číslo',
       },
     ),
     datePicker(
@@ -119,6 +119,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
       },
     ),
     customComponentsField(
+      'suhlasSVopLink',
       {
         type: 'additionalLinks',
         props: {

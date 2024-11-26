@@ -476,22 +476,12 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="black-solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
-        </Button>,
-        <Button
-          variant="black-solid"
-          size="small"
-          onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
-          fullWidthMobile
-          isLoading={sendEidPending}
-          isLoadingText={t('eid_send_error_modal.button_title_loading')}
-        >
-          {t('eid_send_error_modal.button_title')}
         </Button>,
       ],
       isDismissable: !sendEidPending,
@@ -566,9 +556,11 @@ const FormModals = () => {
         onOpenChange={setIdentityVerificationModal}
         accountType={accountType}
       />
-      {messageModals.map((modalProps) => (
-        <MessageModal {...modalProps} />
-      ))}
+      {messageModals.map((modalProps) => {
+        // To avoid "A props object containing a "key" prop is being spread into JSX" error
+        const { key, ...restModalProps } = modalProps
+        return <MessageModal key={key} {...restModalProps} />
+      })}
     </>
   )
 }

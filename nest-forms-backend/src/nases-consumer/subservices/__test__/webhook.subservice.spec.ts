@@ -95,7 +95,7 @@ describe('WebhookSubservice', () => {
       })
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
         where: { id: 'test-form-id' },
-        data: { state: FormState.PROCESSING },
+        data: { state: FormState.FINISHED },
       })
     })
 

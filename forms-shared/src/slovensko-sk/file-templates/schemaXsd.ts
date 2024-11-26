@@ -13,6 +13,7 @@ export const getSchemaXsd = (
   <xs:element name="eform">
     <xs:complexType>
       <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
         <xs:element name="Json" type="xs:string"/>
         <xs:element name="Summary" type="SummaryType"/>
         <xs:element name="TermsAndConditions" type="xs:string"/>

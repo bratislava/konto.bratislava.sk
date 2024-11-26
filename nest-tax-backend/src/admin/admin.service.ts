@@ -390,10 +390,7 @@ export class AdminService {
                   ? currency(norisPayment.zbyva_uhradit).intValue
                   : currency(norisPayment.zbyva_uhradit!.replace(',', '.')) // we know it's not undefined from filter
                       .intValue
-              if (
-                payerData.sum === null ||
-                payerData.sum < payedFromNoris
-              ) {
+              if (payerData.sum === null || payerData.sum < payedFromNoris) {
                 created += 1
                 const createdTaxPayment =
                   await this.prismaService.taxPayment.create({

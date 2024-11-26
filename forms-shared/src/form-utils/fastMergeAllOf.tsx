@@ -1,5 +1,25 @@
-import { JSONSchema7 } from 'json-schema'
 import { BAJSONSchema7 } from './ajvKeywords'
+
+const validateObject = (schema: unknown, context: string) => {
+  if (typeof schema !== 'object') {
+    throw new Error(`${context} must be an object`)
+  }
+}
+
+const validateSchemaType = (type: unknown, context: string) => {
+  if (type && type !== 'object') {
+    throw new Error(`${context} type must be either undefined or "object"`)
+  }
+}
+
+const validateAllowedProperties = (schema: unknown, allowedProps: string[], context: string) => {
+  const invalidProps = Object.keys(schema as Record<string, any>).filter(
+    (prop) => !allowedProps.includes(prop),
+  )
+  if (invalidProps.length > 0) {
+    throw new Error(`Unsupported properties in ${context}: ${invalidProps.join(', ')}`)
+  }
+}
 
 /**
  * A very fast implementation of `json-schema-merge-allof` that merges properties from allOf array.
@@ -28,10 +48,11 @@ import { BAJSONSchema7 } from './ajvKeywords'
  *
  * More context:
  * https://github.com/rjsf-team/react-jsonschema-form/pull/4308
- *
- * TODO: Consider throwing an error when the input doesn't match the expected shape.
  */
 export function baFastMergeAllOf(schema: BAJSONSchema7): BAJSONSchema7 {
+  validateObject(schema, 'Schema')
+  validateSchemaType(schema.type, 'Schema')
+
   if (!schema.allOf || !Array.isArray(schema.allOf)) {
     return schema
   }
@@ -44,7 +65,11 @@ export function baFastMergeAllOf(schema: BAJSONSchema7): BAJSONSchema7 {
   }
 
   delete newSchema.allOf
-  ;(schema.allOf as BAJSONSchema7[]).forEach((item: JSONSchema7) => {
+  ;(schema.allOf as BAJSONSchema7[]).forEach((item) => {
+    validateObject(item, 'allOf item')
+    validateSchemaType(item.type, 'allOf item')
+    validateAllowedProperties(item, ['type', 'properties', 'required'], 'allOf item')
+
     if (item.properties) {
       newSchema.properties = {
         ...newSchema.properties,

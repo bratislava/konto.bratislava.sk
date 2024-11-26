@@ -31,13 +31,13 @@ describe('fastMergeAllOf', () => {
       properties: { name: { type: 'string' } },
       required: ['name'],
       allOf: [
-        { 
+        {
           properties: { age: { type: 'number' } },
-          required: ['age']
+          required: ['age'],
         },
-        { 
+        {
           properties: { email: { type: 'string' } },
-          required: ['email']
+          required: ['email'],
         },
       ],
     }
@@ -51,7 +51,7 @@ describe('fastMergeAllOf', () => {
         age: { type: 'number' },
         email: { type: 'string' },
       },
-      required: ['name', 'age', 'email']
+      required: ['name', 'age', 'email'],
     })
   })
 
@@ -104,5 +104,64 @@ describe('fastMergeAllOf', () => {
       name: { type: 'string' },
       age: { type: 'number' },
     })
+  })
+
+  it('should throw error when schema type is not "object"', () => {
+    const schema: BAJSONSchema7 = {
+      type: 'string',
+    }
+
+    expect(() => baFastMergeAllOf(schema)).toThrow(
+      'Schema type must be either undefined or "object"',
+    )
+  })
+
+  it('should throw error when allOf item type is not "object"', () => {
+    const schema: BAJSONSchema7 = {
+      type: 'object',
+      properties: { name: { type: 'string' } },
+      allOf: [
+        {
+          type: 'string',
+        },
+      ],
+    }
+
+    expect(() => baFastMergeAllOf(schema)).toThrow(
+      'allOf item type must be either undefined or "object"',
+    )
+  })
+
+  it('should throw error when allOf item contains unsupported properties', () => {
+    const schema: BAJSONSchema7 = {
+      type: 'object',
+      properties: { name: { type: 'string' } },
+      allOf: [
+        {
+          properties: { age: { type: 'number' } },
+          additionalProperties: false,
+        },
+      ],
+    }
+
+    expect(() => baFastMergeAllOf(schema)).toThrow(
+      'Unsupported properties in allOf item: additionalProperties',
+    )
+  })
+
+  it('should throw error when allOf item is not defined', () => {
+    const schema: BAJSONSchema7 = {
+      type: 'object',
+      properties: { name: { type: 'string' } },
+      allOf: [undefined] as any,
+    }
+
+    expect(() => baFastMergeAllOf(schema)).toThrow('allOf item must be an object')
+  })
+
+  it('should throw error when schema is not an object', () => {
+    const schema = 'not an object' as any
+
+    expect(() => baFastMergeAllOf(schema)).toThrow('Schema must be an object')
   })
 })

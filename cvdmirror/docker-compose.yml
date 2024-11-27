@@ -1,0 +1,55 @@
+services:
+  cvdmirror:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["./entrypoint.sh", "serve"]
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIGMAP_NAME=clamav-cvdmirror-env
+    volumes:
+      - database:/mnt/cvdupdate
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 8G
+        reservations:
+          cpus: '0.1'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      konto:
+        aliases:
+          - clamav-cvdmirror-database
+
+  cron:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/usr/sbin/crond", "-f"]
+    environment:
+      - CONFIGMAP_NAME=clamav-cvdmirror-env
+    volumes:
+      - database:/mnt/cvdupdate
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 1G
+    networks:
+      - konto
+
+volumes:
+  database:
+    driver: local
+
+networks:
+  konto:
+    name: konto-network

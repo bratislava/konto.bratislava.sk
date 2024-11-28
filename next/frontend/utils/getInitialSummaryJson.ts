@@ -12,6 +12,7 @@ export const getInitialSummaryJson = (
   formDefinition: FormDefinition,
   formData: GenericObjectType,
 ) => {
+  // Getting the summary JSON is expensive, therefore it is worth checking if it is actually needed.
   if (query[STEP_QUERY_PARAM_KEY] !== STEP_QUERY_PARAM_VALUE_SUMMARY) {
     return null
   }

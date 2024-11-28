@@ -2,6 +2,7 @@ import { createSchemaUtils, GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import Form from '@rjsf/core'
 import { baRjsfValidator } from './validators'
 import { baDefaultFormStateBehavior } from './defaultFormState'
+import { baFastMergeAllOf } from './fastMergeAllOf'
 
 /**
  * Omits extra data from form data.
@@ -10,7 +11,12 @@ import { baDefaultFormStateBehavior } from './defaultFormState'
  * extra data from form data.
  */
 export function omitExtraData(schema: RJSFSchema, formData: GenericObjectType): GenericObjectType {
-  const schemaUtils = createSchemaUtils(baRjsfValidator, schema, baDefaultFormStateBehavior)
+  const schemaUtils = createSchemaUtils(
+    baRjsfValidator,
+    schema,
+    baDefaultFormStateBehavior,
+    baFastMergeAllOf,
+  )
   const formInstance = new Form({ schema, validator: baRjsfValidator })
 
   const retrievedSchema = schemaUtils.retrieveSchema(schema, formData)

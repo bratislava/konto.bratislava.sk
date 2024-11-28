@@ -7,7 +7,7 @@ import pick from 'lodash/pick'
 import { FormStepperStep } from '../../components/forms/types/Steps'
 import { isDefined } from './general'
 
-export const SUMMARY_QUERY_PARAM = 'sumar'
+export const STEP_QUERY_PARAM_VALUE_SUMMARY = 'sumar'
 
 /**
  * Evaluates each step with current form data and returns an array of schemas.
@@ -91,7 +91,7 @@ export const getStepperData = (
     {
       index: 'summary',
       displayIndex: displayIndex + 1,
-      queryParam: SUMMARY_QUERY_PARAM,
+      queryParam: STEP_QUERY_PARAM_VALUE_SUMMARY,
     } satisfies FormStepperStep,
   ]
 }

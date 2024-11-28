@@ -26,7 +26,7 @@ const getQueryParamByStepIndex = (steps: FormStepperStep[], stepIndex: FormStepI
   return step?.queryParam ?? null
 }
 
-const STEP_QUERY_PARAM = 'krok'
+export const STEP_QUERY_PARAM = 'krok'
 
 /**
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.

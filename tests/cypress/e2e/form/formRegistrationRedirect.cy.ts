@@ -61,10 +61,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number)
 
-            // TODO - Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-              .click()
-              .click()
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
         })
 

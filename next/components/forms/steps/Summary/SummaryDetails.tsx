@@ -17,6 +17,7 @@ import { useIsClient } from 'usehooks-ts'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
+import { useFormValidatorRegistry } from '../../useFormValidatorRegistry'
 import SummaryFile from './SummaryFile'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
@@ -145,7 +146,9 @@ const SummaryDetails = () => {
     },
     initialSummaryJson,
   } = useFormContext()
+  const validatorRegistry = useFormValidatorRegistry()
   const isClient = useIsClient()
+
   const summaryJson = useMemo(() => {
     if (!isClient) {
       // Node needs to use a different method to get the summary JSON (see `getSummaryJsonNode`).
@@ -153,8 +156,8 @@ const SummaryDetails = () => {
       return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser(schema, uiSchema, formData)
-  }, [isClient, initialSummaryJson, schema, uiSchema, formData])
+    return getSummaryJsonBrowser(schema, uiSchema, formData, validatorRegistry)
+  }, [isClient, initialSummaryJson, schema, uiSchema, formData, validatorRegistry])
 
   if (!summaryJson) {
     return null

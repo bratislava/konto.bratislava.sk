@@ -19,8 +19,9 @@ import React, {
 import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions, BaFieldType, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
-import { baFormDefaults } from '../form-utils/formDefaults'
+import { getBaFormDefaults } from '../form-utils/formDefaults'
 import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -188,7 +189,9 @@ const theme: ThemeProps = {
 
 const ThemedForm = withTheme(theme)
 
-type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
+type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'> & {
+  validatorRegistry: BaRjsfValidatorRegistry
+}
 
 /**
  * Generates a summary XML form based on the provided schema, UI schema, and form data.
@@ -198,7 +201,12 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({
+  schema,
+  uiSchema,
+  formData,
+  validatorRegistry,
+}: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
@@ -206,7 +214,7 @@ export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormPro
       formData={formData}
       // RJSF renders the form in <form> tag by default.
       tagName={({ children }: PropsWithChildren) => <>{children}</>}
-      {...baFormDefaults}
+      {...getBaFormDefaults(schema, validatorRegistry)}
     >
       {/* There must be an empty fragment inside the form, otherwise RJSF renders submit button
        * inside the form. */}

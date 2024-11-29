@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
+import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsModule from '../forms/forms.module'
 import GinisModule from '../ginis/ginis.module'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
@@ -25,6 +26,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
     ConvertModule,
     ConvertPdfModule,
     TaxModule,
+    FormValidatorRegistryModule,
   ],
   providers: [
     NasesConsumerService,

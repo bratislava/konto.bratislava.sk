@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
@@ -33,6 +34,10 @@ describe('ConvertService', () => {
         {
           provide: MinioClientSubservice,
           useValue: createMock<MinioClientSubservice>(),
+        },
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
         },
       ],
     }).compile()

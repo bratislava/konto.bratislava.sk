@@ -7,7 +7,7 @@ import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampl
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
-import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useTranslation } from 'next-i18next'
 import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useMemo, useRef, useState } from 'react'
@@ -21,6 +21,7 @@ import ThemedForm from './ThemedForm'
 import { FormDataContext } from './useFormData'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { FormFileUploadContext } from './useFormFileUpload'
+import { FormValidatorRegistryProvider, useFormValidatorRegistry } from './useFormValidatorRegistry'
 import SelectField, { SelectOption } from './widget-components/SelectField/SelectField'
 
 export type FormsPlaygroundProps = {
@@ -91,18 +92,23 @@ const FormPlaygroundProviders = ({
   )
 
   return (
-    <FormFileUploadContext.Provider
-      value={formFileUploadContextValue as ContextType<typeof FormFileUploadContext>}
-    >
-      <FormDataContext.Provider value={formDataContextValue as ContextType<typeof FormDataContext>}>
-        {children}
-      </FormDataContext.Provider>
-    </FormFileUploadContext.Provider>
+    <FormValidatorRegistryProvider>
+      <FormFileUploadContext.Provider
+        value={formFileUploadContextValue as ContextType<typeof FormFileUploadContext>}
+      >
+        <FormDataContext.Provider
+          value={formDataContextValue as ContextType<typeof FormDataContext>}
+        >
+          {children}
+        </FormDataContext.Provider>
+      </FormFileUploadContext.Provider>
+    </FormValidatorRegistryProvider>
   )
 }
 
 const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroundProps) => {
   const { transformErrors } = useFormErrorTranslations()
+  const validatorRegistry = useFormValidatorRegistry()
   const formRef = createRef<Form>()
   const allForms = useMemo(
     () => [...formDefinitions, ...devFormDefinitions],
@@ -127,8 +133,11 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   }, [allForms, slug])
 
   const defaultFormData = useMemo(
-    () => (selectedForm ? baGetDefaultFormStateStable(selectedForm.schemas.schema, {}) : {}),
-    [selectedForm],
+    () =>
+      selectedForm
+        ? baGetDefaultFormStateStable(selectedForm.schemas.schema, {}, validatorRegistry)
+        : {},
+    [validatorRegistry, selectedForm],
   )
 
   const [formData, setFormData] = useState(defaultFormData)
@@ -146,7 +155,11 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
       setSelectedExampleName('')
       const newForm = allForms.find((form) => form.slug === newSlug)
       if (newForm) {
-        const newDefaultData = baGetDefaultFormStateStable(newForm.schemas.schema, {})
+        const newDefaultData = baGetDefaultFormStateStable(
+          newForm.schemas.schema,
+          {},
+          validatorRegistry,
+        )
         setFormData(newDefaultData)
         setJsonInput(JSON.stringify(newDefaultData, null, 2))
         setFiles({})
@@ -367,7 +380,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
               liveOmit
               transformErrors={transformErrors}
               ref={formRef}
-              {...baFormDefaults}
+              {...getBaFormDefaults(selectedForm.schemas.schema, validatorRegistry)}
             >
               {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
               <></>

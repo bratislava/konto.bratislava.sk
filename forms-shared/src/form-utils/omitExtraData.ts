@@ -1,7 +1,7 @@
 import { createSchemaUtils, GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import Form from '@rjsf/core'
-import { baRjsfValidator } from './validators'
 import { baDefaultFormStateBehavior } from './defaultFormState'
+import { BaRjsfValidatorRegistry } from './validatorRegistry'
 import { baFastMergeAllOf } from './fastMergeAllOf'
 
 /**
@@ -10,14 +10,19 @@ import { baFastMergeAllOf } from './fastMergeAllOf'
  * Until https://github.com/rjsf-team/react-jsonschema-form/issues/4081 is resolved this is the only way how to omit
  * extra data from form data.
  */
-export function omitExtraData(schema: RJSFSchema, formData: GenericObjectType): GenericObjectType {
+export function omitExtraData(
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
+): GenericObjectType {
+  const validator = validatorRegistry.getValidator(schema)
   const schemaUtils = createSchemaUtils(
-    baRjsfValidator,
+    validator,
     schema,
     baDefaultFormStateBehavior,
     baFastMergeAllOf,
   )
-  const formInstance = new Form({ schema, validator: baRjsfValidator })
+  const formInstance = new Form({ schema, validator })
 
   const retrievedSchema = schemaUtils.retrieveSchema(schema, formData)
   const pathSchema = schemaUtils.toPathSchema(retrievedSchema, undefined, formData)

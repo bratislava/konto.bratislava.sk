@@ -18,6 +18,7 @@ import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { Parser } from 'xml2js'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 type SlovenskoSkSummaryXmlProps = {
   summaryJson: SummaryJsonForm
@@ -139,15 +140,22 @@ const parser = new Parser({
 export async function renderSlovenskoXmlSummary(
   formDefinition: FormDefinition,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   serverFiles?: FormsBackendFile[],
 ) {
   const summaryJson = getSummaryJsonNode(
     formDefinition.schemas.schema,
     formDefinition.schemas.uiSchema,
     formData,
+    validatorRegistry,
   )
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
-  const validatedSummary = validateSummary(formDefinition.schemas.schema, formData, fileInfos)
+  const validatedSummary = validateSummary(
+    formDefinition.schemas.schema,
+    formData,
+    fileInfos,
+    validatorRegistry,
+  )
 
   const stringXml = renderToString(
     <SlovenskoSkSummaryXml summaryJson={summaryJson} validatedSummary={validatedSummary} />,

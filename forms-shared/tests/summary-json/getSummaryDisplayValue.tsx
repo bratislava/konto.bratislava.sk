@@ -21,7 +21,8 @@ import { RJSFSchema, WidgetProps } from '@rjsf/utils'
 import { withTheme } from '@rjsf/core'
 import { renderToString } from 'react-dom/server'
 import React from 'react'
-import { baFormDefaults } from '../../src/form-utils/formDefaults'
+import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
@@ -45,7 +46,13 @@ const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
     },
   })
 
-  renderToString(<Form schema={schema} uiSchema={uiSchema} {...baFormDefaults} />)
+  renderToString(
+    <Form
+      schema={schema}
+      uiSchema={uiSchema}
+      {...getBaFormDefaults(schema, testValidatorRegistry)}
+    />,
+  )
 
   // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
   if (!retrievedSchema || !retrievedOptions) {

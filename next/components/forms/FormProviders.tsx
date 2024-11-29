@@ -12,6 +12,7 @@ import { FormModalsProvider } from './useFormModals'
 import { FormRedirectsProvider } from './useFormRedirects'
 import { FormSendProvider } from './useFormSend'
 import { FormStateProvider } from './useFormState'
+import { FormValidatorRegistryProvider } from './useFormValidatorRegistry'
 
 type FormProvidersProps = {
   formServerContext: FormServerContext
@@ -19,29 +20,31 @@ type FormProvidersProps = {
 
 const FormProviders = ({ formServerContext, children }: PropsWithChildren<FormProvidersProps>) => {
   return (
-    <FormContextProvider formServerContext={formServerContext}>
-      <FormFileUploadProvider>
-        <FormLeaveProtectionProvider>
-          <FormModalsProvider>
-            <FormSignerLoaderProvider>
-              <FormDataProvider>
-                <FormStateProvider>
-                  <FormSignatureProvider>
-                    <FormRedirectsProvider>
-                      <FormSummaryProvider>
-                        <FormSendProvider>
-                          <FormExportImportProvider>{children}</FormExportImportProvider>
-                        </FormSendProvider>
-                      </FormSummaryProvider>
-                    </FormRedirectsProvider>
-                  </FormSignatureProvider>
-                </FormStateProvider>
-              </FormDataProvider>
-            </FormSignerLoaderProvider>
-          </FormModalsProvider>
-        </FormLeaveProtectionProvider>
-      </FormFileUploadProvider>
-    </FormContextProvider>
+    <FormValidatorRegistryProvider>
+      <FormContextProvider formServerContext={formServerContext}>
+        <FormFileUploadProvider>
+          <FormLeaveProtectionProvider>
+            <FormModalsProvider>
+              <FormSignerLoaderProvider>
+                <FormDataProvider>
+                  <FormStateProvider>
+                    <FormSignatureProvider>
+                      <FormRedirectsProvider>
+                        <FormSummaryProvider>
+                          <FormSendProvider>
+                            <FormExportImportProvider>{children}</FormExportImportProvider>
+                          </FormSendProvider>
+                        </FormSummaryProvider>
+                      </FormRedirectsProvider>
+                    </FormSignatureProvider>
+                  </FormStateProvider>
+                </FormDataProvider>
+              </FormSignerLoaderProvider>
+            </FormModalsProvider>
+          </FormLeaveProtectionProvider>
+        </FormFileUploadProvider>
+      </FormContextProvider>
+    </FormValidatorRegistryProvider>
   )
 }
 

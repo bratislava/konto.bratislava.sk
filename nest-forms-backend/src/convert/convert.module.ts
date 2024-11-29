@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import FilesModule from '../files/files.module'
+import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import FormsService from '../forms/forms.service'
@@ -15,7 +16,13 @@ import ConvertService from './convert.service'
 
 @Module({
   controllers: [ConvertController],
-  imports: [FormsModule, ScannerClientModule, FilesModule, TaxModule],
+  imports: [
+    FormsModule,
+    ScannerClientModule,
+    FilesModule,
+    TaxModule,
+    FormValidatorRegistryModule,
+  ],
   providers: [
     ConvertService,
     ThrowerErrorGuard,

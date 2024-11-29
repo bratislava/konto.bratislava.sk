@@ -3,11 +3,11 @@ import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import {
   FormsErrorsEnum,
@@ -56,6 +56,7 @@ export default class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('NasesService')
   }
@@ -309,7 +310,10 @@ export default class NasesService {
       )
     }
 
-    const validationResult = baRjsfValidator.validateFormData(
+    const validator = this.formValidatorRegistryService
+      .getRegistry()
+      .getValidator(formDefinition.schemas.schema)
+    const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
     )
@@ -398,7 +402,10 @@ export default class NasesService {
       )
     }
 
-    const validationResult = baRjsfValidator.validateFormData(
+    const validator = this.formValidatorRegistryService
+      .getRegistry()
+      .getValidator(formDefinition.schemas.schema)
+    const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
     )

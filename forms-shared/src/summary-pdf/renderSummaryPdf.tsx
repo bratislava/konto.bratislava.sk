@@ -10,6 +10,7 @@ import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndSe
 import { validateSummary } from '../summary-renderer/validateSummary'
 import summaryPdfCss from '../generated-assets/summaryPdfCss'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export type RenderSummaryPdfPayload = {
   formDefinition: FormDefinition
@@ -19,6 +20,7 @@ export type RenderSummaryPdfPayload = {
    * only a peer dependency of this package.
    */
   launchBrowser: () => Promise<Browser>
+  validatorRegistry: BaRjsfValidatorRegistry
   serverFiles?: FormsBackendFile[]
   clientFiles?: ClientFileInfo[]
 }
@@ -30,14 +32,15 @@ export const renderSummaryPdf = async ({
   formDefinition,
   formData,
   launchBrowser,
+  validatorRegistry,
   clientFiles,
   serverFiles,
 }: RenderSummaryPdfPayload) => {
   const { schema, uiSchema } = formDefinition.schemas
-  const summaryJson = getSummaryJsonNode(schema, uiSchema, formData)
+  const summaryJson = getSummaryJsonNode(schema, uiSchema, formData, validatorRegistry)
 
   const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
-  const validatedSummary = validateSummary(schema, formData, fileInfos)
+  const validatedSummary = validateSummary(schema, formData, fileInfos, validatorRegistry)
 
   const renderedString = renderToString(
     <SummaryPdf

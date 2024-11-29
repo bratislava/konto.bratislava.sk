@@ -6,6 +6,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsClient } from 'usehooks-ts'
 
@@ -26,6 +27,7 @@ export type FormServerContext = {
   initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
+  initialSummaryJson?: SummaryJsonForm | null
   formSent: boolean
   formMigrationRequired: boolean
   isEmbedded: boolean

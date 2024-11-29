@@ -1,7 +1,6 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
 import { useFormData } from 'components/forms/useFormData'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
-import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -14,6 +13,7 @@ import {
 } from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { useIsClient } from 'usehooks-ts'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
@@ -143,16 +143,22 @@ const SummaryDetails = () => {
     formDefinition: {
       schemas: { schema, uiSchema },
     },
+    initialSummaryJson,
   } = useFormContext()
+  const isClient = useIsClient()
   const summaryJson = useMemo(() => {
-    // `getSummaryJsonNode` must never be included in the client bundle, see description in the function.
-    // This check doesn't prevent itself from being included, it must be filtered in the webpack config.
-    if (typeof window === 'undefined') {
-      return getSummaryJsonNode(schema, uiSchema, formData)
+    if (!isClient) {
+      // Node needs to use a different method to get the summary JSON (see `getSummaryJsonNode`).
+      // No need to check if schema/formData matches the summary JSON as it is rendered only once on the server.
+      return initialSummaryJson
     }
 
     return getSummaryJsonBrowser(schema, uiSchema, formData)
-  }, [schema, uiSchema, formData])
+  }, [isClient, initialSummaryJson, schema, uiSchema, formData])
+
+  if (!summaryJson) {
+    return null
+  }
 
   return (
     <SummaryRenderer

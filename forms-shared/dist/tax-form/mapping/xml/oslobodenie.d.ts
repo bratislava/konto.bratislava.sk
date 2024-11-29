@@ -1,0 +1,30 @@
+import { TaxFormData } from '../../types';
+export declare const oslobodenieXml: (data: TaxFormData) => {
+    Priloha: {
+        Obec: string;
+        PozemkyA: boolean;
+        PozemkyB: boolean;
+        PozemkyC: boolean;
+        PozemkyD: boolean;
+        PozemkyE: boolean;
+        PozemkyF: boolean;
+        PozemkyG: boolean;
+        PozemkyH: boolean;
+        PozemkyI: boolean;
+        PozemkyJ: boolean;
+        PozemkyK: boolean;
+        PozemkyL: boolean;
+        StavbyA: boolean;
+        StavbyB: boolean;
+        StavbyC: boolean;
+        StavbyD: boolean;
+        StavbyE: boolean;
+        StavbyF: boolean;
+        BytyA: boolean;
+        BytyB: boolean;
+        BytyC: boolean;
+        BytyD: boolean;
+        BytyE: boolean;
+        Poznamka: string | undefined;
+    };
+};

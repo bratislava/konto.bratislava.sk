@@ -1,0 +1,34 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UploadClientErrorReasonType = exports.isDownloadableFileStatusType = exports.isInfectedFileStatusType = exports.isErrorFileStatusType = exports.isScanFileStatusType = exports.isUploadFileStatusType = exports.isDoneFileStatusType = exports.FileStatusType = void 0;
+var FileStatusType;
+(function (FileStatusType) {
+    FileStatusType["UploadQueued"] = "UploadQueued";
+    FileStatusType["Uploading"] = "Uploading";
+    FileStatusType["UploadClientError"] = "UploadClientError";
+    FileStatusType["WaitingForScan"] = "WaitingForScan";
+    FileStatusType["Scanning"] = "Scanning";
+    FileStatusType["ScanError"] = "ScanError";
+    FileStatusType["ScanDone"] = "ScanDone";
+    FileStatusType["ScanInfected"] = "ScanInfected";
+    FileStatusType["UnknownFile"] = "UnknownFile";
+    FileStatusType["UnknownStatus"] = "UnknownStatus";
+    FileStatusType["UploadServerError"] = "UploadServerError";
+})(FileStatusType || (exports.FileStatusType = FileStatusType = {}));
+const isDoneFileStatusType = (status) => status === FileStatusType.ScanDone;
+exports.isDoneFileStatusType = isDoneFileStatusType;
+const isUploadFileStatusType = (status) => status === FileStatusType.Uploading || status === FileStatusType.UploadQueued;
+exports.isUploadFileStatusType = isUploadFileStatusType;
+const isScanFileStatusType = (status) => status === FileStatusType.WaitingForScan || status === FileStatusType.Scanning;
+exports.isScanFileStatusType = isScanFileStatusType;
+const isErrorFileStatusType = (status) => !(0, exports.isDoneFileStatusType)(status) && !(0, exports.isUploadFileStatusType)(status) && !(0, exports.isScanFileStatusType)(status);
+exports.isErrorFileStatusType = isErrorFileStatusType;
+const isInfectedFileStatusType = (status) => status === FileStatusType.ScanInfected;
+exports.isInfectedFileStatusType = isInfectedFileStatusType;
+const isDownloadableFileStatusType = (status) => (0, exports.isDoneFileStatusType)(status) || (0, exports.isScanFileStatusType)(status);
+exports.isDownloadableFileStatusType = isDownloadableFileStatusType;
+var UploadClientErrorReasonType;
+(function (UploadClientErrorReasonType) {
+    UploadClientErrorReasonType["LargeFile"] = "LargeFile";
+    UploadClientErrorReasonType["InvalidFileType"] = "InvalidFileType";
+})(UploadClientErrorReasonType || (exports.UploadClientErrorReasonType = UploadClientErrorReasonType = {}));

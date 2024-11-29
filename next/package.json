@@ -5,7 +5,7 @@
   "license": "EUPL-1.2",
   "scripts": {
     "dev": "next dev --turbopack | pino-pretty -c",
-    "develop": "next dev | pino-pretty -c",
+    "dev-legacy": "next dev | pino-pretty -c",
     "build": "next build",
     "build:analyze": "cross-env ANALYZE=true next build",
     "build:e2e": "cp .env.e2e .env.production.local && next build",

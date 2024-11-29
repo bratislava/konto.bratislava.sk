@@ -101,6 +101,8 @@ describe('F02 -', { testIsolation: false }, () => {
             )
 
             cy.checkFormValidation(device, form, 4, designerErrorBorderFields)
+          })
+          cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
           })
           cy.dataCy('form-container').should('be.visible') //.matchImage()

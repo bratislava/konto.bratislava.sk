@@ -16,6 +16,7 @@ import {
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { createCondition } from '../../src/generator/helpers'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
@@ -95,7 +96,7 @@ describe('defaultFormState', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
-    expect(baGetDefaultFormState(definition.schema, {})).toEqual({
+    expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],
       select: [],
@@ -115,7 +116,7 @@ describe('defaultFormState', () => {
       ),
     ])
 
-    expect(baGetDefaultFormState(definition.schema, {})).toEqual({})
+    expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({})
   })
 })
 
@@ -134,8 +135,8 @@ describe('baGetDefaultFormStateStable', () => {
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
 
-    const result = baGetDefaultFormState(schema, {})
-    const resultStable = baGetDefaultFormStateStable(schema, {})
+    const result = baGetDefaultFormState(schema, {}, testValidatorRegistry)
+    const resultStable = baGetDefaultFormStateStable(schema, {}, testValidatorRegistry)
 
     expect(result).toEqual({ input1: 'value1' })
     expect(resultStable).toEqual({ input1: 'value1', input2: 'value2' })

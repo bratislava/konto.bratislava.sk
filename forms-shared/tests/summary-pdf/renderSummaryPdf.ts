@@ -4,6 +4,7 @@ import { renderSummaryPdf } from '../../src/summary-pdf/renderSummaryPdf'
 import { launchPlaywrightTest } from '../../test-utils/launchPlaywright'
 import { expectPdfToMatchSnapshot } from '../../test-utils/expectPdfToMatchSnapshot'
 import { screenshotTestTimeout } from '../../test-utils/consts'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('getSummaryJson', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
@@ -24,6 +25,7 @@ describe('getSummaryJson', () => {
           formData: exampleForm.formData,
           launchBrowser: launchPlaywrightTest,
           serverFiles: exampleForm.serverFiles,
+          validatorRegistry: testValidatorRegistry,
         })
 
         await expectPdfToMatchSnapshot(pdfBuffer)

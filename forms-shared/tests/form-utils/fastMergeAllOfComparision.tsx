@@ -3,8 +3,9 @@ import type { baFastMergeAllOf } from '../../src/form-utils/fastMergeAllOf'
 import type mergeAllOf from 'json-schema-merge-allof'
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { baFormDefaults } from '../../src/form-utils/formDefaults'
+import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
 import { JSONSchema7 } from 'json-schema'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 const mockFastMergeAllOf = jest.fn(
   jest.requireActual('../../src/form-utils/fastMergeAllOf')
@@ -89,7 +90,7 @@ describe('fastMergeAllOfComparision', () => {
           schema: formDefinition.schemas.schema,
           uiSchema: formDefinition.schemas.uiSchema,
           formData: exampleForm.formData,
-          ...baFormDefaults,
+          ...getBaFormDefaults(formDefinition.schemas.schema, testValidatorRegistry),
           experimental_customMergeAllOf: undefined,
         })
         originalFormCalls = mockOriginalMergeAllOf.mock.calls
@@ -103,7 +104,7 @@ describe('fastMergeAllOfComparision', () => {
           schema: formDefinition.schemas.schema,
           uiSchema: formDefinition.schemas.uiSchema,
           formData: exampleForm.formData,
-          ...baFormDefaults,
+          ...getBaFormDefaults(formDefinition.schemas.schema, testValidatorRegistry),
         })
         fastFormCalls = mockFastMergeAllOf.mock.calls
         fastFormResults = mockFastMergeAllOf.mock.results

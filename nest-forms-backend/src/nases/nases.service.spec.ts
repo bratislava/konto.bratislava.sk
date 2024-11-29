@@ -3,7 +3,6 @@ import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { ValidationData } from '@rjsf/utils'
 import {
   FormDefinition,
   FormDefinitionEmail,
@@ -11,11 +10,11 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import * as baRjsfValidatorModule from 'forms-shared/form-utils/validators'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
@@ -70,6 +69,10 @@ describe('NasesService', () => {
           provide: PrismaService,
           useValue: prismaMock,
         },
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
+        },
       ],
     }).compile()
 
@@ -85,13 +88,6 @@ describe('NasesService', () => {
     Object.defineProperty(service, 'logger', {
       value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
     })
-
-    jest
-      .spyOn(baRjsfValidatorModule.baRjsfValidator, 'validateFormData')
-      .mockReturnValue({
-        errors: [],
-        errorSchema: {},
-      } as unknown as ValidationData<any>)
   })
 
   describe('should be defined', () => {
@@ -383,11 +379,15 @@ describe('NasesService', () => {
     })
 
     it('should throw an error if form data is invalid', async () => {
-      jest
-        .spyOn(baRjsfValidatorModule.baRjsfValidator, 'validateFormData')
+      service['formValidatorRegistryService'].getRegistry = jest
+        .fn()
         .mockReturnValue({
-          errors: ['Invalid data'],
-        } as unknown as ValidationData<any>)
+          getValidator: () => ({
+            validateFormData: () => ({
+              errors: ['Invalid data'],
+            }),
+          }),
+        })
 
       await expect(service.sendForm('1')).rejects.toThrow(
         FormsErrorsResponseEnum.FORM_DATA_INVALID,

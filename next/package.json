@@ -4,7 +4,7 @@
   "private": true,
   "license": "EUPL-1.2",
   "scripts": {
-    "dev": "next dev | pino-pretty -c",
+    "dev": "next dev --turbopack | pino-pretty -c",
     "develop": "next dev | pino-pretty -c",
     "build": "next build",
     "build:analyze": "cross-env ANALYZE=true next build",
@@ -36,7 +36,9 @@
   },
   "overrides": {
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "1.2.17",
@@ -79,7 +81,7 @@
     "lodash": "4.17.21",
     "memoize-one": "^6.0.0",
     "mime-types": "^2.1.35",
-    "next": "14.2.3",
+    "next": "15.0.3",
     "next-i18next": "15.2.0",
     "next-plausible": "^3.12.0",
     "nuqs": "^1.17.0",
@@ -126,7 +128,7 @@
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/client-preset": "4.2.5",
     "@graphql-codegen/typescript-graphql-request": "6.2.0",
-    "@next/bundle-analyzer": "14.2.3",
+    "@next/bundle-analyzer": "15.0.3",
     "@svgr/webpack": "6.5.1",
     "@tanstack/eslint-plugin-query": "5.27.7",
     "@testing-library/jest-dom": "^5.16.5",
@@ -140,9 +142,9 @@
     "@types/node": "18.11.18",
     "@types/object-hash": "^3.0.5",
     "@types/qs": "^6.9.12",
-    "@types/react": "18.3.3",
+    "@types/react": "18.3.12",
     "@types/react-beforeunload": "^2.1.1",
-    "@types/react-dom": "18.3.0",
+    "@types/react-dom": "18.3.1",
     "@types/traverse": "^0.6.32",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "7.2.0",
@@ -154,7 +156,7 @@
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "18.0.0",
     "eslint-config-auto": "0.9.0",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "15.0.3",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-array-func": "5.0.1",
     "eslint-plugin-const-case": "1.2.2",

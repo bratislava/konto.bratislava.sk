@@ -528,12 +528,12 @@ export const step = (
         },
       },
       required: [property],
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:options': {
-        stepperTitle: options.stepperTitle,
-        stepQueryParam: getHash(),
-      } satisfies StepUiOptions,
+      baUiSchema: {
+        'ui:options': {
+          stepperTitle: options.stepperTitle,
+          stepQueryParam: getHash(),
+        } satisfies StepUiOptions,
+      },
     }),
   }
 }
@@ -547,11 +547,10 @@ export const conditionalStep = (
   },
   fields: (FieldType | null)[],
 ) => {
-  const { schema, uiSchema } = step(property, options, fields)
+  const { schema } = step(property, options, fields)
   return {
     property,
     schema: removeUndefinedValues({ if: condition, then: schema }),
-    uiSchema,
     required: true,
   }
 }
@@ -616,9 +615,6 @@ export const schema = (
       allOf: filteredSteps.map((stepInner) => stepInner.schema),
     }) as RJSFSchema,
     uiSchema: removeUndefinedValues({
-      ...Object.fromEntries(
-        filteredSteps.map((stepInner) => [stepInner.property, stepInner.uiSchema]),
-      ),
       'ui:options': uiOptions,
       'ui:hideError': true,
     }) as UiSchema,

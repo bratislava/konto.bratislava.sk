@@ -53,10 +53,7 @@ const useGetContext = () => {
    * A condition in different step might invalidate the step, but it is not easily detectable.
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
-  const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, uiSchema),
-    [stepsSchemas, uiSchema],
-  )
+  const stepperData = useMemo(() => getStepperData(stepsSchemas), [stepsSchemas])
 
   const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
   const { setMigrationRequiredModal } = useFormModals()
@@ -136,7 +133,7 @@ const useGetContext = () => {
     )
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData, validatorRegistry)
-    const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema)
+    const afterImportStepperData = getStepperData(evaluatedSchemas)
 
     if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises

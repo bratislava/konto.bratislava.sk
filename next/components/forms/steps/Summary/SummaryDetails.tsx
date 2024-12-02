@@ -13,7 +13,7 @@ import {
 } from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
-import { useIsClient } from 'usehooks-ts'
+import { useIsSSR } from 'react-aria'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
@@ -147,17 +147,17 @@ const SummaryDetails = () => {
     initialSummaryJson,
   } = useFormContext()
   const validatorRegistry = useFormValidatorRegistry()
-  const isClient = useIsClient()
+  const isSSR = useIsSSR()
 
   const summaryJson = useMemo(() => {
-    if (!isClient) {
+    if (isSSR) {
       // Node needs to use a different method to get the summary JSON (see `getSummaryJsonNode`).
       // No need to check if schema/formData matches the summary JSON as it is rendered only once on the server.
       return initialSummaryJson
     }
 
     return getSummaryJsonBrowser(schema, uiSchema, formData, validatorRegistry)
-  }, [isClient, initialSummaryJson, schema, uiSchema, formData, validatorRegistry])
+  }, [isSSR, initialSummaryJson, schema, uiSchema, formData, validatorRegistry])
 
   if (!summaryJson) {
     return null

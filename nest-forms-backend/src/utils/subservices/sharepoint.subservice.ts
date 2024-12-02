@@ -22,6 +22,7 @@ import {
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 import { escape, get as lodashGet } from 'lodash'
 
+import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -47,6 +48,7 @@ export default class SharepointSubservice {
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
     private configService: ConfigService,
+    private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('SharepointSubservice')
 
@@ -210,6 +212,7 @@ export default class SharepointSubservice {
     const jsonDataExtraDataOmitted = omitExtraData(
       schemas.schema,
       form.formDataJson as GenericObjectType,
+      this.formValidatorRegistryService.getRegistry(),
     )
     const valuesForFields = getValuesForFields(
       sharepointData,

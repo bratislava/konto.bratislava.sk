@@ -3,11 +3,10 @@ import {
   GenericObjectType,
   getDefaultFormState,
   RJSFSchema,
-  ValidatorType,
 } from '@rjsf/utils'
-
-import { baRjsfValidator } from './validators'
 import { isEqual } from 'lodash'
+import { BaRjsfValidatorRegistry } from './validatorRegistry'
+import { baFastMergeAllOf } from './fastMergeAllOf'
 
 /**
  * Detects schema of `fileUpload` with `multiple: true`.
@@ -73,16 +72,17 @@ export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior =
 export const baGetDefaultFormState = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   rootSchema?: RJSFSchema,
-  customValidator?: ValidatorType,
 ) =>
   getDefaultFormState(
-    customValidator ?? baRjsfValidator,
+    validatorRegistry.getValidator(schema),
     schema,
     formData,
     rootSchema,
     undefined,
     baDefaultFormStateBehavior,
+    baFastMergeAllOf,
   )
 
 /**
@@ -97,15 +97,25 @@ export const baGetDefaultFormState = (
 export const baGetDefaultFormStateStable = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   rootSchema?: RJSFSchema,
-  customValidator?: ValidatorType,
   maxIterations: number = 10,
 ) => {
   let currentFormData = formData
   let iteration = 0
+  const validator = validatorRegistry.getValidator(schema)
+  // For subsequent calls we want to reuse the same validator, so we create a new registry with the same validator
+  const reuseValidatorRegistry = {
+    getValidator: () => validator,
+  }
 
   while (iteration < maxIterations) {
-    const newFormData = baGetDefaultFormState(schema, currentFormData, rootSchema, customValidator)
+    const newFormData = baGetDefaultFormState(
+      schema,
+      currentFormData,
+      reuseValidatorRegistry,
+      rootSchema,
+    )
 
     if (isEqual(currentFormData, newFormData)) {
       return newFormData

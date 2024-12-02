@@ -1,6 +1,9 @@
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
+import { createSingleUseValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import memoize from 'lodash/memoize'
+
+const validatorRegistry = createSingleUseValidatorRegistry()
 
 /**
  * Returns default form data for the given form definition.
@@ -8,5 +11,5 @@ import memoize from 'lodash/memoize'
  * It is expensive to compute, so it is memoized.
  */
 export const getDefaultFormDataForFormDefinition = memoize((formDefinition: FormDefinition) =>
-  baGetDefaultFormStateStable(formDefinition.schemas.schema, {}),
+  baGetDefaultFormStateStable(formDefinition.schemas.schema, {}, validatorRegistry),
 )

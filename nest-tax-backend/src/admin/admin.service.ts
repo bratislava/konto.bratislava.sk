@@ -214,11 +214,11 @@ export class AdminService {
                     .intValue,
                   year: +data.year,
                 },
-                userFromCityAccount.externalId,
+                userFromCityAccount.externalId ?? undefined,
               )
             if (!bloomreachTracker) {
               this.logger.error(
-                `Error in send Tax data to Bloomreach for tax with ID ${taxExists.id}`,
+                `ERROR - Status-500: Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
               )
             }
           }
@@ -271,7 +271,9 @@ export class AdminService {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
-          in: norisPaymentData.map((item) => item.variabilny_symbol),
+          in: norisPaymentData
+            .filter((item) => item.variabilny_symbol !== undefined)
+            .map((item) => item.variabilny_symbol as string),
         },
       },
       include: {
@@ -363,64 +365,72 @@ export class AdminService {
 
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
     await Promise.all(
-      norisPaymentData.map(async (norisPayment) => {
-        try {
-          const taxData = taxesDataMap.get(norisPayment.variabilny_symbol)
-          if (taxData) {
-            const payerData = aggregateDataMap.get(taxData.id) || {
-              sum: 0,
-              count: 0,
-            }
-            const payedFromNoris =
-              typeof norisPayment.uhrazeno === 'number'
-                ? currency(norisPayment.uhrazeno).intValue
-                : currency(norisPayment.uhrazeno.replace(',', '.')).intValue
-            const forPayment =
-              typeof norisPayment.zbyva_uhradit === 'number'
-                ? currency(norisPayment.zbyva_uhradit).intValue
-                : currency(norisPayment.zbyva_uhradit.replace(',', '.'))
-                    .intValue
-            if (payerData.sum === null || payerData.sum < payedFromNoris) {
-              created += 1
-              const createdTaxPayment =
-                await this.prismaService.taxPayment.create({
-                  data: {
-                    amount: payedFromNoris - payerData.sum,
-                    source: 'BANK_ACCOUNT',
-                    specificSymbol: norisPayment.specificky_symbol,
-                    taxId: taxData.id,
-                    status: PaymentStatus.SUCCESS,
-                  },
-                })
-              const userFromCityAccount =
-                await this.cityAccountSubservice.getUserDataAdmin(
-                  taxData.taxPayer.birthNumber,
-                )
-              if (userFromCityAccount) {
-                await this.bloomreachService.trackEventTaxPayment(
-                  {
-                    amount: createdTaxPayment.amount,
-                    payment_source: 'BANK_ACCOUNT',
-                    year: taxData.year,
-                  },
-                  userFromCityAccount.externalId,
-                )
+      norisPaymentData
+        .filter((norisPayment) => {
+          return (
+            norisPayment.variabilny_symbol !== undefined &&
+            norisPayment.uhrazeno !== undefined &&
+            norisPayment.zbyva_uhradit !== undefined
+          )
+        })
+        .map(async (norisPayment) => {
+          try {
+            const taxData = taxesDataMap.get(norisPayment.variabilny_symbol!) // we know it's not undefined from filter
+            if (taxData) {
+              const payerData = aggregateDataMap.get(taxData.id) || {
+                sum: 0,
+                count: 0,
               }
+              const payedFromNoris =
+                typeof norisPayment.uhrazeno === 'number'
+                  ? currency(norisPayment.uhrazeno).intValue
+                  : currency(norisPayment.uhrazeno!.replace(',', '.')).intValue // we know it's not undefined from filter
+              const forPayment =
+                typeof norisPayment.zbyva_uhradit === 'number'
+                  ? currency(norisPayment.zbyva_uhradit).intValue
+                  : currency(norisPayment.zbyva_uhradit!.replace(',', '.')) // we know it's not undefined from filter
+                      .intValue
+              if (payerData.sum === null || payerData.sum < payedFromNoris) {
+                created += 1
+                const createdTaxPayment =
+                  await this.prismaService.taxPayment.create({
+                    data: {
+                      amount: payedFromNoris - (payerData.sum ?? 0),
+                      source: 'BANK_ACCOUNT',
+                      specificSymbol: norisPayment.specificky_symbol,
+                      taxId: taxData.id,
+                      status: PaymentStatus.SUCCESS,
+                    },
+                  })
+                const userFromCityAccount =
+                  await this.cityAccountSubservice.getUserDataAdmin(
+                    taxData.taxPayer.birthNumber,
+                  )
+                if (userFromCityAccount && userFromCityAccount.externalId) {
+                  await this.bloomreachService.trackEventTaxPayment(
+                    {
+                      amount: createdTaxPayment.amount,
+                      payment_source: 'BANK_ACCOUNT',
+                      year: taxData.year,
+                    },
+                    userFromCityAccount.externalId,
+                  )
+                }
 
-              this.handlePaymentsErrors(
-                payedFromNoris,
-                taxData,
-                forPayment,
-                payerData.count,
-              )
-            } else {
-              alreadyCreated += 1
+                this.handlePaymentsErrors(
+                  payedFromNoris,
+                  taxData,
+                  forPayment,
+                  payerData.count,
+                )
+              } else {
+                alreadyCreated += 1
+              }
             }
+          } catch (error) {
+            this.logger.error(`ERROR - Status-500: ${(error as Error).message}`)
           }
-        } catch (error) {
-          this.logger.error(`ERROR - Status-500: ${(error as Error).message}`)
-        }
-      }),
+        }),
     )
 
     return {

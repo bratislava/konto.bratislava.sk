@@ -22,6 +22,7 @@ import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -56,6 +57,7 @@ export default class ConvertService {
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('ConvertService')
   }
@@ -80,6 +82,7 @@ export default class ConvertService {
         ? patchConvertServiceTaxFormDefinition(formDefinition)
         : formDefinition,
       formDataJson as GenericObjectType,
+      this.formValidatorRegistryService.getRegistry(),
       formWithFiles.files,
     )
   }
@@ -241,6 +244,7 @@ export default class ConvertService {
         launchBrowser: () => chromium.launch(),
         clientFiles,
         serverFiles: form.files,
+        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       })
     } catch (error) {
       this.logger.error(`Error during generating PDF: ${<string>error}`)

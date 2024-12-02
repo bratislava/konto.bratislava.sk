@@ -6,8 +6,9 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
-import { useIsClient } from 'usehooks-ts'
+import { useIsSSR } from 'react-aria'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { SerializableFormDefinition } from './serializableFormDefinition'
@@ -26,6 +27,7 @@ export type FormServerContext = {
   initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
+  initialSummaryJson?: SummaryJsonForm | null
   formSent: boolean
   formMigrationRequired: boolean
   isEmbedded: boolean
@@ -34,7 +36,7 @@ export type FormServerContext = {
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {
-  const isClient = useIsClient()
+  const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
   const { eIdTaxFormAllowed } = useSsrAuth()
 
@@ -67,11 +69,11 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   useEffect(() => {
     // Dev only debugging feature
-    if (isClient) {
+    if (!isSSR) {
       // eslint-disable-next-line no-underscore-dangle
       window.__DEV_ALLOW_IMPORT_EXPORT_JSON = () => setJsonImportExportAllowed(true)
     }
-  }, [isClient, setJsonImportExportAllowed])
+  }, [isSSR, setJsonImportExportAllowed])
 
   const isReadonly = formMigrationRequired || formSent
   const isDeletable = formMigrationRequired && !formSent

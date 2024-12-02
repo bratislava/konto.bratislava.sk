@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import {
   PaymentStatus,
   Tax,
@@ -15,6 +16,7 @@ import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subserv
 import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
+import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
 @Injectable()
@@ -25,10 +27,11 @@ export class PaymentService {
     private errorThrowerGuard: ErrorThrowerGuard,
     private cityAccountSubservice: CityAccountSubservice,
     private bloomreachService: BloomreachService,
+    private readonly configService: ConfigService,
   ) {}
 
   private async getPaymentUrl(tax: Tax): Promise<string> {
-    let taxPayment: TaxPaymentWithTaxYear
+    let taxPayment: TaxPaymentWithTaxYear | null
     try {
       taxPayment = await this.prisma.taxPayment.findFirst({
         where: {
@@ -71,17 +74,18 @@ export class PaymentService {
 
     try {
       const requestData = {
-        MERCHANTNUMBER: process.env.PAYGATE_MERCHANT_NUMBER,
+        MERCHANTNUMBER: this.configService.getOrThrow<string>(
+          'PAYGATE_MERCHANT_NUMBER',
+        ),
         OPERATION: 'CREATE_ORDER',
         ORDERNUMBER: orderId,
         AMOUNT: payment.amount.toString(),
-        CURRENCY: process.env.PAYGATE_CURRENCY,
+        CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
         DEPOSITFLAG: '1',
-        URL: process.env.PAYGATE_REDIRECT_URL,
+        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
         DESCRIPTION: `Platba za dane pre BA s id dane ${tax.id}`,
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
-      console.log(requestData)
       const signedData = this.gpWebpaySubservice.getSignedData(requestData)
       return `${process.env.PAYGATE_PAYMENT_REDIRECT_URL}?${formurlencoded(
         signedData,
@@ -95,7 +99,7 @@ export class PaymentService {
   }
 
   async redirectToPayGateByTaxId(uuid: string) {
-    let tax: Tax
+    let tax: Tax | null = null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
@@ -107,14 +111,14 @@ export class PaymentService {
     }
 
     if (!tax) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
     return this.getPaymentUrl(tax)
   }
 
   async getPayGateUrlByUserAndYear(year: string, birthNumber: string) {
-    let taxPayer: TaxPayer
+    let taxPayer: TaxPayer | null = null
     try {
       taxPayer = await this.prisma.taxPayer.findUnique({
         where: { birthNumber },
@@ -124,10 +128,10 @@ export class PaymentService {
     }
 
     if (!taxPayer) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
-    let tax: Tax
+    let tax: Tax | null = null
     try {
       tax = await this.prisma.tax.findUnique({
         where: {
@@ -142,7 +146,7 @@ export class PaymentService {
     }
 
     if (!tax) {
-      this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.errorThrowerGuard.paymentTaxNotFound()
     }
 
     return this.getPaymentUrl(tax)
@@ -156,7 +160,10 @@ export class PaymentService {
     DIGEST,
     DIGEST1,
     RESULTTEXT,
-  }): Promise<string> {
+  }: PaymentResponseQueryDto): Promise<string> {
+    if (!ORDERNUMBER) {
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+    }
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,
@@ -207,7 +214,7 @@ export class PaymentService {
 
       if (!(Number(PRCODE) === 0 && Number(SRCODE) === 0)) {
         await this.prisma.taxPayment.update({
-          where: { orderId: payment.orderId },
+          where: { orderId: ORDERNUMBER },
           data: {
             status: PaymentStatus.FAIL,
             source: 'CARD',
@@ -217,7 +224,7 @@ export class PaymentService {
       }
 
       const taxPayment = await this.prisma.taxPayment.update({
-        where: { orderId: payment.orderId },
+        where: { orderId: ORDERNUMBER },
         data: {
           status: PaymentStatus.SUCCESS,
           source: 'CARD',
@@ -253,6 +260,12 @@ export class PaymentService {
 
   async getQrCodeByTaxUuid(uuid: string): Promise<string> {
     const qrBase64 = await this.prisma.tax.findUnique({ where: { uuid } })
+    if (!qrBase64) {
+      throw this.errorThrowerGuard.paymentTaxNotFound()
+    }
+    if (!qrBase64.qrCodeEmail) {
+      throw this.errorThrowerGuard.qrCodeNotFound()
+    }
     return qrBase64.qrCodeEmail
   }
 }

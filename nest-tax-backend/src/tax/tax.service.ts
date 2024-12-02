@@ -29,7 +29,7 @@ export class TaxService {
     birthNumber: string,
   ): Promise<ResponseTaxDto> {
     if (!birthNumber || !year) {
-      this.errorThrowerGuard.taxNotFound()
+      throw this.errorThrowerGuard.taxNotFound()
     }
     const tax = await this.prisma.tax.findFirst({
       where: {
@@ -47,7 +47,7 @@ export class TaxService {
     })
 
     if (!tax) {
-      this.errorThrowerGuard.taxNotFound()
+      throw this.errorThrowerGuard.taxNotFound()
     }
 
     const taxPayment = await this.prisma.taxPayment.groupBy({
@@ -63,7 +63,7 @@ export class TaxService {
 
     let total = 0
     if (taxPayment.length === 1) {
-      total = taxPayment[0]._sum.amount
+      total = taxPayment[0]._sum.amount || 0
     }
 
     if (total > 0 && tax.amount - total > 0) {
@@ -154,11 +154,8 @@ export class TaxService {
         (taxPayment) => taxPayment.taxId === tax.id,
       )
 
-      const paidAmount = taxPaymentItem ? taxPaymentItem._sum.amount : 0
-      const paidStatus = getTaxStatus(
-        tax.amount,
-        taxPaymentItem ? taxPaymentItem._sum.amount : undefined,
-      )
+      const paidAmount = taxPaymentItem?._sum.amount ?? 0
+      const paidStatus = getTaxStatus(tax.amount, paidAmount || undefined)
 
       const isPayable = computeIsPayableYear(tax.year)
 

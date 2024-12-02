@@ -12,7 +12,7 @@ export class ErrorThrowerGuard {
   private logger: Logger = new Logger('CUSTOM ERRORS')
 
   taxNotFound() {
-    throw new HttpException(
+    return new HttpException(
       {
         statusCode: 404,
         status: 'Not found',
@@ -78,13 +78,27 @@ export class ErrorThrowerGuard {
   }
 
   paymentTaxNotFound() {
-    throw new HttpException(
+    return new HttpException(
       {
         statusCode: 422,
         status: 'Not Found',
         message: 'Tax was not found',
         messageSk: 'Daň s týmto ID nebola nájdená, prosím kontaktujte support.',
         errorName: CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+      },
+      422,
+    )
+  }
+
+  qrCodeNotFound() {
+    return new HttpException(
+      {
+        statusCode: 422,
+        status: 'Not Found',
+        message: 'QR code was not found',
+        messageSk:
+          'QR kód nebol pre túto daň nájdený, prosím kontaktujte support.',
+        errorName: CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
       },
       422,
     )

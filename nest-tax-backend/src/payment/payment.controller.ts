@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   Param,
   Post,
   Query,
@@ -26,7 +27,7 @@ import {
 } from 'src/utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from 'src/utils/subservices/dtos/gpwebpay.dto'
 
-import { ResponseUserDataDto } from '../generated-clients/nest-city-account'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'
 import { PaymentService } from './payment.service'
 
@@ -63,7 +64,7 @@ export class PaymentController {
   @UseGuards(AuthenticationGuard)
   @Post('cardpay/by-year/:year')
   async payment(
-    @BratislavaUser() baUser: ResponseUserDataDto,
+    @BratislavaUser() baUser: BratislavaUserDto,
     @Param('year') year: string,
   ) {
     const urlToRedirect = await this.paymentService.getPayGateUrlByUserAndYear(
@@ -101,7 +102,13 @@ export class PaymentController {
     } catch (error) {
       console.error(error)
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
-      res.end(error.response.messageSk)
+      const response = (error as HttpException).getResponse()
+      if (typeof response === 'object' && 'messageSk' in response) {
+        res.end(response.messageSk)
+      } else {
+        // Handle unexpected error format
+        res.end('An unexpected error occurred')
+      }
     }
   }
 

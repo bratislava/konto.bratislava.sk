@@ -12,7 +12,8 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useIsClient, useIsMounted } from 'usehooks-ts'
+import { useIsSSR } from 'react-aria'
+import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import { createFormSignatureId } from '../../../frontend/utils/formSignature'
@@ -66,7 +67,7 @@ const useGetContext = () => {
   const isMounted = useIsMounted()
 
   const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
-  const isClient = useIsClient()
+  const isSSR = useIsSSR()
 
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
@@ -75,11 +76,11 @@ const useGetContext = () => {
 
   useEffect(() => {
     // Dev only debugging feature
-    if (isClient) {
+    if (!isSSR) {
       // eslint-disable-next-line no-underscore-dangle
       window.__DEV_SHOW_SIGNATURE = () => setShowSignatureInConsole(true)
     }
-  }, [isClient, setShowSignatureInConsole])
+  }, [isSSR, setShowSignatureInConsole])
 
   const signData = async (
     formDataRequest: GenericObjectType,

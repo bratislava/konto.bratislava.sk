@@ -621,13 +621,3 @@ export const schema = (
     uiSchema: {} as UiSchema,
   }
 }
-
-// TODO: Document
-export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
-  return { ...field, skipUiSchema: true }
-}
-
-// TODO: Document
-export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
-  return { ...field, skipSchema: true }
-}

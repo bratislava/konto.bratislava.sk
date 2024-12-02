@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { connect } from 'mssql'
 import {
   RequestPostNorisLoadDataDto,
@@ -12,7 +13,7 @@ import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 export class NorisService {
   private logger: Logger = new Logger('NorisService')
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     if (
       !process.env.MSSQL_HOST ||
       !process.env.MSSQL_DB ||
@@ -27,13 +28,13 @@ export class NorisService {
 
   async getDataFromNoris(data: RequestPostNorisLoadDataDto) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
-      database: process.env.MSSQL_DB,
-      user: process.env.MSSQL_USERNAME,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
       connectionTimeout: 120_000,
       requestTimeout: 120_000,
-      password: process.env.MSSQL_PASSWORD,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
       options: {
         encrypt: true,
         trustServerCertificate: true,
@@ -60,13 +61,13 @@ export class NorisService {
 
   async getPaymentDataFromNoris(data: RequestPostNorisPaymentDataLoadDto) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
-      database: process.env.MSSQL_DB,
-      user: process.env.MSSQL_USERNAME,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
       connectionTimeout: 120_000,
       requestTimeout: 120_000,
-      password: process.env.MSSQL_PASSWORD,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
       options: {
         encrypt: true,
         trustServerCertificate: true,
@@ -108,13 +109,13 @@ export class NorisService {
     data: RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   ) {
     const connection = await connect({
-      server: process.env.MSSQL_HOST,
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
-      database: process.env.MSSQL_DB,
-      user: process.env.MSSQL_USERNAME,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
       connectionTimeout: 120_000,
       requestTimeout: 120_000,
-      password: process.env.MSSQL_PASSWORD,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
       options: {
         encrypt: true,
         trustServerCertificate: true,

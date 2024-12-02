@@ -1,17 +1,23 @@
-// TODO
 /* eslint-disable unicorn/no-array-reduce */
 import crypto from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 
 import {
   CreateOrderData,
   PaymentErrorStatus,
+  PaymentResponseQueryToVerifyDto,
   SignedOrderData,
 } from './dtos/gpwebpay.dto'
 
 @Injectable()
 export class GpWebpaySubservice {
+  constructor(private readonly configService: ConfigService) {
+    // Check for the existence of the environment variables
+    this.configService.getOrThrow<string>('PAYGATE_SIGN_CERT')
+  }
+
   private getDataToSign = (data: CreateOrderData): string => {
     const digestData: Array<keyof CreateOrderData> = [
       'MERCHANTNUMBER',
@@ -34,7 +40,7 @@ export class GpWebpaySubservice {
       .slice(1)
   }
 
-  getDataToVerify = (data): string => {
+  getDataToVerify = (data: PaymentResponseQueryToVerifyDto): string => {
     const digestData = [
       'OPERATION',
       'ORDERNUMBER',
@@ -45,46 +51,60 @@ export class GpWebpaySubservice {
 
     return digestData
       .reduce(
-        (string, item) => (data[item] ? `${string}|${data[item]}` : string),
+        (string, item) =>
+          data[item as keyof PaymentResponseQueryToVerifyDto]
+            ? `${string}|${data[item as keyof PaymentResponseQueryToVerifyDto]}`
+            : string,
         '',
       )
       .slice(1)
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  private getPaymentErrorMessage = ({ PRCODE, SRCODE }): PaymentErrorStatus => {
+  private getPaymentErrorMessage = (
+    PRCODE: any,
+    SRCODE: any,
+  ): PaymentErrorStatus => {
     const pr = Number(PRCODE)
     const sr = Number(SRCODE)
 
-    if ([32, 38].includes(pr)) {
-      return PaymentErrorStatus.incorrectData
+    // Direct PR code mappings
+    const prCodeMap: Record<number, PaymentErrorStatus> = {
+      32: PaymentErrorStatus.incorrectData,
+      38: PaymentErrorStatus.incorrectData,
+      25: PaymentErrorStatus.paymentDenied,
+      40: PaymentErrorStatus.paymentDenied,
+      85: PaymentErrorStatus.paymentDenied,
+      300: PaymentErrorStatus.paymentDenied,
+      26: PaymentErrorStatus.techProblem,
+      1000: PaymentErrorStatus.techProblem,
     }
-    if ([25, 40, 85, 300].includes(pr)) {
-      return PaymentErrorStatus.paymentDenied
+
+    // Special cases mappings
+    const specialCases: Record<number, Record<number, PaymentErrorStatus>> = {
+      28: {
+        3000: PaymentErrorStatus.incorrectData,
+        3008: PaymentErrorStatus.paymentDenied,
+        3005: PaymentErrorStatus.techProblem,
+        3006: PaymentErrorStatus.techProblem,
+        3007: PaymentErrorStatus.techProblem,
+      },
+      30: {
+        1003: PaymentErrorStatus.incorrectData,
+        1001: PaymentErrorStatus.paymentDenied,
+        1002: PaymentErrorStatus.paymentDenied,
+        1005: PaymentErrorStatus.paymentDenied,
+        1004: PaymentErrorStatus.techProblem,
+      },
     }
-    if ([26, 1000].includes(pr)) {
-      return PaymentErrorStatus.techProblem
+
+    // Check direct PR code mappings
+    if (prCodeMap[pr]) {
+      return prCodeMap[pr]
     }
-    if (pr === 28) {
-      if (sr === 3000) {
-        return PaymentErrorStatus.incorrectData
-      }
-      if (sr === 3008) {
-        return PaymentErrorStatus.paymentDenied
-      }
-      if ([3005, 3006, 3007].includes(sr)) {
-        return PaymentErrorStatus.techProblem
-      }
-    } else if (pr === 30) {
-      if (sr === 1003) {
-        return PaymentErrorStatus.incorrectData
-      }
-      if ([1001, 1002, 1005]) {
-        return PaymentErrorStatus.paymentDenied
-      }
-      if (sr === 1004) {
-        return PaymentErrorStatus.techProblem
-      }
+
+    // Check special cases
+    if (specialCases[pr]?.[sr]) {
+      return specialCases[pr][sr]
     }
 
     return PaymentErrorStatus.unknownError
@@ -96,7 +116,7 @@ export class GpWebpaySubservice {
     signer.write(this.getDataToSign(data))
     signer.end()
 
-    const key = process.env.PAYGATE_KEY
+    const key = this.configService.getOrThrow<string>('PAYGATE_KEY')
     const signature = signer.sign(
       {
         key,
@@ -117,6 +137,10 @@ export class GpWebpaySubservice {
     verifier.write(data)
     verifier.end()
 
-    return verifier.verify(process.env.PAYGATE_SIGN_CERT, digest, 'base64')
+    return verifier.verify(
+      this.configService.getOrThrow<string>('PAYGATE_SIGN_CERT'),
+      digest,
+      'base64',
+    )
   }
 }

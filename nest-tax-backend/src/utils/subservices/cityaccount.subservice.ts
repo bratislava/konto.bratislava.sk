@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
+import { AxiosError } from 'axios'
 
 import {
   ADMINApi as AdminApi,
@@ -42,8 +43,8 @@ export class CityAccountSubservice {
       // Since we add all taxes from noris, not only for people in city account, we shall not log errors
       // when the people do not exist in city account, or their birth number is in bad format for city account.
       if (
-        error.response?.status === HttpStatus.NOT_FOUND ||
-        error.response?.status === HttpStatus.BAD_REQUEST
+        (error as AxiosError).response?.status === HttpStatus.NOT_FOUND ||
+        (error as AxiosError).response?.status === HttpStatus.BAD_REQUEST
       ) {
         return null
       }

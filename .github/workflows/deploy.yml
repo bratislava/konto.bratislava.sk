@@ -119,21 +119,6 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
-  deploy-dev-cvdmirror:
-    name: dev cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.dev-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
-    with:
-      directory: cvdmirror/
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
-      debug: --debug
-      version: beta
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-
   deploy-dev-clamav:
     name: dev clamav
     needs: deploy-dev-cvdmirror
@@ -280,21 +265,6 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
-  deploy-staging-cvdmirror:
-    name: staging cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.staging-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: cvdmirror/
-      cluster: tkg-innov-staging
-      url: https://tkg.staging.bratislava.sk
-      debug: --debug
-      flag: --staging
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-
   deploy-staging-clamav:
     name: staging clamav
     needs: deploy-staging-cvdmirror
@@ -440,21 +410,6 @@ jobs:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
-
-  deploy-prod-cvdmirror:
-    name: prod cvdmirror
-    needs: conditions
-    if: needs.conditions.outputs.prod-cvdmirror == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
-    with:
-      directory: cvdmirror/
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
-      flag: --production
-      debug: --debug
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-prod-clamav:
     name: prod clamav

@@ -1,5 +1,6 @@
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { getSummaryJsonNode } from '../../src/summary-json/getSummaryJsonNode'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('getSummaryJson', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
@@ -8,6 +9,7 @@ describe('getSummaryJson', () => {
         formDefinition.schemas.schema,
         formDefinition.schemas.uiSchema,
         exampleForm.formData,
+        testValidatorRegistry,
       )
       expect(result).toMatchSnapshot()
     })

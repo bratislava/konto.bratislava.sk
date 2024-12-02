@@ -2,6 +2,7 @@ import { fileUpload, input, object } from '../../src/generator/functions'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
 import { filterConsole } from '../../test-utils/filterConsole'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('validateSummary', () => {
   beforeEach(() => {
@@ -19,7 +20,12 @@ describe('validateSummary', () => {
     ])
 
     it('should validate successfully when required field is provided', () => {
-      const result = validateSummary(schema, { requiredInput: 'some value' }, {})
+      const result = validateSummary(
+        schema,
+        { requiredInput: 'some value' },
+        {},
+        testValidatorRegistry,
+      )
 
       expect(result.hasErrors).toBe(false)
       expect(result.pathHasError('root_requiredInput')).toBe(false)
@@ -28,7 +34,7 @@ describe('validateSummary', () => {
     })
 
     it('should report errors for missing required field', () => {
-      const result = validateSummary(schema, {}, {})
+      const result = validateSummary(schema, {}, {}, testValidatorRegistry)
 
       expect(result.hasErrors).toBe(true)
       expect(result.pathHasError('root_requiredInput')).toBe(true)
@@ -51,6 +57,7 @@ describe('validateSummary', () => {
             fileName: '',
           },
         },
+        testValidatorRegistry,
       )
 
       expect(result.hasErrors).toBe(false)
@@ -71,6 +78,7 @@ describe('validateSummary', () => {
             fileName: '',
           },
         },
+        testValidatorRegistry,
       )
 
       expect(result.hasErrors).toBe(true)
@@ -81,7 +89,12 @@ describe('validateSummary', () => {
     })
 
     it('should report errors for missing file information', () => {
-      const result = validateSummary(schema, { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' }, {})
+      const result = validateSummary(
+        schema,
+        { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
+        {},
+        testValidatorRegistry,
+      )
 
       expect(result.hasErrors).toBe(true)
       expect(result.pathHasError('root_file')).toBe(true)
@@ -124,6 +137,7 @@ describe('validateSummary', () => {
             fileName: '',
           },
         },
+        testValidatorRegistry,
       )
 
       expect(result.hasErrors).toBe(true)

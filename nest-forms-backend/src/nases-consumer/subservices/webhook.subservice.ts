@@ -7,6 +7,7 @@ import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinition
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
+import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -29,6 +30,7 @@ export default class WebhookSubservice {
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly configService: ConfigService,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {}
 
   async sendWebhook(formId: string): Promise<void> {
@@ -70,6 +72,7 @@ export default class WebhookSubservice {
     const formData = omitExtraData(
       formDefinition.schemas.schema,
       form.formDataJson as GenericObjectType,
+      this.formValidatorRegistryService.getRegistry(),
     )
 
     this.logger.log(

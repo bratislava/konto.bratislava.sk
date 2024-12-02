@@ -186,6 +186,7 @@ export const ResponseCustomPaymentErrorDtoErrorNameEnum = {
   OldTaxNotPayable: 'OLD_TAX_NOT_PAYABLE',
   DatabaseError: 'DATABASE_ERROR',
   CreatePaymentUrl: 'CREATE_PAYMENT_URL',
+  QrCodeNotFound: 'QR_CODE_NOT_FOUND',
 } as const
 
 export type ResponseCustomPaymentErrorDtoErrorNameEnum =
@@ -384,7 +385,7 @@ export interface ResponseTaxDetailInstallmentsDto {
    * @type {string}
    * @memberof ResponseTaxDetailInstallmentsDto
    */
-  text: string
+  text: string | null
 }
 /**
  *
@@ -433,7 +434,7 @@ export interface ResponseTaxDetailsDto {
    * @type {string}
    * @memberof ResponseTaxDetailsDto
    */
-  area: string
+  area: string | null
   /**
    * Base of tax pare meter
    * @type {number}
@@ -519,43 +520,43 @@ export interface ResponseTaxDto {
    * @type {string}
    * @memberof ResponseTaxDto
    */
-  taxId: string
+  taxId: string | null
   /**
    * Date of tax order.
    * @type {string}
    * @memberof ResponseTaxDto
    */
-  dateCreateTax: string
+  dateCreateTax: string | null
   /**
    * Part of tax amount for lands in cents in Eur.
    * @type {number}
    * @memberof ResponseTaxDto
    */
-  taxLand: number
+  taxLand: number | null
   /**
    * Part of tax amount for constructions in cents in Eur.
    * @type {number}
    * @memberof ResponseTaxDto
    */
-  taxConstructions: number
+  taxConstructions: number | null
   /**
    * Part of tax amount for flats in cents in Eur.
    * @type {number}
    * @memberof ResponseTaxDto
    */
-  taxFlat: number
+  taxFlat: number | null
   /**
    * Qr code use for pay in web in Base64 representing image of paybysquare QRcode
    * @type {string}
    * @memberof ResponseTaxDto
    */
-  qrCodeWeb: string
+  qrCodeWeb: string | null
   /**
    * Qr code use for pay in email in Base64 representing image of paybysquare QRcode
    * @type {string}
    * @memberof ResponseTaxDto
    */
-  qrCodeEmail: string
+  qrCodeEmail: string | null
   /**
    *
    * @type {TaxPaidStatusEnum}
@@ -696,49 +697,49 @@ export interface ResponseTaxPayerDto {
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  permanentResidenceAddress: string
+  permanentResidenceAddress: string | null
   /**
    * Id of tax payer from Noris
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  externalId: string
+  externalId: string | null
   /**
    * Name of taxpayer
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  name: string
+  name: string | null
   /**
    * Text of descreption of name for pdf
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  nameTxt: string
+  nameTxt: string | null
   /**
    * Text of descreption of street for pdf
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  permanentResidenceStreetTxt: string
+  permanentResidenceStreetTxt: string | null
   /**
    * Street of permanent residence with number
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  permanentResidenceStreet: string
+  permanentResidenceStreet: string | null
   /**
    * Zip of permanent residence with number
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  permanentResidenceZip: string
+  permanentResidenceZip: string | null
   /**
    * City of permanent residence with number
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
-  permanentResidenceCity: string
+  permanentResidenceCity: string | null
   /**
    * Birth number with slash
    * @type {string}
@@ -1520,26 +1521,30 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
     },
     /**
      *
+     * @param {string} dIGEST
+     * @param {string} dIGEST1
      * @param {string} oPERATION
      * @param {string} oRDERNUMBER
      * @param {string} pRCODE
      * @param {string} sRCODE
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
      * @param {string} rESULTTEXT
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse: async (
+      dIGEST: string,
+      dIGEST1: string,
       oPERATION: string,
       oRDERNUMBER: string,
       pRCODE: string,
       sRCODE: string,
-      dIGEST: string,
-      dIGEST1: string,
       rESULTTEXT: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
+      // verify required parameter 'dIGEST' is not null or undefined
+      assertParamExists('paymentControllerPaymentResponse', 'dIGEST', dIGEST)
+      // verify required parameter 'dIGEST1' is not null or undefined
+      assertParamExists('paymentControllerPaymentResponse', 'dIGEST1', dIGEST1)
       // verify required parameter 'oPERATION' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'oPERATION', oPERATION)
       // verify required parameter 'oRDERNUMBER' is not null or undefined
@@ -1548,10 +1553,6 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       assertParamExists('paymentControllerPaymentResponse', 'pRCODE', pRCODE)
       // verify required parameter 'sRCODE' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'sRCODE', sRCODE)
-      // verify required parameter 'dIGEST' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponse', 'dIGEST', dIGEST)
-      // verify required parameter 'dIGEST1' is not null or undefined
-      assertParamExists('paymentControllerPaymentResponse', 'dIGEST1', dIGEST1)
       // verify required parameter 'rESULTTEXT' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'rESULTTEXT', rESULTTEXT)
       const localVarPath = `/payment/cardpay/response`
@@ -1565,6 +1566,14 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      if (dIGEST !== undefined) {
+        localVarQueryParameter['DIGEST'] = dIGEST
+      }
+
+      if (dIGEST1 !== undefined) {
+        localVarQueryParameter['DIGEST1'] = dIGEST1
+      }
 
       if (oPERATION !== undefined) {
         localVarQueryParameter['OPERATION'] = oPERATION
@@ -1580,14 +1589,6 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
 
       if (sRCODE !== undefined) {
         localVarQueryParameter['SRCODE'] = sRCODE
-      }
-
-      if (dIGEST !== undefined) {
-        localVarQueryParameter['DIGEST'] = dIGEST
-      }
-
-      if (dIGEST1 !== undefined) {
-        localVarQueryParameter['DIGEST1'] = dIGEST1
       }
 
       if (rESULTTEXT !== undefined) {
@@ -1703,33 +1704,33 @@ export const PaymentApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} dIGEST
+     * @param {string} dIGEST1
      * @param {string} oPERATION
      * @param {string} oRDERNUMBER
      * @param {string} pRCODE
      * @param {string} sRCODE
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
      * @param {string} rESULTTEXT
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async paymentControllerPaymentResponse(
+      dIGEST: string,
+      dIGEST1: string,
       oPERATION: string,
       oRDERNUMBER: string,
       pRCODE: string,
       sRCODE: string,
-      dIGEST: string,
-      dIGEST1: string,
       rESULTTEXT: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerPaymentResponse(
+        dIGEST,
+        dIGEST1,
         oPERATION,
         oRDERNUMBER,
         pRCODE,
         sRCODE,
-        dIGEST,
-        dIGEST1,
         rESULTTEXT,
         options,
       )
@@ -1806,34 +1807,34 @@ export const PaymentApiFactory = function (
     },
     /**
      *
+     * @param {string} dIGEST
+     * @param {string} dIGEST1
      * @param {string} oPERATION
      * @param {string} oRDERNUMBER
      * @param {string} pRCODE
      * @param {string} sRCODE
-     * @param {string} dIGEST
-     * @param {string} dIGEST1
      * @param {string} rESULTTEXT
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     paymentControllerPaymentResponse(
+      dIGEST: string,
+      dIGEST1: string,
       oPERATION: string,
       oRDERNUMBER: string,
       pRCODE: string,
       sRCODE: string,
-      dIGEST: string,
-      dIGEST1: string,
       rESULTTEXT: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .paymentControllerPaymentResponse(
+          dIGEST,
+          dIGEST1,
           oPERATION,
           oRDERNUMBER,
           pRCODE,
           sRCODE,
-          dIGEST,
-          dIGEST1,
           rESULTTEXT,
           options,
         )
@@ -1892,35 +1893,35 @@ export class PaymentApi extends BaseAPI {
 
   /**
    *
+   * @param {string} dIGEST
+   * @param {string} dIGEST1
    * @param {string} oPERATION
    * @param {string} oRDERNUMBER
    * @param {string} pRCODE
    * @param {string} sRCODE
-   * @param {string} dIGEST
-   * @param {string} dIGEST1
    * @param {string} rESULTTEXT
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
   public paymentControllerPaymentResponse(
+    dIGEST: string,
+    dIGEST1: string,
     oPERATION: string,
     oRDERNUMBER: string,
     pRCODE: string,
     sRCODE: string,
-    dIGEST: string,
-    dIGEST1: string,
     rESULTTEXT: string,
     options?: RawAxiosRequestConfig,
   ) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPaymentResponse(
+        dIGEST,
+        dIGEST1,
         oPERATION,
         oRDERNUMBER,
         pRCODE,
         sRCODE,
-        dIGEST,
-        dIGEST1,
         rESULTTEXT,
         options,
       )

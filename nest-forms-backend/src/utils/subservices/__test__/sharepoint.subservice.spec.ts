@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -15,6 +16,7 @@ import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSha
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
 import prismaMock from '../../../../test/singleton'
+import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import * as textHandler from '../../handlers/text.handler'
@@ -36,6 +38,10 @@ describe('SharepointSubservice', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         { provide: ConfigService, useValue: configServiceMock },
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
+        },
       ],
     }).compile()
 

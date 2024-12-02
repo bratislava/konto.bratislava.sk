@@ -13,6 +13,7 @@ import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer
 import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
+import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 import type { GlobalAppProps } from '../../_app'
@@ -76,17 +77,23 @@ export const getServerSideProps = amplifyGetServerSideProps<
     if (!embeddedSuccess) {
       return { notFound: true }
     }
+    const initialFormDataJson =
+      form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition)
 
     return {
       props: {
         formServerContext: {
           formDefinition: makeSerializableFormDefinition(formDefinition),
           formId,
-          initialFormDataJson:
-            form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition),
+          initialFormDataJson,
           initialServerFiles: files,
           initialSignature,
           formSent,
+          initialSummaryJson: getInitialSummaryJson(
+            context.query,
+            formDefinition,
+            initialFormDataJson,
+          ),
           formMigrationRequired,
           isEmbedded,
           strapiForm: strapiForm ?? null,

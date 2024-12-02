@@ -12,6 +12,7 @@ import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefini
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../../../test/singleton'
+import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
@@ -36,6 +37,10 @@ describe('WebhookSubservice', () => {
         },
         ThrowerErrorGuard,
         { provide: ConfigService, useValue: createMock<ConfigService>() },
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
+        },
       ],
     }).compile()
 

@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from './FormControls'
@@ -14,6 +14,7 @@ import { useFormContext } from './useFormContext'
 import { useFormData } from './useFormData'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
+import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const FormPage = () => {
   const {
@@ -32,6 +33,7 @@ const FormPage = () => {
     handleFormOnChange,
     popScrollToFieldId,
   } = useFormState()
+  const validatorRegistry = useFormValidatorRegistry()
 
   const { transformErrors } = useFormErrorTranslations()
 
@@ -86,7 +88,7 @@ const FormPage = () => {
               liveOmit
               // HTML validation doesn't work for our use case, therefore it's turned off.
               noHtml5Validate
-              {...baFormDefaults}
+              {...getBaFormDefaults(currentStepSchema!, validatorRegistry)}
             >
               {
                 // returning null would make RJSF render the default submit button

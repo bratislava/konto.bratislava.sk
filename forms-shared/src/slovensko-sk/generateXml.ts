@@ -4,6 +4,7 @@ import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { getSlovenskoSkXmlns } from './urls'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 function getSlovenskoSkXmlObjectBase(
   formDefinition: FormDefinitionSlovenskoSk,
@@ -44,6 +45,7 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
 export async function generateSlovenskoSkXmlObject(
   formDefinition: FormDefinitionSlovenskoSk,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   serverFiles?: FormsBackendFile[],
 ) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
@@ -51,7 +53,12 @@ export async function generateSlovenskoSkXmlObject(
     // in Slovensko.sk XMLs beforehand to accommodate for future changes.
     JsonVersion: '1.0',
     Json: JSON.stringify(formData),
-    Summary: await renderSlovenskoXmlSummary(formDefinition, formData, serverFiles),
+    Summary: await renderSlovenskoXmlSummary(
+      formDefinition,
+      formData,
+      validatorRegistry,
+      serverFiles,
+    ),
     TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
   })
 }

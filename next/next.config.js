@@ -141,11 +141,6 @@ const nextConfig = {
       }),
     )
 
-    if (!isServer) {
-      // Prevents `getSummaryJsonNode` from being included, see function description for more info
-      config.resolve.alias['jsdom'] = false
-    }
-
     // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
     config.externals = [...config.externals, { canvas: 'canvas' }]
 

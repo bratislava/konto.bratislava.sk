@@ -54,6 +54,7 @@ export enum CustomErrorPaymentTypesEnum {
   OLD_TAX_NOT_PAYABLE = 'OLD_TAX_NOT_PAYABLE',
   DATABASE_ERROR = 'DATABASE_ERROR',
   CREATE_PAYMENT_URL = 'CREATE_PAYMENT_URL',
+  QR_CODE_NOT_FOUND = 'QR_CODE_NOT_FOUND',
 }
 
 export enum CustomErrorPaymentResponseTypesEnum {

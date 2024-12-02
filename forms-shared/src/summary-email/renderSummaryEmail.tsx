@@ -7,6 +7,7 @@ import { validateSummary } from '../summary-renderer/validateSummary'
 import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export type FileIdInfoMap = Record<string, { url: string; fileName: string }>
 
@@ -14,6 +15,7 @@ export type RenderSummaryEmailPayload = {
   formDefinition: FormDefinition
   formData: GenericObjectType
   fileIdInfoMap: FileIdInfoMap
+  validatorRegistry: BaRjsfValidatorRegistry
   serverFiles?: FormsBackendFile[]
   withHtmlBodyTags?: boolean
 }
@@ -22,6 +24,7 @@ export const renderSummaryEmail = async ({
   formDefinition,
   formData,
   fileIdInfoMap,
+  validatorRegistry,
   serverFiles,
   withHtmlBodyTags = false,
 }: RenderSummaryEmailPayload) => {
@@ -29,9 +32,15 @@ export const renderSummaryEmail = async ({
     formDefinition.schemas.schema,
     formDefinition.schemas.uiSchema,
     formData,
+    validatorRegistry,
   )
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
-  const validatedSummary = validateSummary(formDefinition.schemas.schema, formData, fileInfos)
+  const validatedSummary = validateSummary(
+    formDefinition.schemas.schema,
+    formData,
+    fileInfos,
+    validatorRegistry,
+  )
 
   return render(
     <SummaryEmail

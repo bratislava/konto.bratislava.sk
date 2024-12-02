@@ -11,6 +11,7 @@ import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEma
 
 import prismaMock from '../../../../test/singleton'
 import ConvertService from '../../../convert/convert.service'
+import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
@@ -47,6 +48,10 @@ describe('EmailFormsSubservice', () => {
         {
           provide: ConvertService,
           useValue: createMock<ConvertService>(),
+        },
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
         },
         ThrowerErrorGuard,
       ],

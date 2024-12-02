@@ -8,6 +8,7 @@ import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
 
 import ConvertService from '../../convert/convert.service'
+import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -37,6 +38,7 @@ export default class EmailFormsSubservice {
     private mailgunService: MailgunService,
     private configService: ConfigService,
     private convertService: ConvertService,
+    private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('EmailFormsSubservice')
   }
@@ -91,6 +93,7 @@ export default class EmailFormsSubservice {
     const jsonDataExtraDataOmitted = omitExtraData(
       formDefinition.schemas.schema,
       form.formDataJson as GenericObjectType,
+      this.formValidatorRegistryService.getRegistry(),
     )
 
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
@@ -110,6 +113,7 @@ export default class EmailFormsSubservice {
             formData: jsonDataExtraDataOmitted,
             serverFiles: form.files,
             fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
+            validatorRegistry: this.formValidatorRegistryService.getRegistry(),
           }),
         },
       },

@@ -25,7 +25,7 @@ import {
 } from 'src/utils/guards/dtos/error.dto'
 import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
 
-import { ResponseUserDataDto } from '../generated-clients/nest-city-account'
+import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -62,7 +62,7 @@ export class TaxController {
   @UseGuards(AuthenticationGuard)
   @Get('get-tax-by-year')
   async getActualTaxes(
-    @BratislavaUser() baUser: ResponseUserDataDto,
+    @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year') year: number,
   ): Promise<ResponseTaxDto> {
     return this.taxService.getTaxByYear(year, baUser.birthNumber)
@@ -93,7 +93,7 @@ export class TaxController {
   @UseGuards(AuthenticationGuard)
   @Get('get-tax-pdf-by-year')
   async getTaxByYearPdf(
-    @BratislavaUser() baUser: ResponseUserDataDto,
+    @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year') year: number,
     @Res() res: any,
   ) {
@@ -148,7 +148,7 @@ export class TaxController {
   @UseGuards(AuthenticationGuard)
   @Get('taxes')
   async getArchivedTaxes(
-    @BratislavaUser() baUser: ResponseUserDataDto,
+    @BratislavaUser() baUser: BratislavaUserDto,
   ): Promise<ResponseGetTaxesDto> {
     // TODO - pagination - but it will be issue after in year 2040 :D
     const response = await this.taxService.loadTaxes(baUser.birthNumber)

@@ -5,7 +5,7 @@ import { SchemaValidateFunction, Vocabulary } from 'ajv'
 import { baAjvFormats } from './ajvFormats'
 import { baAjvKeywords } from './ajvKeywords'
 
-const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
+export const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
   customizeValidator({
     // The type in @rjsf/validator-ajv8 is wrong.
     customFormats: baAjvFormats as unknown as CustomValidatorOptionsType['customFormats'],
@@ -13,11 +13,6 @@ const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
       keywords: customKeywords ?? baAjvKeywords,
     },
   })
-
-/**
- * Default RJSF validator that should be used for all forms.
- */
-export const baRjsfValidator = getBaRjsfValidator()
 
 /**
  * Generates keywords with custom file validation function.

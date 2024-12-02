@@ -1,13 +1,13 @@
 import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
-import { baRjsfValidator } from 'forms-shared/form-utils/validators'
+import { BaRjsfValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
 import { FormStepperStep } from '../../components/forms/types/Steps'
 import { isDefined } from './general'
 
-export const SUMMARY_QUERY_PARAM = 'sumar'
+export const STEP_QUERY_PARAM_VALUE_SUMMARY = 'sumar'
 
 /**
  * Evaluates each step with current form data and returns an array of schemas.
@@ -17,13 +17,15 @@ export const SUMMARY_QUERY_PARAM = 'sumar'
 export const getEvaluatedStepsSchemas = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
 ): (BAJSONSchema7 | null)[] => {
   return (
     schema.allOf?.map((step) => {
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(baRjsfValidator, step, schema, formData)
+      const validator = validatorRegistry.getValidator(step)
+      const retrievedSchema = retrieveSchema(validator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []
@@ -91,7 +93,7 @@ export const getStepperData = (
     {
       index: 'summary',
       displayIndex: displayIndex + 1,
-      queryParam: SUMMARY_QUERY_PARAM,
+      queryParam: STEP_QUERY_PARAM_VALUE_SUMMARY,
     } satisfies FormStepperStep,
   ]
 }
@@ -126,8 +128,9 @@ export const parseStepFromFieldId = (fieldId: string) => {
 export const removeUnusedPropertiesFromFormData = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
 ) => {
-  const evaluatedSchemas = getEvaluatedStepsSchemas(schema, formData)
+  const evaluatedSchemas = getEvaluatedStepsSchemas(schema, formData, validatorRegistry)
   const propertiesToKeep = evaluatedSchemas.map(getStepProperty).filter(isDefined)
 
   return pick(formData, propertiesToKeep)

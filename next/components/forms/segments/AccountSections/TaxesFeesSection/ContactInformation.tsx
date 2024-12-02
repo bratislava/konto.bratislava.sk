@@ -43,7 +43,7 @@ const ContactInformationSection = () => {
   const displayPermanentAddress = displayStrings(
     [
       taxData.taxPayer?.permanentResidenceStreet,
-      formatZip(taxData.taxPayer?.permanentResidenceZip),
+      formatZip(taxData.taxPayer?.permanentResidenceZip ?? undefined),
       taxData.taxPayer?.permanentResidenceCity,
     ],
     ', ',

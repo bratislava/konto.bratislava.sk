@@ -36,9 +36,9 @@ export const getFrontendFormTitleFromForm = (
       titleFallback?: string
     }
   }
-  const uiOptions = (formDefinition.schemas.uiSchema as MinimalUiSchema)?.[
-    'ui:options'
-  ]
+  const uiOptions = (
+    formDefinition.schemas.schema.baUiSchema as MinimalUiSchema
+  )?.['ui:options']
   return (
     (lodash.get(
       data.formDataJson,

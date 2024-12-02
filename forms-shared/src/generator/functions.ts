@@ -613,11 +613,12 @@ export const schema = (
     schema: removeUndefinedValues({
       ...options,
       allOf: filteredSteps.map((stepInner) => stepInner.schema),
+      baUiSchema: {
+        'ui:options': uiOptions,
+        'ui:hideError': true,
+      },
     }) as RJSFSchema,
-    uiSchema: removeUndefinedValues({
-      'ui:options': uiOptions,
-      'ui:hideError': true,
-    }) as UiSchema,
+    uiSchema: {} as UiSchema,
   }
 }
 

@@ -36,7 +36,7 @@
     "@types/passport-http-bearer": "^1.0.41",
     "@types/uuid": "^10.0.0",
     "await-exec": "^0.1.2",
-    "axios": "1.6.0",
+    "axios": "1.7.8",
     "base64url": "^3.0.1",
     "clamdjs": "^1.0.2",
     "class-transformer": "^0.5.1",

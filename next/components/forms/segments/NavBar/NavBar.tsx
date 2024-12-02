@@ -78,12 +78,6 @@ export const NavBar = ({
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
-  // Hide taxes and fees section for legal entities
-  if (isLegalEntity) {
-    // eslint-disable-next-line no-param-reassign
-    sectionsList = sectionsList?.filter((section) => section.url !== ROUTES.TAXES_AND_FEES)
-  }
-
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
 

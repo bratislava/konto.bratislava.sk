@@ -161,6 +161,9 @@ export class PaymentService {
     DIGEST1,
     RESULTTEXT,
   }: PaymentResponseQueryDto): Promise<string> {
+    if (!ORDERNUMBER) {
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.FAILED_TO_VERIFY}`
+    }
     try {
       const dataToVerify = this.gpWebpaySubservice.getDataToVerify({
         OPERATION,

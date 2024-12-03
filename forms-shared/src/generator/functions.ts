@@ -429,6 +429,7 @@ export const object = (
   ) as ConditionalFields[]
 
   const getSchema = () => {
+    const isUiOptionsEmpty = Object.keys(uiOptions).length === 0
     const allOf = conditionalFields.map((field) => ({
       if: field.condition,
       then: field.thenSchema,
@@ -440,11 +441,11 @@ export const object = (
       properties: Object.fromEntries(ordinaryFields.map((field) => [field.property, field.schema])),
       required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
       allOf: allOf.length > 0 ? allOf : undefined,
-      baUiSchema: uiOptions
-        ? {
+      baUiSchema: isUiOptionsEmpty
+        ? undefined
+        : {
             'ui:options': uiOptions,
-          }
-        : undefined,
+          },
     })
   }
 
@@ -455,13 +456,26 @@ export const object = (
   }
 }
 
+/**
+ * Arrays and conditional fields needs to use created schema for object internally, but the object must have no property,
+ * and uiOptions.
+ */
+const simpleObjectInternal = (fields: (FieldType | null)[]) => {
+  const result = object(null, {}, {}, fields)
+  if (result.schema.baUiSchema) {
+    throw new Error('Simple object should not have uiOptions.')
+  }
+
+  return result
+}
+
 export const arrayField = (
   property: string,
   options: BaseOptions & { minItems?: number; maxItems?: number },
   uiOptions: ArrayFieldUiOptions,
   fields: (FieldType | null)[],
 ): Field => {
-  const { schema: objectSchema } = object(null, {}, {}, fields)
+  const { schema: objectSchema } = simpleObjectInternal(fields)
 
   return {
     property,
@@ -547,12 +561,8 @@ export const conditionalFields = (
   const filteredThenFields = thenFields.filter((field) => field !== null) as FieldType[]
   const filteredElseFields = elseFields.filter((field) => field !== null) as FieldType[]
 
-  const { schema: thenSchema } = object(null, {}, {}, filteredThenFields)
-  // Temporary solution
-  delete thenSchema.baUiSchema
-  const { schema: elseSchema } = object(null, {}, {}, filteredElseFields)
-  // Temporary solution
-  delete elseSchema.baUiSchema
+  const { schema: thenSchema } = simpleObjectInternal(filteredThenFields)
+  const { schema: elseSchema } = simpleObjectInternal(filteredElseFields)
 
   return {
     condition,

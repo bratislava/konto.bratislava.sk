@@ -6,6 +6,7 @@ declare module 'json-schema' {
   export interface JSONSchema7 {
     file?: boolean
     baUiSchema?: GenericObjectType
+    baOrder?: number
   }
 }
 
@@ -17,5 +18,8 @@ export const baAjvKeywords = [
   },
   {
     keyword: 'baUiSchema',
+  },
+  {
+    keyword: 'baOrder',
   },
 ]

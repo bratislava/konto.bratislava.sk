@@ -1,7 +1,5 @@
 import type { RJSFSchema, UiSchema } from '@rjsf/utils'
-import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
-import uniq from 'lodash/uniq'
 
 import { getInputTypeForAjvFormat, removeUndefinedValues } from './helpers'
 import {
@@ -32,6 +30,7 @@ import {
   createEnumSchemaEnum,
   OptionItem,
 } from './optionItems'
+import { addBaOrderToFields } from './addBaOrderToFields'
 
 export type Schemas = {
   schema: RJSFSchema
@@ -46,14 +45,12 @@ export type Field = {
 
 type ObjectField = Omit<Field, 'property'> & {
   property: string | null
-  fieldProperties: string[]
 }
 
-type ConditionalFields = {
+export type ConditionalFields = {
   condition: RJSFSchema
   thenSchema: RJSFSchema
   elseSchema?: RJSFSchema
-  fieldProperties: string[]
 }
 
 export type FieldType = Field | ConditionalFields | ObjectField
@@ -425,22 +422,11 @@ export const object = (
   fields: (FieldType | null)[],
 ): ObjectField => {
   const filteredFields = fields.filter((field) => field !== null) as FieldType[]
-  const ordinaryFields = filteredFields.filter((field) => !('condition' in field)) as Field[]
-  const conditionalFields = filteredFields.filter(
+  const fieldsWithOrder = addBaOrderToFields(filteredFields)
+  const ordinaryFields = fieldsWithOrder.filter((field) => !('condition' in field)) as Field[]
+  const conditionalFields = fieldsWithOrder.filter(
     (field) => 'condition' in field,
   ) as ConditionalFields[]
-  const fieldProperties = filteredFields
-    .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
-    .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
-    .filter((field) => field !== null) as string[]
-
-  if (fieldProperties.length !== uniq(fieldProperties).length) {
-    throw new Error(
-      `Field properties must be unique, but there are duplicates: ${fieldProperties
-        .filter((field, index) => fieldProperties.indexOf(field) !== index)
-        .join(', ')}`,
-    )
-  }
 
   const getSchema = () => {
     const allOf = conditionalFields.map((field) => ({
@@ -454,12 +440,11 @@ export const object = (
       properties: Object.fromEntries(ordinaryFields.map((field) => [field.property, field.schema])),
       required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
       allOf: allOf.length > 0 ? allOf : undefined,
-      baUiSchema: {
-        // As the order of the properties is not guaranteed in JSON and is lost when having the fields both in `properties`
-        // and `allOf`, we need to provide it manually.
-        'ui:order': fieldProperties,
-        'ui:options': uiOptions,
-      },
+      baUiSchema: uiOptions
+        ? {
+            'ui:options': uiOptions,
+          }
+        : undefined,
     })
   }
 
@@ -467,7 +452,6 @@ export const object = (
     property,
     schema: getSchema(),
     required: Boolean(options.required),
-    fieldProperties,
   }
 }
 
@@ -525,15 +509,15 @@ export const step = (
           title: options.title,
           description: options.description,
           ...schema,
+          baUiSchema: {
+            'ui:options': {
+              stepperTitle: options.stepperTitle,
+              stepQueryParam: getHash(),
+            } satisfies StepUiOptions,
+          },
         },
       },
       required: [property],
-      baUiSchema: {
-        'ui:options': {
-          stepperTitle: options.stepperTitle,
-          stepQueryParam: getHash(),
-        } satisfies StepUiOptions,
-      },
     }),
   }
 }
@@ -563,37 +547,17 @@ export const conditionalFields = (
   const filteredThenFields = thenFields.filter((field) => field !== null) as FieldType[]
   const filteredElseFields = elseFields.filter((field) => field !== null) as FieldType[]
 
-  const { schema: thenSchema, fieldProperties: thenFieldProperties } = object(
-    null,
-    {},
-    {},
-    filteredThenFields,
-  )
+  const { schema: thenSchema } = object(null, {}, {}, filteredThenFields)
   // Temporary solution
   delete thenSchema.baUiSchema
-  const { schema: elseSchema, fieldProperties: elseFieldProperties } = object(
-    null,
-    {},
-    {},
-    filteredElseFields,
-  )
+  const { schema: elseSchema } = object(null, {}, {}, filteredElseFields)
   // Temporary solution
   delete elseSchema.baUiSchema
-
-  const intersectionProperties = intersection(thenFieldProperties, elseFieldProperties)
-  if (intersectionProperties.length > 0) {
-    throw new Error(
-      `Field properties must be unique, but there are duplicates between then and else fields: ${intersectionProperties.join(
-        ', ',
-      )}`,
-    )
-  }
 
   return {
     condition,
     thenSchema,
     elseSchema: filteredElseFields.length > 0 ? elseSchema : undefined,
-    fieldProperties: [...thenFieldProperties, ...elseFieldProperties],
   }
 }
 

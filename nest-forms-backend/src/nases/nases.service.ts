@@ -115,6 +115,16 @@ export default class NasesService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<CreateFormResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(
+      requestData.formDefinitionSlug,
+    )
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
+      )
+    }
+
     const data = {
       userExternalId: user ? user.sub : null,
       ...requestData,
@@ -128,13 +138,6 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`,
-      )
-    }
 
     const messageSubject = getSubjectTextFromForm(result, formDefinition)
     const frontendTitle =

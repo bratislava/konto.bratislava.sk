@@ -53,7 +53,6 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "prisma": "^5.18.0",
-    "reflect-metadata": "^0.1.13",
     "rimraf": "^6.0.1",
     "rxjs": "^7.8.1",
     "uuid": "^10.0.0"

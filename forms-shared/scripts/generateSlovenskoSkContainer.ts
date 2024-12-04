@@ -81,7 +81,6 @@ async function main() {
     validFrom: string
     unzip: boolean
   } = await inquirer.prompt(
-    // @ts-expect-error Inquirer typings don't work well
     [
       {
         type: 'list',

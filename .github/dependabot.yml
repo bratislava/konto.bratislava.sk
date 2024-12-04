@@ -13,6 +13,8 @@ updates:
     directory: '/next'
     schedule:
       interval: 'weekly'
+    # Open only security updates https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
+    open-pull-requests-limit: 0
   - package-ecosystem: 'npm'
     directory: '/nest-forms-backend'
     schedule:

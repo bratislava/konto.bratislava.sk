@@ -283,6 +283,7 @@ describe('NasesService', () => {
       } as JwtNasesPayloadDto
       const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
+        jsonVersion: '1.0',
         schemas: {
           schema: {},
           uiSchema: { 'ui:options': {} },

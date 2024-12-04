@@ -13,7 +13,9 @@ type FormDefinitionBase = {
   slug: string
   title: string
   schemas: Schemas
-  jsonVersion: string
+  // Fixed to 1.0 until proper versioning is implemented on all forms
+  // jsonVersion: string
+  jsonVersion: '1.0'
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string

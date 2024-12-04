@@ -127,7 +127,7 @@ export default class NasesService {
 
     const data = {
       userExternalId: user ? user.sub : null,
-      ...requestData,
+      formDefinitionSlug: requestData.formDefinitionSlug,
       ico,
       ownerType:
         user?.['custom:account_type'] === 'po' ||

@@ -13,6 +13,7 @@ type FormDefinitionBase = {
   slug: string
   title: string
   schemas: Schemas
+  jsonVersion: string
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string

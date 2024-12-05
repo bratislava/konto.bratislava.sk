@@ -1,5 +1,5 @@
-export const oddiel2VymeraPozemkuFormula =
-  'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)'
+export const oddiel2VymeraPozemkuFormula = `floorToTwoDecimals(n) = floor(n * 100) / 100;
+floorToTwoDecimals(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku)`
 
 export const oddiel3JedenUcelZakladDaneFormula =
   'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))'

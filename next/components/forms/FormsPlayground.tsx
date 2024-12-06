@@ -92,17 +92,13 @@ const FormPlaygroundProviders = ({
   )
 
   return (
-    <FormValidatorRegistryProvider>
-      <FormFileUploadContext.Provider
-        value={formFileUploadContextValue as ContextType<typeof FormFileUploadContext>}
-      >
-        <FormDataContext.Provider
-          value={formDataContextValue as ContextType<typeof FormDataContext>}
-        >
-          {children}
-        </FormDataContext.Provider>
-      </FormFileUploadContext.Provider>
-    </FormValidatorRegistryProvider>
+    <FormFileUploadContext.Provider
+      value={formFileUploadContextValue as ContextType<typeof FormFileUploadContext>}
+    >
+      <FormDataContext.Provider value={formDataContextValue as ContextType<typeof FormDataContext>}>
+        {children}
+      </FormDataContext.Provider>
+    </FormFileUploadContext.Provider>
   )
 }
 
@@ -392,4 +388,12 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
   )
 }
 
-export default FormsPlayground
+const FormsPlaygroundWrapped = (props: FormsPlaygroundProps) => {
+  return (
+    <FormValidatorRegistryProvider>
+      <FormsPlayground {...props} />
+    </FormValidatorRegistryProvider>
+  )
+}
+
+export default FormsPlaygroundWrapped

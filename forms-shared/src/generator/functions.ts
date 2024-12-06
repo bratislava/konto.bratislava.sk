@@ -529,6 +529,7 @@ export const step = (
               stepQueryParam: getHash(),
             } satisfies StepUiOptions,
           },
+          baOrder: 1,
         },
       },
       required: [property],

@@ -40,7 +40,6 @@ import {
 } from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -96,18 +95,6 @@ export default class NasesService {
         return null
       })
     return result
-  }
-
-  async createFormEid(
-    nasesUser: JwtNasesPayloadDto,
-    requestData: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const data = {
-      mainUri: nasesUser.sub,
-      actorUri: nasesUser.actor.sub,
-      ...requestData,
-    }
-    return this.formsService.createForm(data)
   }
 
   async createForm(

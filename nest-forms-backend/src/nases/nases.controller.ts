@@ -61,7 +61,6 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import parseJwt from '../utils/tokens'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   EidSendFormRequestDto,
   EidUpdateSendFormRequestDto,
@@ -276,39 +275,6 @@ export default class NasesController {
       userInfo?.ico ?? null,
       user,
     )
-    return returnData
-  }
-
-  @ApiOperation({
-    deprecated: true,
-    description:
-      'Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Return charging details - price and used free minutes / hours.',
-    type: GetFormResponseDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiInternalServerErrorResponse({
-    status: 500,
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-      ],
-    },
-  })
-  @UseGuards(NasesAuthGuard)
-  @Post('eid/create-form')
-  async createFormEid(
-    @User() user: JwtNasesPayloadDto,
-    @Body() data: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const returnData = await this.nasesService.createFormEid(user, data)
     return returnData
   }
 

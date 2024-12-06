@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: forms
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: forms
+      PGPORT: 5432
+    expose:
+      - '5432'
+    ports:
+      - '127.0.0.1:5432:5432'
+
   rabbitmq:
     image: heidiks/rabbitmq-delayed-message-exchange:latest
     container_name: 'rabbitmq'

@@ -58,12 +58,17 @@ export const getStepperData = (stepsSchemas: (BAJSONSchema7 | null)[]): FormStep
         throw new Error('Step must have exactly one property.')
       }
 
+      const stepProperty = getStepProperty(step)
+      if (!stepProperty) {
+        throw new Error(`Step ${stepProperty} does not have a property.`)
+      }
+      const stepSchema = step.properties[stepProperty] as BAJSONSchema7
+
       const { stepperTitle, stepQueryParam: queryParam } = getUiOptions(
-        step.baUiSchema,
+        stepSchema.baUiSchema,
       ) as StepUiOptions
 
-      const stepProperty = getStepProperty(step)!
-      const { title, description } = step.properties[stepProperty] as BAJSONSchema7
+      const { title, description } = stepSchema
       if (!title || !queryParam) {
         throw new Error(`Title or queryParam not found for step ${stepProperty}`)
       }

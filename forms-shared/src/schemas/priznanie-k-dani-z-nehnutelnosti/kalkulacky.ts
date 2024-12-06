@@ -1,4 +1,4 @@
-import { checkbox, conditionalFields, Field, object, skipUiSchema } from '../../generator/functions'
+import { checkbox, conditionalFields, Field, object } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 
 export const kalkulackaFields = ({
@@ -45,6 +45,6 @@ export const kalkulackaFields = ({
       ],
     ]),
     [inner(true)],
-    [skipUiSchema(inner(false))],
+    [inner(false)],
   ),
 ]

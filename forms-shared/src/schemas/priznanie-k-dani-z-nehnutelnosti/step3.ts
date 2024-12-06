@@ -9,7 +9,6 @@ import {
   object,
   radioGroup,
   select,
-  skipSchema,
   step,
 } from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
@@ -269,13 +268,14 @@ const innerArray = (kalkulacka: boolean) =>
               ),
             ],
           ),
-          kalkulacka ? celkovaVymeraPozemku : skipSchema(celkovaVymeraPozemku),
-          kalkulacka
-            ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
-            : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
-          kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-          kalkulacka ? vymeraPozemkuKalkulacka : skipSchema(vymeraPozemkuKalkulacka),
-          kalkulacka ? skipSchema(vymeraPozemku) : vymeraPozemku,
+          ...(kalkulacka
+            ? [
+                celkovaVymeraPozemku,
+                podielPriestoruNaSpolocnychCastiachAZariadeniachDomu,
+                spoluvlastnickyPodiel,
+                vymeraPozemkuKalkulacka,
+              ]
+            : [vymeraPozemku]),
           object(
             'datumy',
             {},

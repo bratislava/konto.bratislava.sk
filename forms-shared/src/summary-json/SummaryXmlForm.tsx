@@ -22,6 +22,7 @@ import { getSummaryDisplayValues } from './getSummaryDisplayValue'
 import { getBaFormDefaults } from '../form-utils/formDefaults'
 import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { defaultFormFields, DefaultFormFieldType } from '../form-utils/defaultFormFields'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -184,7 +185,8 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: () => null,
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    ...defaultFormFields,
+  } satisfies Record<BaFieldType & DefaultFormFieldType, ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)

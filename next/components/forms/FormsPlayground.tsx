@@ -7,7 +7,7 @@ import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampl
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
-import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useTranslation } from 'next-i18next'
 import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useMemo, useRef, useState } from 'react'
@@ -364,7 +364,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
             <ThemedForm
               key={`form-instance-${formInstanceIndex}`}
               schema={selectedForm.schemas.schema}
-              uiSchema={selectedForm.schemas.uiSchema}
+              uiSchema={defaultUiSchema}
               formData={formData}
               onChange={(e) => {
                 setFormData(e.formData)

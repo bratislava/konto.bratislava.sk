@@ -1,4 +1,4 @@
-import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
 import { BaRjsfValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
@@ -44,10 +44,7 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
   return keys[0] ?? null
 }
 
-export const getStepperData = (
-  stepsSchemas: (BAJSONSchema7 | null)[],
-  uiSchema: UiSchema,
-): FormStepperStep[] => {
+export const getStepperData = (stepsSchemas: (BAJSONSchema7 | null)[]): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
 
@@ -61,16 +58,17 @@ export const getStepperData = (
         throw new Error('Step must have exactly one property.')
       }
 
-      const stepProperty = getStepProperty(step)!
-      const stepUiSchema = uiSchema[stepProperty]
-      if (!stepUiSchema) {
-        throw new Error(`Step UI schema not found for step ${stepProperty}`)
+      const stepProperty = getStepProperty(step)
+      if (!stepProperty) {
+        throw new Error(`Step ${stepProperty} does not have a property.`)
       }
+      const stepSchema = step.properties[stepProperty] as BAJSONSchema7
 
       const { stepperTitle, stepQueryParam: queryParam } = getUiOptions(
-        stepUiSchema,
+        stepSchema.baUiSchema,
       ) as StepUiOptions
-      const { title, description } = step.properties[stepProperty] as BAJSONSchema7
+
+      const { title, description } = stepSchema
       if (!title || !queryParam) {
         throw new Error(`Title or queryParam not found for step ${stepProperty}`)
       }

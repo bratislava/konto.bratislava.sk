@@ -23,6 +23,7 @@ import { renderToString } from 'react-dom/server'
 import React from 'react'
 import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
@@ -30,8 +31,8 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
  * processed schema and uiOptions from the widget. This function renders the minimal form with the widget and retrieves
  * the values.
  */
-const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
-  const widgetType = uiSchema['ui:widget'] as BaWidgetType
+const retrieveRuntimeValues = ({ schema }: Field) => {
+  const widgetType = schema.baUiSchema?.['ui:widget'] as BaWidgetType
 
   let retrievedSchema: RJSFSchema
   let retrievedOptions: WidgetProps['options']
@@ -44,15 +45,10 @@ const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
         return null
       },
     },
+    fields: defaultFormFields,
   })
 
-  renderToString(
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      {...getBaFormDefaults(schema, testValidatorRegistry)}
-    />,
-  )
+  renderToString(<Form schema={schema} {...getBaFormDefaults(schema, testValidatorRegistry)} />)
 
   // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
   if (!retrievedSchema || !retrievedOptions) {

@@ -3,6 +3,7 @@ import React, { ComponentProps, ComponentType } from 'react'
 import { FieldProps, WidgetProps } from '@rjsf/utils'
 import { BaFieldType, BaWidgetType } from '../src/generator/uiOptionsTypes'
 import { renderToString } from 'react-dom/server'
+import { defaultFormFields, DefaultFormFieldType } from '../src/form-utils/defaultFormFields'
 
 const wrapWidget = (widgetType: BaWidgetType) =>
   function wrap({ id, label, value, children }: WidgetProps) {
@@ -47,7 +48,8 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: wrapField(BaFieldType.CustomComponents),
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    ...defaultFormFields,
+  } satisfies Record<BaFieldType & DefaultFormFieldType, ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)

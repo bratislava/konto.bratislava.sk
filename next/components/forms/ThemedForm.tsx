@@ -2,6 +2,7 @@ import { ThemeProps, withTheme } from '@rjsf/core'
 import { ArrayFieldTemplateItemType, FieldProps, WidgetProps } from '@rjsf/utils'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
+import { defaultFormFields, DefaultFormFieldType } from 'forms-shared/form-utils/defaultFormFields'
 import { BaFieldType, BaWidgetType } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
@@ -39,7 +40,8 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: CustomComponentsFieldRJSF,
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    ...defaultFormFields,
+  } satisfies Record<BaFieldType & DefaultFormFieldType, ComponentType<FieldProps>>,
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

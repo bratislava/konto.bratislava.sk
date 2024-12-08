@@ -17,6 +17,7 @@ import { kalkulackaFields } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel2VymeraPozemkuFormula } from '../../tax-form/formulas'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
@@ -63,8 +64,7 @@ const vymeraPozemkuKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Vaša výmera pozemku',
-          formula:
-            'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
+          formula: oddiel2VymeraPozemkuFormula,
           missingFieldsMessage:
             '**Pre výpočet výmery pozemku vyplňte správne všetky polia:**\n' +
             '- Celková výmera pozemku\n' +

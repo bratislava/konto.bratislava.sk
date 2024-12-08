@@ -16,6 +16,7 @@ import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel3JedenUcelZakladDaneFormula } from '../../tax-form/formulas'
 
 const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
@@ -61,7 +62,7 @@ const zakladDaneKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Základ dane',
-          formula: 'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
+          formula: oddiel3JedenUcelZakladDaneFormula,
           missingFieldsMessage:
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Celková zastavaná plocha\n' +

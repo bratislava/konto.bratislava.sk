@@ -3,15 +3,13 @@ import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
+import { oddiel3JedenUcelZakladDaneFormula } from '../../formulas'
 
 const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebJedenUcelPriznania) => {
   const pouzitKalkulacku =
     safeBoolean(data.danZoStaviebJedenUcel?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
-    ? calculateFormCalculatorFormula(
-        'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
-        priznanie,
-      )
+    ? calculateFormCalculatorFormula(oddiel3JedenUcelZakladDaneFormula, priznanie)
     : safeNumber(priznanie?.zakladDane)
 
   const cisloListuVlastnictva = safeString(priznanie.cisloListuVlastnictva)

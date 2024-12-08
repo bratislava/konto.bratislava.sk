@@ -3,6 +3,10 @@ import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
+import {
+  oddiel3ViacereUcelyCelkovaVymeraFormula,
+  oddiel3ViacereUcelyZakladDaneFormula,
+} from '../../formulas'
 
 const getVymeryStaviebPodlaTypu = (
   stavba: DanZoStaviebViacereUcelyPriznania,
@@ -40,16 +44,10 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebViacereUcelyPriz
   const pouzitKalkulacku =
     safeBoolean(data.danZoStaviebViacereUcely?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
-    ? calculateFormCalculatorFormula(
-        'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
-        priznanie,
-      )
+    ? calculateFormCalculatorFormula(oddiel3ViacereUcelyZakladDaneFormula, priznanie)
     : safeNumber(priznanie.zakladDane)
   const celkovaVymera = pouzitKalkulacku
-    ? calculateFormCalculatorFormula(
-        'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
-        priznanie,
-      )
+    ? calculateFormCalculatorFormula(oddiel3ViacereUcelyCelkovaVymeraFormula, priznanie)
     : safeNumber(priznanie.celkovaVymera)
 
   const vymeryStaviebPodlaTypu = getVymeryStaviebPodlaTypu(priznanie, pouzitKalkulacku)

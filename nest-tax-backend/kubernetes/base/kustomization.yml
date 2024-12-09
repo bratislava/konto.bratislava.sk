@@ -1,0 +1,38 @@
+resources:
+- deployment.yml
+- service-app.yml
+- ingress.yml
+# Comment-out these lines if no database is used
+- stateful-set.yml
+- service-database.yml
+configurations:
+- configuration.yml
+
+# Add composite env vars from secrets
+patches:
+  - target:
+      name: app
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+        - name: DATABASE_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public&connection_limit=50 
+        - name: PAYGATE_CERT_PATH
+          value: ${PAYGATE_CERT_PATH}
+
+# Keep as is
+namePrefix: ${BUILD_REPOSITORY_NAME}-
+commonLabels:
+  app: ${BUILD_REPOSITORY_NAME}
+  source: ${BUILD_REPOSITORY_NAME}
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: env
+  namespace: ${NAMESPACE}
+  envs:
+  - .env

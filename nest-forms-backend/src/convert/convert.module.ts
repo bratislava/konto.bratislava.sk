@@ -1,8 +1,8 @@
-import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import FilesModule from '../files/files.module'
+import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import FormsService from '../forms/forms.service'
@@ -13,7 +13,6 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertController from './convert.controller'
 import ConvertService from './convert.service'
-import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Module({
   controllers: [ConvertController],
@@ -22,11 +21,10 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
     ScannerClientModule,
     FilesModule,
     TaxModule,
-    CacheModule.register(),
+    FormValidatorRegistryModule,
   ],
   providers: [
     ConvertService,
-    JsonXmlConvertService,
     ThrowerErrorGuard,
     PrismaService,
     FormsService,

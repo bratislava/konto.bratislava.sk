@@ -20,7 +20,13 @@ FROM base as prod
 COPY . ./
 RUN npm run build
 
-FROM base as test
+ARG GIT_COMMIT="undefined"
+ENV GIT_COMMIT=$GIT_COMMIT
+LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
+      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/forms-shared" \
+      org.opencontainers.image.licenses="EUPL-1.2"
+
+FROM base as test-base
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \
     default-jre \
@@ -56,4 +62,9 @@ ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./
-CMD [ "npm", "run", "test" ]
+
+FROM test-base as test
+CMD [ "npm", "run", "test:ci" ]
+
+FROM test-base as test-update
+CMD [ "npm", "run", "test:update" ]

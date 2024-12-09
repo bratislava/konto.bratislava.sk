@@ -7,10 +7,12 @@ type SecondArg<F> = F extends (arg1: any, arg2: infer A, ...rest: any[]) => any 
 export const vyplnitKrokRadio = ({
   title,
   helptext,
+  helptextMarkdown,
   fields,
 }: {
   title: string
   helptext: string
+  helptextMarkdown: boolean
   fields: SecondArg<typeof conditionalFields>
 }) => [
   object(
@@ -26,16 +28,17 @@ export const vyplnitKrokRadio = ({
           type: 'boolean',
           title,
           required: true,
-          options: [
-            { value: true, title: 'Áno' },
-            { value: false, title: 'Nie', isDefault: true },
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
           ],
         },
         {
           variant: 'boxed',
           orientations: 'row',
           labelSize: 'h3',
-          helptextHeader: helptext,
+          helptext,
+          helptextMarkdown,
         },
       ),
     ],

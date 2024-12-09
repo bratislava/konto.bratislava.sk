@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TaxPayer {
+  id                          Int      @id @default(autoincrement())
+  uuid                        String   @default(uuid()) @db.Uuid
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @default(now()) @updatedAt
+  active                      Boolean //if it is active tax payer or is only past tax pay
+  birthNumber                 String //with slash
+  permanentResidenceAddress   String?
+  externalId                  String?
+  name                        String?
+  nameTxt                     String?
+  permanentResidenceStreetTxt String?
+  permanentResidenceStreet    String?
+  permanentResidenceZip       String?
+  permanentResidenceCity      String?
+
+  taxes Tax[]
+
+  @@unique([birthNumber])
+  @@unique([uuid])
+}
+
+model Tax {
+  id                  Int              @id @default(autoincrement())
+  uuid                String           @default(uuid()) @db.Uuid
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @default(now()) @updatedAt
+  year                Int
+  taxPayerId          Int
+  taxPayer            TaxPayer         @relation(fields: [taxPayerId], references: [id])
+  amount              Int
+  variableSymbol      String
+  taxEmployeeId       Int
+  qrCodeWeb           String?
+  qrCodeEmail         String?
+  taxId               String?
+  dateCreateTax       String?
+  taxLand             Int?
+  taxConstructions    Int?
+  taxFlat             Int?
+  taxPayments         TaxPayment[]
+  taxInstallments     TaxInstallment[]
+  taxDetails          TaxDetail[]
+  taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
+  lastCheckedPayments DateTime         @default(now())
+
+  @@unique([taxPayerId, year])
+  @@unique([uuid])
+  @@index([year, lastCheckedPayments])
+}
+
+model TaxPayment {
+  id             Int               @id @default(autoincrement())
+  orderId        String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @default(now()) @updatedAt
+  taxId          Int
+  tax            Tax               @relation(fields: [taxId], references: [id])
+  status         PaymentStatus     @default(NEW)
+  amount         Int
+  specificSymbol String?
+  source         TaxPaymentSource?
+
+  @@unique([orderId])
+  @@index([status])
+}
+
+model TaxInstallment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  taxId     Int
+  tax       Tax      @relation(fields: [taxId], references: [id])
+  order     String?
+  amount    Int
+  text      String?
+}
+
+model TaxDetail {
+  id        Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @default(now()) @updatedAt
+  taxId     Int
+  tax       Tax               @relation(fields: [taxId], references: [id])
+  type      TaxDetailType
+  areaType  TaxDetailareaType
+  area      String?
+  base      Int
+  amount    Int
+}
+
+model TaxEmployee {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  tax         Tax[]
+  externalId  String
+  name        String
+  phoneNumber String
+  email       String
+}
+
+enum TaxDetailType {
+  APARTMENT
+  CONSTRUCTION
+  GROUND
+}
+
+enum TaxPaymentSource {
+  CARD
+  QRCODE
+  BANK_ACCOUNT
+  POST
+  CASH
+}
+
+enum TaxDetailareaType {
+  NONRESIDENTIAL
+  RESIDENTIAL
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  jH
+  jI
+  byt
+  nebyt
+}
+
+enum PaymentStatus {
+  NEW
+  FAIL
+  SUCCESS
+}

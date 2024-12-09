@@ -1,5 +1,6 @@
 import {
   arrayField,
+  checkbox,
   checkboxGroup,
   conditionalFields,
   fileUpload,
@@ -15,6 +16,7 @@ import {
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { createCondition } from '../../src/generator/helpers'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
@@ -30,10 +32,10 @@ describe('defaultFormState', () => {
   })
 
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
-    const options = [
+    const items = [
       {
         value: 'option',
-        title: 'Option',
+        label: 'Option',
       },
     ]
 
@@ -48,7 +50,7 @@ describe('defaultFormState', () => {
         'select',
         {
           title: 'Select multiple',
-          options,
+          items,
         },
         {},
       ),
@@ -56,7 +58,7 @@ describe('defaultFormState', () => {
         'selectRequired',
         {
           title: 'Select multiple required',
-          options,
+          items,
           required: true,
         },
         {},
@@ -65,7 +67,7 @@ describe('defaultFormState', () => {
         'checkboxGroup',
         {
           title: 'Checkbox group',
-          options,
+          items,
         },
         {},
       ),
@@ -73,19 +75,19 @@ describe('defaultFormState', () => {
         'checkboxGroupRequired',
         {
           title: 'Checkbox group required',
-          options,
+          items,
           required: true,
         },
         {},
       ),
       arrayField('arrayField', { title: 'Array field' }, {} as ArrayFieldUiOptions, [
-        input('placeholderField', { title: 'Placeholder field' }, {}),
+        input('placeholderField', { type: 'text', title: 'Placeholder field' }, {}),
       ]),
       arrayField(
         'arrayFieldRequired',
         { title: 'Array field required', required: true },
         {} as ArrayFieldUiOptions,
-        [input('placeholderField', { title: 'Placeholder field' }, {})],
+        [input('placeholderField', { type: 'text', title: 'Placeholder field' }, {})],
       ),
     ])
 
@@ -94,7 +96,7 @@ describe('defaultFormState', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
-    expect(baGetDefaultFormState(definition.schema, {})).toEqual({
+    expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],
       select: [],
@@ -104,13 +106,25 @@ describe('defaultFormState', () => {
       arrayFieldRequired: [{}],
     })
   })
+
+  it('getDefaultForm should not prefill const values', () => {
+    const definition = object('defaultFormState', {}, {}, [
+      checkbox(
+        'checkboxWithConstValue',
+        { title: 'Checkbox with const value', required: true, constValue: true },
+        { checkboxLabel: 'I agree' },
+      ),
+    ])
+
+    expect(baGetDefaultFormState(definition.schema, {}, testValidatorRegistry)).toEqual({})
+  })
 })
 
 describe('baGetDefaultFormStateStable', () => {
   const { schema } = object('wrapper', { required: true }, {}, [
-    input('input1', { title: 'Input 1', default: 'value1', required: true }, {}),
+    input('input1', { type: 'text', title: 'Input 1', default: 'value1', required: true }, {}),
     conditionalFields(createCondition([[['input1'], { const: 'value1' }]]), [
-      input('input2', { title: 'Input 2', default: 'value2', required: true }, {}),
+      input('input2', { type: 'text', title: 'Input 2', default: 'value2', required: true }, {}),
     ]),
   ])
 
@@ -121,8 +135,8 @@ describe('baGetDefaultFormStateStable', () => {
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
 
-    const result = baGetDefaultFormState(schema, {})
-    const resultStable = baGetDefaultFormStateStable(schema, {})
+    const result = baGetDefaultFormState(schema, {}, testValidatorRegistry)
+    const resultStable = baGetDefaultFormStateStable(schema, {}, testValidatorRegistry)
 
     expect(result).toEqual({ input1: 'value1' })
     expect(resultStable).toEqual({ input1: 'value1', input2: 'value2' })

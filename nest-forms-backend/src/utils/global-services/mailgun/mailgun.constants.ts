@@ -6,6 +6,8 @@ export enum MailgunTemplateEnum {
   GINIS_SUCCESS = 'GINIS_SUCCESS',
   GINIS_DENIED = 'GINIS_DENIED',
   ATTACHMENT_VIRUS = 'ATTACHMENT_VIRUS',
+  OLO_SEND_FORM = 'OLO_SEND_FORM',
+  OLO_DELIVERED_SUCCESS = 'OLO_DELIVERED_SUCCESS',
 }
 
 export enum MailgunConfigVariableType {
@@ -155,6 +157,38 @@ export const MAILGUN_CONFIG = {
         value: `${
           process.env.FRONTEND_URL || 'https://konto.bratislava.sk'
         }/{{slug}}/{{formId}}`,
+      },
+    },
+  },
+  OLO_SEND_FORM: {
+    template: 'olo-form-send',
+    subject: 'OLO: Nové podanie',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      htmlData: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{htmlData}}',
+      },
+    },
+  },
+  OLO_DELIVERED_SUCCESS: {
+    template: '2024-olo-form-success',
+    subject: 'OLO: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value: process.env.OLO_FRONTEND_URL || 'https://olo.sk',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
       },
     },
   },

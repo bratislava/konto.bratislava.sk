@@ -143,7 +143,9 @@ const SelectField = <
   value,
   label,
   helptext,
-  helptextHeader,
+  helptextMarkdown,
+  helptextFooter,
+  helptextFooterMarkdown,
   tooltip,
   errorMessage,
   options,
@@ -165,7 +167,9 @@ const SelectField = <
       <FieldWrapper
         label={label}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         required={rest.required}
         errorMessage={errorMessage}

@@ -6,13 +6,14 @@ import { useEffectOnce } from 'usehooks-ts'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormPage from './FormPage'
 import FormProviders from './FormProviders'
+import IframeResizerChild from './IframeResizerChild'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import ConditionalWrap from './simple-components/ConditionalWrap'
-import { FormContext, FormContextProvider } from './useFormContext'
+import { FormContextProvider, FormServerContext } from './useFormContext'
 import { FormSentRenderer } from './useFormSent'
 
 export type FormPageWrapperProps = {
-  formContext: FormContext
+  formServerContext: FormServerContext
 }
 
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
@@ -41,38 +42,40 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
-const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
-  const { formDefinition, isEmbedded } = formContext
+const FormPageWrapper = ({ formServerContext }: FormPageWrapperProps) => {
+  const { formDefinition, isEmbedded } = formServerContext
   useCustomPlausibleFormPagesTracking(formDefinition.slug)
 
   return (
-    <FormSentRenderer
-      // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
-      // if it stays this way remove the prop completely
-      initialFormSent={false}
-      notSentChildren={
-        <FormProviders formContext={formContext}>
-          <ConditionalWrap
-            condition={!isEmbedded}
-            wrap={(children) => <AccountPageLayout>{children}</AccountPageLayout>}
-          >
-            <FormPage />
-          </ConditionalWrap>
-        </FormProviders>
-      }
-      sentChildren={
-        <FormContextProvider formContext={formContext}>
-          <ConditionalWrap
-            condition={!isEmbedded}
-            wrap={(children) => (
-              <AccountPageLayout className="bg-gray-50">{children}</AccountPageLayout>
-            )}
-          >
-            <ThankYouFormSection />
-          </ConditionalWrap>
-        </FormContextProvider>
-      }
-    />
+    <IframeResizerChild enabled={formServerContext.isEmbedded}>
+      <FormSentRenderer
+        // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
+        // if it stays this way remove the prop completely
+        initialFormSent={false}
+        notSentChildren={
+          <FormProviders formServerContext={formServerContext}>
+            <ConditionalWrap
+              condition={!isEmbedded}
+              wrap={(children) => <AccountPageLayout>{children}</AccountPageLayout>}
+            >
+              <FormPage />
+            </ConditionalWrap>
+          </FormProviders>
+        }
+        sentChildren={
+          <FormContextProvider formServerContext={formServerContext}>
+            <ConditionalWrap
+              condition={!isEmbedded}
+              wrap={(children) => (
+                <AccountPageLayout className="bg-gray-50">{children}</AccountPageLayout>
+              )}
+            >
+              <ThankYouFormSection />
+            </ConditionalWrap>
+          </FormContextProvider>
+        }
+      />
+    </IframeResizerChild>
   )
 }
 

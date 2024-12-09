@@ -9,8 +9,8 @@ import ButtonNew from '../../../simple-components/ButtonNew'
 type ThankYouCardBase = {
   success?: boolean
   title?: string
-  firstButtonTitle: string
-  secondButtonTitle: string
+  firstButtonTitle?: string
+  secondButtonTitle?: string
   content?: string
   feedbackUrl?: string
 }
@@ -47,34 +47,40 @@ const ThankYouCard = ({
       <div className="flex w-full flex-col items-center gap-4 px-0 sm:flex-row md:px-24">
         {success ? (
           <>
-            {feedbackUrl && (
+            {firstButtonTitle && feedbackUrl ? (
               <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
                 {firstButtonTitle}
               </ButtonNew>
-            )}
-            <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
-              {secondButtonTitle}
-            </ButtonNew>
+            ) : null}
+            {secondButtonTitle ? (
+              <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+                {secondButtonTitle}
+              </ButtonNew>
+            ) : null}
           </>
         ) : (
           <>
-            <ButtonNew
-              // TODO: Right now it is not possible to determine the year that it is being paid for.
-              href={ROUTES.TAXES_AND_FEES_YEAR(new Date().getFullYear())}
-              variant="black-solid"
-              fullWidth
-              startIcon={<RepeatIcon />}
-            >
-              {firstButtonTitle}
-            </ButtonNew>
-            <ButtonNew
-              href={ROUTES.HOME}
-              variant="black-outline"
-              fullWidth
-              startIcon={<CrossIcon className="size-6" />}
-            >
-              {secondButtonTitle}
-            </ButtonNew>
+            {firstButtonTitle ? (
+              <ButtonNew
+                // TODO: Right now it is not possible to determine the year that it is being paid for.
+                href={ROUTES.TAXES_AND_FEES_YEAR(new Date().getFullYear())}
+                variant="black-solid"
+                fullWidth
+                startIcon={<RepeatIcon />}
+              >
+                {firstButtonTitle}
+              </ButtonNew>
+            ) : null}
+            {secondButtonTitle ? (
+              <ButtonNew
+                href={ROUTES.HOME}
+                variant="black-outline"
+                fullWidth
+                startIcon={<CrossIcon className="size-6" />}
+              >
+                {secondButtonTitle}
+              </ButtonNew>
+            ) : null}
           </>
         )}
       </div>

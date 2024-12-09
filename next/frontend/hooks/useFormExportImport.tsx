@@ -12,6 +12,7 @@ import React, { createContext, PropsWithChildren, useContext, useRef } from 'rea
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from '../../components/forms/signer/useFormSignature'
 import { useFormContext } from '../../components/forms/useFormContext'
+import { useFormData } from '../../components/forms/useFormData'
 import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
@@ -28,7 +29,8 @@ export const useGetContext = () => {
     formId,
     isTaxForm,
   } = useFormContext()
-  const { formData, setImportedFormData } = useFormState()
+  const { setImportedFormData } = useFormState()
+  const { formData } = useFormData()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
@@ -111,7 +113,6 @@ export const useGetContext = () => {
         {
           formId,
           jsonData: formData,
-          slug,
         },
         { accessToken: 'onlyAuthenticated' },
       )
@@ -147,11 +148,11 @@ export const useGetContext = () => {
 
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
-      const xmlData = await file.text()
+      const xmlForm = await file.text()
       const response = await formsApi.convertControllerConvertXmlToJson(
-        slug,
         {
-          xmlForm: xmlData,
+          formId,
+          xmlForm,
         },
         { accessToken: 'onlyAuthenticated' },
       )

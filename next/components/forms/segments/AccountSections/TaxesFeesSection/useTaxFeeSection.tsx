@@ -1,3 +1,4 @@
+import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
@@ -11,10 +12,11 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
+  taxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
 }
 
-const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -44,6 +46,7 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
   })
 
   const downloadQrCode = async () => {
+    if (!taxData.qrCodeWeb) return
     const arrayBuffer = base64ToArrayBuffer(taxData.qrCodeWeb)
     downloadBlob(new Blob([arrayBuffer], { type: 'image/png' }), 'QR-dan-z-nehnutelnosti.png')
   }
@@ -66,6 +69,7 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
     downloadPdf,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
+    taxAdministrator,
   }
 }
 

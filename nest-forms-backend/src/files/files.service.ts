@@ -303,7 +303,7 @@ export default class FilesService {
     }
 
     const formInfo = this.filesHelper.forms2formInfo(form)
-    const { pospId } = formInfo
+    const { pospIdOrSlug } = formInfo
     const filePath = this.filesHelper.getPath(formInfo)
     const minioFileName = this.filesHelper.createMinioFileName(
       bufferedFile,
@@ -329,7 +329,7 @@ export default class FilesService {
         fileName,
         fileSize,
         formId,
-        pospId,
+        pospIdOrSlug,
       )
     } else {
       throw this.throwerErrorGuard.UnprocessableEntityException(
@@ -543,6 +543,19 @@ export default class FilesService {
           ErrorsEnum.DATABASE_ERROR,
           `Error while deleting file in the database. Error: ${<string>error}`,
         )
+      }
+
+      /* delete file form scanner if contains scannerId */
+      if (file.scannerId) {
+        const deleteScannerStatus =
+          // eslint-disable-next-line no-await-in-loop
+          await this.filesHelper.deleteFileFromScannerClient(file.scannerId)
+        if (deleteScannerStatus === undefined) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            FilesErrorsEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+            FilesErrorsResponseEnum.FILE_DELETE_FROM_SCANNER_ERROR,
+          )
+        }
       }
 
       const formInfo = this.filesHelper.fileDto2formInfo(file)

@@ -23,7 +23,11 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.hideNavbar(device)
         })
 
-        it('1. Checking "Applicant" step validation.', () => {
+        it('1. Press fill form button.', () => {
+          cy.dataCy('form-landing-page-fill-form-button').click()
+        })
+
+        it('2. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
@@ -34,7 +38,7 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('2. Filling out the "Applicant" step.', () => {
+        it('3. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
@@ -56,7 +60,7 @@ describe('F03 -', { testIsolation: false }, () => {
           })
         })
 
-        it('3. Going to summary.', () => {
+        it('4. Going to summary.', () => {
           if (device === 'desktop') {
             cy.get('[data-cy=stepper-desktop] [data-cy=stepper-step-6]').click()
           } else {
@@ -66,11 +70,11 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible') //.matchImage()
         })
 
-        it('4. Checking alert visibility.', () => {
+        it('5. Checking alert visibility.', () => {
           cy.dataCy('alert-container').should('exist').should('be.visible')
         })
 
-        it('5. Checking filled in information are saved', () => {
+        it('6. Checking filled in information are saved', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_menoPriezvisko]', form)).should(
               'contain',
@@ -101,7 +105,7 @@ describe('F03 -', { testIsolation: false }, () => {
           })
         })
 
-        it('8. Checking form validation.', () => {
+        it('7. Checking form validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-red-500')
           })

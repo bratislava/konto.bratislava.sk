@@ -36,7 +36,7 @@ declare module 'react' {
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
-  const { isSignedIn } = useSsrAuth()
+  const { isSignedIn, isLegalEntity } = useSsrAuth()
   const { signOut } = useSignOut()
 
   const router = useRouter()
@@ -110,6 +110,11 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     },
   ].filter(isDefined)
 
+  // Hide taxes and fees section for legal entities
+  const filteredSections = sectionsList.filter(
+    (section) => !(isLegalEntity && section.url === ROUTES.TAXES_AND_FEES),
+  )
+
   // TODO consider using this in desktop menu
   const menuItems: MenuItemBase[] = isSignedIn
     ? [
@@ -153,7 +158,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
       {/* `contents` is here for sticky elements inside to work */}
       <header className="relative z-30 contents">
         <NavBar
-          sectionsList={sectionsList}
+          sectionsList={filteredSections}
           menuItems={menuItems}
           navHidden
           hiddenHeaderNav={hiddenHeaderNav}

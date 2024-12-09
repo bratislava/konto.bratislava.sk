@@ -59,6 +59,7 @@ export const environment = {
     process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
   ),
   awsRegion: assertEnv('NEXT_PUBLIC_AWS_REGION', process.env.NEXT_PUBLIC_AWS_REGION),
+  selfUrl: assertEnv('NEXT_PUBLIC_SELF_URL', process.env.NEXT_PUBLIC_SELF_URL),
   formsUrl: assertEnv('NEXT_PUBLIC_FORMS_URL', process.env.NEXT_PUBLIC_FORMS_URL),
   cityAccountUrl: assertEnv(
     'NEXT_PUBLIC_CITY_ACCOUNT_URL',
@@ -90,8 +91,11 @@ export const environment = {
     process.env.NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS,
     false,
   ),
-
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
+  iframeResizerPublicPath: assertEnv(
+    'IFRAME_RESIZER_PUBLIC_PATH',
+    process.env.IFRAME_RESIZER_PUBLIC_PATH,
+  ),
   featureToggles: {
     developmentForms:
       assertEnv(
@@ -107,6 +111,11 @@ export const environment = {
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG,
+      ) === 'true',
+    hideStatusbar:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR,
       ) === 'true',
   },
   formsMimetypes: assertEnv(

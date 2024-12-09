@@ -17,6 +17,7 @@ export enum FilesErrorsEnum {
   FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR = 'FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR',
   FILE_IDS_NOT_FOUND_IN_DB_ERROR = 'FILE_IDS_NOT_FOUND_IN_DB_ERROR',
   FILE_MINIO_CHECK_ERROR = 'FILE_MINIO_CHECK_ERROR',
+  FILE_DELETE_FROM_SCANNER_ERROR = 'FILE_DELETE_FROM_SCANNER_ERROR',
 }
 
 export enum FilesErrorsResponseEnum {
@@ -38,4 +39,5 @@ export enum FilesErrorsResponseEnum {
   FILE_DELETE_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR = 'We were unable to delete file from minio',
   FILE_IDS_NOT_FOUND_IN_DB_ERROR = 'File ids not found in db.',
   FILE_MINIO_CHECK_ERROR = 'Error while checking if file exists in minio.',
+  FILE_DELETE_FROM_SCANNER_ERROR = 'File was not successfully deleted from the scanner service',
 }

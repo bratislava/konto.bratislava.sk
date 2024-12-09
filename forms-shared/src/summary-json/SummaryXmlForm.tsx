@@ -1,7 +1,8 @@
-import { FormProps, getDefaultRegistry, ThemeProps, withTheme } from '@rjsf/core'
+import { FormProps, ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
+  FieldProps,
   getTemplate,
   getUiOptions,
   ObjectFieldTemplateProps,
@@ -16,9 +17,11 @@ import React, {
 } from 'react'
 
 import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
-import { ArrayFieldUiOptions, BaWidgetType } from '../generator/uiOptionsTypes'
+import { ArrayFieldUiOptions, BaFieldType, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
-import { baFormDefaults } from '../form-utils/formDefaults'
+import { getBaFormDefaults } from '../form-utils/formDefaults'
+import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
+import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -132,10 +135,7 @@ const ArrayFieldTemplate = ({
 }
 
 const ObjectFieldTemplate = ({ schema, properties, idSchema, title }: ObjectFieldTemplateProps) => {
-  const id = idSchema.$id
-  const splitId = id.split('_')
-  const isFormObject = splitId.length === 1 && splitId[0] === 'root'
-  const isStepObject = splitId.length === 2 && splitId[0] === 'root'
+  const { id, splitId, isFormObject, isStepObject } = getObjectFieldInfo(idSchema)
 
   const content = properties.map((element, index) => (
     <Fragment key={index}>{element.content}</Fragment>
@@ -181,30 +181,17 @@ const theme: ThemeProps = {
     [BaWidgetType.FileUploadMultiple]: wrapWidget(BaWidgetType.FileUploadMultiple),
     [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
     [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
-    [BaWidgetType.CustomComponents]: () => {
-      return null
-    },
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
-    AnyOfField: (props) => {
-      // RJSF renders unnecessary <div>s for MultiSchemaField, which breaks the XML structure.
-      // https://github.com/rjsf-team/react-jsonschema-form/blob/ec932db942dd046640303056c89e3501b16ec469/packages/core/src/components/fields/MultiSchemaField.tsx#L217
-      const options = getUiOptions(props.uiSchema)
-      if (options?.widget === 'CustomComponents') {
-        return null
-      }
-
-      const defaultRegistry = getDefaultRegistry()
-      const DefaultAnyOfField = defaultRegistry.fields.AnyOfField
-
-      return <DefaultAnyOfField {...props} />
-    },
-  },
+    [BaFieldType.CustomComponents]: () => null,
+  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)
 
-type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
+type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'> & {
+  validatorRegistry: BaRjsfValidatorRegistry
+}
 
 /**
  * Generates a summary XML form based on the provided schema, UI schema, and form data.
@@ -214,7 +201,12 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({
+  schema,
+  uiSchema,
+  formData,
+  validatorRegistry,
+}: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
@@ -222,7 +214,7 @@ export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormPro
       formData={formData}
       // RJSF renders the form in <form> tag by default.
       tagName={({ children }: PropsWithChildren) => <>{children}</>}
-      {...baFormDefaults}
+      {...getBaFormDefaults(schema, validatorRegistry)}
     >
       {/* There must be an empty fragment inside the form, otherwise RJSF renders submit button
        * inside the form. */}

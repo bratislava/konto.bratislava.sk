@@ -4,41 +4,47 @@ import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImpo
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
 import { FormSummaryProvider } from './steps/Summary/useFormSummary'
-import { FormContext, FormContextProvider } from './useFormContext'
+import { FormContextProvider, FormServerContext } from './useFormContext'
+import { FormDataProvider } from './useFormData'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
 import { FormRedirectsProvider } from './useFormRedirects'
 import { FormSendProvider } from './useFormSend'
 import { FormStateProvider } from './useFormState'
+import { FormValidatorRegistryProvider } from './useFormValidatorRegistry'
 
 type FormProvidersProps = {
-  formContext: FormContext
+  formServerContext: FormServerContext
 }
 
-const FormProviders = ({ formContext, children }: PropsWithChildren<FormProvidersProps>) => {
+const FormProviders = ({ formServerContext, children }: PropsWithChildren<FormProvidersProps>) => {
   return (
-    <FormContextProvider formContext={formContext}>
-      <FormFileUploadProvider>
-        <FormLeaveProtectionProvider>
-          <FormModalsProvider>
-            <FormSignerLoaderProvider>
-              <FormStateProvider>
-                <FormSignatureProvider>
-                  <FormRedirectsProvider>
-                    <FormSummaryProvider>
-                      <FormSendProvider>
-                        <FormExportImportProvider>{children}</FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormSummaryProvider>
-                  </FormRedirectsProvider>
-                </FormSignatureProvider>
-              </FormStateProvider>
-            </FormSignerLoaderProvider>
-          </FormModalsProvider>
-        </FormLeaveProtectionProvider>
-      </FormFileUploadProvider>
-    </FormContextProvider>
+    <FormValidatorRegistryProvider>
+      <FormContextProvider formServerContext={formServerContext}>
+        <FormFileUploadProvider>
+          <FormLeaveProtectionProvider>
+            <FormModalsProvider>
+              <FormSignerLoaderProvider>
+                <FormDataProvider>
+                  <FormStateProvider>
+                    <FormSignatureProvider>
+                      <FormRedirectsProvider>
+                        <FormSummaryProvider>
+                          <FormSendProvider>
+                            <FormExportImportProvider>{children}</FormExportImportProvider>
+                          </FormSendProvider>
+                        </FormSummaryProvider>
+                      </FormRedirectsProvider>
+                    </FormSignatureProvider>
+                  </FormStateProvider>
+                </FormDataProvider>
+              </FormSignerLoaderProvider>
+            </FormModalsProvider>
+          </FormLeaveProtectionProvider>
+        </FormFileUploadProvider>
+      </FormContextProvider>
+    </FormValidatorRegistryProvider>
   )
 }
 

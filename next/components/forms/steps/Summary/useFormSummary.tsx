@@ -1,4 +1,5 @@
 import { useDeepMemo } from '@react-aria/utils'
+import { useFormData } from 'components/forms/useFormData'
 import {
   FileStatusType,
   isInfectedFileStatusType,
@@ -15,6 +16,7 @@ import { environment } from '../../../../environment'
 import { useFormContext } from '../../useFormContext'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'
+import { useFormValidatorRegistry } from '../../useFormValidatorRegistry'
 
 const memoizedValidateSummary = memoizeOne(validateSummary)
 
@@ -38,7 +40,9 @@ const useGetContext = () => {
       schemas: { schema },
     },
   } = useFormContext()
-  const { formData, currentStepIndex } = useFormState()
+  const { formData } = useFormData()
+  const { currentStepIndex } = useFormState()
+  const validatorRegistry = useFormValidatorRegistry()
 
   const { clientFiles, serverFiles } = useFormFileUpload()
   // Don't use directly!
@@ -65,9 +69,9 @@ const useGetContext = () => {
         throw new Error('getValidatedSummary should never be called on a form step')
       }
 
-      return memoizedValidateSummary(schema, formData, fileInfos)
+      return memoizedValidateSummary(schema, formData, fileInfos, validatorRegistry)
     },
-    [formData, schema, fileInfos, currentStepIndex],
+    [formData, schema, fileInfos, currentStepIndex, validatorRegistry],
   )
 
   const getInfectedFiles = useCreateGetFilesByStatusType(

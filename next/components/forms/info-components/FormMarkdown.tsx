@@ -1,4 +1,3 @@
-import { markdownTextPrefix } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
@@ -17,7 +16,7 @@ function getTaxYear() {
   return today < februaryFirst ? currentYear - 1 : currentYear
 }
 
-type FormMarkdownProps = {
+export type FormMarkdownProps = {
   children: string
   /**
    * By default, the text in markdown is wrapped in a paragraph. In some cases we don't want to create a new paragraph.
@@ -30,78 +29,71 @@ type FormMarkdownProps = {
  * special directives such as `form-image-preview`.
  */
 const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
-  if (children.startsWith(markdownTextPrefix)) {
-    // eslint-disable-next-line security/detect-non-literal-regexp
-    const withoutPrefix = children.replace(new RegExp(`^${markdownTextPrefix}`), '')
-
-    return (
-      <ReactMarkdown
-        remarkPlugins={[remarkSupersub, remarkDirective, remarkDirectiveRehype]}
-        rehypePlugins={[
-          [
-            rehypeSanitize,
-            {
-              tagNames: [
-                'strong',
-                'em',
-                'sub',
-                'sup',
-                'p',
-                'a',
-                'ul',
-                'ol',
-                'li',
-                'form-image-preview',
-                'tax-year',
-                'tax-year-next',
-              ],
-              attributes: {
-                'form-image-preview': ['src'],
-                a: ['href'],
-              },
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkSupersub, remarkDirective, remarkDirectiveRehype]}
+      rehypePlugins={[
+        [
+          rehypeSanitize,
+          {
+            tagNames: [
+              'strong',
+              'em',
+              'sub',
+              'sup',
+              'p',
+              'a',
+              'ul',
+              'ol',
+              'li',
+              'form-image-preview',
+              'tax-year',
+              'tax-year-next',
+            ],
+            attributes: {
+              'form-image-preview': ['src'],
+              a: ['href'],
             },
-          ],
-        ]}
-        components={{
-          // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
-          'form-image-preview': ({ children: childrenInner, node }) => {
-            return (
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
-                {childrenInner}
-              </FormLightboxModal>
-            )
           },
-          a: ({ href, children: childrenInner }) => (
-            <MLinkNew
-              href={href ?? '#'}
-              target={href?.startsWith('http') ? '_blank' : ''}
-              variant="underlined"
-            >
+        ],
+      ]}
+      components={{
+        // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
+        'form-image-preview': ({ children: childrenInner, node }) => {
+          return (
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
               {childrenInner}
-            </MLinkNew>
-          ),
-          ul: ({ children: childrenInner }) => (
-            <ul className="list-disc whitespace-normal pl-8">{childrenInner}</ul>
-          ),
-          ol: ({ children: childrenInner }) => (
-            <ol className="list-decimal  whitespace-normal pl-8">{childrenInner}</ol>
-          ),
-          'tax-year': () => <>{getTaxYear()}</>,
-          'tax-year-next': () => <>{getTaxYear() + 1}</>,
-          ...(pAsSpan
-            ? {
-                p: ({ children: childrenInner }) => <span>{childrenInner}</span>,
-              }
-            : {}),
-        }}
-      >
-        {withoutPrefix}
-      </ReactMarkdown>
-    )
-  }
-
-  return <>{children}</>
+            </FormLightboxModal>
+          )
+        },
+        a: ({ href, children: childrenInner }) => (
+          <MLinkNew
+            href={href ?? '#'}
+            target={href?.startsWith('http') ? '_blank' : ''}
+            variant="underlined"
+          >
+            {childrenInner}
+          </MLinkNew>
+        ),
+        ul: ({ children: childrenInner }) => (
+          <ul className="list-disc whitespace-normal pl-8">{childrenInner}</ul>
+        ),
+        ol: ({ children: childrenInner }) => (
+          <ol className="list-decimal  whitespace-normal pl-8">{childrenInner}</ol>
+        ),
+        'tax-year': () => <>{getTaxYear()}</>,
+        'tax-year-next': () => <>{getTaxYear() + 1}</>,
+        ...(pAsSpan
+          ? {
+              p: ({ children: childrenInner }) => <span>{childrenInner}</span>,
+            }
+          : {}),
+      }}
+    >
+      {children}
+    </ReactMarkdown>
+  )
 }
 
 export default FormMarkdown

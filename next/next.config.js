@@ -2,15 +2,28 @@ const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { join } = require('node:path')
+const fs = require('node:fs')
+const path = require('node:path')
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
+const iframeResizerPublicPath = (() => {
+  const packagePath = path.join(__dirname, './node_modules/@iframe-resizer/child/package.json')
+  const { version } = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+
+  // The path must contain the version so that the browser does not serve the old cached version when the package is updated.
+  return `/scripts/iframe-resizer-child-${version}.js`
+})()
+
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  env: {
+    IFRAME_RESIZER_PUBLIC_PATH: iframeResizerPublicPath,
+  },
   i18n,
   reactStrictMode: true,
   images: {
@@ -116,24 +129,31 @@ const nextConfig = {
       },
     })
 
+    // See `IframeResizerChild.tsx`
     config.plugins.push(
       new CopyWebpackPlugin({
         patterns: [
           {
             from: join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js'),
-            to: join(__dirname, './public/scripts/iframe-resizer-child.js'),
+            to: join(__dirname, 'public', iframeResizerPublicPath),
           },
         ],
       }),
     )
 
-    if (!isServer) {
-      // Prevents `getSummaryJsonNode` from being included, see function description for more info
-      config.resolve.alias['jsdom'] = false
-    }
-
     // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
     config.externals = [...config.externals, { canvas: 'canvas' }]
+
+    // In `forms-shared` we have React, and it acts as a duplicate of the React in the app in local development
+    // (because the package is symlinked).
+    // It causes the error: `You might have more than one copy of React in the same app`.
+    // This is a temporary solution until the packages are installed using npm workspaces.
+    // https://blog.elantha.com/more-than-one-copy-of-react-in-the-same-app/
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+    }
 
     return config
   },

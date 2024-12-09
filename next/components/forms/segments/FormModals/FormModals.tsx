@@ -1,4 +1,5 @@
 import { getUiOptions } from '@rjsf/utils'
+import { useFormData } from 'components/forms/useFormData'
 import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,7 +10,6 @@ import Button from '../../simple-components/ButtonNew'
 import { useFormContext } from '../../useFormContext'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
-import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -73,7 +73,7 @@ const FormModals = () => {
       schemas: { uiSchema },
     },
   } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const uiOptions = getUiOptions(uiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
@@ -476,22 +476,12 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
-          variant="black-plain"
+          variant="black-solid"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
-        </Button>,
-        <Button
-          variant="black-solid"
-          size="small"
-          onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
-          fullWidthMobile
-          isLoading={sendEidPending}
-          isLoadingText={t('eid_send_error_modal.button_title_loading')}
-        >
-          {t('eid_send_error_modal.button_title')}
         </Button>,
       ],
       isDismissable: !sendEidPending,
@@ -566,9 +556,11 @@ const FormModals = () => {
         onOpenChange={setIdentityVerificationModal}
         accountType={accountType}
       />
-      {messageModals.map((modalProps) => (
-        <MessageModal {...modalProps} />
-      ))}
+      {messageModals.map((modalProps) => {
+        // To avoid "A props object containing a "key" prop is being spread into JSX" error
+        const { key, ...restModalProps } = modalProps
+        return <MessageModal key={key} {...restModalProps} />
+      })}
     </>
   )
 }

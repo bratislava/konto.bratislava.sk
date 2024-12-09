@@ -42,7 +42,7 @@ const AccountSuccessAlert = ({
         variant="category"
         text={confirmLabel}
         loading={confirmIsLoading}
-        data-cy={`${confirmLabel.replaceAll(" ", "-").toLowerCase()}-button`}
+        data-cy={`${confirmLabel.replaceAll(' ', '-').toLowerCase()}-button`}
       />
       {onCancel && (
         <Button

@@ -1,12 +1,5 @@
-import {
-  conditionalFields,
-  fileUpload,
-  markdownText,
-  object,
-  radioGroup,
-  step,
-} from '../../generator/functions'
-import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
+import { conditionalFields, fileUpload, object, radioGroup, step } from '../../generator/functions'
+import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
 import { danovnik, splnomocnenec } from './osoby'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
@@ -16,11 +9,11 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       type: 'boolean',
       title: 'Podávate priznanie k dani z nehnuteľností vo svojom mene?',
       required: true,
-      options: [
-        { value: true, title: 'Áno', isDefault: true },
+      items: [
+        { value: true, label: 'Áno', isDefault: true },
         {
           value: false,
-          title: 'Nie',
+          label: 'Nie',
           description:
             'Označte v prípade, že podávate priznanie k dani z nehnuteľností ako oprávnená osoba na základe napr. plnej moci alebo ako zákonný zástupca.',
         },
@@ -43,9 +36,9 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
           { title: 'Nahrajte splnomocnenie', multiple: true },
           {
             type: 'dragAndDrop',
-            helptext: markdownText(
+            helptextFooter:
               'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.',
-            ),
+            helptextFooterMarkdown: true,
           },
         ),
         radioGroup(
@@ -54,10 +47,10 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
             type: 'string',
             title: 'Podávate ako oprávnená osoba (splnomocnenec)',
             required: true,
-            options: createCamelCaseOptionsV2([
-              { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
+            items: createCamelCaseItemsV2([
+              { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
               {
-                title: 'Právnicka osoba',
+                label: 'Právnicka osoba',
                 description:
                   'Organizácia osôb alebo majetku vytvorená na určitý účel (napr. podnikanie).',
               },
@@ -75,11 +68,11 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       type: 'string',
       title: 'Podávate priznanie ako',
       required: true,
-      options: createCamelCaseOptionsV2([
-        { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
-        { title: 'Fyzická osoba podnikateľ', description: 'SZČO alebo živnostník.' },
+      items: createCamelCaseItemsV2([
+        { label: 'Fyzická osoba', description: 'Občan SR alebo cudzinec.' },
+        { label: 'Fyzická osoba podnikateľ', description: 'SZČO alebo živnostník.' },
         {
-          title: 'Právnicka osoba',
+          label: 'Právnicka osoba',
           description:
             'Organizácia osôb alebo majetku vytvorená na určitý účel (napr. podnikanie).',
         },

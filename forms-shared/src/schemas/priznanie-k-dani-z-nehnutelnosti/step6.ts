@@ -4,7 +4,6 @@ import {
   customComponentsField,
   datePicker,
   input,
-  markdownText,
   number,
   object,
   radioGroup,
@@ -45,9 +44,8 @@ const vymeraPodlahovejPlochyBytu = number(
     minimum: 0,
   },
   {
-    helptext: markdownText(
-      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
-    ),
+    helptextFooter: 'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+    helptextFooterMarkdown: true,
   },
 )
 
@@ -64,14 +62,15 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
       minimum: 0,
     },
     {
-      helptext:
+      helptextFooter:
         'Ak má číslo za lomkou vo vašom podiele priestoru na spoločných častiach hodnotu, napríklad, 1 000, 10 000, alebo 100 000, údaj z listu vlastníctva vám nepomôže. Správne údaje o podlahovej ploche nájdete v kúpnej zmluve alebo znaleckom posudku (celková podlahová plocha okrem balkónov, lodžií a terás).',
     },
   )
 
 const vymeraKalkulacka = customComponentsField(
+  'vymeraKalkulacka',
   {
-    type: 'propertyTaxCalculator',
+    type: 'calculator',
     props: {
       variant: 'black',
       calculators: [
@@ -86,7 +85,8 @@ const vymeraKalkulacka = customComponentsField(
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
             '- Spoluvlastnícky podiel',
-          unit: markdownText('m^2^'),
+          unit: 'm^2^',
+          unitMarkdown: true,
         },
       ],
     },
@@ -98,31 +98,31 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
   input(
     'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
     {
+      type: 'ba-ratio',
       title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
       required: true,
-      format: 'ba-ratio',
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
-      helptext: markdownText(
+      helptextFooter:
         typ === Typ.Byt
           ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}'
           : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
-      ),
+      helptextFooterMarkdown: true,
     },
   )
 
 const spoluvlastnickyPodiel = (typ: Typ) =>
   input(
     'spoluvlastnickyPodiel',
-    { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
+    { type: 'ba-ratio', title: 'Spoluvlastnícky podiel', required: true },
     {
       placeholder: 'Napr. 1/150',
-      helptext: markdownText(
+      helptextFooter:
         typ === Typ.Byt
           ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}'
           : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
-      ),
+      helptextFooterMarkdown: true,
     },
   )
 
@@ -135,7 +135,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
     minimum: 0,
   },
   {
-    helptext: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49).',
+    helptextFooter: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49).',
   },
 )
 
@@ -167,9 +167,9 @@ const innerArray = (kalkulacka: boolean) =>
               type: 'boolean',
               title: 'Podávate priznanie za byt?',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: false },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: false },
               ],
             },
             {
@@ -179,11 +179,11 @@ const innerArray = (kalkulacka: boolean) =>
             },
           ),
           conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
-            input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+            input('cisloBytu', { type: 'text', title: 'Číslo bytu', required: true }, {}),
             input(
               'popisBytu',
-              { title: 'Popis bytu' },
-              { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
+              { type: 'text', title: 'Popis bytu' },
+              { helptextFooter: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
             ),
             kalkulacka
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)
@@ -206,7 +206,7 @@ const innerArray = (kalkulacka: boolean) =>
                 minimum: 0,
               },
               {
-                helptext:
+                helptextFooter:
                   'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
               },
             ),
@@ -222,7 +222,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'datumVznikuDanovejPovinnosti',
                   { title: 'Dátum vzniku daňovej povinnosti' },
                   {
-                    helptext:
+                    helptextFooter:
                       'Vypĺňate len v prípade, ak ste byt zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
                   },
                 ),
@@ -230,7 +230,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'datumZanikuDanovejPovinnosti',
                   { title: 'Dátum zániku daňovej povinnosti' },
                   {
-                    helptext:
+                    helptextFooter:
                       'Vypĺňate len v prípade, ak ste byt predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
                   },
                 ),
@@ -253,9 +253,9 @@ const innerArray = (kalkulacka: boolean) =>
               title:
                 'Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?',
               required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
+              items: [
+                { value: true, label: 'Áno' },
+                { value: false, label: 'Nie', isDefault: true },
               ],
             },
             {
@@ -288,20 +288,25 @@ const innerArray = (kalkulacka: boolean) =>
                     input(
                       'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
                       {
+                        type: 'text',
                         title: 'Účel využitia nebytového priestoru v bytovom dome',
                         required: true,
                       },
                       {
-                        helptext: 'Napr. garážovanie, skladovanie, podnikanie alebo iné.',
+                        helptextFooter: 'Napr. garážovanie, skladovanie, podnikanie alebo iné.',
                       },
                     ),
                     input(
                       'cisloNebytovehoPriestoruVBytovomDome',
-                      { title: 'Číslo nebytového priestoru v bytovom dome', required: true },
                       {
-                        helptext: markdownText(
+                        type: 'text',
+                        title: 'Číslo nebytového priestoru v bytovom dome',
+                        required: true,
+                      },
+                      {
+                        helptextFooter:
                           'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
-                        ),
+                        helptextFooterMarkdown: true,
                       },
                     ),
                   ],
@@ -335,7 +340,7 @@ const innerArray = (kalkulacka: boolean) =>
                       'datumVznikuDanovejPovinnosti',
                       { title: 'Dátum vzniku daňovej povinnosti' },
                       {
-                        helptext:
+                        helptextFooter:
                           'Vypĺňate len v prípade, ak ste nebytový priestor zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
                       },
                     ),
@@ -343,7 +348,7 @@ const innerArray = (kalkulacka: boolean) =>
                       'datumZanikuDanovejPovinnosti',
                       { title: 'Dátum zániku daňovej povinnosti' },
                       {
-                        helptext:
+                        helptextFooter:
                           'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
                       },
                     ),
@@ -356,7 +361,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       input(
         'poznamka',
-        { title: 'Poznámka' },
+        { type: 'text', title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],
@@ -370,12 +375,11 @@ export default step(
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?',
-    helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}`,
-    ),
+    helptext: `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o tú časť LV, kde máte nadpis “Byty a nebytové priestory” v časti “ČASŤ B: VLASTNÍCI A INÉ OPRÁVNENÉ OSOBY Z PRÁVA K NEHNUTEĽNOSTI”.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_priznanie_f168d61548.png"}`,
+    helptextMarkdown: true,
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery podlahových plôch bytov a nebytových priestorov',
-      helptextHeader:
+      helptext:
         'Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch',
       inner: innerArray,

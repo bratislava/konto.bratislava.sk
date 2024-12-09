@@ -25,7 +25,9 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     size,
     labelSize,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     displayOptionalLabel,
   } = props
   const state: CheckboxGroupState = useCheckboxGroupState(props)
@@ -46,7 +48,9 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         size={size}
         labelSize={labelSize}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         customHeaderBottomMargin="mb-4"
         displayOptionalLabel={displayOptionalLabel}
       >

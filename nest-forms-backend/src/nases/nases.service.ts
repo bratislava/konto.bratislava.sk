@@ -1,14 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { FormOwnerType, Forms, FormState } from '@prisma/client'
+import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
-import { isUserVerified } from '../common/utils/helpers'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import {
   FormsErrorsEnum,
@@ -20,6 +19,7 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
@@ -56,6 +56,7 @@ export default class NasesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('NasesService')
   }
@@ -273,8 +274,8 @@ export default class NasesService {
 
   async sendForm(
     id: string,
-    userInfo: ResponseGdprDataDto,
-    user: CognitoGetUserData,
+    userInfo?: ResponseGdprDataDto,
+    user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
@@ -285,20 +286,34 @@ export default class NasesService {
       )
     }
 
-    if (!isUserVerified(user)) {
+    if (
+      !formDefinition.allowSendingUnauthenticatedUsers &&
+      !this.isUserVerified(user)
+    ) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.SEND_UNVERIFIED,
         NasesErrorsResponseEnum.SEND_UNVERIFIED,
       )
     }
 
-    if (!this.formsHelper.userCanSendForm(form, userInfo, user.sub)) {
+    if (
+      !this.formsHelper.userCanSendForm(
+        form,
+        formDefinition.allowSendingUnauthenticatedUsers ?? false,
+        userInfo,
+        user?.sub,
+      )
+    ) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
-    const validationResult = baRjsfValidator.validateFormData(
+
+    const validator = this.formValidatorRegistryService
+      .getRegistry()
+      .getValidator(formDefinition.schemas.schema)
+    const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
     )
@@ -322,8 +337,8 @@ export default class NasesService {
           formId: form.id,
           tries: 0,
           userData: {
-            email: user.email || null,
-            firstName: user.given_name || null,
+            email: user?.email || null,
+            firstName: user?.given_name || null,
           },
         },
         10_000,
@@ -387,7 +402,10 @@ export default class NasesService {
       )
     }
 
-    const validationResult = baRjsfValidator.validateFormData(
+    const validator = this.formValidatorRegistryService
+      .getRegistry()
+      .getValidator(formDefinition.schemas.schema)
+    const validationResult = validator.validateFormData(
       form.formDataJson,
       formDefinition.schemas.schema,
     )
@@ -429,7 +447,7 @@ export default class NasesService {
     }
 
     // Send to nases
-    await this.nasesConsumerService.sendToNasesAndUpdateState(
+    const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
       jwt,
       form,
       data,
@@ -437,7 +455,20 @@ export default class NasesService {
       user.sub,
     )
 
-    if (!isUserVerified(cognitoUser)) {
+    if (!isSent) {
+      // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function
+      await this.formsService.updateForm(data.formId, {
+        state: FormState.DRAFT,
+        error: FormError.NASES_SEND_ERROR,
+      })
+
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.SEND_TO_NASES_ERROR,
+        NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
+      )
+    }
+
+    if (!this.isUserVerified(cognitoUser)) {
       await verifyUserByEidToken(oboToken, this.logger, bearerToken)
     }
 
@@ -471,5 +502,13 @@ export default class NasesService {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(formId)
     return formAttachmentsReady.filesReady
+  }
+
+  private isUserVerified(user?: CognitoGetUserData): boolean {
+    if (!user) return false
+    return (
+      user['custom:tier'] === Tier.IDENTITY_CARD ||
+      user['custom:tier'] === Tier.EID
+    )
   }
 }

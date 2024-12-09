@@ -1,12 +1,14 @@
 import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
-import { getEmbeddedFormsAllowedOrigins } from '../../../frontend/utils/embeddedFormsAllowedOrigins'
+import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+import type { GlobalAppProps } from '../../_app'
 
 type Params = {
   slug: string
@@ -15,48 +17,47 @@ type Params = {
 /**
  * A route to preview forms in `forms-shared` folder. Backend functionality doesn't work. Works only in development.
  */
-export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps, Params>(
-  async ({ context }) => {
-    if (!environment.featureToggles.developmentForms || !context.params) {
-      return { notFound: true }
-    }
+export const getServerSideProps = amplifyGetServerSideProps<
+  FormPageWrapperProps & GlobalAppProps,
+  Params
+>(async ({ context }) => {
+  if (!environment.featureToggles.developmentForms || !context.params) {
+    return { notFound: true }
+  }
 
-    const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlugDev(slug)
-    if (!formDefinition) {
-      return { notFound: true }
-    }
+  const { slug } = context.params
+  const formDefinition = getFormDefinitionBySlugDev(slug)
+  if (!formDefinition) {
+    return { notFound: true }
+  }
 
-    const isEmbeddedQueryParam = context.query['externa-sluzba'] === 'true'
+  const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+    formDefinition,
+    context,
+  )
+  if (!embeddedSuccess) {
+    return { notFound: true }
+  }
 
-    if (isEmbeddedQueryParam) {
-      const allowedOrigins = getEmbeddedFormsAllowedOrigins(formDefinition)
-      if (!allowedOrigins) {
-        return { notFound: true }
-      }
-
-      context.res.setHeader(
-        'Content-Security-Policy',
-        `frame-ancestors ${allowedOrigins.join(' ')}`,
-      )
-    }
-
-    return {
-      props: {
-        formContext: {
-          formDefinition,
-          formId: '',
-          initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
-          initialServerFiles: [],
-          formSent: false,
-          formMigrationRequired: false,
-          isEmbedded: isEmbeddedQueryParam,
-          isDevRoute: true,
-        },
-        ...(await slovakServerSideTranslations()),
-      } satisfies FormPageWrapperProps,
-    }
-  },
-)
+  return {
+    props: {
+      formServerContext: {
+        formDefinition: makeSerializableFormDefinition(formDefinition),
+        formId: '',
+        initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
+        initialServerFiles: [],
+        formSent: false,
+        formMigrationRequired: false,
+        isEmbedded,
+        isDevRoute: true,
+        strapiForm: { slug },
+      },
+      appProps: {
+        externallyEmbedded: isEmbedded,
+      },
+      ...(await slovakServerSideTranslations()),
+    },
+  }
+})
 
 export default SsrAuthProviderHOC(FormPageWrapper)

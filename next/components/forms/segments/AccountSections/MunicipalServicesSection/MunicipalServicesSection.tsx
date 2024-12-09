@@ -24,6 +24,11 @@ const enumOptions: SelectOption[] = [
     description: '',
   },
   {
+    value: 'SOCIAL_SERVICES_CATEGORY',
+    label: MunicipalServicesCategories.SOCIAL_SERVICES_CATEGORY,
+    description: '',
+  },
+  {
     value: 'ENVIROMENTS_CATEGORY',
     label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY,
     description: '',
@@ -54,11 +59,12 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
-  32, 9, 19, 34, 35, 43, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 33, 17, 20, 21, 22, 23, 24, 25,
-  29, 26, 27, 28, 18,
+  44, 9, 19, 34, 35, 43, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 33, 17, 20, 21, 22, 23, 24, 25,
+  29, 26, 27, 28, 32, 18,
 ]
 const poMunicipalServicesSection = [
-  34, 35, 32, 3, 4, 6, 43, 1, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39, 28, 14, 40, 41, 18,
+  34, 35, 44, 3, 4, 6, 43, 1, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39, 28, 14, 40, 41, 32,
+  18,
 ]
 
 const MunicipalServicesSection = () => {

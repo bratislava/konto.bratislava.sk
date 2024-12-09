@@ -1,23 +1,28 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, Logger, StreamableFile } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
-import * as cheerio from 'cheerio'
+import { Forms, Prisma } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
 import {
   FormDefinition,
+  FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import {
+  extractJsonFromSlovenskoSkXml,
+  ExtractJsonFromSlovenskoSkXmlError,
+} from 'forms-shared/slovensko-sk/extractJson'
+import { generateSlovenskoSkXmlObject } from 'forms-shared/slovensko-sk/generateXml'
+import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
-import { parseStringPromise } from 'xml2js'
-import { firstCharLowerCase } from 'xml2js/lib/processors'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -28,32 +33,85 @@ import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { JsonSchema } from '../utils/types/global'
+import { FormWithFiles } from '../utils/types/prisma'
+import { patchConvertServiceTaxFormDefinition } from './convert.helper'
 import {
   ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
+  XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
+import { extractJsonErrorMapping } from './errors/convert.errors.dto'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from './errors/convert.errors.enum'
-import createXmlTemplate from './utils-services/createXmlTemplate'
-import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()
 export default class ConvertService {
   private readonly logger: Logger
 
   constructor(
-    private readonly jsonXmlService: JsonXmlConvertService,
     private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new Logger('ConvertService')
+  }
+
+  private async convertJsonToXmlObject(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
+    formDataJson: Prisma.JsonValue,
+  ): Promise<GenericObjectType> {
+    // Find a better way how to get the form with files
+    const formWithFiles = (await this.prismaService.forms.findUnique({
+      where: {
+        id: form.id,
+      },
+      include: {
+        files: true,
+      },
+    })) as FormWithFiles
+
+    return generateSlovenskoSkXmlObject(
+      isSlovenskoSkTaxFormDefinition(formDefinition)
+        ? patchConvertServiceTaxFormDefinition(formDefinition)
+        : formDefinition,
+      formDataJson as GenericObjectType,
+      this.formValidatorRegistryService.getRegistry(),
+      formWithFiles.files,
+    )
+  }
+
+  /**
+   * Do not use directly for user facing endpoints as this bypasses the access check in `convertJsonToXmlObjectNewGovernment`.
+   *
+   * TODO: Pass files to the function instead
+   */
+  async convertJsonToXmlObjectForForm(
+    form: Forms,
+    formDataJsonOverride?: Prisma.JsonValue,
+  ): Promise<GenericObjectType> {
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (formDefinition === null) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+      )
+    }
+    const formDataJson = formDataJsonOverride ?? form.formDataJson
+
+    return this.convertJsonToXmlObject(form, formDefinition, formDataJson)
   }
 
   async convertJsonToXmlV2(
@@ -61,84 +119,68 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(data.slug)
-    if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
-      )
-    }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,
-      )
-    }
-
-    let jsonFormData = data.jsonData
-    if (jsonFormData === undefined) {
-      if (data.formId === undefined) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.FORM_ID_MISSING,
-          ConvertErrorsResponseEnum.FORM_ID_MISSING,
-        )
-      }
-
-      const form = await this.formsService.getFormWithAccessCheck(
-        data.formId,
-        user?.sub ?? null,
-        ico,
-      )
-      jsonFormData = form.formDataJson
-    }
-
-    const xmlTemplate = createXmlTemplate(formDefinition)
-    const $ = cheerio.load(xmlTemplate, {
-      xmlMode: true,
-      decodeEntities: false,
-    })
-    this.jsonXmlService.buildXmlRecursive(
-      ['E-form', 'Body'],
-      $,
-      jsonFormData,
-      formDefinition.schemas.schema as JsonSchema,
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user?.sub ?? null,
+      ico,
     )
-    return $('E-form').prop('outerHTML') ?? ''
+
+    const xmlObject = await this.convertJsonToXmlObjectForForm(
+      form,
+      data.jsonData,
+    )
+    return buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })
   }
 
   async convertXmlToJson(
-    xmlData: string,
-    formDefinitionSlug: string,
+    data: XmlToJsonRequestDto,
+    ico: string | null,
+    user?: CognitoGetUserData,
   ): Promise<XmlToJsonResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(formDefinitionSlug)
+    const form = await this.formsService.getFormWithAccessCheck(
+      data.formId,
+      user?.sub ?? null,
+      ico,
+    )
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
 
-    // xml2js has issues when top level element isn't a single node
-    const wrappedXmlString = `<wrapper>${xmlData}</wrapper>`
-    const obj: { wrapper: GenericObjectType } = (await parseStringPromise(
-      wrappedXmlString,
-      {
-        tagNameProcessors: [firstCharLowerCase],
-      },
-    )) as { wrapper: GenericObjectType }
-    const body: RJSFSchema = (
-      obj.wrapper['e-form']
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          obj.wrapper['e-form'][0].body[0]
-        : obj.wrapper
-    ) as RJSFSchema
-    this.jsonXmlService.removeNeedlessXmlTransformArraysRecursive(
-      body,
-      [],
-      formDefinition.schemas.schema as JsonSchema,
-    )
-    return {
-      jsonForm: body,
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+      )
+    }
+
+    try {
+      const jsonForm = await extractJsonFromSlovenskoSkXml(
+        isSlovenskoSkTaxFormDefinition(formDefinition)
+          ? patchConvertServiceTaxFormDefinition(formDefinition)
+          : formDefinition,
+        data.xmlForm,
+      )
+      return { jsonForm }
+    } catch (error) {
+      if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
+        const { error: errorEnum, message: errorMessage } =
+          extractJsonErrorMapping[error.type]
+        throw this.throwerErrorGuard.BadRequestException(
+          // eslint-disable-next-line custom-rules/thrower-error-guard-enum
+          errorEnum,
+          errorMessage,
+        )
+      } else {
+        this.logger.error(
+          `Unexpected error during XML to JSON conversion: ${error}`,
+        )
+        throw error
+      }
     }
   }
 
@@ -167,6 +209,10 @@ export default class ConvertService {
     formId: string,
     formDefinition: FormDefinition,
     clientFiles?: ClientFileInfo[],
+    /**
+     * If true, the summary PDF instead of government sheet will be generated for tax form.
+     */
+    forceSummaryPdfForTaxForm?: boolean,
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
       where: {
@@ -183,19 +229,22 @@ export default class ConvertService {
       )
     }
 
-    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
+    if (
+      isSlovenskoSkTaxFormDefinition(formDefinition) &&
+      !forceSummaryPdfForTaxForm
+    ) {
       return this.generateTaxPdf(jsonForm, formId)
     }
 
     let pdfBuffer: Buffer
     try {
       pdfBuffer = await renderSummaryPdf({
-        jsonSchema: formDefinition.schemas.schema,
-        uiSchema: formDefinition.schemas.uiSchema,
+        formDefinition,
         formData: jsonForm as GenericObjectType,
         launchBrowser: () => chromium.launch(),
         clientFiles,
         serverFiles: form.files,
+        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       })
     } catch (error) {
       this.logger.error(`Error during generating PDF: ${<string>error}`)

@@ -10,7 +10,6 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
 import {
@@ -23,9 +22,11 @@ import {
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
 import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
+import { useFormData } from './useFormData'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
+import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const useGetContext = () => {
   const {
@@ -33,16 +34,19 @@ const useGetContext = () => {
       schemas: { schema, uiSchema },
     },
     formMigrationRequired,
-    initialFormDataJson,
     isReadonly,
   } = useFormContext()
+  const { formData, setFormData } = useFormData()
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
+  const validatorRegistry = useFormValidatorRegistry()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
-  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
+  const stepsSchemas = useMemo(
+    () => getEvaluatedStepsSchemas(schema, formData, validatorRegistry),
+    [schema, formData, validatorRegistry],
+  )
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -108,7 +112,11 @@ const useGetContext = () => {
     // existing data, as each step contains only one root property with the data this object spread
     // will overwrite the existing step data with the new ones, which is an expected behaviour.
     const newData = { ...formData, ...stepFormData }
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, newData)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(
+      schema,
+      newData,
+      validatorRegistry,
+    )
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     keepFiles(fileUuids)
@@ -121,9 +129,13 @@ const useGetContext = () => {
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(
+      schema,
+      importedFormData,
+      validatorRegistry,
+    )
 
-    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData, validatorRegistry)
     const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema)
 
     if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
@@ -144,7 +156,12 @@ const useGetContext = () => {
     // missing step in errorSummary === no error on the step
     // we treat errorless steps as "complete"
     const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
-    const { errorSchema } = validateSummary(schema, pickedPropertiesData, fileInfos)
+    const { errorSchema } = validateSummary(
+      schema,
+      pickedPropertiesData,
+      fileInfos,
+      validatorRegistry,
+    )
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {
@@ -205,8 +222,6 @@ const useGetContext = () => {
   }
 
   return {
-    formData,
-    formDataRef,
     currentStepIndex,
     submittedStepsIndexes,
     stepperData,
@@ -225,7 +240,9 @@ const useGetContext = () => {
   }
 }
 
-const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormStateProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

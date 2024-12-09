@@ -48,7 +48,7 @@ The generator is a simple TypeScript application. To create a new form, add a de
 To generate all schemas:
 
 ```bash
-  npm run generate:all
+  npm run generate-slovensko-sk
 ```
 
 for a single schema, for example:

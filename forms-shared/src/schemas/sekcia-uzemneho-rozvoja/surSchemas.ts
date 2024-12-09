@@ -8,7 +8,7 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 
 const ziadatelInvestorFields = [
@@ -18,31 +18,27 @@ const ziadatelInvestorFields = [
       type: 'string',
       title: 'Žiadate ako',
       required: true,
-      options: createStringOptions([
-        'Fyzická osoba',
-        'Fyzická osoba – podnikateľ',
-        'Právnická osoba',
-      ]),
+      items: createStringItems(['Fyzická osoba', 'Fyzická osoba – podnikateľ', 'Právnická osoba']),
     },
     { variant: 'boxed' },
   ),
   conditionalFields(
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
-      input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
       sharedAddressField('adresa', 'Korešpondenčná adresa', true),
     ],
-    [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
+    [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
     sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    input('ico', { title: 'IČO', required: true }, {}),
+    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
     sharedAddressField('adresaSidla', 'Adresa sídla', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
+    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
   sharedPhoneNumberField('telefon', true),
@@ -56,9 +52,6 @@ export const getSurSchema = (zavazne: boolean) =>
         : 'Žiadosť o stanovisko k investičnému zámeru',
     },
     {
-      moreInformationUrl: zavazne
-        ? 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti'
-        : 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
       titlePath: 'stavba.nazov',
       titleFallback: 'Názov stavby/projektu',
     },
@@ -71,9 +64,9 @@ export const getSurSchema = (zavazne: boolean) =>
             type: 'boolean',
             title: 'Je investor rovnaká osoba ako žiadateľ?',
             required: true,
-            options: [
-              { value: true, title: 'Áno', isDefault: true },
-              { value: false, title: 'Nie' },
+            items: [
+              { value: true, label: 'Áno', isDefault: true },
+              { value: false, label: 'Nie' },
             ],
           },
           {
@@ -94,12 +87,12 @@ export const getSurSchema = (zavazne: boolean) =>
         ]),
       ]),
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-        input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+        input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
         sharedPhoneNumberField('projektantTelefon', true),
         input(
           'autorizacneOsvedcenie',
-          { title: 'Číslo autorizačného osvedčenia', required: true },
+          { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
           {
             helptext:
               'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.',
@@ -113,13 +106,13 @@ export const getSurSchema = (zavazne: boolean) =>
         ),
       ]),
       step('stavba', { title: 'Informácie o stavbe' }, [
-        input('nazov', { title: 'Názov stavby/projektu', required: true }, {}),
+        input('nazov', { type: 'text', title: 'Názov stavby/projektu', required: true }, {}),
         radioGroup(
           'druhStavby',
           {
             type: 'string',
             title: 'Druh stavby',
-            options: createStringOptions([
+            items: createStringItems([
               'Bytový dom',
               'Rodinný dom',
               'Iná budova na bývanie',
@@ -131,15 +124,19 @@ export const getSurSchema = (zavazne: boolean) =>
           },
           { variant: 'boxed' },
         ),
-        input('ulica', { title: 'Ulica', required: true }, { size: 'medium' }),
-        input('supisneCislo', { title: 'Súpisné číslo' }, { size: 'medium' }),
-        input('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'medium' }),
+        input('ulica', { type: 'text', title: 'Ulica', required: true }, { size: 'medium' }),
+        input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, { size: 'medium' }),
+        input(
+          'parcelneCislo',
+          { type: 'text', title: 'Parcelné číslo', required: true },
+          { size: 'medium' },
+        ),
         selectMultiple(
           'kataster',
           {
             title: 'Katastrálne územie',
             required: true,
-            options: createStringOptions(
+            items: createStringItems(
               [
                 'Čunovo',
                 'Devín',
@@ -180,7 +177,7 @@ export const getSurSchema = (zavazne: boolean) =>
                 {
                   type: 'string',
                   title: 'Typ konania',
-                  options: createStringOptions([
+                  items: createStringItems([
                     'Územné konanie',
                     'Územné konanie spojené so stavebným konaním',
                     'Zmena stavby pred dokončením',
@@ -199,7 +196,7 @@ export const getSurSchema = (zavazne: boolean) =>
                     {
                       type: 'string',
                       title: 'Upresnenie konania',
-                      options: createStringOptions([
+                      items: createStringItems([
                         'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
                         'Dodatočné povolenie zmeny stavby pred dokončením',
                       ]),

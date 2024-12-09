@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 
 import ConvertModule from '../convert/convert.module'
-import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesHelper from '../files/files.helper'
 import FilesModule from '../files/files.module'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import NasesConsumerModule from '../nases-consumer/nases-consumer.module'
@@ -29,12 +29,12 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     ConvertModule,
     TaxModule,
     ConvertPdfModule,
+    FormValidatorRegistryModule,
   ],
   providers: [
     NasesService,
     NasesUtilsService,
     ThrowerErrorGuard,
-    JsonXmlConvertService,
     FormsHelper,
     FilesService,
     FilesHelper,

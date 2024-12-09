@@ -12,14 +12,15 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useIsClient, useIsMounted } from 'usehooks-ts'
+import { useIsSSR } from 'react-aria'
+import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
+import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
 import { useFormModals } from '../useFormModals'
-import { useFormState } from '../useFormState'
 import { SignerErrorType } from './mapDitecError'
 // kept while it might be usefull for local testing
 // import { signerExamplePayload } from './signerExamplePayload'
@@ -43,8 +44,8 @@ declare global {
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
-  const { isSigned, initialSignature } = useFormContext()
-  const { formData, formDataRef } = useFormState()
+  const { formId, isSigned, initialSignature, formDefinition } = useFormContext()
+  const { formData, formDataRef } = useFormData()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {
@@ -66,7 +67,7 @@ const useGetContext = () => {
   const isMounted = useIsMounted()
 
   const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
-  const isClient = useIsClient()
+  const isSSR = useIsSSR()
 
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
@@ -75,11 +76,11 @@ const useGetContext = () => {
 
   useEffect(() => {
     // Dev only debugging feature
-    if (isClient) {
+    if (!isSSR) {
       // eslint-disable-next-line no-underscore-dangle
       window.__DEV_SHOW_SIGNATURE = () => setShowSignatureInConsole(true)
     }
-  }, [isClient, setShowSignatureInConsole])
+  }, [isSSR, setShowSignatureInConsole])
 
   const signData = async (
     formDataRequest: GenericObjectType,
@@ -110,7 +111,10 @@ const useGetContext = () => {
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
-      formsApi.taxControllerSignerData({ jsonForm: formDataRequest }),
+      formsApi.taxControllerSignerData(formDefinition.slug, {
+        formId,
+        jsonForm: formDataRequest,
+      }),
     networkMode: 'always',
     onSuccess: (response, formDataRequest) => {
       // This is not awaited on purpose, because it would make the mutation pending.

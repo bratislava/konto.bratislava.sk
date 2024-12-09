@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Pipelines Version
         run: |
@@ -30,7 +32,7 @@ jobs:
 
       - name: Build Docker image on test target
         run: |
-          docker build -t test .
+          docker build --target test -t test .
 
       - name: Run tests
         run: |

@@ -55,25 +55,23 @@ export default class FormsHelper {
 
   userCanSendForm(
     form: Forms,
-    userInfo: ResponseGdprDataDto,
+    allowSendingUnauthenticatedUsers: boolean,
+    userInfo?: ResponseGdprDataDto,
     userSub?: string,
   ): boolean {
-    // If user is not provided return false.
-    if (!userSub) {
-      return false
-    }
-    // if file is not owned by anyone, it can't be sent
-    if (form.userExternalId === null) {
-      return false
-    }
-
     // If owned by company, it must have the same ICO
-    if (form.ico !== null) {
-      return form.ico === userInfo.ico
+    if (form.ico != null) {
+      return form.ico === userInfo?.ico
     }
 
-    // Can be sent if uri is set and also it is the logged in user's form.
-    return form.userExternalId === userSub
+    // If owned by user, it must have the same user sub
+    if (form.userExternalId != null) {
+      return form.userExternalId === userSub
+    }
+
+    // If not owned, return allowSendingUnauthenticatedUsers
+    // (If the form is only for authenticated users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
+    return allowSendingUnauthenticatedUsers
   }
 
   userCanSendFormEid(
@@ -92,6 +90,15 @@ export default class FormsHelper {
 
     // If no uri is assigned, allow
     if (form.mainUri === null && form.actorUri === null) return true
+
+    // TODO setup and use config module
+    // we can't login into fix slovensko.sk with the id cards we're signing the form with, so the check for uris would never match
+    // this should only happen on non-production environments
+    if (
+      process.env.SLOVENSKO_SK_CONTAINER_URI ===
+      'https://fix.slovensko-sk-api.bratislava.sk'
+    )
+      return true
 
     // The uri from token must match the uri of the form
     return mainUri === form.mainUri && actorUri === form.actorUri

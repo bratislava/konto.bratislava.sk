@@ -1,0 +1,2398 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`slovenskoSkForm komunitne-zahrady schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm komunitneZahradyExample XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"obcianskeZdruzenie":{"nazovObcianskehoZdruzenia":"Zelená Bratislava","ico":"12345678","adresaSidla":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}},"statutar":{"menoStatutara":"Marta","priezviskoStatutara":"Nováková"}},"pozemok":{"typPozemku":"predschvalenyPozemok","predschvalenyPozemokVyber":"Azalková"},"zahrada":{"dovodyZalozenia":"Priestor je v súčasnosti nevyužívaný a zanedbaný. Komunitná záhrada by poskytla miesto pre miestnych obyvateľov na pestovanie rastlín a stretávanie sa.","suhlasKomunity":"Získali sme podporu od miestnych obyvateľov prostredníctvom petície a verejných stretnutí.","organizacnyTim":"Tím bude pozostávať z miestnych dobrovoľníkov, ktorí sa budú starať o záhradu a organizovať komunitné aktivity.","prevadzka":"Údržbu zelene budú zabezpečovať dobrovoľníci. Odpad bude separovaný a recyklovaný, pričom sa budeme snažiť o zero-waste režim.","inkluzivnost":"Projekt bude otvorený pre všetkých miestnych obyvateľov. Záujemcovia o záhradkárčenie budú vybraní na základe transparentného procesu.","financovanie":"Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje."},"prilohyPredschvalenyPozemok":{"umiestnenie":"ace1a8c2-f96e-4583-bdf9-64233b582572","dizajn":"27766841-1f8f-4daa-b6e9-df826b294ae0","fotografie":"7510f8c5-c777-4426-8166-90f253eb0738","ine":"1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0"}}</Json>
+  <Summary>
+    <Form title="Komunitné záhrady">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_menoPriezvisko_meno" label="Meno">
+          <StringValue>Ján</StringValue>
+        </Field>
+        <Field id="root_ziadatel_menoPriezvisko_priezvisko" label="Priezvisko">
+          <StringValue>Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Mierová 12</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>82108</StringValue>
+        </Field>
+        <Field id="root_ziadatel_email" label="E-mail">
+          <StringValue>jan.kovac@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_ziadatel_telefon" label="Telefónne číslo">
+          <StringValue>+421905987654</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_obcianskeZdruzenie" title="Občianske združenie">
+        <Field id="root_obcianskeZdruzenie_nazovObcianskehoZdruzenia" label="Názov občianskeho združenia">
+          <StringValue>Zelená Bratislava</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_ico" label="IČO">
+          <StringValue>12345678</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_adresaSidla_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Šancová 56</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_adresaSidla_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_adresaSidla_mestoPsc_psc" label="PSČ">
+          <StringValue>83104</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_statutar_menoStatutara" label="Meno">
+          <StringValue>Marta</StringValue>
+        </Field>
+        <Field id="root_obcianskeZdruzenie_statutar_priezviskoStatutara" label="Priezvisko">
+          <StringValue>Nováková</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_pozemok" title="Pozemok">
+        <Field id="root_pozemok_typPozemku" label="O aký pozemok máte záujem?">
+          <StringValue>Predschválený mestský pozemok</StringValue>
+        </Field>
+        <Field id="root_pozemok_predschvalenyPozemokVyber" label="Ponuka predschválených mestských pozemkov">
+          <StringValue>Azalková</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_zahrada" title="Záhrada">
+        <Field id="root_zahrada_dovodyZalozenia" label="Dôvody založenia komunitnej záhrady na danom pozemku">
+          <StringValue>Priestor je v súčasnosti nevyužívaný a zanedbaný. Komunitná záhrada by poskytla miesto pre miestnych obyvateľov na pestovanie rastlín a stretávanie sa.</StringValue>
+        </Field>
+        <Field id="root_zahrada_suhlasKomunity" label="Súhlas miestnej komunity">
+          <StringValue>Získali sme podporu od miestnych obyvateľov prostredníctvom petície a verejných stretnutí.</StringValue>
+        </Field>
+        <Field id="root_zahrada_organizacnyTim" label="Organizačný tím záhrady">
+          <StringValue>Tím bude pozostávať z miestnych dobrovoľníkov, ktorí sa budú starať o záhradu a organizovať komunitné aktivity.</StringValue>
+        </Field>
+        <Field id="root_zahrada_prevadzka" label="Prevádzka a údržba záhrady">
+          <StringValue>Údržbu zelene budú zabezpečovať dobrovoľníci. Odpad bude separovaný a recyklovaný, pričom sa budeme snažiť o zero-waste režim.</StringValue>
+        </Field>
+        <Field id="root_zahrada_inkluzivnost" label="Inkluzívnosť projektu a režim komunitnej záhrady">
+          <StringValue>Projekt bude otvorený pre všetkých miestnych obyvateľov. Záujemcovia o záhradkárčenie budú vybraní na základe transparentného procesu.</StringValue>
+        </Field>
+        <Field id="root_zahrada_financovanie" label="Spôsob financovania záhrady">
+          <StringValue>Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje.</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_prilohyPredschvalenyPozemok" title="Prílohy">
+        <Field id="root_prilohyPredschvalenyPozemok_umiestnenie" label="Presné umiestnenie záhrady na pozemku">
+          <FileValue id="ace1a8c2-f96e-4583-bdf9-64233b582572">umiestnenie.jpg</FileValue>
+        </Field>
+        <Field id="root_prilohyPredschvalenyPozemok_dizajn" label="Dizajn/projekt záhrady">
+          <FileValue id="27766841-1f8f-4daa-b6e9-df826b294ae0">dizajn.jpg</FileValue>
+        </Field>
+        <Field id="root_prilohyPredschvalenyPozemok_fotografie" label="Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu">
+          <FileValue id="7510f8c5-c777-4426-8166-90f253eb0738">fotografie.jpg</FileValue>
+        </Field>
+        <Field id="root_prilohyPredschvalenyPozemok_ine" label="Iné">
+          <FileValue id="1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0">ine.pdf</FileValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm predzahradky schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.predzahradky/1.1" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm predzahradkyExample XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"predzahradka":{"typRegistracie":"nova","adresa":"Dunajská 34","mestskaCast":"Devín","parcelneCislo":"46549/435413","ine":"Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.","rozlozenieNova":"Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede."},"prilohy":{"mapa":"4f01b72e-f5d6-429e-a4b4-ecb6432f05f7","fotografie":"6f306cec-29c4-45dd-97b8-f9bedcb7d72d","projekt":"88b55eff-ebb4-4d17-bc5a-cdbe6d8eb923","inePrilohy":"7f3e5eeb-215d-4e55-ac78-44f7d60a699c"}}</Json>
+  <Summary>
+    <Form title="Predzáhradky">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_menoPriezvisko_meno" label="Meno">
+          <StringValue>Ján</StringValue>
+        </Field>
+        <Field id="root_ziadatel_menoPriezvisko_priezvisko" label="Priezvisko">
+          <StringValue>Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Mierová 12</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>82108</StringValue>
+        </Field>
+        <Field id="root_ziadatel_email" label="E-mail">
+          <StringValue>jan.kovac@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_ziadatel_telefon" label="Telefónne číslo">
+          <StringValue>+421905987654</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_predzahradka" title="Predzáhradka">
+        <Field id="root_predzahradka_typRegistracie" label="Mám záujem o">
+          <StringValue>Vytvorenie novej predzáhradky</StringValue>
+        </Field>
+        <Field id="root_predzahradka_adresa" label="Adresa predzáhradky (ulica, číslo)">
+          <StringValue>Dunajská 34</StringValue>
+        </Field>
+        <Field id="root_predzahradka_mestskaCast" label="Mestská časť, v ktorej sa pozemok nachádza">
+          <StringValue>Devín</StringValue>
+        </Field>
+        <Field id="root_predzahradka_parcelneCislo" label="Číslo parcely">
+          <StringValue>46549/435413</StringValue>
+        </Field>
+        <Field id="root_predzahradka_rozlozenieNova" label="Plánované rozloženie predzáhradky">
+          <StringValue>Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede.</StringValue>
+        </Field>
+        <Field id="root_predzahradka_ine" label="Iné">
+          <StringValue>Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_prilohy" title="Prílohy">
+        <Field id="root_prilohy_mapa" label="Snímka z mapy so zakreslením miesta predzáhradky">
+          <FileValue id="4f01b72e-f5d6-429e-a4b4-ecb6432f05f7">mapa.jpg</FileValue>
+        </Field>
+        <Field id="root_prilohy_fotografie" label="Fotografie predzáhradky alebo miesta, na ktorom si chcete vytvoriť predzáhradku">
+          <FileValue id="6f306cec-29c4-45dd-97b8-f9bedcb7d72d">fotografie.jpg</FileValue>
+        </Field>
+        <Field id="root_prilohy_projekt" label="Projekt predzáhradky">
+          <FileValue id="88b55eff-ebb4-4d17-bc5a-cdbe6d8eb923">projekt.pdf</FileValue>
+        </Field>
+        <Field id="root_prilohy_inePrilohy" label="Iné">
+          <FileValue id="7f3e5eeb-215d-4e55-ac78-44f7d60a699c">ine-prilohy.pdf</FileValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti-test schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample1 XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"danZPozemkov":{"priznania":[{"pozemky":[{"kataster":"Nové Mesto","druhPozemku":"E","celkovaVymeraPozemku":215,"cisloListuVlastnictva":"0000","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"2567/0"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2569/15897"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"somJedinyVlastnik"}],"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true}},"druhPriznania":{"rok":2024,"druh":"priznanie"},"udajeODanovnikovi":{"stat":"703","email":"meno@gmail.com","obecPsc":{"psc":"83103","obec":"Bratislava"},"telefon":"+421948111111","menoTitul":{"meno":"Peter"},"priezvisko":"AAA Skúšobné s r .o","rodneCislo":"920314/6326","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true},"ulicaCisloFyzickaOsoba":{"cislo":"6","ulica":"Robotnícka"}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":["option2","option4"]}}</Json>
+  <Summary>
+    <Form title="Priznanie k dani z nehnuteľností">
+      <Step id="root_druhPriznania" title="Druh priznania">
+        <Field id="root_druhPriznania_druh" label="Vyberte druh priznania">
+          <StringValue>Priznanie</StringValue>
+        </Field>
+        <Field id="root_druhPriznania_rok" label="Za aký rok podávate priznanie?">
+          <StringValue>2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_udajeODanovnikovi" title="Údaje o daňovníkovi">
+        <Field id="root_udajeODanovnikovi_voSvojomMene" label="Podávate priznanie k dani z nehnuteľností vo svojom mene?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priznanieAko" label="Podávate priznanie ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_rodneCislo" label="Rodné číslo">
+          <StringValue>920314/6326</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priezvisko" label="Priezvisko">
+          <StringValue>AAA Skúšobné s r .o</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_meno" label="Meno">
+          <StringValue>Peter</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_titul" label="Titul">
+          <NoneValue/>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica" label="Ulica">
+          <StringValue>Robotnícka</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo" label="Čislo">
+          <StringValue>6</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_obec" label="Obec">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_psc" label="PSČ">
+          <StringValue>83103</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_korespondencnaAdresaRovnaka" label="Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_email" label="E-mail">
+          <StringValue>meno@gmail.com</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_telefon" label="Telefónne číslo">
+          <StringValue>+421948111111</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZPozemkov" title="Priznanie k dani z pozemkov">
+        <Field id="root_danZPozemkov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z pozemkov?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZPozemkov_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery pozemkov">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov</StringValue>
+        </Field>
+        <Array id="root_danZPozemkov_priznania" title="Priznania k dani z pozemkov">
+          <ArrayItem id="root_danZPozemkov_priznania_0" title="Priznanie k dani z pozemkov č. 1">
+            <Field id="root_danZPozemkov_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Som jediný vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+            <Array id="root_danZPozemkov_priznania_0_pozemky" title="Pozemky">
+              <ArrayItem id="root_danZPozemkov_priznania_0_pozemky_0" title="Pozemok č. 1">
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+                  <StringValue>0000</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_kataster" label="Názov katastrálneho územia">
+                  <StringValue>Nové Mesto</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely" label="Číslo parcely">
+                  <StringValue>2567/0</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku" label="Spôsob využitia pozemku">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_druhPozemku" label="Druh pozemku">
+                  <StringValue>E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku" label="Celková výmera pozemku">
+                  <StringValue>215</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>2569/15897</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_danZoStaviebJedenUcel" title="Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel">
+        <Field id="root_danZoStaviebJedenUcel_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebViacereUcely" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely">
+        <Field id="root_danZoStaviebViacereUcely_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZBytovANebytovychPriestorov" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome">
+        <Field id="root_danZBytovANebytovychPriestorov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_znizenieAleboOslobodenieOdDane" title="Zníženie alebo oslobodenie od dane">
+        <Field id="root_znizenieAleboOslobodenieOdDane_pozemky" label="Pozemky">
+          <StringValue>pásma hygienickej ochrany vodných zdrojov I. stupňa a II. stupňa</StringValue>
+          <StringValue>pozemky, ktorých vlastníkmi sú fyzické osoby staršie ako 65 rokov, ak tieto pozemky slúžia výhradne na ich osobnú potrebu</StringValue>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_stavby" label="Stavby">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_byty" label="Byty">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_poznamka" label="Poznámka">
+          <NoneValue/>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample2 XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"druhPriznania":{"rok":2024,"druh":"ciastkovePriznanie"},"udajeODanovnikovi":{"stat":"703","email":"test@test.ts","obecPsc":{"psc":"84106","obec":"Bratislava"},"telefon":"+42191111111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Test"},"priezvisko":"Test","rodneCislo":"1.1.1993","ulicaCisloFyzickaOsoba":{"cislo":"15A","ulica":"Ulica "},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true}},"danZPozemkov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"pozemky":[{"kataster":"Záhorská Bystrica","druhPozemku":"F","celkovaVymeraPozemku":2,"cisloListuVlastnictva":"1111","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"730/2"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"1/1"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov"},{"pozemky":[{"kataster":"Záhorská Bystrica","druhPozemku":"C","celkovaVymeraPozemku":24,"cisloListuVlastnictva":"1111","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"755/4"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"1/1"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov"}]},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"bezpodieloveSpoluvlastnictvoManzelov":{"email":"test@test.ts","telefon":"+42191111111","menoTitul":{"meno":"Test","titul":"Ing"},"priezvisko":"Test","rodneCislo":"123232/1234","rovnakaAdresa":true},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
+  <Summary>
+    <Form title="Priznanie k dani z nehnuteľností">
+      <Step id="root_druhPriznania" title="Druh priznania">
+        <Field id="root_druhPriznania_druh" label="Vyberte druh priznania">
+          <StringValue>Čiastkové priznanie</StringValue>
+        </Field>
+        <Field id="root_druhPriznania_rok" label="Za aký rok podávate priznanie?">
+          <StringValue>2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_udajeODanovnikovi" title="Údaje o daňovníkovi">
+        <Field id="root_udajeODanovnikovi_voSvojomMene" label="Podávate priznanie k dani z nehnuteľností vo svojom mene?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priznanieAko" label="Podávate priznanie ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_rodneCislo" label="Rodné číslo">
+          <StringValue>1.1.1993</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priezvisko" label="Priezvisko">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_meno" label="Meno">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_titul" label="Titul">
+          <NoneValue/>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica" label="Ulica">
+          <StringValue>Ulica </StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo" label="Čislo">
+          <StringValue>15A</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_obec" label="Obec">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_psc" label="PSČ">
+          <StringValue>84106</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_korespondencnaAdresaRovnaka" label="Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_email" label="E-mail">
+          <StringValue>test@test.ts</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_telefon" label="Telefónne číslo">
+          <StringValue>+42191111111</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZPozemkov" title="Priznanie k dani z pozemkov">
+        <Field id="root_danZPozemkov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z pozemkov?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZPozemkov_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery pozemkov">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov</StringValue>
+        </Field>
+        <Array id="root_danZPozemkov_priznania" title="Priznania k dani z pozemkov">
+          <ArrayItem id="root_danZPozemkov_priznania_0" title="Priznanie k dani z pozemkov č. 1">
+            <Field id="root_danZPozemkov_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Bezpodielové spoluvlastníctvo manželov</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+            <Array id="root_danZPozemkov_priznania_0_pozemky" title="Pozemky">
+              <ArrayItem id="root_danZPozemkov_priznania_0_pozemky_0" title="Pozemok č. 1">
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+                  <StringValue>1111</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_kataster" label="Názov katastrálneho územia">
+                  <StringValue>Záhorská Bystrica</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely" label="Číslo parcely">
+                  <StringValue>730/2</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku" label="Spôsob využitia pozemku">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_druhPozemku" label="Druh pozemku">
+                  <StringValue>F – zastavané plochy a nádvoria</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku" label="Celková výmera pozemku">
+                  <StringValue>2</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+          <ArrayItem id="root_danZPozemkov_priznania_1" title="Priznanie k dani z pozemkov č. 2">
+            <Field id="root_danZPozemkov_priznania_1_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_1_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Bezpodielové spoluvlastníctvo manželov</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_1_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+            <Array id="root_danZPozemkov_priznania_1_pozemky" title="Pozemky">
+              <ArrayItem id="root_danZPozemkov_priznania_1_pozemky_0" title="Pozemok č. 1">
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+                  <StringValue>1111</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_kataster" label="Názov katastrálneho územia">
+                  <StringValue>Záhorská Bystrica</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely" label="Číslo parcely">
+                  <StringValue>755/4</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku" label="Spôsob využitia pozemku">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_druhPozemku" label="Druh pozemku">
+                  <StringValue>C – záhrady</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_celkovaVymeraPozemku" label="Celková výmera pozemku">
+                  <StringValue>24</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_1_pozemky_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+                  <NoneValue/>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_danZoStaviebJedenUcel" title="Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel">
+        <Field id="root_danZoStaviebJedenUcel_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebViacereUcely" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely">
+        <Field id="root_danZoStaviebViacereUcely_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZBytovANebytovychPriestorov" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome">
+        <Field id="root_danZBytovANebytovychPriestorov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_bezpodieloveSpoluvlastnictvoManzelov" title="Údaje o manželovi/manželke">
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo" label="Rodné číslo">
+          <StringValue>123232/1234</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_priezvisko" label="Priezvisko">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno" label="Meno">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_titul" label="Titul">
+          <StringValue>Ing</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_rovnakaAdresa" label="Má trvalý pobyt na rovnakej adrese ako vy?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_email" label="E-mail">
+          <StringValue>test@test.ts</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_telefon" label="Telefónne číslo">
+          <StringValue>+42191111111</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_znizenieAleboOslobodenieOdDane" title="Zníženie alebo oslobodenie od dane">
+        <Field id="root_znizenieAleboOslobodenieOdDane_pozemky" label="Pozemky">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_stavby" label="Stavby">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_byty" label="Byty">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_poznamka" label="Poznámka">
+          <NoneValue/>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample3 XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"druhPriznania":{"rok":2024,"druh":"priznanie"},"udajeODanovnikovi":{"stat":"703","email":"test@mail.com","obecPsc":{"psc":"85103","obec":"Bratislava"},"telefon":"+421901111111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Test","titul":"Ing."},"priezvisko":"Test","rodneCislo":"910101/1111","ulicaCisloFyzickaOsoba":{"cislo":"1","ulica":"Test"},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true}},"danZPozemkov":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"riadok1":{"supisneCislo":1,"ulicaACisloDomu":"Jána Smreka 1"},"riadok2":{"kataster":"Devínska Nová Ves","cisloParcely":"1234/10"},"pravnyVztah":"vlastnik","priznanieZaByt":{"priznanieZaByt":true,"cisloBytu":"23","spoluvlastnickyPodiel":"1/2","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"3468/246230"},"spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"3385","priznanieZaNebytovyPriestor":{"priznanieZaNebytovyPriestor":false},"naZakladeDohody":true,"pocetSpoluvlastnikov":2,"splnomocnenie":[]}]},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
+  <Summary>
+    <Form title="Priznanie k dani z nehnuteľností">
+      <Step id="root_druhPriznania" title="Druh priznania">
+        <Field id="root_druhPriznania_druh" label="Vyberte druh priznania">
+          <StringValue>Priznanie</StringValue>
+        </Field>
+        <Field id="root_druhPriznania_rok" label="Za aký rok podávate priznanie?">
+          <StringValue>2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_udajeODanovnikovi" title="Údaje o daňovníkovi">
+        <Field id="root_udajeODanovnikovi_voSvojomMene" label="Podávate priznanie k dani z nehnuteľností vo svojom mene?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priznanieAko" label="Podávate priznanie ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_rodneCislo" label="Rodné číslo">
+          <StringValue>910101/1111</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priezvisko" label="Priezvisko">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_meno" label="Meno">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_titul" label="Titul">
+          <StringValue>Ing.</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica" label="Ulica">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo" label="Čislo">
+          <StringValue>1</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_obec" label="Obec">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_psc" label="PSČ">
+          <StringValue>85103</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_korespondencnaAdresaRovnaka" label="Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_email" label="E-mail">
+          <StringValue>test@mail.com</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_telefon" label="Telefónne číslo">
+          <StringValue>+421901111111</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZPozemkov" title="Priznanie k dani z pozemkov">
+        <Field id="root_danZPozemkov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z pozemkov?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebJedenUcel" title="Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel">
+        <Field id="root_danZoStaviebJedenUcel_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebViacereUcely" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely">
+        <Field id="root_danZoStaviebViacereUcely_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZBytovANebytovychPriestorov" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome">
+        <Field id="root_danZBytovANebytovychPriestorov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZBytovANebytovychPriestorov_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery podlahových plôch bytov a nebytových priestorov">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch</StringValue>
+        </Field>
+        <Array id="root_danZBytovANebytovychPriestorov_priznania" title="Priznania k dani z bytov a z nebytových priestorov v bytovom dome">
+          <ArrayItem id="root_danZBytovANebytovychPriestorov_priznania_0" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. 1">
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+              <StringValue>3385</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok1_ulicaACisloDomu" label="Ulica a číslo domu">
+              <StringValue>Jána Smreka 1</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok1_supisneCislo" label="Súpisné číslo">
+              <StringValue>1</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok2_kataster" label="Názov katastrálneho územia">
+              <StringValue>Devínska Nová Ves</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok2_cisloParcely" label="Číslo parcely">
+              <StringValue>1234/10</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Podielové spoluvlastníctvo</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_pocetSpoluvlastnikov" label="Zadajte počet spoluvlastníkov">
+              <StringValue>2</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_naZakladeDohody" label="Podávate priznanie za všetkých spoluvlastníkov na základe dohody?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_splnomocnenie" label="Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_priznanieZaByt" label="Podávate priznanie za byt?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_cisloBytu" label="Číslo bytu">
+              <StringValue>23</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_popisBytu" label="Popis bytu">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+              <StringValue>3468/246230</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+              <StringValue>1/2</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyNaIneUcely" label="Výmera podlahovej plochy bytu používaného na iné účely">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_priznanieZaNebytovyPriestor" label="Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_znizenieAleboOslobodenieOdDane" title="Zníženie alebo oslobodenie od dane">
+        <Field id="root_znizenieAleboOslobodenieOdDane_pozemky" label="Pozemky">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_stavby" label="Stavby">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_byty" label="Byty">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_poznamka" label="Poznámka">
+          <NoneValue/>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample4 XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"druhPriznania":{"rok":2024,"druh":"ciastkovePriznanieNaZanikDanovejPovinnosti"},"danZPozemkov":{"vyplnitObject":{"vyplnit":false}},"udajeODanovnikovi":{"stat":"703","email":"test@test.sk","obecPsc":{"psc":"91701","obec":"Trnava"},"telefon":"+421911111111","menoTitul":{"meno":"Test"},"priezvisko":"Test ","rodneCislo":"93823741111","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":true},"ulicaCisloFyzickaOsoba":{"cislo":"1111/61","ulica":"Test"}},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":false}},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":false}},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":false}},"znizenieAleboOslobodenieOdDane":{"byty":[],"stavby":[],"pozemky":[]}}</Json>
+  <Summary>
+    <Form title="Priznanie k dani z nehnuteľností">
+      <Step id="root_druhPriznania" title="Druh priznania">
+        <Field id="root_druhPriznania_druh" label="Vyberte druh priznania">
+          <StringValue>Čiastkové priznanie na zánik daňovej povinnosti.</StringValue>
+        </Field>
+        <Field id="root_druhPriznania_rok" label="Za aký rok podávate priznanie?">
+          <StringValue>2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_udajeODanovnikovi" title="Údaje o daňovníkovi">
+        <Field id="root_udajeODanovnikovi_voSvojomMene" label="Podávate priznanie k dani z nehnuteľností vo svojom mene?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priznanieAko" label="Podávate priznanie ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_rodneCislo" label="Rodné číslo">
+          <StringValue>93823741111</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priezvisko" label="Priezvisko">
+          <StringValue>Test </StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_meno" label="Meno">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_titul" label="Titul">
+          <NoneValue/>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica" label="Ulica">
+          <StringValue>Test</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo" label="Čislo">
+          <StringValue>1111/61</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_obec" label="Obec">
+          <StringValue>Trnava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_psc" label="PSČ">
+          <StringValue>91701</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_korespondencnaAdresaRovnaka" label="Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_email" label="E-mail">
+          <StringValue>test@test.sk</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_telefon" label="Telefónne číslo">
+          <StringValue>+421911111111</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZPozemkov" title="Priznanie k dani z pozemkov">
+        <Field id="root_danZPozemkov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z pozemkov?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebJedenUcel" title="Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel">
+        <Field id="root_danZoStaviebJedenUcel_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZoStaviebViacereUcely" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely">
+        <Field id="root_danZoStaviebViacereUcely_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZBytovANebytovychPriestorov" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome">
+        <Field id="root_danZBytovANebytovychPriestorov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_znizenieAleboOslobodenieOdDane" title="Zníženie alebo oslobodenie od dane">
+        <Field id="root_znizenieAleboOslobodenieOdDane_pozemky" label="Pozemky">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_stavby" label="Stavby">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_byty" label="Byty">
+          <NoneValue/>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_poznamka" label="Poznámka">
+          <NoneValue/>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample5 XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"druhPriznania":{"rok":2024,"druh":"opravnePriznanie"},"udajeODanovnikovi":{"stat":"686","email":"test@test.com","obecPsc":{"psc":"83103","obec":"Bratislava"},"telefon":"+421948417711","priznanieAko":"fyzickaOsoba","voSvojomMene":true,"menoTitul":{"meno":"Lincoln","titul":"Mgr."},"priezvisko":"Abraham","rodneCislo":"9203146326","ulicaCisloFyzickaOsoba":{"cislo":"6","ulica":"Robotnícka"},"korespondencnaAdresa":{"korespondencnaAdresaRovnaka":false,"stat":"703","obecPsc":{"psc":"83106","obec":"Bratislava"},"ulicaCisloKorespondencnaAdresa":{"cislo":"7","ulica":"Prašivá"}}},"danZPozemkov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"pozemky":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-13","datumZanikuDanovejPovinnosti":"2024-01-04"},"kataster":"Devínska Nová Ves","druhPozemku":"B","celkovaVymeraPozemku":218,"cisloListuVlastnictva":"4589","spoluvlastnickyPodiel":"1/1","parcelneCisloSposobVyuzitiaPozemku":{"cisloParcely":"7986/1","sposobVyuzitiaPozemku":"Ložisko"},"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"4587/53994"}],"pravnyVztah":"vlastnik","spoluvlastnictvo":"somJedinyVlastnik"}]},"danZoStaviebJedenUcel":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-04","datumZanikuDanovejPovinnosti":"2024-01-06"},"riadok1":{"supisneCislo":2526,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Jarovce","cisloParcely":"7859/1"},"pravnyVztah":"vlastnik","predmetDane":"a","spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"4597","spoluvlastnickyPodiel":"1/2","celkovaZastavanaPlocha":2659,"castStavbyOslobodenaOdDane":true,"pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia":5,"naZakladeDohody":true,"pocetSpoluvlastnikov":2,"splnomocnenie":[],"castStavbyOslobodenaOdDaneDetaily":{"celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby":26,"vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb":89}}]},"danZoStaviebViacereUcely":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-05","datumZanikuDanovejPovinnosti":"2024-01-04"},"riadok1":{"supisneCislo":35,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Devín","cisloParcely":"5697/1"},"poznamka":"Príkladná 35","popisStavby":"Príkladná stavba","pravnyVztah":"najomca","celkovaVymera":25648,"nehnutelnosti":{"nehnutelnosti":[{"ucelVyuzitiaStavby":"b","spoluvlastnickyPodiel":"1/1","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"4598/26594"}]},"spoluvlastnictvo":"bezpodieloveSpoluvlastnictvoManzelov","cisloListuVlastnictva":"4597","castStavbyOslobodenaOdDane":true,"pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia":4,"vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb":26}]},"danZBytovANebytovychPriestorov":{"vyplnitObject":{"vyplnit":true},"kalkulackaWrapper":{"pouzitKalkulacku":true},"priznania":[{"riadok1":{"supisneCislo":3694,"ulicaACisloDomu":"Príkladná 35"},"riadok2":{"kataster":"Karlova Ves","cisloParcely":"6975/2"},"poznamka":"Príkladná 35","pravnyVztah":"spravca","priznanieZaByt":{"priznanieZaByt":true,"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-16","datumZanikuDanovejPovinnosti":"2024-01-07"},"cisloBytu":"3","popisBytu":"Dvojizbak","spoluvlastnickyPodiel":"1/1","vymeraPodlahovejPlochyNaIneUcely":18,"podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2654/36594"},"spoluvlastnictvo":"podieloveSpoluvlastnictvo","cisloListuVlastnictva":"2648","priznanieZaNebytovyPriestor":{"priznanieZaNebytovyPriestor":true,"nebytovePriestory":[{"datumy":{"datumVznikuDanovejPovinnosti":"2024-01-05","datumZanikuDanovejPovinnosti":"2024-01-12"},"riadok":{"cisloNebytovehoPriestoruVBytovomDome":"G05","ucelVyuzitiaNebytovehoPriestoruVBytovomDome":"Garáž"},"spoluvlastnickyPodiel":"1/5","podielPriestoruNaSpolocnychCastiachAZariadeniachDomu":"2659/86569"}]},"naZakladeDohody":false,"pocetSpoluvlastnikov":3}]},"bezpodieloveSpoluvlastnictvoManzelov":{"email":"test@test.com","telefon":"+421948417711","menoTitul":{"meno":"Petra","titul":"Bsc"},"priezvisko":"Príkladná","rodneCislo":"920314/2634","rovnakaAdresa":false,"stat":"703","obecPsc":{"psc":"83106","obec":"Abelova"},"ulicaCisloBezpodieloveSpoluvlastnictvoManzelov":{"cislo":"25","ulica":"Príkladná 35"}},"znizenieAleboOslobodenieOdDane":{"byty":["option1","option2"],"stavby":["option1","option2","option3"],"pozemky":["option1","option2","option3","option4"],"poznamka":"Príkladná 35"}}</Json>
+  <Summary>
+    <Form title="Priznanie k dani z nehnuteľností">
+      <Step id="root_druhPriznania" title="Druh priznania">
+        <Field id="root_druhPriznania_druh" label="Vyberte druh priznania">
+          <StringValue>Opravné priznanie</StringValue>
+        </Field>
+        <Field id="root_druhPriznania_rok" label="Za aký rok podávate priznanie?">
+          <StringValue>2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_udajeODanovnikovi" title="Údaje o daňovníkovi">
+        <Field id="root_udajeODanovnikovi_voSvojomMene" label="Podávate priznanie k dani z nehnuteľností vo svojom mene?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priznanieAko" label="Podávate priznanie ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_rodneCislo" label="Rodné číslo">
+          <StringValue>9203146326</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_priezvisko" label="Priezvisko">
+          <StringValue>Abraham</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_meno" label="Meno">
+          <StringValue>Lincoln</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_menoTitul_titul" label="Titul">
+          <StringValue>Mgr.</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_ulica" label="Ulica">
+          <StringValue>Robotnícka</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_ulicaCisloFyzickaOsoba_cislo" label="Čislo">
+          <StringValue>6</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_obec" label="Obec">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_obecPsc_psc" label="PSČ">
+          <StringValue>83103</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_stat" label="Štát">
+          <StringValue>Senegalská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_korespondencnaAdresaRovnaka" label="Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_ulicaCisloKorespondencnaAdresa_ulica" label="Ulica">
+          <StringValue>Prašivá</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_ulicaCisloKorespondencnaAdresa_cislo" label="Čislo">
+          <StringValue>7</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_obecPsc_obec" label="Obec">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_obecPsc_psc" label="PSČ">
+          <StringValue>83106</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_korespondencnaAdresa_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_email" label="E-mail">
+          <StringValue>test@test.com</StringValue>
+        </Field>
+        <Field id="root_udajeODanovnikovi_telefon" label="Telefónne číslo">
+          <StringValue>+421948417711</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_danZPozemkov" title="Priznanie k dani z pozemkov">
+        <Field id="root_danZPozemkov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z pozemkov?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZPozemkov_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery pozemkov">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov</StringValue>
+        </Field>
+        <Array id="root_danZPozemkov_priznania" title="Priznania k dani z pozemkov">
+          <ArrayItem id="root_danZPozemkov_priznania_0" title="Priznanie k dani z pozemkov č. 1">
+            <Field id="root_danZPozemkov_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Som jediný vlastník</StringValue>
+            </Field>
+            <Field id="root_danZPozemkov_priznania_0_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+            <Array id="root_danZPozemkov_priznania_0_pozemky" title="Pozemky">
+              <ArrayItem id="root_danZPozemkov_priznania_0_pozemky_0" title="Pozemok č. 1">
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+                  <StringValue>4589</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_kataster" label="Názov katastrálneho územia">
+                  <StringValue>Devínska Nová Ves</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_cisloParcely" label="Číslo parcely">
+                  <StringValue>7986/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_parcelneCisloSposobVyuzitiaPozemku_sposobVyuzitiaPozemku" label="Spôsob využitia pozemku">
+                  <StringValue>Ložisko</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_druhPozemku" label="Druh pozemku">
+                  <StringValue>B – trvalé trávnaté porasty</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_celkovaVymeraPozemku" label="Celková výmera pozemku">
+                  <StringValue>218</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>4587/53994</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/1</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+                  <StringValue>13. 1. 2024</StringValue>
+                </Field>
+                <Field id="root_danZPozemkov_priznania_0_pozemky_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+                  <StringValue>4. 1. 2024</StringValue>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_danZoStaviebJedenUcel" title="Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel">
+        <Field id="root_danZoStaviebJedenUcel_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZoStaviebJedenUcel_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery zastavanej plochy stavby">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu zastavanej plochy</StringValue>
+        </Field>
+        <Array id="root_danZoStaviebJedenUcel_priznania" title="Priznania k dani zo stavieb slúžiacich na jeden účel">
+          <ArrayItem id="root_danZoStaviebJedenUcel_priznania_0" title="Priznanie k dani zo stavby slúžiacej na jeden účel č. 1">
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+              <StringValue>4597</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_riadok1_ulicaACisloDomu" label="Ulica a číslo domu">
+              <StringValue>Príkladná 35</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_riadok1_supisneCislo" label="Súpisné číslo">
+              <StringValue>2526</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_riadok2_kataster" label="Názov katastrálneho územia">
+              <StringValue>Jarovce</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_riadok2_cisloParcely" label="Číslo parcely">
+              <StringValue>7859/1</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Vlastník</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Podielové spoluvlastníctvo</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_pocetSpoluvlastnikov" label="Zadajte počet spoluvlastníkov">
+              <StringValue>2</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_naZakladeDohody" label="Podávate priznanie za všetkých spoluvlastníkov na základe dohody?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_splnomocnenie" label="Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností">
+              <NoneValue/>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_predmetDane" label="Predmet dane">
+              <StringValue>a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_celkovaZastavanaPlocha" label="Celková zastavaná plocha">
+              <StringValue>2659</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+              <StringValue>1/2</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia" label="Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia">
+              <StringValue>5</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDane" label="Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby" label="Celková výmera podlahových plôch všetkých podlaží stavby">
+              <StringValue>26</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_castStavbyOslobodenaOdDaneDetaily_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb" label="Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb">
+              <StringValue>89</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+              <StringValue>4. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+              <StringValue>6. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebJedenUcel_priznania_0_poznamka" label="Poznámka">
+              <NoneValue/>
+            </Field>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_danZoStaviebViacereUcely" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely">
+        <Field id="root_danZoStaviebViacereUcely_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZoStaviebViacereUcely_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery podlahových plôch a základu dane">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane</StringValue>
+        </Field>
+        <Array id="root_danZoStaviebViacereUcely_priznania" title="Priznania k dani zo stavieb slúžiacich na viaceré účely">
+          <ArrayItem id="root_danZoStaviebViacereUcely_priznania_0" title="Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. 1">
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+              <StringValue>4597</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_riadok1_ulicaACisloDomu" label="Ulica a číslo domu">
+              <StringValue>Príkladná 35</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_riadok1_supisneCislo" label="Súpisné číslo">
+              <StringValue>35</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_riadok2_kataster" label="Názov katastrálneho územia">
+              <StringValue>Devín</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_riadok2_cisloParcely" label="Číslo parcely">
+              <StringValue>5697/1</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Nájomca</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Bezpodielové spoluvlastníctvo manželov</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_popisStavby" label="Popis stavby">
+              <StringValue>Príkladná stavba</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+              <StringValue>5. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+              <StringValue>4. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_celkovaVymera" label="Celková výmera zastavanej plochy viacúčelovej stavby">
+              <StringValue>25648</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia" label="Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia">
+              <StringValue>4</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_castStavbyOslobodenaOdDane" label="Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb" label="Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb">
+              <StringValue>26</StringValue>
+            </Field>
+            <Field id="root_danZoStaviebViacereUcely_priznania_0_poznamka" label="Poznámka">
+              <StringValue>Príkladná 35</StringValue>
+            </Field>
+            <Array id="root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti" title="Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?">
+              <ArrayItem id="root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0" title="Časť stavby č. 1">
+                <Field id="root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_ucelVyuzitiaStavby" label="Účel využitia stavby">
+                  <StringValue>b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu</StringValue>
+                </Field>
+                <Field id="root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>4598/26594</StringValue>
+                </Field>
+                <Field id="root_danZoStaviebViacereUcely_priznania_0_nehnutelnosti_nehnutelnosti_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/1</StringValue>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_danZBytovANebytovychPriestorov" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome">
+        <Field id="root_danZBytovANebytovychPriestorov_vyplnitObject_vyplnit" label="Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_danZBytovANebytovychPriestorov_kalkulackaWrapper_pouzitKalkulacku" label="Kalkulačka výpočtu výmery podlahových plôch bytov a nebytových priestorov">
+          <StringValue>Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch</StringValue>
+        </Field>
+        <Array id="root_danZBytovANebytovychPriestorov_priznania" title="Priznania k dani z bytov a z nebytových priestorov v bytovom dome">
+          <ArrayItem id="root_danZBytovANebytovychPriestorov_priznania_0" title="Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. 1">
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_cisloListuVlastnictva" label="Číslo listu vlastníctva">
+              <StringValue>2648</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok1_ulicaACisloDomu" label="Ulica a číslo domu">
+              <StringValue>Príkladná 35</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok1_supisneCislo" label="Súpisné číslo">
+              <StringValue>3694</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok2_kataster" label="Názov katastrálneho územia">
+              <StringValue>Karlova Ves</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_riadok2_cisloParcely" label="Číslo parcely">
+              <StringValue>6975/2</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_pravnyVztah" label="Právny vzťah">
+              <StringValue>Správca</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_spoluvlastnictvo" label="Spoluvlastníctvo">
+              <StringValue>Podielové spoluvlastníctvo</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_pocetSpoluvlastnikov" label="Zadajte počet spoluvlastníkov">
+              <StringValue>3</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_naZakladeDohody" label="Podávate priznanie za všetkých spoluvlastníkov na základe dohody?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_priznanieZaByt" label="Podávate priznanie za byt?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_cisloBytu" label="Číslo bytu">
+              <StringValue>3</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_popisBytu" label="Popis bytu">
+              <StringValue>Dvojizbak</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+              <StringValue>2654/36594</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+              <StringValue>1/1</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_vymeraPodlahovejPlochyNaIneUcely" label="Výmera podlahovej plochy bytu používaného na iné účely">
+              <StringValue>18</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+              <StringValue>16. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaByt_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+              <StringValue>7. 1. 2024</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_priznanieZaNebytovyPriestor" label="Podávate priznanie za nebytový priestor (napr. garážové státie, pivnica, obchodný priestor a pod.)?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_danZBytovANebytovychPriestorov_priznania_0_poznamka" label="Poznámka">
+              <StringValue>Príkladná 35</StringValue>
+            </Field>
+            <Array id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory" title="Nebytové priestory">
+              <ArrayItem id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0" title="Nebytový priestor č. 1">
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_ucelVyuzitiaNebytovehoPriestoruVBytovomDome" label="Účel využitia nebytového priestoru v bytovom dome">
+                  <StringValue>Garáž</StringValue>
+                </Field>
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_riadok_cisloNebytovehoPriestoruVBytovomDome" label="Číslo nebytového priestoru v bytovom dome">
+                  <StringValue>G05</StringValue>
+                </Field>
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_podielPriestoruNaSpolocnychCastiachAZariadeniachDomu" label="Podiel priestoru na spoločných častiach a zariadeniach domu">
+                  <StringValue>2659/86569</StringValue>
+                </Field>
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
+                  <StringValue>1/5</StringValue>
+                </Field>
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumVznikuDanovejPovinnosti" label="Dátum vzniku daňovej povinnosti">
+                  <StringValue>5. 1. 2024</StringValue>
+                </Field>
+                <Field id="root_danZBytovANebytovychPriestorov_priznania_0_priznanieZaNebytovyPriestor_nebytovePriestory_0_datumy_datumZanikuDanovejPovinnosti" label="Dátum zániku daňovej povinnosti">
+                  <StringValue>12. 1. 2024</StringValue>
+                </Field>
+              </ArrayItem>
+            </Array>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_bezpodieloveSpoluvlastnictvoManzelov" title="Údaje o manželovi/manželke">
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_rodneCislo" label="Rodné číslo">
+          <StringValue>920314/2634</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_priezvisko" label="Priezvisko">
+          <StringValue>Príkladná</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_meno" label="Meno">
+          <StringValue>Petra</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_menoTitul_titul" label="Titul">
+          <StringValue>Bsc</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_rovnakaAdresa" label="Má trvalý pobyt na rovnakej adrese ako vy?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_ulicaCisloBezpodieloveSpoluvlastnictvoManzelov_ulica" label="Ulica">
+          <StringValue>Príkladná 35</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_ulicaCisloBezpodieloveSpoluvlastnictvoManzelov_cislo" label="Čislo">
+          <StringValue>25</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_obecPsc_obec" label="Obec">
+          <StringValue>Abelova</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_obecPsc_psc" label="PSČ">
+          <StringValue>83106</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_stat" label="Štát">
+          <StringValue>Slovenská republika</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_email" label="E-mail">
+          <StringValue>test@test.com</StringValue>
+        </Field>
+        <Field id="root_bezpodieloveSpoluvlastnictvoManzelov_telefon" label="Telefónne číslo">
+          <StringValue>+421948417711</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_znizenieAleboOslobodenieOdDane" title="Zníženie alebo oslobodenie od dane">
+        <Field id="root_znizenieAleboOslobodenieOdDane_pozemky" label="Pozemky">
+          <StringValue>pozemky, na ktorých sú cintoríny, kolumbáriá, urnové háje a rozptylové lúky</StringValue>
+          <StringValue>pásma hygienickej ochrany vodných zdrojov I. stupňa a II. stupňa</StringValue>
+          <StringValue>pozemky verejne prístupných parkov a verejne prístupných športovísk</StringValue>
+          <StringValue>pozemky, ktorých vlastníkmi sú fyzické osoby staršie ako 65 rokov, ak tieto pozemky slúžia výhradne na ich osobnú potrebu</StringValue>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_stavby" label="Stavby">
+          <StringValue>stavby slúžiace detským domovom</StringValue>
+          <StringValue>stavby na bývanie vo vlastníctve fyzických osôb starších ako 65 rokov, držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ako aj prevažne alebo úplne bezvládnych fyzických osôb, ktoré slúžia na ich trvalé bývanie</StringValue>
+          <StringValue>garáže v bytových domoch slúžiace ako garáž vo vlastníctve držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ktoré slúžia pre motorové vozidlo používané na ich dopravu</StringValue>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_byty" label="Byty">
+          <StringValue>byty vo vlastníctve fyzických osôb starších ako 65 rokov, držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ako aj prevažne alebo úplne bezvládnych fyzických osôb, ktoré slúžia na ich trvalé bývanie</StringValue>
+          <StringValue>nebytové priestory v bytových domoch slúžiace ako garáž vo vlastníctve držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ktoré slúžia pre motorové vozidlo používané na ich dopravu</StringValue>
+        </Field>
+        <Field id="root_znizenieAleboOslobodenieOdDane_poznamka" label="Poznámka">
+          <StringValue>Príkladná 35</StringValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm stanovisko-k-investicnemu-zameru schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm stanoviskoKInvesticnemuZameruExample XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatel":{"typ":"Fyzická osoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","menoPriezvisko":"Ján Kováč","adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}}},"investor":{"investorZiadatelom":false,"splnomocnenie":"c6bd9718-97ea-4601-b79f-c70e7064943d","typ":"Fyzická osoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","menoPriezvisko":"Marta Nováková","adresa":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}}},"zodpovednyProjektant":{"menoPriezvisko":"Peter Horváth","email":"peter.horvath@priklad.sk","projektantTelefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-03"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"Bytový dom","ulica":"Dunajská","supisneCislo":"464","parcelneCislo":"56789","kataster":["Dúbravka","Karlova Ves"]},"prilohy":{"architektonickaStudia":["cb1e3a95-f9d2-4e55-b482-8e7919f2b43f"]}}</Json>
+  <Summary>
+    <Form title="Žiadosť o stanovisko k investičnému zámeru">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_typ" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_ziadatel_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Ján Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Mierová 12</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>82108</StringValue>
+        </Field>
+        <Field id="root_ziadatel_email" label="E-mail">
+          <StringValue>jan.kovac@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_ziadatel_telefon" label="Telefónne číslo">
+          <StringValue>+421905987654</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_investor" title="Investor">
+        <Field id="root_investor_investorZiadatelom" label="Je investor rovnaká osoba ako žiadateľ?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_investor_splnomocnenie" label="Splnomocnenie na zastupovanie">
+          <FileValue id="c6bd9718-97ea-4601-b79f-c70e7064943d">splnomocnenie.pdf</FileValue>
+        </Field>
+        <Field id="root_investor_typ" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_investor_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Marta Nováková</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Šancová 56</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>83104</StringValue>
+        </Field>
+        <Field id="root_investor_email" label="E-mail">
+          <StringValue>marta.novakova@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_investor_telefon" label="Telefónne číslo">
+          <StringValue>+421902123456</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_zodpovednyProjektant" title="Zodpovedný projektant">
+        <Field id="root_zodpovednyProjektant_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Peter Horváth</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_email" label="E-mail">
+          <StringValue>peter.horvath@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_projektantTelefon" label="Telefónne číslo">
+          <StringValue>+421911654321</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_autorizacneOsvedcenie" label="Číslo autorizačného osvedčenia">
+          <StringValue>123456789</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_datumSpracovania" label="Dátum spracovania projektovej dokumentácie">
+          <StringValue>3. 7. 2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_stavba" title="Informácie o stavbe">
+        <Field id="root_stavba_nazov" label="Názov stavby/projektu">
+          <StringValue>Nový Bytový Dom</StringValue>
+        </Field>
+        <Field id="root_stavba_druhStavby" label="Druh stavby">
+          <StringValue>Bytový dom</StringValue>
+        </Field>
+        <Field id="root_stavba_ulica" label="Ulica">
+          <StringValue>Dunajská</StringValue>
+        </Field>
+        <Field id="root_stavba_supisneCislo" label="Súpisné číslo">
+          <StringValue>464</StringValue>
+        </Field>
+        <Field id="root_stavba_parcelneCislo" label="Parcelné číslo">
+          <StringValue>56789</StringValue>
+        </Field>
+        <Field id="root_stavba_kataster" label="Katastrálne územie">
+          <StringValue>Dúbravka</StringValue>
+          <StringValue>Karlova Ves</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_prilohy" title="Prílohy">
+        <Field id="root_prilohy_architektonickaStudia" label="Architektonická štúdia">
+          <FileValue id="cb1e3a95-f9d2-4e55-b482-8e7919f2b43f">architektonicka-studia.pdf</FileValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm zavazne-stanovisko-k-investicnej-cinnosti schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatel":{"typ":"Fyzická osoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","menoPriezvisko":"Ján Kováč","adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}}},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","typ":"Fyzická osoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","menoPriezvisko":"Marta Nováková","adresa":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}}},"zodpovednyProjektant":{"menoPriezvisko":"Peter Horváth","email":"peter.horvath@priklad.sk","projektantTelefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"Bytový dom","ulica":"Dunajská","supisneCislo":"1234","parcelneCislo":"56789","kataster":["Karlova Ves","Dúbravka"]},"konanieTyp":{"typ":"Konanie o dodatočnom povolení stavby","ziadostOdovodnenie":"Dodatočné povolenie zmeny stavby pred dokončením","stavbaPisomnosti":["4110b6da-0dd7-4007-8c13-896134f1eaa0"],"stavbaFotodokumentacia":["8bfd16c6-49d5-45d2-987e-cba0ff0ebdd9"]},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
+  <Summary>
+    <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_typ" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_ziadatel_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Ján Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Mierová 12</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>82108</StringValue>
+        </Field>
+        <Field id="root_ziadatel_email" label="E-mail">
+          <StringValue>jan.kovac@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_ziadatel_telefon" label="Telefónne číslo">
+          <StringValue>+421905987654</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_investor" title="Investor">
+        <Field id="root_investor_investorZiadatelom" label="Je investor rovnaká osoba ako žiadateľ?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_investor_splnomocnenie" label="Splnomocnenie na zastupovanie">
+          <FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a442">splnomocnenie.pdf</FileValue>
+        </Field>
+        <Field id="root_investor_typ" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_investor_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Marta Nováková</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Šancová 56</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_investor_adresa_mestoPsc_psc" label="PSČ">
+          <StringValue>83104</StringValue>
+        </Field>
+        <Field id="root_investor_email" label="E-mail">
+          <StringValue>marta.novakova@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_investor_telefon" label="Telefónne číslo">
+          <StringValue>+421902123456</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_zodpovednyProjektant" title="Zodpovedný projektant">
+        <Field id="root_zodpovednyProjektant_menoPriezvisko" label="Meno a priezvisko">
+          <StringValue>Peter Horváth</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_email" label="E-mail">
+          <StringValue>peter.horvath@priklad.sk</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_projektantTelefon" label="Telefónne číslo">
+          <StringValue>+421911654321</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_autorizacneOsvedcenie" label="Číslo autorizačného osvedčenia">
+          <StringValue>123456789</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_datumSpracovania" label="Dátum spracovania projektovej dokumentácie">
+          <StringValue>4. 7. 2024</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_stavba" title="Informácie o stavbe">
+        <Field id="root_stavba_nazov" label="Názov stavby/projektu">
+          <StringValue>Nový Bytový Dom</StringValue>
+        </Field>
+        <Field id="root_stavba_druhStavby" label="Druh stavby">
+          <StringValue>Bytový dom</StringValue>
+        </Field>
+        <Field id="root_stavba_ulica" label="Ulica">
+          <StringValue>Dunajská</StringValue>
+        </Field>
+        <Field id="root_stavba_supisneCislo" label="Súpisné číslo">
+          <StringValue>1234</StringValue>
+        </Field>
+        <Field id="root_stavba_parcelneCislo" label="Parcelné číslo">
+          <StringValue>56789</StringValue>
+        </Field>
+        <Field id="root_stavba_kataster" label="Katastrálne územie">
+          <StringValue>Karlova Ves</StringValue>
+          <StringValue>Dúbravka</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_konanieTyp" title="Typ konania na stavebnom úrade">
+        <Field id="root_konanieTyp_typ" label="Typ konania">
+          <StringValue>Konanie o dodatočnom povolení stavby</StringValue>
+        </Field>
+        <Field id="root_konanieTyp_ziadostOdovodnenie" label="Upresnenie konania">
+          <StringValue>Dodatočné povolenie zmeny stavby pred dokončením</StringValue>
+        </Field>
+        <Field id="root_konanieTyp_stavbaPisomnosti" label="Relevantné písomnosti súvisiace so stavbou">
+          <FileValue id="4110b6da-0dd7-4007-8c13-896134f1eaa0">stavba-pisomnosti.pdf</FileValue>
+        </Field>
+        <Field id="root_konanieTyp_stavbaFotodokumentacia" label="Fotodokumentácia stavby">
+          <FileValue id="8bfd16c6-49d5-45d2-987e-cba0ff0ebdd9">stavba-fotodokumentacia.jpg</FileValue>
+        </Field>
+      </Step>
+      <Step id="root_prilohy" title="Prílohy">
+        <Field id="root_prilohy_projektovaDokumentacia" label="Projektová dokumentácia">
+          <FileValue id="1cdcb500-7f11-45d1-a31b-0ab614482e27">projektova-dokumentacia-1.pdf</FileValue>
+          <FileValue id="01d3bd64-270e-4a04-83da-f72cdd8717c4">projektova-dokumentacia-2.pdf</FileValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
+exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0</JsonVersion>
+  <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["opustenieUstavnejStarostlivosti","osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":true,"typByvania":"institucionalnaStarostlivost","dlzkaBytovejNudze":"menejAko1"},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"mieraFunkcnejPoruchy":"50az74","tzpPreukaz":true}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"tzpPreukaz":false,"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"75az100"}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"50az74"}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
+  <Summary>
+    <Form title="Žiadosť o nájom bytu">
+      <Step id="root_ziadatelZiadatelka" title="Žiadateľ/žiadateľka">
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_menoPriezvisko_meno" label="Meno">
+          <StringValue>Jana</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_menoPriezvisko_priezvisko" label="Priezvisko">
+          <StringValue>Nováková</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_rodnePriezvisko" label="Rodné priezvisko">
+          <StringValue>Kováčová</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_datumNarodenia" label="Dátum narodenia">
+          <StringValue>15. 3. 1985</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
+          <StringValue>Slovenská</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_rodinnyStav" label="Rodinný stav">
+          <StringValue>Rozvedený/rozvedená</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_email" label="Email">
+          <StringValue>jana.novakova@email.com</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_kontaktovanyEmailom" label="Chcem byť kontaktovaný/á emailom?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_telefonneCislo" label="Telefónne číslo">
+          <StringValue>+421901234567</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Hlavná 123</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_mestoPsc_psc" label="PSČ">
+          <StringValue>81101</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_vlastnikNehnutelnosti" label="Ste vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_byvanieVMestskomNajomnomByte" label="Bývate v mestskom nájomnom byte v Bratislave?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_pobytVBratislaveViacAkoRok" label="Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_osobneUdaje_adresaTrvalehoPobytu_adresaSkutocnehoPobytuRovnaka" label="Je adresa skutočného pobytu rovnaká ako adresa trvalého pobytu?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_sucasneByvanie_bytovaNudza" label="Nachádzate sa v bytovej núdzi?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_sucasneByvanie_typByvania" label="Typ bývania">
+          <StringValue>Bývanie v inštitucionálnej starostlivosti</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_sucasneByvanie_dlzkaBytovejNudze" label="Uveďte, ako dlho trvá vaša bytová núdza">
+          <StringValue>Menej ako 1 rok</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_zamestnanie" label="Boli ste v minulom kalendárnom roku zamestnaný/á?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
+          <StringValue>1200</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_samostatnaZarobkovaCinnost" label="Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_dochodok" label="Poberali ste v minulom kalendárnom roku dôchodok?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_vyzivne" label="Poberali ste v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_vyzivneVyska" label="Mesačná výška sumy výživného na dieťa/deti">
+          <StringValue>200</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_davkaVNezamestnanosti" label="Poberali ste v minulom kalendárnom roku dávku v nezamestnanosti?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_inePrijmy" label="Poberali ste v minulom kalendárnom roku iné príjmy?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_prijem_inePrijmyVyska" label="Iné pravidelné mesačné príjmy">
+          <StringValue>150</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_zdravotnyStav_tzpPreukaz" label="Ste držiteľom preukazu ŤZP?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_zdravotnyStav_chronickeOchorenie" label="Trpíte chronickým ochorením?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_zdravotnyStav_existujuceDiagnozy" label="Máte niektorú z týchto diagnóz?">
+          <StringValue>Astma</StringValue>
+          <StringValue>Chronická paradentóza</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_zdravotnyStav_bezbarierovyByt" label="Uchádzate sa o pridelenie bezbariérového bytu?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_rizikoveFaktory_rizikoveFaktoryPritomne" label="Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_rizikoveFaktory_zoznamRizikovychFaktorov" label="Označte rizikové faktory">
+          <StringValue>Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko</StringValue>
+          <StringValue>Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.</StringValue>
+        </Field>
+        <Field id="root_ziadatelZiadatelka_rizikoveFaktory_vekNajstarsiehoClena" label="Zvoľte vek najstaršieho člena domácnosti">
+          <StringValue>menej ako 63 rokov</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_manzelManzelka" title="Manžel/manželka">
+        <Field id="root_manzelManzelka_manzelManzelkaSucastouDomacnosti" label="Bude súčasťou budúcej domácnosti aj váš manžel/manželka?">
+          <StringValue>Nie</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_druhDruzka" title="Druh/družka">
+        <Field id="root_druhDruzka_druhDruzkaSucastouDomacnosti" label="Bude súčasťou budúcej domácnosti aj váš druh/družka?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_menoPriezvisko_meno" label="Meno">
+          <StringValue>Peter</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_menoPriezvisko_priezvisko" label="Priezvisko">
+          <StringValue>Horváth</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_rodnePriezvisko" label="Rodné priezvisko">
+          <StringValue>Horváth</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_datumNarodenia" label="Dátum narodenia">
+          <StringValue>22. 7. 1982</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
+          <StringValue>Slovenská</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_rodinnyStav" label="Rodinný stav">
+          <StringValue>Slobodný/slobodná</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_adresaSkutocnehoPobytu_ulicaACislo" label="Ulica a číslo">
+          <StringValue>Nová 456</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_adresaSkutocnehoPobytu_mestoPsc_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_adresaSkutocnehoPobytu_mestoPsc_psc" label="PSČ">
+          <StringValue>82105</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_osobneUdaje_adresaSkutocnehoPobytu_vlastnikNehnutelnosti" label="Je váš druh/družka vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho druha/družky rovnaká ako vaša?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_zamestnanie" label="Bol váš druh/družka v minulom kalendárnom roku zamestnaný/á?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
+          <StringValue>1500</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnostPrijem" label="Mesačný príjem z podnikania">
+          <StringValue>300</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_dochodok" label="Poberal/poberala v minulom kalendárnom roku dôchodok?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_vyzivne" label="Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_davkaVNezamestnanosti" label="Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
+          <StringValue>Nie</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_druhDruzka_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
+          <StringValue>Od 50 % do 74 %</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_deti" title="Nezaopatrené deti do 25 rokov">
+        <Field id="root_deti_detiSucastouDomacnosti" label="Bude súčasťou budúcej domácnosti aj vaše dieťa/deti?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Array id="root_deti_zoznamDeti" title="Deti">
+          <ArrayItem id="root_deti_zoznamDeti_0" title="Dieťa č. 1">
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_menoPriezvisko_meno" label="Meno">
+              <StringValue>Lucia</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_menoPriezvisko_priezvisko" label="Priezvisko">
+              <StringValue>Nováková</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_datumNarodenia" label="Dátum narodenia">
+              <StringValue>30. 11. 2010</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
+              <StringValue>Slovenská</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho dieťaťa rovnaká ako vaša?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_prijem_maPrijem" label="Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_0_zdravotnyStav_chronickeOchorenie" label="Trpí chronickým ochorením?">
+              <StringValue>Nie</StringValue>
+            </Field>
+          </ArrayItem>
+          <ArrayItem id="root_deti_zoznamDeti_1" title="Dieťa č. 2">
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_menoPriezvisko_meno" label="Meno">
+              <StringValue>Michal</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_menoPriezvisko_priezvisko" label="Priezvisko">
+              <StringValue>Novák</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_datumNarodenia" label="Dátum narodenia">
+              <StringValue>18. 4. 2005</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
+              <StringValue>Slovenská</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho dieťaťa rovnaká ako vaša?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_prijem_maPrijem" label="Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_prijem_prijemVyska" label="Čistý mesačný príjem dieťaťa">
+              <StringValue>200</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_deti_zoznamDeti_1_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
+              <StringValue>Od 75 % do 100 %</StringValue>
+            </Field>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_inyClenoviaClenkyDomacnosti" title="Iní členovia/členky domácnosti">
+        <Field id="root_inyClenoviaClenkyDomacnosti_inyClenoviaClenkySucastouDomacnosti" label="Budú súčasťou budúcej domácnosti aj iní členovia/členky? (zaopatrené deti, starí rodičia a pod.)">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Array id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov" title="Iní členovia/členky domácnosti">
+          <ArrayItem id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0" title="Člen/členka domácnosti č. 1">
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_menoPriezvisko_meno" label="Meno">
+              <StringValue>Mária</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_menoPriezvisko_priezvisko" label="Priezvisko">
+              <StringValue>Kováčová</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_rodnePriezvisko" label="Rodné priezvisko">
+              <StringValue>Hrušková</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_datumNarodenia" label="Dátum narodenia">
+              <StringValue>5. 9. 1960</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
+              <StringValue>Slovenská</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_rodinnyStav" label="Rodinný stav">
+              <StringValue>Vdovec/vdova</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_osobneUdaje_vlastnikNehnutelnosti" label="Je člen/členka domácnosti vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania člena/členky domácnosti rovnaká ako vaša?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_zamestnanie" label="Bol člen/členka  v minulom kalendárnom roku zamestnaný/á?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodok" label="Poberal/poberala v minulom kalendárnom roku dôchodok?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_dochodokVyska" label="Mesačná výška dôchodku">
+              <StringValue>550</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_vyzivne" label="Poberal/poberala v minulom kalendárnom roku výživné alebo náhradné výživné na dieťa/deti?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_davkaVNezamestnanosti" label="Poberal/poberala v minulom kalendárnom roku dávku v nezamestnanosti?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
+              <StringValue>Nie</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
+              <StringValue>Áno</StringValue>
+            </Field>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
+              <StringValue>Od 50 % do 74 %</StringValue>
+            </Field>
+          </ArrayItem>
+        </Array>
+      </Step>
+      <Step id="root_ineOkolnosti" title="Iné okolnosti">
+        <Field id="root_ineOkolnosti_dovodyPodaniaZiadosti" label="Prečo si podávate žiadosť?">
+          <StringValue>Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.</StringValue>
+        </Field>
+        <Field id="root_ineOkolnosti_preferovanaVelkost" label="Akú veľkosť nájomného bytu preferujete?">
+          <StringValue>3-izbový byt</StringValue>
+        </Field>
+        <Field id="root_ineOkolnosti_preferovanaLokalita" label="Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?">
+          <StringValue>Ružinov</StringValue>
+          <StringValue>Nové Mesto</StringValue>
+        </Field>
+        <Field id="root_ineOkolnosti_maximalnaVyskaNajomneho" label="Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť">
+          <StringValue>700</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_sucetPrijmovCestneVyhlasenie" title="Súčet príjmov a čestné výhlásenie">
+        <Field id="root_sucetPrijmovCestneVyhlasenie_cestneVyhlasenie" label="Čestné vyhlásenie">
+          <StringValue>Čestne vyhlasujem, že všetky údaje uvedené v žiadosti a dokumentoch na nahliadnutie sú pravdivé a úplné. Zároveň som si vedomý/á toho, že poskytnutie nepravdivých a/alebo neúplných informácií môže mať za následok nezaradenie žiadosti do evidencie žiadateľov.</StringValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+</eform>"
+`;

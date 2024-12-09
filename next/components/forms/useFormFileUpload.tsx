@@ -318,7 +318,9 @@ export const useGetContext = () => {
   }
 }
 
-const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormFileUploadProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

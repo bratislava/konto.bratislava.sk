@@ -1,3 +1,5 @@
+import { EnumMetadata } from './optionItems'
+
 export type CustomComponentAccordionProps = {
   title: string
   content: string
@@ -10,11 +12,12 @@ export type CustomComponentAdditionalLinksProps = {
   }[]
 }
 
-export type CustomComponentPropertyCalculator = {
+export type CustomComponentCalculator = {
   label: string
   formula: string
   missingFieldsMessage: string
   unit: string
+  unitMarkdown?: boolean
   /**
    * The dataContextLevelsUp is an optional parameter that specifies the number of levels to go up in the JSON data
    * context for formula in hierarchy from the current position. This is useful when you want to retrieve or access data
@@ -28,10 +31,10 @@ export type CustomComponentAlertProps = {
   message: string
 }
 
-export type CustomComponentPropertyCalculatorProps = {
+export type CustomComponentCalculatorProps = {
   label?: string
   variant: 'white' | 'black'
-  calculators: CustomComponentPropertyCalculator[]
+  calculators: CustomComponentCalculator[]
 }
 
 export type CustomComponentType =
@@ -44,8 +47,8 @@ export type CustomComponentType =
       props: CustomComponentAdditionalLinksProps
     }
   | {
-      type: 'propertyTaxCalculator'
-      props: CustomComponentPropertyCalculatorProps
+      type: 'calculator'
+      props: CustomComponentCalculatorProps
     }
   | {
       type: 'alert'
@@ -64,7 +67,9 @@ export type WidgetSpacing = {
 export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
-  helptextHeader?: string
+  helptextMarkdown?: boolean
+  helptextFooter?: string
+  helptextFooterMarkdown?: boolean
   className?: string
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
@@ -73,6 +78,7 @@ export type WidgetUiOptions = WidgetSpacing & {
 }
 
 export type CheckboxGroupUiOptions = {
+  enumMetadata: EnumMetadata<string>[]
   variant?: 'basic' | 'boxed'
 } & WidgetUiOptions
 
@@ -83,34 +89,25 @@ export type CheckboxUiOptions = {
 
 export type DatePickerUiOptions = WidgetUiOptions
 
+export type InputUiOptionsInputType = 'text' | 'password' | 'email' | 'tel'
+
 export type InputUiOptions = {
-  type?: 'text' | 'password' | 'email' | 'tel'
+  inputType: InputUiOptionsInputType
   resetIcon?: boolean
-  leftIcon?: 'person' | 'mail' | 'call' | 'lock'
+  leftIcon?: 'person' | 'mail' | 'call' | 'lock' | 'euro'
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'type'>
-
-type RadioOption = {
-  value: string
-  description?: string
-}
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
 
 export type RadioGroupUiOptions = {
-  className?: string
-  radioOptions?: RadioOption[]
+  enumMetadata: EnumMetadata<string | boolean>[]
   variant?: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-type SelectOption = {
-  title: string
-  description?: string
-}
-
 export type SelectUiOptions = {
-  selectOptions?: Record<string, SelectOption>
+  enumMetadata: EnumMetadata<string>[]
   placeholder?: string
 } & WidgetUiOptions
 
@@ -131,6 +128,7 @@ export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | '
 export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
   hideTitle?: boolean
   description?: string
+  descriptionMarkdown?: boolean
   addButtonLabel: string
   itemTitle?: string
   cannotAddItemMessage?: string
@@ -151,6 +149,7 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
     objectDisplay?: 'wrapper' | 'boxed'
     title?: string
     description?: string
+    descriptionMarkdown?: boolean
   } & (
     | {
         columns?: false
@@ -170,7 +169,6 @@ export type StepUiOptions = {
 }
 
 export type SchemaUiOptions = {
-  moreInformationUrl?: string
   titlePath?: string
   titleFallback?: string
 }
@@ -193,5 +191,8 @@ export enum BaWidgetType {
   FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
+}
+
+export enum BaFieldType {
   CustomComponents = 'CustomComponents',
 }

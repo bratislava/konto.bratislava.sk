@@ -9,23 +9,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { isBrowser, isProductionDeployment } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
-interface CookieOptions {
-  expires?: number | Date
-  path?: string
-  domain?: string
-  secure?: boolean
-  httpOnly?: boolean
-  sameSite?: 'strict' | 'lax' | 'none'
-}
-
-interface CookiesHandler {
-  get(name: string): string | undefined
-  set(name: string, value: string, options?: CookieOptions): void
-  remove(name: string, options?: CookieOptions): void
-}
-
-const cookiesHandler: CookiesHandler = Cookies as unknown as CookiesHandler
-
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)
 
@@ -39,7 +22,7 @@ export const CookiesAndTracking = () => {
 
   const refresh = useCallback(async () => {
     try {
-      const consentValue = cookiesHandler.get('gdpr-consents')
+      const consentValue = Cookies.get('gdpr-consents')
       if (!consentValue || typeof consentValue !== 'string') {
         setBannerDismissed(false)
         return
@@ -65,7 +48,7 @@ export const CookiesAndTracking = () => {
       if (typeof value !== 'object') return
       const consentValue = pickConsents(value)
       const mergedConsents = { ...consents, ...consentValue }
-      cookiesHandler.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
+      Cookies.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
       setConsentsState(mergedConsents)
     },
     [consents],
@@ -73,13 +56,16 @@ export const CookiesAndTracking = () => {
 
   const { t } = useTranslation(['common'])
 
+  const thirdPartyScriptsAllowed = isProductionDeployment()
+  const hotjarAllowed = thirdPartyScriptsAllowed && consents?.statistics
+
   return (
     <>
       {/* all 3rd party scrips loading here */}
       {/* don't use any of the analytics/tracking in staging/dev - change this if you need testing */}
-      {isProductionDeployment() ? (
+      {thirdPartyScriptsAllowed ? (
         <>
-          {consents?.statistics ? (
+          {hotjarAllowed ? (
             <Script
               id="hotjar"
               strategy="afterInteractive"
@@ -108,6 +94,8 @@ export const CookiesAndTracking = () => {
               <a
                 href={t('cookie_consent_privacy_policy_link')}
                 className="cursor-pointer font-semibold underline"
+                target="_blank"
+                rel="noreferrer"
               >
                 {' '}
                 {t('cookie_consent_privacy_policy')}{' '}

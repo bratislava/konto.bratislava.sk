@@ -3,9 +3,10 @@ import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
 
-import { removeUndefinedValues } from './helpers'
+import { getInputTypeForAjvFormat, removeUndefinedValues } from './helpers'
 import {
   ArrayFieldUiOptions,
+  BaFieldType,
   BaWidgetType,
   CheckboxGroupUiOptions,
   CheckboxUiOptions,
@@ -14,7 +15,6 @@ import {
   DatePickerUiOptions,
   FileUploadUiOptions,
   InputUiOptions,
-  markdownTextPrefix,
   NumberUiOptions,
   ObjectFieldUiOptions,
   RadioGroupUiOptions,
@@ -24,6 +24,14 @@ import {
   TextAreaUiOptions,
   TimePickerUiOptions,
 } from './uiOptionsTypes'
+import { BaAjvInputFormat } from '../form-utils/ajvFormats'
+import {
+  createEnumMetadata,
+  createEnumSchemaDefault,
+  createEnumSchemaDefaultMultiple,
+  createEnumSchemaEnum,
+  OptionItem,
+} from './optionItems'
 
 export type Schemas = {
   schema: RJSFSchema
@@ -62,37 +70,23 @@ type BaseOptions = {
 export const select = (
   property: string,
   options: BaseOptions & {
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    items: OptionItem<string>[]
   },
-  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
+  uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
     schema: removeUndefinedValues({
       type: 'string',
       title: options.title,
-      // This had to be changed from oneOf to enum because of this bug:
-      // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
-      // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
-      // Form validation failed
-      // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
-      enum: options.options.map(({ value }) => value),
-      default: options.options.find(({ isDefault }) => isDefault)?.value,
+      enum: createEnumSchemaEnum(options.items),
+      default: createEnumSchemaDefault(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Select,
       'ui:options': {
         ...uiOptions,
-        selectOptions: Object.fromEntries(
-          options.options.map(
-            ({ value, title, description }) => [value, { title, description }] as const,
-          ),
-        ),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -104,14 +98,9 @@ export const selectMultiple = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    items: OptionItem<string>[]
   },
-  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
+  uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
@@ -120,27 +109,18 @@ export const selectMultiple = (
       title: options.title,
       items: {
         type: 'string',
-        // This had to be changed from oneOf to enum because of this bug:
-        // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
-        // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
-        // Form validation failed
-        // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
-        enum: options.options.map(({ value }) => value),
+        enum: createEnumSchemaEnum(options.items),
       },
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       uniqueItems: true,
-      default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
+      default: createEnumSchemaDefaultMultiple(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.SelectMultiple,
       'ui:options': {
         ...uiOptions,
-        selectOptions: Object.fromEntries(
-          options.options.map(
-            ({ value, title, description }) => [value, { title, description }] as const,
-          ),
-        ),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -149,63 +129,45 @@ export const selectMultiple = (
 
 export const input = (
   property: string,
-  options: BaseOptions &
-    (
-      | {
-          type?: 'text'
-          format?: 'ba-slovak-zip' | 'ba-ratio' | 'ba-ico' | 'ba-iban'
-          pattern?: RegExp
-        }
-      | {
-          type: 'password' | 'email' | 'tel'
-        }
-    ) & { default?: string },
-  uiOptions: Omit<InputUiOptions, 'type'>,
+  options: BaseOptions & {
+    type: 'text' | 'password' | 'email' | BaAjvInputFormat
+    default?: string
+  },
+  uiOptions: Omit<InputUiOptions, 'inputType'>,
 ): Field => {
-  if ('pattern' in options && 'format' in options) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `Input: ${property} has both pattern and format, only one of them can be provided`,
-    )
-  }
-
-  const getFormat = () => {
-    if (options.type == null || options.type === 'text') {
-      return options.format
-    }
+  const { inputType, format } = (() => {
     if (options.type === 'email') {
-      return 'email'
-    }
-    if (options.type === 'tel') {
-      return 'ba-phone-number'
-    }
-
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    return undefined
-  }
-
-  const getPattern = () => {
-    if (options.type == null || options.type === 'text') {
-      return options.pattern?.source
+      return {
+        inputType: 'email',
+        format: 'email',
+      }
     }
 
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    return undefined
-  }
+    if (options.type === 'text' || options.type === 'password') {
+      return {
+        inputType: options.type,
+        format: undefined,
+      }
+    }
+
+    return {
+      inputType: getInputTypeForAjvFormat(options.type),
+      format: options.type,
+    }
+  })()
 
   return {
     property,
     schema: removeUndefinedValues({
       type: 'string',
       title: options.title,
-      format: getFormat(),
-      pattern: getPattern(),
+      format,
       default: options.default,
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Input,
       'ui:label': false,
-      'ui:options': { ...uiOptions, type: options.type ?? 'text' },
+      'ui:options': { ...uiOptions, inputType },
     }),
     required: Boolean(options.required),
   }
@@ -243,43 +205,29 @@ export const number = (
   }
 }
 
-type StringToType<T> = T extends 'string'
-  ? string
-  : T extends 'number'
-    ? number
-    : T extends 'boolean'
-      ? boolean
-      : never
+type StringToType<T> = T extends 'string' ? string : T extends 'boolean' ? boolean : never
 
-export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
+export const radioGroup = <ValueType extends 'string' | 'boolean'>(
   property: string,
   options: BaseOptions & {
-    type: T
-    options: {
-      value: StringToType<T>
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    type: ValueType
+    items: OptionItem<StringToType<ValueType>>[]
   },
-  uiOptions: Omit<RadioGroupUiOptions, 'radioOptions'>,
+  uiOptions: Omit<RadioGroupUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
     schema: removeUndefinedValues({
       type: options.type,
       title: options.title,
-      default: options.options.find(({ isDefault }) => isDefault)?.value,
-      oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
+      enum: createEnumSchemaEnum(options.items),
+      default: createEnumSchemaDefault(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.RadioGroup,
       'ui:options': {
         ...uiOptions,
-        radioOptions: options.options
-          // These are only used as a lookup for the description, so we need only those that have it
-          .filter(({ description }) => description)
-          .map(({ value, description }) => ({ value, description })),
+        enumMetadata: createEnumMetadata(options.items),
       },
     }),
     required: Boolean(options.required),
@@ -305,7 +253,7 @@ export const textArea = (
 
 export const checkbox = (
   property: string,
-  options: BaseOptions & { default?: boolean },
+  options: BaseOptions & { default?: boolean; constValue?: boolean },
   uiOptions: CheckboxUiOptions,
 ): Field => {
   return {
@@ -314,6 +262,7 @@ export const checkbox = (
       type: 'boolean',
       title: options.title,
       default: options.default,
+      const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.Checkbox,
@@ -328,14 +277,9 @@ export const checkboxGroup = (
   options: BaseOptions & {
     minItems?: number
     maxItems?: number
-    options: {
-      value: string
-      title: string
-      description?: string
-      isDefault?: boolean
-    }[]
+    items: OptionItem<string>[]
   },
-  uiOptions: CheckboxGroupUiOptions,
+  uiOptions: Omit<CheckboxGroupUiOptions, 'enumMetadata'>,
 ): Field => {
   return {
     property,
@@ -346,13 +290,16 @@ export const checkboxGroup = (
       maxItems: options.maxItems,
       uniqueItems: true,
       items: {
-        anyOf: options.options.map(({ value, title }) => ({ const: value, title })),
+        enum: createEnumSchemaEnum(options.items),
       },
-      default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
+      default: createEnumSchemaDefaultMultiple(options.items),
     }),
     uiSchema: removeUndefinedValues({
       'ui:widget': BaWidgetType.CheckboxGroup,
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        enumMetadata: createEnumMetadata(options.items),
+      },
     }),
     required: Boolean(options.required),
   }
@@ -435,33 +382,32 @@ export const timePicker = (
   }
 }
 
-let customComponentCounter = 0
-
 /**
  * This is a special field that represents no data in the schema. It is a "hacky way", but the easiest how to display
  * custom components in the UI anywhere we need.
  */
 export const customComponentsField = (
+  property: string,
   customComponents: CustomComponentType | CustomComponentType[],
   uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
-): Field => {
-  customComponentCounter += 1
-  return {
-    // Random property name to avoid collisions
-    property: `customComponent${customComponentCounter}_gRbYIKNcAF`,
-    schema: removeUndefinedValues({
-      anyOf: [{}],
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.CustomComponents,
-      'ui:options': {
-        ...uiOptions,
-        customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
-      },
-    }),
-    required: false,
-  }
-}
+): Field => ({
+  property,
+  // This is probably the best way how to represent no data in the schema, but still have the field in the UI.
+  schema: removeUndefinedValues({
+    anyOf: [{}],
+  }),
+  uiSchema: removeUndefinedValues({
+    'ui:field': BaFieldType.CustomComponents,
+    'ui:options': {
+      ...uiOptions,
+      customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
+    },
+    // If this wouldn't be present, the RJSF will render the field in place of `customComponent__anyOf_select`, now it
+    // is rendered directly where it should be.
+    'ui:fieldReplacesAnyOrOneOf': true,
+  }),
+  required: false,
+})
 
 /**
  * Object is the most complex field type to handle. For example, step is an instance of object. In JSONSchema, ordinary
@@ -482,12 +428,18 @@ export const object = (
   const conditionalFields = filteredFields.filter(
     (field) => 'condition' in field,
   ) as ConditionalFields[]
-  const fieldProperties = uniq(
-    filteredFields
-      .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
-      .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
-      .filter((field) => field !== null) as string[],
-  )
+  const fieldProperties = filteredFields
+    .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
+    .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
+    .filter((field) => field !== null) as string[]
+
+  if (fieldProperties.length !== uniq(fieldProperties).length) {
+    throw new Error(
+      `Field properties must be unique, but there are duplicates: ${fieldProperties
+        .filter((field, index) => fieldProperties.indexOf(field) !== index)
+        .join(', ')}`,
+    )
+  }
 
   const getSchema = () => {
     const allOf = conditionalFields.map((field) => ({
@@ -645,11 +597,10 @@ export const conditionalFields = (
 
   const intersectionProperties = intersection(thenFieldProperties, elseFieldProperties)
   if (intersectionProperties.length > 0) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `Conditional fields: ${intersectionProperties.join(
+    throw new Error(
+      `Field properties must be unique, but there are duplicates between then and else fields: ${intersectionProperties.join(
         ', ',
-      )} is in both then and else uiSchema, it will be overwritten by the else uiSchema`,
+      )}`,
     )
   }
 
@@ -671,15 +622,21 @@ export const schema = (
     description?: string
   },
   uiOptions: SchemaUiOptions,
-  steps: ReturnType<typeof step | typeof conditionalStep>[],
+  steps: (ReturnType<typeof step | typeof conditionalStep> | null)[],
 ): Schemas => {
+  const filteredSteps = steps.filter((stepInner) => stepInner != null) as ReturnType<
+    typeof step | typeof conditionalStep
+  >[]
+
   return {
     schema: removeUndefinedValues({
       ...options,
-      allOf: steps.map((stepInner) => stepInner.schema),
+      allOf: filteredSteps.map((stepInner) => stepInner.schema),
     }) as RJSFSchema,
     uiSchema: removeUndefinedValues({
-      ...Object.fromEntries(steps.map((stepInner) => [stepInner.property, stepInner.uiSchema])),
+      ...Object.fromEntries(
+        filteredSteps.map((stepInner) => [stepInner.property, stepInner.uiSchema]),
+      ),
       'ui:options': uiOptions,
       'ui:hideError': true,
     }) as UiSchema,
@@ -695,9 +652,3 @@ export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
 export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
   return { ...field, skipSchema: true }
 }
-
-/**
- * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
- * detect that it is markdown when used in component.
- */
-export const markdownText = (text: string) => `${markdownTextPrefix}${text}`

@@ -11,7 +11,14 @@ import {
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
-export class JsonConvertRequestDto {
+export class GetSignerDataRequestDto {
+  @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
   @IsObject()
   @ApiProperty({
     description: 'Form values in JSON',
@@ -23,24 +30,17 @@ export class JsonConvertRequestDto {
 }
 
 export class JsonToXmlV2RequestDto {
-  @ApiPropertyOptional({
-    description: 'Form id. If jsonData is not provided, this is required.',
+  @ApiProperty({
+    description: 'Form id',
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
   })
   @IsUUID()
-  @IsOptional()
-  formId?: string
-
-  @ApiProperty({
-    description: 'Slug of the form definition',
-    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
-  })
-  @IsString()
-  slug: string
+  formId: string
 
   @IsObject()
   @ApiPropertyOptional({
-    description: 'Form values in JSON',
+    description:
+      'JSON form values, if not provided the form data from the database will be used.',
     example: JSON_FORM_EXAMPLE,
   })
   @IsNotEmpty()
@@ -50,11 +50,18 @@ export class JsonToXmlV2RequestDto {
 
 export class XmlToJsonRequestDto {
   @ApiProperty({
+    description: 'Form id',
+    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+  })
+  @IsUUID()
+  formId: string
+
+  @ApiProperty({
     description: 'Form values in XML',
     example: XML_FORM_EXAMPLE,
   })
   @IsString()
-  xmlForm!: string
+  xmlForm: string
 }
 
 export class XmlToJsonResponseDto {

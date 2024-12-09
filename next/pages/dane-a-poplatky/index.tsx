@@ -7,7 +7,9 @@ import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
+import { AccountType } from 'frontend/dtos/accountDto'
 
 import TaxesFeesSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeesSection'
@@ -52,12 +54,22 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [taxesData, taxAdministrator, strapiTax] = await Promise.all([
+      const [taxesData, taxAdministrator, strapiTax, accountType] = await Promise.all([
         getTaxes(getAccessToken),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        fetchUserAttributes(amplifyContextSpec).then(
+          (response) => response?.['custom:account_type'],
+        ),
         prefetchUserQuery(queryClient, getAccessToken),
       ])
+
+      // Hide taxes and fees section for legal entities
+      if (
+        accountType === AccountType.FyzickaOsobaPodnikatel ||
+        accountType === AccountType.PravnickaOsoba
+      )
+        return { notFound: true }
 
       if (!strapiTax) {
         return { notFound: true }

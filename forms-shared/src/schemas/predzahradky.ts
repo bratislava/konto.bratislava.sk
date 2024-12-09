@@ -2,7 +2,6 @@ import {
   conditionalFields,
   fileUpload,
   input,
-  markdownText,
   object,
   radioGroup,
   schema,
@@ -10,17 +9,14 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import { createCondition, createStringItems } from '../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 
 export default schema(
   {
     title: 'Predzáhradky',
   },
-  {
-    moreInformationUrl:
-      'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/predzahradky',
-  },
+  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       object(
@@ -52,9 +48,9 @@ export default schema(
             type: 'string',
             title: 'Mám záujem o',
             required: true,
-            options: [
-              { value: 'nova', title: 'Vytvorenie novej predzáhradky', isDefault: true },
-              { value: 'existujuca', title: 'Registrácia existujúcej predzáhradky' },
+            items: [
+              { value: 'nova', label: 'Vytvorenie novej predzáhradky', isDefault: true },
+              { value: 'existujuca', label: 'Registrácia existujúcej predzáhradky' },
             ],
           },
           {
@@ -76,7 +72,7 @@ export default schema(
           {
             title: 'Mestská časť, v ktorej sa pozemok nachádza',
             required: true,
-            options: createStringOptions(
+            items: createStringItems(
               [
                 'Čunovo',
                 'Devín',
@@ -105,9 +101,10 @@ export default schema(
           'parcelneCislo',
           { title: 'Číslo parcely', required: true, type: 'text' },
           {
-            helptextHeader: markdownText(
+            helptext:
               'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.',
-            ),
+            helptextMarkdown: true,
+
             size: 'medium',
           },
         ),
@@ -132,7 +129,7 @@ export default schema(
             },
             {
               placeholder: 'Popíšte',
-              helptextHeader: 'Popíšte rozloženie jednotlivých prvkov predzáhradky.',
+              helptext: 'Popíšte rozloženie jednotlivých prvkov predzáhradky.',
             },
           ),
           input(
@@ -146,7 +143,7 @@ export default schema(
           { title: 'Iné', required: true },
           {
             placeholder: 'Popíšte',
-            helptextHeader:
+            helptext:
               'Ak by ste nám chceli ešte niečo v súvislosti s predzáhradkou napísať, tu je na to priestor.',
           },
         ),
@@ -172,8 +169,7 @@ export default schema(
         { title: 'Projekt predzáhradky' },
         {
           type: 'dragAndDrop',
-          helptextHeader:
-            'Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.',
+          helptext: 'Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.',
         },
       ),
       fileUpload('inePrilohy', { title: 'Iné' }, { type: 'dragAndDrop' }),

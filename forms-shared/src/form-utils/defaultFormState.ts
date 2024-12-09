@@ -3,11 +3,10 @@ import {
   GenericObjectType,
   getDefaultFormState,
   RJSFSchema,
-  ValidatorType,
 } from '@rjsf/utils'
-
-import { baRjsfValidator } from './validators'
 import { isEqual } from 'lodash'
+import { BaRjsfValidatorRegistry } from './validatorRegistry'
+import { baFastMergeAllOf } from './fastMergeAllOf'
 
 /**
  * Detects schema of `fileUpload` with `multiple: true`.
@@ -52,6 +51,14 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
  *
  * This should be a default behavior, but the maintainers decided to keep it as an experimental feature as it would be
  * a breaking change.
+ *
+ * `constAsDefaults` strategy:
+ * According to JSON Schema spec, the only suitable value for const is the value itself, therefore RJSF adopted that
+ * the const fields would be pre-filled with the value itself. This is not suitable for our use case, as we use the const
+ * for agreement checkboxes and user has to explicitly check them.
+ *
+ * Context:
+ * https://github.com/rjsf-team/react-jsonschema-form/issues/4344
  */
 export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: {
@@ -59,21 +66,23 @@ export const baDefaultFormStateBehavior: Experimental_DefaultFormStateBehavior =
     computeSkipPopulate: (validator, schema) => isFileMultipleSchema(schema),
   },
   allOf: 'populateDefaults',
+  constAsDefaults: 'never',
 }
 
 export const baGetDefaultFormState = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   rootSchema?: RJSFSchema,
-  customValidator?: ValidatorType,
 ) =>
   getDefaultFormState(
-    customValidator ?? baRjsfValidator,
+    validatorRegistry.getValidator(schema),
     schema,
     formData,
     rootSchema,
     undefined,
     baDefaultFormStateBehavior,
+    baFastMergeAllOf,
   )
 
 /**
@@ -88,15 +97,25 @@ export const baGetDefaultFormState = (
 export const baGetDefaultFormStateStable = (
   schema: RJSFSchema,
   formData: GenericObjectType,
+  validatorRegistry: BaRjsfValidatorRegistry,
   rootSchema?: RJSFSchema,
-  customValidator?: ValidatorType,
   maxIterations: number = 10,
 ) => {
   let currentFormData = formData
   let iteration = 0
+  const validator = validatorRegistry.getValidator(schema)
+  // For subsequent calls we want to reuse the same validator, so we create a new registry with the same validator
+  const reuseValidatorRegistry = {
+    getValidator: () => validator,
+  }
 
   while (iteration < maxIterations) {
-    const newFormData = baGetDefaultFormState(schema, currentFormData, rootSchema, customValidator)
+    const newFormData = baGetDefaultFormState(
+      schema,
+      currentFormData,
+      reuseValidatorRegistry,
+      rootSchema,
+    )
 
     if (isEqual(currentFormData, newFormData)) {
       return newFormData

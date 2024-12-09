@@ -281,7 +281,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             <Spinner size="sm" />
           </>
         ) : (
-          icon ?? children
+          (icon ?? children)
         )}
         {!isLoading && endIcon}
       </button>

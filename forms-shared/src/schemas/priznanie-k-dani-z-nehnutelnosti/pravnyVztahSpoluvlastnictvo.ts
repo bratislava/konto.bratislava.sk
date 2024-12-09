@@ -1,7 +1,7 @@
 import { conditionalFields, fileUpload, number, radioGroup } from '../../generator/functions'
 import {
-  createCamelCaseOptions,
-  createCamelCaseOptionsV2,
+  createCamelCaseItems,
+  createCamelCaseItemsV2,
   createCondition,
 } from '../../generator/helpers'
 import { StepEnum } from './stepEnum'
@@ -13,7 +13,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       type: 'string',
       title: 'Právny vzťah',
       required: true,
-      options: createCamelCaseOptions(
+      items: createCamelCaseItems(
         step === StepEnum.DanZBytovANebytovychPriestorov
           ? ['Vlastník', 'Správca']
           : ['Vlastník', 'Správca', 'Nájomca', 'Užívateľ'],
@@ -27,15 +27,15 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       type: 'string',
       title: 'Spoluvlastníctvo',
       required: true,
-      options: createCamelCaseOptionsV2([
-        { title: 'Som jediný vlastník' },
+      items: createCamelCaseItemsV2([
+        { label: 'Som jediný vlastník' },
         {
-          title: 'Podielové spoluvlastníctvo',
+          label: 'Podielové spoluvlastníctvo',
           description:
             'Nehnuteľnosť vlastníte s ďalšou/ďalšími osobou/osobami (váš podiel na LV je napr. 1/2).',
         },
         {
-          title: 'Bezpodielové spoluvlastníctvo manželov',
+          label: 'Bezpodielové spoluvlastníctvo manželov',
           description:
             'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov. Údaje o manželovi/manželke zadáte na konci tohto formulára.',
         },
@@ -51,7 +51,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 1, required: true },
         {
           size: 'medium',
-          helptext:
+          helptextFooter:
             'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2).',
         },
       ),
@@ -61,9 +61,9 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
           type: 'boolean',
           title: 'Podávate priznanie za všetkých spoluvlastníkov na základe dohody?',
           required: true,
-          options: [
-            { value: true, title: 'Áno', isDefault: true },
-            { value: false, title: 'Nie' },
+          items: [
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
           ],
         },
         {
@@ -102,7 +102,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
               },
             },
           ],
-          helptext:
+          helptextFooter:
             'Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.',
         },
       ),

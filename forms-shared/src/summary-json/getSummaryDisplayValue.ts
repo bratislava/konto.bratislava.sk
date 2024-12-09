@@ -1,16 +1,18 @@
 import { DateFormatter, parseDate } from '@internationalized/date'
 
 import { JSONSchema7 } from 'json-schema'
-import { validate, version } from 'uuid'
 
-import { BaWidgetType, CheckboxUiOptions, SelectUiOptions } from '../generator/uiOptionsTypes'
-import { WidgetProps } from '@rjsf/utils'
-import { baTimeRegex } from '../form-utils/ajvFormats'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isFileUuid(value: any): boolean {
-  return typeof value === 'string' && validate(value) && version(value) === 4
-}
+import {
+  BaWidgetType,
+  CheckboxGroupUiOptions,
+  CheckboxUiOptions,
+  RadioGroupUiOptions,
+  SelectUiOptions,
+} from '../generator/uiOptionsTypes'
+import { EnumOptionsType, WidgetProps } from '@rjsf/utils'
+import { baTimeRegex, validateBaFileUuid } from '../form-utils/ajvFormats'
+import { mergeEnumOptionsMetadata } from '../generator/optionItems'
+import { WithEnumOptions } from '../form-utils/WithEnumOptions'
 
 export enum SummaryDisplayValueType {
   String = 'String',
@@ -94,19 +96,20 @@ export const getSummaryDisplayValues = (
     return [noneValue]
   }
 
-  if (widgetType === BaWidgetType.Select) {
-    const selectUiOptions = uiOptions as SelectUiOptions
-
-    const option = selectUiOptions.selectOptions?.[value]
+  if (widgetType === BaWidgetType.Select || widgetType === BaWidgetType.RadioGroup) {
+    const uiOptionsWithType = uiOptions as WithEnumOptions<SelectUiOptions | RadioGroupUiOptions>
+    const mergedMetadata = mergeEnumOptionsMetadata(
+      uiOptionsWithType.enumOptions,
+      uiOptionsWithType.enumMetadata,
+    )
+    const option = mergedMetadata.find((optionInner) => optionInner.value === value)
     if (!option) {
       return [invalidValue]
     }
 
-    return [createStringValue(option.title)]
+    return [createStringValue(option.label)]
   }
-  if (widgetType === BaWidgetType.SelectMultiple) {
-    const selectUiOptions = uiOptions as SelectUiOptions
-
+  if (widgetType === BaWidgetType.SelectMultiple || widgetType === BaWidgetType.CheckboxGroup) {
     if (!Array.isArray(value)) {
       return [invalidValue]
     }
@@ -115,22 +118,22 @@ export const getSummaryDisplayValues = (
       return [noneValue]
     }
 
+    const uiOptionsWithType = uiOptions as (SelectUiOptions | CheckboxGroupUiOptions) & {
+      enumOptions: EnumOptionsType[]
+    }
+    const mergedMetadata = mergeEnumOptionsMetadata(
+      uiOptionsWithType.enumOptions,
+      uiOptionsWithType.enumMetadata,
+    )
+
     return value.map((item) => {
-      const option = selectUiOptions.selectOptions?.[item]
+      const option = mergedMetadata.find((optionInner) => optionInner.value === item)
       if (!option) {
         return invalidValue
       }
 
-      return createStringValue(option.title)
+      return createStringValue(option.label)
     })
-  }
-  if (widgetType === BaWidgetType.RadioGroup) {
-    const option = uiOptions.enumOptions?.find((enumOption) => enumOption.value === value)
-    if (!option) {
-      return [invalidValue]
-    }
-
-    return [createStringValue(option.label)]
   }
   if (widgetType === BaWidgetType.Input || widgetType === BaWidgetType.TextArea) {
     if (typeof value !== 'string') {
@@ -162,26 +165,8 @@ export const getSummaryDisplayValues = (
     const checkboxUiOptions = uiOptions as CheckboxUiOptions
     return value ? [createStringValue(checkboxUiOptions.checkboxLabel)] : [noneValue]
   }
-  if (widgetType === BaWidgetType.CheckboxGroup) {
-    if (!Array.isArray(value)) {
-      return [invalidValue]
-    }
-
-    if (value.length === 0) {
-      return [noneValue]
-    }
-
-    return value.map((item) => {
-      const option = uiOptions.enumOptions?.find((optionInner) => optionInner.value === item)
-      if (!option) {
-        return invalidValue
-      }
-
-      return createStringValue(option.label)
-    })
-  }
   if (widgetType === BaWidgetType.FileUpload) {
-    if (isFileUuid(value)) {
+    if (validateBaFileUuid(value)) {
       return [createFileValue(value)]
     }
 
@@ -197,7 +182,7 @@ export const getSummaryDisplayValues = (
     }
 
     return value.map((item) => {
-      if (!isFileUuid(item)) {
+      if (!validateBaFileUuid(item)) {
         return invalidValue
       }
 

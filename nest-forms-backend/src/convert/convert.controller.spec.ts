@@ -18,7 +18,6 @@
 // import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 // import ConvertController from './convert.controller'
 // import ConvertService from './convert.service'
-// import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 describe('ConvertController', () => {
   // let controller: ConvertController
@@ -30,7 +29,6 @@ describe('ConvertController', () => {
     //     SchemasService,
     //     ConvertService,
     //     TaxService,
-    //     JsonXmlConvertService,
     //     ThrowerErrorGuard,
     //     FormsHelper,
     //     ConfigService,

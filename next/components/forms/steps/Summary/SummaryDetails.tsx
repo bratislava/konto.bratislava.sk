@@ -1,6 +1,6 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
+import { useFormData } from 'components/forms/useFormData'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
-import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -13,9 +13,11 @@ import {
 } from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { useIsSSR } from 'react-aria'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
+import { useFormValidatorRegistry } from '../../useFormValidatorRegistry'
 import SummaryFile from './SummaryFile'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
@@ -27,7 +29,7 @@ const FormRenderer = ({ children }: SummaryFormRendererProps) => (
 const StepRenderer = ({ step, children }: SummaryStepRendererProps) => {
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-h3-bold">{step.title}</h2>
+      <h3 className="text-h3-bold">{step.title}</h3>
       <div>{children}</div>
     </div>
   )
@@ -135,23 +137,31 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 }
 
 const SummaryDetails = () => {
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { getValidatedSummary } = useFormSummary()
   const validatedSummary = getValidatedSummary()
   const {
     formDefinition: {
       schemas: { schema, uiSchema },
     },
+    initialSummaryJson,
   } = useFormContext()
+  const validatorRegistry = useFormValidatorRegistry()
+  const isSSR = useIsSSR()
+
   const summaryJson = useMemo(() => {
-    // `getSummaryJsonNode` must never be included in the client bundle, see description in the function.
-    // This check doesn't prevent itself from being included, it must be filtered in the webpack config.
-    if (typeof window === 'undefined') {
-      return getSummaryJsonNode(schema, uiSchema, formData)
+    if (isSSR) {
+      // Node needs to use a different method to get the summary JSON (see `getSummaryJsonNode`).
+      // No need to check if schema/formData matches the summary JSON as it is rendered only once on the server.
+      return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser(schema, uiSchema, formData)
-  }, [schema, uiSchema, formData])
+    return getSummaryJsonBrowser(schema, uiSchema, formData, validatorRegistry)
+  }, [isSSR, initialSummaryJson, schema, uiSchema, formData, validatorRegistry])
+
+  if (!summaryJson) {
+    return null
+  }
 
   return (
     <SummaryRenderer

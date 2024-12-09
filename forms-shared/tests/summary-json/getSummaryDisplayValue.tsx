@@ -21,7 +21,8 @@ import { RJSFSchema, WidgetProps } from '@rjsf/utils'
 import { withTheme } from '@rjsf/core'
 import { renderToString } from 'react-dom/server'
 import React from 'react'
-import { baFormDefaults } from '../../src/form-utils/formDefaults'
+import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
@@ -45,7 +46,13 @@ const retrieveRuntimeValues = ({ schema, uiSchema }: Field) => {
     },
   })
 
-  renderToString(<Form schema={schema} uiSchema={uiSchema} {...baFormDefaults} />)
+  renderToString(
+    <Form
+      schema={schema}
+      uiSchema={uiSchema}
+      {...getBaFormDefaults(schema, testValidatorRegistry)}
+    />,
+  )
 
   // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
   if (!retrievedSchema || !retrievedOptions) {
@@ -61,9 +68,9 @@ describe('getSummaryDisplayValues', () => {
       'selectProperty',
       {
         title: 'Select Title',
-        options: [
-          { value: 'value-1', title: 'Label 1' },
-          { value: 'value-2', title: 'Label 2' },
+        items: [
+          { value: 'value-1', label: 'Label 1' },
+          { value: 'value-2', label: 'Label 2' },
         ],
       },
       {},
@@ -96,9 +103,9 @@ describe('getSummaryDisplayValues', () => {
       'selectMultipleProperty',
       {
         title: 'Select Multiple Title',
-        options: [
-          { value: 'value-1', title: 'Label 1' },
-          { value: 'value-2', title: 'Label 2' },
+        items: [
+          { value: 'value-1', label: 'Label 1' },
+          { value: 'value-2', label: 'Label 2' },
         ],
       },
       {},
@@ -143,9 +150,9 @@ describe('getSummaryDisplayValues', () => {
       {
         title: 'Radio Group Title',
         type: 'string',
-        options: [
-          { value: 'value1', title: 'Label 1' },
-          { value: 'value2', title: 'Label 2' },
+        items: [
+          { value: 'value1', label: 'Label 1' },
+          { value: 'value2', label: 'Label 2' },
         ],
       },
       {},
@@ -209,7 +216,7 @@ describe('getSummaryDisplayValues', () => {
   })
 
   describe('Input', () => {
-    const field = input('inputProperty', { title: 'Input Title', type: 'text' }, {})
+    const field = input('inputProperty', { type: 'text', title: 'Input Title' }, {})
     const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
 
     it('returns the input string for Input widget', () => {
@@ -282,10 +289,10 @@ describe('getSummaryDisplayValues', () => {
       'checkboxGroupProperty',
       {
         title: 'Checkbox Group Title',
-        options: [
-          { value: 'option1', title: 'Title 1' },
-          { value: 'option2', title: 'Title 2' },
-          { value: 'option3', title: 'Title 3' },
+        items: [
+          { value: 'option1', label: 'Title 1' },
+          { value: 'option2', label: 'Title 2' },
+          { value: 'option3', label: 'Title 3' },
         ],
       },
       {},

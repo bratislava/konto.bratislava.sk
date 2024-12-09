@@ -1,7 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
-import Script from 'next/script'
+import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from './FormControls'
@@ -12,8 +11,10 @@ import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
 import { useFormContext } from './useFormContext'
+import { useFormData } from './useFormData'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
+import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const FormPage = () => {
   const {
@@ -22,17 +23,17 @@ const FormPage = () => {
     },
     isReadonly,
     displayHeaderAndMenu,
-    isEmbedded,
   } = useFormContext()
+  const { formData } = useFormData()
   const {
     currentStepIndex,
     currentStepperStep,
     currentStepSchema,
-    formData,
     handleFormOnSubmit,
     handleFormOnChange,
     popScrollToFieldId,
   } = useFormState()
+  const validatorRegistry = useFormValidatorRegistry()
 
   const { transformErrors } = useFormErrorTranslations()
 
@@ -51,8 +52,6 @@ const FormPage = () => {
 
   return (
     <>
-      {/* Must be copied in next.config.js to work correctly. */}
-      {isEmbedded && <Script src="/scripts/iframe-resizer-child.js" async />}
       {displayHeaderAndMenu && <FormHeader />}
       <div
         className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
@@ -66,45 +65,37 @@ const FormPage = () => {
           {currentStepperStep.index === 'summary' ? (
             <FormSummary />
           ) : (
-            <>
-              <div className="mb-8 flex flex-col gap-4">
-                <h2 className="text-h2 font-semibold">{currentStepperStep.title}</h2>
-                {currentStepperStep.description && (
-                  <p className="text-p1">{currentStepperStep.description}</p>
-                )}
-              </div>
-              <ThemedForm
-                // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
-                // is needed or not, but ensures 100% safety.
-                key={`form-step-${currentStepperStep.index}`}
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                schema={currentStepSchema!}
-                uiSchema={uiSchema}
-                formData={formData}
-                readonly={isReadonly}
-                onSubmit={(e) => {
-                  handleFormOnSubmit(e.formData)
-                }}
-                onChange={(e) => {
-                  handleFormOnChange(e.formData)
-                }}
-                transformErrors={transformErrors}
-                showErrorList={false}
-                // This removes the extra conditional data for the current step, for removing the steps themselves see
-                // `handleFormOnChange` implementation.
-                omitExtraData
-                liveOmit
-                // HTML validation doesn't work for our use case, therefore it's turned off.
-                noHtml5Validate
-                {...baFormDefaults}
-              >
-                {
-                  // returning null would make RJSF render the default submit button
-                  // eslint-disable-next-line react/jsx-no-useless-fragment
-                  isReadonly ? <></> : <FormControls />
-                }
-              </ThemedForm>
-            </>
+            <ThemedForm
+              // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
+              // is needed or not, but ensures 100% safety.
+              key={`form-step-${currentStepperStep.index}`}
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              schema={currentStepSchema!}
+              uiSchema={uiSchema}
+              formData={formData}
+              readonly={isReadonly}
+              onSubmit={(e) => {
+                handleFormOnSubmit(e.formData)
+              }}
+              onChange={(e) => {
+                handleFormOnChange(e.formData)
+              }}
+              transformErrors={transformErrors}
+              showErrorList={false}
+              // This removes the extra conditional data for the current step, for removing the steps themselves see
+              // `handleFormOnChange` implementation.
+              omitExtraData
+              liveOmit
+              // HTML validation doesn't work for our use case, therefore it's turned off.
+              noHtml5Validate
+              {...getBaFormDefaults(currentStepSchema!, validatorRegistry)}
+            >
+              {
+                // returning null would make RJSF render the default submit button
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                isReadonly ? <></> : <FormControls />
+              }
+            </ThemedForm>
           )}
           {displayHeaderAndMenu && <MenuList />}
         </div>

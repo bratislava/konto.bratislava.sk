@@ -170,9 +170,9 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Online lístky na kúpaliská",
-    "announcement_card_text_first": "Otvorili sme mestské kúpaliská! Kúpte si lístok alebo permanentku online a ušetrite nie len čas strávený v rade, ale aj peniaze. Užite si zlaté časy pri vode. ",
-    "announcement_card_button_first": "Viac informácií",
+    "announcement_card_title_first": "Žiadosť o nájom bytu",
+    "announcement_card_text_first": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
+    "announcement_card_button_first": "Mám záujem",
     "announcement_card_title_second": "Založte si komunitnú záhradu",
     "announcement_card_text_second": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
     "announcement_card_button_second": "Viac informácií",
@@ -403,6 +403,12 @@
         "description": "Vyplňte jednoducho priznanie s návodom a pomocnými kalkulačkami.",
         "buttonText": "Prejsť na priznanie",
         "tag": "Nová služba"
+      },
+      "44": {
+        "title": "Žiadosť o nájom bytu",
+        "description": "Možnosť podať si žiadosť o mestský nájomný byt, pri ktorej sa bude posudzovať splnenie stanovených podmienok pre pridelenie nájomného bytu.",
+        "buttonText": "Mám záujem",
+        "tag": "Nová služba"
       }
     }
   },
@@ -559,14 +565,11 @@
   "permanent_address": "Adresa trvalého pobytu",
   "correspondence_address": "Korešpondenčná adresa",
   "taxpayer_id": "Osobný identifikátor daňovníka",
-  "equips": "Vybavuje",
   "contact": "Kontakt",
   "tax_liability_breakdown": "Rozpis daňovej povinnosti",
   "land_tax": "Daň z pozemkov",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné metódy a spôsob oznámenia výšky dane",
-  "constant_symbol": "Konštantný symbol",
-  "constant_symbol_number": "8148",
   "variable_symbol": "Variabilný symbol",
   "tax_due": "Splatnosť dane",
   "card_payment": "Platba kartou",
@@ -579,7 +582,7 @@
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
-    "footer_text": "© 2023 Hlavné mesto Bratislava",
+    "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
     "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
     "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
@@ -609,7 +612,8 @@
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.  Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+      "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
     },
     "form_submit_tax": {
       "title": "Ďakujeme za odoslanie priznania",

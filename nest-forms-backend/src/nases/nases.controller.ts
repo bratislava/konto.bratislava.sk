@@ -553,12 +553,12 @@ export default class NasesController {
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
-  @UseGuards(CognitoGuard)
+  @UseGuards(new CognitoGuard(true))
   @Post('send-form/:id')
   async sendForm(
     @Param('id') id: string,
-    @UserInfo() userInfo: ResponseGdprDataDto,
-    @User() user: CognitoGetUserData,
+    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @User() user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const data = await this.nasesService.sendForm(id, userInfo, user)
     return data
@@ -718,15 +718,15 @@ export default class NasesController {
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
-  @UseGuards(CognitoGuard)
+  @UseGuards(new CognitoGuard(true))
   @Post('send-and-update-form/:id')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
-    @User() user: CognitoGetUserData,
-    @UserInfo() userInfo: ResponseGdprDataDto,
+    @User() user?: CognitoGetUserData,
+    @UserInfo() userInfo?: ResponseGdprDataDto,
   ): Promise<SendFormResponseDto> {
-    await this.nasesService.updateForm(id, data, userInfo.ico ?? null, user)
+    await this.nasesService.updateForm(id, data, userInfo?.ico ?? null, user)
 
     const returnData = await this.nasesService.sendForm(id, userInfo, user)
     return returnData

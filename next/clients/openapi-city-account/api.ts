@@ -221,6 +221,19 @@ export type GdprDataDtoCategoryEnum =
 /**
  *
  * @export
+ * @interface GetUserDataByBirthNumbersBatchResponseDto
+ */
+export interface GetUserDataByBirthNumbersBatchResponseDto {
+  /**
+   * A record of users keyed by their birth number
+   * @type {{ [key: string]: ResponseUserByBirthNumberDto; }}
+   * @memberof GetUserDataByBirthNumbersBatchResponseDto
+   */
+  users: { [key: string]: ResponseUserByBirthNumberDto }
+}
+/**
+ *
+ * @export
  * @interface ManuallyVerifyUserRequestDto
  */
 export interface ManuallyVerifyUserRequestDto {
@@ -255,6 +268,19 @@ export interface OnlySuccessDto {
    * @memberof OnlySuccessDto
    */
   success: boolean
+}
+/**
+ *
+ * @export
+ * @interface RequestBatchQueryUsersByBirthNumbersDto
+ */
+export interface RequestBatchQueryUsersByBirthNumbersDto {
+  /**
+   * Birth numbers without slash which should be retrieved from user database.
+   * @type {Array<string>}
+   * @memberof RequestBatchQueryUsersByBirthNumbersDto
+   */
+  birthNumbers: Array<string>
 }
 /**
  *
@@ -404,14 +430,11 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
@@ -457,14 +480,11 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
@@ -801,14 +821,11 @@ export const ResponseVerificationDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseVerificationDtoErrorNameEnum =
@@ -867,21 +884,18 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   InvalidCaptcha: 'INVALID_CAPTCHA',
   VerifyEidError: 'VERIFY_EID_ERROR',
   UnexpectedUpvsResponse: 'UNEXPECTED_UPVS_RESPONSE',
-  LegalEntitiesNotFound: 'LEGAL_ENTITIES_NOT_FOUND',
-  UserNotFoundInLegalEntity: 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
-  UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
   IcoNotProvided: 'ICO_NOT_PROVIDED',
   IfoNotProvided: 'IFO_NOT_PROVIDED',
-  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
+  EmptyRfoResponse: 'EMPTY_RFO_RESPONSE',
+  EmptyRpoResponse: 'EMPTY_RPO_RESPONSE',
 } as const
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
 
 /**
- *
+ * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
  * @export
  * @enum {string}
  */
@@ -1210,6 +1224,58 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetUserDataByBirthNumbersBatch: async (
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBatchQueryUsersByBirthNumbersDto' is not null or undefined
+      assertParamExists(
+        'adminControllerGetUserDataByBirthNumbersBatch',
+        'requestBatchQueryUsersByBirthNumbersDto',
+        requestBatchQueryUsersByBirthNumbersDto,
+      )
+      const localVarPath = `/admin/userdata-batch`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBatchQueryUsersByBirthNumbersDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1560,6 +1626,40 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumbersBatch']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
      * @summary Get verification data for user.
      * @param {string} email
@@ -1772,6 +1872,24 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Get user data by birthnumbers in batch.
+     * @summary Get user data
+     * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetUserDataByBirthNumbersBatch(
+      requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
+      return localVarFp
+        .adminControllerGetUserDataByBirthNumbersBatch(
+          requestBatchQueryUsersByBirthNumbersDto,
+          options,
+        )
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
      * @summary Get verification data for user.
      * @param {string} email
@@ -1898,6 +2016,26 @@ export class ADMINApi extends BaseAPI {
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetUserDataByBirthNumber(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Get user data by birthnumbers in batch.
+   * @summary Get user data
+   * @param {RequestBatchQueryUsersByBirthNumbersDto} requestBatchQueryUsersByBirthNumbersDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerGetUserDataByBirthNumbersBatch(
+    requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerGetUserDataByBirthNumbersBatch(
+        requestBatchQueryUsersByBirthNumbersDto,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath))
   }
 

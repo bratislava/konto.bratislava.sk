@@ -1,0 +1,75 @@
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# bratiska-cli manifest files
+manifest-*.y?ml
+
+/coverage-e2e
+/test-suites
+test-report.xml
+eslint-report.json
+.env
+.env.test
+.env.local
+.scannerwork
+
+/certs
+kubernetes/envs/Dev/secrets/database.yml
+kubernetes/envs/Prod/secrets/database.yml
+.gitignore
+kubernetes/envs/Staging/secrets/database.yml
+kubernetes/envs/Dev/secrets/mailgun.yml
+kubernetes/envs/Dev/secrets/payment.yml
+kubernetes/envs/Dev/secrets/cognito.yml
+kubernetes/envs/Staging/secrets/payment.yml
+kubernetes/envs/Staging/secrets/cognito.yml
+.gitignore
+kubernetes/envs/Staging/secrets/mailgun.yml
+kubernetes/envs/Dev/secrets/admin.yml
+kubernetes/envs/Staging/secrets/admin.yml
+kubernetes/envs/Prod/secrets/admin.yml
+.gitignore
+kubernetes/envs/Prod/secrets/cognito.yml
+.gitignore
+.gitignore
+kubernetes/envs/Prod/secrets/payment.yml
+kubernetes/envs/Prod/secrets/mailgun.yml
+kubernetes/envs/Dev/secrets/bloomreach.yml
+kubernetes/envs/Prod/secrets/bloomreach.yml
+kubernetes/envs/Staging/secrets/bloomreach.yml
+kubernetes/envs/Staging/secrets/noris.yml
+kubernetes/envs/Prod/secrets/noris.yml
+kubernetes/envs/Dev/secrets/noris.yml

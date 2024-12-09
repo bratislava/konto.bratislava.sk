@@ -1,4 +1,4 @@
-import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
+import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -9,7 +9,7 @@ import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
+export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
 
 export type InputFieldProps = FieldWrapperProps & {
@@ -35,7 +35,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       placeholder,
       errorMessage = [],
       helptext,
-      helptextHeader,
+      helptextMarkdown,
+      helptextFooter,
+      helptextFooterMarkdown,
       tooltip,
       required,
       value = '',
@@ -104,6 +106,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           return <PhoneIcon />
         case 'lock':
           return <LockIcon />
+        case 'euro':
+          return <EuroIcon />
         default:
           return null
       }
@@ -139,7 +143,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         descriptionProps={descriptionProps}
         required={required}
         tooltip={tooltip}

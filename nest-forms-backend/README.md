@@ -2,52 +2,57 @@
 
 ## Run locally
 
-Run from docker-compose:
+1. Run from docker-compose:
+   - RabbitMQ
+   - PostgreSQL
+2. Install dependencies in `/forms-shared`:
+   ```bash
+   npm i
+   ```
+   - `forms-shared` is used as a build package in `nest-forms-backend` and therefore needs to have dependencies installed and be built after dependencies are installed
+   - if you already have `node_modules` or `dist` folders in `forms-shared` is good to remove them before running `npm i`
+   
 
-- RabbitMQ
-- Postgresql
+3. Build `/forms-shared`:
+   ```bash
+   npm run build
+   ```
 
-Install dependencies using npm:
+4. Install dependencies in `/nest-forms-backend`:
+   ```bash
+   npm i
+   ```
 
-```bash
-npm i
-```
+5. Copy and adjust `.env` from `.env.example`
 
-copy and adjust .env from .env.example
+6. If you are using a different database or a different PostgreSQL user, adjust `DATABASE_*` env vars
 
-if you are using different database or different posgres with user, adjust `DATABASE_*` env vars
+7. Migrate database and generate Prisma files:
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
 
-Migrate database and generate prisma files
-
-```
-npx prisma migrate dev
-prisma generate
-```
-
-Start dev server
-
-```
-npm run start:dev
-```
+8. Start dev server:
+   ```bash
+   npm run start:dev
+   ```
 
 ## Test
 
-Follow the same setup as with local run.
+Follow the same setup as with the local run.
 
-Run the test suite that runs during
-
+Run the test suite:
 ```bash
 npm run test
 ```
 
-Test sending pre-filled messages (forms) to UPVS FIX server
-
+Test sending pre-filled messages (forms) to UPVS FIX server:
 ```bash
 npm run test:send-form
 ```
 
-Test pdf creation for tax form - output is written to gitignored `pdf-output` directory
-
+Test PDF creation for tax form - output is written to gitignored `pdf-output` directory:
 ```bash
 npm run test:generate-pdf
 ```

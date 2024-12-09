@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import axios from 'axios'
 import FormData from 'form-data'
+import Handlebars from 'handlebars'
 import Mailgun from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
+import nodemailer from 'nodemailer'
 
-// import { IMailgunClient } from 'mailgun.js/Interfaces'
 import {
   SendEmailInputDto,
   SendEmailVariablesDto,
 } from '../../global-dtos/mailgun.dto'
+import {
+  MailgunErrorsEnum,
+  MailgunErrorsResponseEnum,
+} from '../../global-enums/mailgun.errors.enum'
+import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import {
   MAILGUN_CONFIG,
   MAILGUN_CONFIG_FEEDBACK_URLS,
@@ -18,7 +26,12 @@ import {
 export default class MailgunService {
   mailgunClient: IMailgunClient
 
-  constructor() {
+  oloTransporter: nodemailer.Transporter
+
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
     if (
       !process.env.MAILGUN_API_KEY ||
       !process.env.MAILGUN_HOST ||
@@ -34,6 +47,19 @@ export default class MailgunService {
       username: 'api',
       key: process.env.MAILGUN_API_KEY || '',
       url: process.env.MAILGUN_HOST,
+    })
+
+    this.oloTransporter = nodemailer.createTransport({
+      host: 'smtp.office365.com',
+      port: 587,
+      secure: false, // Use TLS
+      auth: {
+        user: this.configService.getOrThrow<string>('OLO_SMTP_USERNAME'),
+        pass: this.configService.getOrThrow<string>('OLO_SMTP_PASSWORD'),
+      },
+      tls: {
+        ciphers: 'SSLv3',
+      },
     })
   }
 
@@ -103,5 +129,72 @@ export default class MailgunService {
     } catch (error) {
       console.error('ERROR to send mailgun message', error)
     }
+  }
+
+  /**
+   * Sends an email using OLO SMTP instead of Mailgun.
+   * @param data Object containing the email data which should be sent.
+   * @param oloEmailFrom The email address to send the email from.
+   * @param attachments Optional array of attachments to be sent with the email.
+   */
+  async sendOloEmail(
+    data: SendEmailInputDto,
+    oloEmailFrom: string,
+    attachments?: nodemailer.SendMailOptions['attachments'],
+  ): Promise<void> {
+    try {
+      const mailBody = await this.getFilledTemplate(
+        MAILGUN_CONFIG[data.template].template,
+        this.createEmailVariables(data),
+      )
+      await this.oloTransporter.sendMail({
+        from: `OLO <${oloEmailFrom}>`,
+        to: data.to,
+        subject: MAILGUN_CONFIG[data.template].subject,
+        // eslint-disable-next-line xss/no-mixed-html
+        html: mailBody,
+        attachments,
+      })
+    } catch (error) {
+      this.throwerErrorGuard.InternalServerErrorException(
+        MailgunErrorsEnum.SEND_OLO_MAIL_ERROR,
+        `${MailgunErrorsResponseEnum.SEND_OLO_MAIL_ERROR}: ${(error as Error).message}`,
+      )
+    }
+  }
+
+  /**
+   * Retrieves a Mailgun email template through API and fills it with provided variables using Handlebars.
+   *
+   * @async
+   * @param {string} templateName - The name of the Mailgun template to retrieve.
+   * @param {SendEmailVariablesDto} variables - An object containing variables to be inserted into the template.
+   * @returns {Promise<string>} A promise that resolves to the filled template as an html string.
+   * @throws {HttpException} Throws an error if the Mailgun template is not found.
+   */
+  async getFilledTemplate(
+    templateName: string,
+    variables: SendEmailVariablesDto,
+  ): Promise<string> {
+    const url = `https://api.eu.mailgun.net/v3/${process.env.MAILGUN_DOMAIN}/templates/${templateName}`
+    const auth = `api:${process.env.MAILGUN_API_KEY}`
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Basic ${Buffer.from(auth).toString('base64')}`,
+      },
+      params: {
+        active: true,
+      },
+    })
+    if (!response.data) {
+      throw this.throwerErrorGuard.NotFoundException(
+        MailgunErrorsEnum.TEMPLATE_NOT_FOUND,
+        `${MailgunErrorsResponseEnum.TEMPLATE_NOT_FOUND}: ${templateName}`,
+      )
+    }
+    const { template } = response.data.template.version
+
+    const compiledTemplate = Handlebars.compile(template)
+    return compiledTemplate(variables)
   }
 }

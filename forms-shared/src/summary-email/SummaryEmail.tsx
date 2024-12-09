@@ -1,5 +1,5 @@
-import React from 'react'
-import { Body, Container, Html, Row, Section, Text } from '@react-email/components'
+import React, { createContext } from 'react'
+import { Body, Container, Html, Link, Section, Text } from '@react-email/components'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -14,10 +14,24 @@ import {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
+import { FileIdInfoMap } from './renderSummaryEmail'
 
 type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
   validatedSummary: ValidatedSummary
+  fileIdInfoMap: FileIdInfoMap
+  withHtmlBodyTags: boolean
+}
+
+const FileIdInfoMapContext = createContext<FileIdInfoMap | null>(null)
+
+const useFileIdInfoMap = () => {
+  const fileIdInfoMap = React.useContext(FileIdInfoMapContext)
+  if (!fileIdInfoMap) {
+    throw new Error('useFileIdInfoMap must be used within a FileIdInfoMapContext.Provider')
+  }
+
+  return fileIdInfoMap
 }
 
 const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
@@ -29,8 +43,8 @@ const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => 
     <Text
       style={{
         fontSize: '20px',
-        fontWeight: '600',
-        marginTop: isFirst ? '0px' : '16px',
+        fontWeight: 'bold',
+        marginTop: isFirst ? '0' : '16px',
         marginBottom: '16px',
       }}
     >
@@ -41,53 +55,61 @@ const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => 
 )
 
 const FieldRenderer = ({ field, children }: SummaryFieldRendererProps) => (
-  <Row
+  <Section
     style={{
       borderBottom: '2px solid #e5e7eb',
       paddingBottom: '10px',
       marginBottom: '10px',
     }}
   >
-    <Text style={{ margin: '0px', fontWeight: '600' }}>{field.label}</Text>
+    <Text style={{ margin: '0', fontWeight: 'bold' }}>{field.label}</Text>
     {children}
-  </Row>
+  </Section>
 )
 
-const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps) => {
+const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps) => (
+  <Text
+    style={{
+      margin: '0',
+      paddingBottom: isLast ? '0' : '8px',
+      whiteSpace: 'pre-wrap',
+    }}
+  >
+    {value}
+  </Text>
+)
+
+const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
+  const fileIdInfoMap = useFileIdInfoMap()
+  const fileUrl = fileIdInfoMap[fileInfo.id].url
   return (
-    <Text
-      style={{
-        marginTop: '0px',
-        marginBottom: isLast ? '0px' : '8px',
-        whiteSpace: 'pre-wrap',
-      }}
-    >
-      {value}
+    <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>
+      {fileUrl ? <Link href={fileUrl}>{fileInfo.fileName}</Link> : fileInfo.fileName}
     </Text>
   )
 }
 
-const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>
-    {fileInfo.fileName}
-  </Text>
-)
-
 const NoneValueRenderer = ({ isLast }: SummaryNoneValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px' }}>-</Text>
+  <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>-</Text>
 )
 
 const InvalidValueRenderer = ({ isLast }: SummaryInvalidValueRendererProps) => (
-  <Text style={{ marginTop: '0px', marginBottom: isLast ? '0px' : '8px', color: '#ef4444' }}>
+  <Text
+    style={{
+      margin: '0',
+      paddingBottom: isLast ? '0' : '8px',
+      color: '#ef4444',
+    }}
+  >
     Neznáma hodnota
   </Text>
 )
 
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
-  <>
-    <Text style={{ fontWeight: '600', marginTop: '0px', marginBottom: '16px' }}>{array.title}</Text>
+  <Section>
+    <Text style={{ fontWeight: 'bold', margin: '0 0 16px 0' }}>{array.title}</Text>
     {children}
-  </>
+  </Section>
 )
 
 const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRendererProps) => (
@@ -95,19 +117,18 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
     style={{
       borderLeft: '2px solid #e5e7eb',
       paddingLeft: '16px',
-      marginTop: '0px',
-      marginBottom: isLast ? '0px' : '16px',
+      marginTop: '0',
+      marginBottom: isLast ? '0' : '16px',
     }}
   >
     <Text
       style={{
         display: 'inline-block',
-        fontWeight: '600',
+        fontWeight: 'bold',
         backgroundColor: '#f3f4f6',
-        padding: '0px 8px',
+        padding: '0 8px',
         borderRadius: '12px',
-        marginTop: '0px',
-        marginBottom: '8px',
+        margin: '0 0 8px 0',
       }}
     >
       {arrayItem.title}
@@ -116,7 +137,34 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
   </Section>
 )
 
-export const SummaryEmail = ({ summaryJson, validatedSummary }: SummaryEmailProps) => {
+export const SummaryEmail = ({
+  summaryJson,
+  validatedSummary,
+  fileIdInfoMap,
+  withHtmlBodyTags,
+}: SummaryEmailProps) => {
+  const content = (
+    <FileIdInfoMapContext.Provider value={fileIdInfoMap}>
+      <SummaryRenderer
+        summaryJson={summaryJson}
+        validatedSummary={validatedSummary}
+        renderForm={FormRenderer}
+        renderStep={StepRenderer}
+        renderField={FieldRenderer}
+        renderArray={ArrayRenderer}
+        renderArrayItem={ArrayItemRenderer}
+        renderStringValue={StringValueRenderer}
+        renderFileValue={FileValueRenderer}
+        renderNoneValue={NoneValueRenderer}
+        renderInvalidValue={InvalidValueRenderer}
+      />
+    </FileIdInfoMapContext.Provider>
+  )
+
+  if (!withHtmlBodyTags) {
+    return content
+  }
+
   return (
     <Html>
       <Body
@@ -126,19 +174,7 @@ export const SummaryEmail = ({ summaryJson, validatedSummary }: SummaryEmailProp
             '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
         }}
       >
-        <SummaryRenderer
-          summaryJson={summaryJson}
-          validatedSummary={validatedSummary}
-          renderForm={FormRenderer}
-          renderStep={StepRenderer}
-          renderField={FieldRenderer}
-          renderArray={ArrayRenderer}
-          renderArrayItem={ArrayItemRenderer}
-          renderStringValue={StringValueRenderer}
-          renderFileValue={FileValueRenderer}
-          renderNoneValue={NoneValueRenderer}
-          renderInvalidValue={InvalidValueRenderer}
-        />
+        {content}
       </Body>
     </Html>
   )

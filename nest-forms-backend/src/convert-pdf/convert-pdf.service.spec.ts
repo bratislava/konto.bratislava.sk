@@ -9,7 +9,6 @@ import {
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
 import ConvertService from '../convert/convert.service'
-import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormsHelper from '../forms/forms.helper'
@@ -74,7 +73,6 @@ describe('ConvertPdfService', () => {
         },
         ConvertPdfService,
         { provide: ConvertService, useValue: { generatePdf } },
-        JsonXmlConvertService,
         FilesHelper,
         ConfigService,
         ScannerClientService,

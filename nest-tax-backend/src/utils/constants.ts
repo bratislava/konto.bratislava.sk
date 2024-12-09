@@ -1,0 +1,1 @@
+export const MAX_NORIS_PAYMENTS_BATCH_SELECT = 200

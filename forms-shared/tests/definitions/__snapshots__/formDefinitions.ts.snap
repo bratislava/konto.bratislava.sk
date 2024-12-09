@@ -794,6 +794,7 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
             },
             "properties": {
               "dizajn": {
+                "baFile": true,
                 "baOrder": 2,
                 "baUiSchema": {
                   "ui:options": {
@@ -805,12 +806,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Dizajn/projekt záhrady",
                 "type": "string",
               },
               "fotografie": {
+                "baFile": true,
                 "baOrder": 3,
                 "baUiSchema": {
                   "ui:options": {
@@ -818,12 +819,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
                 "type": "string",
               },
               "ine": {
+                "baFile": true,
                 "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
@@ -831,12 +832,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Iné",
                 "type": "string",
               },
               "umiestnenie": {
+                "baFile": true,
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
@@ -846,7 +847,6 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Presné umiestnenie záhrady na pozemku",
                 "type": "string",
@@ -899,6 +899,7 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
             },
             "properties": {
               "dizajn": {
+                "baFile": true,
                 "baOrder": 3,
                 "baUiSchema": {
                   "ui:options": {
@@ -910,12 +911,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Dizajn/projekt záhrady",
                 "type": "string",
               },
               "fotografie": {
+                "baFile": true,
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
@@ -924,12 +925,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
                 "type": "string",
               },
               "ine": {
+                "baFile": true,
                 "baOrder": 4,
                 "baUiSchema": {
                   "ui:options": {
@@ -937,12 +938,12 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Iné",
                 "type": "string",
               },
               "umiestnenie": {
+                "baFile": true,
                 "baOrder": 2,
                 "baUiSchema": {
                   "ui:options": {
@@ -952,7 +953,6 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
                   },
                   "ui:widget": "FileUpload",
                 },
-                "file": true,
                 "format": "ba-file-uuid",
                 "title": "Presné umiestnenie záhrady na pozemku",
                 "type": "string",
@@ -4686,7 +4686,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -5440,7 +5440,7 @@ exports[`Form definitions olo-kolo-taxi schema matches snapshot 1`] = `
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -8742,7 +8742,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schema matches snapshot
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -13955,6 +13955,7 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
           },
           "properties": {
             "fotografie": {
+              "baFile": true,
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
@@ -13962,12 +13963,12 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
                 },
                 "ui:widget": "FileUpload",
               },
-              "file": true,
               "format": "ba-file-uuid",
               "title": "Fotografie predzáhradky alebo miesta, na ktorom si chcete vytvoriť predzáhradku",
               "type": "string",
             },
             "inePrilohy": {
+              "baFile": true,
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
@@ -13975,12 +13976,12 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
                 },
                 "ui:widget": "FileUpload",
               },
-              "file": true,
               "format": "ba-file-uuid",
               "title": "Iné",
               "type": "string",
             },
             "mapa": {
+              "baFile": true,
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
@@ -13988,12 +13989,12 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
                 },
                 "ui:widget": "FileUpload",
               },
-              "file": true,
               "format": "ba-file-uuid",
               "title": "Snímka z mapy so zakreslením miesta predzáhradky",
               "type": "string",
             },
             "projekt": {
+              "baFile": true,
               "baOrder": 3,
               "baUiSchema": {
                 "ui:options": {
@@ -14002,7 +14003,6 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
                 },
                 "ui:widget": "FileUpload",
               },
-              "file": true,
               "format": "ba-file-uuid",
               "title": "Projekt predzáhradky",
               "type": "string",
@@ -14470,7 +14470,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                         },
                         "default": [],
                         "items": {
-                          "file": true,
+                          "baFile": true,
                           "format": "ba-file-uuid",
                           "type": "string",
                         },
@@ -20897,7 +20897,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -21011,7 +21011,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                                             },
                                             "default": [],
                                             "items": {
-                                              "file": true,
+                                              "baFile": true,
                                               "format": "ba-file-uuid",
                                               "type": "string",
                                             },
@@ -21556,7 +21556,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -21670,7 +21670,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                                             },
                                             "default": [],
                                             "items": {
-                                              "file": true,
+                                              "baFile": true,
                                               "format": "ba-file-uuid",
                                               "type": "string",
                                             },
@@ -22395,7 +22395,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -23064,7 +23064,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -23895,7 +23895,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -24646,7 +24646,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -25562,7 +25562,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -26342,7 +26342,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -29576,7 +29576,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                         },
                         "default": [],
                         "items": {
-                          "file": true,
+                          "baFile": true,
                           "format": "ba-file-uuid",
                           "type": "string",
                         },
@@ -36003,7 +36003,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -36117,7 +36117,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                                             },
                                             "default": [],
                                             "items": {
-                                              "file": true,
+                                              "baFile": true,
                                               "format": "ba-file-uuid",
                                               "type": "string",
                                             },
@@ -36662,7 +36662,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -36776,7 +36776,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                                             },
                                             "default": [],
                                             "items": {
-                                              "file": true,
+                                              "baFile": true,
                                               "format": "ba-file-uuid",
                                               "type": "string",
                                             },
@@ -37501,7 +37501,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -38170,7 +38170,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -39001,7 +39001,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -39752,7 +39752,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -40668,7 +40668,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -41448,7 +41448,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                       },
                                       "default": [],
                                       "items": {
-                                        "file": true,
+                                        "baFile": true,
                                         "format": "ba-file-uuid",
                                         "type": "string",
                                       },
@@ -45081,6 +45081,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapsh
                     "type": "string",
                   },
                   "splnomocnenie": {
+                    "baFile": true,
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
@@ -45089,7 +45090,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapsh
                       },
                       "ui:widget": "FileUpload",
                     },
-                    "file": true,
                     "format": "ba-file-uuid",
                     "title": "Splnomocnenie na zastupovanie",
                     "type": "string",
@@ -45571,7 +45571,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapsh
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -46613,7 +46613,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schema matches snapshot 1`] =
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -47572,6 +47572,7 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti schema matches snapshot 1
           },
           "properties": {
             "snimkaKatastralnejMapy": {
+              "baFile": true,
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
@@ -47583,7 +47584,6 @@ Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájd
                 },
                 "ui:widget": "FileUpload",
               },
-              "file": true,
               "format": "ba-file-uuid",
               "title": "Snímka z katastrálnej mapy s vyznačeným záujmovým územím",
               "type": "string",
@@ -48313,7 +48313,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schema matches snapshot 1`]
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -48387,7 +48387,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schema matches snapshot 1`]
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -49164,7 +49164,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -49183,7 +49183,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -49201,7 +49201,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -49220,7 +49220,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },
@@ -50094,6 +50094,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
                     "type": "string",
                   },
                   "splnomocnenie": {
+                    "baFile": true,
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
@@ -50102,7 +50103,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
                       },
                       "ui:widget": "FileUpload",
                     },
-                    "file": true,
                     "format": "ba-file-uuid",
                     "title": "Splnomocnenie na zastupovanie",
                     "type": "string",
@@ -50625,7 +50625,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
                     },
                     "default": [],
                     "items": {
-                      "file": true,
+                      "baFile": true,
                       "format": "ba-file-uuid",
                       "type": "string",
                     },
@@ -50644,7 +50644,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
                     },
                     "default": [],
                     "items": {
-                      "file": true,
+                      "baFile": true,
                       "format": "ba-file-uuid",
                       "type": "string",
                     },
@@ -50756,7 +50756,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
               },
               "default": [],
               "items": {
-                "file": true,
+                "baFile": true,
                 "format": "ba-file-uuid",
                 "type": "string",
               },

@@ -1,4 +1,6 @@
-import { checkboxGroup, step, textArea } from '../../generator/functions'
+import { textArea } from '../../generator/functions/textArea'
+import { checkboxGroup } from '../../generator/functions/checkboxGroup'
+import { step } from '../../generator/functions/step'
 
 export default step(
   'znizenieAleboOslobodenieOdDane',

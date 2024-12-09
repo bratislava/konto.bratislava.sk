@@ -1,9 +1,10 @@
-import { input, object } from '../../src/generator/functions'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { input } from '../../src/generator/functions/input'
+import { object } from '../../src/generator/object'
 
 describe('omitExtraData', () => {
   beforeEach(() => {

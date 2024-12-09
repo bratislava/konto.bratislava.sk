@@ -1,21 +1,19 @@
-import {
-  checkbox,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  object,
-  radioGroup,
-  schema,
-  select,
-  step,
-  textArea,
-  timePicker,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { textArea } from '../../generator/functions/textArea'
+import { checkbox } from '../../generator/functions/checkbox'
+import { datePicker } from '../../generator/functions/datePicker'
+import { timePicker } from '../../generator/functions/timePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
 
 export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [

@@ -1,14 +1,12 @@
-import {
-  conditionalFields,
-  datePicker,
-  fileUpload,
-  input,
-  object,
-  radioGroup,
-  schema,
-  step,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { fileUpload } from '../../generator/functions/fileUpload'
+import { datePicker } from '../../generator/functions/datePicker'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [

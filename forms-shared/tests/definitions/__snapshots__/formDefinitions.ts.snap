@@ -975,7 +975,6 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Komunitné záhrady",
@@ -1722,7 +1721,6 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schema matche
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Dočistenie stanovišťa zberných nádob",
@@ -4873,7 +4871,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Energetické zhodnotenie odpadu v ZEVO",
@@ -5568,7 +5565,6 @@ exports[`Form definitions olo-kolo-taxi schema matches snapshot 1`] = `
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "KOLO Taxi",
@@ -6759,7 +6755,6 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schema match
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Mimoriadny odvoz a zhodnotenie odpadu",
@@ -7270,7 +7265,6 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schema matches sna
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Odvoz objemného odpadu valníkom",
@@ -8114,7 +8108,6 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom",
@@ -8499,7 +8492,6 @@ exports[`Form definitions olo-olo-taxi schema matches snapshot 1`] = `
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "OLO Taxi",
@@ -8804,7 +8796,6 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schema matches snapshot
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Podnety a pochvaly občanov",
@@ -10131,7 +10122,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Triedený zber papiera, plastov a skla pre právnické osoby",
@@ -11381,7 +11371,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Triedený zber papiera, plastov a skla pre správcovské spoločnosti",
@@ -13492,7 +13481,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema ma
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Uzatvorenie zmluvy o nakladaní s odpadom",
@@ -14035,7 +14023,6 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Predzáhradky",
@@ -29142,7 +29129,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Priznanie k dani z nehnuteľností",
@@ -44249,7 +44235,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Priznanie k dani z nehnuteľností",
@@ -45609,7 +45594,6 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapsh
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
@@ -46652,7 +46636,6 @@ exports[`Form definitions tsb-objednavka-vytycenia schema matches snapshot 1`] =
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "TEST - Objednávka vytýčenia",
@@ -47620,7 +47603,6 @@ Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájd
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "TEST - Objednávka zákresu sietí",
@@ -48428,7 +48410,6 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schema matches snapshot 1`]
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "TEST - Umiestnenie zariadenia",
@@ -49264,7 +49245,6 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "TEST - Žiadosť o stanovisko k projektovej dokumentácii",
@@ -50799,7 +50779,6 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {
       "titleFallback": "Názov stavby/projektu",
       "titlePath": "stavba.nazov",
@@ -59088,7 +59067,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
     },
   ],
   "baUiSchema": {
-    "ui:hideError": true,
     "ui:options": {},
   },
   "title": "Žiadosť o nájom bytu",

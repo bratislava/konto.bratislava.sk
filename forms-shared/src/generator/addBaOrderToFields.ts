@@ -1,6 +1,6 @@
 import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
-import { FieldType } from './functions'
 import { create } from 'mutative'
+import { GeneratorFieldType } from './generatorTypes'
 
 /**
  * Recursively increments baOrder values for all fields in a schema and its nested conditional fields.
@@ -102,7 +102,7 @@ const incrementAllChildOrders = (schema: BAJSONSchema7, incrementBy: number) => 
  *
  * `mutative` is used to produce immutable results, it would be very difficult to write the function in a functional style.
  */
-export const addBaOrderToFields = (fields: FieldType[]) => {
+export const addBaOrderToFields = (fields: GeneratorFieldType[]) => {
   let counter = 0
   return create(fields, (draft) => {
     draft.forEach((field) => {

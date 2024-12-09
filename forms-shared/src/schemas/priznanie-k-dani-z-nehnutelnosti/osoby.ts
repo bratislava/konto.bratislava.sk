@@ -1,7 +1,11 @@
-import { conditionalFields, input, object, radioGroup, select } from '../../generator/functions'
 import { createCamelCaseItems, createCondition } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { esbsNationalityCiselnik } from './esbsCiselniky'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { object } from '../../generator/object'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 enum UlicaCisloTyp {
   FyzickaOsoba = 'FyzickaOsoba',

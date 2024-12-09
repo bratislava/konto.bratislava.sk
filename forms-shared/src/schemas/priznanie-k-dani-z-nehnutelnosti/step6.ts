@@ -1,19 +1,17 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  number,
-  object,
-  radioGroup,
-  step,
-} from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 enum Typ {
   Byt,

@@ -1,21 +1,19 @@
-import {
-  arrayField,
-  checkbox,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  object,
-  radioGroup,
-  schema,
-  select,
-  step,
-  textArea,
-} from '../../generator/functions'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { textArea } from '../../generator/functions/textArea'
+import { checkbox } from '../../generator/functions/checkbox'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
 
 export default schema(
   {

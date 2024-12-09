@@ -1,5 +1,8 @@
-import { fileUpload, input, object, selectMultiple } from '../../src/generator/functions'
 import { getFileUuids, getFileUuidsNaive } from '../../src/form-utils/fileUtils'
+import { selectMultiple } from '../../src/generator/functions/selectMultiple'
+import { input } from '../../src/generator/functions/input'
+import { fileUpload } from '../../src/generator/functions/fileUpload'
+import { object } from '../../src/generator/object'
 
 describe('fileUtils', () => {
   const fileUploadSchema = object('files', {}, {}, [

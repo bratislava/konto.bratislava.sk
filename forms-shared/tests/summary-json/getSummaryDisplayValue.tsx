@@ -1,19 +1,4 @@
 import {
-  checkbox,
-  checkboxGroup,
-  datePicker,
-  Field,
-  fileUpload,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  selectMultiple,
-  textArea,
-  timePicker,
-} from '../../src/generator/functions'
-import {
   getSummaryDisplayValues,
   SummaryDisplayValueType,
 } from '../../src/summary-json/getSummaryDisplayValue'
@@ -25,6 +10,19 @@ import React from 'react'
 import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
+import { GeneratorField } from '../../src/generator/generatorTypes'
+import { select } from '../../src/generator/functions/select'
+import { selectMultiple } from '../../src/generator/functions/selectMultiple'
+import { input } from '../../src/generator/functions/input'
+import { number } from '../../src/generator/functions/number'
+import { radioGroup } from '../../src/generator/functions/radioGroup'
+import { textArea } from '../../src/generator/functions/textArea'
+import { checkbox } from '../../src/generator/functions/checkbox'
+import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
+import { fileUpload } from '../../src/generator/functions/fileUpload'
+import { datePicker } from '../../src/generator/functions/datePicker'
+import { timePicker } from '../../src/generator/functions/timePicker'
+import { object } from '../../src/generator/object'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
@@ -32,7 +30,7 @@ import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
  * processed schema and uiOptions from the widget. This function renders the minimal form with the widget and retrieves
  * the values.
  */
-const retrieveRuntimeValues = (field: Field) => {
+const retrieveRuntimeValues = (field: GeneratorField) => {
   const widgetType = field.schema.baUiSchema?.['ui:widget'] as BaWidgetType
   if (!widgetType) {
     throw new Error('Widget type not set')

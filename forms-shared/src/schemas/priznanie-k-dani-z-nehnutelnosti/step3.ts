@@ -1,21 +1,19 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  fileUpload,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  step,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { fileUpload } from '../../generator/functions/fileUpload'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',

@@ -69,9 +69,7 @@ const FormModals = () => {
   const { login, register, verifyIdentity } = useFormRedirects()
 
   const {
-    formDefinition: {
-      schemas: { schema },
-    },
+    formDefinition: { schema },
   } = useFormContext()
   const { formData } = useFormData()
   const uiOptions = getUiOptions(schema.baUiSchema)

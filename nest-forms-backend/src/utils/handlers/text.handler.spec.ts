@@ -1,6 +1,6 @@
 import { Forms, Prisma } from '@prisma/client'
+import { RJSFSchema } from '@rjsf/utils'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
-import { Schemas } from 'forms-shared/generator/functions'
 
 import {
   getFrontendFormTitleFromForm,
@@ -113,34 +113,28 @@ describe('getFrontendFormTitleFromForm', () => {
 
   it('should return correct title when available in uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
-      schemas: {
-        schema: {
-          baUiSchema: {
-            'ui:options': {
-              titlePath,
-              titleFallback,
-            },
+      schema: {
+        baUiSchema: {
+          'ui:options': {
+            titlePath,
+            titleFallback,
           },
         },
-        uiSchema: {},
-      } as Schemas,
+      } as RJSFSchema,
     } as FormDefinition)
     expect(result).toBe(title)
   })
 
   it('should be fine without uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
-      schemas: {
-        schema: {
-          baUiSchema: {
-            'ui:options': {
-              titlePath,
-              titleFallback,
-            },
+      schema: {
+        baUiSchema: {
+          'ui:options': {
+            titlePath,
+            titleFallback,
           },
         },
-        uiSchema: {},
-      } as Schemas,
+      } as RJSFSchema,
     } as FormDefinition)
     expect(result).toBe(result)
   })
@@ -152,17 +146,14 @@ describe('getFrontendFormTitleFromForm', () => {
         formDataJson: {},
       },
       {
-        schemas: {
-          schema: {
-            baUiSchema: {
-              'ui:options': {
-                titlePath,
-                titleFallback,
-              },
+        schema: {
+          baUiSchema: {
+            'ui:options': {
+              titlePath,
+              titleFallback,
             },
           },
-          uiSchema: {},
-        } as Schemas,
+        } as RJSFSchema,
       } as FormDefinition,
     )
     expect(result).toBe(titleFallback)
@@ -172,16 +163,13 @@ describe('getFrontendFormTitleFromForm', () => {
     const result = getFrontendFormTitleFromForm(
       {} as Forms,
       {
-        schemas: {
-          schema: {
-            baUiSchema: {
-              'ui:options': {
-                titlePath,
-              },
+        schema: {
+          baUiSchema: {
+            'ui:options': {
+              titlePath,
             },
           },
-          uiSchema: {},
-        } as Schemas,
+        } as RJSFSchema,
       } as FormDefinition,
     )
     expect(result).toBeNull()

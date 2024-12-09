@@ -205,12 +205,12 @@ export default class SharepointSubservice {
     }
 
     const accessToken = await this.getAccessToken()
-    const { sharepointData, schemas } = formDefinition
+    const { sharepointData, schema } = formDefinition
     const formTitle = this.getTitle(form, formDefinition)
     const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
 
     const jsonDataExtraDataOmitted = omitExtraData(
-      schemas.schema,
+      schema,
       form.formDataJson as GenericObjectType,
       this.formValidatorRegistryService.getRegistry(),
     )

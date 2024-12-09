@@ -2,8 +2,8 @@ import {
   checkbox,
   checkboxGroup,
   datePicker,
-  Field,
   fileUpload,
+  GeneratorField,
   input,
   number,
   object,
@@ -32,7 +32,7 @@ import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
  * processed schema and uiOptions from the widget. This function renders the minimal form with the widget and retrieves
  * the values.
  */
-const retrieveRuntimeValues = (field: Field) => {
+const retrieveRuntimeValues = (field: GeneratorField) => {
   const widgetType = field.schema.baUiSchema?.['ui:widget'] as BaWidgetType
   if (!widgetType) {
     throw new Error('Widget type not set')

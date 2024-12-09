@@ -1,5 +1,10 @@
 import { addBaOrderToFields } from '../../src/generator/addBaOrderToFields'
-import { ConditionalFields, conditionalFields, Field, input } from '../../src/generator/functions'
+import {
+  conditionalFields,
+  GeneratorConditionalFields,
+  GeneratorField,
+  input,
+} from '../../src/generator/functions'
 import { createCondition } from '../../src/generator/helpers'
 
 describe('addBaOrderToFields', () => {
@@ -12,9 +17,9 @@ describe('addBaOrderToFields', () => {
 
     const result = addBaOrderToFields(fields)
 
-    expect((result[0] as Field).schema.baOrder).toBe(1)
-    expect((result[1] as Field).schema.baOrder).toBe(2)
-    expect((result[2] as Field).schema.baOrder).toBe(3)
+    expect((result[0] as GeneratorField).schema.baOrder).toBe(1)
+    expect((result[1] as GeneratorField).schema.baOrder).toBe(2)
+    expect((result[2] as GeneratorField).schema.baOrder).toBe(3)
   })
 
   it('handles conditional fields with then/else branches', () => {
@@ -31,11 +36,11 @@ describe('addBaOrderToFields', () => {
     const result = addBaOrderToFields(fields)
 
     // Regular fields get sequential numbers
-    expect((result[0] as Field).schema.baOrder).toBe(1)
-    expect((result[2] as Field).schema.baOrder).toBe(4)
+    expect((result[0] as GeneratorField).schema.baOrder).toBe(1)
+    expect((result[2] as GeneratorField).schema.baOrder).toBe(4)
 
     // Check then/else schemas have correct ordering
-    const conditional = result[1] as ConditionalFields
+    const conditional = result[1] as GeneratorConditionalFields
     // @ts-expect-error Improve BAJONSchema7 type
     expect(conditional.thenSchema.properties.field2.baOrder).toBe(2)
     // @ts-expect-error Improve BAJONSchema7 type
@@ -62,9 +67,9 @@ describe('addBaOrderToFields', () => {
 
     const result = addBaOrderToFields(fields)
 
-    expect((result[0] as Field).schema.baOrder).toBe(1)
+    expect((result[0] as GeneratorField).schema.baOrder).toBe(1)
 
-    const outerConditional = result[1] as ConditionalFields
+    const outerConditional = result[1] as GeneratorConditionalFields
     // @ts-expect-error Improve BAJONSchema7 type
     expect(outerConditional.thenSchema.properties.field2.baOrder).toBe(2)
 
@@ -77,6 +82,6 @@ describe('addBaOrderToFields', () => {
 
     // @ts-expect-error Improve BAJONSchema7 type
     expect(outerConditional.elseSchema.properties.field5.baOrder).toBe(5)
-    expect((result[2] as Field).schema.baOrder).toBe(6)
+    expect((result[2] as GeneratorField).schema.baOrder).toBe(6)
   })
 })

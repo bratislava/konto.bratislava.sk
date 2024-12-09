@@ -32,36 +32,36 @@ import {
 } from './optionItems'
 import { addBaOrderToFields } from './addBaOrderToFields'
 
-export type Field = {
+export type GeneratorField = {
   property: string
   schema: RJSFSchema
   required: boolean
 }
 
-export type ObjectField = Omit<Field, 'property'> & {
+export type GeneratorObjectField = Omit<GeneratorField, 'property'> & {
   property: string | null
 }
 
-export type ConditionalFields = {
+export type GeneratorConditionalFields = {
   condition: RJSFSchema
   thenSchema: RJSFSchema
   elseSchema?: RJSFSchema
 }
 
-export type FieldType = Field | ConditionalFields | ObjectField
+export type GeneratorFieldType = GeneratorField | GeneratorConditionalFields | GeneratorObjectField
 
-export type BaseOptions = {
+export type GeneratorBaseOptions = {
   title: string
   required?: boolean
 }
 
 export const select = (
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     items: OptionItem<string>[]
   },
   uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -83,13 +83,13 @@ export const select = (
 
 export const selectMultiple = (
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     minItems?: number
     maxItems?: number
     items: OptionItem<string>[]
   },
   uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -117,12 +117,12 @@ export const selectMultiple = (
 
 export const input = (
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     type: 'text' | 'password' | 'email' | BaAjvInputFormat
     default?: string
   },
   uiOptions: Omit<InputUiOptions, 'inputType'>,
-): Field => {
+): GeneratorField => {
   const { inputType, format } = (() => {
     if (options.type === 'email') {
       return {
@@ -163,7 +163,7 @@ export const input = (
 
 export const number = (
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     type?: 'number' | 'integer'
     default?: number
     minimum?: number
@@ -172,7 +172,7 @@ export const number = (
     exclusiveMaximum?: number
   },
   uiOptions: NumberUiOptions,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -197,12 +197,12 @@ type StringToType<T> = T extends 'string' ? string : T extends 'boolean' ? boole
 
 export const radioGroup = <ValueType extends 'string' | 'boolean'>(
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     type: ValueType
     items: OptionItem<StringToType<ValueType>>[]
   },
   uiOptions: Omit<RadioGroupUiOptions, 'enumMetadata'>,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -224,9 +224,9 @@ export const radioGroup = <ValueType extends 'string' | 'boolean'>(
 
 export const textArea = (
   property: string,
-  options: BaseOptions,
+  options: GeneratorBaseOptions,
   uiOptions: TextAreaUiOptions,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -245,9 +245,9 @@ export const textArea = (
 
 export const checkbox = (
   property: string,
-  options: BaseOptions & { default?: boolean; constValue?: boolean },
+  options: GeneratorBaseOptions & { default?: boolean; constValue?: boolean },
   uiOptions: CheckboxUiOptions,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -266,13 +266,13 @@ export const checkbox = (
 
 export const checkboxGroup = (
   property: string,
-  options: BaseOptions & {
+  options: GeneratorBaseOptions & {
     minItems?: number
     maxItems?: number
     items: OptionItem<string>[]
   },
   uiOptions: Omit<CheckboxGroupUiOptions, 'enumMetadata'>,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -299,9 +299,9 @@ export const checkboxGroup = (
 
 export const fileUpload = (
   property: string,
-  options: BaseOptions & { multiple?: boolean },
+  options: GeneratorBaseOptions & { multiple?: boolean },
   uiOptions: FileUploadUiOptions,
-): Field => {
+): GeneratorField => {
   const baUiSchema = {
     'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
     'ui:options': uiOptions,
@@ -337,9 +337,9 @@ export const fileUpload = (
 
 export const datePicker = (
   property: string,
-  options: BaseOptions & { default?: string },
+  options: GeneratorBaseOptions & { default?: string },
   uiOptions: DatePickerUiOptions,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -358,9 +358,9 @@ export const datePicker = (
 
 export const timePicker = (
   property: string,
-  options: BaseOptions & { default?: string },
+  options: GeneratorBaseOptions & { default?: string },
   uiOptions: TimePickerUiOptions,
-): Field => {
+): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
@@ -385,7 +385,7 @@ export const customComponentsField = (
   property: string,
   customComponents: CustomComponentType | CustomComponentType[],
   uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
-): Field => ({
+): GeneratorField => ({
   property,
   // This is probably the best way how to represent no data in the schema, but still have the field in the UI.
   schema: removeUndefinedValues({
@@ -414,14 +414,16 @@ export const object = (
   property: string | null,
   options: { required?: boolean },
   uiOptions: ObjectFieldUiOptions,
-  fields: (FieldType | null)[],
-): ObjectField => {
-  const filteredFields = fields.filter((field) => field !== null) as FieldType[]
+  fields: (GeneratorFieldType | null)[],
+): GeneratorObjectField => {
+  const filteredFields = fields.filter((field) => field !== null) as GeneratorFieldType[]
   const fieldsWithOrder = addBaOrderToFields(filteredFields)
-  const ordinaryFields = fieldsWithOrder.filter((field) => !('condition' in field)) as Field[]
+  const ordinaryFields = fieldsWithOrder.filter(
+    (field) => !('condition' in field),
+  ) as GeneratorField[]
   const conditionalFields = fieldsWithOrder.filter(
     (field) => 'condition' in field,
-  ) as ConditionalFields[]
+  ) as GeneratorConditionalFields[]
 
   const getSchema = () => {
     const isUiOptionsEmpty = Object.keys(uiOptions).length === 0
@@ -455,7 +457,7 @@ export const object = (
  * Arrays and conditional fields needs to use created schema for object internally, but the object must have no property,
  * and uiOptions.
  */
-const simpleObjectInternal = (fields: (FieldType | null)[]) => {
+const simpleObjectInternal = (fields: (GeneratorFieldType | null)[]) => {
   const result = object(null, {}, {}, fields)
   if (result.schema.baUiSchema) {
     throw new Error('Simple object should not have uiOptions.')
@@ -466,10 +468,10 @@ const simpleObjectInternal = (fields: (FieldType | null)[]) => {
 
 export const arrayField = (
   property: string,
-  options: BaseOptions & { minItems?: number; maxItems?: number },
+  options: GeneratorBaseOptions & { minItems?: number; maxItems?: number },
   uiOptions: ArrayFieldUiOptions,
-  fields: (FieldType | null)[],
-): Field => {
+  fields: (GeneratorFieldType | null)[],
+): GeneratorField => {
   const { schema: objectSchema } = simpleObjectInternal(fields)
 
   return {
@@ -496,7 +498,7 @@ export const step = (
     stepperTitle?: string
     customHash?: string
   },
-  fields: (FieldType | null)[],
+  fields: (GeneratorFieldType | null)[],
 ) => {
   const { schema } = object(property, { required: true }, {}, fields)
   const getHash = () => {
@@ -539,7 +541,7 @@ export const conditionalStep = (
     title: string
     customHash?: string
   },
-  fields: (FieldType | null)[],
+  fields: (GeneratorFieldType | null)[],
 ) => {
   const { schema } = step(property, options, fields)
   return {
@@ -551,11 +553,11 @@ export const conditionalStep = (
 
 export const conditionalFields = (
   condition: RJSFSchema,
-  thenFields: (FieldType | null)[],
-  elseFields: (FieldType | null)[] = [],
-): ConditionalFields => {
-  const filteredThenFields = thenFields.filter((field) => field !== null) as FieldType[]
-  const filteredElseFields = elseFields.filter((field) => field !== null) as FieldType[]
+  thenFields: (GeneratorFieldType | null)[],
+  elseFields: (GeneratorFieldType | null)[] = [],
+): GeneratorConditionalFields => {
+  const filteredThenFields = thenFields.filter((field) => field !== null) as GeneratorFieldType[]
+  const filteredElseFields = elseFields.filter((field) => field !== null) as GeneratorFieldType[]
 
   const { schema: thenSchema } = simpleObjectInternal(filteredThenFields)
   const { schema: elseSchema } = simpleObjectInternal(filteredElseFields)

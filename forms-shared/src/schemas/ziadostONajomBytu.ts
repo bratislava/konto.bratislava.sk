@@ -5,7 +5,7 @@ import {
   conditionalFields,
   customComponentsField,
   datePicker,
-  FieldType,
+  GeneratorFieldType,
   input,
   number,
   object,
@@ -381,7 +381,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
 }
 
 const getPrijemSection = (stepType: StepType) => {
-  const wrapper = (fields: (FieldType | null)[]) =>
+  const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'prijem',
       { required: true },
@@ -1008,7 +1008,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
 }
 
 const getSucasneByvanieSection = (stepType: StepType) => {
-  const wrapper = (fields: (FieldType | null)[]) =>
+  const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'sucasneByvanie',
       { required: true },

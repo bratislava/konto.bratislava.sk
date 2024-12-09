@@ -1,5 +1,5 @@
 import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
-import { FieldType } from './functions'
+import { GeneratorFieldType } from './functions'
 import { create } from 'mutative'
 
 /**
@@ -102,7 +102,7 @@ const incrementAllChildOrders = (schema: BAJSONSchema7, incrementBy: number) => 
  *
  * `mutative` is used to produce immutable results, it would be very difficult to write the function in a functional style.
  */
-export const addBaOrderToFields = (fields: FieldType[]) => {
+export const addBaOrderToFields = (fields: GeneratorFieldType[]) => {
   let counter = 0
   return create(fields, (draft) => {
     draft.forEach((field) => {

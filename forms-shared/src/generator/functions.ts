@@ -38,7 +38,7 @@ export type Field = {
   required: boolean
 }
 
-type ObjectField = Omit<Field, 'property'> & {
+export type ObjectField = Omit<Field, 'property'> & {
   property: string | null
 }
 
@@ -50,7 +50,7 @@ export type ConditionalFields = {
 
 export type FieldType = Field | ConditionalFields | ObjectField
 
-type BaseOptions = {
+export type BaseOptions = {
   title: string
   required?: boolean
 }

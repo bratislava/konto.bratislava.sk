@@ -114,13 +114,15 @@ describe('getFrontendFormTitleFromForm', () => {
   it('should return correct title when available in uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
       schemas: {
-        uiSchema: {
-          'ui:options': {
-            titlePath,
-            titleFallback,
+        schema: {
+          baUiSchema: {
+            'ui:options': {
+              titlePath,
+              titleFallback,
+            },
           },
         },
-        schema: {},
+        uiSchema: {},
       } as Schemas,
     } as FormDefinition)
     expect(result).toBe(title)
@@ -129,13 +131,15 @@ describe('getFrontendFormTitleFromForm', () => {
   it('should be fine without uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
       schemas: {
-        uiSchema: {
-          'ui:options': {
-            titlePath,
-            titleFallback,
+        schema: {
+          baUiSchema: {
+            'ui:options': {
+              titlePath,
+              titleFallback,
+            },
           },
         },
-        schema: {},
+        uiSchema: {},
       } as Schemas,
     } as FormDefinition)
     expect(result).toBe(result)
@@ -149,13 +153,15 @@ describe('getFrontendFormTitleFromForm', () => {
       },
       {
         schemas: {
-          uiSchema: {
-            'ui:options': {
-              titlePath,
-              titleFallback,
+          schema: {
+            baUiSchema: {
+              'ui:options': {
+                titlePath,
+                titleFallback,
+              },
             },
           },
-          schema: {},
+          uiSchema: {},
         } as Schemas,
       } as FormDefinition,
     )
@@ -167,12 +173,14 @@ describe('getFrontendFormTitleFromForm', () => {
       {} as Forms,
       {
         schemas: {
-          uiSchema: {
-            'ui:options': {
-              titlePath,
+          schema: {
+            baUiSchema: {
+              'ui:options': {
+                titlePath,
+              },
             },
           },
-          schema: {},
+          uiSchema: {},
         } as Schemas,
       } as FormDefinition,
     )

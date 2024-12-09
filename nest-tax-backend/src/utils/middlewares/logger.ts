@@ -23,13 +23,17 @@ export class AppLoggerMiddleware implements NestMiddleware {
       }
       const logger = new Logger(response.statusMessage)
 
+      const responseDataString = JSON.stringify(responseData).replaceAll(
+        String.raw`\"`,
+        '"',
+      )
       if (response.statusCode >= 500) {
         logger.error(
           `${method} ${originalUrl} Status-${
             response.statusCode
           } ${responseTime}ms - ${userAgent} ${ip}, request-body: ${JSON.stringify(
             body,
-          )}, response-data: ${JSON.stringify(responseData).replaceAll('\\"', '"')}`,
+          )}, response-data: ${responseDataString}`,
         )
       } else if (response.statusCode >= 400) {
         logger.warn(
@@ -37,7 +41,7 @@ export class AppLoggerMiddleware implements NestMiddleware {
             response.statusCode
           } ${responseTime}ms - ${userAgent} ${ip}, request-body: ${JSON.stringify(
             body,
-          )}, response-data: ${JSON.stringify(responseData).replaceAll('\\"', '"')}`,
+          )}, response-data: ${responseDataString}`,
         )
       } else {
         logger.log(

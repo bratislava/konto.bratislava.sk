@@ -22,11 +22,11 @@ import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 @Injectable()
 export class PaymentService {
   constructor(
-    private prisma: PrismaService,
-    private gpWebpaySubservice: GpWebpaySubservice,
-    private errorThrowerGuard: ErrorThrowerGuard,
-    private cityAccountSubservice: CityAccountSubservice,
-    private bloomreachService: BloomreachService,
+    private readonly prisma: PrismaService,
+    private readonly gpWebpaySubservice: GpWebpaySubservice,
+    private readonly errorThrowerGuard: ErrorThrowerGuard,
+    private readonly cityAccountSubservice: CityAccountSubservice,
+    private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
   ) {}
 

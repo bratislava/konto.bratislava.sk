@@ -7,13 +7,13 @@ import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
 import { radioGroup } from '../../generator/functions/radioGroup'
-import { fileUpload } from '../../generator/functions/fileUpload'
 import { datePicker } from '../../generator/functions/datePicker'
 import { customComponentsField } from '../../generator/functions/customComponentsField'
 import { object } from '../../generator/object'
 import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
@@ -250,12 +250,11 @@ const innerArray = (kalkulacka: boolean) =>
               [['hodnotaUrcenaZnaleckymPosudkom'], { const: true }],
             ]),
             [
-              fileUpload(
+              fileUploadMultiple(
                 'znaleckyPosudok',
                 // TODO: Reconsider required when tax form will be sent online.
                 {
                   title: 'Nahrajte znalecký posudok',
-                  multiple: true,
                 },
                 {
                   type: 'dragAndDrop',

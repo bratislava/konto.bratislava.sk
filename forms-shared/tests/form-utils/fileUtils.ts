@@ -3,11 +3,12 @@ import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { input } from '../../src/generator/functions/input'
 import { fileUpload } from '../../src/generator/functions/fileUpload'
 import { object } from '../../src/generator/object'
+import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 
 describe('fileUtils', () => {
   const fileUploadSchema = object('files', {}, {}, [
     fileUpload('file', { title: 'File' }, {}),
-    fileUpload('fileMultiple', { title: 'File multiple', multiple: true }, {}),
+    fileUploadMultiple('fileMultiple', { title: 'File multiple' }, {}),
     input('fakeFileInput', { type: 'text', title: 'Fake file' }, {}),
     selectMultiple(
       'fakeFileSelect',

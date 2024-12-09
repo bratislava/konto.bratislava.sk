@@ -6,6 +6,7 @@ import {
   fileUpload,
   input,
   number,
+  object,
   radioGroup,
   select,
   selectMultiple,
@@ -31,8 +32,11 @@ import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
  * processed schema and uiOptions from the widget. This function renders the minimal form with the widget and retrieves
  * the values.
  */
-const retrieveRuntimeValues = ({ schema }: Field) => {
-  const widgetType = schema.baUiSchema?.['ui:widget'] as BaWidgetType
+const retrieveRuntimeValues = (field: Field) => {
+  const widgetType = field.schema.baUiSchema?.['ui:widget'] as BaWidgetType
+  if (!widgetType) {
+    throw new Error('Widget type not set')
+  }
 
   let retrievedSchema: RJSFSchema
   let retrievedOptions: WidgetProps['options']
@@ -48,7 +52,10 @@ const retrieveRuntimeValues = ({ schema }: Field) => {
     fields: defaultFormFields,
   })
 
-  renderToString(<Form schema={schema} {...getBaFormDefaults(schema, testValidatorRegistry)} />)
+  const { schema: wrapperSchema } = object('wrapper', { required: true }, {}, [field])
+  renderToString(
+    <Form schema={wrapperSchema} {...getBaFormDefaults(wrapperSchema, testValidatorRegistry)} />,
+  )
 
   // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
   if (!retrievedSchema || !retrievedOptions) {

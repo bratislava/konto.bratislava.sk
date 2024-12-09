@@ -1,4 +1,4 @@
-import type { RJSFSchema, UiSchema } from '@rjsf/utils'
+import type { RJSFSchema } from '@rjsf/utils'
 import kebabCase from 'lodash/kebabCase'
 
 import { getInputTypeForAjvFormat, removeUndefinedValues } from './helpers'
@@ -31,11 +31,6 @@ import {
   OptionItem,
 } from './optionItems'
 import { addBaOrderToFields } from './addBaOrderToFields'
-
-export type Schemas = {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-}
 
 export type Field = {
   property: string
@@ -579,20 +574,17 @@ export const schema = (
   },
   uiOptions: SchemaUiOptions,
   steps: (ReturnType<typeof step | typeof conditionalStep> | null)[],
-): Schemas => {
+) => {
   const filteredSteps = steps.filter((stepInner) => stepInner != null) as ReturnType<
     typeof step | typeof conditionalStep
   >[]
 
-  return {
-    schema: removeUndefinedValues({
-      ...options,
-      allOf: filteredSteps.map((stepInner) => stepInner.schema),
-      baUiSchema: {
-        'ui:options': uiOptions,
-        'ui:hideError': true,
-      },
-    }) as RJSFSchema,
-    uiSchema: {} as UiSchema,
-  }
+  return removeUndefinedValues({
+    ...options,
+    allOf: filteredSteps.map((stepInner) => stepInner.schema),
+    baUiSchema: {
+      'ui:options': uiOptions,
+      'ui:hideError': true,
+    },
+  }) as RJSFSchema
 }

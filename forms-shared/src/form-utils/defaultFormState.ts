@@ -11,7 +11,7 @@ import { baFastMergeAllOf } from './fastMergeAllOf'
 /**
  * Detects schema of fileUploadMultiple field.
  *
- * e.g. `{ type: 'array', items: { type: 'string', file: true } }`
+ * e.g. `{ type: 'array', items: { type: 'string', baFile: true } }`
  */
 export const isFileMultipleSchema = (schema: RJSFSchema) =>
   !Array.isArray(schema?.items) &&

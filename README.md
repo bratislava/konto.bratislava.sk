@@ -28,6 +28,8 @@ Each sub-project contains a README which should get you up and running. More doc
 
 🗄️ `/nest-tax-backend` This service is responsible for digital tax payment.
 
+🗄️ `/nest-city-account` Service which is handling user related logic for konto
+
 🐳 `docker-compose.yml` - if you need to quickly set up a postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
 
 ## Development

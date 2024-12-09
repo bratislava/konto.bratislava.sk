@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CognitoUserAttributesTierEnum {
+  NEW
+  QUEUE_IDENTITY_CARD
+  NOT_VERIFIED_IDENTITY_CARD
+  IDENTITY_CARD
+  EID
+}
+
+model User {
+  id                              String                         @id @default(uuid()) @db.Uuid
+  createdAt                       DateTime                       @default(now())
+  updatedAt                       DateTime                       @updatedAt
+  externalId                      String?                        @unique
+  email                           String?                        @unique
+  ifo                             String?                        @unique
+  birthNumber                     String?                        @unique
+  lastVerificationIdentityCard    DateTime?
+  oldMagproxyDatabase             Int                            @default(0)
+  requeuedInVerification          Int                            @default(0)
+  birthnumberAlreadyExistsLast    String?
+  birthnumberAlreadyExistsCounter Int                            @default(0)
+  userAttribute                   String?
+  userGdprData                    UserGdprData[]
+  physicalEntity                  PhysicalEntity?
+  lastTaxYear                     Int?
+  lastTaxBackendUploadTry         DateTime                       @default(now())
+  cognitoTier                     CognitoUserAttributesTierEnum?
+  userIdCardVerify                UserIdCardVerify[]
+}
+
+// In this table we store for one month the data used by a user to verify their account by ID card.
+// Encrypted columns - idCard, birthNumber. Encryption and decryption is described in src/utils/crypto.ts.
+// The reason behind it is that when there is a failure during verification, we need to get these values fast to check manually.
+model UserIdCardVerify {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id])
+  birthNumber String
+  idCard      String
+  verifyStart DateTime @default(now())
+}
+
+// In this table we store for one month the data used by a legal person to verify their account by ID card and ico.
+// Encrypted columns - idCard, birthNumber, ico. Encryption and decryption is described in src/utils/crypto.ts.
+// The reason behind it is that when there is a failure during verification, we need to get these values fast to check manually.
+model LegalPersonIcoIdCardVerify {
+  id            String      @id @default(uuid()) @db.Uuid
+  legalPersonId String      @db.Uuid
+  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+  birthNumber   String
+  idCard        String
+  ico           String
+  verifyStart   DateTime    @default(now())
+}
+
+// consolidates data from magproxy / NASES
+// a physicalEntity record may or may not be linked to exactly one User record, and vice versa
+model PhysicalEntity {
+  id                String              @id @default(uuid()) @db.Uuid
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  user              User?               @relation(fields: [userId], references: [id])
+  userId            String?             @unique @db.Uuid
+  uri               String?             @unique
+  // is ifo unique ? should we store it here ?
+  ifo               String?             @unique
+  birthNumber       String?
+  activeEdesk       Boolean?
+  RfoByBirthnumber  RfoByBirthnumber[]
+  UpvsIdentityByUri UpvsIdentityByUri[]
+}
+
+// stores (filtered) requests from nases
+model RfoByBirthnumber {
+  id               String          @id @default(uuid()) @db.Uuid
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  birthNumber      String
+  // data may be filtered before storing in db
+  data             Json?
+  // should exist most of the time, but giving the option to make the request without it
+  PhysicalEntity   PhysicalEntity? @relation(fields: [physicalEntityId], references: [id])
+  physicalEntityId String?         @db.Uuid
+}
+
+// stores (filtered) requests from nases
+model UpvsIdentityByUri {
+  id               String          @id @default(uuid()) @db.Uuid
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  uri              String
+  data             Json?
+  // optionally link to physical entity for which we're doing the query
+  PhysicalEntity   PhysicalEntity? @relation(fields: [physicalEntityId], references: [id])
+  physicalEntityId String?         @db.Uuid
+  // TODO once we have legal entities add ids for those
+}
+
+model LegalPerson {
+  id                                 String                         @id @default(uuid()) @db.Uuid
+  createdAt                          DateTime                       @default(now())
+  updatedAt                          DateTime                       @updatedAt
+  externalId                         String?                        @unique
+  email                              String?                        @unique
+  ico                                String?
+  birthNumber                        String?
+  lastVerificationAttempt            DateTime?
+  birthnumberIcoAlreadyExistsLast    String?
+  birthnumberIcoAlreadyExistsCounter Int                            @default(0)
+  userAttribute                      String?
+  legalPersonGdprData                LegalPersonGdprData[]
+  cognitoTier                        CognitoUserAttributesTierEnum?
+  legalPersonIcoIdCardVerify         LegalPersonIcoIdCardVerify[]
+
+  @@unique([ico, birthNumber])
+}
+
+model UserGdprData {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @db.Uuid
+  type      String
+  category  String
+  subType   String?
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model LegalPersonGdprData {
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  legalPersonId String      @db.Uuid
+  type          String
+  category      String
+  subType       String?
+  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+}
+
+model Config {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  key       String   @unique
+  value     Json
+}

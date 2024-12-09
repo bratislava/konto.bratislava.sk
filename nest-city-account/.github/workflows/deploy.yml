@@ -1,0 +1,61 @@
+name: Nest deploy pipeline
+on:
+  push:
+    tags:
+      - 'dev**'
+      - 'staging**'
+      - 'prod**'
+    branches:
+      - master
+
+jobs:
+  conditions:
+    name: Check for cluster conditions
+    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions-simple.yml@stable
+
+  deploy-dev:
+    name: Deploy to dev
+    if: needs.conditions.outputs.dev == 'true'
+    needs: conditions
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
+    with:
+      directory: ./
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  deploy-staging:
+    name: Deploy to staging
+    if: needs.conditions.outputs.staging == 'true'
+    needs: [conditions]
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    with:
+      directory: ./
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      flag: --staging
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  deploy-prod:
+    name: Deploy to prod
+    if: needs.conditions.outputs.prod == 'true'
+    needs: [conditions]
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    with:
+      directory: ./
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}

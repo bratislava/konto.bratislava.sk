@@ -1,10 +1,13 @@
-import { conditionalFields, fileUpload, number, radioGroup } from '../../generator/functions'
 import {
   createCamelCaseItems,
   createCamelCaseItemsV2,
   createCondition,
 } from '../../generator/helpers'
 import { StepEnum } from './stepEnum'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   radioGroup(
@@ -79,13 +82,12 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       [['naZakladeDohody'], { const: true }],
     ]),
     [
-      fileUpload(
+      fileUploadMultiple(
         'splnomocnenie',
         // TODO: Reconsider required when tax form will be sent online.
         {
           title:
             'Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností',
-          multiple: true,
         },
         {
           type: 'dragAndDrop',

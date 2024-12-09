@@ -11,9 +11,7 @@ import { useFormMenuItems } from '../useFormMenuItems'
 
 const FormHeader = () => {
   const {
-    formDefinition: {
-      schemas: { schema },
-    },
+    formDefinition: { schema },
     isReadonly,
     strapiForm,
   } = useFormContext()

@@ -284,10 +284,7 @@ describe('NasesService', () => {
       const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
         jsonVersion: '1.0',
-        schemas: {
-          schema: {},
-          uiSchema: { 'ui:options': {} },
-        },
+        schema: {},
         slug: 'test-slug',
         type: FormDefinitionType.SlovenskoSkTax,
         title: 'Test Form',
@@ -343,10 +340,7 @@ describe('NasesService', () => {
     } as unknown as Forms
 
     const mockFormDefinition = {
-      schemas: {
-        schema: {},
-        uiSchema: {},
-      },
+      schema: {},
       type: FormDefinitionType.SlovenskoSkGeneric,
     } as FormDefinitionSlovenskoSkGeneric
 

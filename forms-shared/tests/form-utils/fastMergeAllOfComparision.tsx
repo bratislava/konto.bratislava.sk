@@ -87,10 +87,9 @@ describe('fastMergeAllOfComparision', () => {
         mockFastMergeAllOf.mockClear()
 
         originalForm = renderTestForm({
-          schema: formDefinition.schemas.schema,
-          uiSchema: formDefinition.schemas.uiSchema,
+          schema: formDefinition.schema,
           formData: exampleForm.formData,
-          ...getBaFormDefaults(formDefinition.schemas.schema, testValidatorRegistry),
+          ...getBaFormDefaults(formDefinition.schema, testValidatorRegistry),
           experimental_customMergeAllOf: undefined,
         })
         originalFormCalls = mockOriginalMergeAllOf.mock.calls
@@ -101,10 +100,9 @@ describe('fastMergeAllOfComparision', () => {
         mockFastMergeAllOf.mockClear()
 
         fastForm = renderTestForm({
-          schema: formDefinition.schemas.schema,
-          uiSchema: formDefinition.schemas.uiSchema,
+          schema: formDefinition.schema,
           formData: exampleForm.formData,
-          ...getBaFormDefaults(formDefinition.schemas.schema, testValidatorRegistry),
+          ...getBaFormDefaults(formDefinition.schema, testValidatorRegistry),
         })
         fastFormCalls = mockFastMergeAllOf.mock.calls
         fastFormResults = mockFastMergeAllOf.mock.results

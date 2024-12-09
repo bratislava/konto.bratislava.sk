@@ -1,9 +1,10 @@
-import { input, object } from '../../src/generator/functions'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { input } from '../../src/generator/functions/input'
+import { object } from '../../src/generator/object'
 
 describe('omitExtraData', () => {
   beforeEach(() => {
@@ -34,7 +35,7 @@ describe('omitExtraData', () => {
   // data consists of all possible fields, therefore it is a good test case for omitting extra data.
   it('should omit extra data for complex schema', () => {
     const result = omitExtraData(
-      priznanieKDaniZNehnutelnosti.schema,
+      priznanieKDaniZNehnutelnosti,
       {
         udajeODanovnikovi: {
           voSvojomMene: true,
@@ -150,7 +151,7 @@ describe('omitExtraData', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
     it(`${exampleForm.name} should not contain extra data`, () => {
       const result = omitExtraData(
-        formDefinition.schemas.schema,
+        formDefinition.schema,
         exampleForm.formData,
         testValidatorRegistry,
       )

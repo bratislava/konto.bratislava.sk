@@ -15,9 +15,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
 
   const formDefinition = {
     pospID: 'App.GeneralAgenda',
-    schemas: {
-      schema: {},
-    },
+    schema: {},
   } as FormDefinitionSlovenskoSk
 
   it('should successfully extract JSON from valid XML', async () => {

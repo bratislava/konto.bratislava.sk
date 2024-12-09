@@ -141,9 +141,7 @@ const SummaryDetails = () => {
   const { getValidatedSummary } = useFormSummary()
   const validatedSummary = getValidatedSummary()
   const {
-    formDefinition: {
-      schemas: { schema, uiSchema },
-    },
+    formDefinition: { schema },
     initialSummaryJson,
   } = useFormContext()
   const validatorRegistry = useFormValidatorRegistry()
@@ -156,8 +154,8 @@ const SummaryDetails = () => {
       return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser(schema, uiSchema, formData, validatorRegistry)
-  }, [isSSR, initialSummaryJson, schema, uiSchema, formData, validatorRegistry])
+    return getSummaryJsonBrowser(schema, formData, validatorRegistry)
+  }, [isSSR, initialSummaryJson, schema, formData, validatorRegistry])
 
   if (!summaryJson) {
     return null

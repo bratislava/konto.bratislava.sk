@@ -1,6 +1,6 @@
-import { conditionalStep } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { bezpodieloveSpoluvlastnictvoManzelov } from './osoby'
+import { conditionalStep } from '../../generator/functions/conditionalStep'
 
 export default conditionalStep(
   'bezpodieloveSpoluvlastnictvoManzelov',

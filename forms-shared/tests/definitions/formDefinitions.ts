@@ -8,13 +8,13 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
     describe(formDefinition.slug, () => {
-      it('schemas match snapshot', () => {
-        expect(formDefinition.schemas).toMatchSnapshot()
+      it('schema matches snapshot', () => {
+        expect(formDefinition.schema).toMatchSnapshot()
       })
 
       it('is valid schema', () => {
-        const validator = testValidatorRegistry.getValidator(formDefinition.schemas.schema)
-        expect(validator.ajv.validateSchema(formDefinition.schemas.schema, true)).toBe(true)
+        const validator = testValidatorRegistry.getValidator(formDefinition.schema)
+        expect(validator.ajv.validateSchema(formDefinition.schema, true)).toBe(true)
       })
 
       it('default form state should match snapshot', () => {
@@ -25,7 +25,7 @@ describe('Form definitions', () => {
         )
 
         expect(
-          baGetDefaultFormState(formDefinition.schemas.schema, {}, testValidatorRegistry),
+          baGetDefaultFormState(formDefinition.schema, {}, testValidatorRegistry),
         ).toMatchSnapshot()
       })
 

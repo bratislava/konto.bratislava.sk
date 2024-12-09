@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: database
+  namespace: ${NAMESPACE}
+  labels:
+    service: database
+spec:
+  serviceName: database
+  selector:
+    matchLabels:
+      service: database
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: database
+    spec:
+      containers:
+        - image: postgres:14-alpine
+          name: database
+          resources:
+            limits:
+              cpu: ${DB_CPU_LIMITS}
+              memory: ${DB_MEMORY_LIMITS}
+            requests:
+              cpu: ${DB_CPU_REQUESTS}
+              memory: ${DB_MEMORY_REQUESTS}
+          volumeMounts:
+            - name: postgresql
+              mountPath: /var/lib/postgresql/data
+              subPath: postgresql
+          envFrom:
+            - secretRef:
+                name: database-secret
+  # Volume Claim
+  volumeClaimTemplates:
+    - metadata:
+        name: postgresql
+        labels:
+          service: database
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi

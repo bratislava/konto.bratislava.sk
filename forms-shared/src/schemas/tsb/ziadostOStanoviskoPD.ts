@@ -1,15 +1,13 @@
-import {
-  conditionalFields,
-  datePicker,
-  fileUpload,
-  input,
-  object,
-  radioGroup,
-  schema,
-  selectMultiple,
-  step,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
+import { selectMultiple } from '../../generator/functions/selectMultiple'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default schema(
   {
@@ -231,24 +229,22 @@ export default schema(
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUpload(
+      fileUploadMultiple(
         'technickaSpravaFile',
         {
           title: 'Technická správa',
           required: true,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',
           helptext: 'Technická správa s popisom navrhovaného technického riešenia.',
         },
       ),
-      fileUpload(
+      fileUploadMultiple(
         'vyznaceneZaujmoveUzemieFile',
         {
           title: 'Vyznačené záujmové územie na katastrálnej mape',
           required: true,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',
@@ -256,23 +252,21 @@ export default schema(
             'Využiť môžete katastrálnu mapu ZBGIS, kde nájdete požadované záujmové územie. V katastrálnej mape zvoľte funkciu Meranie v ľavom menu a vyznačte záujmové územie. Meranie uložte cez možnosť Tlačiť do PDF.',
         },
       ),
-      fileUpload(
+      fileUploadMultiple(
         'situacnyVykresFile',
         {
           title: 'Situačný výkres',
           required: true,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',
         },
       ),
-      fileUpload(
+      fileUploadMultiple(
         'svetelnoTechnickyVypocetFile',
         {
           title: 'Svetelno-technický výpočet',
           required: false,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',

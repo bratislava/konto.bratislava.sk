@@ -75,7 +75,7 @@ describe('WebhookSubservice', () => {
       const mockFormDefinition: FormDefinition = {
         type: FormDefinitionType.Webhook,
         webhookUrl: 'https://example.com/webhook',
-        schemas: { schema: {}, uiSchema: {} },
+        schema: {},
         slug: 'test-slug',
       } as FormDefinition
       prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)

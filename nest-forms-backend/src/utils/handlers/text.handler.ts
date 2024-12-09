@@ -1,4 +1,5 @@
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
 import lodash from 'lodash'
 
 import { FormWithSelectedProperties } from '../types/prisma'
@@ -36,9 +37,9 @@ export const getFrontendFormTitleFromForm = (
       titleFallback?: string
     }
   }
-  const uiOptions = (formDefinition.schemas.uiSchema as MinimalUiSchema)?.[
-    'ui:options'
-  ]
+  const uiOptions = (
+    (formDefinition.schema as BAJSONSchema7).baUiSchema as MinimalUiSchema
+  )?.['ui:options']
   return (
     (lodash.get(
       data.formDataJson,

@@ -41,7 +41,7 @@ on Windows just use npm install as the binaries are included in the npm packages
   npm install
 ```
 
-### Generating just schema and uiSchema
+### Generating just schema
 
 The generator is a simple TypeScript application. To create a new form, add a definition to `/definition` and implement it the `/cli.ts` file. **Keep the definition names (subdirectories) in sync with the slugs used on backend**. Add the script to `package.json` and then run it to generate the schemas. The schemas are located in `/dist`.
 

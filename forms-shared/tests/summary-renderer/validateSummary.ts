@@ -1,8 +1,11 @@
-import { fileUpload, input, object } from '../../src/generator/functions'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { input } from '../../src/generator/functions/input'
+import { fileUpload } from '../../src/generator/functions/fileUpload'
+import { object } from '../../src/generator/object'
+import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 
 describe('validateSummary', () => {
   beforeEach(() => {
@@ -106,7 +109,7 @@ describe('validateSummary', () => {
 
   describe('Multiple file upload validation', () => {
     const { schema } = object('wrapper', {}, {}, [
-      fileUpload('files', { title: 'File', multiple: true }, {}),
+      fileUploadMultiple('files', { title: 'File' }, {}),
     ])
 
     it('should handle multiple file upload scenario', () => {

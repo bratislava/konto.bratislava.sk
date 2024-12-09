@@ -274,11 +274,8 @@ export default class FormsService {
       // fallback to messageSubject if title can't be parsed
       const frontendTitle =
         getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
-      const formWithoutUiSchema = {
-        ...form,
-      }
       dataWithLatestFlag.push({
-        ...formWithoutUiSchema,
+        ...form,
         messageSubject,
         frontendTitle,
         formDefinitionSlug: formDefinition.slug,

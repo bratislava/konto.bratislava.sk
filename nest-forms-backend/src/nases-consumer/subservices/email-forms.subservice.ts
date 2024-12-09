@@ -91,7 +91,7 @@ export default class EmailFormsSubservice {
       getFrontendFormTitleFromForm(form, formDefinition) ||
       getSubjectTextFromForm(form, formDefinition)
     const jsonDataExtraDataOmitted = omitExtraData(
-      formDefinition.schemas.schema,
+      formDefinition.schema,
       form.formDataJson as GenericObjectType,
       this.formValidatorRegistryService.getRegistry(),
     )

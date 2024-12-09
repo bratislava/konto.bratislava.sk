@@ -303,10 +303,10 @@ export default class NasesService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schemas.schema)
+      .getValidator(formDefinition.schema)
     const validationResult = validator.validateFormData(
       form.formDataJson,
-      formDefinition.schemas.schema,
+      formDefinition.schema,
     )
     if (validationResult.errors.length > 0) {
       this.logger.error(
@@ -395,10 +395,10 @@ export default class NasesService {
 
     const validator = this.formValidatorRegistryService
       .getRegistry()
-      .getValidator(formDefinition.schemas.schema)
+      .getValidator(formDefinition.schema)
     const validationResult = validator.validateFormData(
       form.formDataJson,
-      formDefinition.schemas.schema,
+      formDefinition.schema,
     )
     if (validationResult.errors.length > 0) {
       this.logger.error(

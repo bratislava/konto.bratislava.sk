@@ -2,7 +2,7 @@ import { devFormDefinitions } from 'forms-shared/definitions/devFormDefinitions'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampleForms'
 
-import FormsPlayground, { FormsPlaygroundProps } from '../components/forms/FormsPlayground'
+import FormsPlaygroundWrapped, { FormsPlaygroundProps } from '../components/forms/FormsPlayground'
 import { makeSerializableFormDefinitionArray } from '../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { environment } from '../environment'
@@ -25,4 +25,4 @@ export const getServerSideProps = amplifyGetServerSideProps<FormsPlaygroundProps
   }
 })
 
-export default SsrAuthProviderHOC(FormsPlayground)
+export default SsrAuthProviderHOC(FormsPlaygroundWrapped)

@@ -8,7 +8,7 @@ export const devFormDefinitions: FormDefinition[] = [
     slug: 'showcase',
     title: 'Showcase',
     jsonVersion: '1.0',
-    schemas: showcase,
+    schema: showcase,
     pospID: '',
     pospVersion: '',
     publisher: '',

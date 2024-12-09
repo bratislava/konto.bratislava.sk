@@ -1,21 +1,19 @@
-import {
-  checkbox,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  fileUpload,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  selectMultiple,
-  step,
-} from '../../../generator/functions'
 import { createCondition, createStringItems, createStringItemsV2 } from '../../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../../form-utils/safeData'
+import { select } from '../../../generator/functions/select'
+import { selectMultiple } from '../../../generator/functions/selectMultiple'
+import { input } from '../../../generator/functions/input'
+import { number } from '../../../generator/functions/number'
+import { radioGroup } from '../../../generator/functions/radioGroup'
+import { checkbox } from '../../../generator/functions/checkbox'
+import { datePicker } from '../../../generator/functions/datePicker'
+import { customComponentsField } from '../../../generator/functions/customComponentsField'
+import { object } from '../../../generator/object'
+import { step } from '../../../generator/functions/step'
+import { conditionalFields } from '../../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../../generator/functions/fileUploadMultiple'
 
 export enum ZevoType {
   EnergetickeZhodnotenieOdpaduVZevo,
@@ -997,12 +995,11 @@ export const getZevoSchema = (type: ZevoType) => [
           },
           {},
         ),
-        fileUpload(
+        fileUploadMultiple(
           'fotoOdpadu',
           {
             title: 'Foto odpadu',
             required: false,
-            multiple: true,
           },
           {
             type: 'dragAndDrop',

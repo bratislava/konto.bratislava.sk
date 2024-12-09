@@ -69,12 +69,10 @@ const FormModals = () => {
   const { login, register, verifyIdentity } = useFormRedirects()
 
   const {
-    formDefinition: {
-      schemas: { uiSchema },
-    },
+    formDefinition: { schema },
   } = useFormContext()
   const { formData } = useFormData()
-  const uiOptions = getUiOptions(uiSchema)
+  const uiOptions = getUiOptions(schema.baUiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
   const messageModals: (MessageModalProps & { key: string })[] = [

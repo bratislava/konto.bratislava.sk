@@ -1,4 +1,4 @@
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 
@@ -144,20 +144,14 @@ function parseXml(domParserInstance: DOMParser, xmlString: string) {
  * Renders the summary form and parses the XML into a JSON object.
  */
 export const getSummaryJson = (
-  jsonSchema: RJSFSchema,
-  uiSchema: UiSchema,
+  schema: RJSFSchema,
   data: GenericObjectType,
   domParserInstance: DOMParser,
   validatorRegistry: BaRjsfValidatorRegistry,
 ) => {
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const renderedString = renderToString(
-    <SummaryXmlForm
-      schema={jsonSchema}
-      uiSchema={uiSchema}
-      formData={data}
-      validatorRegistry={validatorRegistry}
-    />,
+    <SummaryXmlForm schema={schema} formData={data} validatorRegistry={validatorRegistry} />,
   )
 
   return parseXml(domParserInstance, renderedString)

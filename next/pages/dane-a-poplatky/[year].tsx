@@ -1,3 +1,7 @@
+import {
+  getTaxAdministratorForUser,
+  StrapiTaxAdministrator,
+} from '@backend/utils/tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
@@ -15,6 +19,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto
+  taxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
@@ -32,7 +37,7 @@ function convertYearToNumber(input: string | undefined) {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
-  async ({ context, getAccessToken }) => {
+  async ({ amplifyContextSpec, context, getAccessToken }) => {
     const year = context.params?.year
     const yearNumber = convertYearToNumber(year)
     if (!yearNumber) {
@@ -42,12 +47,13 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax, user] = await Promise.all([
+      const [{ data: taxData }, strapiTax, taxAdministrator, user] = await Promise.all([
         taxApi.taxControllerGetActualTaxes(yearNumber, {
           accessToken: 'always',
           accessTokenSsrGetFn: getAccessToken,
         }),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        getTaxAdministratorForUser(amplifyContextSpec),
         prefetchUserQuery(queryClient, getAccessToken),
       ])
 
@@ -74,6 +80,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         props: {
           taxData,
           strapiTax,
+          taxAdministrator: taxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
@@ -103,11 +110,16 @@ const AccountTaxesFeesPage = ({
   taxData,
   strapiTax,
   dehydratedState,
+  taxAdministrator,
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSectionProvider taxData={taxData} strapiTax={strapiTax}>
+        <TaxFeeSectionProvider
+          taxData={taxData}
+          taxAdministrator={taxAdministrator}
+          strapiTax={strapiTax}
+        >
           <TaxFeeSection />
         </TaxFeeSectionProvider>
       </AccountPageLayout>

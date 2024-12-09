@@ -6,8 +6,7 @@ describe('getSummaryJson', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
     it(`${exampleForm.name} summary JSON should match snapshot`, () => {
       const result = getSummaryJsonNode(
-        formDefinition.schemas.schema,
-        formDefinition.schemas.uiSchema,
+        formDefinition.schema,
         exampleForm.formData,
         testValidatorRegistry,
       )

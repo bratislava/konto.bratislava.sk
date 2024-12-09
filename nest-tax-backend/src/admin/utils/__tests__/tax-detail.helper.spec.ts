@@ -163,8 +163,8 @@ describe('taxDetail', () => {
       taxId: mockTaxId,
       areaType: 'jH',
       type: AreaTypesEnum.CONSTRUCTION,
-      base: 130075,
-      amount: 13075,
+      base: 130_075,
+      amount: 13_075,
       area: null,
     })
   })

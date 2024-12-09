@@ -3,10 +3,18 @@ import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
+import {
+  ErrorFilter,
+  HttpExceptionFilter,
+  TypeErrorFilter,
+} from './utils/filters/error.filter'
+import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap() {
   const port = process.env.PORT || 3000
+  const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule)
+  app.useLogger(logger)
   const corsOptions = {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -16,6 +24,9 @@ async function bootstrap() {
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
+  app.useGlobalFilters(new TypeErrorFilter())
+  app.useGlobalFilters(new HttpExceptionFilter())
   const config = new DocumentBuilder()
     .setTitle('Nest tax backend')
     .setDescription('Backend for payment taxes and connection to Noris')
@@ -42,7 +53,7 @@ async function bootstrap() {
   app.getHttpAdapter().get('/spec-json', (req, res) => res.json(document))
 
   await app.listen(port)
-  console.log(`Nest is running on port: ${port}`)
+  logger.log(`Nest is running on port: ${port}`)
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await
 bootstrap()

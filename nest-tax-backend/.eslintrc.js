@@ -33,6 +33,9 @@ module.exports = {
     /** BE often has these in boilerplate */
     'no-underscore-dangle': 'off',
 
+    /** Please use logger **/
+    'no-console': 'error',
+
     // TODO: discuss these rules in nest-prisma-template repo
     'max-classes-per-file': 'off',
     'const-case/uppercase': 'off',

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { BloomreachModule } from 'src/bloomreach/bloomreach.module'
 import { PrismaModule } from 'src/prisma/prisma.module'
-import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
+import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
 import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
 import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
@@ -15,7 +15,7 @@ import { PaymentService } from './payment.service'
     PaymentService,
     CognitoSubservice,
     GpWebpaySubservice,
-    ErrorThrowerGuard,
+    ThrowerErrorGuard,
     CityAccountSubservice,
   ],
   exports: [PaymentService],

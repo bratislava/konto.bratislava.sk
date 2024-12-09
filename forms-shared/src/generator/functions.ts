@@ -31,29 +31,13 @@ import {
   OptionItem,
 } from './optionItems'
 import { addBaOrderToFields } from './addBaOrderToFields'
-
-export type GeneratorField = {
-  property: string
-  schema: RJSFSchema
-  required: boolean
-}
-
-export type GeneratorObjectField = Omit<GeneratorField, 'property'> & {
-  property: string | null
-}
-
-export type GeneratorConditionalFields = {
-  condition: RJSFSchema
-  thenSchema: RJSFSchema
-  elseSchema?: RJSFSchema
-}
-
-export type GeneratorFieldType = GeneratorField | GeneratorConditionalFields | GeneratorObjectField
-
-export type GeneratorBaseOptions = {
-  title: string
-  required?: boolean
-}
+import {
+  GeneratorBaseOptions,
+  GeneratorConditionalFields,
+  GeneratorField,
+  GeneratorFieldType,
+  GeneratorObjectField,
+} from './generatorTypes'
 
 export const select = (
   property: string,

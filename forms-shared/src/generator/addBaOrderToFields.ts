@@ -1,6 +1,6 @@
 import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
-import { GeneratorFieldType } from './functions'
 import { create } from 'mutative'
+import { GeneratorFieldType } from './generatorTypes'
 
 /**
  * Recursively increments baOrder values for all fields in a schema and its nested conditional fields.

@@ -5,7 +5,6 @@ import {
   conditionalFields,
   customComponentsField,
   datePicker,
-  GeneratorFieldType,
   input,
   number,
   object,
@@ -17,6 +16,7 @@ import {
   textArea,
 } from '../generator/functions'
 import { createCondition } from '../generator/helpers'
+import { GeneratorFieldType } from '../generator/generatorTypes'
 
 enum StepType {
   Ziadatel,

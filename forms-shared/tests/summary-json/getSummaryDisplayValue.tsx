@@ -3,7 +3,6 @@ import {
   checkboxGroup,
   datePicker,
   fileUpload,
-  GeneratorField,
   input,
   number,
   object,
@@ -25,6 +24,7 @@ import React from 'react'
 import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { defaultFormFields } from '../../src/form-utils/defaultFormFields'
+import { GeneratorField } from '../../src/generator/generatorTypes'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like

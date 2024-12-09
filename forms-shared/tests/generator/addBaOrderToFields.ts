@@ -1,11 +1,7 @@
 import { addBaOrderToFields } from '../../src/generator/addBaOrderToFields'
-import {
-  conditionalFields,
-  GeneratorConditionalFields,
-  GeneratorField,
-  input,
-} from '../../src/generator/functions'
+import { conditionalFields, input } from '../../src/generator/functions'
 import { createCondition } from '../../src/generator/helpers'
+import { GeneratorConditionalFields, GeneratorField } from '../../src/generator/generatorTypes'
 
 describe('addBaOrderToFields', () => {
   it('assigns sequential order to regular fields', () => {

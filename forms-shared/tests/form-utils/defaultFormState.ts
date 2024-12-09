@@ -11,14 +11,14 @@ import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { input } from '../../src/generator/functions/input'
 import { checkbox } from '../../src/generator/functions/checkbox'
 import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
-import { fileUpload } from '../../src/generator/functions/fileUpload'
 import { object } from '../../src/generator/object'
 import { arrayField } from '../../src/generator/functions/arrayField'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
-    const definition = fileUpload('file', { title: 'File', multiple: true }, {})
+    const definition = fileUploadMultiple('file', { title: 'File' }, {})
 
     expect(isFileMultipleSchema(definition.schema)).toBe(true)
   })
@@ -38,12 +38,8 @@ describe('defaultFormState', () => {
     ]
 
     const definition = object('defaultFormState', {}, {}, [
-      fileUpload('fileMultiple', { title: 'File multiple', multiple: true, required: false }, {}),
-      fileUpload(
-        'fileMultipleRequired',
-        { title: 'File multiple', multiple: true, required: true },
-        {},
-      ),
+      fileUploadMultiple('fileMultiple', { title: 'File multiple', required: false }, {}),
+      fileUploadMultiple('fileMultipleRequired', { title: 'File multiple', required: true }, {}),
       selectMultiple(
         'select',
         {

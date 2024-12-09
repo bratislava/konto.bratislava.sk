@@ -7,7 +7,6 @@ import { radioGroup } from '../generator/functions/radioGroup'
 import { textArea } from '../generator/functions/textArea'
 import { checkbox } from '../generator/functions/checkbox'
 import { checkboxGroup } from '../generator/functions/checkboxGroup'
-import { fileUpload } from '../generator/functions/fileUpload'
 import { datePicker } from '../generator/functions/datePicker'
 import { timePicker } from '../generator/functions/timePicker'
 import { customComponentsField } from '../generator/functions/customComponentsField'
@@ -17,6 +16,7 @@ import { step } from '../generator/functions/step'
 import { conditionalStep } from '../generator/functions/conditionalStep'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 
 export default schema(
   {
@@ -284,24 +284,22 @@ export default schema(
       ),
     ]),
     step('fileUploads', { title: 'File Uploads' }, [
-      fileUpload(
+      fileUploadMultiple(
         'buttonUpload',
         {
           title: 'Button Upload',
           required: true,
-          multiple: true,
         },
         {
           type: 'button',
           helptext: 'Click button to upload files',
         },
       ),
-      fileUpload(
+      fileUploadMultiple(
         'dragAndDrop',
         {
           title: 'Drag and Drop Upload',
           required: true,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',

@@ -23,6 +23,7 @@ import { fileUpload } from '../../src/generator/functions/fileUpload'
 import { datePicker } from '../../src/generator/functions/datePicker'
 import { timePicker } from '../../src/generator/functions/timePicker'
 import { object } from '../../src/generator/object'
+import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 
 /**
  * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
@@ -346,9 +347,9 @@ describe('getSummaryDisplayValues', () => {
   })
 
   describe('FileUpload Multiple', () => {
-    const field = fileUpload(
+    const field = fileUploadMultiple(
       'fileUploadMultiple',
-      { title: 'File Upload Multiple Title', multiple: true },
+      { title: 'File Upload Multiple Title' },
       {},
     )
     const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)

@@ -14,9 +14,6 @@ on:
       dev-nest-forms-backend:
         description: "Returns true if dev-nest-forms-backend: can be deployed"
         value: ${{ jobs.conditions.outputs.dev-nest-forms-backend }}
-      dev-nest-city-account:
-        description: "Returns true if dev-nest-city-account: can be deployed"
-        value: ${{ jobs.conditions.outputs.dev-nest-city-account }}
       dev-cvdmirror:
         description: "Returns true if dev-cvdmirror can be deployed"
         value: ${{ jobs.conditions.outputs.dev-cvdmirror }}
@@ -29,6 +26,9 @@ on:
       dev-nest-tax-backend:
         description: "Returns true if dev-nest-tax-backend: can be deployed"
         value: ${{ jobs.conditions.outputs.dev-nest-tax-backend }}
+      dev-nest-city-account:
+        description: "Returns true if dev-nest-city-account: can be deployed"
+        value: ${{ jobs.conditions.outputs.dev-nest-city-account }}
       staging:
         description: "Returns true if staging-strapi, staging-nest-forms-backend, staging-nest-tax-backend, staging-nest-clamav-scanner, staging-cvdmirror, staging-clamav and staging-next can be deployed"
         value: ${{ jobs.conditions.outputs.staging }}
@@ -38,9 +38,6 @@ on:
       staging-strapi:
         description: "Returns true if staging-strapi can be deployed"
         value: ${{ jobs.conditions.outputs.staging-strapi }}
-      staging-nest-city-account:
-        description: "Returns true if staging-nest-city-account: can be deployed"
-        value: ${{ jobs.conditions.outputs.staging-nest-city-account }}
       staging-nest-forms-backend:
         description: "Returns true if staging-nest-forms-backend can be deployed"
         value: ${{ jobs.conditions.outputs.staging-nest-forms-backend }}
@@ -56,6 +53,9 @@ on:
       staging-nest-tax-backend:
         description: "Returns true if staging-nest-tax-backend can be deployed"
         value: ${{ jobs.conditions.outputs.staging-nest-tax-backend }}
+      staging-nest-city-account:
+        description: "Returns true if staging-nest-city-account: can be deployed"
+        value: ${{ jobs.conditions.outputs.staging-nest-city-account }}
       prod:
         description: "Returns true if prod-strapi prod-nest-forms-backend, prod-nest-tax-backend, prod-nest-clamav-scanner, prod-cvdmirror, prod-clamav and prod-next can be deployed"
         value: ${{ jobs.conditions.outputs.prod }}
@@ -68,9 +68,6 @@ on:
       prod-nest-forms-backend:
         description: "Returns true if prod-nest-forms-backend can be deployed"
         value: ${{ jobs.conditions.outputs.prod-nest-forms-backend }}
-      prod-nest-city-account:
-        description: "Returns true if prod-nest-city-account: can be deployed"
-        value: ${{ jobs.conditions.outputs.prod-nest-city-account }}
       prod-cvdmirror:
         description: "Returns true if prod-cvdmirror can be deployed"
         value: ${{ jobs.conditions.outputs.prod-cvdmirror }}
@@ -83,6 +80,9 @@ on:
       prod-nest-tax-backend:
         description: "Returns true if prod-nest-tax-backend can be deployed"
         value: ${{ jobs.conditions.outputs.prod-nest-tax-backend }}
+      prod-nest-city-account:
+        description: "Returns true if prod-nest-city-account: can be deployed"
+        value: ${{ jobs.conditions.outputs.prod-nest-city-account }}
 
 jobs:
   conditions:
@@ -95,29 +95,29 @@ jobs:
       dev-next: ${{ steps.dev-next.outputs.condition }}
       dev-strapi: ${{ steps.dev-strapi.outputs.condition }}
       dev-nest-forms-backend: ${{ steps.dev-nest-forms-backend.outputs.condition }}
-      dev-nest-city-account: ${{ steps.dev-nest-city-account.outputs.condition }}
       dev-cvdmirror: ${{ steps.dev-cvdmirror.outputs.condition }}
       dev-clamav: ${{ steps.dev-clamav.outputs.condition }}
       dev-nest-clamav-scanner: ${{ steps.dev-nest-clamav-scanner.outputs.condition }}
       dev-nest-tax-backend: ${{ steps.dev-nest-tax-backend.outputs.condition }}
+      dev-nest-city-account: ${{ steps.dev-nest-city-account.outputs.condition }}
       staging: ${{ steps.staging.outputs.condition }}
       staging-next: ${{ steps.staging-next.outputs.condition }}
       staging-strapi: ${{ steps.staging-strapi.outputs.condition }}
       staging-nest-forms-backend: ${{ steps.staging-nest-forms-backend.outputs.condition }}
-      staging-nest-city-account: ${{ steps.staging-nest-city-account.outputs.condition }}
       staging-cvdmirror: ${{ steps.staging-cvdmirror.outputs.condition }}
       staging-clamav: ${{ steps.staging-clamav.outputs.condition }}
       staging-nest-clamav-scanner: ${{ steps.staging-nest-clamav-scanner.outputs.condition }}
       staging-nest-tax-backend: ${{ steps.staging-nest-tax-backend.outputs.condition }}
+      staging-nest-city-account: ${{ steps.staging-nest-city-account.outputs.condition }}
       prod: ${{ steps.prod.outputs.condition }}
       prod-next: ${{ steps.prod-next.outputs.condition }}
       prod-strapi: ${{ steps.prod-strapi.outputs.condition }}
       prod-nest-forms-backend: ${{ steps.prod-nest-forms-backend.outputs.condition }}
-      prod-nest-city-account: ${{ steps.prod-nest-city-account.outputs.condition }}
       prod-cvdmirror: ${{ steps.prod-cvdmirror.outputs.condition }}
       prod-clamav: ${{ steps.prod-clamav.outputs.condition }}
       prod-nest-clamav-scanner: ${{ steps.prod-nest-clamav-scanner.outputs.condition }}
       prod-nest-tax-backend: ${{ steps.prod-nest-tax-backend.outputs.condition }}
+      prod-nest-city-account: ${{ steps.prod-nest-city-account.outputs.condition }}
     steps:
       - name: Print pipeline summary
         run: |
@@ -157,14 +157,6 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev-nest-forms-backend**" >> $GITHUB_STEP_SUMMARY
 
-      - id: dev-nest-city-account
-        name: Check for dev nest-city-account
-        if: startsWith(github.ref, 'refs/tags/dev-nest-city-account') || steps.dev.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **dev-nest-city-account**" >> $GITHUB_STEP_SUMMARY
-
       - id: dev-cvdmirror
         name: Check for dev cvdmirror
         if: startsWith(github.ref, 'refs/tags/dev-cvdmirror') || steps.dev.outputs.condition == 'true'
@@ -172,15 +164,6 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev-cvdmirror**" >> $GITHUB_STEP_SUMMARY
-
-      - id: dev-nest-tax-backend
-        name: Check for dev nest-tax-backend
-        if: startsWith(github.ref, 'refs/tags/dev-nest-tax-backend') || steps.dev.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **dev-nest-tax-backend**" >> $GITHUB_STEP_SUMMARY
-
 
       - id: dev-clamav
         name: Check for dev clamav
@@ -198,6 +181,22 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **dev-nest-clamav-scanner**" >> $GITHUB_STEP_SUMMARY
 
+      - id: dev-nest-tax-backend
+        name: Check for dev nest-tax-backend
+        if: startsWith(github.ref, 'refs/tags/dev-nest-tax-backend') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-nest-tax-backend**" >> $GITHUB_STEP_SUMMARY
+
+      - id: dev-nest-city-account
+        name: Check for dev nest-city-account
+        if: startsWith(github.ref, 'refs/tags/dev-nest-city-account') || steps.dev.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **dev-nest-city-account**" >> $GITHUB_STEP_SUMMARY
+
       - id: staging
         name: Check for deployment of whole project to staging
         if: (startsWith(github.ref, 'refs/tags/staging') && startsWith(github.ref, 'refs/tags/staging-next') == false && startsWith(github.ref, 'refs/tags/staging-strapi') == false && startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/staging-clamav') == false && startsWith(github.ref, 'refs/tags/staging-cvdmirror') == false && startsWith(github.ref, 'refs/tags/staging-clamav') == false && startsWith(github.ref, 'refs/tags/staging-nest-clamav-scanner') == false && startsWith(github.ref, 'refs/tags/staging-nest-tax-backend') == false && startsWith(github.ref, 'refs/tags/staging-nest-city-account') == false) || (github.event_name == 'push' && github.ref == 'refs/heads/master')
@@ -213,14 +212,6 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **staging**" >> $GITHUB_STEP_SUMMARY
-
-      - id: staging-nest-city-account
-        name: Check for staging nest-city-account
-        if: startsWith(github.ref, 'refs/tags/staging-nest-city-account') || steps.staging.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **staging-nest-city-account**" >> $GITHUB_STEP_SUMMARY    
 
       - id: staging-strapi
         name: Check for staging strapi
@@ -270,6 +261,14 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **staging-nest-tax-backend**" >> $GITHUB_STEP_SUMMARY    
 
+      - id: staging-nest-city-account
+        name: Check for staging nest-city-account
+        if: startsWith(github.ref, 'refs/tags/staging-nest-city-account') || steps.staging.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **staging-nest-city-account**" >> $GITHUB_STEP_SUMMARY    
+
       - id: prod
         name: Check for deployment of whole project to prod
         if: startsWith(github.ref, 'refs/tags/prod') && startsWith(github.ref, 'refs/tags/prod-next') == false && startsWith(github.ref, 'refs/tags/prod-strapi') == false && startsWith(github.ref, 'refs/tags/prod-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/prod-cvdmirror') == false && startsWith(github.ref, 'refs/tags/prod-clamav') == false && startsWith(github.ref, 'refs/tags/prod-nest-clamav-scanner') == false && startsWith(github.ref, 'refs/tags/prod-nest-tax-backend') == false && startsWith(github.ref, 'refs/tags/prod-nest-city-account') == false
@@ -302,14 +301,6 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod-nest-forms-backend** " >> $GITHUB_STEP_SUMMARY
 
-      - id: prod-nest-city-account
-        name: Check for prod nest-city-account
-        if: startsWith(github.ref, 'refs/tags/prod-nest-city-account') || steps.prod.outputs.condition == 'true'
-        run: |
-          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
-          echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **prod-nest-city-account** " >> $GITHUB_STEP_SUMMARY
-
       - id: prod-cvdmirror
         name: Check for prod cvdmirror
         if: startsWith(github.ref, 'refs/tags/prod-cvdmirror') || steps.prod.outputs.condition == 'true'
@@ -341,6 +332,14 @@ jobs:
           echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod-nest-tax-backend** " >> $GITHUB_STEP_SUMMARY
+
+      - id: prod-nest-city-account
+        name: Check for prod nest-city-account
+        if: startsWith(github.ref, 'refs/tags/prod-nest-city-account') || steps.prod.outputs.condition == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+          echo ":soon: **prod-nest-city-account** " >> $GITHUB_STEP_SUMMARY
 
       - id: conditions-count-zero-summary
         if: env.COUNT == 0

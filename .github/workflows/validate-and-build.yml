@@ -155,5 +155,5 @@ jobs:
       directory: nest-city-account/
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
     permissions: write-all
-

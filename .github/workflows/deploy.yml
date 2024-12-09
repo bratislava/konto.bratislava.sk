@@ -186,6 +186,7 @@ jobs:
     secrets:
       service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-staging:
@@ -348,6 +349,7 @@ jobs:
     secrets:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
   deploy-prod:
@@ -510,4 +512,5 @@ jobs:
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}

@@ -2,7 +2,7 @@ import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
 
-export const fileUpload = (
+export const fileUploadMultiple = (
   property: string,
   options: GeneratorBaseOptions,
   uiOptions: FileUploadUiOptions,
@@ -10,11 +10,16 @@ export const fileUpload = (
   property,
   schema: removeUndefinedValues({
     title: options.title,
-    type: 'string',
-    format: 'ba-file-uuid',
-    file: true,
+    type: 'array',
+    items: {
+      type: 'string',
+      format: 'ba-file-uuid',
+      file: true,
+    },
+    minItems: options.required ? 1 : undefined,
+    default: [],
     baUiSchema: {
-      'ui:widget': BaWidgetType.FileUpload,
+      'ui:widget': BaWidgetType.FileUploadMultiple,
       'ui:options': uiOptions,
     },
   }),

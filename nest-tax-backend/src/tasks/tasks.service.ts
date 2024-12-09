@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client'
 import { AdminService } from '../admin/admin.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
+import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 
 @Injectable()
 export class TasksService {
@@ -18,6 +19,7 @@ export class TasksService {
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
   async updatePaymentsFromNoris() {
     const year = new Date().getFullYear()
 

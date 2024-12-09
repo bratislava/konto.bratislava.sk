@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { PrismaModule } from 'src/prisma/prisma.module'
-import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
+import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
@@ -12,7 +12,7 @@ import { TaxService } from './tax.service'
   providers: [
     TaxService,
     CognitoSubservice,
-    ErrorThrowerGuard,
+    ThrowerErrorGuard,
     QrCodeSubservice,
   ],
   exports: [TaxService],

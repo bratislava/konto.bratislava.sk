@@ -7,21 +7,27 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from 'src/admin/dtos/requests.dto'
 
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 
 @Injectable()
 export class NorisService {
   private logger: Logger = new Logger('NorisService')
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
     if (
       !process.env.MSSQL_HOST ||
       !process.env.MSSQL_DB ||
       !process.env.MSSQL_USERNAME ||
       !process.env.MSSQL_PASSWORD
     ) {
-      throw new Error(
-        'Missing on of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
       )
     }
   }

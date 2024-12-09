@@ -1,132 +1,180 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common'
+import { HttpException, HttpStatus } from '@nestjs/common'
 
-import {
-  CustomErrorPaymentResponseTypesEnum,
-  CustomErrorPaymentTypesEnum,
-  CustomErrorPdfCreateTypesEnum,
-  CustomErrorTaxTypesEnum,
-} from './dtos/error.dto'
+import alertReporting from '../constants/error.alerts'
+import { CustomErrorEnums, ResponseErrorInternalDto } from './dtos/error.dto'
 
-@Injectable()
-export class ErrorThrowerGuard {
-  private logger: Logger = new Logger('CUSTOM ERRORS')
-
-  taxNotFound() {
-    return new HttpException(
-      {
-        statusCode: 404,
-        status: 'Not found',
-        message: 'Tax year or user was not found',
-        errorName: CustomErrorTaxTypesEnum.TAXYEAR_OR_USER_NOT_FOUND,
-      },
-      404,
+export default class ThrowerErrorGuard {
+  NotAcceptableException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.NOT_ACCEPTABLE,
+      errorEnum,
+      message,
+      status || 'Resource was not accepted.',
+      console,
+      object,
     )
   }
 
-  taxNotPayable(): HttpException {
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Not payable',
-        message: 'Tax is not payable, because tax is from past year.',
-        errorName: CustomErrorPaymentTypesEnum.OLD_TAX_NOT_PAYABLE,
-      },
-      422,
+  GoneException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.GONE,
+      errorEnum,
+      message,
+      status || 'Resource is gone.',
+      console,
+      object,
     )
   }
 
-  paymentAlreadyPayed(): HttpException {
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Already payed',
-        message:
-          'Payment or part of payment or some installment was already payed, you can not pay whole amount',
-        messageSk:
-          'Vaša daň alebo jej časť už bola uhradená, preto nieje možná platba kartou.',
-        errorName: CustomErrorPaymentTypesEnum.PAYMENT_ALREADY_PAYED,
-      },
-      422,
+  PayloadTooLargeException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.PAYLOAD_TOO_LARGE,
+      errorEnum,
+      message,
+      status || 'Payload to large.',
+      console,
+      object,
     )
   }
 
-  paymentDatabaseError(message: string): HttpException {
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Databse error',
-        message,
-        messageSk: 'Neočakávaná chyba, prosím kontaktujte support.',
-        errorName: CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-      },
-      422,
+  InternalServerErrorException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      errorEnum,
+      message,
+      status || 'Internal server error',
+      console,
+      object,
     )
   }
 
-  paymentGenerateUrlError(error: any): HttpException {
-    this.logger.error(error)
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Create url error',
-        message: 'Can not create url',
-        messageSk: 'Neočakávaná chyba. prosím kotaktujte support',
-        errorName: CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
-      },
-      422,
+  ForbiddenException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.FORBIDDEN,
+      errorEnum,
+      message,
+      status || 'Forbidden',
+      console,
+      object,
     )
   }
 
-  paymentTaxNotFound() {
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Not Found',
-        message: 'Tax was not found',
-        messageSk: 'Daň s týmto ID nebola nájdená, prosím kontaktujte support.',
-        errorName: CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
-      },
-      422,
+  UnprocessableEntityException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      errorEnum,
+      message,
+      status || 'Unprocessable entity',
+      console,
+      object,
     )
   }
 
-  qrCodeNotFound() {
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Not Found',
-        message: 'QR code was not found',
-        messageSk:
-          'QR kód nebol pre túto daň nájdený, prosím kontaktujte support.',
-        errorName: CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
-      },
-      422,
+  NotFoundException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.NOT_FOUND,
+      errorEnum,
+      message,
+      status || 'Not found',
+      console,
+      object,
     )
   }
 
-  paymentResponseRedirectError(error: any): HttpException {
-    this.logger.error(error)
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Error to redirect',
-        message: 'Error to redirect to response',
-        errorName: CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
-      },
-      422,
+  BadRequestException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.BAD_REQUEST,
+      errorEnum,
+      message,
+      status || 'Bad Request',
+      console,
+      object,
     )
   }
 
-  renderPdfError(error: any): HttpException {
-    this.logger.error(error)
-    return new HttpException(
-      {
-        statusCode: 422,
-        status: 'Error to create pdf',
-        message: 'Error to create pdf',
-        errorName: CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
-      },
-      422,
+  UnauthorizedException(
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status?: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.LoggingHttpException(
+      HttpStatus.UNAUTHORIZED,
+      errorEnum,
+      message,
+      status || 'Unauthorized',
+      console,
+      object,
     )
+  }
+
+  private LoggingHttpException(
+    statusCode: number,
+    errorEnum: CustomErrorEnums,
+    message: string,
+    status: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    const response: ResponseErrorInternalDto = {
+      statusCode,
+      status,
+      errorName: errorEnum,
+      [Symbol('alert')]: alertReporting.includes(errorEnum) ? 1 : 0,
+      message,
+      object,
+      [Symbol('console')]: console,
+    }
+
+    return new HttpException(response, statusCode)
   }
 }

@@ -6,12 +6,12 @@ import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { textArea } from '../../generator/functions/textArea'
 import { checkbox } from '../../generator/functions/checkbox'
-import { fileUpload } from '../../generator/functions/fileUpload'
 import { customComponentsField } from '../../generator/functions/customComponentsField'
 import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default schema({ title: 'KOLO Taxi' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -126,12 +126,11 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
         helptext: 'Okrem čalúneného nábytku a elektrospotrebičov',
       },
     ),
-    fileUpload(
+    fileUploadMultiple(
       'fotoDarovanychVeci',
       {
         title: 'Foto darovaných vecí',
         required: true,
-        multiple: true,
       },
       {
         type: 'dragAndDrop',

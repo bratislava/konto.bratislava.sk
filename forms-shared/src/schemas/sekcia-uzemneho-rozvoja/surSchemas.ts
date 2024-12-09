@@ -8,6 +8,7 @@ import { datePicker } from '../../generator/functions/datePicker'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -212,21 +213,20 @@ export const getSurSchema = (zavazne: boolean) =>
                   ],
                 ]),
                 [
-                  fileUpload(
+                  fileUploadMultiple(
                     'stavbaPisomnosti',
                     {
                       title: 'Relevantné písomnosti súvisiace so stavbou',
                       required: true,
-                      multiple: true,
                     },
                     {
                       type: 'button',
                       helptext: 'napr. vydané stavebné povolenie, stanoviská hlavného mesta',
                     },
                   ),
-                  fileUpload(
+                  fileUploadMultiple(
                     'stavbaFotodokumentacia',
-                    { title: 'Fotodokumentácia stavby', required: true, multiple: true },
+                    { title: 'Fotodokumentácia stavby', required: true },
                     {
                       type: 'button',
                     },
@@ -237,12 +237,11 @@ export const getSurSchema = (zavazne: boolean) =>
           ]
         : []),
       step('prilohy', { title: 'Prílohy' }, [
-        fileUpload(
+        fileUploadMultiple(
           zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
           {
             title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
             required: true,
-            multiple: true,
           },
           {
             type: 'dragAndDrop',

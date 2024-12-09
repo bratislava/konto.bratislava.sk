@@ -6,11 +6,11 @@ import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { textArea } from '../../generator/functions/textArea'
 import { checkboxGroup } from '../../generator/functions/checkboxGroup'
-import { fileUpload } from '../../generator/functions/fileUpload'
 import { datePicker } from '../../generator/functions/datePicker'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   step('podnet', { title: 'Podať podnet' }, [
@@ -89,12 +89,11 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
     textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
-    fileUpload(
+    fileUploadMultiple(
       'prilohy',
       {
         title: 'Prílohy',
         required: false,
-        multiple: true,
       },
       {
         type: 'dragAndDrop',

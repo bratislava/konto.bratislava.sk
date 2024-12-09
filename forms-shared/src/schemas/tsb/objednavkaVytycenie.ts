@@ -4,12 +4,12 @@ import { select } from '../../generator/functions/select'
 import { selectMultiple } from '../../generator/functions/selectMultiple'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
-import { fileUpload } from '../../generator/functions/fileUpload'
 import { datePicker } from '../../generator/functions/datePicker'
 import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default schema(
   {
@@ -289,12 +289,11 @@ export default schema(
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
-      fileUpload(
+      fileUploadMultiple(
         'informativnyZakresSieti',
         {
           title: 'Informatívny zákres sietí vydaný Technickými sieťami Bratislava, a.s.',
           required: true,
-          multiple: true,
         },
         {
           type: 'dragAndDrop',

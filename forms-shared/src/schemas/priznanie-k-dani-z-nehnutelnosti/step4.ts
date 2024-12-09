@@ -8,7 +8,6 @@ import {
   object,
   radioGroup,
   select,
-  skipSchema,
   step,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
@@ -142,10 +141,9 @@ const innerArray = (kalkulacka: boolean) =>
           helptextFooter: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
         },
       ),
-      kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),
-      kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-      kalkulacka ? skipSchema(zakladDane) : zakladDane,
-      kalkulacka ? zakladDaneKalkulacka : skipSchema(zakladDaneKalkulacka),
+      ...(kalkulacka
+        ? [celkovaZastavanaPlocha, spoluvlastnickyPodiel, zakladDaneKalkulacka]
+        : [zakladDane]),
       number(
         'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
         {

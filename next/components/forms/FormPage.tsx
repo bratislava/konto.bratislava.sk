@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from './FormControls'
@@ -17,13 +17,7 @@ import { useFormState } from './useFormState'
 import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const FormPage = () => {
-  const {
-    formDefinition: {
-      schemas: { uiSchema },
-    },
-    isReadonly,
-    displayHeaderAndMenu,
-  } = useFormContext()
+  const { isReadonly, displayHeaderAndMenu } = useFormContext()
   const { formData } = useFormData()
   const {
     currentStepIndex,
@@ -71,7 +65,7 @@ const FormPage = () => {
               key={`form-step-${currentStepperStep.index}`}
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               schema={currentStepSchema!}
-              uiSchema={uiSchema}
+              uiSchema={defaultUiSchema}
               formData={formData}
               readonly={isReadonly}
               onSubmit={(e) => {

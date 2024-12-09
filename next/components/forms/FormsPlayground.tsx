@@ -7,7 +7,7 @@ import { exampleDevForms, exampleForms } from 'forms-shared/example-forms/exampl
 import { FileInfo, FileStatusType } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { baGetDefaultFormStateStable } from 'forms-shared/form-utils/defaultFormState'
-import { getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
 import { useTranslation } from 'next-i18next'
 import { useQueryState } from 'nuqs'
 import React, { ContextType, createRef, useMemo, useRef, useState } from 'react'
@@ -130,9 +130,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
 
   const defaultFormData = useMemo(
     () =>
-      selectedForm
-        ? baGetDefaultFormStateStable(selectedForm.schemas.schema, {}, validatorRegistry)
-        : {},
+      selectedForm ? baGetDefaultFormStateStable(selectedForm.schema, {}, validatorRegistry) : {},
     [validatorRegistry, selectedForm],
   )
 
@@ -151,11 +149,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
       setSelectedExampleName('')
       const newForm = allForms.find((form) => form.slug === newSlug)
       if (newForm) {
-        const newDefaultData = baGetDefaultFormStateStable(
-          newForm.schemas.schema,
-          {},
-          validatorRegistry,
-        )
+        const newDefaultData = baGetDefaultFormStateStable(newForm.schema, {}, validatorRegistry)
         setFormData(newDefaultData)
         setJsonInput(JSON.stringify(newDefaultData, null, 2))
         setFiles({})
@@ -363,8 +357,8 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
           {selectedForm ? (
             <ThemedForm
               key={`form-instance-${formInstanceIndex}`}
-              schema={selectedForm.schemas.schema}
-              uiSchema={selectedForm.schemas.uiSchema}
+              schema={selectedForm.schema}
+              uiSchema={defaultUiSchema}
               formData={formData}
               onChange={(e) => {
                 setFormData(e.formData)
@@ -376,7 +370,7 @@ const FormsPlayground = ({ formDefinitions, devFormDefinitions }: FormsPlaygroun
               liveOmit
               transformErrors={transformErrors}
               ref={formRef}
-              {...getBaFormDefaults(selectedForm.schemas.schema, validatorRegistry)}
+              {...getBaFormDefaults(selectedForm.schema, validatorRegistry)}
             >
               {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
               <></>

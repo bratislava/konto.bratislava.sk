@@ -34,7 +34,7 @@ describe('omitExtraData', () => {
   // data consists of all possible fields, therefore it is a good test case for omitting extra data.
   it('should omit extra data for complex schema', () => {
     const result = omitExtraData(
-      priznanieKDaniZNehnutelnosti.schema,
+      priznanieKDaniZNehnutelnosti,
       {
         udajeODanovnikovi: {
           voSvojomMene: true,
@@ -150,7 +150,7 @@ describe('omitExtraData', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
     it(`${exampleForm.name} should not contain extra data`, () => {
       const result = omitExtraData(
-        formDefinition.schemas.schema,
+        formDefinition.schema,
         exampleForm.formData,
         testValidatorRegistry,
       )

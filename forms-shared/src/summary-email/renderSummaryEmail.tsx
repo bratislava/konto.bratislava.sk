@@ -28,15 +28,10 @@ export const renderSummaryEmail = async ({
   serverFiles,
   withHtmlBodyTags = false,
 }: RenderSummaryEmailPayload) => {
-  const summaryJson = getSummaryJsonNode(
-    formDefinition.schemas.schema,
-    formDefinition.schemas.uiSchema,
-    formData,
-    validatorRegistry,
-  )
+  const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
   const validatedSummary = validateSummary(
-    formDefinition.schemas.schema,
+    formDefinition.schema,
     formData,
     fileInfos,
     validatorRegistry,

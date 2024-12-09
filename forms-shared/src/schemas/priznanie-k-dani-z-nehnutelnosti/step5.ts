@@ -8,7 +8,6 @@ import {
   object,
   radioGroup,
   select,
-  skipSchema,
   step,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
@@ -311,18 +310,16 @@ const innerArray = (kalkulacka: boolean) =>
               },
               {},
             ),
-            kalkulacka ? skipSchema(vymeraPodlahovejPlochy) : vymeraPodlahovejPlochy,
-            kalkulacka
-              ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
-              : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
-            kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-            kalkulacka
-              ? vymeraPodlahovejPlochyKalkulacka
-              : skipSchema(vymeraPodlahovejPlochyKalkulacka),
+            ...(kalkulacka
+              ? [
+                  podielPriestoruNaSpolocnychCastiachAZariadeniachDomu,
+                  spoluvlastnickyPodiel,
+                  vymeraPodlahovejPlochyKalkulacka,
+                ]
+              : [vymeraPodlahovejPlochy]),
           ],
         ),
-        kalkulacka ? skipSchema(sumar) : sumar,
-        kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
+        kalkulacka ? sumarKalkulacka : sumar,
       ]),
       input(
         'poznamka',

@@ -214,7 +214,7 @@ describe('NasesConsumerService', () => {
 
     const mockFormDefinition = {
       type: FormDefinitionType.SlovenskoSkGeneric,
-      schemas: { schema: {}, uiSchema: {} },
+      schema: {},
     } as FormDefinitionSlovenskoSk
 
     beforeEach(() => {

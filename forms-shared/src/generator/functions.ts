@@ -1,7 +1,5 @@
-import type { RJSFSchema, UiSchema } from '@rjsf/utils'
-import intersection from 'lodash/intersection'
+import type { RJSFSchema } from '@rjsf/utils'
 import kebabCase from 'lodash/kebabCase'
-import uniq from 'lodash/uniq'
 
 import { getInputTypeForAjvFormat, removeUndefinedValues } from './helpers'
 import {
@@ -32,32 +30,22 @@ import {
   createEnumSchemaEnum,
   OptionItem,
 } from './optionItems'
-
-export type Schemas = {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-}
+import { addBaOrderToFields } from './addBaOrderToFields'
 
 export type Field = {
   property: string
   schema: RJSFSchema
-  uiSchema: UiSchema
   required: boolean
-  skipUiSchema?: boolean
-  skipSchema?: boolean
 }
 
 type ObjectField = Omit<Field, 'property'> & {
   property: string | null
-  fieldProperties: string[]
 }
 
-type ConditionalFields = {
+export type ConditionalFields = {
   condition: RJSFSchema
   thenSchema: RJSFSchema
   elseSchema?: RJSFSchema
-  uiSchema: UiSchema
-  fieldProperties: string[]
 }
 
 export type FieldType = Field | ConditionalFields | ObjectField
@@ -81,12 +69,12 @@ export const select = (
       title: options.title,
       enum: createEnumSchemaEnum(options.items),
       default: createEnumSchemaDefault(options.items),
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Select,
-      'ui:options': {
-        ...uiOptions,
-        enumMetadata: createEnumMetadata(options.items),
+      baUiSchema: {
+        'ui:widget': BaWidgetType.Select,
+        'ui:options': {
+          ...uiOptions,
+          enumMetadata: createEnumMetadata(options.items),
+        },
       },
     }),
     required: Boolean(options.required),
@@ -115,12 +103,12 @@ export const selectMultiple = (
       maxItems: options.maxItems,
       uniqueItems: true,
       default: createEnumSchemaDefaultMultiple(options.items),
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.SelectMultiple,
-      'ui:options': {
-        ...uiOptions,
-        enumMetadata: createEnumMetadata(options.items),
+      baUiSchema: {
+        'ui:widget': BaWidgetType.SelectMultiple,
+        'ui:options': {
+          ...uiOptions,
+          enumMetadata: createEnumMetadata(options.items),
+        },
       },
     }),
     required: Boolean(options.required),
@@ -163,11 +151,11 @@ export const input = (
       title: options.title,
       format,
       default: options.default,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Input,
-      'ui:label': false,
-      'ui:options': { ...uiOptions, inputType },
+      baUiSchema: {
+        'ui:widget': BaWidgetType.Input,
+        'ui:label': false,
+        'ui:options': { ...uiOptions, inputType },
+      },
     }),
     required: Boolean(options.required),
   }
@@ -195,11 +183,11 @@ export const number = (
       exclusiveMinimum: options.exclusiveMinimum,
       maximum: options.maximum,
       exclusiveMaximum: options.exclusiveMaximum,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Number,
-      'ui:label': false,
-      'ui:options': { ...uiOptions },
+      baUiSchema: {
+        'ui:widget': BaWidgetType.Number,
+        'ui:label': false,
+        'ui:options': { ...uiOptions },
+      },
     }),
     required: Boolean(options.required),
   }
@@ -222,12 +210,12 @@ export const radioGroup = <ValueType extends 'string' | 'boolean'>(
       title: options.title,
       enum: createEnumSchemaEnum(options.items),
       default: createEnumSchemaDefault(options.items),
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.RadioGroup,
-      'ui:options': {
-        ...uiOptions,
-        enumMetadata: createEnumMetadata(options.items),
+      baUiSchema: {
+        'ui:widget': BaWidgetType.RadioGroup,
+        'ui:options': {
+          ...uiOptions,
+          enumMetadata: createEnumMetadata(options.items),
+        },
       },
     }),
     required: Boolean(options.required),
@@ -241,12 +229,16 @@ export const textArea = (
 ): Field => {
   return {
     property,
-    schema: removeUndefinedValues({ type: 'string', title: options.title }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.TextArea,
-      'ui:label': false,
-      'ui:options': uiOptions,
+    schema: removeUndefinedValues({
+      type: 'string',
+      title: options.title,
+      baUiSchema: {
+        'ui:widget': BaWidgetType.TextArea,
+        'ui:label': false,
+        'ui:options': uiOptions,
+      },
     }),
+
     required: Boolean(options.required),
   }
 }
@@ -263,10 +255,10 @@ export const checkbox = (
       title: options.title,
       default: options.default,
       const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.Checkbox,
-      'ui:options': uiOptions,
+      baUiSchema: {
+        'ui:widget': BaWidgetType.Checkbox,
+        'ui:options': uiOptions,
+      },
     }),
     required: Boolean(options.required),
   }
@@ -293,12 +285,12 @@ export const checkboxGroup = (
         enum: createEnumSchemaEnum(options.items),
       },
       default: createEnumSchemaDefaultMultiple(options.items),
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.CheckboxGroup,
-      'ui:options': {
-        ...uiOptions,
-        enumMetadata: createEnumMetadata(options.items),
+      baUiSchema: {
+        'ui:widget': BaWidgetType.CheckboxGroup,
+        'ui:options': {
+          ...uiOptions,
+          enumMetadata: createEnumMetadata(options.items),
+        },
       },
     }),
     required: Boolean(options.required),
@@ -310,6 +302,11 @@ export const fileUpload = (
   options: BaseOptions & { multiple?: boolean },
   uiOptions: FileUploadUiOptions,
 ): Field => {
+  const baUiSchema = {
+    'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
+    'ui:options': uiOptions,
+  }
+
   return {
     property,
     schema: removeUndefinedValues(
@@ -324,18 +321,16 @@ export const fileUpload = (
             },
             minItems: options.required ? 1 : undefined,
             default: [],
+            baUiSchema,
           }
         : {
             title: options.title,
             type: 'string',
             format: 'ba-file-uuid',
             file: true,
+            baUiSchema,
           },
     ),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
-      'ui:options': uiOptions,
-    }),
     required: Boolean(options.required),
   }
 }
@@ -352,10 +347,10 @@ export const datePicker = (
       format: 'date',
       title: options.title,
       default: options.default,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.DatePicker,
-      'ui:options': uiOptions,
+      baUiSchema: {
+        'ui:widget': BaWidgetType.DatePicker,
+        'ui:options': uiOptions,
+      },
     }),
     required: Boolean(options.required),
   }
@@ -373,10 +368,10 @@ export const timePicker = (
       format: 'ba-time',
       title: options.title,
       default: options.default,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:widget': BaWidgetType.TimePicker,
-      'ui:options': uiOptions,
+      baUiSchema: {
+        'ui:widget': BaWidgetType.TimePicker,
+        'ui:options': uiOptions,
+      },
     }),
     required: Boolean(options.required),
   }
@@ -395,16 +390,16 @@ export const customComponentsField = (
   // This is probably the best way how to represent no data in the schema, but still have the field in the UI.
   schema: removeUndefinedValues({
     anyOf: [{}],
-  }),
-  uiSchema: removeUndefinedValues({
-    'ui:field': BaFieldType.CustomComponents,
-    'ui:options': {
-      ...uiOptions,
-      customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
+    baUiSchema: {
+      'ui:field': BaFieldType.CustomComponents,
+      'ui:options': {
+        ...uiOptions,
+        customComponents: Array.isArray(customComponents) ? customComponents : [customComponents],
+      },
+      // If this wouldn't be present, the RJSF will render the field in place of `customComponent__anyOf_select`, now it
+      // is rendered directly where it should be.
+      'ui:fieldReplacesAnyOrOneOf': true,
     },
-    // If this wouldn't be present, the RJSF will render the field in place of `customComponent__anyOf_select`, now it
-    // is rendered directly where it should be.
-    'ui:fieldReplacesAnyOrOneOf': true,
   }),
   required: false,
 })
@@ -422,26 +417,14 @@ export const object = (
   fields: (FieldType | null)[],
 ): ObjectField => {
   const filteredFields = fields.filter((field) => field !== null) as FieldType[]
-  const ordinaryFields = filteredFields.filter((field) => !('condition' in field)) as Field[]
-  const ordinaryFieldsWithSchema = ordinaryFields.filter((field) => !field.skipSchema)
-  const ordinaryFieldsWithUiSchema = ordinaryFields.filter((field) => !field.skipUiSchema)
-  const conditionalFields = filteredFields.filter(
+  const fieldsWithOrder = addBaOrderToFields(filteredFields)
+  const ordinaryFields = fieldsWithOrder.filter((field) => !('condition' in field)) as Field[]
+  const conditionalFields = fieldsWithOrder.filter(
     (field) => 'condition' in field,
   ) as ConditionalFields[]
-  const fieldProperties = filteredFields
-    .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
-    .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
-    .filter((field) => field !== null) as string[]
-
-  if (fieldProperties.length !== uniq(fieldProperties).length) {
-    throw new Error(
-      `Field properties must be unique, but there are duplicates: ${fieldProperties
-        .filter((field, index) => fieldProperties.indexOf(field) !== index)
-        .join(', ')}`,
-    )
-  }
 
   const getSchema = () => {
+    const isUiOptionsEmpty = Object.keys(uiOptions).length === 0
     const allOf = conditionalFields.map((field) => ({
       if: field.condition,
       then: field.thenSchema,
@@ -450,42 +433,35 @@ export const object = (
 
     return removeUndefinedValues({
       type: 'object' as const,
-      properties: Object.fromEntries(
-        ordinaryFieldsWithSchema.map((field) => [field.property, field.schema]),
-      ),
-      required: ordinaryFieldsWithSchema
-        .filter((field) => field.required)
-        .map((field) => field.property),
+      properties: Object.fromEntries(ordinaryFields.map((field) => [field.property, field.schema])),
+      required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
       allOf: allOf.length > 0 ? allOf : undefined,
-    })
-  }
-
-  const getUiSchema = () => {
-    const ordinaryFieldsUiSchema = Object.fromEntries(
-      ordinaryFieldsWithUiSchema.map((field) => [field.property, field.uiSchema]),
-    )
-    const conditionalFieldsUiSchema = conditionalFields.reduce(
-      (acc, field) => ({ ...acc, ...field.uiSchema }),
-      {},
-    )
-
-    return removeUndefinedValues({
-      ...ordinaryFieldsUiSchema,
-      ...conditionalFieldsUiSchema,
-      // As the order of the properties is not guaranteed in JSON and is lost when having the fields both in `properties`
-      // and `allOf`, we need to provide it manually.
-      'ui:order': fieldProperties,
-      'ui:options': uiOptions,
+      baUiSchema: isUiOptionsEmpty
+        ? undefined
+        : {
+            'ui:options': uiOptions,
+          },
     })
   }
 
   return {
     property,
     schema: getSchema(),
-    uiSchema: getUiSchema(),
     required: Boolean(options.required),
-    fieldProperties,
   }
+}
+
+/**
+ * Arrays and conditional fields needs to use created schema for object internally, but the object must have no property,
+ * and uiOptions.
+ */
+const simpleObjectInternal = (fields: (FieldType | null)[]) => {
+  const result = object(null, {}, {}, fields)
+  if (result.schema.baUiSchema) {
+    throw new Error('Simple object should not have uiOptions.')
+  }
+
+  return result
 }
 
 export const arrayField = (
@@ -494,7 +470,7 @@ export const arrayField = (
   uiOptions: ArrayFieldUiOptions,
   fields: (FieldType | null)[],
 ): Field => {
-  const { schema: objectSchema, uiSchema: objectUiSchema } = object(null, {}, {}, fields)
+  const { schema: objectSchema } = simpleObjectInternal(fields)
 
   return {
     property,
@@ -504,10 +480,9 @@ export const arrayField = (
       items: objectSchema,
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
-    }),
-    uiSchema: removeUndefinedValues({
-      'ui:options': uiOptions,
-      items: objectUiSchema,
+      baUiSchema: {
+        'ui:options': uiOptions,
+      },
     }),
     required: Boolean(options.required),
   }
@@ -523,7 +498,7 @@ export const step = (
   },
   fields: (FieldType | null)[],
 ) => {
-  const { schema, uiSchema } = object(property, { required: true }, {}, fields)
+  const { schema } = object(property, { required: true }, {}, fields)
   const getHash = () => {
     if (options.customHash) {
       return options.customHash
@@ -543,17 +518,16 @@ export const step = (
           title: options.title,
           description: options.description,
           ...schema,
+          baUiSchema: {
+            'ui:options': {
+              stepperTitle: options.stepperTitle,
+              stepQueryParam: getHash(),
+            } satisfies StepUiOptions,
+          },
+          baOrder: 1,
         },
       },
       required: [property],
-    }),
-    uiSchema: removeUndefinedValues({
-      ...uiSchema,
-      'ui:options': {
-        ...uiSchema['ui:options'],
-        stepperTitle: options.stepperTitle,
-        stepQueryParam: getHash(),
-      } satisfies StepUiOptions,
     }),
   }
 }
@@ -567,11 +541,10 @@ export const conditionalStep = (
   },
   fields: (FieldType | null)[],
 ) => {
-  const { schema, uiSchema } = step(property, options, fields)
+  const { schema } = step(property, options, fields)
   return {
     property,
     schema: removeUndefinedValues({ if: condition, then: schema }),
-    uiSchema: uiSchema,
     required: true,
   }
 }
@@ -584,35 +557,13 @@ export const conditionalFields = (
   const filteredThenFields = thenFields.filter((field) => field !== null) as FieldType[]
   const filteredElseFields = elseFields.filter((field) => field !== null) as FieldType[]
 
-  const {
-    schema: thenSchema,
-    uiSchema: thenUiSchema,
-    fieldProperties: thenFieldProperties,
-  } = object(null, {}, {}, filteredThenFields)
-  const {
-    schema: elseSchema,
-    uiSchema: elseUiSchema,
-    fieldProperties: elseFieldProperties,
-  } = object(null, {}, {}, filteredElseFields)
-
-  const intersectionProperties = intersection(thenFieldProperties, elseFieldProperties)
-  if (intersectionProperties.length > 0) {
-    throw new Error(
-      `Field properties must be unique, but there are duplicates between then and else fields: ${intersectionProperties.join(
-        ', ',
-      )}`,
-    )
-  }
+  const { schema: thenSchema } = simpleObjectInternal(filteredThenFields)
+  const { schema: elseSchema } = simpleObjectInternal(filteredElseFields)
 
   return {
     condition,
     thenSchema,
     elseSchema: filteredElseFields.length > 0 ? elseSchema : undefined,
-    uiSchema: removeUndefinedValues({
-      ...thenUiSchema,
-      ...(elseFields.length > 0 ? elseUiSchema : {}),
-    }),
-    fieldProperties: [...thenFieldProperties, ...elseFieldProperties],
   }
 }
 
@@ -623,32 +574,17 @@ export const schema = (
   },
   uiOptions: SchemaUiOptions,
   steps: (ReturnType<typeof step | typeof conditionalStep> | null)[],
-): Schemas => {
+) => {
   const filteredSteps = steps.filter((stepInner) => stepInner != null) as ReturnType<
     typeof step | typeof conditionalStep
   >[]
 
-  return {
-    schema: removeUndefinedValues({
-      ...options,
-      allOf: filteredSteps.map((stepInner) => stepInner.schema),
-    }) as RJSFSchema,
-    uiSchema: removeUndefinedValues({
-      ...Object.fromEntries(
-        filteredSteps.map((stepInner) => [stepInner.property, stepInner.uiSchema]),
-      ),
+  return removeUndefinedValues({
+    ...options,
+    allOf: filteredSteps.map((stepInner) => stepInner.schema),
+    baUiSchema: {
       'ui:options': uiOptions,
       'ui:hideError': true,
-    }) as UiSchema,
-  }
-}
-
-// TODO: Document
-export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
-  return { ...field, skipUiSchema: true }
-}
-
-// TODO: Document
-export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
-  return { ...field, skipSchema: true }
+    },
+  }) as RJSFSchema
 }

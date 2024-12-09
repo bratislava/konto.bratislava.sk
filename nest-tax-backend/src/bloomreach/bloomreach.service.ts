@@ -8,7 +8,7 @@ import {
 
 @Injectable()
 export class BloomreachService {
-  private bloomreachCredentials = Buffer.from(
+  private readonly bloomreachCredentials = Buffer.from(
     `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
     'binary',
   ).toString('base64')

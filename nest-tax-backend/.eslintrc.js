@@ -1,9 +1,19 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
+    sourceType: 'module',
+    ecmaVersion: 2021,
+  },
   plugins: ['@darraghor/nestjs-typed'],
-  extends: [
-    'auto',
-    'plugin:@darraghor/nestjs-typed/recommended',
-  ],
+  extends: ['auto', 'plugin:@darraghor/nestjs-typed/recommended'],
+  root: true,
+  env: {
+    node: true,
+    jest: true,
+    es2021: true,
+  },
   ignorePatterns: ["*.queries.ts"],
   rules: {
     /** Named export is easier to refactor automatically */
@@ -27,11 +37,13 @@ module.exports = {
     'xss/no-mixed-html': 'off',
     'pii/no-email': 'off',
 
-    /** Nested ternaries are quite hard to read and it's really easy to lose an edge case in them */
-    'no-nested-ternary': 'error',
-
     /** BE often has these in boilerplate */
     'no-underscore-dangle': 'off',
+
+    /** Nested ternaries are quite hard to read and it's really easy to lose an edge case in them */
+    'no-nested-ternary': 'error',
+    /** This is similar to using const to let */
+    '@typescript-eslint/prefer-readonly': 'error',
 
     // TODO: discuss these rules in nest-prisma-template repo
     'max-classes-per-file': 'off',
@@ -54,6 +66,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/dot-notation': 'off', // to test private methods
       }
     }
   ],

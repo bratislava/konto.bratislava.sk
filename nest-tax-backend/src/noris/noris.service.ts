@@ -11,7 +11,7 @@ import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 
 @Injectable()
 export class NorisService {
-  private logger: Logger = new Logger('NorisService')
+  private readonly logger: Logger = new Logger('NorisService')
 
   constructor(private readonly configService: ConfigService) {
     if (

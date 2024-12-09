@@ -20,11 +20,11 @@ export class AdminService {
   private readonly logger: Logger
 
   constructor(
-    private prismaService: PrismaService,
-    private qrCodeSubservice: QrCodeSubservice,
-    private cityAccountSubservice: CityAccountSubservice,
-    private bloomreachService: BloomreachService,
-    private norisService: NorisService,
+    private readonly prismaService: PrismaService,
+    private readonly qrCodeSubservice: QrCodeSubservice,
+    private readonly cityAccountSubservice: CityAccountSubservice,
+    private readonly bloomreachService: BloomreachService,
+    private readonly norisService: NorisService,
   ) {
     this.logger = new Logger(AdminService.name)
   }

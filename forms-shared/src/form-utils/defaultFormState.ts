@@ -16,7 +16,7 @@ import { baFastMergeAllOf } from './fastMergeAllOf'
 export const isFileMultipleSchema = (schema: RJSFSchema) =>
   !Array.isArray(schema?.items) &&
   typeof schema?.items !== 'boolean' &&
-  schema?.items?.file === true
+  schema?.items?.baFile === true
 
 /**
  * This is the most important setting for RJSF, make sure to pass it to all RJSF components / functions. Anytime user

@@ -14,7 +14,7 @@ export const fileUploadMultiple = (
     items: {
       type: 'string',
       format: 'ba-file-uuid',
-      file: true,
+      baFile: true,
     },
     minItems: options.required ? 1 : undefined,
     default: [],

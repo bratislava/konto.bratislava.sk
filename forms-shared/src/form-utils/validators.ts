@@ -19,7 +19,7 @@ export const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
  */
 const getFileValidatorBaAjvKeywords = (fileValidateFn: SchemaValidateFunction) => {
   return baAjvKeywords.map((keyword) => {
-    if (keyword.keyword === 'file') {
+    if (keyword.keyword === 'baFile') {
       return {
         ...keyword,
         validate: fileValidateFn,

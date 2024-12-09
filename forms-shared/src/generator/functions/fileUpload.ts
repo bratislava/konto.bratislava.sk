@@ -12,7 +12,7 @@ export const fileUpload = (
     title: options.title,
     type: 'string',
     format: 'ba-file-uuid',
-    file: true,
+    baFile: true,
     baUiSchema: {
       'ui:widget': BaWidgetType.FileUpload,
       'ui:options': uiOptions,

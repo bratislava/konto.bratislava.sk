@@ -1,20 +1,24 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { CognitoUserAttributesTierEnum, LegalPerson, User } from '@prisma/client'
 import _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { UpvsIdentity } from 'src/upvs-identity-by-uri/dtos/upvsSchema'
-import { UpvsIdentityByUriService, UpvsIdentityByUriServiceCreateManyParam } from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
+import {
+  UpvsIdentityByUriService,
+  UpvsIdentityByUriServiceCreateManyParam,
+} from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { DatabaseSubserviceUser } from '../user-verification/utils/subservice/database.subservice'
 import { decryptData } from '../utils/crypto'
 import {
   CognitoUserAccountTypesEnum,
-  CognitoUserAttributesEnum
+  CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import { COGNITO_TYPE_ERROR } from '../utils/guards/dtos/error.dto'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
@@ -24,14 +28,20 @@ import {
   UserVerifyState,
   VerificationDataForUserResponseDto,
 } from './dtos/responses.admin.dto'
-import { removeLegalPersonDataFromDatabase, removeUserDataFromDatabase } from './utils/account-deactivate.utils'
+import {
+  removeLegalPersonDataFromDatabase,
+  removeUserDataFromDatabase,
+} from './utils/account-deactivate.utils'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
 
 @Injectable()
 export class AdminService {
   constructor(
-    private databaseSubservice: DatabaseSubserviceUser,
     private cognitoSubservice: CognitoSubservice,
-    private errorThrowerGuard: ErrorThrowerGuard,
+    private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
@@ -39,9 +49,14 @@ export class AdminService {
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
-    const user = await this.databaseSubservice.getUserByBirthNumber(birthNumber)
+    const user = await this.prismaService.user.findUnique({
+      where: { birthNumber },
+    })
     if (!user) {
-      throw this.errorThrowerGuard.adminDatabaseBirthNumberNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
+        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
+      )
     }
     let cognitoUser = {}
     if (user.externalId) {
@@ -56,6 +71,46 @@ export class AdminService {
       userAttribute: user.userAttribute,
       cognitoAttributes: cognitoUser,
     }
+  }
+
+  /**
+   * Similar to function getUserDataByBirthNumber, returns data about users based on their birth number, but instead of separately, it does it in batch in one request.
+   * @param birthNumbers Array of birth numbers without slash, for which users should be retrieved from database.
+   * @returns A map of birth numbers (those which were found in database) to user information.
+   */
+  async getUsersDataByBirthNumbers(
+    birthNumbers: string[]
+  ): Promise<Record<string, ResponseUserByBirthNumberDto>> {
+    const users = await this.prismaService.user.findMany({
+      where: {
+        birthNumber: {
+          in: birthNumbers,
+        },
+      },
+    })
+    const result: Record<string, ResponseUserByBirthNumberDto> = {}
+
+    for (const user of users) {
+      if (!user.birthNumber) {
+        continue
+      }
+      let cognitoUser = {}
+      if (user.externalId) {
+        try {
+          cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
+        } catch (error) {}
+      }
+
+      result[user.birthNumber] = {
+        email: user.email,
+        birthNumber: user.birthNumber,
+        externalId: user.externalId,
+        userAttribute: user.userAttribute,
+        cognitoAttributes: cognitoUser,
+      }
+    }
+
+    return result
   }
 
   async checkUserVerifyState(email: string): Promise<UserVerifyState> {
@@ -160,19 +215,29 @@ export class AdminService {
     await this.cognitoSubservice.deactivateCognitoMail(externalId, cognitoUser.email)
 
     // We also need to change the account to unverified, since we delete birthNumber from database
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(externalId, CognitoUserAttributesTierEnum.NEW, cognitoUser['custom:account_type'])
+    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      externalId,
+      CognitoUserAttributesTierEnum.NEW,
+      cognitoUser['custom:account_type']
+    )
 
     if (
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
+      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+      CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
       await removeUserDataFromDatabase(this.prismaService, externalId)
     } else if (
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
-      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
+      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+        CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
+      cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
+        CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
       await removeLegalPersonDataFromDatabase(this.prismaService, externalId)
     } else {
-      throw new HttpException(COGNITO_TYPE_ERROR, 422)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.COGNITO_TYPE_ERROR,
+        UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+      )
     }
 
     const bloomreachRemovedStatus = await this.bloomreachService.anonymizeCustomer(externalId)
@@ -197,7 +262,10 @@ export class AdminService {
     })
 
     if (!user) {
-      throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
 
     const verifyData = await this.prismaService.userIdCardVerify.findMany({
@@ -267,17 +335,26 @@ export class AdminService {
       })
     }
     if (!user) {
-      throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
 
     if (!user.externalId) {
-      throw this.errorThrowerGuard.userOrLegalPersonNoExternalId()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        UserErrorsEnum.NO_EXTERNAL_ID,
+        UserErrorsResponseEnum.NO_EXTERNAL_ID
+      )
     }
 
     // Update the database
     if (isLegalPerson) {
       if (!data.ico) {
-        throw this.errorThrowerGuard.icoNotProvided()
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.ICO_NOT_PROVIDED,
+          VerificationErrorsResponseEnum.ICO_NOT_PROVIDED
+        )
       }
 
       await this.prismaService.legalPerson.update({
@@ -292,7 +369,10 @@ export class AdminService {
       })
     } else {
       if (!data.ifo) {
-        throw this.errorThrowerGuard.ifoNotProvided()
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.IFO_NOT_PROVIDED,
+          VerificationErrorsResponseEnum.IFO_NOT_PROVIDED
+        )
       }
 
       await this.prismaService.user.update({
@@ -309,7 +389,11 @@ export class AdminService {
 
     // Update cognito
     const cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(user.externalId, CognitoUserAttributesTierEnum.IDENTITY_CARD, cognitoUser['custom:account_type'])
+    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      user.externalId,
+      CognitoUserAttributesTierEnum.IDENTITY_CARD,
+      cognitoUser['custom:account_type']
+    )
 
     return { success: true }
   }
@@ -335,26 +419,33 @@ export class AdminService {
       Object.values(physicalEntitiesByBirthNumber).length !==
       physicalEntitiesWithoutUriVerificationAttempts.length
     ) {
-      throw this.errorThrowerGuard.databaseError('Duplicate birth numbers in this batch, aborting')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.DATABASE_ERROR,
+        ErrorsResponseEnum.DATABASE_ERROR,
+        'Duplicate birth numbers in this batch, aborting'
+      )
     }
 
     const users = await this.prismaService.user.findMany({
       where: {
         id: {
-          in: physicalEntitiesWithoutUriVerificationAttempts.map(
-            (physicalEntity) => physicalEntity.userId
-          ).filter((id) => id !== null) as string[],
+          in: physicalEntitiesWithoutUriVerificationAttempts
+            .map((physicalEntity) => physicalEntity.userId)
+            .filter((id) => id !== null) as string[],
         },
         externalId: {
-          not: null
-        }
+          not: null,
+        },
       },
     })
 
     const cognitoUsers = await Promise.all(
       users.map((user) => {
         if (!user.externalId) {
-          throw this.errorThrowerGuard.userOrLegalPersonNoExternalId()
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            UserErrorsEnum.NO_EXTERNAL_ID,
+            UserErrorsResponseEnum.NO_EXTERNAL_ID
+          )
         }
         return this.cognitoSubservice.getDataFromCognito(user.externalId).catch((e) => undefined)
       })

@@ -20,22 +20,23 @@ enum CognitoUserAttributesTierEnum {
 }
 
 model User {
-  id                              String         @id @default(uuid()) @db.Uuid
-  createdAt                       DateTime       @default(now())
-  updatedAt                       DateTime       @updatedAt
-  externalId                      String?        @unique
-  email                           String?        @unique
-  ifo                             String?        @unique
-  birthNumber                     String?        @unique
+  id                              String                         @id @default(uuid()) @db.Uuid
+  createdAt                       DateTime                       @default(now())
+  updatedAt                       DateTime                       @updatedAt
+  externalId                      String?                        @unique
+  email                           String?                        @unique
+  ifo                             String?                        @unique
+  birthNumber                     String?                        @unique
   lastVerificationIdentityCard    DateTime?
-  oldMagproxyDatabase             Int            @default(0)
-  requeuedInVerification          Int            @default(0)
+  oldMagproxyDatabase             Int                            @default(0)
+  requeuedInVerification          Int                            @default(0)
   birthnumberAlreadyExistsLast    String?
-  birthnumberAlreadyExistsCounter Int            @default(0)
+  birthnumberAlreadyExistsCounter Int                            @default(0)
   userAttribute                   String?
   userGdprData                    UserGdprData[]
-  // not a relation on purpose, one record can exists without the other
-  physicalEntityId                String?        @db.Uuid
+  physicalEntity                  PhysicalEntity?
+  lastTaxYear                     Int?
+  lastTaxBackendUploadTry         DateTime                       @default(now())
   cognitoTier                     CognitoUserAttributesTierEnum?
   userIdCardVerify                UserIdCardVerify[]
 }
@@ -44,25 +45,25 @@ model User {
 // Encrypted columns - idCard, birthNumber. Encryption and decryption is described in src/utils/crypto.ts.
 // The reason behind it is that when there is a failure during verification, we need to get these values fast to check manually.
 model UserIdCardVerify {
-  id              String      @id @default(uuid()) @db.Uuid
-  userId          String      @db.Uuid
-  user            User        @relation(fields: [userId], references: [id])
-  birthNumber     String
-  idCard          String
-  verifyStart     DateTime    @default(now())
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  user        User     @relation(fields: [userId], references: [id])
+  birthNumber String
+  idCard      String
+  verifyStart DateTime @default(now())
 }
 
 // In this table we store for one month the data used by a legal person to verify their account by ID card and ico.
 // Encrypted columns - idCard, birthNumber, ico. Encryption and decryption is described in src/utils/crypto.ts.
 // The reason behind it is that when there is a failure during verification, we need to get these values fast to check manually.
 model LegalPersonIcoIdCardVerify {
-  id              String        @id @default(uuid()) @db.Uuid
-  legalPersonId   String        @db.Uuid
-  legalPerson     LegalPerson   @relation(fields: [legalPersonId], references: [id])
-  birthNumber     String
-  idCard          String
-  ico             String
-  verifyStart     DateTime      @default(now())
+  id            String      @id @default(uuid()) @db.Uuid
+  legalPersonId String      @db.Uuid
+  legalPerson   LegalPerson @relation(fields: [legalPersonId], references: [id])
+  birthNumber   String
+  idCard        String
+  ico           String
+  verifyStart   DateTime    @default(now())
 }
 
 // consolidates data from magproxy / NASES
@@ -71,7 +72,7 @@ model PhysicalEntity {
   id                String              @id @default(uuid()) @db.Uuid
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  // not a relation on purpose, one record can exists without the other
+  user              User?               @relation(fields: [userId], references: [id])
   userId            String?             @unique @db.Uuid
   uri               String?             @unique
   // is ifo unique ? should we store it here ?
@@ -109,16 +110,16 @@ model UpvsIdentityByUri {
 }
 
 model LegalPerson {
-  id                                 String                @id @default(uuid()) @db.Uuid
-  createdAt                          DateTime              @default(now())
-  updatedAt                          DateTime              @updatedAt
-  externalId                         String?               @unique
-  email                              String?               @unique
+  id                                 String                         @id @default(uuid()) @db.Uuid
+  createdAt                          DateTime                       @default(now())
+  updatedAt                          DateTime                       @updatedAt
+  externalId                         String?                        @unique
+  email                              String?                        @unique
   ico                                String?
   birthNumber                        String?
   lastVerificationAttempt            DateTime?
   birthnumberIcoAlreadyExistsLast    String?
-  birthnumberIcoAlreadyExistsCounter Int                   @default(0)
+  birthnumberIcoAlreadyExistsCounter Int                            @default(0)
   userAttribute                      String?
   legalPersonGdprData                LegalPersonGdprData[]
   cognitoTier                        CognitoUserAttributesTierEnum?

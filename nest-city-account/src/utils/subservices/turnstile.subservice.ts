@@ -1,31 +1,46 @@
 import { Injectable } from '@nestjs/common'
-import Turnstile from 'cf-turnstile'
+import Turnstile, { TurnstileResponse } from 'cf-turnstile'
 
-import { ErrorThrowerGuard } from '../../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../../user-verification/verification.errors.enum'
+import { LineLoggerSubservice } from './line-logger.subservice'
+
 @Injectable()
 export class TurnstileSubservice {
   turnstile
 
-  constructor(private errorThrowerGuard: ErrorThrowerGuard) {
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(TurnstileSubservice.name)
+
+  constructor(private throwerErrorGuard: ThrowerErrorGuard) {
     // TODO temporarily uses dummy token which always passes
     if (!process.env.TURNSTILE_SECRET) {
-      console.warn('TURNSTILE_SECRET not set! Using dummy token, captcha will always pass.')
+      this.logger.warn('TURNSTILE_SECRET not set! Using dummy token, captcha will always pass.')
       this.turnstile = Turnstile('1x0000000000000000000000000000000AA')
     } else {
       this.turnstile = Turnstile(process.env.TURNSTILE_SECRET)
-      console.log('Successfully initialized Turnstile')
+      this.logger.log('Successfully initialized Turnstile')
     }
   }
 
   async validateToken(token: string): Promise<any> {
+    let result: TurnstileResponse | undefined
     try {
-      const result = await this.turnstile(token)
-      if (!result?.success) {
-        this.errorThrowerGuard.invalidTurnstileCaptcha()
-      }
+      result = await this.turnstile(token)
     } catch (error) {
-      console.error(error)
-      this.errorThrowerGuard.invalidTurnstileCaptcha()
+      throw this.throwerErrorGuard.BadRequestException(
+        VerificationErrorsEnum.INVALID_CAPTCHA,
+        VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+        JSON.stringify(error)
+      )
+    }
+    if (!result || !result?.success) {
+      throw this.throwerErrorGuard.BadRequestException(
+        VerificationErrorsEnum.INVALID_CAPTCHA,
+        VerificationErrorsResponseEnum.INVALID_CAPTCHA
+      )
     }
   }
 }

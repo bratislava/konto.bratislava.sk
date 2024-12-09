@@ -3,10 +3,13 @@ import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
+import { ErrorFilter, HttpExceptionFilter, TypeErrorFilter } from './utils/filters/error.filter'
+import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap() {
   const port = process.env.PORT || 3000
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { logger: false })
+  app.useLogger(new LineLoggerSubservice('Nest'))
   const corsOptions = {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -16,6 +19,9 @@ async function bootstrap() {
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
+  app.useGlobalFilters(new TypeErrorFilter())
+  app.useGlobalFilters(new HttpExceptionFilter())
   const config = new DocumentBuilder()
     .setTitle('User Module - city account')
     .setDescription(

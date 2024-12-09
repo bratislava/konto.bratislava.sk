@@ -3,52 +3,59 @@ import {
   Controller,
   Get,
   HttpCode,
-  Logger,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger'
+import {
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import * as _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
 import { PrismaService } from '../prisma/prisma.service'
-import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
-import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
+  RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
   RequestQueryUserByBirthNumberDto,
   RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  GetUserDataByBirthNumbersBatchResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
   UserVerifyState,
-  ValidateEdeskForUserIdsResponseDto,
   ValidatedUsersToPhysicalEntitiesResponseDto,
-  VerificationDataForUserResponseDto
+  ValidateEdeskForUserIdsResponseDto,
+  VerificationDataForUserResponseDto,
 } from './dtos/responses.admin.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @ApiTags('ADMIN')
 @Controller('admin')
 @ApiSecurity('apiKey')
 export class AdminController {
-  private readonly logger: Logger = new Logger(AdminController.name)
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminController.name)
 
   constructor(
     private readonly adminService: AdminService,
     private readonly prismaService: PrismaService,
-    private readonly cognitoSubservice: CognitoSubservice,
-    private readonly errorThrowerGuard: ErrorThrowerGuard,
-    private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly physicalEntityService: PhysicalEntityService
   ) {}
 
@@ -57,6 +64,11 @@ export class AdminController {
     summary: 'Get user data',
     description: 'Get user data by birthnumber',
   })
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User by birth number not found',
+    type: HttpException,
+  })
   @UseGuards(AdminGuard)
   @Get('userdata')
   async getUserDataByBirthNumber(
@@ -64,6 +76,25 @@ export class AdminController {
   ): Promise<ResponseUserByBirthNumberDto> {
     const result = await this.adminService.getUserDataByBirthNumber(query.birthNumber)
     return result
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get user data',
+    description: 'Get user data by birthnumbers in batch.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Success.',
+    type: GetUserDataByBirthNumbersBatchResponseDto,
+  })
+  @UseGuards(AdminGuard)
+  @Post('userdata-batch')
+  async getUserDataByBirthNumbersBatch(
+    @Body() query: RequestBatchQueryUsersByBirthNumbersDto
+  ): Promise<GetUserDataByBirthNumbersBatchResponseDto> {
+    const result = await this.adminService.getUsersDataByBirthNumbers(query.birthNumbers)
+    return { users: result }
   }
 
   @HttpCode(200)
@@ -85,7 +116,9 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Get('deactivate/:externalId')
-  async deactivateAccount(@Param('externalId') externalId: string): Promise<DeactivateAccountResponseDto> {
+  async deactivateAccount(
+    @Param('externalId') externalId: string
+  ): Promise<DeactivateAccountResponseDto> {
     const response = await this.adminService.deactivateAccount(externalId)
     return response
   }
@@ -146,7 +179,7 @@ export class AdminController {
   @Post('validated-users-to-physical-entities')
   async validatedUsersToPhysicalEntities() {
     const users = await this.prismaService.user.findMany({
-      where: { birthNumber: { not: null }, physicalEntityId: null },
+      where: { birthNumber: { not: null }, physicalEntity: null },
       take: 1000,
     })
 
@@ -160,17 +193,32 @@ export class AdminController {
     // link existing physicalEntities to users where they exist, link by birth number, don't transfer other data
     // ignoring the problems with duplicate birth numbers, we should resolve these manually
     const existingPhysicalEntities = await this.prismaService.physicalEntity.findMany({
-      where: { birthNumber: { in: users.map((user) => user.birthNumber).filter((birthNumber) => birthNumber !== null) as string[] }, userId: null },
+      where: {
+        birthNumber: {
+          in: users
+            .map((user) => user.birthNumber)
+            .filter((birthNumber) => birthNumber !== null) as string[],
+        },
+        userId: null,
+      },
     })
 
     const physicalEntitiesByBirthNumber = _.keyBy(existingPhysicalEntities, 'birthNumber')
     const usersByBirthNumber = _.keyBy(users, 'birthNumber')
 
     if (Object.values(physicalEntitiesByBirthNumber).length !== existingPhysicalEntities.length) {
-      throw this.errorThrowerGuard.databaseError('Duplicate birth numbers in existing physicalEntities')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.DATABASE_ERROR,
+        ErrorsResponseEnum.DATABASE_ERROR,
+        'Duplicate birth numbers in existing physicalEntities'
+      )
     }
     if (Object.values(usersByBirthNumber).length !== users.length) {
-      throw this.errorThrowerGuard.databaseError('Duplicate birth numbers in existing physicalEntities')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.DATABASE_ERROR,
+        ErrorsResponseEnum.DATABASE_ERROR,
+        'Duplicate birth numbers in existing physicalEntities'
+      )
     }
 
     if (existingPhysicalEntities.length !== 0) {
@@ -178,41 +226,30 @@ export class AdminController {
         `Found ${existingPhysicalEntities.length} existing physicalEntities for unlinked users`
       )
       for (const physicalEntity of existingPhysicalEntities) {
-        const user = physicalEntity.birthNumber ? usersByBirthNumber[physicalEntity.birthNumber] : null
+        const user = physicalEntity.birthNumber
+          ? usersByBirthNumber[physicalEntity.birthNumber]
+          : null
         if (user) {
           this.logger.log(`Linking user ${user.id} to physicalEntity ${physicalEntity.id}`)
-          await this.prismaService.$transaction([
-            this.prismaService.user.update({
-              where: { id: user.id },
-              data: { physicalEntityId: physicalEntity.id },
-            }),
-            this.prismaService.physicalEntity.update({
-              where: { id: physicalEntity.id },
-              data: { userId: user.id },
-            }),
-          ])
+          await this.prismaService.physicalEntity.update({
+            where: { id: physicalEntity.id },
+            data: { userId: user.id },
+          })
         }
       }
     }
 
     // create physicalEntities for the rest of the users
     const usersWithoutPhysicalEntity = users.filter(
-      (user) => !(user.birthNumber) || physicalEntitiesByBirthNumber[user.birthNumber] === undefined
+      (user) => !user.birthNumber || physicalEntitiesByBirthNumber[user.birthNumber] === undefined
     )
     if (usersWithoutPhysicalEntity.length !== 0) {
       this.logger.log(
         `Creating ${usersWithoutPhysicalEntity.length} new physicalEntities for users`
       )
       for (const user of usersWithoutPhysicalEntity) {
-        // paired in transaction, so that we don't create unlinked entities
-        await this.prismaService.$transaction(async (tx) => {
-          const result = await tx.physicalEntity.create({
-            data: { userId: user.id, birthNumber: user.birthNumber },
-          })
-          await tx.user.update({
-            where: { id: user.id },
-            data: { physicalEntityId: result.id },
-          })
+        await this.prismaService.physicalEntity.create({
+          data: { userId: user.id, birthNumber: user.birthNumber },
         })
       }
     }

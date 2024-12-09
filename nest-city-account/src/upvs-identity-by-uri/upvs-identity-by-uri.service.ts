@@ -3,9 +3,15 @@ import { UpvsIdentityByUri } from '@prisma/client'
 import _ from 'lodash'
 import { NasesService } from '../nases/nases.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { parseBirthNumberFromUri } from '../utils/upvs'
 import { UpvsIdentity, UpvsIdentitySchema } from './dtos/upvsSchema'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 export type UpvsIdentityByUriServiceCreateManyParam = {
   physicalEntityId?: string | null | undefined
@@ -13,17 +19,21 @@ export type UpvsIdentityByUriServiceCreateManyParam = {
 }[]
 
 type CreateManyResult = {
-  success: UpvsIdentityByUri[],
-  failed: UpvsIdentityByUri[],
+  success: UpvsIdentityByUri[]
+  failed: { physicalEntityId?: string; uri: string }[]
 }
 
 @Injectable()
 export class UpvsIdentityByUriService {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
-    private errorThrowerGuard: ErrorThrowerGuard,
+    private throwerErrorGuard: ThrowerErrorGuard,
     private nasesService: NasesService,
     private prismaService: PrismaService
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(UpvsIdentityByUriService.name)
+  }
 
   // takes an array of uris with optional physicalEntityId, validates them against UPVS and keeps the record of both the successful and the failed uris
   // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
@@ -31,13 +41,19 @@ export class UpvsIdentityByUriService {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   async createMany(inputs: UpvsIdentityByUriServiceCreateManyParam): Promise<CreateManyResult> {
     if (inputs.length === 0 || inputs.length > 100) {
-      throw this.errorThrowerGuard.badRequestException('Must provide between 1 and 100 URIs to validate')
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Must provide between 1 and 100 URIs to validate'
+      )
     }
 
     const inputsByBirthNumbers = _.groupBy(inputs, (input) => {
       const parsedBirthNumber = parseBirthNumberFromUri(input.uri)
       if (!parsedBirthNumber) {
-        throw this.errorThrowerGuard.badRequestException(`Invalid uri found among inputs: ${input.uri}`)
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.BAD_REQUEST_ERROR,
+          `Invalid uri found among inputs: ${input.uri}`
+        )
       }
       return parsedBirthNumber
     })
@@ -47,7 +63,11 @@ export class UpvsIdentityByUriService {
     )
 
     if (!Array.isArray(results)) {
-      this.errorThrowerGuard.unexpectedUpvsResponseError(results)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
+        VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
+        JSON.stringify(results)
+      )
     }
 
     // for each db write we collect the written object into result that we return
@@ -58,7 +78,7 @@ export class UpvsIdentityByUriService {
       // validate the result format - for info only, continue either way
       const parsedResult = UpvsIdentitySchema.safeParse(result)
       if (!parsedResult.success) {
-        console.error(
+        this.logger.error(
           'Failed to parse result from nases. Will still attempt to save the data, and continue if we fail. Result JSON: ',
           JSON.stringify(result)
         )
@@ -74,7 +94,7 @@ export class UpvsIdentityByUriService {
           inputsByBirthNumbers[parsedBirthNumber].map((input) => input.physicalEntityId)
         )
         if (physicalEntityIds.length > 1) {
-          console.error(
+          this.logger.error(
             'Multiple physicalEntityIds found for the same birthNumber. We must assign manually - ignoring these in results'
           )
           continue
@@ -97,7 +117,7 @@ export class UpvsIdentityByUriService {
           )
         }
       } catch (e) {
-        console.error('Failed to save data. Will continue to next result. Error: ', e)
+        this.logger.error('Failed to save data. Will continue to next result. Error: ', e)
       }
     }
 
@@ -113,17 +133,13 @@ export class UpvsIdentityByUriService {
     const failedBirthNumbers = Object.keys(inputsByBirthNumbers).filter(
       (birthNumber) => !birthNumbersWithSuccessfulUris.has(birthNumber)
     )
-    const resultDataFailed: UpvsIdentityByUri[] = []
+    const resultDataFailed: { physicalEntityId?: string; uri: string }[] = []
     for (const failedBirthNumber of failedBirthNumbers) {
       for (const failedInput of inputsByBirthNumbers[failedBirthNumber]) {
-        resultDataFailed.push(
-          await this.prismaService.upvsIdentityByUri.create({
-            data: {
-              physicalEntityId: failedInput.physicalEntityId ?? null,
-              uri: failedInput.uri,
-            },
-          })
-        )
+        resultDataFailed.push({
+          physicalEntityId: failedInput.physicalEntityId ?? undefined,
+          uri: failedInput.uri,
+        })
       }
     }
 

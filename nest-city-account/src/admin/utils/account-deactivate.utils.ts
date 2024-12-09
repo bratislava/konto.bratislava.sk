@@ -1,12 +1,14 @@
-import { PrismaService } from "../../prisma/prisma.service";
+import { PrismaService } from '../../prisma/prisma.service'
 
-export const removePhysicalEntityUserIdRelation = async (prisma: PrismaService, userId: string): Promise<void> => {
+export const removePhysicalEntityUserIdRelation = async (
+  prisma: PrismaService,
+  userId: string
+): Promise<void> => {
   const physicalEntity = await prisma.physicalEntity.findUnique({
     where: {
       userId,
-    }
+    },
   })
-
   if (physicalEntity) {
     await prisma.physicalEntity.update({
       where: {
@@ -14,12 +16,15 @@ export const removePhysicalEntityUserIdRelation = async (prisma: PrismaService, 
       },
       data: {
         userId: null,
-      }
+      },
     })
   }
 }
 
-export const removeUserDataFromDatabase = async (prisma: PrismaService, externalId: string): Promise<void> => {
+export const removeUserDataFromDatabase = async (
+  prisma: PrismaService,
+  externalId: string
+): Promise<void> => {
   const user = await prisma.user.findUnique({
     where: {
       externalId,
@@ -36,12 +41,11 @@ export const removeUserDataFromDatabase = async (prisma: PrismaService, external
         ifo: null,
         birthnumberAlreadyExistsCounter: 0,
         birthnumberAlreadyExistsLast: null,
-        physicalEntityId: null,
         userIdCardVerify: {
           deleteMany: {
             userId: user.id,
-          }
-        }
+          },
+        },
       },
     })
 
@@ -49,13 +53,16 @@ export const removeUserDataFromDatabase = async (prisma: PrismaService, external
   }
 }
 
-export const removeLegalPersonDataFromDatabase = async (prisma: PrismaService, externalId: string): Promise<void> => {
+export const removeLegalPersonDataFromDatabase = async (
+  prisma: PrismaService,
+  externalId: string
+): Promise<void> => {
   const legalPerson = await prisma.legalPerson.findUnique({
     where: {
       externalId,
     },
   })
-  
+
   if (legalPerson) {
     await prisma.legalPerson.update({
       where: {

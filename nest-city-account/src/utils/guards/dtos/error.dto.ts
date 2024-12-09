@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export const COGNITO_TYPE_ERROR = 'Unexpected Cognito User Account Type'
+import { UserErrorsEnum } from '../../../user/user.error.enum'
+import {
+  SendToQueueErrorsEnum,
+  VerificationErrorsEnum,
+} from '../../../user-verification/verification.errors.enum'
+import { AdminErrorsEnum } from '../../../admin/admin.errors.enum'
+import { MagproxyErrorsEnum } from '../../../magproxy/magproxy.errors.enum'
 
 // copied over from nest-forms-backend
 export enum ErrorsEnum {
@@ -12,42 +18,13 @@ export enum ErrorsEnum {
   BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
 }
 
-export enum CustomErrorVerificationTypesEnum {
-  RFO_ACCESS_ERROR = 'RFO_ACCESS_ERROR',
-  RFO_NOT_RESPONDING = 'RFO_NOT_RESPONDING',
-  RPO_NOT_RESPONDING = 'RPO_NOT_RESPONDING',
-  DEAD_PERSON = 'DEAD_PERSON',
-  BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY = 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
-  BIRTHNUMBER_IFO_DUPLICITY = 'BIRTHNUMBER_IFO_DUPLICITY',
-  BIRTHNUMBER_ICO_DUPLICITY = 'BIRTHNUMBER_ICO_DUPLICITY',
-  BIRTH_NUMBER_NOT_EXISTS = 'BIRTH_NUMBER_NOT_EXISTS',
-  BIRTH_NUMBER_WRONG_FORMAT = 'BIRTH_NUMBER_WRONG_FORMAT',
-  DATABASE_ERROR = 'DATABASE_ERROR',
-  INVALID_CAPTCHA = 'INVALID_CAPTCHA',
-  VERIFY_EID_ERROR = 'VERIFY_EID_ERROR',
-  UNEXPECTED_UPVS_RESPONSE = 'UNEXPECTED_UPVS_RESPONSE',
-  LEGAL_ENTITIES_NOT_FOUND = 'LEGAL_ENTITIES_NOT_FOUND',
-  USER_NOT_FOUND_IN_LEGAL_ENTITY = 'USER_NOT_FOUND_IN_LEGAL_ENTITY',
-  NO_IF_FOUND_FOR_STATUTORY = 'NO_IF_FOUND_FOR_STATUTORY',
-  UNEXPECTED_MAGPROXY_RESPONSE_ERROR = 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
-  RPO_FIELD_NOT_EXISTS = 'RPO_FIELD_NOT_EXISTS',
-  ICO_NOT_PROVIDED = 'ICO_NOT_PROVIDED',
-  IFO_NOT_PROVIDED = 'IFO_NOT_PROVIDED',
-  VERIFICATION_DATA_NOT_PROVIDED = 'VERIFICATION_DATA_NOT_PROVIDED',
-}
-
-export enum CustomErrorAdminTypesEnum {
-  BIRTH_NUMBER_NOT_FOUND = 'BIRTH_NUMBER_NOT_FOUND',
-}
-
-export enum CustomErrorUserEnum {
-  USER_NOT_FOUND = 'USER_NOT_FOUND',
-  NO_EXTERNAL_ID = 'NO_EXTERNAL_ID'
-}
-
-export enum CustomErrorSendToQueueEnum {
-  COGNITO_CHANGE_TIER_ERROR = 'COGNITO_CHANGE_TIER_ERROR',
-  RABBIT_PUSH_DATA_ERROR = 'RABBIT_PUSH_DATA_ERROR',
+export enum ErrorsResponseEnum {
+  NOT_FOUND_ERROR = 'Not found',
+  DATABASE_ERROR = 'Error to write or update or read from/to database',
+  INTERNAL_SERVER_ERROR = 'Unexpected error',
+  UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR',
+  UNPROCESSABLE_ENTITY_ERROR = 'UNPROCESSABLE_ENTITY_ERROR',
+  BAD_REQUEST_ERROR = 'BAD_REQUEST_ERROR',
 }
 
 export class ResponseInternalServerErrorDto {
@@ -64,6 +41,14 @@ export class ResponseInternalServerErrorDto {
   message!: string
 }
 
+export type CustomErrorEnums =
+  | UserErrorsEnum
+  | VerificationErrorsEnum
+  | MagproxyErrorsEnum
+  | ErrorsEnum
+  | AdminErrorsEnum
+  | SendToQueueErrorsEnum
+
 export class ResponseErrorDto {
   statusCode!: number
 
@@ -71,5 +56,11 @@ export class ResponseErrorDto {
 
   message!: string
 
-  errorName!: CustomErrorVerificationTypesEnum
+  errorName!: CustomErrorEnums
+
+  $alert?: number
+
+  object?: object | undefined
+
+  $console?: string
 }

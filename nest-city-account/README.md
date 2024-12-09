@@ -2,6 +2,10 @@
 
 This repository contains backend code of City Account project.
 
+## Product specification
+
+[Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
+
 ## Development
 
 First of all, duplicate `.env.example` file as `.env` by running following command:

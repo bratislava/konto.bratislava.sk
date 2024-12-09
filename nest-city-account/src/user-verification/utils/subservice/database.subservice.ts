@@ -3,15 +3,19 @@ import { Injectable } from '@nestjs/common'
 import { LegalPerson, User } from '@prisma/client'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
-import { ErrorMessengerGuard, ErrorThrowerGuard } from '../../../utils/guards/errors.guard'
+import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../utils/guards/errors.guard'
 import { ResponseVerificationIdentityCardDto } from '../../dtos/requests.verification.dto'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../../verification.errors.enum'
 
 @Injectable()
 export class DatabaseSubserviceUser {
   constructor(
     private prisma: PrismaService,
     private errorMessengerGuard: ErrorMessengerGuard,
-    private errorThrowerGuard: ErrorThrowerGuard
+    private throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
   async findUserByEmailOrExternalId(email: string, externalId: string): Promise<User | null> {
@@ -19,19 +23,23 @@ export class DatabaseSubserviceUser {
     try {
       user = await this.prisma.user.findUnique({
         where: {
-          email: email,
+          email,
         },
       })
       if (!user) {
         user = await this.prisma.user.findUnique({
           where: {
-            externalId: externalId,
+            externalId,
           },
         })
       }
       return user
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
   }
 
@@ -43,19 +51,23 @@ export class DatabaseSubserviceUser {
     try {
       legalPerson = await this.prisma.legalPerson.findUnique({
         where: {
-          email: email,
+          email,
         },
       })
       if (!legalPerson) {
         legalPerson = await this.prisma.legalPerson.findUnique({
           where: {
-            externalId: externalId,
+            externalId,
           },
         })
       }
       return legalPerson
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
   }
 
@@ -68,7 +80,7 @@ export class DatabaseSubserviceUser {
     try {
       const checkUser = await this.prisma.user.findUnique({
         where: {
-          birthNumber: birthNumber,
+          birthNumber,
         },
       })
       if (checkUser && checkUser.externalId !== cognitoUser.idUser) {
@@ -138,7 +150,11 @@ export class DatabaseSubserviceUser {
         }
       }
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
   }
 
@@ -151,8 +167,8 @@ export class DatabaseSubserviceUser {
       const checkUser = await this.prisma.legalPerson.findUnique({
         where: {
           ico_birthNumber: {
-            ico: ico,
-            birthNumber: birthNumber,
+            ico,
+            birthNumber,
           },
         },
       })
@@ -180,8 +196,8 @@ export class DatabaseSubserviceUser {
           await this.prisma.legalPerson.update({
             where: {
               ico_birthNumber: {
-                ico: ico,
-                birthNumber: birthNumber,
+                ico,
+                birthNumber,
               },
             },
             data: {
@@ -227,7 +243,11 @@ export class DatabaseSubserviceUser {
         message: 'upserted',
       }
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
   }
 
@@ -255,7 +275,11 @@ export class DatabaseSubserviceUser {
         })
       }
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
   }
 
@@ -281,12 +305,11 @@ export class DatabaseSubserviceUser {
         })
       }
     } catch (error) {
-      throw this.errorThrowerGuard.databaseError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.DATABASE_ERROR,
+        VerificationErrorsResponseEnum.DATABASE_ERROR,
+        JSON.stringify(error)
+      )
     }
-  }
-
-  async getUserByBirthNumber(birthNumber: string) {
-    const user = await this.prisma.user.findUnique({ where: { birthNumber: birthNumber } })
-    return user
   }
 }

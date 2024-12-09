@@ -1,19 +1,19 @@
-import { createMock } from '@golevelup/ts-jest';
-import { Test, TestingModule } from '@nestjs/testing';
-import prismaMock from '../../test/singleton';
-import { NasesService } from '../nases/nases.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard';
-import { UpvsIdentityByUriService } from './upvs-identity-by-uri.service';
+import { createMock } from '@golevelup/ts-jest'
+import { Test, TestingModule } from '@nestjs/testing'
+import prismaMock from '../../test/singleton'
+import { NasesService } from '../nases/nases.service'
+import { PrismaService } from '../prisma/prisma.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { UpvsIdentityByUriService } from './upvs-identity-by-uri.service'
 
 describe('UpvsIdentityByUriService', () => {
-  let service: UpvsIdentityByUriService;
+  let service: UpvsIdentityByUriService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UpvsIdentityByUriService, 
-        ErrorThrowerGuard, 
+        UpvsIdentityByUriService,
+        ThrowerErrorGuard,
         {
           provide: NasesService,
           useValue: createMock<NasesService>(),
@@ -22,10 +22,10 @@ describe('UpvsIdentityByUriService', () => {
       ],
     }).compile()
 
-    service = module.get<UpvsIdentityByUriService>(UpvsIdentityByUriService);
-  });
+    service = module.get<UpvsIdentityByUriService>(UpvsIdentityByUriService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    expect(service).toBeDefined()
+  })
+})

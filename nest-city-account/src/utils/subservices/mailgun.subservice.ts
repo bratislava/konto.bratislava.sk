@@ -6,11 +6,14 @@ import { MAILGUN } from '../../user-verification/constats'
 const mailgun = new Mailgun(formData)
 
 import { MailgunTemplates } from '../global-dtos/mailgun.dto'
+import { LineLoggerSubservice } from './line-logger.subservice'
 @Injectable()
 export class MailgunSubservice {
   private mg
 
   private readonly config
+
+  private readonly logger: LineLoggerSubservice
 
   constructor() {
     // TODO temporarily uses dummy token which always passes
@@ -26,7 +29,8 @@ export class MailgunSubservice {
       key: process.env.MAILGUN_API_KEY,
       url: MAILGUN.API_URL,
     })
-    console.log('Successfully initialized Mailgun')
+    this.logger = new LineLoggerSubservice(MailgunSubservice.name)
+    this.logger.log('Successfully initialized Mailgun')
   }
 
   // only throws if passed unserializable options
@@ -38,7 +42,7 @@ export class MailgunSubservice {
     options: Parameters<(typeof MailgunTemplates)[T]>[0]
   ) {
     try {
-      console.log(
+      this.logger.log(
         'About to send email with template',
         templateKey,
         'and options',
@@ -48,9 +52,9 @@ export class MailgunSubservice {
         this.config.defaultMailgunDomain,
         MailgunTemplates[templateKey](options)
       )
-      console.log('Mailgun response', response)
+      this.logger.log('Mailgun response', response)
     } catch (error) {
-      console.error(
+      this.logger.error(
         'WARNING - failed to send Mailgun email, with template',
         templateKey,
         'and options',

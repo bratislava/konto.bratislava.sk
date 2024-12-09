@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
 import { CognitoUserAttributesTierEnum } from "@prisma/client"
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator"
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsString, IsUUID } from "class-validator"
 import { AnonymizeResponse } from "../../bloomreach/bloomreach.dto"
 import { UserAttributeEnum } from "../../user/dtos/gdpr.user.dto"
 import { IsBirthNumber } from "../../utils/decorators/validation.decorators"
@@ -240,4 +240,14 @@ export class ResponseValidatePhysicalEntityRfoDto {
   })
   //TODO: add types
   upvsResult: unknown
+}
+
+export class GetUserDataByBirthNumbersBatchResponseDto { 
+  @ApiProperty({
+    description: 'A record of users keyed by their birth number',
+    type: 'object',
+    additionalProperties: { type: 'ResponseUserByBirthNumberDto' }
+  })
+  @IsObject()
+  users: Record<string, ResponseUserByBirthNumberDto>;
 }

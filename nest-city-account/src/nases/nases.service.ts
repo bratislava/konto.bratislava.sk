@@ -2,11 +2,20 @@ import { Injectable } from '@nestjs/common'
 import axios from 'axios'
 import * as crypto from 'node:crypto'
 import { v1 as uuidv1 } from 'uuid'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class NasesService {
-  constructor(private errorThrowerGuard: ErrorThrowerGuard) {}
+  private readonly logger: LineLoggerSubservice
+
+  constructor(private throwerErrorGuard: ThrowerErrorGuard) {
+    this.logger = new LineLoggerSubservice(NasesService.name)
+  }
 
   async getUpvsIdentity(token: string) {
     await axios
@@ -17,11 +26,19 @@ export class NasesService {
       })
       .then((response) => {
         if (response.data.statusCode !== 200) {
-          this.errorThrowerGuard.unexpectedUpvsResponseError(response.data)
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
+            VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
+            JSON.stringify(response.data)
+          )
         }
       })
       .catch((error) => {
-        this.errorThrowerGuard.verifyEidError(error)
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          JSON.stringify(error)
+        )
       })
   }
 
@@ -37,7 +54,7 @@ export class NasesService {
       sub: process.env.SUB_NASES_TECHNICAL_ACCOUNT,
       exp,
       jti,
-      obo: null
+      obo: null,
     }
     const headerEncode = Buffer.from(JSON.stringify(header)).toString('base64url')
     const payloadEncode = Buffer.from(JSON.stringify(payload)).toString('base64url')
@@ -60,11 +77,15 @@ export class NasesService {
         }
       )
       .catch((error) => {
-        console.error(error)
+        this.logger.error(error)
         throw error
       })
     if (response.status > 400) {
-      this.errorThrowerGuard.unexpectedUpvsResponseError(response)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
+        VerificationErrorsResponseEnum.UNEXPECTED_UPVS_RESPONSE,
+        JSON.stringify(response)
+      )
     }
     return response.data
   }

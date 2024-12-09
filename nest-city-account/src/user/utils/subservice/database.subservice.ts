@@ -14,12 +14,15 @@ import {
   ResponseGdprUserDataDto,
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class DatabaseSubserviceUser {
-  private readonly logger: Logger = new Logger('DatabaseSubservice')
+  private readonly logger: LineLoggerSubservice
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
+  }
 
   async getOrCreateUser(externalId: string | null, email: string) {
     let user = await this.prisma.user.findUnique({

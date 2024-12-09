@@ -1,11 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Config, UpvsIdentityByUri } from '@prisma/client'
 import { AdminService } from 'src/admin/admin.service'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
 import { PrismaService } from '../../prisma/prisma.service'
+import { HandleErrors } from '../../utils/decorators/errorHandler.decorators'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const ValidateEdeskConfigValueSchema = z.object({
   active: z.boolean(),
@@ -14,7 +16,7 @@ const ValidateEdeskConfigValueSchema = z.object({
 
 @Injectable()
 export class AdminCronSubservice {
-  private readonly logger: Logger = new Logger(AdminCronSubservice.name)
+  private readonly logger: LineLoggerSubservice = new LineLoggerSubservice(AdminCronSubservice.name)
 
   private readonly edeskCognitoConfigDbkey = 'VALIDATE_EDESK_FROM_COGNITO_DATA'
 
@@ -27,6 +29,7 @@ export class AdminCronSubservice {
   ) {}
 
   @Cron(CronExpression.EVERY_30_SECONDS)
+  @HandleErrors('Cron Error')
   async validateEdeskFromCognitoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
       where: { key: this.edeskCognitoConfigDbkey },
@@ -45,8 +48,9 @@ export class AdminCronSubservice {
 
     const result = await this.adminService.validateEdeskWithUriFromCognito(config.offset)
     const validatedUsers = result.validatedUsers
-    const mappingFn = (upvsResult: UpvsIdentityByUri) =>
-      `uri: ${upvsResult.uri} physicalEntityId: ${upvsResult.physicalEntityId}`
+    const mappingFn = (
+      upvsResult: UpvsIdentityByUri | { physicalEntityId?: string; uri: string }
+    ) => `uri: ${upvsResult.uri} physicalEntityId: ${upvsResult.physicalEntityId}`
     const successData = result.entities.success.map(mappingFn)
     const failedData = result.entities.failed.map(mappingFn)
     this.logger.log(
@@ -63,7 +67,7 @@ export class AdminCronSubservice {
       const currentOffset = config.offset
       const newOffset = (currentOffset + 90) % physicalEntitiesWithoutUriVerificationAttemptsCount
       this.logger.log(
-        `Attemp to set new offset: ${newOffset}, previous offset: ${currentOffset}, untestedEntitiesCount: ${physicalEntitiesWithoutUriVerificationAttemptsCount}`
+        `Attempt to set new offset: ${newOffset}, previous offset: ${currentOffset}, untestedEntitiesCount: ${physicalEntitiesWithoutUriVerificationAttemptsCount}`
       )
       await this.prismaService.$transaction(async (tx) => {
         const { value } = await tx.config.findUnique({
@@ -80,6 +84,7 @@ export class AdminCronSubservice {
   }
 
   @Cron(CronExpression.EVERY_30_SECONDS)
+  @HandleErrors('Cron Error')
   async validateEdeskFromRfoData(): Promise<void> {
     const configDbResult = await this.prismaService.config.findUnique({
       where: { key: this.edeskRfoConfigDbkey },
@@ -126,7 +131,7 @@ export class AdminCronSubservice {
     }
 
     const newOffset = config.offset + 1
-    this.logger.log(`Attemp to set new offset: ${newOffset}`)
+    this.logger.log(`Attempt to set new offset: ${newOffset}`)
     await this.prismaService.$transaction(async (tx) => {
       const { value } = await tx.config.findUnique({
         where: { key: this.edeskRfoConfigDbkey },

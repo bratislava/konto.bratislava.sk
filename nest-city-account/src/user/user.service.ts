@@ -12,19 +12,20 @@ import {
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 
 @Injectable()
 export class UserService {
   constructor(
     private databaseSubservice: DatabaseSubserviceUser,
     private prisma: PrismaService,
-    private errorThrowerGuard: ErrorThrowerGuard,
+    private throwerErrorGuard: ThrowerErrorGuard,
     private bloomreachService: BloomreachService
   ) {}
 
@@ -157,7 +158,10 @@ export class UserService {
     const getGdprData = await this.databaseSubservice.getUserGdprData(id)
     const user = await this.databaseSubservice.getUserById(id)
     if (!user) {
-      throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
     // this is attentional not await, we don't want to wait for bloomreach integration if there will be error. Data will be also integrated every day for updated from database
     this.bloomreachService.trackEventConsent(GdprSubType.UNSUB, gdprData, user.externalId)
@@ -173,7 +177,10 @@ export class UserService {
       const data = await this.unsubscribePublicUser(user.id, gdprData)
       return data
     }
-    throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+    throw this.throwerErrorGuard.NotFoundException(
+      UserErrorsEnum.USER_NOT_FOUND,
+      UserErrorsResponseEnum.USER_NOT_FOUND
+    )
   }
 
   async changeUserEmail(id: string, newEmail: string): Promise<ResponseUserDataBasicDto> {
@@ -197,7 +204,10 @@ export class UserService {
         showEmailCommunicationBanner,
       }
     } catch (error) {
-      throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
   }
 
@@ -217,7 +227,10 @@ export class UserService {
 
       return user
     } catch (error) {
-      throw this.errorThrowerGuard.userOrLegalPersonNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
   }
 }

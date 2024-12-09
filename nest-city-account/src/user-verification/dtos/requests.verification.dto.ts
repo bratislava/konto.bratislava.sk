@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
-import { CustomErrorVerificationTypesEnum } from '../../utils/guards/dtos/error.dto'
+import { CustomErrorEnums } from '../../utils/guards/dtos/error.dto'
+import { VerificationErrorsEnum } from '../verification.errors.enum'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
   SEND_TO_QUEUE = 'SendToQueue',
@@ -31,7 +32,7 @@ export class ResponseVerificationIdentityCardToQueueDto {
     description: 'Error if exists',
     default: '',
   })
-  errorName?: CustomErrorVerificationTypesEnum
+  errorName?: VerificationErrorsEnum
 }
 
 export class RequestBodyVerifyIdentityCardDto {
@@ -83,13 +84,11 @@ export class ResponseVerificationIdentityCardDto {
     description: 'Error if exists',
     default: '',
   })
-  errorName?: CustomErrorVerificationTypesEnum
+  errorName?: CustomErrorEnums
 }
 
 export class ResponseVerificationIdentityCardMessageDto {
   message!: string
-
-  udrzitela!: boolean
 }
 
 export class ResponseCustomErrorVerificationIdentityCardDto {
@@ -107,9 +106,9 @@ export class ResponseCustomErrorVerificationIdentityCardDto {
 
   @ApiProperty({
     description: 'Error name for decoding.',
-    default: CustomErrorVerificationTypesEnum.BIRTHNUMBER_IFO_DUPLICITY,
+    default: VerificationErrorsEnum.BIRTHNUMBER_IFO_DUPLICITY,
   })
-  errorName!: CustomErrorVerificationTypesEnum
+  errorName!: VerificationErrorsEnum
 }
 
 export class ResponseNotFoundErrorVerificationIdentityCardDto {
@@ -163,7 +162,7 @@ export class ResponseVerificationDto {
     description: 'Error if exists',
     default: '',
   })
-  errorName?: CustomErrorVerificationTypesEnum
+  errorName?: VerificationErrorsEnum
 }
 
 export class ResponseCustomErrorVerificationEidDto {
@@ -181,9 +180,9 @@ export class ResponseCustomErrorVerificationEidDto {
 
   @ApiProperty({
     description: 'Error name for decoding.',
-    default: CustomErrorVerificationTypesEnum.VERIFY_EID_ERROR,
+    default: VerificationErrorsEnum.VERIFY_EID_ERROR,
   })
-  errorName!: CustomErrorVerificationTypesEnum
+  errorName!: VerificationErrorsEnum
 }
 
 export class RequestBodyVerifyWithRpoDto {

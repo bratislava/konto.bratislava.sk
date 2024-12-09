@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpException,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { CognitoGuard } from '../auth/guards/cognito.guard'
@@ -18,7 +8,8 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import { COGNITO_TYPE_ERROR, ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
+import { ResponseInternalServerErrorDto } from '../utils/guards/dtos/error.dto'
+import { UserErrorsResponseEnum, UserErrorsEnum } from './user.error.enum'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
@@ -32,12 +23,16 @@ import {
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
 import { UserService } from './user.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @ApiTags('Users manipulation')
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
+  ) {}
 
   @HttpCode(200)
   @ApiOperation({
@@ -76,7 +71,10 @@ export class UserController {
       return result
     }
 
-    throw new HttpException(COGNITO_TYPE_ERROR, 422)
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 
   @UseGuards(CognitoGuard)
@@ -98,7 +96,10 @@ export class UserController {
       return result
     }
 
-    throw new HttpException(COGNITO_TYPE_ERROR, 422)
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 
   @HttpCode(200)
@@ -144,7 +145,10 @@ export class UserController {
       return result
     }
 
-    throw new HttpException(COGNITO_TYPE_ERROR, 422)
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 
   @HttpCode(200)
@@ -190,7 +194,10 @@ export class UserController {
       return result
     }
 
-    throw new HttpException(COGNITO_TYPE_ERROR, 422)
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 
   @HttpCode(200)
@@ -270,6 +277,9 @@ export class UserController {
       return result
     }
 
-    throw new HttpException(COGNITO_TYPE_ERROR, 422)
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
   }
 }

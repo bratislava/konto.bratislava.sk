@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NasesService } from './nases.service'
 
 // TODO missing all tests
@@ -8,7 +8,7 @@ describe('NasesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NasesService, ErrorThrowerGuard],
+      providers: [NasesService, ThrowerErrorGuard],
     }).compile()
 
     service = module.get<NasesService>(NasesService)

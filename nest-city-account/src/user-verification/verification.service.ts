@@ -12,8 +12,14 @@ import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
-import { CustomErrorVerificationTypesEnum } from '../utils/guards/dtos/error.dto'
-import { ErrorMessengerGuard, ErrorThrowerGuard } from '../utils/guards/errors.guard'
+import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
+import {
+  SendToQueueErrorsEnum,
+  SendToQueueErrorsResponseEnum,
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from './verification.errors.enum'
+import ThrowerErrorGuard, { ErrorMessengerGuard } from '../utils/guards/errors.guard'
 import { rabbitmqRequeueDelay } from '../utils/handlers/rabbitmq.handlers'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { MailgunSubservice } from '../utils/subservices/mailgun.subservice'
@@ -29,23 +35,27 @@ import {
 } from './dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class VerificationService {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
     private cognitoSubservice: CognitoSubservice,
     private databaseSubservice: DatabaseSubserviceUser,
     private nasesService: NasesService,
     private errorMessengerGuard: ErrorMessengerGuard,
-    private errorThrowerGuard: ErrorThrowerGuard,
+    private throwerErrorGuard: ThrowerErrorGuard,
     private mailgunSubservice: MailgunSubservice,
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw new Error('Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)')
     }
+    this.logger = new LineLoggerSubservice(VerificationService.name)
   }
 
   async sendToQueue(
@@ -64,9 +74,16 @@ export class VerificationService {
       }
     } else {
       try {
-        await this.cognitoSubservice.changeCognitoTierAndInDatabase(user.idUser, CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD, user['custom:account_type'])
+        await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+          user.idUser,
+          CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
+          user['custom:account_type']
+        )
       } catch (error) {
-        this.errorThrowerGuard.cognitoTierError()
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR
+        )
       }
 
       try {
@@ -76,9 +93,12 @@ export class VerificationService {
         })
 
         await this.addEncryptedVerificationDataToDatabase(user, data, type)
-
       } catch (error) {
-        this.errorThrowerGuard.rabbitMQPushDataError(error)
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
+          SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
+          JSON.stringify(error)
+        )
       }
 
       return {
@@ -97,12 +117,17 @@ export class VerificationService {
       channel.reject(message, false)
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto
-        const errorThrowerGuard: ErrorThrowerGuard = new ErrorThrowerGuard()
+        const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
         const prismaService = new PrismaService()
-        const cognitoSubservice = new CognitoSubservice(errorThrowerGuard, prismaService)
-        await cognitoSubservice.changeCognitoTierAndInDatabase(data.msg.user.idUser, CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD, data.msg.type)
+        const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, prismaService)
+        await cognitoSubservice.changeCognitoTierAndInDatabase(
+          data.msg.user.idUser,
+          CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
+          data.msg.type
+        )
       } catch (errorCatch) {
-        console.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
+        const logger = new LineLoggerSubservice('RabbitRPC')
+        logger.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
       }
     },
   })
@@ -121,57 +146,51 @@ export class VerificationService {
         const body = data.msg.data as RequestBodyVerifyWithRpoDto
         verification = await this.verificationSubservice.verifyIcoIdentityCard(data.msg.user, body)
       } else {
-        console.info('Not exists type of RPO or RFO verification', data.msg.user.sub)
+        this.logger.error('Not exists type of RPO or RFO verification', data.msg.user.sub)
         return new Nack()
       }
     } catch (error) {
-      console.error(error, data.msg.user.sub)
+      this.logger.error(error, data.msg.user.sub)
       const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
       const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
-      await this.amqpConnection.publish(
-        RABBIT_MQ.EXCHANGE,
-        RABBIT_MQ.QUEUE,
-        data,
-        {
-          headers: {
-            'x-delay': delay,
-          },
-        }
-      )
+      await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.QUEUE, data, {
+        headers: {
+          'x-delay': delay,
+        },
+      })
       return new Nack()
     }
 
     if (verification.statusCode === 200) {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(data.msg.user.idUser, CognitoUserAttributesTierEnum.IDENTITY_CARD, data.msg.type)
+      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+        data.msg.user.idUser,
+        CognitoUserAttributesTierEnum.IDENTITY_CARD,
+        data.msg.type
+      )
       const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
       if (
         newUserData[CognitoUserAttributesEnum.TIER] ===
         CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
       ) {
-        console.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', data.msg.user)
+        this.logger.error('COGNITO_ERROR - WRITE TIER IDENTITY_CARD', data.msg.user)
         const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
           data.msg.user
         )
         const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
-        await this.amqpConnection.publish(
-          RABBIT_MQ.EXCHANGE,
-          RABBIT_MQ.QUEUE,
-          data,
-          {
-            headers: {
-              'x-delay': delay,
-            },
-          }
-        )
+        await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.QUEUE, data, {
+          headers: {
+            'x-delay': delay,
+          },
+        })
         return new Nack()
       } else {
         try {
           const firstName = data.msg.user?.given_name
           const email = data.msg.user?.email
           if (!email) {
-            console.error(
+            this.logger.error(
               "Error - no email sent, couldn't find email in user object: ",
               JSON.stringify(data.msg.user)
             )
@@ -184,7 +203,7 @@ export class VerificationService {
             })
           }
         } catch (error) {
-          console.error('Error while sending verification success email: ', error)
+          this.logger.error('Error while sending verification success email: ', error)
         }
         this.errorMessengerGuard.verificationQueueLog(
           data.msg.user,
@@ -194,54 +213,50 @@ export class VerificationService {
         return new Nack()
       }
     } else if (
-      verification.errorName === CustomErrorVerificationTypesEnum.RFO_NOT_RESPONDING ||
-      verification.errorName === CustomErrorVerificationTypesEnum.RFO_ACCESS_ERROR
+      verification.errorName === MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE ||
+      verification.errorName === MagproxyErrorsEnum.RFO_ACCESS_ERROR ||
+      verification.errorName === VerificationErrorsEnum.RFO_NOT_RESPONDING ||
+      verification.errorName === VerificationErrorsEnum.RFO_ACCESS_ERROR
     ) {
       this.errorMessengerGuard.verificationQueueError(data.msg.user, verification)
       const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
         data.msg.user
       )
       const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
-      await this.amqpConnection.publish(
-        RABBIT_MQ.EXCHANGE,
-        RABBIT_MQ.QUEUE,
-        data,
-        {
-          headers: {
-            'x-delay': delay,
-          },
-        }
-      )
+      await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.QUEUE, data, {
+        headers: {
+          'x-delay': delay,
+        },
+      })
       return new Nack()
     } else {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(data.msg.user.idUser, CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD, data.msg.type)
+      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+        data.msg.user.idUser,
+        CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
+        data.msg.type
+      )
       const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
       if (
         newUserData[CognitoUserAttributesEnum.TIER] ===
         CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD
       ) {
-        console.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', data.msg.user)
+        this.logger.error('COGNITO_ERROR - WRITE TIER NOT_VERIFIED', data.msg.user)
         const userFromDb = await this.databaseSubservice.requeuedInVerificationIncrement(
           data.msg.user
         )
         const delay = rabbitmqRequeueDelay(userFromDb.requeuedInVerification)
-        await this.amqpConnection.publish(
-          RABBIT_MQ.EXCHANGE,
-          RABBIT_MQ.QUEUE,
-          data,
-          {
-            headers: {
-              'x-delay': delay,
-            },
-          }
-        )
+        await this.amqpConnection.publish(RABBIT_MQ.EXCHANGE, RABBIT_MQ.QUEUE, data, {
+          headers: {
+            'x-delay': delay,
+          },
+        })
         return new Nack()
       } else {
         try {
           const firstName = data.msg.user?.given_name
           const email = data.msg.user?.email
           if (!email) {
-            console.error(
+            this.logger.error(
               "Error - no email sent, couldn't find given_name or email in user object: ",
               JSON.stringify(data.msg.user)
             )
@@ -255,7 +270,7 @@ export class VerificationService {
           }
           return new Nack()
         } catch (error) {
-          console.error('Error while sending verification failed email: ', error)
+          this.logger.error('Error while sending verification failed email: ', error)
         }
         this.errorMessengerGuard.verificationQueueError(data.msg.user, verification)
         return new Nack()
@@ -271,7 +286,11 @@ export class VerificationService {
     try {
       await this.nasesService.getUpvsIdentity(jwtToken)
     } catch (error) {
-      this.errorThrowerGuard.verifyEidError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        VerificationErrorsEnum.VERIFY_EID_ERROR,
+        VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+        JSON.stringify(error)
+      )
     }
 
     const base64Payload = oboToken.split('.')[1]
@@ -290,7 +309,11 @@ export class VerificationService {
         0
       )
       if (response.statusCode !== 200) {
-        this.errorThrowerGuard.verifyEidError('Failed to verify FO with birth number')
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          'Failed to verify FO with birth number'
+        )
       }
     }
 
@@ -304,14 +327,25 @@ export class VerificationService {
         birthNumber
       )
       if (response.statusCode !== 200) {
-        this.errorThrowerGuard.verifyEidError('Failed to verify PO with ico and birth number')
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          'Failed to verify PO with ico and birth number'
+        )
       }
     }
 
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(user.idUser, CognitoUserAttributesTierEnum.EID, user['custom:account_type'])
+    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      user.idUser,
+      CognitoUserAttributesTierEnum.EID,
+      user['custom:account_type']
+    )
     const newUserData = await this.cognitoSubservice.getDataFromCognito(user.idUser)
     if (newUserData[CognitoUserAttributesEnum.TIER] !== CognitoUserAttributesTierEnum.EID) {
-      this.errorThrowerGuard.cognitoTierError()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+        SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR
+      )
     }
 
     return {
@@ -322,8 +356,8 @@ export class VerificationService {
   }
 
   private async addEncryptedVerificationDataToDatabase(
-    user: CognitoGetUserData, 
-    data: RequestBodyVerifyIdentityCardDto | RequestBodyVerifyWithRpoDto, 
+    user: CognitoGetUserData,
+    data: RequestBodyVerifyIdentityCardDto | RequestBodyVerifyWithRpoDto,
     type: CognitoUserAccountTypesEnum
   ): Promise<void> {
     if (type === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
@@ -336,11 +370,14 @@ export class VerificationService {
     }
   }
 
-  private async addEncryptedIdentityCardToDatabase(user: CognitoGetUserData, data: RequestBodyVerifyIdentityCardDto): Promise<void> {
+  private async addEncryptedIdentityCardToDatabase(
+    user: CognitoGetUserData,
+    data: RequestBodyVerifyIdentityCardDto
+  ): Promise<void> {
     const userFromDb = await this.prisma.user.findUnique({
       where: {
-        externalId: user.sub
-      }
+        externalId: user.sub,
+      },
     })
 
     if (userFromDb === null) {
@@ -350,14 +387,19 @@ export class VerificationService {
     const birthNumberEncrypted = encryptData(data.birthNumber)
     const idCardEncrypted = encryptData(data.identityCard)
 
-    await this.prisma.userIdCardVerify.create({data: { userId: userFromDb.id, birthNumber: birthNumberEncrypted, idCard: idCardEncrypted }})
+    await this.prisma.userIdCardVerify.create({
+      data: { userId: userFromDb.id, birthNumber: birthNumberEncrypted, idCard: idCardEncrypted },
+    })
   }
 
-  private async addEncryptedIdentityCardIcoToDatabase(user: CognitoGetUserData, data: RequestBodyVerifyWithRpoDto): Promise<void> {
+  private async addEncryptedIdentityCardIcoToDatabase(
+    user: CognitoGetUserData,
+    data: RequestBodyVerifyWithRpoDto
+  ): Promise<void> {
     const legalPerson = await this.prisma.legalPerson.findUnique({
       where: {
-        externalId: user.sub
-      }
+        externalId: user.sub,
+      },
     })
 
     if (legalPerson === null) {
@@ -367,7 +409,14 @@ export class VerificationService {
     const birthNumberEncrypted = encryptData(data.birthNumber)
     const idCardEncrypted = encryptData(data.identityCard)
     const icoEncrypted = encryptData(data.ico)
-    
-    await this.prisma.legalPersonIcoIdCardVerify.create({data: { legalPersonId: legalPerson.id, birthNumber: birthNumberEncrypted, idCard: idCardEncrypted, ico: icoEncrypted }})
+
+    await this.prisma.legalPersonIcoIdCardVerify.create({
+      data: {
+        legalPersonId: legalPerson.id,
+        birthNumber: birthNumberEncrypted,
+        idCard: idCardEncrypted,
+        ico: icoEncrypted,
+      },
+    })
   }
 }

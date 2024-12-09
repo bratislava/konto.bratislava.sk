@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { HttpStatus, Injectable } from '@nestjs/common'
 
 import axios, { AxiosError } from 'axios'
 
@@ -10,10 +10,11 @@ import {
   BloomreachEventNameEnum,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
+import { LineLoggerSubservice } from "../utils/subservices/line-logger.subservice";
 
 @Injectable()
 export class BloomreachService {
-  private readonly logger: Logger = new Logger(BloomreachService.name)
+  private readonly logger: LineLoggerSubservice
 
   private bloomreachCredentials = Buffer.from(
     `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
@@ -31,6 +32,7 @@ export class BloomreachService {
         'Missing one of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.'
       )
     }
+    this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
   private createBloomreachConsentCategory(
@@ -103,7 +105,7 @@ export class BloomreachService {
   async trackEventConsent(
     gdprSubType: GdprSubType,
     gdprData: GdprDataDto[],
-    cognitoId: string | null,
+    cognitoId: string | null
   ): Promise<boolean | undefined> {
     if (!cognitoId) {
       return false
@@ -126,7 +128,7 @@ export class BloomreachService {
   /**
    * Anonymizes a customer based on his cognito id in bloomreach. This is a part of user acccount deactivation process.
    * For more info about bloomreach anonymization see https://documentation.bloomreach.com/engagement/reference/anonymize-a-customer-2
-   * 
+   *
    * @param cognitoId Id of the user to be anonymized
    * @returns Enum of type AnonymizeResponse with the status of anonymization (if it went successfully, or if there was some error)
    */
@@ -136,30 +138,30 @@ export class BloomreachService {
     }
 
     try {
-      const response = await axios
-        .post(
-          `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/anonymize`,
-          JSON.stringify({
-            customer_ids: {
-              city_account_id: cognitoId,
-            },
-          }),
-          {
-            headers: {
-              Authorization: `Basic ${this.bloomreachCredentials}`,
-              "Content-Type": 'application/json',
-              Accept: 'application/json',
-            },
-          }
-        )
-        
+      const response = await axios.post(
+        `${process.env.BLOOMREACH_API_URL}/data/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers/anonymize`,
+        JSON.stringify({
+          customer_ids: {
+            city_account_id: cognitoId,
+          },
+        }),
+        {
+          headers: {
+            Authorization: `Basic ${this.bloomreachCredentials}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        }
+      )
+
       if (response.status !== 200) {
         this.logger.error(`Anonymize user in bloomreach error for user: ${cognitoId}`)
         return AnonymizeResponse.ERROR
       }
       return AnonymizeResponse.SUCCESS
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 404) { // User not found in bloomreach
+      if (error instanceof AxiosError && error.response?.status === HttpStatus.NOT_FOUND) {
+        // User not found in bloomreach
         return AnonymizeResponse.NOT_FOUND
       }
       this.logger.error(error)

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
 import { IsBirthNumber, IsIco, IsIdentityCard } from '../../utils/decorators/validation.decorators'
 
 export enum ResponseVerificationIdentityCardMessageEnum {
@@ -17,6 +17,18 @@ export class RequestQueryUserByBirthNumberDto {
     message: 'Text must be birthnumber without slash (9 or 10 characters) and Only numbers ',
   })
   birthNumber!: string
+}
+
+export class RequestBatchQueryUsersByBirthNumbersDto {
+  @ApiProperty({
+    description:
+      'Birth numbers without slash which should be retrieved from user database.',
+    default: ['0000000000', '0000001010'],
+    type: String,
+    isArray: true,
+  })
+  @IsArray()
+  birthNumbers: string[]
 }
 
 export class RequestBodyRequeueVerifyIdentityCardDto {

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { RfoByBirthnumber } from '@prisma/client'
 
 import { MagproxyService } from '../magproxy/magproxy.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -11,18 +10,24 @@ export class RfoByBirthnumberService {
     private readonly prismaService: PrismaService
   ) {}
 
-  async create(birthnumber: string, physicalEntityId?: string): Promise<RfoByBirthnumber | null> {
-    const result = await this.magproxyService.rfoBirthNumberList(birthnumber)
+  async create(birthNumber: string, physicalEntityId?: string) {
+    const result = await this.magproxyService.rfoBirthNumberList(birthNumber)
     if (result.length === 0) {
-      return null
+      return {
+        rfoByBirthNumber: null,
+        request: result,
+      }
     } else {
-      return this.prismaService.rfoByBirthnumber.create({
-        data: {
-          birthNumber: birthnumber,
-          data: JSON.stringify(result),
-          physicalEntityId,
-        },
-      })
+      return {
+        rfoByBirthNumber: await this.prismaService.rfoByBirthnumber.create({
+          data: {
+            birthNumber,
+            data: JSON.stringify(result),
+            physicalEntityId,
+          },
+        }),
+        request: result,
+      }
     }
   }
 }

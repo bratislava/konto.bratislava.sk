@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import AWS from 'aws-sdk'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
@@ -13,7 +13,11 @@ import {
   CognitoUserAttributesValuesDateDto,
   CognitoUserStatusEnum,
 } from '../global-dtos/cognito.dto'
-import { ErrorThrowerGuard } from '../guards/errors.guard'
+import ThrowerErrorGuard from '../guards/errors.guard'
+import {
+  SendToQueueErrorsEnum,
+  SendToQueueErrorsResponseEnum,
+} from '../../user-verification/verification.errors.enum'
 
 @Injectable()
 export class CognitoSubservice {
@@ -22,7 +26,7 @@ export class CognitoSubservice {
   private readonly config
 
   constructor(
-    private readonly errorThrowerGuard: ErrorThrowerGuard,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prisma: PrismaService
   ) {
     if (
@@ -66,12 +70,13 @@ export class CognitoSubservice {
       )
       .promise()
     if (result.$response.error) {
+      // TODO: Use throwerErrorGuard
       throw new HttpException(
         {
           status: result.$response.error.statusCode,
           message: result.$response.error.code,
         },
-        400
+        HttpStatus.BAD_REQUEST
       )
     } else {
       return {
@@ -103,12 +108,13 @@ export class CognitoSubservice {
       .promise()
 
     if (result.$response.error) {
+      // TODO: Use throwerErrorGuard
       throw new HttpException(
         {
           status: result.$response.error.statusCode,
           message: result.$response.error.code,
         },
-        400
+        HttpStatus.BAD_REQUEST
       )
     }
   }
@@ -128,8 +134,8 @@ export class CognitoSubservice {
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
       const user = await this.prisma.user.findUnique({
         where: {
-          externalId: userId
-        }
+          externalId: userId,
+        },
       })
       if (!user) {
         return
@@ -146,8 +152,8 @@ export class CognitoSubservice {
     } else {
       const legalPerson = await this.prisma.legalPerson.findUnique({
         where: {
-          externalId: userId
-        }
+          externalId: userId,
+        },
       })
       if (!legalPerson) {
         return
@@ -176,7 +182,11 @@ export class CognitoSubservice {
       })
       .promise()
       .catch((error) => {
-        this.errorThrowerGuard.cognitoTierError(error)
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+          JSON.stringify(error)
+        )
       })
   }
 
@@ -186,32 +196,33 @@ export class CognitoSubservice {
    * @param userId user id in cognito
    * @returns void
    */
-  async deactivateCognitoMail(
-    userId: string,
-    oldMail: string,
-  ) {
-    const result = await this.cognitoIdentity.adminUpdateUserAttributes({
-      UserAttributes: [
-        {
-          Name: 'email',
-          Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
-        },
-        {
-          Name: 'email_verified',
-          Value: 'true'
-        }
-      ],
-      UserPoolId: this.config.cognitoUserPoolId,
-      Username: userId,
-    }).promise()
+  async deactivateCognitoMail(userId: string, oldMail: string) {
+    const result = await this.cognitoIdentity
+      .adminUpdateUserAttributes({
+        UserAttributes: [
+          {
+            Name: 'email',
+            Value: `${userId}-${oldMail}.disabled.bratislava.sk`,
+          },
+          {
+            Name: 'email_verified',
+            Value: 'true',
+          },
+        ],
+        UserPoolId: this.config.cognitoUserPoolId,
+        Username: userId,
+      })
+      .promise()
 
     if (result.$response.error) {
+      // TODO This error is a bit of a problem for me, as I don't want to break anything.
+      // TODO status in exception and in response may not match and we can't do that with throwerErrorGuard as of right now
       throw new HttpException(
         {
           status: result.$response.error.statusCode,
           message: result.$response.error.code,
         },
-        400
+        HttpStatus.BAD_REQUEST
       )
     }
   }

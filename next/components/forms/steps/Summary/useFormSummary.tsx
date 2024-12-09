@@ -36,9 +36,7 @@ const useCreateGetFilesByStatusType = (
  */
 const useGetContext = () => {
   const {
-    formDefinition: {
-      schemas: { schema },
-    },
+    formDefinition: { schema },
   } = useFormContext()
   const { formData } = useFormData()
   const { currentStepIndex } = useFormState()

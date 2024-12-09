@@ -25,11 +25,7 @@ async function generateFiles(formDefinition: FormDefinitionSlovenskoSk, validFro
 
   await fs.writeFile(
     path.join(outputDir, 'schema.json'),
-    JSON.stringify(formDefinition.schemas.schema, null, 2),
-  )
-  await fs.writeFile(
-    path.join(outputDir, 'uiSchema.json'),
-    JSON.stringify(formDefinition.schemas.uiSchema, null, 2),
+    JSON.stringify(formDefinition.schema, null, 2),
   )
 
   const outputFile = path.join(outputDir, 'container.zip')

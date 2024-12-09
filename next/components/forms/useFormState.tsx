@@ -30,9 +30,7 @@ import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const useGetContext = () => {
   const {
-    formDefinition: {
-      schemas: { schema },
-    },
+    formDefinition: { schema },
     formMigrationRequired,
     isReadonly,
   } = useFormContext()

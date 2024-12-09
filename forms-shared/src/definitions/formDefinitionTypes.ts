@@ -1,6 +1,5 @@
-import { Schemas } from '../generator/functions'
 import { SharepointData } from './sharepointTypes'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -12,7 +11,7 @@ export enum FormDefinitionType {
 type FormDefinitionBase = {
   slug: string
   title: string
-  schemas: Schemas
+  schema: RJSFSchema
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string

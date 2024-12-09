@@ -90,7 +90,7 @@ describe('EmailFormsSubservice', () => {
       const mockFormDefinition = {
         type: 'Email',
         email: 'test@example.com',
-        schemas: { schema: {} },
+        schema: {},
         slug: 'test-slug',
         userEmailPath: 'user.email',
       }
@@ -138,7 +138,7 @@ describe('EmailFormsSubservice', () => {
       const mockFormDefinition = {
         type: 'Email',
         email: 'test@example.com',
-        schemas: { schema: {} },
+        schema: {},
         slug: 'test-slug',
         extractEmail: (formData: GenericObjectType) => formData.user.email,
       }

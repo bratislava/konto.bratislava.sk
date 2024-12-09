@@ -29,15 +29,16 @@ export const object = (
     (field) => 'condition' in field,
   ) as GeneratorConditionalFields[]
 
-  const getSchema = () => {
-    const isUiOptionsEmpty = Object.keys(uiOptions).length === 0
-    const allOf = conditionalFields.map((field) => ({
-      if: field.condition,
-      then: field.thenSchema,
-      else: field.elseSchema,
-    }))
+  const isUiOptionsEmpty = Object.keys(uiOptions).length === 0
+  const allOf = conditionalFields.map((field) => ({
+    if: field.condition,
+    then: field.thenSchema,
+    else: field.elseSchema,
+  }))
 
-    return removeUndefinedValues({
+  return {
+    property,
+    schema: removeUndefinedValues({
       type: 'object' as const,
       properties: Object.fromEntries(ordinaryFields.map((field) => [field.property, field.schema])),
       required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
@@ -47,12 +48,7 @@ export const object = (
         : {
             'ui:options': uiOptions,
           },
-    })
-  }
-
-  return {
-    property,
-    schema: getSchema(),
+    }),
     required: Boolean(options.required),
   }
 }

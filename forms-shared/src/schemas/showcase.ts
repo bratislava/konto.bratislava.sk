@@ -1,24 +1,22 @@
-import {
-  arrayField,
-  checkbox,
-  checkboxGroup,
-  conditionalFields,
-  conditionalStep,
-  customComponentsField,
-  datePicker,
-  fileUpload,
-  input,
-  number,
-  object,
-  radioGroup,
-  schema,
-  select,
-  selectMultiple,
-  step,
-  textArea,
-  timePicker,
-} from '../generator/functions'
 import { createCondition, createStringItems, createStringItemsV2 } from '../generator/helpers'
+import { select } from '../generator/functions/select'
+import { selectMultiple } from '../generator/functions/selectMultiple'
+import { input } from '../generator/functions/input'
+import { number } from '../generator/functions/number'
+import { radioGroup } from '../generator/functions/radioGroup'
+import { textArea } from '../generator/functions/textArea'
+import { checkbox } from '../generator/functions/checkbox'
+import { checkboxGroup } from '../generator/functions/checkboxGroup'
+import { fileUpload } from '../generator/functions/fileUpload'
+import { datePicker } from '../generator/functions/datePicker'
+import { timePicker } from '../generator/functions/timePicker'
+import { customComponentsField } from '../generator/functions/customComponentsField'
+import { object } from '../generator/object'
+import { arrayField } from '../generator/functions/arrayField'
+import { step } from '../generator/functions/step'
+import { conditionalStep } from '../generator/functions/conditionalStep'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { schema } from '../generator/functions/schema'
 
 export default schema(
   {

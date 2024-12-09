@@ -1,6 +1,8 @@
-import { checkbox, conditionalFields, object } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { GeneratorField } from '../../generator/generatorTypes'
+import { checkbox } from '../../generator/functions/checkbox'
+import { object } from '../../generator/object'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 export const kalkulackaFields = ({
   title,

@@ -1,14 +1,4 @@
 import {
-  arrayField,
-  checkbox,
-  checkboxGroup,
-  conditionalFields,
-  fileUpload,
-  input,
-  object,
-  selectMultiple,
-} from '../../src/generator/functions'
-import {
   baGetDefaultFormState,
   baGetDefaultFormStateStable,
   isFileMultipleSchema,
@@ -17,6 +7,14 @@ import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { createCondition } from '../../src/generator/helpers'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { selectMultiple } from '../../src/generator/functions/selectMultiple'
+import { input } from '../../src/generator/functions/input'
+import { checkbox } from '../../src/generator/functions/checkbox'
+import { checkboxGroup } from '../../src/generator/functions/checkboxGroup'
+import { fileUpload } from '../../src/generator/functions/fileUpload'
+import { object } from '../../src/generator/object'
+import { arrayField } from '../../src/generator/functions/arrayField'
+import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {

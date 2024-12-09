@@ -22008,7 +22008,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapsh
                                               "props": {
                                                 "calculators": [
                                                   {
-                                                    "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
+                                                    "formula": "floorToTwoDecimals(n) = floor(n * 100) / 100;
+floorToTwoDecimals(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku)",
                                                     "label": "Vaša výmera pozemku",
                                                     "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
 - Celková výmera pozemku
@@ -26573,9 +26574,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                     "calculators": [
                                                       {
                                                         "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+highestPowerOf10 = pow(10, floor(log10 denominator));
+isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
                                                         "label": "Základ dane",
                                                         "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
@@ -26849,9 +26850,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                           "calculators": [
                                                             {
                                                               "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+highestPowerOf10 = pow(10, floor(log10 denominator));
+isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
                                                               "label": "Základ dane",
                                                               "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
@@ -37114,7 +37115,8 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches s
                                               "props": {
                                                 "calculators": [
                                                   {
-                                                    "formula": "roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)",
+                                                    "formula": "floorToTwoDecimals(n) = floor(n * 100) / 100;
+floorToTwoDecimals(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku)",
                                                     "label": "Vaša výmera pozemku",
                                                     "missingFieldsMessage": "**Pre výpočet výmery pozemku vyplňte správne všetky polia:**
 - Celková výmera pozemku
@@ -41679,9 +41681,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                     "calculators": [
                                                       {
                                                         "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+highestPowerOf10 = pow(10, floor(log10 denominator));
+isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
                                                         "label": "Základ dane",
                                                         "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu
@@ -41955,9 +41957,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                           "calculators": [
                                                             {
                                                               "formula": "denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
+highestPowerOf10 = pow(10, floor(log10 denominator));
+isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))",
                                                               "label": "Základ dane",
                                                               "missingFieldsMessage": "**Pre výpočet základu dane vyplňte správne všetky polia:**
 - Podiel priestoru na spoločných častiach a zariadeniach domu

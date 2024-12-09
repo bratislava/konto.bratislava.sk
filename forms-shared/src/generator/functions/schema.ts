@@ -21,7 +21,6 @@ export const schema = (
     allOf: filteredSteps.map((stepInner) => stepInner.schema),
     baUiSchema: {
       'ui:options': uiOptions,
-      'ui:hideError': true,
     },
   }) as RJSFSchema
 }

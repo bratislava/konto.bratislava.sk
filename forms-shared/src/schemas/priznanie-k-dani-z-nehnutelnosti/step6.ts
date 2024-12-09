@@ -3,6 +3,7 @@ import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel4ZakladDaneFormula } from '../../tax-form/formulas'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
 import { radioGroup } from '../../generator/functions/radioGroup'
@@ -73,11 +74,7 @@ const vymeraKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Základ dane',
-          // The special case checks whether the denominator is number starting with 1-9 followed by 3 or more zeroes.
-          formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          formula: oddiel4ZakladDaneFormula,
           missingFieldsMessage:
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +

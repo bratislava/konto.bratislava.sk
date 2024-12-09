@@ -1,18 +1,16 @@
-import {
-  checkboxGroup,
-  conditionalFields,
-  datePicker,
-  fileUpload,
-  input,
-  radioGroup,
-  schema,
-  step,
-  textArea,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { textArea } from '../../generator/functions/textArea'
+import { checkboxGroup } from '../../generator/functions/checkboxGroup'
+import { fileUpload } from '../../generator/functions/fileUpload'
+import { datePicker } from '../../generator/functions/datePicker'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   step('podnet', { title: 'Podať podnet' }, [

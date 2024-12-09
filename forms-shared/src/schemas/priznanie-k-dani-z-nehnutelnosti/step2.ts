@@ -1,6 +1,10 @@
-import { conditionalFields, fileUpload, object, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
 import { danovnik, splnomocnenec } from './osoby'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { fileUpload } from '../../generator/functions/fileUpload'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   radioGroup(

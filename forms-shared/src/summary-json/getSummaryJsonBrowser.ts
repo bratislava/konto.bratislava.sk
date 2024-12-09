@@ -1,4 +1,4 @@
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 
 import { getSummaryJson } from './getSummaryJson'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
@@ -8,12 +8,11 @@ import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
  * `window.DOMParser` is not available there.
  */
 export const getSummaryJsonBrowser = (
-  jsonSchema: RJSFSchema,
-  uiSchema: UiSchema,
+  schema: RJSFSchema,
   data: GenericObjectType,
   validatorRegistry: BaRjsfValidatorRegistry,
 ) => {
   const domParserInstance = new window.DOMParser()
 
-  return getSummaryJson(jsonSchema, uiSchema, data, domParserInstance, validatorRegistry)
+  return getSummaryJson(schema, data, domParserInstance, validatorRegistry)
 }

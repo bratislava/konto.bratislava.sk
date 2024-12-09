@@ -11,5 +11,5 @@ const validatorRegistry = createSingleUseValidatorRegistry()
  * It is expensive to compute, so it is memoized.
  */
 export const getDefaultFormDataForFormDefinition = memoize((formDefinition: FormDefinition) =>
-  baGetDefaultFormStateStable(formDefinition.schemas.schema, {}, validatorRegistry),
+  baGetDefaultFormStateStable(formDefinition.schema, {}, validatorRegistry),
 )

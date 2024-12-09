@@ -1,6 +1,6 @@
 import { Forms, Prisma } from '@prisma/client'
+import { RJSFSchema } from '@rjsf/utils'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
-import { Schemas } from 'forms-shared/generator/functions'
 
 import {
   getFrontendFormTitleFromForm,
@@ -113,30 +113,28 @@ describe('getFrontendFormTitleFromForm', () => {
 
   it('should return correct title when available in uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
-      schemas: {
-        uiSchema: {
+      schema: {
+        baUiSchema: {
           'ui:options': {
             titlePath,
             titleFallback,
           },
         },
-        schema: {},
-      } as Schemas,
+      } as RJSFSchema,
     } as FormDefinition)
     expect(result).toBe(title)
   })
 
   it('should be fine without uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data, {
-      schemas: {
-        uiSchema: {
+      schema: {
+        baUiSchema: {
           'ui:options': {
             titlePath,
             titleFallback,
           },
         },
-        schema: {},
-      } as Schemas,
+      } as RJSFSchema,
     } as FormDefinition)
     expect(result).toBe(result)
   })
@@ -148,15 +146,14 @@ describe('getFrontendFormTitleFromForm', () => {
         formDataJson: {},
       },
       {
-        schemas: {
-          uiSchema: {
+        schema: {
+          baUiSchema: {
             'ui:options': {
               titlePath,
               titleFallback,
             },
           },
-          schema: {},
-        } as Schemas,
+        } as RJSFSchema,
       } as FormDefinition,
     )
     expect(result).toBe(titleFallback)
@@ -166,14 +163,13 @@ describe('getFrontendFormTitleFromForm', () => {
     const result = getFrontendFormTitleFromForm(
       {} as Forms,
       {
-        schemas: {
-          uiSchema: {
+        schema: {
+          baUiSchema: {
             'ui:options': {
               titlePath,
             },
           },
-          schema: {},
-        } as Schemas,
+        } as RJSFSchema,
       } as FormDefinition,
     )
     expect(result).toBeNull()

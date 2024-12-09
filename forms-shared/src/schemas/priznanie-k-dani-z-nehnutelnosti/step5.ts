@@ -1,16 +1,3 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  skipSchema,
-  step,
-} from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
@@ -20,6 +7,16 @@ import {
   oddiel3ViacereUcelyCelkovaVymeraFormula,
   oddiel3ViacereUcelyZakladDaneFormula,
 } from '../../tax-form/formulas'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
@@ -313,18 +310,16 @@ const innerArray = (kalkulacka: boolean) =>
               },
               {},
             ),
-            kalkulacka ? skipSchema(vymeraPodlahovejPlochy) : vymeraPodlahovejPlochy,
-            kalkulacka
-              ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
-              : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
-            kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-            kalkulacka
-              ? vymeraPodlahovejPlochyKalkulacka
-              : skipSchema(vymeraPodlahovejPlochyKalkulacka),
+            ...(kalkulacka
+              ? [
+                  podielPriestoruNaSpolocnychCastiachAZariadeniachDomu,
+                  spoluvlastnickyPodiel,
+                  vymeraPodlahovejPlochyKalkulacka,
+                ]
+              : [vymeraPodlahovejPlochy]),
           ],
         ),
-        kalkulacka ? skipSchema(sumar) : sumar,
-        kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
+        kalkulacka ? sumarKalkulacka : sumar,
       ]),
       input(
         'poznamka',

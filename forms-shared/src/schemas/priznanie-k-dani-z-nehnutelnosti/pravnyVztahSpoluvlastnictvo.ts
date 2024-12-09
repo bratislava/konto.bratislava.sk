@@ -1,10 +1,13 @@
-import { conditionalFields, fileUpload, number, radioGroup } from '../../generator/functions'
 import {
   createCamelCaseItems,
   createCamelCaseItemsV2,
   createCondition,
 } from '../../generator/helpers'
 import { StepEnum } from './stepEnum'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { fileUpload } from '../../generator/functions/fileUpload'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   radioGroup(

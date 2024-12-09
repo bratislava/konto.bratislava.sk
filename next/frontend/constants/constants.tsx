@@ -297,7 +297,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.26.buttonText',
     icon: <AdministrationIcon className="size-10 text-main-600 lg:size-12" />,
     category: [MunicipalServicesCategories.ENVIROMENTS_CATEGORY],
-    href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
+    href: 'https://static-pages.s3.bratislava.sk/non-residential-premises-map/index.html?lang=sk',
   },
   {
     id: 27,

@@ -20,6 +20,9 @@ on:
       nest-tax-backend:
         description: "Returns true if nest-tax-backend can be built"
         value: ${{ jobs.conditions.outputs.nest-tax-backend }}
+      nest-city-account:
+        description: "Returns true if nest-city-account can be built"
+        value: ${{ jobs.conditions.outputs.nest-city-account }}
 jobs:
   changes:
     name: Checking for directory changes in repository
@@ -31,6 +34,7 @@ jobs:
       nest-forms-backend: ${{ steps.filter.outputs.nest-forms-backend }}
       nest-clamav-scanner: ${{ steps.filter.outputs.nest-clamav-scanner }}
       nest-tax-backend: ${{ steps.filter.outputs.nest-tax-backend }}
+      nest-city-account: ${{ steps.filter.outputs.nest-city-account }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,6 +61,8 @@ jobs:
               - 'nest-clamav-scanner/**'
             nest-tax-backend:
               - 'nest-tax-backend/**'
+            nest-city-account:
+              - 'nest-city-account/**'
   conditions:
     name: Checking build conditions
     needs: changes
@@ -70,6 +76,7 @@ jobs:
       nest-forms-backend: ${{ steps.nest-forms-backend.outputs.condition }}
       nest-clamav-scanner: ${{ steps.nest-clamav-scanner.outputs.condition }}
       nest-tax-backend: ${{ steps.nest-tax-backend.outputs.condition }}
+      nest-city-account: ${{steps.nest-city-account.outputs.condition}}
     steps:
       - name: Print pipeline comment
         if: github.event_name == 'pull_request'
@@ -86,6 +93,7 @@ jobs:
             :arrow_right: Changes in nest-forms-backend: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
             :arrow_right: Changes in nest-clamav-scanner: <b>${{ needs.changes.outputs.nest-clamav-scanner }}</b><br/>
             :arrow_right: Changes in nest-tax-backend: <b>${{ needs.changes.outputs.nest-tax-backend }}</b><br/>
+            :arrow_right: Changes in nest-city-account: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
             We are going to build :ship:
 
       - id: forms-shared
@@ -183,6 +191,22 @@ jobs:
           append: true
           message: |
             :soon: <b>nest-tax-backend<b><br/>
+
+      - id: nest-city-account
+        name: Check for build nest-city-account
+        if: needs.changes.outputs.nest-city-account == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-city-account == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-city-account<b><br/>
 
       - name: Print pipeline comment
         if: env.COUNT == 0

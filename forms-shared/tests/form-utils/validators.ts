@@ -4,13 +4,9 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 describe('Validators', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
     it(`${exampleForm.name} validate correctly`, () => {
-      const validator = testValidatorRegistry.getValidator(formDefinition.schemas.schema)
+      const validator = testValidatorRegistry.getValidator(formDefinition.schema)
       expect(
-        validator.isValid(
-          formDefinition.schemas.schema,
-          exampleForm.formData,
-          formDefinition.schemas.schema,
-        ),
+        validator.isValid(formDefinition.schema, exampleForm.formData, formDefinition.schema),
       ).toBe(true)
     })
   })

@@ -28,7 +28,7 @@ jobs:
 
   deploy-dev:
     name: after dev Backends deploy Next
-    needs: [conditions, deploy-dev-strapi, deploy-dev-nest-forms-backend, deploy-dev-nest-clamav-scanner, deploy-dev-nest-tax-backend]
+    needs: [conditions, deploy-dev-strapi, deploy-dev-nest-forms-backend, deploy-dev-nest-clamav-scanner, deploy-dev-nest-tax-backend, deploy-dev-nest-city-account]
     if: needs.conditions.outputs.dev == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -172,9 +172,26 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
+  deploy-dev-nest-city-account:
+    name: dev nest-city-account
+    needs: conditions
+    if: needs.conditions.outputs.dev-nest-city-account == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-city-account/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+
   deploy-staging:
     name: after staging Backends deploy Next
-    needs: [conditions, deploy-staging-strapi, deploy-staging-nest-forms-backend, deploy-staging-nest-clamav-scanner, deploy-staging-nest-tax-backend]
+    needs: [conditions, deploy-staging-strapi, deploy-staging-nest-forms-backend, deploy-staging-nest-clamav-scanner, deploy-staging-nest-tax-backend, deploy-staging-nest-city-account]
     if: needs.conditions.outputs.staging == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -318,9 +335,26 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
+  deploy-staging-nest-city-account:
+    name: staging nest-city-account
+    needs: conditions
+    if: needs.conditions.outputs.staging-nest-city-account == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-city-account/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+      flag: --staging
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+
   deploy-prod:
     name: after prod Backends deploy Next
-    needs: [conditions, deploy-prod-strapi, deploy-prod-nest-forms-backend, deploy-prod-nest-clamav-scanner, deploy-prod-nest-tax-backend]
+    needs: [conditions, deploy-prod-strapi, deploy-prod-nest-forms-backend, deploy-prod-nest-clamav-scanner, deploy-prod-nest-tax-backend, deploy-prod-nest-city-account]
     if: needs.conditions.outputs.prod == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -454,6 +488,23 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+
+  deploy-prod-nest-city-account:
+    name: prod nest-city-account
+    needs: conditions
+    if: needs.conditions.outputs.prod-nest-city-account == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-city-account/
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production

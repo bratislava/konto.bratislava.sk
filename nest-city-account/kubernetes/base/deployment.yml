@@ -41,22 +41,22 @@ spec:
         - name: RABBIT_MQ_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: password
         - name: RABBIT_MQ_USERNAME
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: username
         - name: RABBIT_MQ_PORT
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: port
         - name: RABBIT_MQ_HOST
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: host
         - name: DATABASE_URL
           value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public&connection_limit=100

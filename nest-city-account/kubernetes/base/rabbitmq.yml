@@ -34,7 +34,7 @@ spec:
                           /opt/bitnami/rabbitmq/plugins
                 volumeMounts:
                   - mountPath: /opt/community-plugins
-                    name: ${BUILD_REPOSITORY_NAME}-community-plugins
+                    name: community-plugins
             volumes:
               - name: community-plugins
                 emptyDir: {}

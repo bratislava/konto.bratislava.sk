@@ -36,7 +36,7 @@ spec:
                   - mountPath: /opt/community-plugins
                     name: ${BUILD_REPOSITORY_NAME}-community-plugins
             volumes:
-              - name: ${BUILD_REPOSITORY_NAME}-community-plugins
+              - name: community-plugins
                 emptyDir: {}
             initContainers:
               - command:
@@ -55,7 +55,7 @@ spec:
                     memory: 500Mi
                 volumeMounts:
                   - mountPath: /community-plugins/
-                    name: ${BUILD_REPOSITORY_NAME}-community-plugins
+                    name: community-plugins
   rabbitmq:
     additionalPlugins:
       - rabbitmq_delayed_message_exchange

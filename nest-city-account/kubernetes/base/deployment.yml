@@ -37,6 +37,10 @@ spec:
           requests:
             cpu: ${NEST_CPU_REQUESTS}
             memory: ${NEST_MEMORY_REQUESTS}
+        ports:
+        - name: api
+          containerPort: ${INTERNAL_APP_PORT}
+          protocol: TCP
         env:
         - name: RABBIT_MQ_PASSWORD
           valueFrom:

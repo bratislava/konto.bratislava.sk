@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: database
+  name: ${BUILD_REPOSITORY_NAME}-database
   namespace: ${NAMESPACE}
   labels:
     service: database
 spec:
-  serviceName: database
+  serviceName: ${BUILD_REPOSITORY_NAME}-database
   selector:
     matchLabels:
       service: database
@@ -32,7 +32,7 @@ spec:
               subPath: postgresql
           envFrom:
             - secretRef:
-                name: database-secret
+                name: ${BUILD_REPOSITORY_NAME}-database-secret
   # Volume Claim
   volumeClaimTemplates:
     - metadata:

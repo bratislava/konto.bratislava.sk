@@ -1,10 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: ${BUILD_REPOSITORY_NAME}-app
   namespace: ${NAMESPACE}
   labels:
     service: app
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
 spec:
   selector:
     matchLabels:
@@ -40,48 +45,48 @@ spec:
         - name: RABBIT_MQ_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: password
         - name: RABBIT_MQ_USERNAME
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: username
         - name: RABBIT_MQ_PORT
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: port
         - name: RABBIT_MQ_HOST
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-default-user
+              name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: host
         - name: DATABASE_URL
           value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public&connection_limit=100
         envFrom:
         - secretRef:
-            name: database-secret
+            name: ${BUILD_REPOSITORY_NAME}-database-secret
         - secretRef:
-            name: cognito-secret
+            name: ${BUILD_REPOSITORY_NAME}-cognito-secret
         - secretRef:
-            name: azure-magproxy-secret
+            name: ${BUILD_REPOSITORY_NAME}-azure-magproxy-secret
         - secretRef:
-            name: turnstile-secret
+            name: ${BUILD_REPOSITORY_NAME}-turnstile-secret
         - secretRef:
-            name: mailgun-secret
+            name: ${BUILD_REPOSITORY_NAME}-mailgun-secret
         - secretRef:
-            name: apikey-secret
+            name: ${BUILD_REPOSITORY_NAME}-apikey-secret
         - secretRef:
-            name: nases-secret
+            name: ${BUILD_REPOSITORY_NAME}-nases-secret
         - secretRef:
-            name: bloomreach-secret
+            name: ${BUILD_REPOSITORY_NAME}-bloomreach-secret
         - secretRef:
-            name: cipher-key-secret
+            name: ${BUILD_REPOSITORY_NAME}-cipher-key-secret
         - secretRef:
-            name: tax-backend-secret
+            name: ${BUILD_REPOSITORY_NAME}-tax-backend-secret
         - configMapRef:
-            name: env
+            name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:
           httpGet:
             path: /healthcheck

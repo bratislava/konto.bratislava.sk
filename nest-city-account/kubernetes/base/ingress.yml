@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: ${BUILD_REPOSITORY_NAME}-ingress
   namespace: ${NAMESPACE}
   labels:
     service: app
@@ -12,16 +12,16 @@ metadata:
 spec:
   tls:
     - hosts:
-        - ${HOSTNAME}
+        - ${BRATISKA_HOSTNAME}
       secretName: ${BUILD_REPOSITORY_NAME}-tls
   rules:
-    - host: ${HOSTNAME}
+    - host: ${BRATISKA_HOSTNAME}
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
               service:
-                name: app
+                name: ${BUILD_REPOSITORY_NAME}-app
                 port:
                   number: 80

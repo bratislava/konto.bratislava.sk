@@ -9,8 +9,6 @@ resources:
 configurations:
 - configuration.yml
 
-# Keep as is
-namePrefix: ${BUILD_REPOSITORY_NAME}-
 commonLabels:
   app: ${BUILD_REPOSITORY_NAME}
   source: ${BUILD_REPOSITORY_NAME}
@@ -23,7 +21,7 @@ commonAnnotations:
   image: ${IMAGE}
 
 configMapGenerator:
-- name: env
+- name: ${BUILD_REPOSITORY_NAME}-env
   namespace: ${NAMESPACE}
   envs:
   - .env

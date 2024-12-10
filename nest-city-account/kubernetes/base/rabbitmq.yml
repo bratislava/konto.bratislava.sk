@@ -1,7 +1,7 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-  name: rabbitmq
+  name: ${BUILD_REPOSITORY_NAME}-rabbitmq
   namespace: ${NAMESPACE}
 spec:
   replicas: 1
@@ -13,8 +13,8 @@ spec:
       cpu: ${RABBIT_CPU_REQUESTS}
       memory: ${RABBIT_MEMORY_REQUESTS}
   persistence:
-   storageClassName: "vsan-default-storage-policy"
-   storage: 10Gi
+    storageClassName: "vsan-default-storage-policy"
+    storage: 10Gi
   override:
     statefulSet:
       spec:

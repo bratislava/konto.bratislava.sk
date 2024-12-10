@@ -1,10 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: ${BUILD_REPOSITORY_NAME}-app
   namespace: ${NAMESPACE}
   labels:
     service: app
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
 spec:
   selector:
     matchLabels:

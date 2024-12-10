@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - ${HOSTNAME}
+        - ${BRATISKA_HOSTNAME}
       secretName: ${BUILD_REPOSITORY_NAME}-tls
   rules:
-    - host: ${HOSTNAME}
+    - host: ${BRATISKA_HOSTNAME}
       http:
         paths:
           - path: /

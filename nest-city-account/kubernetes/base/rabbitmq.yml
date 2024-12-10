@@ -34,9 +34,9 @@ spec:
                           /opt/bitnami/rabbitmq/plugins
                 volumeMounts:
                   - mountPath: /opt/community-plugins
-                    name: community-plugins
+                    name: ${BUILD_REPOSITORY_NAME}-community-plugins
             volumes:
-              - name: community-plugins
+              - name: ${BUILD_REPOSITORY_NAME}-community-plugins
                 emptyDir: {}
             initContainers:
               - command:
@@ -45,7 +45,7 @@ spec:
                   - curl -L -v https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez --output /community-plugins/rabbitmq_delayed_message_exchange-3.11.1.ez
                 image: curlimages/curl
                 imagePullPolicy: IfNotPresent
-                name: copy-community-plugins
+                name: ${BUILD_REPOSITORY_NAME}-copy-community-plugins
                 resources:
                   limits:
                     cpu: 100m
@@ -55,7 +55,7 @@ spec:
                     memory: 500Mi
                 volumeMounts:
                   - mountPath: /community-plugins/
-                    name: community-plugins
+                    name: ${BUILD_REPOSITORY_NAME}-community-plugins
   rabbitmq:
     additionalPlugins:
       - rabbitmq_delayed_message_exchange

@@ -16,10 +16,6 @@ commonLabels:
 generatorOptions:
   disableNameSuffixHash: true
 
-commonAnnotations:
-  repositoryUrl: ${BUILD_REPOSITORY_URI}
-  image: ${IMAGE}
-
 configMapGenerator:
 - name: ${BUILD_REPOSITORY_NAME}-env
   namespace: ${NAMESPACE}

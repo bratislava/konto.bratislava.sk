@@ -37,10 +37,6 @@ spec:
           requests:
             cpu: ${NEST_CPU_REQUESTS}
             memory: ${NEST_MEMORY_REQUESTS}
-        ports:
-        - name: api
-          containerPort: ${INTERNAL_APP_PORT}
-          protocol: TCP
         env:
         - name: RABBIT_MQ_PASSWORD
           valueFrom:
@@ -66,27 +62,27 @@ spec:
           value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@${BUILD_REPOSITORY_NAME}-database:5432/$(POSTGRES_DB)?schema=public&connection_limit=100
         envFrom:
         - secretRef:
-            name: database-secret
+            name: ${BUILD_REPOSITORY_NAME}-database-secret
         - secretRef:
-            name: cognito-secret
+            name: ${BUILD_REPOSITORY_NAME}-cognito-secret
         - secretRef:
-            name: azure-magproxy-secret
+            name: ${BUILD_REPOSITORY_NAME}-azure-magproxy-secret
         - secretRef:
-            name: turnstile-secret
+            name: ${BUILD_REPOSITORY_NAME}-turnstile-secret
         - secretRef:
-            name: mailgun-secret
+            name: ${BUILD_REPOSITORY_NAME}-mailgun-secret
         - secretRef:
-            name: apikey-secret
+            name: ${BUILD_REPOSITORY_NAME}-apikey-secret
         - secretRef:
-            name: nases-secret
+            name: ${BUILD_REPOSITORY_NAME}-nases-secret
         - secretRef:
-            name: bloomreach-secret
+            name: ${BUILD_REPOSITORY_NAME}-bloomreach-secret
         - secretRef:
-            name: cipher-key-secret
+            name: ${BUILD_REPOSITORY_NAME}-cipher-key-secret
         - secretRef:
-            name: tax-backend-secret
+            name: ${BUILD_REPOSITORY_NAME}-tax-backend-secret
         - configMapRef:
-            name: env
+            name: ${BUILD_REPOSITORY_NAME}-env
         readinessProbe:
           httpGet:
             path: /healthcheck

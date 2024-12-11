@@ -13,6 +13,7 @@ type ThankYouCardBase = {
   secondButtonTitle?: string
   content?: string
   feedbackUrl?: string
+  feedbackTitle?: string
 }
 
 const ThankYouCard = ({
@@ -22,6 +23,7 @@ const ThankYouCard = ({
   secondButtonTitle,
   content,
   feedbackUrl,
+  feedbackTitle,
 }: ThankYouCardBase) => {
   return (
     <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
@@ -44,13 +46,16 @@ const ThankYouCard = ({
         <h2 className="text-h2 text-center">{title}</h2>
         <AccountMarkdown variant="sm" content={content} />
       </div>
-      <div className="flex w-full flex-col items-center gap-4 px-0 sm:flex-row md:px-24">
+      <div className="flex w-full flex-col items-center gap-4">
         {success ? (
           <>
             {firstButtonTitle && feedbackUrl ? (
-              <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
-                {firstButtonTitle}
-              </ButtonNew>
+              <div className="flex flex-col gap-6 rounded-lg bg-gray-100 p-8">
+                <h3 className="text-h3 text-left">{feedbackTitle}</h3>
+                <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                  {firstButtonTitle}
+                </ButtonNew>
+              </div>
             ) : null}
             {secondButtonTitle ? (
               <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>

@@ -25,6 +25,7 @@ const useThankYouFormSection = () => {
       secondButtonTitle: t('thank_you.button_to_profil_text'),
       content: t('thank_you.form_submit_tax.content'),
       feedbackUrl,
+      feedbackTitle: t('thank_you.form_submit_tax.feedbackTitle'),
       largePadding: true,
       displayAccountLinks: true,
     }
@@ -44,6 +45,7 @@ const useThankYouFormSection = () => {
     secondButtonTitle: t('thank_you.button_to_profil_text'),
     content: t('thank_you.form_submit.content'),
     feedbackUrl,
+    feedbackTitle: t('thank_you.form_submit.feedbackTitle'),
     largePadding: true,
     displayAccountLinks: true,
   }
@@ -56,6 +58,7 @@ const ThankYouFormSection = () => {
     secondButtonTitle,
     content,
     feedbackUrl,
+    feedbackTitle,
     largePadding,
     displayAccountLinks,
   } = useThankYouFormSection()
@@ -76,6 +79,7 @@ const ThankYouFormSection = () => {
           secondButtonTitle={secondButtonTitle}
           content={content}
           feedbackUrl={feedbackUrl}
+          feedbackTitle={feedbackTitle}
         />
         {displayAccountLinks ? (
           <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">

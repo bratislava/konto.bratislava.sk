@@ -150,7 +150,7 @@ jobs:
     name: build nest-city-account
     needs: [ conditions, validate-nest-city-account ]
     if: needs.conditions.outputs.nest-city-account == 'true'
-    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
     secrets:

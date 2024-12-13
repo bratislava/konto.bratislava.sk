@@ -16,11 +16,14 @@ on:
 jobs:
   test:
     name: Forms-shared tests
-    runs-on: ubuntu-latest
+    runs-on: [ "self-hosted", "Linux", "X64", "bratislava" ]
     defaults:
       run:
         working-directory: ${{ inputs.directory }}
     steps:
+      - name: Enforce IPv4 Connectivity
+        uses: bratislava/github-actions/.github/actions/force-ipv4@beta
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:

@@ -45,7 +45,6 @@ const useThankYouFormSection = () => {
     secondButtonTitle: t('thank_you.button_to_profil_text'),
     content: t('thank_you.form_submit.content'),
     feedbackUrl,
-    feedbackTitle: t('thank_you.form_submit.feedbackTitle'),
     largePadding: true,
     displayAccountLinks: true,
   }

@@ -46,16 +46,26 @@ const ThankYouCard = ({
         <h2 className="text-h2 text-center">{title}</h2>
         <AccountMarkdown variant="sm" content={content} />
       </div>
-      <div className="flex w-full flex-col items-center gap-4">
+      <div
+        className={cx('flex w-full flex-col items-center gap-4', {
+          'px-0 sm:flex-row md:px-24': !feedbackTitle,
+        })}
+      >
         {success ? (
           <>
             {firstButtonTitle && feedbackUrl ? (
-              <div className="flex flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                <h3 className="text-h3 text-left">{feedbackTitle}</h3>
+              feedbackTitle ? (
+                <div className="flex flex-col gap-6 rounded-lg bg-gray-100 p-8">
+                  <h3 className="text-h3 text-left">{feedbackTitle}</h3>
+                  <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                    {firstButtonTitle}
+                  </ButtonNew>
+                </div>
+              ) : (
                 <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
                   {firstButtonTitle}
                 </ButtonNew>
-              </div>
+              )
             ) : null}
             {secondButtonTitle ? (
               <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>

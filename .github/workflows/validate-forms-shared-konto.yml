@@ -26,9 +26,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Enforce IPv4 Connectivity
-        uses: bratislava/github-actions/.github/actions/force-ipv4@beta
-
       - name: Pipelines Version
         run: |
           echo "Pipelines version: 2.3.0"

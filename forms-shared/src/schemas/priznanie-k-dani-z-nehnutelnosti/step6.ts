@@ -1,20 +1,18 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  number,
-  object,
-  radioGroup,
-  skipSchema,
-  step,
-} from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel4ZakladDaneFormula } from '../../tax-form/formulas'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 enum Typ {
   Byt,
@@ -76,11 +74,7 @@ const vymeraKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Základ dane',
-          // The special case checks whether the denominator is number starting with 1-9 followed by 3 or more zeroes.
-          formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-          highestPowerOf10 = pow(10, floor(log10 denominator));
-          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          formula: oddiel4ZakladDaneFormula,
           missingFieldsMessage:
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
@@ -185,19 +179,14 @@ const innerArray = (kalkulacka: boolean) =>
               { type: 'text', title: 'Popis bytu' },
               { helptextFooter: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
             ),
-            kalkulacka
-              ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)
-              : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)),
-            conditionalFields(specialCaseCondition, [
-              kalkulacka
-                ? celkovaVymeraSpecialCase(Typ.Byt)
-                : skipSchema(celkovaVymeraSpecialCase(Typ.Byt)),
-            ]),
-            kalkulacka
-              ? spoluvlastnickyPodiel(Typ.Byt)
-              : skipSchema(spoluvlastnickyPodiel(Typ.Byt)),
-            kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
-            kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
+            ...(kalkulacka
+              ? [
+                  podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt),
+                  conditionalFields(specialCaseCondition, [celkovaVymeraSpecialCase(Typ.Byt)]),
+                  spoluvlastnickyPodiel(Typ.Byt),
+                  vymeraKalkulacka,
+                ]
+              : [vymeraPodlahovejPlochyBytu]),
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
               {
@@ -311,23 +300,16 @@ const innerArray = (kalkulacka: boolean) =>
                     ),
                   ],
                 ),
-                kalkulacka
-                  ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.NebytovyPriestor)
-                  : skipSchema(
+                ...(kalkulacka
+                  ? [
                       podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.NebytovyPriestor),
-                    ),
-                conditionalFields(specialCaseCondition, [
-                  kalkulacka
-                    ? celkovaVymeraSpecialCase(Typ.NebytovyPriestor)
-                    : skipSchema(celkovaVymeraSpecialCase(Typ.NebytovyPriestor)),
-                ]),
-                kalkulacka
-                  ? spoluvlastnickyPodiel(Typ.NebytovyPriestor)
-                  : skipSchema(spoluvlastnickyPodiel(Typ.NebytovyPriestor)),
-                kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
-                kalkulacka
-                  ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
-                  : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,
+                      conditionalFields(specialCaseCondition, [
+                        celkovaVymeraSpecialCase(Typ.NebytovyPriestor),
+                      ]),
+                      spoluvlastnickyPodiel(Typ.NebytovyPriestor),
+                      vymeraKalkulacka,
+                    ]
+                  : [vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome]),
                 object(
                   'datumy',
                   {},

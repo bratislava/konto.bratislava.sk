@@ -1,6 +1,10 @@
-import { conditionalFields, fileUpload, object, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseItemsV2, createCondition } from '../../generator/helpers'
 import { danovnik, splnomocnenec } from './osoby'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   radioGroup(
@@ -30,10 +34,10 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
         title: 'Údaje o oprávnenej osobe na podanie priznania',
       },
       [
-        fileUpload(
+        fileUploadMultiple(
           'splnomocnenie',
           // TODO: Reconsider required when tax form will be sent online.
-          { title: 'Nahrajte splnomocnenie', multiple: true },
+          { title: 'Nahrajte splnomocnenie' },
           {
             type: 'dragAndDrop',
             helptextFooter:

@@ -144,6 +144,17 @@ const nextConfig = {
     // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
     config.externals = [...config.externals, { canvas: 'canvas' }]
 
+    // In `forms-shared` we have React, and it acts as a duplicate of the React in the app in local development
+    // (because the package is symlinked).
+    // It causes the error: `You might have more than one copy of React in the same app`.
+    // This is a temporary solution until the packages are installed using npm workspaces.
+    // https://blog.elantha.com/more-than-one-copy-of-react-in-the-same-app/
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom'),
+    }
+
     return config
   },
 }

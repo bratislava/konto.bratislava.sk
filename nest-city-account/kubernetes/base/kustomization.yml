@@ -1,0 +1,23 @@
+resources:
+- deployment.yml
+- service-app.yml
+- ingress.yml
+# Comment-out these lines if no database is used
+- stateful-set.yml
+- service-database.yml
+- rabbitmq.yml
+configurations:
+- configuration.yml
+
+commonLabels:
+  app: ${BUILD_REPOSITORY_NAME}
+  source: ${BUILD_REPOSITORY_NAME}
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: ${BUILD_REPOSITORY_NAME}-env
+  namespace: ${NAMESPACE}
+  envs:
+  - .env

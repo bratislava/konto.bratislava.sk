@@ -36,11 +36,15 @@ export const renderSummaryPdf = async ({
   clientFiles,
   serverFiles,
 }: RenderSummaryPdfPayload) => {
-  const { schema, uiSchema } = formDefinition.schemas
-  const summaryJson = getSummaryJsonNode(schema, uiSchema, formData, validatorRegistry)
+  const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
 
   const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
-  const validatedSummary = validateSummary(schema, formData, fileInfos, validatorRegistry)
+  const validatedSummary = validateSummary(
+    formDefinition.schema,
+    formData,
+    fileInfos,
+    validatorRegistry,
+  )
 
   const renderedString = renderToString(
     <SummaryPdf

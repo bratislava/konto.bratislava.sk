@@ -3,6 +3,7 @@ import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
+import { oddiel2VymeraPozemkuFormula } from '../../formulas'
 
 const mapPriznanie = (data: TaxFormData, priznanie: DanZPozemkovPriznania) => {
   const pozemky = safeArray(priznanie.pozemky).slice(0, 17)
@@ -18,10 +19,7 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZPozemkovPriznania) => {
     const pouzitKalkulacku =
       safeBoolean(data.danZPozemkov?.kalkulackaWrapper?.pouzitKalkulacku) === true
     const vymeraPozemku = pouzitKalkulacku
-      ? calculateFormCalculatorFormula(
-          'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
-          pozemok,
-        )
+      ? calculateFormCalculatorFormula(oddiel2VymeraPozemkuFormula, pozemok)
       : safeNumber(pozemok?.vymeraPozemku)
 
     return {

@@ -1,14 +1,12 @@
-import {
-  conditionalFields,
-  datePicker,
-  fileUpload,
-  input,
-  object,
-  radioGroup,
-  schema,
-  step,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
+import { input } from '../../generator/functions/input'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { object } from '../../generator/object'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { schema } from '../../generator/functions/schema'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -150,13 +148,12 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     ]),
   ]),
   step('informacieOZariadeni', { title: 'Informácie o zariadení' }, [
-    fileUpload(
+    fileUploadMultiple(
       'umiestnenieStoziare',
       {
         title:
           'Nahrajte vyplnený súbor Umiestnenie zariadení na stožiare verejného osvetlenia.xlsx',
         required: true,
-        multiple: true,
       },
       {
         type: 'dragAndDrop',
@@ -240,12 +237,11 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     ),
   ]),
   step('prilohy', { title: 'Prílohy' }, [
-    fileUpload(
+    fileUploadMultiple(
       'fotografiaVizualizacia',
       {
         title: 'Fotografia alebo vizualizácia zariadenia/zariadení',
         required: true,
-        multiple: true,
       },
       {
         type: 'dragAndDrop',

@@ -1,22 +1,20 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  fileUpload,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  skipSchema,
-  step,
-} from '../../generator/functions'
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel2VymeraPozemkuFormula } from '../../tax-form/formulas'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
+import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
@@ -63,8 +61,7 @@ const vymeraPozemkuKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Vaša výmera pozemku',
-          formula:
-            'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
+          formula: oddiel2VymeraPozemkuFormula,
           missingFieldsMessage:
             '**Pre výpočet výmery pozemku vyplňte správne všetky polia:**\n' +
             '- Celková výmera pozemku\n' +
@@ -253,12 +250,11 @@ const innerArray = (kalkulacka: boolean) =>
               [['hodnotaUrcenaZnaleckymPosudkom'], { const: true }],
             ]),
             [
-              fileUpload(
+              fileUploadMultiple(
                 'znaleckyPosudok',
                 // TODO: Reconsider required when tax form will be sent online.
                 {
                   title: 'Nahrajte znalecký posudok',
-                  multiple: true,
                 },
                 {
                   type: 'dragAndDrop',
@@ -269,13 +265,14 @@ const innerArray = (kalkulacka: boolean) =>
               ),
             ],
           ),
-          kalkulacka ? celkovaVymeraPozemku : skipSchema(celkovaVymeraPozemku),
-          kalkulacka
-            ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
-            : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
-          kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-          kalkulacka ? vymeraPozemkuKalkulacka : skipSchema(vymeraPozemkuKalkulacka),
-          kalkulacka ? skipSchema(vymeraPozemku) : vymeraPozemku,
+          ...(kalkulacka
+            ? [
+                celkovaVymeraPozemku,
+                podielPriestoruNaSpolocnychCastiachAZariadeniachDomu,
+                spoluvlastnickyPodiel,
+                vymeraPozemkuKalkulacka,
+              ]
+            : [vymeraPozemku]),
           object(
             'datumy',
             {},

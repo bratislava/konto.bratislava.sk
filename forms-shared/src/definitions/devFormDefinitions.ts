@@ -7,7 +7,7 @@ export const devFormDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'showcase',
     title: 'Showcase',
-    schemas: showcase,
+    schema: showcase,
     pospID: '',
     pospVersion: '',
     publisher: '',

@@ -27,7 +27,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@nestjs-cognito/auth": "^1.1.6",
+    "@nestjs-cognito/auth": "^1.1.7",
     "@nestjs/cli": "^10.4.5",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.3.0",

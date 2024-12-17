@@ -3,11 +3,7 @@ import { parseDateFieldDate } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
 import { calculateFormCalculatorFormula } from '../../../form-calculators/calculators'
 import { safeArray, safeBoolean, safeNumber, safeString } from '../../../form-utils/safeData'
-
-const zakladDaneFormula = `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-                      highestPowerOf10 = pow(10, floor(log10 denominator));
-                      isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
-                      ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`
+import { oddiel4ZakladDaneFormula } from '../../formulas'
 
 const pouzitKalkulacku = (data: TaxFormData) =>
   safeBoolean(data.danZBytovANebytovychPriestorov?.kalkulackaWrapper?.pouzitKalkulacku) === true
@@ -21,7 +17,7 @@ const priznanieZaBytMapping = (
   }
 
   const zakladDane = pouzitKalkulacku(data)
-    ? calculateFormCalculatorFormula(zakladDaneFormula, priznanie?.priznanieZaByt ?? {})
+    ? calculateFormCalculatorFormula(oddiel4ZakladDaneFormula, priznanie?.priznanieZaByt ?? {})
     : safeNumber(priznanie?.priznanieZaByt?.vymeraPodlahovejPlochyBytu)
 
   return {
@@ -53,7 +49,7 @@ const priznanieZaNebytovePriestoryMapping = (
 
   return nebytovePriestory.map((nebytovyPriestor) => {
     const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = pouzitKalkulacku(data)
-      ? calculateFormCalculatorFormula(zakladDaneFormula, nebytovyPriestor)
+      ? calculateFormCalculatorFormula(oddiel4ZakladDaneFormula, nebytovyPriestor)
       : safeNumber(nebytovyPriestor?.vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
 
     return {

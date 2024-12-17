@@ -22,6 +22,7 @@ import { getSummaryDisplayValues } from './getSummaryDisplayValue'
 import { getBaFormDefaults } from '../form-utils/formDefaults'
 import { getObjectFieldInfo } from '../form-utils/getObjectFieldInfo'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { defaultFormFields, DefaultFormFieldType } from '../form-utils/defaultFormFields'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -184,12 +185,13 @@ const theme: ThemeProps = {
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
     [BaFieldType.CustomComponents]: () => null,
-  } satisfies Record<BaFieldType, ComponentType<FieldProps>>,
+    ...defaultFormFields,
+  } satisfies Record<BaFieldType & DefaultFormFieldType, ComponentType<FieldProps>>,
 }
 
 const ThemedForm = withTheme(theme)
 
-type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'> & {
+type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'formData'> & {
   validatorRegistry: BaRjsfValidatorRegistry
 }
 
@@ -201,16 +203,10 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'> &
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-export const SummaryXmlForm = ({
-  schema,
-  uiSchema,
-  formData,
-  validatorRegistry,
-}: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({ schema, formData, validatorRegistry }: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
-      uiSchema={uiSchema}
       formData={formData}
       // RJSF renders the form in <form> tag by default.
       tagName={({ children }: PropsWithChildren) => <>{children}</>}

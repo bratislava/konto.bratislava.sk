@@ -1,22 +1,20 @@
-import {
-  arrayField,
-  checkbox,
-  checkboxGroup,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  FieldType,
-  input,
-  number,
-  object,
-  radioGroup,
-  schema,
-  select,
-  selectMultiple,
-  step,
-  textArea,
-} from '../generator/functions'
 import { createCondition } from '../generator/helpers'
+import { GeneratorFieldType } from '../generator/generatorTypes'
+import { select } from '../generator/functions/select'
+import { selectMultiple } from '../generator/functions/selectMultiple'
+import { input } from '../generator/functions/input'
+import { number } from '../generator/functions/number'
+import { radioGroup } from '../generator/functions/radioGroup'
+import { textArea } from '../generator/functions/textArea'
+import { checkbox } from '../generator/functions/checkbox'
+import { checkboxGroup } from '../generator/functions/checkboxGroup'
+import { datePicker } from '../generator/functions/datePicker'
+import { customComponentsField } from '../generator/functions/customComponentsField'
+import { object } from '../generator/object'
+import { arrayField } from '../generator/functions/arrayField'
+import { step } from '../generator/functions/step'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { schema } from '../generator/functions/schema'
 
 enum StepType {
   Ziadatel,
@@ -381,7 +379,7 @@ const getOsobneUdajeSection = (stepType: StepType) => {
 }
 
 const getPrijemSection = (stepType: StepType) => {
-  const wrapper = (fields: (FieldType | null)[]) =>
+  const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'prijem',
       { required: true },
@@ -1008,7 +1006,7 @@ const getZdravotnyStavSection = (stepType: StepType) => {
 }
 
 const getSucasneByvanieSection = (stepType: StepType) => {
-  const wrapper = (fields: (FieldType | null)[]) =>
+  const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'sucasneByvanie',
       { required: true },

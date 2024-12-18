@@ -361,7 +361,6 @@ describe('SharepointSubservice', () => {
             ] as SharepointRelationData[],
           },
           type: FormDefinitionType.SlovenskoSkGeneric,
-          schemas: {},
         } as unknown as FormDefinition)
       service['postDataToSharepoint'] = jest.fn().mockResolvedValue({ id: 123 })
       service['handleOneToMany'] = jest

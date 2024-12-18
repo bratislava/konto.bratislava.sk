@@ -1,4 +1,5 @@
-import { input, object } from '../../generator/functions'
+import { input } from '../../generator/functions/input'
+import { object } from '../../generator/object'
 
 /**
  * Create phone number input field consitent with all forms.

@@ -484,7 +484,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "3_RodneCislo1Man": undefined,
   "3_RodneCislo2": "6326",
   "3_RodneCislo2Man": undefined,
-  "3_VymeraPozemku1": "18,52",
+  "3_VymeraPozemku1": "18,51",
   "3_VyuzitiePozemku1": "Ložisko",
   "3_chbDohodaSpolAno": false,
   "3_chbDohodaSpolNie": false,
@@ -1499,7 +1499,7 @@ exports[`tax-form should return correct XML for priznanieKDaniZNehnutelnostiExam
               <WsEnumCode>ICL0079</WsEnumCode>
             </NazovKatastralnehoUzemia>
             <CisloParcely>7986/1</CisloParcely>
-            <Vymera>18.52</Vymera>
+            <Vymera>18.51</Vymera>
             <DruhPozemku>
               <Code>B</Code>
               <Name>Trvalé trávnaté porasty</Name>

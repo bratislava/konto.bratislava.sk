@@ -70,7 +70,7 @@ export default class WebhookSubservice {
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
     const formData = omitExtraData(
-      formDefinition.schemas.schema,
+      formDefinition.schema,
       form.formDataJson as GenericObjectType,
       this.formValidatorRegistryService.getRegistry(),
     )

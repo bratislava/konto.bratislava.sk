@@ -1,21 +1,19 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  skipSchema,
-  step,
-} from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import { oddiel3JedenUcelZakladDaneFormula } from '../../tax-form/formulas'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
@@ -61,7 +59,7 @@ const zakladDaneKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Základ dane',
-          formula: 'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
+          formula: oddiel3JedenUcelZakladDaneFormula,
           missingFieldsMessage:
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
             '- Celková zastavaná plocha\n' +
@@ -142,10 +140,9 @@ const innerArray = (kalkulacka: boolean) =>
           helptextFooter: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
         },
       ),
-      kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),
-      kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-      kalkulacka ? skipSchema(zakladDane) : zakladDane,
-      kalkulacka ? zakladDaneKalkulacka : skipSchema(zakladDaneKalkulacka),
+      ...(kalkulacka
+        ? [celkovaZastavanaPlocha, spoluvlastnickyPodiel, zakladDaneKalkulacka]
+        : [zakladDane]),
       number(
         'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
         {

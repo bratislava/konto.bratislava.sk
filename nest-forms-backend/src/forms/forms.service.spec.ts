@@ -56,10 +56,8 @@ describe('FormsService', () => {
   describe('getForms', () => {
     it('should count correctly', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        schemas: {
-          uiSchema: {
-            'ui:options': {},
-          },
+        schema: {
+          baUiSchema: {},
         },
       })
       const spy = jest

@@ -1,21 +1,22 @@
-import {
-  arrayField,
-  conditionalFields,
-  customComponentsField,
-  datePicker,
-  input,
-  number,
-  object,
-  radioGroup,
-  select,
-  skipSchema,
-  step,
-} from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
+import {
+  oddiel3ViacereUcelyCelkovaVymeraFormula,
+  oddiel3ViacereUcelyZakladDaneFormula,
+} from '../../tax-form/formulas'
+import { select } from '../../generator/functions/select'
+import { input } from '../../generator/functions/input'
+import { number } from '../../generator/functions/number'
+import { radioGroup } from '../../generator/functions/radioGroup'
+import { datePicker } from '../../generator/functions/datePicker'
+import { customComponentsField } from '../../generator/functions/customComponentsField'
+import { object } from '../../generator/object'
+import { arrayField } from '../../generator/functions/arrayField'
+import { step } from '../../generator/functions/step'
+import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
@@ -117,8 +118,7 @@ const sumarKalkulacka = customComponentsField(
       calculators: [
         {
           label: 'Celková výmera podlahových plôch všetkých podlaží stavby',
-          formula:
-            'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
+          formula: oddiel3ViacereUcelyCelkovaVymeraFormula,
           dataContextLevelsUp: 1,
           missingFieldsMessage:
             '**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**\n' +
@@ -128,8 +128,7 @@ const sumarKalkulacka = customComponentsField(
         },
         {
           label: 'Základ dane – celková výmera zastavanej plochy stavby',
-          formula:
-            'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
+          formula: oddiel3ViacereUcelyZakladDaneFormula,
           dataContextLevelsUp: 1,
           missingFieldsMessage:
             '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
@@ -311,18 +310,16 @@ const innerArray = (kalkulacka: boolean) =>
               },
               {},
             ),
-            kalkulacka ? skipSchema(vymeraPodlahovejPlochy) : vymeraPodlahovejPlochy,
-            kalkulacka
-              ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
-              : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
-            kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-            kalkulacka
-              ? vymeraPodlahovejPlochyKalkulacka
-              : skipSchema(vymeraPodlahovejPlochyKalkulacka),
+            ...(kalkulacka
+              ? [
+                  podielPriestoruNaSpolocnychCastiachAZariadeniachDomu,
+                  spoluvlastnickyPodiel,
+                  vymeraPodlahovejPlochyKalkulacka,
+                ]
+              : [vymeraPodlahovejPlochy]),
           ],
         ),
-        kalkulacka ? skipSchema(sumar) : sumar,
-        kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
+        kalkulacka ? sumarKalkulacka : sumar,
       ]),
       input(
         'poznamka',

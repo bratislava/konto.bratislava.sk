@@ -11,6 +11,9 @@ export enum FormDefinitionType {
 type FormDefinitionBase = {
   slug: string
   title: string
+  // Fixed to 1.0 until proper versioning is implemented on all forms
+  // jsonVersion: string
+  jsonVersion: '1.0'
   schema: RJSFSchema
   termsAndConditions: string
   messageSubjectDefault: string

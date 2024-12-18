@@ -5,7 +5,7 @@ import { AdminErrorsEnum } from '../admin/admin.errors.enum'
 
 import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
-import { parseUriNameFromRfo } from '../user/utils/uri'
+import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'

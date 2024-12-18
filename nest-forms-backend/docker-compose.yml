@@ -1,3 +1,6 @@
+# Should be run alongside local npm run start:dev
+# Ports are set to match .env.example and not to conflict with other konto.bratislava.sk services
+
 version: '3.8'
 services:
   postgres:
@@ -6,19 +9,17 @@ services:
       POSTGRES_USER: forms
       POSTGRES_PASSWORD: password
       POSTGRES_DB: forms
-      PGPORT: 5432
-    expose:
-      - '5432'
+      PGPORT: 54321
     ports:
-      - '127.0.0.1:5432:5432'
+      - '127.0.0.1:54321:54321'
 
   rabbitmq:
     image: heidiks/rabbitmq-delayed-message-exchange:latest
     container_name: 'rabbitmq'
     restart: always
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 5611:5672
+      - 15611:15672
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
@@ -28,4 +29,4 @@ services:
     container_name: 'tax_pdf_redis'
     restart: always
     ports:
-      - 6379:6379
+      - 6311:6379

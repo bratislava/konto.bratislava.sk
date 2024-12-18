@@ -77,6 +77,18 @@ const SuccessContent = () => {
             ))}
           </ol>
         </div>
+        <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
+          <h3 className="text-h3 text-left">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
+          <ButtonNew
+            variant="black-solid"
+            className="w-full"
+            href={formsFeedbackLinks['priznanie-k-dani-z-nehnutelnosti']}
+            target="_blank"
+          >
+            {t('tax_form_pdf_export_modal.feedback_button')}
+          </ButtonNew>
+        </div>
+        <div className="h-0.5 w-full bg-gray-200" />
         <h3 className="text-h3">{t('tax_form_pdf_export_modal.how_to_pay_tax')}</h3>
         <p className="text-p1">
           <Trans
@@ -122,16 +134,6 @@ const SuccessContent = () => {
             </div>
           </>
         )}
-        <div className="h-0.5 w-full bg-gray-200" />
-        <h3 className="text-h3 text-center">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
-        <ButtonNew
-          variant="black-outline"
-          className="min-w-[240px] self-center"
-          href={formsFeedbackLinks['priznanie-k-dani-z-nehnutelnosti']}
-          target="_blank"
-        >
-          {t('tax_form_pdf_export_modal.feedback_button')}
-        </ButtonNew>
       </div>
     </div>
   )

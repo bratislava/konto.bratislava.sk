@@ -158,5 +158,9 @@
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
     ]
+  },
+  "volta": {
+    "node": "20.9.0",
+    "npm": "10.7.0"
   }
 }

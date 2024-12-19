@@ -9,9 +9,9 @@ import {
 
 @Injectable()
 export class CityAccountSubservice {
-  private cityAccountApi: AdminApi
+  private readonly cityAccountApi: AdminApi
 
-  private logger: Logger
+  private readonly logger: Logger
 
   constructor() {
     this.cityAccountApi = new AdminApi(

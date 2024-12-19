@@ -13,8 +13,8 @@ import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'
 @Injectable()
 export class TiersGuard implements CanActivate {
   constructor(
-    private reflector: Reflector,
-    private cognitoSubservice: CognitoSubservice,
+    private readonly reflector: Reflector,
+    private readonly cognitoSubservice: CognitoSubservice,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class ErrorThrowerGuard {
-  private logger: Logger = new Logger('CUSTOM ERRORS')
+  private readonly logger: Logger = new Logger('CUSTOM ERRORS')
 
   taxNotFound() {
     return new HttpException(

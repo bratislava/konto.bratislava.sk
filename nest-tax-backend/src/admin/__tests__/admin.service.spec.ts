@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -73,4 +72,3 @@ describe('TasksService', () => {
     })
   })
 })
-/* eslint-enable @typescript-eslint/dot-notation */

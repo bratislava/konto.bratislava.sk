@@ -19,7 +19,7 @@ import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 @Controller('admin')
 @ApiSecurity('apiKey')
 export class AdminController {
-  constructor(private adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @HttpCode(200)
   @ApiOperation({

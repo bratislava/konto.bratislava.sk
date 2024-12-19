@@ -34,6 +34,14 @@ const TaxesFeesTaxAdministratorCard = ({
           <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
             {taxAdministrator.email}
           </MLinkNew>
+          <span className="px-2"> • </span>
+          <br />
+          <MLinkNew
+            href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
+            variant="underlined-medium"
+          >
+            Stránkové hodiny
+          </MLinkNew>
         </div>
       </div>
     </div>

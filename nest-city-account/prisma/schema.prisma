@@ -79,21 +79,7 @@ model PhysicalEntity {
   ifo               String?             @unique
   birthNumber       String?
   activeEdesk       Boolean?
-  RfoByBirthnumber  RfoByBirthnumber[]
   UpvsIdentityByUri UpvsIdentityByUri[]
-}
-
-// stores (filtered) requests from nases
-model RfoByBirthnumber {
-  id               String          @id @default(uuid()) @db.Uuid
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  birthNumber      String
-  // data may be filtered before storing in db
-  data             Json?
-  // should exist most of the time, but giving the option to make the request without it
-  PhysicalEntity   PhysicalEntity? @relation(fields: [physicalEntityId], references: [id])
-  physicalEntityId String?         @db.Uuid
 }
 
 // stores (filtered) requests from nases

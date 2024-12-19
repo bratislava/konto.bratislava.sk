@@ -73,13 +73,11 @@ export const taxDetail = (
         base: currency((data[baseKey] as string).replace(',', '.')).intValue,
         amount: currency((data[amountKey] as string).replace(',', '.'))
           .intValue,
-        area: null,
-      }
-
-      if (valueTaxConfig.area) {
-        const areaKey =
-          `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisTaxPayersDto
-        taxDetailItem.area = data[areaKey] as string
+        area: valueTaxConfig.area
+          ? (data[
+              `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisTaxPayersDto
+            ] as string)
+          : null,
       }
 
       response.push(taxDetailItem)

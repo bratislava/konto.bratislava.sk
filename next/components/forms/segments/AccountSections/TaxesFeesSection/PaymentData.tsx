@@ -11,18 +11,12 @@ import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
-import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const Details = () => {
-  const {
-    taxData,
-    redirectToPayment,
-    redirectToPaymentIsPending,
-    downloadQrCode,
-    setOfficialCorrespondenceChannelModalOpen,
-  } = useTaxFeeSection()
+  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode } =
+    useTaxFeeSection()
   const { channelCurrentYearEffective } = useTaxChannel()
 
   const { t } = useTranslation('account')
@@ -43,9 +37,6 @@ const Details = () => {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <TaxesFeesDeliveryMethodCard
-        onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
-      />
       {channelChangeEffectiveNextYear && <TaxesChannelChangeEffectiveNextYearAlert />}
       <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
         <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 md:w-[488px] lg:px-6">

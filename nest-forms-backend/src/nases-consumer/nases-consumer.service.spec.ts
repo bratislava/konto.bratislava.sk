@@ -18,7 +18,6 @@ import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailgun/mailgun.service'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { FormWithFiles } from '../utils/types/prisma'
-import { CheckAttachmentsEnum } from './nases-consumer.enum'
 import NasesConsumerService from './nases-consumer.service'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
@@ -253,33 +252,12 @@ describe('NasesConsumerService', () => {
       expect(service['logger'].error).toHaveBeenCalled()
     })
 
-    it('should requeue when checkAttachments returns REQUEUE', async () => {
-      jest
-        .spyOn(formsService, 'getUniqueForm')
-        .mockResolvedValue({ formDefinitionSlug: 'test-slug' } as Forms)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: 'slovensko-sk',
-      })
-      jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.REQUEUE)
-      jest.spyOn(service, 'nackTrueWithWait').mockResolvedValue(new Nack(true))
-
-      const result = await service.onQueueConsumption(mockRabbitPayloadDto)
-
-      expect(result).toEqual(new Nack(true))
-      expect(service.nackTrueWithWait).toHaveBeenCalledWith(20_000)
-    })
-
     it('should handle email form when form definition type is Email', async () => {
       const mockForm = { formDefinitionSlug: 'test-slug' } as Forms
       jest.spyOn(formsService, 'getUniqueForm').mockResolvedValue(mockForm)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.Email,
       })
-      jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.OK)
       jest
         .spyOn(service as any, 'handleEmailForm')
         .mockResolvedValue(new Nack(false))
@@ -305,9 +283,6 @@ describe('NasesConsumerService', () => {
         type: FormDefinitionType.Webhook,
       })
       jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.OK)
-      jest
         .spyOn(service as any, 'handleWebhookForm')
         .mockResolvedValue(new Nack(false))
       const sendToNasesAndUpdateStateSpy = jest
@@ -330,9 +305,6 @@ describe('NasesConsumerService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
-      jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.OK)
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
@@ -359,9 +331,6 @@ describe('NasesConsumerService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
-      jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.OK)
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')
@@ -390,9 +359,6 @@ describe('NasesConsumerService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
-      jest
-        .spyOn(service as any, 'checkAttachments')
-        .mockResolvedValue(CheckAttachmentsEnum.OK)
       jest
         .spyOn(service['nasesUtilsService'], 'createTechnicalAccountJwtToken')
         .mockReturnValue('mock-jwt')

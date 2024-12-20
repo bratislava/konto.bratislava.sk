@@ -330,6 +330,16 @@ export default class NasesService {
       )
     }
 
+    // Check if attachments are scanned and safe
+    const formAttachmentsReady =
+      await this.filesService.areFormAttachmentsReady(id)
+    if (!formAttachmentsReady.filesReady) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.UNABLE_TO_SEND,
+        NasesErrorsResponseEnum.UNABLE_TO_SEND,
+      )
+    }
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(

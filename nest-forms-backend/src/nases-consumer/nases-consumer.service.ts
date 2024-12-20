@@ -4,7 +4,6 @@ import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
-  FormDefinition,
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
   isSlovenskoSkFormDefinition,
@@ -32,7 +31,6 @@ import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
 } from './nases-consumer.dto'
-import { CheckAttachmentsEnum } from './nases-consumer.enum'
 import EmailFormsSubservice from './subservices/email-forms.subservice'
 import WebhookSubservice from './subservices/webhook.subservice'
 
@@ -95,28 +93,6 @@ export default class NasesConsumerService {
       )
       return new Nack(false)
     }
-
-    const checkedAttachments = await this.checkAttachments(
-      data,
-      form,
-      formDefinition,
-    )
-    if (checkedAttachments === CheckAttachmentsEnum.REQUEUE) {
-      const requeueAttachment = await this.nackTrueWithWait(20_000)
-      return requeueAttachment
-    }
-    if (checkedAttachments === CheckAttachmentsEnum.ERROR) {
-      if (formDefinition.type === FormDefinitionType.Email) {
-        alertError(
-          `ERROR onQueueConsumption: Found virus in attachments for email form ${form.id}.`,
-          this.logger,
-        )
-      }
-      return new Nack(false)
-    }
-    this.logger.debug(
-      `All files are in final state, sending form with id: ${data.formId}`,
-    )
 
     if (formDefinition.type === FormDefinitionType.Email) {
       const emailResult = await this.handleEmailForm(
@@ -297,46 +273,6 @@ export default class NasesConsumerService {
         error: FormError.RABBITMQ_MAX_TRIES,
       })
     }
-  }
-
-  private async checkAttachments(
-    data: RabbitPayloadDto,
-    form: Forms,
-    formDefinition: FormDefinition,
-  ): Promise<CheckAttachmentsEnum> {
-    const formAttachmentsReady =
-      await this.filesService.areFormAttachmentsReady(data.formId)
-    if (!formAttachmentsReady.filesReady) {
-      if (formAttachmentsReady.requeue) {
-        return CheckAttachmentsEnum.REQUEUE
-      }
-      await this.formsService.updateForm(data.formId, {
-        state: formAttachmentsReady.state,
-        error: formAttachmentsReady.error,
-      })
-      if (formAttachmentsReady.error === 'INFECTED_FILES') {
-        const toEmail = data.userData.email || form.email
-
-        // fallback to messageSubject if title can't be parsed
-        const formTitle =
-          getFrontendFormTitleFromForm(form, formDefinition) ||
-          getSubjectTextFromForm(form, formDefinition)
-        if (toEmail) {
-          await this.mailgunService.sendEmail({
-            to: toEmail,
-            template: MailgunTemplateEnum.ATTACHMENT_VIRUS,
-            data: {
-              formId: form.id,
-              messageSubject: formTitle,
-              firstName: data.userData.firstName,
-              slug: form.formDefinitionSlug,
-            },
-          })
-        }
-      }
-      return CheckAttachmentsEnum.ERROR
-    }
-    return CheckAttachmentsEnum.OK
   }
 
   private async handleEmailForm(

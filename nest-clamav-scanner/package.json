@@ -32,7 +32,7 @@
     "@nestjs/platform-express": "^10.4.0",
     "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^7.4.0",
-    "@prisma/client": "^5.18.0",
+    "@prisma/client": "^6.1.0",
     "@types/passport-http-bearer": "^1.0.41",
     "@types/uuid": "^10.0.0",
     "await-exec": "^0.1.2",

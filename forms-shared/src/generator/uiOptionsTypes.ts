@@ -102,7 +102,7 @@ export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
 
 export type RadioGroupUiOptions = {
   enumMetadata: EnumMetadata<string | boolean>[]
-  variant?: 'basic' | 'boxed' | 'card'
+  variant: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 

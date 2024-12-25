@@ -34,8 +34,8 @@ import { TaxService } from './tax.service'
 @Controller('tax')
 export class TaxController {
   constructor(
-    private taxService: TaxService,
-    private errorThrowerGuard: ErrorThrowerGuard,
+    private readonly taxService: TaxService,
+    private readonly errorThrowerGuard: ErrorThrowerGuard,
   ) {}
 
   @HttpCode(200)

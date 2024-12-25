@@ -34,7 +34,7 @@ import { PaymentService } from './payment.service'
 @ApiTags('payment')
 @Controller('payment')
 export class PaymentController {
-  constructor(private paymentService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
   @HttpCode(200)
   @ApiOperation({

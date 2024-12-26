@@ -6,6 +6,7 @@ import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { screenshotTestTimeout } from '../../test-utils/consts'
+import { getFormDefinitionBySlug } from '../../src/definitions/getFormDefinitionBySlug'
 
 describe('tax-form', () => {
   beforeEach(() => {
@@ -24,7 +25,12 @@ describe('tax-form', () => {
       })
 
       it(`should return correct XML for ${exampleForm.name}`, () => {
-        expect(generateTaxXml(exampleForm.formData, true)).toMatchSnapshot()
+        const formDefinition = getFormDefinitionBySlug('priznanie-k-dani-z-nehnutelnosti')
+        if (!formDefinition || !isSlovenskoSkTaxFormDefinition(formDefinition)) {
+          throw new Error('Form definition not found')
+        }
+
+        expect(generateTaxXml(exampleForm.formData, true, formDefinition)).toMatchSnapshot()
       })
 
       it(

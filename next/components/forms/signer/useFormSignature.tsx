@@ -4,15 +4,7 @@ import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import hash from 'object-hash'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import { useIsSSR } from 'react-aria'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
@@ -31,12 +23,6 @@ export type FormSignature = {
    */
   objectHash: string
   signature: string
-}
-
-declare global {
-  interface Window {
-    __DEV_SHOW_SIGNATURE?: () => void
-  }
 }
 
 const useGetContext = () => {
@@ -64,21 +50,10 @@ const useGetContext = () => {
   const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
 
-  const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
-  const isSSR = useIsSSR()
-
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
     turnOnLeaveProtection()
   }
-
-  useEffect(() => {
-    // Dev only debugging feature
-    if (!isSSR) {
-      // eslint-disable-next-line no-underscore-dangle
-      window.__DEV_SHOW_SIGNATURE = () => setShowSignatureInConsole(true)
-    }
-  }, [isSSR, setShowSignatureInConsole])
 
   const signData = async (
     formDataRequest: GenericObjectType,
@@ -102,9 +77,6 @@ const useGetContext = () => {
       return
     }
     handleSignatureChange({ objectHash: currentHash, signature: result })
-    if (showSignatureInConsole) {
-      console.log('Signature:', result)
-    }
   }
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({

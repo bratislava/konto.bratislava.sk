@@ -22,8 +22,6 @@ import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
 import { useFormModals } from '../useFormModals'
 import { SignerErrorType } from './mapDitecError'
-// kept while it might be usefull for local testing
-// import { signerExamplePayload } from './signerExamplePayload'
 import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
 
 export type FormSignature = {

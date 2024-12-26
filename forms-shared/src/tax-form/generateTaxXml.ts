@@ -10,24 +10,24 @@ import { oslobodenieXml } from './mapping/xml/oslobodenie'
 import { prilohyXml } from './mapping/xml/prilohy'
 import { udajeODanovnikoviXml } from './mapping/xml/udajeODanovnikovi'
 import { removeEmptySubtrees } from './helpers/removeEmptySubtrees'
+import { FormDefinitionSlovenskoSkTax } from '../definitions/formDefinitionTypes'
 
 export const generateTaxXml = (
   data: TaxFormData,
   pretty = false,
-  pospID: string = 'esmao.eforms.bratislava.obec_024',
-  version: string = '201501.2',
+  formDefinition: FormDefinitionSlovenskoSkTax,
 ) => {
   const jsonObj = {
     'E-form': {
       $: {
-        xmlns: `http://schemas.gov.sk/form/${pospID}/${version}`,
+        xmlns: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
       },
       Meta: {
-        ID: pospID,
+        ID: formDefinition.pospID,
         Name: 'Ohlásenie o vzniku, zániku alebo zmene daňovej povinnosti k dani z nehnuteľností',
         Gestor: 'ESMaO',
         RecipientId: 'ico://sk/00603481',
-        Version: version,
+        Version: formDefinition.pospVersion,
         ZepRequired: false,
       },
       Body: {

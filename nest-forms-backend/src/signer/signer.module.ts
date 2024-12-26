@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 
 import FormsModule from '../forms/forms.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import SignerController from './signer.controller'
 import SignerService from './signer.service'
 
 @Module({

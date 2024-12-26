@@ -44,13 +44,13 @@ export default class SignerService {
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
     if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
-        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
+        `getSignerData: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${form.formDefinitionSlug}`,
       )
     }
 
@@ -64,12 +64,14 @@ export default class SignerService {
       },
     })) as FormWithFiles
 
-    return getSignerData({
+    const signerData = await getSignerData({
       formDefinition,
       formId: data.formId,
       formData: form.formDataJson as GenericObjectType,
       validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       serverFiles: formWithFiles.files,
     })
+
+    return signerData
   }
 }

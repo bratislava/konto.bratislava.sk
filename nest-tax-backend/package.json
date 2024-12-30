@@ -52,7 +52,7 @@
     "rimraf": "^5.0.5"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^5.0.23",
+    "@darraghor/eslint-plugin-nestjs-typed": "^5.0.30",
     "@golevelup/ts-jest": "^0.6.1",
     "@nestjs/schematics": "^10.2.3",
     "@nestjs/testing": "^10.4.12",

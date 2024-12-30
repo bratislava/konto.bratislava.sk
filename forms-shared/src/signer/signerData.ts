@@ -27,13 +27,46 @@ export type GetSignerDataParams<
 }
 
 const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovenskoSkTax>) => {
-  const { formData, formDefinition } = params
+  const { formId, formData, formDefinition } = params
 
   const xdcXMLData = generateTaxXml(formData, false, formDefinition)
   const xdcUsedXSD = getTaxXsd(formDefinition)
   const xdcUsedXSLT = getTaxXslt(formDefinition)
 
-  return { xdcXMLData, xdcUsedXSD, xdcUsedXSLT, xslMediaDestinationTypeDescription: 'TXT' }
+  return {
+    signatureId: createFormSignatureId(formData),
+    objectId: `object_${formId}`,
+    objectDescription: '',
+    objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xdcXMLData,
+    xdcIdentifier: '',
+    xdcVersion: '',
+    xslMediaDestinationTypeDescription: 'TXT',
+    xslTargetEnvironment: '',
+    xdcIncludeRefs: true,
+    xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
+    xdcUsedXSD,
+    xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xdcUsedXSLT,
+    xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
+    xslXSLTLanguage: 'sk',
+  }
+}
+
+/**
+ * Formats a form title into a standardized XML filename by removing diacritics and replacing spaces with underscores.
+ *
+ * @example
+ * formatTitleForObjectId("Žiadosť o nájom bytu") // returns "Ziadost_o_najom_bytu.xml"
+ * formatTitleForObjectId("Predzáhradky") // returns "Predzahradky.xml"
+ * formatTitleForObjectId("Komunitné záhrady") // returns "Komunitne_zahrady.xml"
+ */
+const formatTitleForObjectId = (title: string): string => {
+  // https://stackoverflow.com/a/37511463
+  const withoutDiacritics = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const formatted = withoutDiacritics.replace(/\s+/g, '_')
+
+  return `${formatted}.xml`
 }
 
 const getSlovenskoSkGenericXmls = async (
@@ -51,35 +84,15 @@ const getSlovenskoSkGenericXmls = async (
   const xdcUsedXSD = getSchemaXsd(formDefinition)
   const xdcUsedXSLT = getHtmlSbXslt(formDefinition)
 
-  return { xdcXMLData, xdcUsedXSD, xdcUsedXSLT, xslMediaDestinationTypeDescription: 'HTML' }
-}
-
-export const getXmls = async (params: GetSignerDataParams) => {
-  if (isSlovenskoSkTaxFormDefinition(params.formDefinition)) {
-    return getSlovenskoSkTaxXmls(params as GetSignerDataParams<FormDefinitionSlovenskoSkTax>)
-  } else if (isSlovenskoSkGenericFormDefinition(params.formDefinition)) {
-    return await getSlovenskoSkGenericXmls(
-      params as GetSignerDataParams<FormDefinitionSlovenskoSkGeneric>,
-    )
-  } else {
-    throw new Error('Unsupported form definition type')
-  }
-}
-
-export const getSignerData = async (params: GetSignerDataParams) => {
-  const { formDefinition, formId, formData } = params
-  const { xdcXMLData, xdcUsedXSD, xdcUsedXSLT, xslMediaDestinationTypeDescription } =
-    await getXmls(params)
-
   return {
     signatureId: createFormSignatureId(formData),
-    objectId: `object_${formId}`,
-    objectDescription: '',
+    objectId: formatTitleForObjectId(formDefinition.title),
+    objectDescription: formDefinition.title,
     objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
     xdcXMLData,
-    xdcIdentifier: '',
-    xdcVersion: '',
-    xslMediaDestinationTypeDescription,
+    xdcIdentifier: `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xdcVersion: formDefinition.pospVersion,
+    xslMediaDestinationTypeDescription: 'HTML',
     xslTargetEnvironment: '',
     xdcIncludeRefs: true,
     xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
@@ -88,5 +101,28 @@ export const getSignerData = async (params: GetSignerDataParams) => {
     xdcUsedXSLT,
     xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
     xslXSLTLanguage: 'sk',
+  }
+}
+
+export class GetSignerDataError extends Error {
+  constructor(public type: GetSignerDataErrorType) {
+    super(type)
+    this.name = 'GetSignerDataError'
+  }
+}
+
+export enum GetSignerDataErrorType {
+  UnsupportedFormDefinitionType = 'UnsupportedFormDefinitionType',
+}
+
+export const getSignerData = async (params: GetSignerDataParams) => {
+  if (isSlovenskoSkTaxFormDefinition(params.formDefinition)) {
+    return getSlovenskoSkTaxXmls(params as GetSignerDataParams<FormDefinitionSlovenskoSkTax>)
+  } else if (isSlovenskoSkGenericFormDefinition(params.formDefinition)) {
+    return await getSlovenskoSkGenericXmls(
+      params as GetSignerDataParams<FormDefinitionSlovenskoSkGeneric>,
+    )
+  } else {
+    throw new GetSignerDataError(GetSignerDataErrorType.UnsupportedFormDefinitionType)
   }
 }

@@ -3,12 +3,11 @@ import { TaxSignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import hash from 'object-hash'
+import isEqual from 'lodash/isEqual'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
-import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
 import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
@@ -59,19 +58,12 @@ const useGetContext = () => {
     formDataRequest: GenericObjectType,
     signerPayload: TaxSignerDataResponseDto,
   ) => {
-    const requestHash = hash(formDataRequest)
-    const result = await signerSign({
-      ...signerPayload,
-      // The object hash is stored in the signature id, as it is retrieved later on when form is opened in `getInitialFormSignature`.
-      signatureId: createFormSignatureId(requestHash),
-    })
+    const result = await signerSign(signerPayload)
     if (!isMounted()) {
       return
     }
-    // It is possible to edit the data while the signer is open. The easiest way how to ensure the validity of the
-    // signature is to check the hash of the data that was signed versus the current data.
-    const currentHash = hash(formDataRef.current)
-    if (currentHash !== requestHash) {
+    // It is possible to edit the data while the signer is open.
+    if (!isEqual(formDataRequest, formDataRef.current)) {
       openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')
       handleSignatureChange(null)
       return
@@ -125,7 +117,7 @@ const useGetContext = () => {
       return false
     }
 
-    return signature.objectHash === hash(formData)
+    return signature.objectHash === hashFormData(formData)
   }, [isSigned, signature, formData])
 
   return { signature, sign, remove, isValidSignature, getSingerDataIsPending }

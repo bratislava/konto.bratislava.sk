@@ -4,7 +4,7 @@ import {
   getDefaultFormState,
   RJSFSchema,
 } from '@rjsf/utils'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash/isEqual'
 import { BaRjsfValidatorRegistry } from './validatorRegistry'
 import { baFastMergeAllOf } from './fastMergeAllOf'
 

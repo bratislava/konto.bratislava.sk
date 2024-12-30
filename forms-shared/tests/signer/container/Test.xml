@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xdc:XMLDataContainer xmlns:xdc="http://data.gov.sk/def/container/xmldatacontainer+xml/1.0">
+    <xdc:XMLData ContentType="application/xml; charset=UTF-8">
+        <eform xmlns="http://schemas.gov.sk/form/00603481.test/1.0"></eform>
+    </xdc:XMLData>
+    <xdc:UsedSchemasReferenced>
+        <xdc:UsedXSDReference TransformAlgorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                              DigestMethod="urn:oid:2.16.840.1.101.3.4.2.1" DigestValue="REDACTED">
+            http://schemas.gov.sk/form/00603481.test/1.0
+        </xdc:UsedXSDReference>
+        <xdc:UsedPresentationSchemaReference TransformAlgorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                                             DigestMethod="urn:oid:2.16.840.1.101.3.4.2.1" DigestValue="REDACTED"
+                                             ContentType="application/xslt+xml" MediaDestinationTypeDescription="HTML"
+                                             Language="sk">http://schemas.gov.sk/form/00603481.test/1.0/form.xslt
+        </xdc:UsedPresentationSchemaReference>
+    </xdc:UsedSchemasReferenced>
+</xdc:XMLDataContainer>

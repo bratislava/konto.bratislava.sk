@@ -10,11 +10,11 @@ const generateDate = () => new Date().toISOString().replaceAll(/\D/g, '').slice(
 export const createFormSignatureId = (formData: GenericObjectType) => {
   const formDataHash = hashFormData(formData)
 
-  return `object_${formDataHash}_${generateDate()}`
+  return `form_data_${formDataHash}_${generateDate()}`
 }
 
 export const parseObjectHashFromFormSignatureId = (formSignature: string) => {
-  const signatureRegex = /^object_([\da-f]{40})_\d{14}$/
+  const signatureRegex = /^form_data_([\da-f]{40})_\d{14}$/
   const match = formSignature.match(signatureRegex)
 
   return match?.[1] ?? null

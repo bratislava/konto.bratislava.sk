@@ -4,17 +4,11 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
 import { Job, JobId, Queue } from 'bull'
-import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
-import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
-import { generateTaxXml } from 'forms-shared/tax-form/generateTaxXml'
 import { TaxFormData } from 'forms-shared/tax-form/types'
-import validateSchema from 'xsd-validator'
 
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { getTaxXsd, getTaxXslt } from '../utils/tax-xml-files'
-import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 
 @Injectable()
 export default class TaxService {
@@ -100,85 +94,5 @@ export default class TaxService {
     )) as Job<GenerateTaxPdfPayload>
 
     return this.waitForJobResult(job.id)
-  }
-
-  // TODO tests
-  convertJsonToXml(
-    data: Prisma.JsonValue,
-    pospID: string,
-    version: string,
-  ): string {
-    if (typeof data !== 'object' || Array.isArray(data) || !data)
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Form data are empty or invalid',
-      )
-    return generateTaxXml(data, false, pospID, version)
-  }
-
-  // apart from getting tax specific xml data this might work for other signed forms - change this when accommodating those
-  getSignerData(
-    formId: string,
-    formDataJson: Prisma.JsonObject,
-    formSlug: string,
-  ): TaxSignerDataResponseDto {
-    const formDefinition = getFormDefinitionBySlug(formSlug)
-    if (formDefinition?.type !== FormDefinitionType.SlovenskoSkTax) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        'Not yet implemented for non-tax forms',
-      )
-    }
-    const xmlData = this.convertJsonToXml(
-      formDataJson,
-      formDefinition.pospID,
-      formDefinition.pospVersion,
-    )
-    const xsd = getTaxXsd(formDefinition.pospID, formDefinition.pospVersion)
-    const xslt = getTaxXslt(formDefinition.pospID, formDefinition.pospVersion)
-
-    // TODO today we don't check against xsd when sending non-signed data, consider adding in the future if this part is getting refactored
-    // TODO console.log vs Logger
-    const result = validateSchema(xmlData, xsd)
-    if (result === true) {
-      console.log('Tax XSD validation successful')
-    } else {
-      console.log(result)
-      // logging error 500 so that we get updated
-      console.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to validate XML against XSD',
-        ),
-      )
-      // throwing error 400 so that FE gets feedback
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `Failed to validate XML against XSD, with following errors: ${result
-          .map((e) => e.message)
-          .join(', ')}`,
-      )
-    }
-
-    return {
-      objectId: `object_${formId}`,
-      objectDescription: '',
-      objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
-      xdcXMLData: xmlData,
-      xdcIdentifier: '',
-      xdcVersion: '',
-      xslMediaDestinationTypeDescription: 'TXT',
-      xslTargetEnvironment: '',
-      xdcIncludeRefs: true,
-      xdcNamespaceURI:
-        'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
-
-      // all of these are hardcoded for tax form - get it from forms/schema/schema-files when doing this for other forms
-      xdcUsedXSD: xsd,
-      xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
-      xdcUsedXSLT: xslt,
-      xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
-      xslXSLTLanguage: 'sk',
-    }
   }
 }

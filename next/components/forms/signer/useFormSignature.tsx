@@ -21,7 +21,7 @@ export type FormSignature = {
    * We store the hash of the object that was signed. This is the easiest way to ensure the validity of the signature
    * for the current data.
    */
-  objectHash: string
+  formDataHash: string
   signature: string
 }
 
@@ -70,7 +70,7 @@ const useGetContext = () => {
       handleSignatureChange(null)
       return
     }
-    handleSignatureChange({ objectHash: currentHash, signature: result })
+    handleSignatureChange({ formDataHash: currentHash, signature: result })
   }
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
@@ -119,7 +119,7 @@ const useGetContext = () => {
       return false
     }
 
-    return signature.objectHash === hashFormData(formData)
+    return signature.formDataHash === hashFormData(formData)
   }, [isSigned, signature, formData])
 
   return { signature, sign, remove, isValidSignature, getSingerDataIsPending }

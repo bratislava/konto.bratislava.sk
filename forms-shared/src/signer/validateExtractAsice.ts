@@ -1,7 +1,7 @@
 import { Parser } from 'xml2js'
 import Ajv from 'ajv'
 import AdmZip from 'adm-zip'
-import { parseObjectHashFromFormSignatureId } from './signatureId'
+import { parseFormDataHashFromFormSignatureId } from './signatureId'
 
 type AsicSignature = {
   'asic:XAdESSignatures': {
@@ -197,7 +197,7 @@ export async function validateExtractAsice(base64Asice: string) {
   }
 
   const signatureId = signaturesXml['asic:XAdESSignatures']['ds:Signature'][0].$.Id
-  const formDataHash = parseObjectHashFromFormSignatureId(signatureId)
+  const formDataHash = parseFormDataHashFromFormSignatureId(signatureId)
   if (!formDataHash) {
     throw new ValidateExtractAsiceError(ValidateExtractAsiceErrorType.InvalidFormDataHash)
   }

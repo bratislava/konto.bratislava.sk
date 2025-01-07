@@ -2393,6 +2393,11 @@ exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] 
       </Step>
     </Form>
   </Summary>
-  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s:
+
+podmienkami ochrany súkromia pre politiku nájomných bytov
+podmienkami ochrany súkromia v rámci Bratislavského konta a podmienkami spracúvania osobných údajov Hlavného mesta
+
+ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na vyhodnotenie splnenia podmienok pre pridelenie nájomného bytu.</TermsAndConditions>
 </eform>"
 `;

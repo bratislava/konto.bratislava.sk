@@ -69,6 +69,22 @@ export default class ThrowerErrorGuard {
     )
   }
 
+  ServiceUnavailableException(
+    errorEnum: string,
+    message: string,
+    console?: string,
+    object?: object,
+  ): HttpException {
+    return this.HttpException(
+      HttpStatus.SERVICE_UNAVAILABLE,
+      'Service unavailable',
+      errorEnum,
+      message,
+      console,
+      object,
+    )
+  }
+
   ForbiddenException(
     errorEnum: string,
     message: string,

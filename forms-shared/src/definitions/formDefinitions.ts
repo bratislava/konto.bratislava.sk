@@ -5,6 +5,7 @@ import {
   generalTermsAndConditions,
   oloTermsAndConditions,
   taxTermsAndConditions,
+  ziadostONajomBytuTermsAndConditions,
 } from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
@@ -163,7 +164,7 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.2',
     publisher: 'ico://sk/00603481',
     gestor: 'Pinter Martin',
-    termsAndConditions: generalTermsAndConditions,
+    termsAndConditions: ziadostONajomBytuTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o nájom bytu',
     sharepointData: ziadostONajomBytuSharepointData,
     ginisAssignment: {

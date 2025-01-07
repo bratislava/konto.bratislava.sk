@@ -17,7 +17,8 @@
     "build": "rimraf dist && tsc --project tsconfig.build.json",
     "build:watch": "tsc --project tsconfig.build.json --watch",
     "sandbox": "ts-node scripts/sandbox.ts",
-    "create-ai-prompt": "ts-node scripts/createAiPrompt.ts"
+    "create-ai-prompt": "ts-node scripts/createAiPrompt.ts",
+    "save-example-forms": "ts-node scripts/saveExampleForms.ts"
   },
   "exports": {
     "./*": "./dist/*.js",

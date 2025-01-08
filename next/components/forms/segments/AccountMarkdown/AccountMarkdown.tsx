@@ -41,6 +41,11 @@ const AccountMarkdown = ({
     disableRemarkDirective ? null : remarkDirective,
     disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
   ].filter(isDefined)
+  const textStyle = cx({
+    'text-p3 lg:text-p2': variant === 'sm',
+    'text-p2': variant === 'statusBar',
+    'text-p1': variant === 'normal',
+  })
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
     h2: ({ children }: ChildrenParent) => <h2 className="text-h2">{children}</h2>,
@@ -48,15 +53,7 @@ const AccountMarkdown = ({
     h4: ({ children }: ChildrenParent) => <h4 className="text-h4">{children}</h4>,
     h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,
     h6: ({ children }: ChildrenParent) => <h6 className="text-h6">{children}</h6>,
-    p: ({ children }: ChildrenParent) => (
-      <p
-        className={
-          variant === 'sm' ? 'text-p3 lg:text-p2' : variant === 'statusBar' ? 'text-p2' : 'text-p1'
-        }
-      >
-        {children}
-      </p>
-    ),
+    p: ({ children }: ChildrenParent) => <p className={textStyle}>{children}</p>,
     strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
     ol: ({ children, ordered, ...props }: ChildrenParent) => (
       <ol className="list-decimal pl-8" {...props}>
@@ -69,7 +66,7 @@ const AccountMarkdown = ({
       </ul>
     ),
     li: ({ children, ordered, ...props }: ChildrenParent) => (
-      <li className={cx(variant === 'sm' ? 'text-p3 lg:text-p2' : 'text-p1')} {...props}>
+      <li className={textStyle} {...props}>
         {children}
       </li>
     ),

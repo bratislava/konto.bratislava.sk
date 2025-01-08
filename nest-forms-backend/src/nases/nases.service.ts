@@ -521,7 +521,7 @@ export default class NasesService {
       )
     }
 
-    throw this.throwerErrorGuard.ServiceUnavailableException(
+    throw this.throwerErrorGuard.BadRequestException(
       NasesErrorsEnum.FILE_NOT_SCANNED,
       NasesErrorsResponseEnum.FILE_NOT_SCANNED,
     )

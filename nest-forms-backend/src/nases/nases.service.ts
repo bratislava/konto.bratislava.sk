@@ -3,6 +3,7 @@ import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
@@ -330,6 +331,8 @@ export default class NasesService {
       )
     }
 
+    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(
@@ -436,15 +439,7 @@ export default class NasesService {
       },
     }
 
-    // Check send conditions
-    const formAttachmentsReady =
-      await this.filesService.areFormAttachmentsReady(id)
-    if (!formAttachmentsReady.filesReady) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.UNABLE_TO_SEND,
-        NasesErrorsResponseEnum.UNABLE_TO_SEND,
-      )
-    }
+    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
     // Send to nases
     const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
@@ -509,6 +504,26 @@ export default class NasesService {
     return (
       user['custom:tier'] === Tier.IDENTITY_CARD ||
       user['custom:tier'] === Tier.EID
+    )
+  }
+
+  private checkAttachments(
+    formAttachmentsReady: FormFilesReadyResultDto,
+  ): void {
+    if (formAttachmentsReady.filesReady) {
+      return
+    }
+
+    if (formAttachmentsReady.error === FormError.INFECTED_FILES) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.INFECTED_FILE,
+        NasesErrorsResponseEnum.INFECTED_FILE,
+      )
+    }
+
+    throw this.throwerErrorGuard.BadRequestException(
+      NasesErrorsEnum.FILE_NOT_SCANNED,
+      NasesErrorsResponseEnum.FILE_NOT_SCANNED,
     )
   }
 }

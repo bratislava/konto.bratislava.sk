@@ -30,16 +30,8 @@ const FormModals = () => {
     setConceptSaveErrorModal,
     sendFilesScanningModal,
     setSendFilesScanningModal,
-    sendFilesScanningEidModal,
-    setSendFilesScanningEidModal,
-    sendFilesScanningNotVerifiedEidModal,
-    setSendFilesScanningNotVerifiedEidModal,
-    sendFilesScanningNotVerified,
-    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
-    sendFilesScanningNonAuthenticatedEidModal,
-    setSendFilesScanningNonAuthenticatedEidModal,
     sendFilesUploadingModal,
     setSendFilesUploadingModal,
     sendConfirmationModal,
@@ -122,106 +114,6 @@ const FormModals = () => {
       children: t('concept_save_error_modal.content'),
     },
     {
-      key: 'sendFilesScanningEidModal',
-      isOpen: sendFilesScanningEidModal.isOpen,
-      onOpenChange: (value) => {
-        if (!value) {
-          setSendFilesScanningEidModal({ isOpen: false })
-        }
-      },
-      title: t('send_files_scanning_eid_modal.title'),
-      type: 'warning',
-      buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendFilesScanningEidModal({ isOpen: false })}
-          fullWidthMobile
-        >
-          {t('modals_back_button_title')}
-        </Button>,
-        <Button
-          variant="black-solid"
-          size="small"
-          onPress={() =>
-            sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
-          }
-          fullWidthMobile
-          isLoading={sendPending}
-          isLoadingText={t('send_files_scanning_eid_modal.button_title_loading')}
-        >
-          {t('send_files_scanning_eid_modal.button_title')}
-        </Button>,
-      ],
-      isDismissable: !sendPending,
-      noCloseButton: sendPending,
-      children: t('send_files_scanning_eid_modal.content'),
-    },
-    {
-      key: 'sendFilesScanningNotVerifiedEidModal',
-      isOpen: sendFilesScanningNotVerifiedEidModal,
-      onOpenChange: setSendFilesScanningNotVerifiedEidModal,
-      title: t('send_files_scanning_not_verified_eid_modal.title'),
-      type: 'warning',
-      buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendFilesScanningNotVerifiedEidModal(false)}
-          fullWidthMobile
-        >
-          {t('modals_back_button_title')}
-        </Button>,
-        <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
-          {t('send_files_scanning_not_verified_eid_modal.button_title')}
-        </Button>,
-      ],
-      children: t('send_files_scanning_not_verified_eid_modal.content'),
-    },
-    {
-      key: 'sendFilesScanningNotVerified',
-      isOpen: sendFilesScanningNotVerified.isOpen,
-      onOpenChange: (value) => {
-        if (!value) {
-          setSendFilesScanningNotVerified({ isOpen: false })
-        }
-      },
-      title: t('send_files_scanning_not_verified.title'),
-      type: 'warning',
-      buttons: [
-        <Button
-          className="grow"
-          variant="black-solid"
-          size="small"
-          onPress={() => verifyIdentity()}
-          fullWidthMobile
-        >
-          {t('send_files_scanning_not_verified.button_title')}
-        </Button>,
-        <Button
-          className="grow"
-          variant="black-outline"
-          size="small"
-          onPress={() =>
-            sendFilesScanningNotVerified.isOpen && sendFilesScanningNotVerified.sendCallback()
-          }
-          fullWidthMobile
-        >
-          {t('send_files_scanning_not_verified.button_title_eid')}
-        </Button>,
-      ],
-      variant: 'vertical',
-      children: (
-        <>
-          {t('send_files_scanning_not_verified.content')}
-          <AccountMarkdown
-            className="text-p3"
-            variant="sm"
-            content={t('send_files_scanning_not_verified.content_small')}
-          />
-        </>
-      ),
-      childrenClassName: 'md:text-center',
-    },
-    {
       key: 'sendIdentityMissingModal',
       isOpen: sendIdentityMissingModal,
       onOpenChange: setSendIdentityMissingModal,
@@ -242,26 +134,6 @@ const FormModals = () => {
       children: t('send_identity_missing_modal.content'),
     },
     {
-      key: 'sendFilesScanningNonAuthenticatedEidModal',
-      isOpen: sendFilesScanningNonAuthenticatedEidModal,
-      onOpenChange: setSendFilesScanningNonAuthenticatedEidModal,
-      title: t('send_files_scanning_non_authenticated_eid_modal.title'),
-      type: 'warning',
-      buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)}
-          fullWidthMobile
-        >
-          {t('modals_back_button_title')}
-        </Button>,
-        <Button variant="black-solid" size="small" onPress={() => register()} fullWidthMobile>
-          {t('send_files_scanning_non_authenticated_eid_modal.button_title')}
-        </Button>,
-      ],
-      children: t('send_files_scanning_non_authenticated_eid_modal.content'),
-    },
-    {
       key: 'sendFilesUploadingModal',
       isOpen: sendFilesUploadingModal,
       onOpenChange: setSendFilesUploadingModal,
@@ -271,36 +143,11 @@ const FormModals = () => {
     },
     {
       key: 'sendFilesScanningModal',
-      isOpen: sendFilesScanningModal.isOpen,
-      onOpenChange: (value) => {
-        if (!value) {
-          setSendFilesScanningModal({ isOpen: false })
-        }
-      },
+      isOpen: sendFilesScanningModal,
+      onOpenChange: setSendFilesScanningModal,
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button
-          variant="black-plain"
-          onPress={() => setSendFilesScanningModal({ isOpen: false })}
-          fullWidthMobile
-        >
-          {t('modals_back_button_title')}
-        </Button>,
-        <Button
-          variant="black-solid"
-          size="small"
-          onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
-          fullWidthMobile
-          isLoading={sendPending}
-          isLoadingText={t('send_files_scanning_modal.button_title_loading')}
-        >
-          {t('send_files_scanning_modal.button_title')}
-        </Button>,
-      ],
       children: t('send_files_scanning_modal.content'),
-      isDismissable: !sendPending,
-      noCloseButton: sendPending,
     },
     {
       key: 'sendConfirmationModal',

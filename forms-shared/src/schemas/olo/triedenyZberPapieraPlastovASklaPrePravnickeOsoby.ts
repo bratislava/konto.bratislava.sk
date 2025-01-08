@@ -377,16 +377,9 @@ export default schema(
                 {
                   title: 'Vyberte objem nádoby',
                   required: true,
-                  items: createStringItems([
-                    '23 l zberná nádoba',
-                    '120 l zberná nádoba',
-                    '240 l zberná nádoba',
-                  ]),
+                  items: createStringItems(['120 l zberná nádoba', '240 l zberná nádoba']),
                 },
-                {
-                  helptext:
-                    '23 l zberná nádoba je možná vybrať iba pre právnické osoby, ktoré majú sídlo v rodinných domoch',
-                },
+                {},
               ),
               select(
                 'frekvenciaOdvozovKuchynskyOdpad',

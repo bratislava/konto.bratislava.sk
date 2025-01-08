@@ -3,6 +3,7 @@ import predzahradky from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
+  oloKoloTaxiTermsAndConditions,
   oloTermsAndConditions,
   taxTermsAndConditions,
   ziadostONajomBytuTermsAndConditions,
@@ -244,7 +245,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'KOLO Taxi',
     schema: koloTaxi,
     email: 'kolo@olo.sk',
-    termsAndConditions: oloTermsAndConditions,
+    termsAndConditions: oloKoloTaxiTermsAndConditions,
     messageSubjectDefault: 'KOLO Taxi',
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,

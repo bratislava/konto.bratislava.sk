@@ -85,22 +85,34 @@ export const getZevoSchema = (type: ZevoType) => [
         conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
           input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
         ]),
-        input(
-          'konatel',
-          { type: 'text', title: 'Konateľ', required: true },
-          { helptext: 'Uveďte meno a priezvisko konateľa' },
-        ),
-        input(
-          'zastupeny',
-          {
-            type: 'text',
-            title: 'Zastúpený - na základe splnomocnenia',
-            required: true,
-          },
-          {
-            helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
-          },
-        ),
+      ],
+    ),
+    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
+      input(
+        'konatel',
+        { type: 'text', title: 'Konateľ', required: true },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
+      ),
+      input(
+        'zastupeny',
+        {
+          type: 'text',
+          title: 'Zastúpený - na základe splnomocnenia',
+          required: true,
+        },
+        {
+          helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+        },
+      ),
+    ]),
+    conditionalFields(
+      createCondition([
+        [
+          ['ziadatelTyp'],
+          { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
+        ],
+      ]),
+      [
         input(
           'kontaktnaOsoba',
           { type: 'text', title: 'Meno kontaktnej osoby', required: true },

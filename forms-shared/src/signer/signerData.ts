@@ -33,7 +33,7 @@ const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovens
   const xdcUsedXSD = getTaxXsd(formDefinition)
   const xdcUsedXSLT = getTaxXslt(formDefinition)
 
-  // These are legacy signer data, they might be improved (added missing fields), but the risk to do that is higher than the benefit
+  // These are legacy signer data, they might be improved (added missing fields), but the risk is greater than the benefit
   return {
     signatureId: createFormSignatureId(formData),
     objectId: `object_${formId}`,

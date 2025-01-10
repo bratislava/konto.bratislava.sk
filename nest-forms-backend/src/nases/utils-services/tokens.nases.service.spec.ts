@@ -184,6 +184,7 @@ describe('NasesUtilsService', () => {
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
         formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+        formSummary: null,
         ginisDocumentId: null,
         senderId: null,
         recipientId: null,
@@ -255,6 +256,7 @@ describe('NasesUtilsService', () => {
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
         formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+        formSummary: null,
         ginisDocumentId: null,
         senderId: null,
         recipientId: null,

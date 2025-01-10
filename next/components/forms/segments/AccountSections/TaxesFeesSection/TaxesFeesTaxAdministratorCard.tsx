@@ -1,6 +1,5 @@
-import { PhoneIcon } from '@assets/ui-icons'
+import { ClockIcon, MailIcon, PhoneIcon } from '@assets/ui-icons'
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import React from 'react'
 
 import MLinkNew from '../../../simple-components/MLinkNew'
 
@@ -26,22 +25,32 @@ const TaxesFeesTaxAdministratorCard = ({
           <span className="text-p2">Kontaktná osoba pre daň z nehnuteľností</span>
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
-        <div>
-          <MLinkNew href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
-            {taxAdministrator.phone}
-          </MLinkNew>
-          <span className="px-2"> • </span>
-          <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
-            {taxAdministrator.email}
-          </MLinkNew>
-          <span className="px-2"> • </span>
-          <br />
-          <MLinkNew
-            href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
-            variant="underlined-medium"
-          >
-            Stránkové hodiny
-          </MLinkNew>
+        <div className="flex flex-wrap content-center items-center gap-x-3 gap-y-2 self-stretch">
+          <span className="flex items-center gap-x-2">
+            <PhoneIcon className="size-5" />
+            <MLinkNew href={`tel:${taxAdministrator.phone}`} variant="underlined-medium">
+              {taxAdministrator.phone}
+            </MLinkNew>
+            <span> • </span>
+          </span>
+
+          <span className="flex items-center gap-x-2">
+            <MailIcon className="size-5" />
+            <MLinkNew href={`mailto:${taxAdministrator.email}`} variant="underlined-medium">
+              {taxAdministrator.email}
+            </MLinkNew>
+            <span> • </span>
+          </span>
+
+          <span className="flex items-center gap-x-2">
+            <ClockIcon className="size-5" />
+            <MLinkNew
+              href="https://bratislava.sk/mesto-bratislava/dane-a-poplatky"
+              variant="underlined-medium"
+            >
+              Stránkové hodiny
+            </MLinkNew>
+          </span>
         </div>
       </div>
     </div>

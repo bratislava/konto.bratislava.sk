@@ -1,6 +1,10 @@
 import { Logger } from '@nestjs/common'
 import axios from 'axios'
 
+/**
+ * Update user tier in city account to that of eid verified level
+ * In case anything goes wrong this is a no-op, log the error and continue uninterrupted
+ */
 const verifyUserByEidToken = async (
   oboToken: string,
   logger: Logger,

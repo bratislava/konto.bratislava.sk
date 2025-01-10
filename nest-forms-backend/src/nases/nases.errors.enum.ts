@@ -7,6 +7,7 @@ export enum NasesErrorsEnum {
   FILE_NOT_SCANNED = 'FILE_NOT_SCANNED',
   SEND_TO_NASES_ERROR = 'SEND_TO_NASES_ERROR',
   SEND_UNVERIFIED = 'SEND_UNVERIFIED',
+  FORM_SUMMARY_GENERATION_ERROR = 'FORM_SUMMARY_GENERATION_ERROR',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -18,6 +19,7 @@ export enum NasesErrorsResponseEnum {
   FILE_NOT_SCANNED = "This form contains a file that hasn't been scanned.",
   SEND_TO_NASES_ERROR = 'There was an error when sending to NASES.',
   SEND_UNVERIFIED = 'Sending is allowed only for verified users.',
+  FORM_SUMMARY_GENERATION_ERROR = 'Error while generating form summary.',
 }
 
 export enum NasesErrorCodesEnum {

@@ -620,7 +620,8 @@
     },
     "form_submit_tax": {
       "title": "Ďakujeme za odoslanie priznania",
-      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.",
+      "feedbackTitle": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka."
     }
   },
   "bank_info": {

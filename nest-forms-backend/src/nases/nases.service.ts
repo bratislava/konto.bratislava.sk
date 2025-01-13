@@ -1,8 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
+import {
+  FormError,
+  FormOwnerType,
+  Forms,
+  FormState,
+  Prisma,
+} from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -273,6 +284,27 @@ export default class NasesService {
     return result
   }
 
+  private getFormSummaryOrThrow(
+    form: Forms,
+    formDefinition: FormDefinition,
+  ): FormSummary {
+    try {
+      return getFormSummary(
+        formDefinition,
+        form.formDataJson as GenericObjectType,
+        this.formValidatorRegistryService.getRegistry(),
+      )
+    } catch (error) {
+      this.logger.error(
+        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,
+      )
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+        NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+      )
+    }
+  }
+
   async sendForm(
     id: string,
     userInfo?: ResponseGdprDataDto,
@@ -333,6 +365,8 @@ export default class NasesService {
 
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
+    const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(
@@ -358,6 +392,7 @@ export default class NasesService {
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
+      formSummary: formSummary as unknown as Prisma.JsonObject,
     })
     return {
       id: form.id,
@@ -425,6 +460,8 @@ export default class NasesService {
       )
     }
 
+    const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
+
     await this.formsService.updateForm(id, {
       mainUri: form.mainUri ?? user.sub,
       actorUri: form.actorUri ?? user.actor.sub,
@@ -448,6 +485,7 @@ export default class NasesService {
       data,
       formDefinition,
       user.sub,
+      { formSummary: formSummary as unknown as Prisma.JsonObject },
     )
 
     if (!isSent) {

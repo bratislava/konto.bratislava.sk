@@ -171,6 +171,41 @@ describe('NasesConsumerService', () => {
 
       expect(convertSpy).toHaveBeenCalled()
     })
+
+    it('should pass additionalFormUpdates to formsService.updateForm', async () => {
+      service['nasesUtilsService'].sendMessageNases = jest
+        .fn()
+        .mockResolvedValue({ status: 200 })
+
+      const updateFormSpy = jest.spyOn(formsService, 'updateForm')
+      const additionalFormUpdates = {
+        formSummary: {},
+      }
+
+      await service.sendToNasesAndUpdateState(
+        '',
+        {} as Forms,
+        {
+          formId: 'formIdVal',
+          tries: 1,
+          userData: {
+            email: 'test.inovacie_at_bratislava.sk',
+            firstName: 'Tester',
+          },
+        },
+        {
+          type: FormDefinitionType.SlovenskoSkGeneric,
+        } as FormDefinitionSlovenskoSk,
+        undefined,
+        additionalFormUpdates,
+      )
+
+      expect(updateFormSpy).toHaveBeenCalledWith('formIdVal', {
+        state: FormState.DELIVERED_NASES,
+        error: FormError.NONE,
+        ...additionalFormUpdates,
+      })
+    })
   })
 
   describe('queueDelayedForm', () => {

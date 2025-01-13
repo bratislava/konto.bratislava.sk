@@ -457,6 +457,13 @@ export default class NasesService {
         error: FormError.NASES_SEND_ERROR,
       })
 
+      // TODO temp SEND_TO_NASES_ERROR log, remove
+      console.log(
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formDataBase64 from db: ${
+          form.formDataBase64
+        }`,
+      )
+
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,

@@ -825,6 +825,13 @@ export default class NasesController {
     }
 
     const updateData = { ...data, eidToken: undefined }
+
+    // TODO temp SEND_TO_NASES_ERROR log, remove
+    console.log(
+      `Signed data from request for formId ${id} before send:`,
+      updateData.formDataBase64,
+    )
+
     await this.nasesService.updateFormEid(
       id,
       user,

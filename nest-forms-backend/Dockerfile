@@ -22,6 +22,8 @@ RUN npx prisma migrate
 
 RUN npm run build
 
+RUN npm run build-migrate-add-form-summary
+
 # development
 FROM base AS dev
 

@@ -2,6 +2,7 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
+import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
@@ -44,6 +45,8 @@ const ThankYouSection = () => {
             content={t(`thank_you.result.${status}.content`)}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
+            feedbackTitle={t(`thank_you.result.${status}.feedback_title`)}
+            feedbackUrl={formsFeedbackLinks['platba-dane-z-nehnutelnosti']}
           />
         ) : (
           <ThankYouCard

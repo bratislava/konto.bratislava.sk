@@ -14,7 +14,6 @@ import {
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { FormWithFiles } from '../utils/types/prisma'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import {
   SignerErrorsEnum,
@@ -73,21 +72,18 @@ export default class SignerService {
       )
     }
 
-    const formWithFiles = (await this.prismaService.forms.findUnique({
+    const files = await this.prismaService.files.findMany({
       where: {
-        id: form.id,
+        formId: form.id,
       },
-      include: {
-        files: true,
-      },
-    })) as FormWithFiles
+    })
 
     const signerData = await getSignerData({
       formDefinition,
       formId: data.formId,
       formData: data.formDataJson as GenericObjectType,
       validatorRegistry: this.formValidatorRegistryService.getRegistry(),
-      serverFiles: formWithFiles.files,
+      serverFiles: files,
     })
 
     this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)

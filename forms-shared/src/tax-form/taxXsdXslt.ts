@@ -1,10 +1,7 @@
-/* eslint-disable no-secrets/no-secrets */
-/* eslint-disable pii/no-email */
-/* eslint-disable pii/no-phone-number */
-/* eslint-disable no-useless-escape */
-
 // MedzinarodneVolacieCislo and email validation different than in the original $SCHEMA_URI xsd
 // the original has incorrect regex format, we've removed the validation here
+import { FormDefinitionSlovenskoSkTax } from '../definitions/formDefinitionTypes'
+
 const TAX_XSD = `<?xml version="1.0" encoding="utf-8"?>
 <xs:schema elementFormDefault="qualified"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -1447,19 +1444,14 @@ const TAX_XSLT = `<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 </xsl:stylesheet>
 `
 
-export const getTaxXsd = (pospId: string, version: string): string =>
+export const getTaxXsd = (formDefinition: FormDefinitionSlovenskoSkTax) =>
   TAX_XSD.replaceAll(
     '$SCHEMA_URI',
-    `http://schemas.gov.sk/form/${pospId}/${version}`,
+    `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
   )
 
-export const getTaxXslt = (pospId: string, version: string): string =>
+export const getTaxXslt = (formDefinition: FormDefinitionSlovenskoSkTax) =>
   TAX_XSLT.replaceAll(
     '$SCHEMA_URI',
-    `http://schemas.gov.sk/form/${pospId}/${version}`,
+    `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
   )
-
-/* eslint-enable no-secrets/no-secrets */
-/* eslint-enable pii/no-email */
-/* eslint-enable pii/no-phone-number */
-/* eslint-enable no-useless-escape */

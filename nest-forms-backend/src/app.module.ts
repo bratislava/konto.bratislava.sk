@@ -18,6 +18,7 @@ import NasesModule from './nases/nases.module'
 import NasesConsumerModule from './nases-consumer/nases-consumer.module'
 import PrismaModule from './prisma/prisma.module'
 import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
+import SignerModule from './signer/signer.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
@@ -53,6 +54,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
     GinisModule,
     TaxModule,
     FormValidatorRegistryModule,
+    SignerModule,
     // BEWARE: If Bull doesn't connect to Redis successfully, it will silently fail!
     // https://github.com/nestjs/bull/issues/1076
     BullModule.forRootAsync({

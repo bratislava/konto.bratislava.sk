@@ -17,18 +17,14 @@ export default schema(
   {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
-      object(
-        'menoPriezvisko',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-        ],
-      ),
+      object('menoPriezvisko', { required: true }, {}, [
+        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+        input(
+          'priezvisko',
+          { title: 'Priezvisko', required: true, type: 'text' },
+          { selfColumn: '2/4' },
+        ),
+      ]),
       sharedAddressField('adresa', 'Adresa trvalého pobytu', true),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
       sharedPhoneNumberField('telefon', true),

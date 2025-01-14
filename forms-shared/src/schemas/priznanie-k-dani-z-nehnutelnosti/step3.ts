@@ -152,34 +152,28 @@ const innerArray = (kalkulacka: boolean) =>
             },
             {},
           ),
-          object(
-            'parcelneCisloSposobVyuzitiaPozemku',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '1/1',
-            },
-            [
-              input(
-                'cisloParcely',
-                { type: 'text', title: 'Číslo parcely', required: true },
-                {
-                  placeholder: 'Napr. 7986/1',
-                  helptextFooter:
-                    'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
-                  helptextFooterMarkdown: true,
-                },
-              ),
-              input(
-                'sposobVyuzitiaPozemku',
-                { type: 'text', title: 'Spôsob využitia pozemku' },
-                {
-                  helptextFooter:
-                    'Vyplňte, ak na pozemok bolo vydané povolenie na dobývanie ložiska nevyhradeného nerastu alebo sa na pozemku nachádza zariadenie na výrobu elektriny zo slnečnej energie, transformačná stanica alebo predajný stánok slúžiaci k predaju tovaru a poskytovaniu služieb.',
-                },
-              ),
-            ],
-          ),
+          object('parcelneCisloSposobVyuzitiaPozemku', { required: true }, {}, [
+            input(
+              'cisloParcely',
+              { type: 'text', title: 'Číslo parcely', required: true },
+              {
+                selfColumn: '2/4',
+                placeholder: 'Napr. 7986/1',
+                helptextFooter:
+                  'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_cislo_parcely_d88349308a.png"}',
+                helptextFooterMarkdown: true,
+              },
+            ),
+            input(
+              'sposobVyuzitiaPozemku',
+              { type: 'text', title: 'Spôsob využitia pozemku' },
+              {
+                selfColumn: '2/4',
+                helptextFooter:
+                  'Vyplňte, ak na pozemok bolo vydané povolenie na dobývanie ložiska nevyhradeného nerastu alebo sa na pozemku nachádza zariadenie na výrobu elektriny zo slnečnej energie, transformačná stanica alebo predajný stánok slúžiaci k predaju tovaru a poskytovaniu služieb.',
+              },
+            ),
+          ]),
           select(
             'druhPozemku',
             {
@@ -273,32 +267,26 @@ const innerArray = (kalkulacka: boolean) =>
                 vymeraPozemkuKalkulacka,
               ]
             : [vymeraPozemku]),
-          object(
-            'datumy',
-            {},
-            {
-              columns: true,
-              columnsRatio: '1/1',
-            },
-            [
-              datePicker(
-                'datumVznikuDanovejPovinnosti',
-                { title: 'Dátum vzniku daňovej povinnosti' },
-                {
-                  helptextFooter:
-                    'Vypĺňate len v prípade, ak ste pozemok zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
-                },
-              ),
-              datePicker(
-                'datumZanikuDanovejPovinnosti',
-                { title: 'Dátum zániku daňovej povinnosti' },
-                {
-                  helptextFooter:
-                    'Vypĺňate len v prípade, ak ste pozemok predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
-                },
-              ),
-            ],
-          ),
+          object('datumy', {}, {}, [
+            datePicker(
+              'datumVznikuDanovejPovinnosti',
+              { title: 'Dátum vzniku daňovej povinnosti' },
+              {
+                selfColumn: '2/4',
+                helptextFooter:
+                  'Vypĺňate len v prípade, ak ste pozemok zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
+              },
+            ),
+            datePicker(
+              'datumZanikuDanovejPovinnosti',
+              { title: 'Dátum zániku daňovej povinnosti' },
+              {
+                selfColumn: '2/4',
+                helptextFooter:
+                  'Vypĺňate len v prípade, ak ste pozemok predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+              },
+            ),
+          ]),
         ],
       ),
       input(

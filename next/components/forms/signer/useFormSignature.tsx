@@ -75,10 +75,15 @@ const useGetContext = () => {
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
-      formsApi.signerControllerGetSignerData({
-        formId,
-        formDataJson: formDataRequest,
-      }),
+      formsApi.signerControllerGetSignerData(
+        {
+          formId,
+          formDataJson: formDataRequest,
+        },
+        {
+          accessToken: 'onlyAuthenticated',
+        },
+      ),
     networkMode: 'always',
     onSuccess: (response, formDataRequest) => {
       // This is not awaited on purpose, because it would make the mutation pending.

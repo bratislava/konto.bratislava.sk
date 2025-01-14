@@ -39,7 +39,6 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -97,26 +96,25 @@ export default class NasesService {
     return result
   }
 
-  async createFormEid(
-    nasesUser: JwtNasesPayloadDto,
-    requestData: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const data = {
-      mainUri: nasesUser.sub,
-      actorUri: nasesUser.actor.sub,
-      ...requestData,
-    }
-    return this.formsService.createForm(data)
-  }
-
   async createForm(
     requestData: CreateFormRequestDto,
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<CreateFormResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(
+      requestData.formDefinitionSlug,
+    )
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
+      )
+    }
+
     const data = {
       userExternalId: user ? user.sub : null,
-      ...requestData,
+      formDefinitionSlug: requestData.formDefinitionSlug,
+      jsonVersion: formDefinition.jsonVersion,
       ico,
       ownerType:
         user?.['custom:account_type'] === 'po' ||
@@ -127,13 +125,6 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`,
-      )
-    }
 
     const messageSubject = getSubjectTextFromForm(result, formDefinition)
     const frontendTitle =

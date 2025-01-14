@@ -28,6 +28,7 @@ model Forms {
   ico                String?
   state              FormState      @default(DRAFT)
   error              FormError      @default(NONE)
+  jsonVersion        String
   formDataJson       Json?
   formDataGinis      String?
   formDataBase64     String?

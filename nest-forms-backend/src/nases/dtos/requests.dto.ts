@@ -55,17 +55,6 @@ export class CreateFormRequestDto {
   declare formDefinitionSlug: string
 }
 
-/* eslint-disable pii/no-email */
-export class CreateFormEidRequestDto extends CreateFormRequestDto {
-  @ApiProperty({
-    description:
-      'Email, if it is not registered user by city account, and it is logged in only by Eid',
-    default: 'janko.mrkvicka@bratislava.sk',
-  })
-  @IsString()
-  email!: string
-}
-
 export class UpdateFormRequestDto {
   // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
@@ -145,6 +134,8 @@ export class EidUpdateSendFormRequestDto extends UpdateFormRequestDto {
 }
 
 export class GetFormResponseDto {
+  /* For some reason, eslint-disable-next-line is not working here. */
+  /* eslint-disable pii/no-email */
   @ApiProperty({
     description: 'Change email, on which you can be contacted',
     default: 'janko.mrkvicka@bratislava.sk',
@@ -153,7 +144,6 @@ export class GetFormResponseDto {
   @IsOptional()
   @IsString()
   declare email: string | null
-
   /* eslint-enable pii/no-email */
 
   @ApiProperty({

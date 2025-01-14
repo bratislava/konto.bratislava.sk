@@ -180,6 +180,7 @@ describe('NasesUtilsService', () => {
         ico: '12345678',
         state: 'QUEUED',
         error: 'NONE',
+        jsonVersion: '1.0',
         formDataJson: null,
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
@@ -252,6 +253,7 @@ describe('NasesUtilsService', () => {
         ico: '12345678',
         state: 'QUEUED',
         error: 'NONE',
+        jsonVersion: '1.0',
         formDataJson: null,
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html

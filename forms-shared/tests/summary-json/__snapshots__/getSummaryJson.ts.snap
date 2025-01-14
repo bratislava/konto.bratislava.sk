@@ -3682,30 +3682,6 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Konatel Konajuci",
-            },
-          ],
-          "id": "root_ziadatel_konatel",
-          "label": "Konateľ",
-          "type": "Field",
-          "value": "Konatel Konajuci",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
-              "value": "Jozef Mrkva",
-            },
-          ],
-          "id": "root_ziadatel_zastupeny",
-          "label": "Zastúpený - na základe splnomocnenia",
-          "type": "Field",
-          "value": "Jozef Mrkva",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "Jozef Mrkva",
             },
           ],

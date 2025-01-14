@@ -2104,31 +2104,6 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
                     "title": "IČO",
                     "type": "string",
                   },
-                  "konatel": {
-                    "baOrder": 11,
-                    "baUiSchema": {
-                      "ui:label": false,
-                      "ui:options": {
-                        "helptext": "Uveďte meno a priezvisko konateľa",
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Konateľ",
-                    "type": "string",
-                  },
-                  "kontaktnaOsoba": {
-                    "baOrder": 13,
-                    "baUiSchema": {
-                      "ui:label": false,
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Meno kontaktnej osoby",
-                    "type": "string",
-                  },
                   "nazov": {
                     "baOrder": 4,
                     "baUiSchema": {
@@ -2153,6 +2128,43 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
                     "title": "Som platca DPH?",
                     "type": "boolean",
                   },
+                },
+                "required": [
+                  "nazov",
+                  "adresaPravnickaOsoba",
+                  "ico",
+                  "dic",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "const": "Právnická osoba",
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "konatel": {
+                    "baOrder": 11,
+                    "baUiSchema": {
+                      "ui:label": false,
+                      "ui:options": {
+                        "helptext": "Uveďte meno a priezvisko konateľa",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Konateľ",
+                    "type": "string",
+                  },
                   "zastupeny": {
                     "baOrder": 12,
                     "baUiSchema": {
@@ -2168,12 +2180,43 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
                   },
                 },
                 "required": [
-                  "nazov",
-                  "adresaPravnickaOsoba",
-                  "ico",
-                  "dic",
                   "konatel",
                   "zastupeny",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "enum": [
+                      "Právnická osoba",
+                      "Právnická osoba s povolením na vstup do ZEVO",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktnaOsoba": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:label": false,
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Meno kontaktnej osoby",
+                    "type": "string",
+                  },
+                },
+                "required": [
                   "kontaktnaOsoba",
                 ],
                 "type": "object",
@@ -9922,10 +9965,6 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                             "ui:options": {
                               "enumMetadata": [
                                 {
-                                  "label": "23 l zberná nádoba",
-                                  "value": "23 l zberná nádoba",
-                                },
-                                {
                                   "label": "120 l zberná nádoba",
                                   "value": "120 l zberná nádoba",
                                 },
@@ -9934,13 +9973,11 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
                                   "value": "240 l zberná nádoba",
                                 },
                               ],
-                              "helptext": "23 l zberná nádoba je možná vybrať iba pre právnické osoby, ktoré majú sídlo v rodinných domoch",
                             },
                             "ui:widget": "Select",
                           },
-                          "default": "23 l zberná nádoba",
+                          "default": "120 l zberná nádoba",
                           "enum": [
-                            "23 l zberná nádoba",
                             "120 l zberná nádoba",
                             "240 l zberná nádoba",
                           ],
@@ -11745,31 +11782,6 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema ma
                     "title": "IČO",
                     "type": "string",
                   },
-                  "konatel": {
-                    "baOrder": 11,
-                    "baUiSchema": {
-                      "ui:label": false,
-                      "ui:options": {
-                        "helptext": "Uveďte meno a priezvisko konateľa",
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Konateľ",
-                    "type": "string",
-                  },
-                  "kontaktnaOsoba": {
-                    "baOrder": 13,
-                    "baUiSchema": {
-                      "ui:label": false,
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Meno kontaktnej osoby",
-                    "type": "string",
-                  },
                   "nazov": {
                     "baOrder": 4,
                     "baUiSchema": {
@@ -11794,6 +11806,43 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema ma
                     "title": "Som platca DPH?",
                     "type": "boolean",
                   },
+                },
+                "required": [
+                  "nazov",
+                  "adresaPravnickaOsoba",
+                  "ico",
+                  "dic",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "const": "Právnická osoba",
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "konatel": {
+                    "baOrder": 11,
+                    "baUiSchema": {
+                      "ui:label": false,
+                      "ui:options": {
+                        "helptext": "Uveďte meno a priezvisko konateľa",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Konateľ",
+                    "type": "string",
+                  },
                   "zastupeny": {
                     "baOrder": 12,
                     "baUiSchema": {
@@ -11809,12 +11858,43 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema ma
                   },
                 },
                 "required": [
-                  "nazov",
-                  "adresaPravnickaOsoba",
-                  "ico",
-                  "dic",
                   "konatel",
                   "zastupeny",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "enum": [
+                      "Právnická osoba",
+                      "Právnická osoba s povolením na vstup do ZEVO",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktnaOsoba": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:label": false,
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Meno kontaktnej osoby",
+                    "type": "string",
+                  },
+                },
+                "required": [
                   "kontaktnaOsoba",
                 ],
                 "type": "object",

@@ -65,13 +65,8 @@ const BAArrayFieldTemplate = <
 
   const hasErrors = rawErrors && rawErrors?.length > 0
 
-  const defaultSpacing = {
-    topLevel: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
-    nested: undefined,
-  }[variant]
-
   return (
-    <WidgetWrapper id={idSchema.$id} options={uiOptions} defaultSpacing={defaultSpacing}>
+    <WidgetWrapper id={idSchema.$id} options={uiOptions}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}

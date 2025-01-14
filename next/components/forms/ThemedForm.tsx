@@ -8,6 +8,7 @@ import { ComponentType } from 'react'
 
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
+import BAFieldTemplate from './widget-wrappers/BAFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
@@ -45,6 +46,7 @@ const theme: ThemeProps = {
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,
+    FieldTemplate: BAFieldTemplate,
     // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
     // cast it to the original type
     ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,

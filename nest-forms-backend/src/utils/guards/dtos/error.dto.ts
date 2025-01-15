@@ -6,6 +6,7 @@ import { NasesErrorsEnum } from '../../../nases/nases.errors.enum'
 import { EmailFormsErrorsEnum } from '../../../nases-consumer/subservices/dtos/email-forms.errors.enum'
 import { WebhookErrorsEnum } from '../../../nases-consumer/subservices/dtos/webhook.errors.enum'
 import { ScannerClientErrorsEnum } from '../../../scanner-client/scanner-client.errors.enum'
+import { SignerErrorsEnum } from '../../../signer/signer.errors.enum'
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import { MailgunErrorsEnum } from '../../global-enums/mailgun.errors.enum'
 import { SharepointErrorsEnum } from '../../subservices/dtos/sharepoint.errors.enum'
@@ -22,13 +23,7 @@ export type CustomErrorEnums =
   | WebhookErrorsEnum
   | ScannerClientErrorsEnum
   | ConvertErrorsEnum
-
-// export const errorSymbols = {
-//   alert: Symbol('alert'),
-//   console: Symbol('console'),
-//   errorType: Symbol('errorType'),
-//   stack: Symbol('stack'),
-// }
+  | SignerErrorsEnum
 
 export class ErrorSymbols {
   static readonly alert: unique symbol = Symbol('alert')

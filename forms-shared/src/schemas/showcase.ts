@@ -529,10 +529,7 @@ export default schema(
         {
           required: true,
         },
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
+        {},
         [
           input(
             'column1',
@@ -541,7 +538,7 @@ export default schema(
               type: 'text',
               required: true,
             },
-            {},
+            { selfColumn: '2/4' },
           ),
           input(
             'column2',
@@ -550,7 +547,7 @@ export default schema(
               type: 'text',
               required: true,
             },
-            {},
+            { selfColumn: '2/4' },
           ),
         ],
       ),

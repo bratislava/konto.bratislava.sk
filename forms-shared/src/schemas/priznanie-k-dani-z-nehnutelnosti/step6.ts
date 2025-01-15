@@ -199,32 +199,26 @@ const innerArray = (kalkulacka: boolean) =>
                   'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
               },
             ),
-            object(
-              'datumy',
-              {},
-              {
-                columns: true,
-                columnsRatio: '1/1',
-              },
-              [
-                datePicker(
-                  'datumVznikuDanovejPovinnosti',
-                  { title: 'Dátum vzniku daňovej povinnosti' },
-                  {
-                    helptextFooter:
-                      'Vypĺňate len v prípade, ak ste byt zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
-                  },
-                ),
-                datePicker(
-                  'datumZanikuDanovejPovinnosti',
-                  { title: 'Dátum zániku daňovej povinnosti' },
-                  {
-                    helptextFooter:
-                      'Vypĺňate len v prípade, ak ste byt predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
-                  },
-                ),
-              ],
-            ),
+            object('datumy', {}, {}, [
+              datePicker(
+                'datumVznikuDanovejPovinnosti',
+                { title: 'Dátum vzniku daňovej povinnosti' },
+                {
+                  selfColumn: '2/4',
+                  helptextFooter:
+                    'Vypĺňate len v prípade, ak ste byt zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
+                },
+              ),
+              datePicker(
+                'datumZanikuDanovejPovinnosti',
+                { title: 'Dátum zániku daňovej povinnosti' },
+                {
+                  selfColumn: '2/4',
+                  helptextFooter:
+                    'Vypĺňate len v prípade, ak ste byt predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+                },
+              ),
+            ]),
           ]),
         ],
       ),
@@ -266,40 +260,34 @@ const innerArray = (kalkulacka: boolean) =>
                   'Dosiahli ste maximálny počet nebytových pozemkov (15) na jedno priznanie. Pridajte ďalšie priznanie.',
               },
               [
-                object(
-                  'riadok',
-                  {},
-                  {
-                    columns: true,
-                    columnsRatio: '1/1',
-                  },
-                  [
-                    input(
-                      'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
-                      {
-                        type: 'text',
-                        title: 'Účel využitia nebytového priestoru v bytovom dome',
-                        required: true,
-                      },
-                      {
-                        helptextFooter: 'Napr. garážovanie, skladovanie, podnikanie alebo iné.',
-                      },
-                    ),
-                    input(
-                      'cisloNebytovehoPriestoruVBytovomDome',
-                      {
-                        type: 'text',
-                        title: 'Číslo nebytového priestoru v bytovom dome',
-                        required: true,
-                      },
-                      {
-                        helptextFooter:
-                          'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
-                        helptextFooterMarkdown: true,
-                      },
-                    ),
-                  ],
-                ),
+                object('riadok', {}, {}, [
+                  input(
+                    'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
+                    {
+                      type: 'text',
+                      title: 'Účel využitia nebytového priestoru v bytovom dome',
+                      required: true,
+                    },
+                    {
+                      selfColumn: '2/4',
+                      helptextFooter: 'Napr. garážovanie, skladovanie, podnikanie alebo iné.',
+                    },
+                  ),
+                  input(
+                    'cisloNebytovehoPriestoruVBytovomDome',
+                    {
+                      type: 'text',
+                      title: 'Číslo nebytového priestoru v bytovom dome',
+                      required: true,
+                    },
+                    {
+                      selfColumn: '2/4',
+                      helptextFooter:
+                        'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
+                      helptextFooterMarkdown: true,
+                    },
+                  ),
+                ]),
                 ...(kalkulacka
                   ? [
                       podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.NebytovyPriestor),
@@ -310,32 +298,26 @@ const innerArray = (kalkulacka: boolean) =>
                       vymeraKalkulacka,
                     ]
                   : [vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome]),
-                object(
-                  'datumy',
-                  {},
-                  {
-                    columns: true,
-                    columnsRatio: '1/1',
-                  },
-                  [
-                    datePicker(
-                      'datumVznikuDanovejPovinnosti',
-                      { title: 'Dátum vzniku daňovej povinnosti' },
-                      {
-                        helptextFooter:
-                          'Vypĺňate len v prípade, ak ste nebytový priestor zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
-                      },
-                    ),
-                    datePicker(
-                      'datumZanikuDanovejPovinnosti',
-                      { title: 'Dátum zániku daňovej povinnosti' },
-                      {
-                        helptextFooter:
-                          'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
-                      },
-                    ),
-                  ],
-                ),
+                object('datumy', {}, {}, [
+                  datePicker(
+                    'datumVznikuDanovejPovinnosti',
+                    { title: 'Dátum vzniku daňovej povinnosti' },
+                    {
+                      selfColumn: '2/4',
+                      helptextFooter:
+                        'Vypĺňate len v prípade, ak ste nebytový priestor zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
+                    },
+                  ),
+                  datePicker(
+                    'datumZanikuDanovejPovinnosti',
+                    { title: 'Dátum zániku daňovej povinnosti' },
+                    {
+                      selfColumn: '2/4',
+                      helptextFooter:
+                        'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+                    },
+                  ),
+                ]),
               ],
             ),
           ]),

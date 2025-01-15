@@ -40,11 +40,11 @@ const BAArrayFieldItemTemplate = <
 
   const headingStyle = cx('flex items-center gap-8', {
     'mb-8': variant === 'topLevel',
-    'border-b border-gray-200 px-6 py-5': variant === 'nested',
+    'border-b border-gray-200 px-4 py-5 md:px-6': variant === 'nested',
   })
 
   const contentStyle = cx({
-    'px-4 md:px-6': variant === 'nested',
+    'px-4 py-5 md:px-6': variant === 'nested',
   })
 
   const title = getArrayItemTitle(itemTitle, index)

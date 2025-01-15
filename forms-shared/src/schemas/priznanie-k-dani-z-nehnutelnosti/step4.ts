@@ -174,67 +174,55 @@ const innerArray = (kalkulacka: boolean) =>
         },
       ),
       conditionalFields(createCondition([[['castStavbyOslobodenaOdDane'], { const: true }]]), [
-        object(
-          'castStavbyOslobodenaOdDaneDetaily',
-          {},
+        object('castStavbyOslobodenaOdDaneDetaily', {}, {}, [
+          number(
+            'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
+            {
+              title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+              required: true,
+              minimum: 0,
+            },
+            {
+              selfColumn: '2/4',
+              helptextFooter:
+                'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+            },
+          ),
+          number(
+            'vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
+            {
+              title:
+                'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
+              required: true,
+              minimum: 0,
+            },
+            {
+              selfColumn: '2/4',
+              helptextFooter: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+            },
+          ),
+        ]),
+      ]),
+      object('datumy', {}, {}, [
+        datePicker(
+          'datumVznikuDanovejPovinnosti',
+          { title: 'Dátum vzniku daňovej povinnosti' },
           {
-            columns: true,
-            columnsRatio: '1/1',
+            selfColumn: '2/4',
+            helptextFooter:
+              'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
           },
-          [
-            number(
-              'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
-              {
-                title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
-                required: true,
-                minimum: 0,
-              },
-              {
-                helptextFooter:
-                  'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
-              },
-            ),
-            number(
-              'vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
-              {
-                title:
-                  'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
-                required: true,
-                minimum: 0,
-              },
-              {
-                helptextFooter: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
-              },
-            ),
-          ],
+        ),
+        datePicker(
+          'datumZanikuDanovejPovinnosti',
+          { title: 'Dátum zániku daňovej povinnosti' },
+          {
+            selfColumn: '2/4',
+            helptextFooter:
+              'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+          },
         ),
       ]),
-      object(
-        'datumy',
-        {},
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          datePicker(
-            'datumVznikuDanovejPovinnosti',
-            { title: 'Dátum vzniku daňovej povinnosti' },
-            {
-              helptextFooter:
-                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
-            },
-          ),
-          datePicker(
-            'datumZanikuDanovejPovinnosti',
-            { title: 'Dátum zániku daňovej povinnosti' },
-            {
-              helptextFooter:
-                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
-            },
-          ),
-        ],
-      ),
       input(
         'poznamka',
         { type: 'text', title: 'Poznámka' },

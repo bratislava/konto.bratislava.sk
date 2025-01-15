@@ -22,8 +22,6 @@ RUN npx prisma migrate
 
 RUN npm run build
 
-RUN npm run build-migrate-add-form-summary
-
 # development
 FROM base AS dev
 
@@ -64,4 +62,4 @@ COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res
 COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 
-ENTRYPOINT npx prisma migrate deploy && npm run migrate-add-form-summary && npm run start:prod
+ENTRYPOINT npx prisma migrate deploy && npm run start:prod

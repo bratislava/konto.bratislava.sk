@@ -1,17 +1,18 @@
-import { Body, Controller, Logger, Param, Post } from '@nestjs/common'
+import { Body, Controller, Param, Post } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 import { GetSignerDataRequestDto } from '../convert/dtos/form.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 import TaxService from './tax.service'
 
 @Controller('tax')
 @ApiTags('Tax')
 export default class TaxController {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly taxService: TaxService) {
-    this.logger = new Logger('TaxController')
+    this.logger = new LineLoggerSubservice('TaxController')
   }
 
   // TODO needs much love, barebones to test E2E functionality ASAP

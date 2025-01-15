@@ -16,6 +16,7 @@ import {
   MailgunErrorsResponseEnum,
 } from '../../global-enums/mailgun.errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import {
   MAILGUN_CONFIG,
   MAILGUN_CONFIG_FEEDBACK_URLS,
@@ -27,6 +28,8 @@ export default class MailgunService {
   mailgunClient: IMailgunClient
 
   oloTransporter: nodemailer.Transporter
+
+  logger: LineLoggerSubservice
 
   constructor(
     private readonly configService: ConfigService,
@@ -42,6 +45,7 @@ export default class MailgunService {
         'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
       )
     }
+    this.logger = new LineLoggerSubservice(MailgunService.name)
     const mailgun = new Mailgun(FormData)
     this.mailgunClient = mailgun.client({
       username: 'api',
@@ -125,9 +129,9 @@ export default class MailgunService {
         },
       )
       if (mailgunResponse.status !== 200)
-        console.warn(`Mailgun message was not sent for email `)
+        this.logger.warn(`Mailgun message was not sent for email `)
     } catch (error) {
-      console.error('ERROR to send mailgun message', error)
+      this.logger.error('ERROR to send mailgun message', error)
     }
   }
 

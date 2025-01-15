@@ -3,7 +3,7 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse } from 'axios'
@@ -28,7 +28,9 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError from '../../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import {
   NasesIsMessageDeliveredDto,
@@ -45,7 +47,7 @@ import {
 
 @Injectable()
 export default class NasesUtilsService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly convertService: ConvertService,
@@ -55,7 +57,7 @@ export default class NasesUtilsService {
     private taxService: TaxService,
     private configService: ConfigService,
   ) {
-    this.logger = new Logger('NasesUtilsService')
+    this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
 
   private tokenValidation(
@@ -281,7 +283,7 @@ export default class NasesUtilsService {
       }
       birthNumber = userInfo.birthNumber
     } catch (error) {
-      alertError('Error when retrieving user info', this.logger, <string>error)
+      alertError('Error when retrieving user info', this.logger, error)
       return null
     }
 
@@ -320,7 +322,7 @@ export default class NasesUtilsService {
         alertError(
           'There was an error when retrieving uri from slovensko.sk',
           this.logger,
-          <string>error
+          error
         )
         return null;
       });
@@ -576,7 +578,7 @@ export default class NasesUtilsService {
         alertError(
           'Error when checking if message is in eDesk',
           this.logger,
-          <string>error,
+          error,
         )
         return false
       })

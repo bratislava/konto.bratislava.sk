@@ -6,10 +6,15 @@ import express from 'express'
 
 import AppModule from './app.module'
 import { INNOVATION_MAIl } from './utils/constants'
+import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
+import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap(): Promise<void> {
   const port = process.env.PORT || 3000
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    logger: new LineLoggerSubservice('Nest'),
+  })
+  // app.useLogger(new LineLoggerSubservice('Nest'))
   const corsOptions = {
     origin: [
       'http://localhost:3001',
@@ -34,6 +39,8 @@ async function bootstrap(): Promise<void> {
       forbidUnknownValues: true,
     }),
   )
+  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
+  app.useGlobalFilters(new HttpExceptionFilter())
   const config = new DocumentBuilder()
     .setTitle('Nest Forms Backend')
     .setDescription('Backend od processing forms and handling the attachments')

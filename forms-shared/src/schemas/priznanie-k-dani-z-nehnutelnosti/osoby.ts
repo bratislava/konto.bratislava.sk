@@ -30,59 +30,36 @@ const priezviskoField = input(
   {},
 )
 
-const menoTitulField = object(
-  'menoTitul',
-  { required: true },
-  {
-    columns: true,
-    columnsRatio: '3/1',
-  },
-  [
-    input('meno', { type: 'text', title: 'Meno', required: true }, {}),
-    input('titul', { type: 'text', title: 'Titul' }, {}),
-  ],
-)
+const menoTitulField = object('menoTitul', { required: true }, {}, [
+  input('meno', { type: 'text', title: 'Meno', required: true }, { selfColumn: '3/4' }),
+  input('titul', { type: 'text', title: 'Titul' }, { selfColumn: '1/4' }),
+])
 
 const ulicaCisloFields = (type: UlicaCisloTyp) =>
-  object(
-    `ulicaCislo${type}`,
-    { required: true },
-    {
-      columns: true,
-      columnsRatio: '3/1',
-    },
-    [
-      input(
-        'ulica',
-        { type: 'text', title: 'Ulica', required: true },
-        {
-          helptextFooter: {
-            [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
-            [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
-              'Zadajte ulicu miesta podnikania podľa živnostenského registra.',
-            [UlicaCisloTyp.PravnickaOsoba]: 'Zadajte ulicu sídla.',
-            [UlicaCisloTyp.BezpodieloveSpoluvlastnictvoManzelov]:
-              'Zadajte ulicu trvalého pobytu manžela/manželky.',
-            [UlicaCisloTyp.KorespondencnaAdresa]: undefined,
-          }[type],
-        },
-      ),
-      input('cislo', { type: 'text', title: 'Čislo', required: true }, {}),
-    ],
-  )
+  object(`ulicaCislo${type}`, { required: true }, {}, [
+    input(
+      'ulica',
+      { type: 'text', title: 'Ulica', required: true },
+      {
+        selfColumn: '3/4',
+        helptextFooter: {
+          [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
+          [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
+            'Zadajte ulicu miesta podnikania podľa živnostenského registra.',
+          [UlicaCisloTyp.PravnickaOsoba]: 'Zadajte ulicu sídla.',
+          [UlicaCisloTyp.BezpodieloveSpoluvlastnictvoManzelov]:
+            'Zadajte ulicu trvalého pobytu manžela/manželky.',
+          [UlicaCisloTyp.KorespondencnaAdresa]: undefined,
+        }[type],
+      },
+    ),
+    input('cislo', { type: 'text', title: 'Čislo', required: true }, { selfColumn: '1/4' }),
+  ])
 
-const obecPscField = object(
-  'obecPsc',
-  { required: true },
-  {
-    columns: true,
-    columnsRatio: '3/1',
-  },
-  [
-    input('obec', { type: 'text', title: 'Obec', required: true }, {}),
-    input('psc', { type: 'text', title: 'PSČ', required: true }, {}),
-  ],
-)
+const obecPscField = object('obecPsc', { required: true }, {}, [
+  input('obec', { type: 'text', title: 'Obec', required: true }, { selfColumn: '3/4' }),
+  input('psc', { type: 'text', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+])
 
 const statField = select(
   'stat',

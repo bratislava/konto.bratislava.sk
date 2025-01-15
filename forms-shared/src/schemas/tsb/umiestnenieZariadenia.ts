@@ -34,9 +34,13 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         ],
       ]),
       [
-        object('menoPriezvisko', { required: true }, { columns: true, columnsRatio: '1/1' }, [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+        object('menoPriezvisko', { required: true }, {}, [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+          input(
+            'priezvisko',
+            { title: 'Priezvisko', required: true, type: 'text' },
+            { selfColumn: '2/4' },
+          ),
         ]),
       ],
     ),
@@ -107,18 +111,10 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         ),
       ],
     ),
-    object(
-      'mestoPsc',
-      { required: true },
-      {
-        columns: true,
-        columnsRatio: '3/1',
-      },
-      [
-        input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-        input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-      ],
-    ),
+    object('mestoPsc', { required: true }, {}, [
+      input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+      input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+    ]),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     input(
       'telefonneCislo',
@@ -178,34 +174,26 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
         { required: true },
         { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
         [
-          object(
-            'menoPriezvisko',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '1/1',
-            },
-            [
-              input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-              input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-            ],
-          ),
+          object('menoPriezvisko', { required: true }, {}, [
+            input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+            input(
+              'priezvisko',
+              { title: 'Priezvisko', required: true, type: 'text' },
+              { selfColumn: '2/4' },
+            ),
+          ]),
         ],
       ),
     ]),
     conditionalFields(createCondition([[['zodpovednostZaMontaz'], { const: 'Fyzická osoba' }]]), [
-      object(
-        'menoPriezvisko',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-        ],
-      ),
+      object('menoPriezvisko', { required: true }, {}, [
+        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+        input(
+          'priezvisko',
+          { title: 'Priezvisko', required: true, type: 'text' },
+          { selfColumn: '2/4' },
+        ),
+      ]),
     ]),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
     input(

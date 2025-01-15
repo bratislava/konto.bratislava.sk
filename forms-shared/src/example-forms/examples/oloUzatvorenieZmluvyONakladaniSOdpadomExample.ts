@@ -20,8 +20,6 @@ const exampleForm: ExampleForm = {
       },
       ico: '12334412',
       dic: '12332123',
-      konatel: 'Konatel Konajuci',
-      zastupeny: 'Jozef Mrkva',
       kontaktnaOsoba: 'Jozef Mrkva',
       cisloPovoleniaNaVstup: '123/45',
     },

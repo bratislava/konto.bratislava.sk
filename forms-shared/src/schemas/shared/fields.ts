@@ -2,7 +2,7 @@ import { input } from '../../generator/functions/input'
 import { object } from '../../generator/object'
 
 /**
- * Create phone number input field consitent with all forms.
+ * Create phone number input field consistent with all forms.
  */
 export const sharedPhoneNumberField = (property: string, required: boolean, helptext?: string) =>
   input(

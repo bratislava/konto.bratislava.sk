@@ -81,6 +81,7 @@ import {
 import {
   ForbiddenFormSendDto,
   FormAssignedToOtherUserErrorDto,
+  FormSummaryGenerationErrorDto,
   UnableAddFormToRabbitErrorDto,
 } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -506,6 +507,7 @@ export default class NasesController {
   @ApiExtraModels(NoFormXmlDataErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -539,11 +541,14 @@ export default class NasesController {
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -579,6 +584,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -612,11 +618,14 @@ export default class NasesController {
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -672,6 +681,7 @@ export default class NasesController {
   @ApiExtraModels(UnableAddFormToRabbitErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -704,11 +714,14 @@ export default class NasesController {
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -747,6 +760,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -780,11 +794,14 @@ export default class NasesController {
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -825,6 +842,13 @@ export default class NasesController {
     }
 
     const updateData = { ...data, eidToken: undefined }
+
+    // TODO temp SEND_TO_NASES_ERROR log, remove
+    console.log(
+      `Signed data from request for formId ${id} before send:`,
+      updateData.formDataBase64,
+    )
+
     await this.nasesService.updateFormEid(
       id,
       user,

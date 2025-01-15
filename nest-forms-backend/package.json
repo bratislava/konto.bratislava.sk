@@ -24,7 +24,9 @@
     "test:e2e": "jest --config test/jest-e2e.json",
     "test:send-form": "jest --config test/jest-send-form.json",
     "test:generate-pdf": "jest --config test/jest-generate-pdf.json",
-    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
+    "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
+    "build-migrate-add-form-summary": "tsc --project ./prisma/migrations/20250110152852_add_form_summary/tsconfig.json --outDir ./prisma/migrations/20250110152852_add_form_summary",
+    "migrate-add-form-summary": "node ./prisma/migrations/20250110152852_add_form_summary/data-migration.js"
   },
   "dependencies": {
     "@bratislava/ginis-sdk": "^0.5.0",

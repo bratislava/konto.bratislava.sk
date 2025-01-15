@@ -525,6 +525,13 @@ export default class NasesUtilsService {
       )
 
       if (!response.data) {
+        // TODO temp SEND_TO_NASES_ERROR log, remove
+        console.log(
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
+            response.data
+          }, message: ${message}`,
+        )
+
         return {
           status: 422,
           data: {
@@ -535,6 +542,13 @@ export default class NasesUtilsService {
       }
 
       if (response.data.receive_result !== 0) {
+        // TODO temp SEND_TO_NASES_ERROR log, remove
+        console.log(
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
+            response.data
+          }, message: ${message}`,
+        )
+
         return {
           status: 422,
           data: {
@@ -548,6 +562,10 @@ export default class NasesUtilsService {
       if (error instanceof AxiosError && error.response?.data) {
         return { status: error.response.status, data: error.response.data }
       }
+      // TODO temp SEND_TO_NASES_ERROR log, remove
+      console.log(
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, message: ${message}`,
+      )
       return {
         status: 400,
         data: {

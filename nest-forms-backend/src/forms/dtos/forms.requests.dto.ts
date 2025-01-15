@@ -9,6 +9,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -148,6 +149,14 @@ export class FormUpdateBodyDto {
   @IsString()
   @IsOptional()
   actorUri?: string | null
+
+  @ApiPropertyOptional({
+    description: 'Form summary for sent forms',
+    nullable: true,
+  })
+  @IsObject()
+  @IsOptional()
+  formSummary?: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue
 }
 
 /* eslint-enable pii/no-phone-number */

@@ -13,6 +13,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
+import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
@@ -187,6 +188,7 @@ export default class NasesConsumerService {
     data: RabbitPayloadDto,
     formDefinition: FormDefinitionSlovenskoSk,
     senderUri?: string,
+    additionalFormUpdates?: FormUpdateBodyDto,
   ): Promise<boolean> {
     // TODO find a nicer place to do this
     // create a pdf image of the form, upload it to minio and at it among form files
@@ -219,6 +221,7 @@ export default class NasesConsumerService {
     await this.formsService.updateForm(data.formId, {
       state: FormState.DELIVERED_NASES,
       error: FormError.NONE,
+      ...additionalFormUpdates,
     })
 
     // Send the form to ginis if should be sent

@@ -2317,25 +2317,6 @@ export interface GetFormsResponseDto {
 /**
  *
  * @export
- * @interface GetSignerDataRequestDto
- */
-export interface GetSignerDataRequestDto {
-  /**
-   * Form id
-   * @type {string}
-   * @memberof GetSignerDataRequestDto
-   */
-  formId: string
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof GetSignerDataRequestDto
-   */
-  jsonForm: object
-}
-/**
- *
- * @export
  * @interface GinisDocumentDetailResponseDto
  */
 export interface GinisDocumentDetailResponseDto {
@@ -3279,6 +3260,128 @@ export interface ServiceRunningDto {
 /**
  *
  * @export
+ * @interface SignerDataRequestDto
+ */
+export interface SignerDataRequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof SignerDataRequestDto
+   */
+  formId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof SignerDataRequestDto
+   */
+  formDataJson: object
+}
+/**
+ *
+ * @export
+ * @interface SignerDataResponseDto
+ */
+export interface SignerDataResponseDto {
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  signatureId: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectId: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectDescription: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectFormatIdentifier: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcXMLData: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcIdentifier: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcVersion: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcUsedXSD: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xsdReferenceURI: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcUsedXSLT: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslReferenceURI: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslMediaDestinationTypeDescription: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslXSLTLanguage: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslTargetEnvironment: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof SignerDataResponseDto
+   */
+  xdcIncludeRefs: boolean
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcNamespaceURI: string
+}
+/**
+ *
+ * @export
  * @interface SimpleBadRequestErrorDto
  */
 export interface SimpleBadRequestErrorDto {
@@ -3344,103 +3447,6 @@ export interface StatusResponseDto {
    * @memberof StatusResponseDto
    */
   scanner: ServiceRunningDto
-}
-/**
- *
- * @export
- * @interface TaxSignerDataResponseDto
- */
-export interface TaxSignerDataResponseDto {
-  /**
-   * Name of the xml \"file\" to be signed
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectId: string
-  /**
-   * Free text description - we are using name of the form
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectDescription: string
-  /**
-   * We do not really know the available values - might allow something other than XML to be signed ? If left empty it works with xml.
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectFormatIdentifier: string
-  /**
-   * Form values in XML
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcXMLData: string
-  /**
-   * Same as NASES schema id (pospId)
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcIdentifier: string
-  /**
-   * Same as NASES schema version (pospVersion)
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcVersion: string
-  /**
-   * XSD validation
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcUsedXSD: string
-  /**
-   * XSD Reference URI, put together on request from pospId and pospVersion
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xsdReferenceURI: string
-  /**
-   * XSLT text transformation, used to convert xml into what is displayed in signer
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcUsedXSLT: string
-  /**
-   * XSLT Reference URI, put together on request from pospId and pospVersion
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslReferenceURI: string
-  /**
-   * Type of XSLT transformation - likely always TXT
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslMediaDestinationTypeDescription: string
-  /**
-   * XSLT language
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslXSLTLanguage: string
-  /**
-   * TODO find out what is this, empty even on ESBS
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslTargetEnvironment: string
-  /**
-   * (always true) - TODO find out what is this
-   * @type {boolean}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcIncludeRefs: boolean
-  /**
-   * Should always be the value from example
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcNamespaceURI: string
 }
 /**
  *
@@ -3836,6 +3842,55 @@ export interface XmlToJsonResponseDto {
    */
   jsonForm: object
 }
+/**
+ *
+ * @export
+ * @interface XmlValidationErrorDto
+ */
+export interface XmlValidationErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof XmlValidationErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  errorName: XmlValidationErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof XmlValidationErrorDto
+   */
+  object?: object
+}
+
+export const XmlValidationErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type XmlValidationErrorDtoErrorNameEnum =
+  (typeof XmlValidationErrorDtoErrorNameEnum)[keyof typeof XmlValidationErrorDtoErrorNameEnum]
 
 /**
  * ADMINApi - axios parameter creator
@@ -7078,6 +7133,160 @@ export class NasesApi extends BaseAPI {
 }
 
 /**
+ * SignerApi - axios parameter creator
+ * @export
+ */
+export const SignerApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerGetSignerData: async (
+      signerDataRequestDto: SignerDataRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'signerDataRequestDto' is not null or undefined
+      assertParamExists(
+        'signerControllerGetSignerData',
+        'signerDataRequestDto',
+        signerDataRequestDto,
+      )
+      const localVarPath = `/signer/get-signer-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        signerDataRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * SignerApi - functional programming interface
+ * @export
+ */
+export const SignerApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = SignerApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async signerControllerGetSignerData(
+      signerDataRequestDto: SignerDataRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignerDataResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.signerControllerGetSignerData(
+        signerDataRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SignerApi.signerControllerGetSignerData']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * SignerApi - factory interface
+ * @export
+ */
+export const SignerApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = SignerApiFp(configuration)
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerGetSignerData(
+      signerDataRequestDto: SignerDataRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SignerDataResponseDto> {
+      return localVarFp
+        .signerControllerGetSignerData(signerDataRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * SignerApi - object-oriented interface
+ * @export
+ * @class SignerApi
+ * @extends {BaseAPI}
+ */
+export class SignerApi extends BaseAPI {
+  /**
+   * Generates signer data including XML and metadata for form signing
+   * @summary Get signer data
+   * @param {SignerDataRequestDto} signerDataRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SignerApi
+   */
+  public signerControllerGetSignerData(
+    signerDataRequestDto: SignerDataRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return SignerApiFp(this.configuration)
+      .signerControllerGetSignerData(signerDataRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * StatusesApi - axios parameter creator
  * @export
  */
@@ -7442,170 +7651,6 @@ export class StatusesApi extends BaseAPI {
   public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerStatus(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * TaxApi - axios parameter creator
- * @export
- */
-export const TaxApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerSignerData: async (
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'slug' is not null or undefined
-      assertParamExists('taxControllerSignerData', 'slug', slug)
-      // verify required parameter 'getSignerDataRequestDto' is not null or undefined
-      assertParamExists(
-        'taxControllerSignerData',
-        'getSignerDataRequestDto',
-        getSignerDataRequestDto,
-      )
-      const localVarPath = `/tax/signer-data/{slug}`.replace(
-        `{${'slug'}}`,
-        encodeURIComponent(String(slug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getSignerDataRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * TaxApi - functional programming interface
- * @export
- */
-export const TaxApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = TaxApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async taxControllerSignerData(
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerSignerData(
-        slug,
-        getSignerDataRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['TaxApi.taxControllerSignerData']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * TaxApi - factory interface
- * @export
- */
-export const TaxApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = TaxApiFp(configuration)
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerSignerData(
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<TaxSignerDataResponseDto> {
-      return localVarFp
-        .taxControllerSignerData(slug, getSignerDataRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * TaxApi - object-oriented interface
- * @export
- * @class TaxApi
- * @extends {BaseAPI}
- */
-export class TaxApi extends BaseAPI {
-  /**
-   * Returns input data for ditec signer from JSON data and shcema version id
-   * @summary
-   * @param {string} slug
-   * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof TaxApi
-   */
-  public taxControllerSignerData(
-    slug: string,
-    getSignerDataRequestDto: GetSignerDataRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return TaxApiFp(this.configuration)
-      .taxControllerSignerData(slug, getSignerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

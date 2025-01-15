@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 
 import {
   ForbiddenErrorDto,
+  InternalServerErrorDto,
   UnprocessableEntityErrorDto,
 } from '../utils/global-dtos/errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -44,6 +45,20 @@ export class FormAssignedToOtherUserErrorDto extends ForbiddenErrorDto {
   @ApiProperty({
     example: NasesErrorsResponseEnum.FORM_ASSIGNED_TO_OTHER_USER,
     default: NasesErrorsResponseEnum.FORM_ASSIGNED_TO_OTHER_USER,
+  })
+  declare message: string
+}
+
+export class FormSummaryGenerationErrorDto extends InternalServerErrorDto {
+  @ApiProperty({
+    example: NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+    default: NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+    default: NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
   })
   declare message: string
 }

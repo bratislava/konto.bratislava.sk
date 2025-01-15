@@ -1,29 +1,19 @@
 import { formsApi } from '@clients/forms'
-import { TaxSignerDataResponseDto } from '@clients/openapi-forms'
+import { SignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import hash from 'object-hash'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import { useIsSSR } from 'react-aria'
+import { hashFormData } from 'forms-shared/signer/hashFormData'
+import isEqual from 'lodash/isEqual'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
-import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
 import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
 import { useFormModals } from '../useFormModals'
 import { SignerErrorType } from './mapDitecError'
-// kept while it might be usefull for local testing
-// import { signerExamplePayload } from './signerExamplePayload'
 import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
 
 export type FormSignature = {
@@ -31,20 +21,14 @@ export type FormSignature = {
    * We store the hash of the object that was signed. This is the easiest way to ensure the validity of the signature
    * for the current data.
    */
-  objectHash: string
+  formDataHash: string
   signature: string
-}
-
-declare global {
-  interface Window {
-    __DEV_SHOW_SIGNATURE?: () => void
-  }
 }
 
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
-  const { formId, isSigned, initialSignature, formDefinition } = useFormContext()
+  const { formId, isSigned, initialSignature } = useFormContext()
   const { formData, formDataRef } = useFormData()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const { sign: signerSign } = useFormSigner({
@@ -66,55 +50,40 @@ const useGetContext = () => {
   const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
 
-  const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
-  const isSSR = useIsSSR()
-
   const handleSignatureChange = (newSignature: FormSignature | null) => {
     setSignature(newSignature)
     turnOnLeaveProtection()
   }
 
-  useEffect(() => {
-    // Dev only debugging feature
-    if (!isSSR) {
-      // eslint-disable-next-line no-underscore-dangle
-      window.__DEV_SHOW_SIGNATURE = () => setShowSignatureInConsole(true)
-    }
-  }, [isSSR, setShowSignatureInConsole])
-
   const signData = async (
     formDataRequest: GenericObjectType,
-    signerPayload: TaxSignerDataResponseDto,
+    signerPayload: SignerDataResponseDto,
   ) => {
-    const requestHash = hash(formDataRequest)
-    const result = await signerSign({
-      ...signerPayload,
-      // The object hash is stored in the signature id, as it is retrieved later on when form is opened in `getInitialFormSignature`.
-      signatureId: createFormSignatureId(requestHash),
-    })
+    const currentHash = hashFormData(formDataRequest)
+    const result = await signerSign(signerPayload)
     if (!isMounted()) {
       return
     }
-    // It is possible to edit the data while the signer is open. The easiest way how to ensure the validity of the
-    // signature is to check the hash of the data that was signed versus the current data.
-    const currentHash = hash(formDataRef.current)
-    if (currentHash !== requestHash) {
+    // It is possible to edit the data while the signer is open.
+    if (!isEqual(formDataRequest, formDataRef.current)) {
       openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')
       handleSignatureChange(null)
       return
     }
-    handleSignatureChange({ objectHash: currentHash, signature: result })
-    if (showSignatureInConsole) {
-      console.log('Signature:', result)
-    }
+    handleSignatureChange({ formDataHash: currentHash, signature: result })
   }
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
-      formsApi.taxControllerSignerData(formDefinition.slug, {
-        formId,
-        jsonForm: formDataRequest,
-      }),
+      formsApi.signerControllerGetSignerData(
+        {
+          formId,
+          formDataJson: formDataRequest,
+        },
+        {
+          accessToken: 'onlyAuthenticated',
+        },
+      ),
     networkMode: 'always',
     onSuccess: (response, formDataRequest) => {
       // This is not awaited on purpose, because it would make the mutation pending.
@@ -155,7 +124,7 @@ const useGetContext = () => {
       return false
     }
 
-    return signature.objectHash === hash(formData)
+    return signature.formDataHash === hashFormData(formData)
   }, [isSigned, signature, formData])
 
   return { signature, sign, remove, isValidSignature, getSingerDataIsPending }

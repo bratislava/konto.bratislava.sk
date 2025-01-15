@@ -1,21 +1,23 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { ServiceRunningDto } from './dtos/status.dto'
 
 @Injectable()
 export default class StatusService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private minioClientSubservice: MinioClientSubservice,
     private readonly prismaService: PrismaService,
     private readonly scannerClientService: ScannerClientService,
   ) {
-    this.logger = new Logger('StatusService')
+    this.logger = new LineLoggerSubservice('StatusService')
   }
 
   // function which checks if prisma is running
@@ -26,7 +28,7 @@ export default class StatusService {
         running: result,
       }
     } catch (error) {
-      alertError('Prisma is not running.', this.logger, <string>error)
+      alertError('Prisma is not running.', this.logger, error)
       return {
         running: false,
       }
@@ -42,7 +44,7 @@ export default class StatusService {
         running: true,
       }
     } catch (error) {
-      alertError('Scanner is not running.', this.logger, <string>error)
+      alertError('Scanner is not running.', this.logger, error)
       return {
         running: false,
       }
@@ -58,7 +60,7 @@ export default class StatusService {
         running: true,
       }
     } catch (error) {
-      alertError('Minio is not running.', this.logger, <string>error)
+      alertError('Minio is not running.', this.logger, error)
       return {
         running: false,
       }

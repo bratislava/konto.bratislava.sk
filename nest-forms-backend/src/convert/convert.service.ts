@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from 'node:stream'
 
-import { Injectable, Logger, StreamableFile } from '@nestjs/common'
+import { Injectable, StreamableFile } from '@nestjs/common'
 import { Forms, Prisma } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
@@ -32,6 +32,7 @@ import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { patchConvertServiceTaxFormDefinition } from './convert.helper'
@@ -49,7 +50,7 @@ import {
 
 @Injectable()
 export default class ConvertService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly taxService: TaxService,
@@ -59,7 +60,7 @@ export default class ConvertService {
     private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('ConvertService')
+    this.logger = new LineLoggerSubservice('ConvertService')
   }
 
   private async convertJsonToXmlObject(

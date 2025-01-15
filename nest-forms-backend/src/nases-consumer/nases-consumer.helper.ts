@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Files, FormError } from '@prisma/client'
 
 import {
@@ -6,14 +6,16 @@ import {
   infectedScanStatuses,
 } from '../common/utils/helpers'
 import PrismaService from '../prisma/prisma.service'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class NasesConsumerHelper {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private prisma: PrismaService) {
-    this.logger = new Logger('NasesConsumerHelper')
+    this.logger = new LineLoggerSubservice('NasesConsumerHelper')
   }
 
   async checkInfectedFiles(formId: string): Promise<boolean> {

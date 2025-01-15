@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Logger,
   Param,
   Patch,
   Post,
@@ -58,6 +57,7 @@ import {
   SimpleBadRequestErrorDto,
   UnauthorizedErrorDto,
 } from '../utils/global-dtos/errors.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
@@ -94,10 +94,10 @@ import FilesService from './files.service'
 })
 @Controller('files')
 export default class FilesController {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly filesService: FilesService) {
-    this.logger = new Logger('FilesController')
+    this.logger = new LineLoggerSubservice('FilesController')
   }
 
   @ApiOperation({

@@ -1,5 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus, Logger } from '@nestjs/common'
+import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
@@ -16,6 +16,7 @@ import FormValidatorRegistryService from '../../../form-validator-registry/form-
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { WebhookErrorsResponseEnum } from '../dtos/webhook.errors.enum'
 import WebhookSubservice from '../webhook.subservice'
 
@@ -51,7 +52,7 @@ describe('WebhookSubservice', () => {
       warn: jest.fn(),
       debug: jest.fn(),
       verbose: jest.fn(),
-    } as unknown as Logger
+    } as unknown as LineLoggerSubservice
     throwerErrorGuard = module.get(
       ThrowerErrorGuard,
     ) as jest.Mocked<ThrowerErrorGuard>

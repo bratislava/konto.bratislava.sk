@@ -1,10 +1,11 @@
 import * as process from 'node:process'
 
 import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
-import { Logger, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import { RABBIT_GINIS_AUTOMATION, RABBIT_MQ } from '../utils/constants'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import RabbitmqClientService from './rabbitmq-client.service'
 
 @Module({
@@ -30,6 +31,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
           },
         ],
         connectionInitOptions: { wait: false },
+        logger: new LineLoggerSubservice('RabbitMQ'),
       }),
       inject: [ConfigService],
     }),
@@ -38,14 +40,14 @@ import RabbitmqClientService from './rabbitmq-client.service'
   exports: [RabbitmqClientService, RabbitMQModule],
 })
 export default class RabbitmqClientModule {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private rabbitmqClientService: RabbitmqClientService,
     private amqpConnection: AmqpConnection,
   ) {
     this.rabbitmqClientService = new RabbitmqClientService(amqpConnection)
-    this.logger = new Logger('RabbitmqClientModule')
+    this.logger = new LineLoggerSubservice('RabbitmqClientModule')
     this.logger.log(
       `Setting up rabbit mq connection to: ${<string>(
         process.env.RABBIT_MQ_URI

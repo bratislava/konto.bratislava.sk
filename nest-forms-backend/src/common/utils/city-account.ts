@@ -1,5 +1,6 @@
-import { Logger } from '@nestjs/common'
 import axios from 'axios'
+
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
  * Update user tier in city account to that of eid verified level
@@ -7,7 +8,7 @@ import axios from 'axios'
  */
 const verifyUserByEidToken = async (
   oboToken: string,
-  logger: Logger,
+  logger: LineLoggerSubservice,
   bearerToken?: string,
 ): Promise<void> => {
   if (!bearerToken) return
@@ -24,9 +25,7 @@ const verifyUserByEidToken = async (
       },
     )
     .catch((error) => {
-      logger.error(
-        `There was an error during verifying the user: ${<string>error}`,
-      )
+      logger.error(`There was an error during verifying the user: `, error)
     })
 }
 

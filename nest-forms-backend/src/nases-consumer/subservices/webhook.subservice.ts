@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
@@ -15,7 +15,9 @@ import {
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError from '../../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import WebhookDto from './dtos/webhook.dto'
 import {
   WebhookErrorsEnum,
@@ -24,7 +26,9 @@ import {
 
 @Injectable()
 export default class WebhookSubservice {
-  private logger: Logger = new Logger(WebhookSubservice.name)
+  private logger: LineLoggerSubservice = new LineLoggerSubservice(
+    WebhookSubservice.name,
+  )
 
   constructor(
     private readonly prismaService: PrismaService,

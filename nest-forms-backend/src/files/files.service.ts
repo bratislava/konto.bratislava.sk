@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
@@ -18,7 +18,9 @@ import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import {
   BufferedFileDto,
@@ -36,7 +38,7 @@ import FilesHelper from './files.helper'
 
 @Injectable()
 export default class FilesService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   private readonly jwtSecret: string
 
@@ -50,7 +52,7 @@ export default class FilesService {
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesConsumerHelper: NasesConsumerHelper,
   ) {
-    this.logger = new Logger('FilesService')
+    this.logger = new LineLoggerSubservice('FilesService')
     this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
   }
 

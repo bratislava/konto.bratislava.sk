@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
 import { ErrorsEnum } from '../../global-enums/errors.enum'
+import { ErrorSymbols, ResponseErrorDto } from '../dtos/error.dto'
 import ThrowerErrorGuard from '../thrower-error.guard'
 
 describe('ThrowerErrorGuard', () => {
@@ -24,17 +25,17 @@ describe('ThrowerErrorGuard', () => {
     it('should alert', () => {
       const result = guard
         .BadRequestException(ErrorsEnum.DATABASE_ERROR, 'Some message')
-        .getResponse() as { alert: number }
+        .getResponse() as ResponseErrorDto
 
-      expect(result.alert).toBe(1)
+      expect(result[ErrorSymbols.alert]).toBe(1)
     })
 
     it('should not alert', () => {
       const result = guard
-        .BadRequestException('OtherError', 'Some message')
-        .getResponse() as { alert: number }
+        .BadRequestException(ErrorsEnum.NOT_FOUND_ERROR, 'Some message')
+        .getResponse() as ResponseErrorDto
 
-      expect(result.alert).toBe(0)
+      expect(result[ErrorSymbols.alert]).toBe(0)
     })
   })
 })

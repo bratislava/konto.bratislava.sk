@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -24,13 +24,14 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 import FormsHelper from './forms.helper'
 
 @Injectable()
 export default class FormsService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly prisma: PrismaService,
@@ -39,7 +40,7 @@ export default class FormsService {
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
   ) {
-    this.logger = new Logger('FormsService')
+    this.logger = new LineLoggerSubservice('FormsService')
   }
 
   async createForm(data: Prisma.FormsUncheckedCreateInput): Promise<Forms> {

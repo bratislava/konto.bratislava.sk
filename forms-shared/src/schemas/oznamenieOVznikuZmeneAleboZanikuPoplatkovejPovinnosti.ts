@@ -15,7 +15,6 @@ import { number } from '../generator/functions/number'
 import { textArea } from '../generator/functions/textArea'
 import { arrayField } from '../generator/functions/arrayField'
 import { match, P } from 'ts-pattern'
-import { GeneratorFieldType } from '../generator/generatorTypes'
 
 const komunalMap = {
   fyzickaOsoba: {
@@ -318,7 +317,7 @@ const getKomunalZmena = (
       'pridat',
       {
         type: 'boolean',
-        title: 'Pridať?',
+        title: 'Chcete si objednať nové zberné nádoby?',
         required: true,
         items: [
           { value: true, label: 'Áno' },
@@ -346,7 +345,7 @@ const getKomunalZmena = (
       'zmena',
       {
         type: 'boolean',
-        title: 'Zmena?',
+        title: 'Chcete zmeniť parametre existujúcich nádob?',
         required: true,
         items: [
           { value: true, label: 'Áno' },
@@ -374,7 +373,7 @@ const getKomunalZmena = (
       'odobrat',
       {
         type: 'boolean',
-        title: 'Odobrať?',
+        title: 'Chcete zrušiť niektoré zberné nádoby?',
         required: true,
         items: [
           { value: true, label: 'Áno' },
@@ -423,22 +422,22 @@ const adresaFields = [
 const getOsobaFields = (pattern: {
   osobaTyp:
     | 'fyzickaOsoba'
-    | 'spravca'
+    | 'spravcaSpolocenstvoVlastnikov'
     | 'fyzickaOsobaPodnikatel'
     | 'pravnickaOsoba'
     | 'splnomocnenecFyzickaOsoba'
     | 'splnomocnenecPravnickaOsoba'
-    | 'spravcaPravnickaOsobaOpravnenaOsoba'
+    | 'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'
 }) => {
   return [
-    match(pattern)
+    ...match(pattern)
       .with(
         {
           osobaTyp: P.union(
             'fyzickaOsoba',
             'fyzickaOsobaPodnikatel',
             'splnomocnenecFyzickaOsoba',
-            'spravcaPravnickaOsobaOpravnenaOsoba',
+            'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
           ),
         },
         () => [
@@ -465,11 +464,11 @@ const getOsobaFields = (pattern: {
           ),
       )
       .otherwise(() => null),
-    match(pattern)
+    ...match(pattern)
       .with(
         {
           osobaTyp: P.union(
-            'spravca',
+            'spravcaSpolocenstvoVlastnikov',
             'fyzickaOsobaPodnikatel',
             'pravnickaOsoba',
             'splnomocnenecPravnickaOsoba',
@@ -481,7 +480,10 @@ const getOsobaFields = (pattern: {
             {
               type: 'text',
               title: match(patternInner)
-                .with({ osobaTyp: 'spravca' }, () => 'Obchodné meno správcu / názov spoločenstva')
+                .with(
+                  { osobaTyp: 'spravcaSpolocenstvoVlastnikov' },
+                  () => 'Obchodné meno správcu / názov spoločenstva',
+                )
                 .with(
                   {
                     osobaTyp: P.union('fyzickaOsobaPodnikatel', 'pravnickaOsoba'),
@@ -521,7 +523,7 @@ const getOsobaFields = (pattern: {
               osobaTyp: P.union(
                 'pravnickaOsoba',
                 'fyzickaOsobaPodnikatel',
-                'spravca',
+                'spravcaSpolocenstvoVlastnikov',
                 'splnomocnenecPravnickaOsoba',
               ),
             },
@@ -535,7 +537,7 @@ const getOsobaFields = (pattern: {
           )
           .with(
             {
-              osobaTyp: P.union('spravcaPravnickaOsobaOpravnenaOsoba'),
+              osobaTyp: P.union('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
             },
             () => 'Adresa trvalého pobytu/sídla',
           )
@@ -543,7 +545,7 @@ const getOsobaFields = (pattern: {
       },
       adresaFields,
     ),
-    match(pattern)
+    ...match(pattern)
       .with({ osobaTyp: 'fyzickaOsoba' }, () => [
         radioGroup(
           'maPrechodnyPobyt',
@@ -564,7 +566,7 @@ const getOsobaFields = (pattern: {
         conditionalFields(createCondition([[['maPrechodnyPobyt'], { const: true }]]), adresaFields),
       ])
       .otherwise(() => []),
-  ].flat()
+  ]
 }
 
 export default schema(
@@ -612,8 +614,6 @@ export default schema(
         {
           variant: 'boxed',
           orientations: 'row',
-          helptext:
-            'Keď zvolí "Nie", zobrazí sa sekcia "Údaje o oprávnenej osobe na podanie oznámenia".',
         },
       ),
       conditionalFields(createCondition([[['voSvojomMene'], { const: false }]]), [
@@ -651,11 +651,11 @@ export default schema(
             ),
             conditionalFields(
               createCondition([[['typOsoby'], { const: 'fyzickaOsoba' }]]),
-              getOsobaFields({ osobaTyp: 'splnomocnenecFyzickaOsoba' }) as GeneratorFieldType[],
+              getOsobaFields({ osobaTyp: 'splnomocnenecFyzickaOsoba' }),
             ),
             conditionalFields(
               createCondition([[['typOsoby'], { const: 'pravnickaOsoba' }]]),
-              getOsobaFields({ osobaTyp: 'splnomocnenecPravnickaOsoba' }) as GeneratorFieldType[],
+              getOsobaFields({ osobaTyp: 'splnomocnenecPravnickaOsoba' }),
             ),
           ],
         ),
@@ -668,7 +668,10 @@ export default schema(
           required: true,
           items: [
             { value: 'fyzickaOsoba', label: 'Fyzická osoba' },
-            { value: 'spravca', label: 'Správca alebo spoločenstvo vlastníkov' },
+            {
+              value: 'spravcaSpolocenstvoVlastnikov',
+              label: 'Správca alebo spoločenstvo vlastníkov',
+            },
             { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba - podnikateľ' },
             { value: 'pravnickaOsoba', label: 'Právnická osoba' },
           ],
@@ -678,17 +681,23 @@ export default schema(
           orientations: 'column',
         },
       ),
-      ...(['fyzickaOsoba', 'spravca', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'] as const).map(
-        (osobaTyp) =>
-          conditionalFields(
-            createCondition([[['oznamovatelTyp'], { const: osobaTyp }]]),
-            getOsobaFields({ osobaTyp }) as GeneratorFieldType[],
-          ),
+      ...(
+        [
+          'fyzickaOsoba',
+          'spravcaSpolocenstvoVlastnikov',
+          'fyzickaOsobaPodnikatel',
+          'pravnickaOsoba',
+        ] as const
+      ).map((osobaTyp) =>
+        conditionalFields(
+          createCondition([[['oznamovatelTyp'], { const: osobaTyp }]]),
+          getOsobaFields({ osobaTyp }),
+        ),
       ),
       conditionalFields(
         createCondition([
           [['voSvojomMene'], { const: true }],
-          [['oznamovatelTyp'], { enum: ['spravca', 'pravnickaOsoba'] }],
+          [['oznamovatelTyp'], { enum: ['spravcaSpolocenstvoVlastnikov', 'pravnickaOsoba'] }],
         ]),
         [
           object(
@@ -711,9 +720,9 @@ export default schema(
                 },
                 {},
               ),
-              ...(getOsobaFields({
-                osobaTyp: 'spravcaPravnickaOsobaOpravnenaOsoba',
-              }) as GeneratorFieldType[]),
+              ...getOsobaFields({
+                osobaTyp: 'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
+              }),
             ],
           ),
         ],
@@ -920,57 +929,97 @@ export default schema(
               {
                 title: 'Druh nehnuteľnosti',
                 required: true,
-                items: (() => {
-                  if (oznamovatelTyp === 'fyzickaOsobaPodnikatel') {
-                    return [
-                      { value: 'rodinnyDom', label: 'Rodinný dom' },
-                      { value: 'byt', label: 'Byt' },
-                      {
-                        value: 'nehnutelnostNaIndividuálnuRekreáciu',
-                        label: 'Nehnuteľnosť na individuálnu rekreáciu',
-                      },
-                    ]
-                  }
-                  return [
-                    { value: 'nebytovaBudova', label: 'Nebytová budova' },
-                    { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
-                    { value: 'ostatneBudovyNaByvanie', label: 'Ostatné budovy na bývanie' },
-                    { value: 'nebytovyPriestor', label: 'Nebytový priestor' },
-                    { value: 'rodinnyDomPodnikanie', label: 'Rodinný dom + podnikanie' },
-                  ]
-                })(),
+                items: match(oznamovatelTyp)
+                  .with('fyzickaOsobaPodnikatel', () => [
+                    { value: 'rodinnyDom', label: 'Rodinný dom' },
+                    { value: 'byt', label: 'Byt' },
+                    {
+                      value: 'nehnutelnostNaIndividuálnuRekreáciu',
+                      label: 'Nehnuteľnosť na individuálnu rekreáciu',
+                    },
+                  ])
+                  .with(
+                    P.union('pravnickaOsoba', 'fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
+                    () => [
+                      { value: 'nebytovaBudova', label: 'Nebytová budova' },
+                      { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
+                      { value: 'ostatneBudovyNaByvanie', label: 'Ostatné budovy na bývanie' },
+                      { value: 'nebytovyPriestor', label: 'Nebytový priestor' },
+                      { value: 'rodinnyDomPodnikanie', label: 'Rodinný dom + podnikanie' },
+                    ],
+                  )
+                  .exhaustive(),
               },
               {},
             ),
-            number(
-              'pocetOsob',
-              {
-                type: 'integer',
-                title: 'Počet osôb užívajúcich nehnuteľnosť',
-                required: true,
-                minimum: 0,
-              },
-              {
-                helptext: (() => {
-                  return 'todo'
-                })(),
-              },
-            ),
+            ...(typOznamenia === 'zmena' || typOznamenia === 'zanik'
+              ? [
+                  number(
+                    'pocetOsob',
+                    {
+                      type: 'integer',
+                      title: match(oznamovatelTyp)
+                        .with(
+                          'spravcaSpolocenstvoVlastnikov',
+                          () => 'Počet osôb žijúcich v bytovom dome',
+                        )
+                        .with(
+                          P.union('fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'),
+                          () => 'Počet osôb užívajúcich nehnuteľnosť',
+                        )
+                        .exhaustive(),
+                      required: true,
+                      minimum: 0,
+                    },
+                    {
+                      helptext: match(oznamovatelTyp)
+                        .with(
+                          'fyzickaOsoba',
+                          () =>
+                            'Zadajte všetky osoby, ktoré sú oprávnené užívať nehnuteľnosť, vrátane maloletých detí.',
+                        )
+                        .with(
+                          P.union(
+                            'spravcaSpolocenstvoVlastnikov',
+                            'fyzickaOsobaPodnikatel',
+                            'pravnickaOsoba',
+                          ),
+                          () => 'Zadajte všetky osoby, ktoré sú oprávnené užívať nehnuteľnosť.',
+                        )
+                        .exhaustive(),
+                    },
+                  ),
+                ]
+              : []),
+            typOznamenia === 'vznik' && oznamovatelTyp === 'spravcaSpolocenstvoVlastnikov'
+              ? number(
+                  'pocetBytovychJednotiek',
+                  {
+                    type: 'integer',
+                    title: 'Počet bytových jednotiek v predmetnej nehnuteľnosti',
+                    required: true,
+                    minimum: 0,
+                  },
+                  {
+                    helptext: 'Zadajte všetky osoby, ktoré sú oprávnené užívať nehnuteľnosť.',
+                  },
+                )
+              : null,
             typOznamenia === 'zmena' || typOznamenia === 'zanik'
               ? textArea(
                   'dovod',
                   {
-                    title: {
-                      zmena: 'Dôvod zmeny',
-                      zanik: 'Dôvod zániku',
-                    }[typOznamenia],
+                    title: match(typOznamenia)
+                      .with('zmena', () => 'Dôvod zmeny')
+                      .with('zanik', () => 'Dôvod zániku')
+                      .exhaustive(),
                     required: true,
                   },
                   {
-                    helptext: {
-                      zmena: 'Popíšte dôvod zmeny',
-                      zanik: 'Popíšte dôvod zániku',
-                    }[typOznamenia],
+                    helptext: match(typOznamenia)
+                      .with('zmena', () => 'Popíšte dôvod zmeny')
+                      .with('zanik', () => 'Popíšte dôvod zániku')
+                      .exhaustive(),
                   },
                 )
               : null,
@@ -1032,7 +1081,7 @@ export default schema(
     ),
     ...createCombinations(
       {
-        typOznamenia: ['vznik', 'zmena'] as const,
+        typOznamenia: ['vznik', 'zmena', 'zanik'] as const,
         oznamovatelTyp: [
           'fyzickaOsoba',
           'spravcaSpolocenstvoVlastnikov',
@@ -1113,34 +1162,39 @@ export default schema(
         ),
       ],
     ),
-    ...(['fyzickaOsoba', 'spravca', ['fyzickaOsobaPodnikatel', 'pravnickaOsoba']] as const).map(
-      (osobaTypy) =>
-        conditionalStep(
-          'prilohy',
-          createCondition([
-            [['typOznamenia', 'typOznamenia'], { enum: ['vznik', 'zmena'] }],
-            [
-              ['oznamovatel', 'oznamovatelTyp'],
-              match(osobaTypy)
-                .with(P.string, (matchedValue) => ({
-                  const: matchedValue,
-                }))
-                .with(P.array(P.string), (matchedValue) => ({
-                  enum: [...matchedValue],
-                }))
-                .exhaustive(),
-            ],
-          ]),
-          { title: 'Prílohy' },
+    ...(
+      [
+        'fyzickaOsoba',
+        'spravcaSpolocenstvoVlastnikov',
+        ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'],
+      ] as const
+    ).map((osobaTypy) =>
+      conditionalStep(
+        'prilohy',
+        createCondition([
+          [['typOznamenia', 'typOznamenia'], { enum: ['vznik', 'zmena'] }],
           [
-            fileUploadMultiple(
-              'prilohy',
-              { title: 'Prílohy', required: true },
-              {
-                helptext: match(osobaTypy)
-                  .with(
-                    'fyzickaOsoba',
-                    () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+            ['oznamovatel', 'oznamovatelTyp'],
+            match(osobaTypy)
+              .with(P.string, (matchedValue) => ({
+                const: matchedValue,
+              }))
+              .with(P.array(P.string), (matchedValue) => ({
+                enum: [...matchedValue],
+              }))
+              .exhaustive(),
+          ],
+        ]),
+        { title: 'Prílohy' },
+        [
+          fileUploadMultiple(
+            'prilohy',
+            { title: 'Prílohy', required: true },
+            {
+              helptext: match(osobaTypy)
+                .with(
+                  'fyzickaOsoba',
+                  () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - kúpna zmluva
 - osvedčenie o dedičstve
@@ -1149,32 +1203,32 @@ export default schema(
 - úmrtný list
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
-                  )
-                  .with(
-                    'spravca',
-                    () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+                )
+                .with(
+                  'spravcaSpolocenstvoVlastnikov',
+                  () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - zmluva o výkone správy
 - zmluva o spoločenstve
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
-                  )
-                  .with(
-                    ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'],
-                    () => `Na overenie vami zadaných informácií  nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+                )
+                .with(
+                  ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'],
+                  () => `Na overenie vami zadaných informácií  nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - kúpna zmluva
 - nájomná zmluva
 - iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
-                  )
-                  .exhaustive(),
-                helptextMarkdown: true,
-              },
-            ),
-          ],
-        ),
+                )
+                .exhaustive(),
+              helptextMarkdown: true,
+            },
+          ),
+        ],
+      ),
     ),
   ],
 )

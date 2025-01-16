@@ -41,6 +41,11 @@ const komunalMap = {
           { value: '1X28Dni', label: '1× 28 dní' },
         ],
       },
+      {
+        condition: (objemNadobyProperty: string) =>
+          createCondition([[[objemNadobyProperty], { const: undefined }]]),
+        items: [{ value: '', label: '' }],
+      },
     ],
   },
   spravcaSpolocenstvoVlastnikov: {
@@ -55,7 +60,7 @@ const komunalMap = {
       {
         condition: (objemNadobyProperty: string) =>
           createCondition([
-            [[objemNadobyProperty], { in: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
+            [[objemNadobyProperty], { enum: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
           ]),
         items: [
           { value: '1X7Dni', label: '1× 7 dní' },
@@ -72,7 +77,7 @@ const komunalMap = {
           createCondition([
             [
               [objemNadobyProperty],
-              { in: ['kontajner1100L', 'PPKontajner3000L', 'PPKontajner5000L'] },
+              { enum: ['kontajner1100L', 'PPKontajner3000L', 'PPKontajner5000L'] },
             ],
           ]),
         items: [
@@ -83,6 +88,11 @@ const komunalMap = {
           { value: '5X7Dni', label: '5× 7 dní' },
           { value: '6X7Dni', label: '6× 7 dní' },
         ],
+      },
+      {
+        condition: (objemNadobyProperty: string) =>
+          createCondition([[[objemNadobyProperty], { const: undefined }]]),
+        items: [{ value: '', label: '' }],
       },
     ],
   },
@@ -96,8 +106,8 @@ const komunalMap = {
       {
         condition: (objemNadobyProperty: string, pocetNadobProperty: string) =>
           createCondition([
-            [[objemNadobyProperty], { in: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
-            [[pocetNadobProperty], { gt: 1 }],
+            [[objemNadobyProperty], { enum: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
+            [[pocetNadobProperty], { minimum: 2 }],
           ]),
         items: [
           { value: '1X7Dni', label: '1× 7 dní' },
@@ -106,6 +116,22 @@ const komunalMap = {
           { value: '4X7Dni', label: '4× 7 dní' },
           { value: '5X7Dni', label: '5× 7 dní' },
           { value: '6X7Dni', label: '6× 7 dní' },
+        ],
+      },
+      {
+        condition: (objemNadobyProperty: string, pocetNadobProperty: string) =>
+          createCondition([
+            [[objemNadobyProperty], { enum: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
+            [[pocetNadobProperty], { not: { minimum: 2 } }],
+          ]),
+        items: [
+          { value: '1X7Dni', label: '1× 7 dní' },
+          { value: '2X7Dni', label: '2× 7 dní' },
+          { value: '3X7Dni', label: '3× 7 dní' },
+          { value: '4X7Dni', label: '4× 7 dní' },
+          { value: '5X7Dni', label: '5× 7 dní' },
+          { value: '6X7Dni', label: '6× 7 dní' },
+          { value: '1X14Dni', label: '1× 14 dní' },
         ],
       },
       {
@@ -119,6 +145,11 @@ const komunalMap = {
           { value: '5X7Dni', label: '5× 7 dní' },
           { value: '6X7Dni', label: '6× 7 dní' },
         ],
+      },
+      {
+        condition: (objemNadobyProperty: string) =>
+          createCondition([[[objemNadobyProperty], { not: { type: 'string' } }]]),
+        items: [{ value: '', label: '' }],
       },
     ],
   },
@@ -136,8 +167,8 @@ const komunalMap = {
       {
         condition: (objemNadobyProperty: string, pocetNadobProperty: string) =>
           createCondition([
-            [[objemNadobyProperty], { in: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
-            [[pocetNadobProperty], { gt: 1 }],
+            [[objemNadobyProperty], { enum: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
+            [[pocetNadobProperty], { minimum: 2 }],
           ]),
         items: [
           { value: '1X7Dni', label: '1× 7 dní' },
@@ -151,8 +182,8 @@ const komunalMap = {
       {
         condition: (objemNadobyProperty: string, pocetNadobProperty: string) =>
           createCondition([
-            [[objemNadobyProperty], { in: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
-            [[pocetNadobProperty], { eq: 1 }],
+            [[objemNadobyProperty], { enum: ['120LZbernaNadoba', '240LZbernaNadoba'] }],
+            [[pocetNadobProperty], { not: { minimum: 1 } }],
           ]),
         items: [
           { value: '1X7Dni', label: '1× 7 dní' },
@@ -170,7 +201,7 @@ const komunalMap = {
             [
               [objemNadobyProperty],
               {
-                in: [
+                enum: [
                   'kontajner1100L',
                   'lisovaciKontajner10000L',
                   'lisovaciKontajner13000L',
@@ -189,12 +220,17 @@ const komunalMap = {
           { value: '6X7Dni', label: '6× 7 dní' },
         ],
       },
+      {
+        condition: (objemNadobyProperty: string) =>
+          createCondition([[[objemNadobyProperty], { const: undefined }]]),
+        items: [{ value: '', label: '' }],
+      },
     ],
   },
 }
 
 const getKomunalNadoba = (
-  typOznamenia: 'vznik' | 'zmena',
+  typOznamenia: 'vznikZanik' | 'zmena',
   oznamovatelTyp:
     | 'fyzickaOsoba'
     | 'spravcaSpolocenstvoVlastnikov'
@@ -217,7 +253,7 @@ const getKomunalNadoba = (
       'objemNadoby',
       {
         title: {
-          ['vznik']: 'Objem nádoby',
+          ['vznikZanik']: 'Objem nádoby',
           ['zmena']: 'Nový objem nádoby',
         }[typOznamenia],
         required: true,
@@ -242,7 +278,7 @@ const getKomunalNadoba = (
       {
         type: 'integer',
         title: {
-          ['vznik']: 'Počet nádob',
+          ['vznikZanik']: 'Počet nádob',
           ['zmena']: 'Nový počet nádob',
         }[typOznamenia],
         required: true,
@@ -271,7 +307,7 @@ const getKomunalNadoba = (
           'frekvenciaOdvozu',
           {
             title: {
-              ['vznik']: 'Frekvencia odvozu',
+              ['vznikZanik']: 'Frekvencia odvozu',
               ['zmena']: 'Nová frekvencia odvozu',
             }[typOznamenia],
             required: true,
@@ -300,7 +336,7 @@ const getKomunalNove = (
         addButtonLabel: 'Pridať daľšiu nádobu',
         itemTitle: 'Nádoba č. {index}',
       },
-      getKomunalNadoba('vznik', oznamovatelTyp),
+      getKomunalNadoba('vznikZanik', oznamovatelTyp),
     ),
   ]
 }
@@ -332,13 +368,13 @@ const getKomunalZmena = (
     conditionalFields(createCondition([[['pridat'], { const: true }]]), [
       arrayField(
         'nadobyPridat',
-        { title: 'Nádoby', required: true },
+        { title: 'Nové nádoby na objednanie', required: true },
         {
           variant: 'topLevel',
           addButtonLabel: 'Pridať daľšiu nádobu',
-          itemTitle: 'Nádoba č. {index}',
+          itemTitle: 'Nová nádoba č. {index}',
         },
-        getKomunalNadoba('vznik', oznamovatelTyp),
+        getKomunalNadoba('vznikZanik', oznamovatelTyp),
       ),
     ]),
     radioGroup(
@@ -360,11 +396,11 @@ const getKomunalZmena = (
     conditionalFields(createCondition([[['zmena'], { const: true }]]), [
       arrayField(
         'nadobyZmena',
-        { title: 'Nádoby', required: true },
+        { title: 'Nádoby na zmenu parametrov', required: true },
         {
           variant: 'topLevel',
           addButtonLabel: 'Pridať daľšiu nádobu',
-          itemTitle: 'Nádoba č. {index}',
+          itemTitle: 'Nádoba na zmenu č. {index}',
         },
         getKomunalNadoba('zmena', oznamovatelTyp),
       ),
@@ -388,13 +424,13 @@ const getKomunalZmena = (
     conditionalFields(createCondition([[['odobrat'], { const: true }]]), [
       arrayField(
         'nadobyOdobrat',
-        { title: 'Nádoby', required: true },
+        { title: 'Nádoby na zrušenie', required: true },
         {
           variant: 'topLevel',
           addButtonLabel: 'Pridať daľšiu nádobu',
-          itemTitle: 'Nádoba č. {index}',
+          itemTitle: 'Nádoba na zrušenie č. {index}',
         },
-        getKomunalNadoba('vznik', oznamovatelTyp),
+        getKomunalNadoba('vznikZanik', oznamovatelTyp),
       ),
     ]),
   ]
@@ -419,7 +455,7 @@ const adresaFields = [
   ),
 ]
 
-const getOsobaFields = (pattern: {
+const getOsobaFields = (
   osobaTyp:
     | 'fyzickaOsoba'
     | 'spravcaSpolocenstvoVlastnikov'
@@ -427,19 +463,17 @@ const getOsobaFields = (pattern: {
     | 'pravnickaOsoba'
     | 'splnomocnenecFyzickaOsoba'
     | 'splnomocnenecPravnickaOsoba'
-    | 'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'
-}) => {
+    | 'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
+) => {
   return [
-    ...match(pattern)
+    ...match(osobaTyp)
       .with(
-        {
-          osobaTyp: P.union(
-            'fyzickaOsoba',
-            'fyzickaOsobaPodnikatel',
-            'splnomocnenecFyzickaOsoba',
-            'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
-          ),
-        },
+        P.union(
+          'fyzickaOsoba',
+          'fyzickaOsobaPodnikatel',
+          'splnomocnenecFyzickaOsoba',
+          'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
+        ),
         () => [
           input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
           input(
@@ -451,51 +485,35 @@ const getOsobaFields = (pattern: {
         ],
       )
       .otherwise(() => []),
-    match(pattern)
-      .with(
-        {
-          osobaTyp: P.union('fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'splnomocnenecFyzickaOsoba'),
-        },
-        () =>
-          input(
-            'rodneCislo',
-            { type: 'text', title: 'Rodné číslo', required: true },
-            { helptext: 'Rodné číslo zadávajte s lomítkom.', size: 'medium' },
-          ),
+    match(osobaTyp)
+      .with(P.union('fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'splnomocnenecFyzickaOsoba'), () =>
+        input(
+          'rodneCislo',
+          { type: 'text', title: 'Rodné číslo', required: true },
+          { helptext: 'Rodné číslo zadávajte s lomítkom.', size: 'medium' },
+        ),
       )
       .otherwise(() => null),
-    ...match(pattern)
+    ...match(osobaTyp)
       .with(
-        {
-          osobaTyp: P.union(
-            'spravcaSpolocenstvoVlastnikov',
-            'fyzickaOsobaPodnikatel',
-            'pravnickaOsoba',
-            'splnomocnenecPravnickaOsoba',
-          ),
-        },
-        (patternInner) => [
+        P.union(
+          'spravcaSpolocenstvoVlastnikov',
+          'fyzickaOsobaPodnikatel',
+          'pravnickaOsoba',
+          'splnomocnenecPravnickaOsoba',
+        ),
+        (osobaTypInner) => [
           input(
             'obchodneMeno',
             {
               type: 'text',
-              title: match(patternInner)
+              title: match(osobaTypInner)
                 .with(
-                  { osobaTyp: 'spravcaSpolocenstvoVlastnikov' },
+                  'spravcaSpolocenstvoVlastnikov',
                   () => 'Obchodné meno správcu / názov spoločenstva',
                 )
-                .with(
-                  {
-                    osobaTyp: P.union('fyzickaOsobaPodnikatel', 'pravnickaOsoba'),
-                  },
-                  () => 'Obchodné meno',
-                )
-                .with(
-                  {
-                    osobaTyp: P.union('splnomocnenecPravnickaOsoba'),
-                  },
-                  () => 'Obchodné meno alebo názov',
-                )
+                .with(P.union('fyzickaOsobaPodnikatel', 'pravnickaOsoba'), () => 'Obchodné meno')
+                .with('splnomocnenecPravnickaOsoba', () => 'Obchodné meno alebo názov')
                 .exhaustive(),
               required: true,
             },
@@ -516,37 +534,28 @@ const getOsobaFields = (pattern: {
       { required: true },
       {
         objectDisplay: 'boxed',
-        title: match(pattern)
-          .with({ osobaTyp: 'fyzickaOsoba' }, () => 'Adresa trvalého pobytu')
+        title: match(osobaTyp)
+          .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')
           .with(
-            {
-              osobaTyp: P.union(
-                'pravnickaOsoba',
-                'fyzickaOsobaPodnikatel',
-                'spravcaSpolocenstvoVlastnikov',
-                'splnomocnenecPravnickaOsoba',
-              ),
-            },
+            P.union(
+              'pravnickaOsoba',
+              'fyzickaOsobaPodnikatel',
+              'spravcaSpolocenstvoVlastnikov',
+              'splnomocnenecPravnickaOsoba',
+            ),
             () => 'Adresa sídla',
           )
+          .with(P.union('splnomocnenecFyzickaOsoba'), () => 'Adresa trvalého/prechodného pobytu')
           .with(
-            {
-              osobaTyp: P.union('splnomocnenecFyzickaOsoba'),
-            },
-            () => 'Adresa trvalého/prechodného pobytu',
-          )
-          .with(
-            {
-              osobaTyp: P.union('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
-            },
+            P.union('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
             () => 'Adresa trvalého pobytu/sídla',
           )
           .exhaustive(),
       },
       adresaFields,
     ),
-    ...match(pattern)
-      .with({ osobaTyp: 'fyzickaOsoba' }, () => [
+    ...match(osobaTyp)
+      .with('fyzickaOsoba', () => [
         radioGroup(
           'maPrechodnyPobyt',
           {
@@ -651,11 +660,11 @@ export default schema(
             ),
             conditionalFields(
               createCondition([[['typOsoby'], { const: 'fyzickaOsoba' }]]),
-              getOsobaFields({ osobaTyp: 'splnomocnenecFyzickaOsoba' }),
+              getOsobaFields('splnomocnenecFyzickaOsoba'),
             ),
             conditionalFields(
               createCondition([[['typOsoby'], { const: 'pravnickaOsoba' }]]),
-              getOsobaFields({ osobaTyp: 'splnomocnenecPravnickaOsoba' }),
+              getOsobaFields('splnomocnenecPravnickaOsoba'),
             ),
           ],
         ),
@@ -691,7 +700,7 @@ export default schema(
       ).map((osobaTyp) =>
         conditionalFields(
           createCondition([[['oznamovatelTyp'], { const: osobaTyp }]]),
-          getOsobaFields({ osobaTyp }),
+          getOsobaFields(osobaTyp),
         ),
       ),
       conditionalFields(
@@ -701,7 +710,7 @@ export default schema(
         ]),
         [
           object(
-            'udajeOOpravnenejOsobe',
+            'opravnenaOsoba',
             { required: false },
             {
               objectDisplay: 'boxed',
@@ -720,9 +729,7 @@ export default schema(
                 },
                 {},
               ),
-              ...getOsobaFields({
-                osobaTyp: 'spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba',
-              }),
+              ...getOsobaFields('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
             ],
           ),
         ],
@@ -1081,7 +1088,7 @@ export default schema(
     ),
     ...createCombinations(
       {
-        typOznamenia: ['vznik', 'zmena', 'zanik'] as const,
+        typOznamenia: ['vznik', 'zmena'] as const,
         oznamovatelTyp: [
           'fyzickaOsoba',
           'spravcaSpolocenstvoVlastnikov',
@@ -1100,6 +1107,166 @@ export default schema(
           [
             ...(typOznamenia === 'vznik' ? getKomunalNove(oznamovatelTyp) : []),
             ...(typOznamenia === 'zmena' ? getKomunalZmena(oznamovatelTyp) : []),
+          ],
+        ),
+    ),
+    ...createCombinations(
+      {
+        typOdpadu: [
+          'biologickyRozlozitelnyOdpadZoZahrad',
+          'biologickyRozlozitelnyOdpadZKuchyne',
+        ] as const,
+        typOznamenia: ['vznik', 'zmena'] as const,
+        oznamovatelTyp: ['fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'] as const,
+      },
+      ({ typOznamenia, oznamovatelTyp, typOdpadu }) =>
+        conditionalStep(
+          typOdpadu,
+          createCondition([
+            [['typOznamenia', 'typOznamenia'], { const: typOznamenia }],
+            [['oznamovatel', 'oznamovatelTyp'], { const: oznamovatelTyp }],
+          ]),
+          {
+            title: match(typOdpadu)
+              .with(
+                'biologickyRozlozitelnyOdpadZoZahrad',
+                () => 'Biologicky rozložiteľný odpad zo záhrad',
+              )
+              .with(
+                'biologickyRozlozitelnyOdpadZKuchyne',
+                () => 'Biologicky rozložiteľný odpad z kuchyne',
+              )
+              .exhaustive(),
+          },
+          [
+            object(
+              'nadoba',
+              { required: true },
+              {
+                objectDisplay: 'boxed',
+                title: 'Nádoba',
+                description: match([typOdpadu, oznamovatelTyp])
+                  .with(
+                    [
+                      'biologickyRozlozitelnyOdpadZoZahrad',
+                      P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
+                    ],
+                    () =>
+                      'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                  )
+                  .with(
+                    ['biologickyRozlozitelnyOdpadZKuchyne', 'fyzickaOsoba'],
+                    () =>
+                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                  )
+                  .with(
+                    ['biologickyRozlozitelnyOdpadZKuchyne', 'spravcaSpolocenstvoVlastnikov'],
+                    () =>
+                      'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                  )
+                  .exhaustive(),
+                descriptionMarkdown: true,
+              },
+              [
+                ...match({ typOdpadu, oznamovatelTyp, typOznamenia })
+                  .with(
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZKuchyne',
+                      oznamovatelTyp: 'fyzickaOsoba',
+                    },
+                    () => [
+                      select(
+                        '',
+                        {
+                          title: 'Objem nádoby',
+                          required: true,
+                          items: [
+                            {
+                              value: '20az23LZbernaNadoba',
+                              label: '20-23l zberná nádoba',
+                              isDefault: true,
+                            },
+                          ],
+                        },
+                        {},
+                      ),
+                    ],
+                  )
+                  .with(
+                    {
+                      typOznamenia: 'zmena',
+                    },
+                    () => [
+                      radioGroup(
+                        'zmena',
+                        {
+                          type: 'boolean',
+                          title: 'Chcete zmeniť objem existujúcej nádoby?',
+                          required: true,
+                          items: [
+                            { value: true, label: 'Áno' },
+                            { value: false, label: 'Nie' },
+                          ],
+                        },
+                        {
+                          variant: 'boxed',
+                          orientations: 'row',
+                        },
+                      ),
+                      conditionalFields(createCondition([[['zmena'], { const: true }]]), [
+                        select(
+                          'povodnyObjemNadoby',
+                          {
+                            title: 'Pôvodný objem nádoby',
+                            required: true,
+                            items: [
+                              {
+                                value: '120LZbernaNadoba',
+                                label: '120 l zberná nádoba',
+                                isDefault: true,
+                              },
+                              { value: '240LZbernaNadoba', label: '240 l zberná nádoba' },
+                            ],
+                          },
+                          {},
+                        ),
+                        select(
+                          'novyObjemNadoby',
+                          {
+                            title: 'Nový objem nádoby',
+                            required: true,
+                            items: [
+                              { value: '120LZbernaNadoba', label: '120 l zberná nádoba' },
+                              { value: '240LZbernaNadoba', label: '240 l zberná nádoba' },
+                            ],
+                          },
+                          {},
+                        ),
+                      ]),
+                    ],
+                  )
+                  .with({ typOznamenia: 'vznik' }, () => [
+                    select(
+                      'objemNadoby',
+                      {
+                        title: 'Objem nádoby',
+                        required: true,
+                        items: [
+                          { value: '120LZbernaNadoba', label: '120 l zberná nádoba' },
+                          {
+                            value: '240LZbernaNadoba',
+                            label: '240 l zberná nádoba',
+                            isDefault: true,
+                          },
+                          { value: 'kompostovaci', label: 'Kompostovací zásobník' },
+                        ],
+                      },
+                      {},
+                    ),
+                  ])
+                  .exhaustive(),
+              ],
+            ),
           ],
         ),
     ),

@@ -1,5 +1,4 @@
 import { createCamelCaseItems, createCondition } from '../generator/helpers'
-import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 import { esbsNationalityCiselnik } from './priznanie-k-dani-z-nehnutelnosti/esbsCiselniky'
 import { select } from '../generator/functions/select'
 import { input } from '../generator/functions/input'
@@ -15,6 +14,8 @@ import { datePicker } from '../generator/functions/datePicker'
 import { number } from '../generator/functions/number'
 import { textArea } from '../generator/functions/textArea'
 import { arrayField } from '../generator/functions/arrayField'
+import { match, P } from 'ts-pattern'
+import { GeneratorFieldType } from '../generator/generatorTypes'
 
 const komunalMap = {
   fyzickaOsoba: {
@@ -193,6 +194,379 @@ const komunalMap = {
   },
 }
 
+const getKomunalNadoba = (
+  typOznamenia: 'vznik' | 'zmena',
+  oznamovatelTyp:
+    | 'fyzickaOsoba'
+    | 'spravcaSpolocenstvoVlastnikov'
+    | 'fyzickaOsobaPodnikatel'
+    | 'pravnickaOsoba',
+) => {
+  return [
+    typOznamenia === 'zmena'
+      ? select(
+          'povodnyObjemNadoby',
+          {
+            title: 'Pôvodný objem nádoby',
+            required: true,
+            items: komunalMap[oznamovatelTyp].objemy,
+          },
+          {},
+        )
+      : null,
+    select(
+      'objemNadoby',
+      {
+        title: {
+          ['vznik']: 'Objem nádoby',
+          ['zmena']: 'Nový objem nádoby',
+        }[typOznamenia],
+        required: true,
+        items: komunalMap[oznamovatelTyp].objemy,
+      },
+      {},
+    ),
+    typOznamenia === 'zmena'
+      ? number(
+          'povodnyPocetNadob',
+          {
+            type: 'integer',
+            title: 'Pôvodný počet nádob',
+            required: true,
+            minimum: 0,
+          },
+          {},
+        )
+      : null,
+    number(
+      'pocetNadob',
+      {
+        type: 'integer',
+        title: {
+          ['vznik']: 'Počet nádob',
+          ['zmena']: 'Nový počet nádob',
+        }[typOznamenia],
+        required: true,
+        minimum: 0,
+      },
+      {},
+    ),
+    ...(typOznamenia === 'zmena'
+      ? komunalMap[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
+          conditionalFields(condition('povodnyObjemNadoby', 'povodnyPocetNadob'), [
+            select(
+              'povodnaFrekvenciaOdvozu',
+              {
+                title: 'Pôvodna frekvencia odvozu',
+                required: true,
+                items,
+              },
+              {},
+            ),
+          ]),
+        )
+      : []),
+    ...komunalMap[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
+      conditionalFields(condition('objemNadoby', 'pocetNadob'), [
+        select(
+          'frekvenciaOdvozu',
+          {
+            title: {
+              ['vznik']: 'Frekvencia odvozu',
+              ['zmena']: 'Nová frekvencia odvozu',
+            }[typOznamenia],
+            required: true,
+            items,
+          },
+          {},
+        ),
+      ]),
+    ),
+  ]
+}
+
+const getKomunalNove = (
+  oznamovatelTyp:
+    | 'fyzickaOsoba'
+    | 'spravcaSpolocenstvoVlastnikov'
+    | 'fyzickaOsobaPodnikatel'
+    | 'pravnickaOsoba',
+) => {
+  return [
+    arrayField(
+      'nadoby',
+      { title: 'Nádoby', required: true },
+      {
+        variant: 'topLevel',
+        addButtonLabel: 'Pridať daľšiu nádobu',
+        itemTitle: 'Nádoba č. {index}',
+      },
+      getKomunalNadoba('vznik', oznamovatelTyp),
+    ),
+  ]
+}
+
+const getKomunalZmena = (
+  oznamovatelTyp:
+    | 'fyzickaOsoba'
+    | 'spravcaSpolocenstvoVlastnikov'
+    | 'fyzickaOsobaPodnikatel'
+    | 'pravnickaOsoba',
+) => {
+  return [
+    radioGroup(
+      'pridat',
+      {
+        type: 'boolean',
+        title: 'Pridať?',
+        required: true,
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie' },
+        ],
+      },
+      {
+        variant: 'boxed',
+        orientations: 'row',
+      },
+    ),
+    conditionalFields(createCondition([[['pridat'], { const: true }]]), [
+      arrayField(
+        'nadobyPridat',
+        { title: 'Nádoby', required: true },
+        {
+          variant: 'topLevel',
+          addButtonLabel: 'Pridať daľšiu nádobu',
+          itemTitle: 'Nádoba č. {index}',
+        },
+        getKomunalNadoba('vznik', oznamovatelTyp),
+      ),
+    ]),
+    radioGroup(
+      'zmena',
+      {
+        type: 'boolean',
+        title: 'Zmena?',
+        required: true,
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie' },
+        ],
+      },
+      {
+        variant: 'boxed',
+        orientations: 'row',
+      },
+    ),
+    conditionalFields(createCondition([[['zmena'], { const: true }]]), [
+      arrayField(
+        'nadobyZmena',
+        { title: 'Nádoby', required: true },
+        {
+          variant: 'topLevel',
+          addButtonLabel: 'Pridať daľšiu nádobu',
+          itemTitle: 'Nádoba č. {index}',
+        },
+        getKomunalNadoba('zmena', oznamovatelTyp),
+      ),
+    ]),
+    radioGroup(
+      'odobrat',
+      {
+        type: 'boolean',
+        title: 'Odobrať?',
+        required: true,
+        items: [
+          { value: true, label: 'Áno' },
+          { value: false, label: 'Nie' },
+        ],
+      },
+      {
+        variant: 'boxed',
+        orientations: 'row',
+      },
+    ),
+    conditionalFields(createCondition([[['odobrat'], { const: true }]]), [
+      arrayField(
+        'nadobyOdobrat',
+        { title: 'Nádoby', required: true },
+        {
+          variant: 'topLevel',
+          addButtonLabel: 'Pridať daľšiu nádobu',
+          itemTitle: 'Nádoba č. {index}',
+        },
+        getKomunalNadoba('vznik', oznamovatelTyp),
+      ),
+    ]),
+  ]
+}
+
+const adresaFields = [
+  input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
+  input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+  input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+  select(
+    'stat',
+    {
+      title: 'Štát',
+      required: true,
+      items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
+        value: Code,
+        label: Name,
+        isDefault: Code === '703' ? true : undefined,
+      })),
+    },
+    {},
+  ),
+]
+
+const getOsobaFields = (pattern: {
+  osobaTyp:
+    | 'fyzickaOsoba'
+    | 'spravca'
+    | 'fyzickaOsobaPodnikatel'
+    | 'pravnickaOsoba'
+    | 'splnomocnenecFyzickaOsoba'
+    | 'splnomocnenecPravnickaOsoba'
+    | 'spravcaPravnickaOsobaOpravnenaOsoba'
+}) => {
+  return [
+    match(pattern)
+      .with(
+        {
+          osobaTyp: P.union(
+            'fyzickaOsoba',
+            'fyzickaOsobaPodnikatel',
+            'splnomocnenecFyzickaOsoba',
+            'spravcaPravnickaOsobaOpravnenaOsoba',
+          ),
+        },
+        () => [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+          input(
+            'priezvisko',
+            { title: 'Priezvisko', required: true, type: 'text' },
+            { selfColumn: '2/4' },
+          ),
+          input('titul', { type: 'text', title: 'Titul' }, { size: 'medium' }),
+        ],
+      )
+      .otherwise(() => []),
+    match(pattern)
+      .with(
+        {
+          osobaTyp: P.union('fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'splnomocnenecFyzickaOsoba'),
+        },
+        () =>
+          input(
+            'rodneCislo',
+            { type: 'text', title: 'Rodné číslo', required: true },
+            { helptext: 'Rodné číslo zadávajte s lomítkom.', size: 'medium' },
+          ),
+      )
+      .otherwise(() => null),
+    match(pattern)
+      .with(
+        {
+          osobaTyp: P.union(
+            'spravca',
+            'fyzickaOsobaPodnikatel',
+            'pravnickaOsoba',
+            'splnomocnenecPravnickaOsoba',
+          ),
+        },
+        (patternInner) => [
+          input(
+            'obchodneMeno',
+            {
+              type: 'text',
+              title: match(patternInner)
+                .with({ osobaTyp: 'spravca' }, () => 'Obchodné meno správcu / názov spoločenstva')
+                .with(
+                  {
+                    osobaTyp: P.union('fyzickaOsobaPodnikatel', 'pravnickaOsoba'),
+                  },
+                  () => 'Obchodné meno',
+                )
+                .with(
+                  {
+                    osobaTyp: P.union('splnomocnenecPravnickaOsoba'),
+                  },
+                  () => 'Obchodné meno alebo názov',
+                )
+                .exhaustive(),
+              required: true,
+            },
+            {},
+          ),
+          input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
+        ],
+      )
+      .otherwise(() => []),
+    input('email', { title: 'Email', required: true, type: 'email' }, {}),
+    input(
+      'telefon',
+      { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+      { size: 'medium', placeholder: '+421', helptext: 'Vyplňte vo formáte +421' },
+    ),
+    object(
+      'adresa',
+      { required: true },
+      {
+        objectDisplay: 'boxed',
+        title: match(pattern)
+          .with({ osobaTyp: 'fyzickaOsoba' }, () => 'Adresa trvalého pobytu')
+          .with(
+            {
+              osobaTyp: P.union(
+                'pravnickaOsoba',
+                'fyzickaOsobaPodnikatel',
+                'spravca',
+                'splnomocnenecPravnickaOsoba',
+              ),
+            },
+            () => 'Adresa sídla',
+          )
+          .with(
+            {
+              osobaTyp: P.union('splnomocnenecFyzickaOsoba'),
+            },
+            () => 'Adresa trvalého/prechodného pobytu',
+          )
+          .with(
+            {
+              osobaTyp: P.union('spravcaPravnickaOsobaOpravnenaOsoba'),
+            },
+            () => 'Adresa trvalého pobytu/sídla',
+          )
+          .exhaustive(),
+      },
+      adresaFields,
+    ),
+    match(pattern)
+      .with({ osobaTyp: 'fyzickaOsoba' }, () => [
+        radioGroup(
+          'maPrechodnyPobyt',
+          {
+            type: 'boolean',
+            title: 'Máte prechodný pobyt?',
+            required: true,
+            items: [
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
+            ],
+          },
+          {
+            variant: 'boxed',
+            orientations: 'row',
+          },
+        ),
+        conditionalFields(createCondition([[['maPrechodnyPobyt'], { const: true }]]), adresaFields),
+      ])
+      .otherwise(() => []),
+  ].flat()
+}
+
 export default schema(
   {
     title: 'Oznámenie o vzniku, zmene alebo zániku poplatkovej povinnosti',
@@ -277,51 +651,11 @@ export default schema(
             ),
             conditionalFields(
               createCondition([[['typOsoby'], { const: 'fyzickaOsoba' }]]),
-              [
-                object(
-                  'menoPriezvisko',
-                  { required: true },
-                  {
-                    columns: true,
-                    columnsRatio: '1/1',
-                  },
-                  [
-                    input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-                    input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-                  ],
-                ),
-                input('titul', { type: 'text', title: 'Titul' }, {}),
-                input(
-                  'rodneCislo',
-                  { type: 'text', title: 'Rodné číslo', required: true },
-                  { helptext: 'Rodné číslo zadávajte s lomítkom.' },
-                ),
-                sharedAddressField('adresa', 'Adresa trvalého/prechodného pobytu', true),
-              ],
-              [
-                input(
-                  'obchodneMeno',
-                  { type: 'text', title: 'Obchodné meno alebo názov', required: true },
-                  {},
-                ),
-                input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {}),
-                sharedAddressField('adresa', 'Adresa sídla', true),
-              ],
+              getOsobaFields({ osobaTyp: 'splnomocnenecFyzickaOsoba' }) as GeneratorFieldType[],
             ),
-            input('email', { title: 'Email', required: true, type: 'email' }, {}),
-            sharedPhoneNumberField('telefon', true),
-            select(
-              'stat',
-              {
-                title: 'Štát',
-                required: true,
-                items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
-                  value: Code,
-                  label: Name,
-                  isDefault: Code === '703' ? true : undefined,
-                })),
-              },
-              {},
+            conditionalFields(
+              createCondition([[['typOsoby'], { const: 'pravnickaOsoba' }]]),
+              getOsobaFields({ osobaTyp: 'splnomocnenecPravnickaOsoba' }) as GeneratorFieldType[],
             ),
           ],
         ),
@@ -344,96 +678,17 @@ export default schema(
           orientations: 'column',
         },
       ),
-      conditionalFields(
-        createCondition([
-          [['oznamovatelTyp'], { enum: ['fyzickaOsoba', 'fyzickaOsobaPodnikatel'] }],
-        ]),
-        [
-          object(
-            'menoPriezvisko',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '1/1',
-            },
-            [
-              input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-              input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-            ],
+      ...(['fyzickaOsoba', 'spravca', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'] as const).map(
+        (osobaTyp) =>
+          conditionalFields(
+            createCondition([[['oznamovatelTyp'], { const: osobaTyp }]]),
+            getOsobaFields({ osobaTyp }) as GeneratorFieldType[],
           ),
-        ],
-      ),
-      input('titul', { type: 'text', title: 'Titul' }, {}),
-      input('rodneCislo', { type: 'text', title: 'Rodné číslo' }, {}),
-      input(
-        'obchodneMenoSpravcu',
-        { type: 'text', title: 'Obchodné meno správcu / názov spoločenstva' },
-        {},
-      ),
-      input('obchodneMeno', { type: 'text', title: 'Obchodné meno' }, {}),
-      conditionalFields(
-        createCondition([
-          [
-            ['oznamovatelTyp'],
-            {
-              enum: ['pravnickaOsoba', 'spravcaSpolocenstvoVlastnikov', 'fyzickaOsobaPodnikatel'],
-            },
-          ],
-        ]),
-        [input('ico', { type: 'ba-ico', title: 'IČO', required: true }, {})],
-      ),
-      input('email', { title: 'Email', required: true, type: 'email' }, {}),
-      sharedPhoneNumberField('telefon', true),
-      conditionalFields(createCondition([[['oznamovatelTyp'], { const: 'fyzickaOsoba' }]]), [
-        sharedAddressField('adresaTrvalehoPobytu', 'Adresa trvalého pobytu', true),
-        radioGroup(
-          'maPrechodnyPobyt',
-          {
-            type: 'boolean',
-            title: 'Máte prechodný pobyt?',
-            required: true,
-            items: [
-              { value: true, label: 'Áno' },
-              { value: false, label: 'Nie', isDefault: true },
-            ],
-          },
-          {
-            variant: 'boxed',
-            orientations: 'row',
-          },
-        ),
-        conditionalFields(createCondition([[['maPrechodnyPobyt'], { const: true }]]), [
-          sharedAddressField('adresaPrechodnehoPobytu', 'Adresa prechodného pobytu', true),
-          select(
-            'statPrechodnyPobyt',
-            {
-              title: 'Štát',
-              required: true,
-              items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
-                value: Code,
-                label: Name,
-                isDefault: Code === '703' ? true : undefined,
-              })),
-            },
-            {},
-          ),
-        ]),
-      ]),
-
-      conditionalFields(
-        createCondition([
-          [
-            ['oznamovatelTyp'],
-            {
-              enum: ['pravnickaOsoba', 'spravcaSpolocenstvoVlastnikov', 'fyzickaOsobaPodnikatel'],
-            },
-          ],
-        ]),
-        [sharedAddressField('adresaSidla', 'Adresa sídla', true)],
       ),
       conditionalFields(
         createCondition([
-          [['oznamovatelTyp'], { enum: ['pravnickaOsoba', 'spravcaSpolocenstvoVlastnikov'] }],
+          [['voSvojomMene'], { const: true }],
+          [['oznamovatelTyp'], { enum: ['spravca', 'pravnickaOsoba'] }],
         ]),
         [
           object(
@@ -456,63 +711,11 @@ export default schema(
                 },
                 {},
               ),
-              object(
-                'menoPriezvisko',
-                { required: true },
-                {
-                  columns: true,
-                  columnsRatio: '1/1',
-                },
-                [
-                  input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-                  input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-                ],
-              ),
-              input('titul', { type: 'text', title: 'Titul' }, {}),
-              input('email', { title: 'Email', required: true, type: 'email' }, {}),
-              sharedPhoneNumberField('telefon', true),
-              sharedAddressField('adresa', 'Adresa trvalého pobytu/ Adresa sídla', true),
-              select(
-                'stat',
-                {
-                  title: 'Štát',
-                  required: true,
-                  items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
-                    value: Code,
-                    label: Name,
-                    isDefault: Code === '703' ? true : undefined,
-                  })),
-                },
-                {},
-              ),
+              ...(getOsobaFields({
+                osobaTyp: 'spravcaPravnickaOsobaOpravnenaOsoba',
+              }) as GeneratorFieldType[]),
             ],
           ),
-        ],
-      ),
-
-      select(
-        'stat',
-        {
-          title: 'Štát',
-          required: true,
-          items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
-            value: Code,
-            label: Name,
-            isDefault: Code === '703' ? true : undefined,
-          })),
-        },
-        {},
-      ),
-      object(
-        'mestoPsc',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '3/1',
-        },
-        [
-          input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-          input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
         ],
       ),
       radioGroup(
@@ -554,18 +757,14 @@ export default schema(
         ),
         conditionalFields(createCondition([[['adresaRozhodnutia'], { const: 'Iná adresa' }]]), [
           input('inaAdresa', { type: 'text', title: 'Iná doručovacia adresa', required: true }, {}),
-          object(
-            'mestoPsc',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '3/1',
-            },
-            [
-              input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-              input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-            ],
-          ),
+          object('mestoPsc', { required: true }, {}, [
+            input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+            input(
+              'psc',
+              { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+              { selfColumn: '1/4' },
+            ),
+          ]),
           select(
             'stat',
             {
@@ -663,18 +862,18 @@ export default schema(
             conditionalFields(createCondition([[['typCisla'], { const: 'Parcelné číslo' }]]), [
               input('parcelneCislo', { type: 'text', title: 'Parcelné číslo', required: true }, {}),
             ]),
-            object(
-              'mestoPsc',
-              { required: true },
-              {
-                columns: true,
-                columnsRatio: '3/1',
-              },
-              [
-                input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-                input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-              ],
-            ),
+            object('mestoPsc', { required: true }, {}, [
+              input(
+                'mesto',
+                { type: 'text', title: 'Mesto', required: true },
+                { selfColumn: '3/4' },
+              ),
+              input(
+                'psc',
+                { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+                { selfColumn: '1/4' },
+              ),
+            ]),
             select(
               'katastralneUzemie',
               {
@@ -788,7 +987,7 @@ export default schema(
       },
       [
         arrayField(
-          'poplatniciData',
+          'poplatnici',
           { title: 'Poplatníci', required: true },
           {
             variant: 'topLevel',
@@ -796,9 +995,13 @@ export default schema(
             itemTitle: 'Poplatník č. {index}',
           },
           [
-            object('menoPriezvisko', { required: true }, { columns: true, columnsRatio: '1/1' }, [
-              input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-              input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+            object('menoPriezvisko', { required: true }, {}, [
+              input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+              input(
+                'priezvisko',
+                { title: 'Priezvisko', required: true, type: 'text' },
+                { selfColumn: '2/4' },
+              ),
             ]),
             input('titul', { type: 'text', title: 'Titul' }, {}),
             input('rodneCislo', { type: 'text', title: 'Rodné číslo', required: true }, {}),
@@ -819,22 +1022,10 @@ export default schema(
                 orientations: 'row',
               },
             ),
-            conditionalFields(createCondition([[['zhodujeSaAdresa'], { const: false }]]), [
-              sharedAddressField('adresa', 'Adresa trvalého/prechodného pobytu', true),
-              select(
-                'stat',
-                {
-                  title: 'Štát',
-                  required: true,
-                  items: esbsNationalityCiselnik.map(({ Name, Code }) => ({
-                    value: Code,
-                    label: Name,
-                    isDefault: Code === '703' ? true : undefined,
-                  })),
-                },
-                {},
-              ),
-            ]),
+            conditionalFields(
+              createCondition([[['zhodujeSaAdresa'], { const: false }]]),
+              adresaFields,
+            ),
           ],
         ),
       ],
@@ -858,96 +1049,8 @@ export default schema(
           ]),
           { title: 'Komunálny odpad' },
           [
-            arrayField(
-              'nadoby',
-              { title: 'Nádoby', required: true },
-              {
-                variant: 'topLevel',
-                addButtonLabel: 'Pridať daľšiu nádobu',
-                itemTitle: 'Nádoba č. {index}',
-              },
-              [
-                typOznamenia === 'zmena'
-                  ? select(
-                      'povodnyObjemNadoby',
-                      {
-                        title: 'Pôvodný objem nádoby',
-                        required: true,
-                        items: komunalMap[oznamovatelTyp].objemy,
-                      },
-                      {},
-                    )
-                  : null,
-                select(
-                  'objemNadoby',
-                  {
-                    title: {
-                      ['vznik']: 'Objem nádoby',
-                      ['zmena']: 'Nový objem nádoby',
-                    }[typOznamenia],
-                    required: true,
-                    items: komunalMap[oznamovatelTyp].objemy,
-                  },
-                  {},
-                ),
-                typOznamenia === 'zmena'
-                  ? number(
-                      'povodnyPocetNadob',
-                      {
-                        type: 'integer',
-                        title: 'Pôvodný počet nádob',
-                        required: true,
-                        minimum: 0,
-                      },
-                      {},
-                    )
-                  : null,
-                number(
-                  'pocetNadob',
-                  {
-                    type: 'integer',
-                    title: {
-                      ['vznik']: 'Počet nádob',
-                      ['zmena']: 'Nový počet nádob',
-                    }[typOznamenia],
-                    required: true,
-                    minimum: 0,
-                  },
-                  {},
-                ),
-                ...(typOznamenia === 'zmena'
-                  ? komunalMap[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
-                      conditionalFields(condition('povodnyObjemNadoby', 'povodnyPocetNadob'), [
-                        select(
-                          'povodnaFrekvenciaOdvozu',
-                          {
-                            title: 'Pôvodna frekvencia odvozu',
-                            required: true,
-                            items,
-                          },
-                          {},
-                        ),
-                      ]),
-                    )
-                  : []),
-                ...komunalMap[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
-                  conditionalFields(condition('objemNadoby', 'pocetNadob'), [
-                    select(
-                      'frekvenciaOdvozu',
-                      {
-                        title: {
-                          ['vznik']: 'Frekvencia odvozu',
-                          ['zmena']: 'Nová frekvencia odvozu',
-                        }[typOznamenia],
-                        required: true,
-                        items,
-                      },
-                      {},
-                    ),
-                  ]),
-                ),
-              ],
-            ),
+            ...(typOznamenia === 'vznik' ? getKomunalNove(oznamovatelTyp) : []),
+            ...(typOznamenia === 'zmena' ? getKomunalZmena(oznamovatelTyp) : []),
           ],
         ),
     ),
@@ -1009,6 +1112,69 @@ export default schema(
           ],
         ),
       ],
+    ),
+    ...(['fyzickaOsoba', 'spravca', ['fyzickaOsobaPodnikatel', 'pravnickaOsoba']] as const).map(
+      (osobaTypy) =>
+        conditionalStep(
+          'prilohy',
+          createCondition([
+            [['typOznamenia', 'typOznamenia'], { enum: ['vznik', 'zmena'] }],
+            [
+              ['oznamovatel', 'oznamovatelTyp'],
+              match(osobaTypy)
+                .with(P.string, (matchedValue) => ({
+                  const: matchedValue,
+                }))
+                .with(P.array(P.string), (matchedValue) => ({
+                  enum: [...matchedValue],
+                }))
+                .exhaustive(),
+            ],
+          ]),
+          { title: 'Prílohy' },
+          [
+            fileUploadMultiple(
+              'prilohy',
+              { title: 'Prílohy', required: true },
+              {
+                helptext: match(osobaTypy)
+                  .with(
+                    'fyzickaOsoba',
+                    () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+- list vlastníctva
+- kúpna zmluva
+- osvedčenie o dedičstve
+- nájomná zmluva
+- preberací protokol
+- úmrtný list
+
+V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
+                  )
+                  .with(
+                    'spravca',
+                    () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+- list vlastníctva
+- zmluva o výkone správy
+- zmluva o spoločenstve
+
+V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
+                  )
+                  .with(
+                    ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'],
+                    () => `Na overenie vami zadaných informácií  nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
+- list vlastníctva
+- kúpna zmluva
+- nájomná zmluva
+- iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
+
+V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
+                  )
+                  .exhaustive(),
+                helptextMarkdown: true,
+              },
+            ),
+          ],
+        ),
     ),
   ],
 )

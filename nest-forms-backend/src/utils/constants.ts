@@ -25,7 +25,7 @@ export const DEFAULT_PAGE_SIZE = 10
 
 export const MAX_TRIES_FOR_NASES_CHECK = 10
 
-export const INNOVATION_MAIl = 'inovacie@bratislava.sk'
+export const INNOVATION_MAIL = 'inovacie@bratislava.sk'
 
 export const EDITABLE_ERRORS: Array<FormError> = [FormError.INFECTED_FILES]
 

@@ -8,6 +8,8 @@ export const conditionalStep = (
   condition: RJSFSchema,
   options: {
     title: string
+    description?: string
+    stepperTitle?: string
     customHash?: string
   },
   fields: (GeneratorFieldType | null)[],

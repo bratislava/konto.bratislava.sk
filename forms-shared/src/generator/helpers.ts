@@ -2,6 +2,7 @@ import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 import { BaAjvInputFormat } from '../form-utils/ajvFormats'
 import { InputUiOptionsInputType } from './uiOptionsTypes'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 type ObjectJsonSchema = {
   type: 'object'
@@ -58,7 +59,7 @@ const arrayPrefix = 'array:'
  *   required: ['a', 'x'],
  * }
  */
-export const createCondition = (conditions: [string[], RJSFSchema][]) => {
+export const createCondition = (conditions: [string[], BAJSONSchema7][]) => {
   const result: ObjectJsonSchema = {
     type: 'object',
     properties: {},

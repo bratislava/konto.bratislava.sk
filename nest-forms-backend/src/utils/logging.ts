@@ -38,7 +38,7 @@ export function separateLogFromResponseObj<T extends object>(
   >['responseLog'] = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
-    if (objKey in errorTypeStrings) {
+    if (errorTypeStrings.includes(objKey)) {
       responseLog[objKey.slice(8)] = obj[objKey as keyof T]
     } else {
       responseMessage[objKey] = obj[objKey as keyof T]

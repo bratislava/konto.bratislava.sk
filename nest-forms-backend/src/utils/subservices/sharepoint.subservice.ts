@@ -1,5 +1,5 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState, Prisma } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
@@ -33,16 +33,16 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../handlers/text.handler'
-import alertError from '../logging'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
 } from './dtos/sharepoint.errors.enum'
+import alertError, { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
 @Processor('sharepoint')
 export default class SharepointSubservice {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -50,7 +50,7 @@ export default class SharepointSubservice {
     private configService: ConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('SharepointSubservice')
+    this.logger = new LineLoggerSubservice('SharepointSubservice')
 
     if (
       !this.configService.get<string>('SHAREPOINT_TENANT_ID') ||

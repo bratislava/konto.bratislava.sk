@@ -1,11 +1,13 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
 import { ServiceRunningDto } from '../status/dtos/status.dto'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import PostScanFileResponseDto, { GetScanFileDto } from './scanner-client.dto'
 import {
   ScannerClientErrorsEnum,
@@ -14,13 +16,13 @@ import {
 
 @Injectable()
 export default class ScannerClientService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly configService: ConfigService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new Logger('ScannerClientService')
+    this.logger = new LineLoggerSubservice('ScannerClientService')
   }
 
   // create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
@@ -37,11 +39,7 @@ export default class ScannerClientService {
       )
       return response.status === 200
     } catch (error) {
-      alertError(
-        'ScannerClientService.health error',
-        this.logger,
-        <string>error,
-      )
+      alertError('ScannerClientService.health error', this.logger, error)
       return false
     }
   }

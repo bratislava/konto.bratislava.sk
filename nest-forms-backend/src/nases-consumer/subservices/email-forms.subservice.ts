@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
@@ -22,7 +22,9 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../../utils/handlers/text.handler'
-import alertError from '../../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
@@ -30,7 +32,7 @@ import {
 
 @Injectable()
 export default class EmailFormsSubservice {
-  private logger: Logger
+  private logger: LineLoggerSubservice
 
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
@@ -40,7 +42,7 @@ export default class EmailFormsSubservice {
     private convertService: ConvertService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('EmailFormsSubservice')
+    this.logger = new LineLoggerSubservice('EmailFormsSubservice')
   }
 
   // eslint-disable-next-line sonarjs/cognitive-complexity

@@ -1,6 +1,6 @@
 import { Readable, Stream } from 'node:stream'
 
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { BucketItemStat, UploadedObjectInfo } from 'minio'
 import { MinioClient, MinioService } from 'nestjs-minio-client'
 
@@ -10,17 +10,17 @@ import {
   FilesErrorsResponseEnum,
 } from '../../files/files.errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import alertError from '../logging'
+import alertError, { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
 export default class MinioClientSubservice {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly minioService: MinioService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new Logger('MinioClientSubservice')
+    this.logger = new LineLoggerSubservice('MinioClientSubservice')
   }
 
   public client(): MinioClient {
@@ -100,7 +100,7 @@ export default class MinioClientSubservice {
       alertError(
         `Error creating folder ${path} in bucket ${bucket}.`,
         this.logger,
-        <string>error,
+        error,
       )
       return false
     }
@@ -115,11 +115,7 @@ export default class MinioClientSubservice {
     try {
       return await this.minioService.client.removeObject(bucket, path)
     } catch (error) {
-      alertError(
-        'Error while deleting a folder in minio',
-        this.logger,
-        <string>error,
-      )
+      alertError('Error while deleting a folder in minio', this.logger, error)
       return false
     }
   }

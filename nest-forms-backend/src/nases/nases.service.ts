@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import {
   FormError,
   FormOwnerType,
@@ -38,6 +38,7 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormEidRequestDto,
   CreateFormRequestDto,
@@ -57,7 +58,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 
 @Injectable()
 export default class NasesService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly formsService: FormsService,
@@ -70,7 +71,7 @@ export default class NasesService {
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('NasesService')
+    this.logger = new LineLoggerSubservice('NasesService')
   }
 
   async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {

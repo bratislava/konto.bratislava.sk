@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Logger,
   Post,
   Res,
   StreamableFile,
@@ -33,6 +32,7 @@ import {
 } from '../forms/forms.errors.dto'
 import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import { User, UserInfo } from '../utils/decorators/request.decorator'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
   ConvertToPdfRequestDto,
@@ -52,10 +52,10 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly convertService: ConvertService) {
-    this.logger = new Logger('ConvertController')
+    this.logger = new LineLoggerSubservice('ConvertController')
   }
 
   @ApiOperation({

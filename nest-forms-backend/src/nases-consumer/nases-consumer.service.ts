@@ -1,7 +1,7 @@
 import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinitionSlovenskoSk,
@@ -27,7 +27,9 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -37,7 +39,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
 
 @Injectable()
 export default class NasesConsumerService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly nasesUtilsService: NasesUtilsService,
@@ -50,7 +52,7 @@ export default class NasesConsumerService {
     private readonly webhookSubservice: WebhookSubservice,
     private readonly prismaService: PrismaService,
   ) {
-    this.logger = new Logger('NasesConsumerService')
+    this.logger = new LineLoggerSubservice('NasesConsumerService')
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {

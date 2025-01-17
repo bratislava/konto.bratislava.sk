@@ -24,24 +24,30 @@ export function escapeForLogfmt(value: string): string {
  * will be put in one object and keys that are a string will be put in another. Keys with symbol as
  * a key will be replaced by their descriptions.
  */
-export function separateLogFromResponseObj(obj: object): {
-  responseLog: Record<string, unknown>
-  responseMessage: Record<string, unknown>
+export function separateLogFromResponseObj<T extends object>(
+  obj: T,
+): {
+  responseLog: { [K: string]: T[keyof T] }
+  responseMessage: { [K: string]: T[keyof T] }
 } {
-  const responseLog: Record<string, unknown> = {}
-  const responseMessage: Record<string, unknown> = {}
+  const responseLog: ReturnType<
+    typeof separateLogFromResponseObj
+  >['responseLog'] = {}
+  const responseMessage: ReturnType<
+    typeof separateLogFromResponseObj
+  >['responseLog'] = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
     if (objKey in errorTypeStrings) {
-      responseLog[objKey.slice(8)] = (obj as any)[objKey]
+      responseLog[objKey.slice(8)] = obj[objKey as keyof T]
     } else {
-      responseMessage[objKey] = (obj as any)[objKey]
+      responseMessage[objKey] = obj[objKey as keyof T]
     }
   })
 
   Object.getOwnPropertySymbols(obj).forEach((symbol) => {
     if (symbol.description) {
-      responseLog[symbol.description] = (obj as any)[symbol]
+      responseLog[symbol.description] = obj[symbol as keyof T]
     }
   })
 

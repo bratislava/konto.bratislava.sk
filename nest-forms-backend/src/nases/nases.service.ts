@@ -385,6 +385,8 @@ export default class NasesService {
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary: formSummary as unknown as Prisma.JsonObject,
+      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+      jsonVersion: formDefinition.jsonVersion,
     })
     return {
       id: form.id,
@@ -477,7 +479,11 @@ export default class NasesService {
       data,
       formDefinition,
       user.sub,
-      { formSummary: formSummary as unknown as Prisma.JsonObject },
+      {
+        formSummary: formSummary as unknown as Prisma.JsonObject,
+        // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+        jsonVersion: formDefinition.jsonVersion,
+      },
     )
 
     if (!isSent) {

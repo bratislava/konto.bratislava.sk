@@ -28,6 +28,7 @@ model Forms {
   ico                String?
   state              FormState      @default(DRAFT)
   error              FormError      @default(NONE)
+  // either the version taken from schema at the time of form creation, or at the time of successful send where applicable (TODO: change when implementing versioning)
   jsonVersion        String
   formDataJson       Json?
   formDataGinis      String?

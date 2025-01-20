@@ -7,6 +7,7 @@ import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
+import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 import type { GlobalAppProps } from '../../_app'
 
@@ -39,14 +40,21 @@ export const getServerSideProps = amplifyGetServerSideProps<
     return { notFound: true }
   }
 
+  const initialFormDataJson = getDefaultFormDataForFormDefinition(formDefinition)
+
   return {
     props: {
       formServerContext: {
         formDefinition: makeSerializableFormDefinition(formDefinition),
         formId: '',
-        initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
+        initialFormDataJson,
         initialServerFiles: [],
         formSent: false,
+        initialSummaryJson: getInitialSummaryJson(
+          context.query,
+          formDefinition,
+          initialFormDataJson,
+        ),
         formMigrationRequired: false,
         isEmbedded,
         isDevRoute: true,

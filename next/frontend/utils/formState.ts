@@ -24,7 +24,7 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const validator = validatorRegistry.getValidator(step)
+      const validator = validatorRegistry.getValidator(schema)
       const retrievedSchema = retrieveSchema(validator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null

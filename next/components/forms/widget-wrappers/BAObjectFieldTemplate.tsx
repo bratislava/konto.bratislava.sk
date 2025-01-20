@@ -44,9 +44,7 @@ const BAObjectFieldTemplate = ({
           </>
         )}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 sm:[&>*]:col-span-4">
-          {properties.map(({ content }) => (
-            <>{content}</>
-          ))}
+          {properties.map(({ content }) => content)}
         </div>
       </fieldset>
     </WidgetWrapper>

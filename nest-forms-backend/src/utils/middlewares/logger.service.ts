@@ -96,13 +96,42 @@ export default class AppLoggerMiddleware implements NestMiddleware {
         logData: {},
       }
     }
+
+    let data = exitData
+
+    // Parse string-type exitData if it is JSON
+    if (typeof exitData === 'string') {
+      try {
+        data = JSON.parse(exitData)
+      } catch (error) {
+        // If parsing fails, assume it's a plain string
+        return {
+          responseData: exitData,
+          returnExitData: exitData,
+          logData: {},
+        }
+      }
+    }
+
+    // Special handling for arrays
+    if (Array.isArray(data)) {
+      return {
+        responseData: JSON.stringify(data),
+        returnExitData: JSON.stringify(data),
+        logData: {},
+      }
+    }
+
     // Filter out keys starting with `$`. We will log them later
     const { responseLog, responseMessage } = separateLogFromResponseObj(
       typeof exitData === 'string' ? JSON.parse(exitData) : exitData,
     )
     const returnExitData = JSON.stringify(responseMessage)
 
-    const responseData = returnExitData.toString()
-    return { returnExitData, responseData, logData: responseLog }
+    return {
+      returnExitData: responseMessage,
+      responseData: returnExitData,
+      logData: responseLog,
+    }
   }
 }

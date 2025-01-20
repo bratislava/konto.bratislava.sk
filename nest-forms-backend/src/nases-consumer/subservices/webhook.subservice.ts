@@ -85,6 +85,7 @@ export default class WebhookSubservice {
 
     const webhookDto: WebhookDto = {
       formId: form.id,
+      jsonVersion: form.jsonVersion,
       slug: form.formDefinitionSlug,
       data: formData,
       files: fileIdInfoMap,

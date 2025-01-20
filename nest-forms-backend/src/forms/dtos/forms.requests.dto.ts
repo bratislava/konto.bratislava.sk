@@ -157,6 +157,14 @@ export class FormUpdateBodyDto {
   @IsObject()
   @IsOptional()
   formSummary?: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue
+
+  @ApiPropertyOptional({
+    description: 'JSON version of the form',
+    example: '1.0',
+  })
+  @IsString()
+  @IsOptional()
+  jsonVersion?: string
 }
 
 /* eslint-enable pii/no-phone-number */

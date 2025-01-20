@@ -40,7 +40,6 @@ import {
 } from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -98,26 +97,25 @@ export default class NasesService {
     return result
   }
 
-  async createFormEid(
-    nasesUser: JwtNasesPayloadDto,
-    requestData: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const data = {
-      mainUri: nasesUser.sub,
-      actorUri: nasesUser.actor.sub,
-      ...requestData,
-    }
-    return this.formsService.createForm(data)
-  }
-
   async createForm(
     requestData: CreateFormRequestDto,
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<CreateFormResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(
+      requestData.formDefinitionSlug,
+    )
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
+      )
+    }
+
     const data = {
       userExternalId: user ? user.sub : null,
-      ...requestData,
+      formDefinitionSlug: requestData.formDefinitionSlug,
+      jsonVersion: formDefinition.jsonVersion,
       ico,
       ownerType:
         user?.['custom:account_type'] === 'po' ||
@@ -128,13 +126,6 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`,
-      )
-    }
 
     const messageSubject = getSubjectTextFromForm(result, formDefinition)
     const frontendTitle =
@@ -394,6 +385,8 @@ export default class NasesService {
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary: formSummary as unknown as Prisma.JsonObject,
+      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+      jsonVersion: formDefinition.jsonVersion,
     })
     return {
       id: form.id,
@@ -486,7 +479,11 @@ export default class NasesService {
       data,
       formDefinition,
       user.sub,
-      { formSummary: formSummary as unknown as Prisma.JsonObject },
+      {
+        formSummary: formSummary as unknown as Prisma.JsonObject,
+        // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+        jsonVersion: formDefinition.jsonVersion,
+      },
     )
 
     if (!isSent) {

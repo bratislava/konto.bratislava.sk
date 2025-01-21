@@ -112,6 +112,13 @@ export default class ConvertService {
     }
     const formDataJson = formDataJsonOverride ?? form.formDataJson
 
+    if (formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      )
+    }
+
     return this.convertJsonToXmlObject(form, formDefinition, formDataJson)
   }
 
@@ -286,6 +293,13 @@ export default class ConvertService {
     }
 
     const formJsonData = data.jsonData ?? form.formDataJson
+
+    if (formJsonData == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
 
     // common init for both json and pdf debug storage
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {

@@ -99,6 +99,13 @@ export default class NasesUtilsService {
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<NasesAttachmentXmlObject[]> {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const result: NasesAttachmentXmlObject[] = []
     const files = await this.prismaService.files.findMany({
       where: {

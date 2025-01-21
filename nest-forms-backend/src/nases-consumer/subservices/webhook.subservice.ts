@@ -72,6 +72,13 @@ export default class WebhookSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const formData = omitExtraData(
       formDefinition.schema,
       form.formDataJson,

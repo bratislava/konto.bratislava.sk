@@ -91,6 +91,14 @@ export default class EmailFormsSubservice {
     const formTitle =
       getFrontendFormTitleFromForm(form, formDefinition) ||
       getSubjectTextFromForm(form, formDefinition)
+
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const jsonDataExtraDataOmitted = omitExtraData(
       formDefinition.schema,
       form.formDataJson,

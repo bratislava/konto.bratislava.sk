@@ -273,6 +273,13 @@ export default class NasesService {
     form: Forms,
     formDefinition: FormDefinition,
   ): FormSummary {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     try {
       return getFormSummary(
         formDefinition,

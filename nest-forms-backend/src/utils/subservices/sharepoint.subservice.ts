@@ -203,6 +203,13 @@ export default class SharepointSubservice {
       )
     }
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const accessToken = await this.getAccessToken()
     const { sharepointData, schema } = formDefinition
     const formTitle = this.getTitle(form, formDefinition)

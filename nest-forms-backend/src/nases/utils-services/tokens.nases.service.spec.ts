@@ -181,7 +181,7 @@ describe('NasesUtilsService', () => {
         state: 'QUEUED',
         error: 'NONE',
         jsonVersion: '1.0',
-        formDataJson: null,
+        formDataJson: {},
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
         formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
@@ -254,7 +254,7 @@ describe('NasesUtilsService', () => {
         state: 'QUEUED',
         error: 'NONE',
         jsonVersion: '1.0',
-        formDataJson: null,
+        formDataJson: {},
         formDataGinis: null,
         // eslint-disable-next-line xss/no-mixed-html
         formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,

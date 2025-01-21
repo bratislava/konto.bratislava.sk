@@ -148,5 +148,31 @@ describe('WebhookSubservice', () => {
         }),
       )
     })
+
+    it('should throw UnprocessableEntityException when formDataJson is null', async () => {
+      const mockForm = {
+        id: 'test-form-id',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: null,
+      }
+      const mockFormDefinition: FormDefinition = {
+        type: FormDefinitionType.Webhook,
+        webhookUrl: 'https://example.com/webhook',
+        schema: {},
+        slug: 'test-slug',
+      } as FormDefinition
+
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
+      ;(
+        getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
+      ).mockReturnValue(mockFormDefinition)
+
+      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
+        expect.objectContaining({
+          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+      )
+    })
   })
 })

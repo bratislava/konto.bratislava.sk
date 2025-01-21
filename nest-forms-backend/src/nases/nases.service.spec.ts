@@ -278,7 +278,11 @@ describe('NasesService', () => {
   describe('sendFormEid', () => {
     it('should throw an error if sendMessageNases returns a status different than 200', async () => {
       // Mock dependencies
-      const mockForm = { id: '1', formDefinitionSlug: 'test-slug' } as Forms
+      const mockForm = {
+        id: '1',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: {},
+      } as Forms
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },

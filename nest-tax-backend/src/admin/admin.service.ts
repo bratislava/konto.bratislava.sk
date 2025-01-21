@@ -321,6 +321,12 @@ export class AdminService {
     }
   }
 
+  private formatAmount(amount: number | string) {
+    return typeof amount === 'number'
+      ? currency(amount).intValue
+      : currency(amount.replace(',', '.')).intValue
+  }
+
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
     let created = 0
     let alreadyCreated = 0
@@ -363,6 +369,14 @@ export class AdminService {
       ]),
     )
 
+    // Get batch data from city account
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        Object.values(taxesDataMap).map(
+          (taxData) => taxData.taxPayer.birthNumber,
+        ),
+      )
+
     // despite the retype, do not trust the data from Noris & approach as if they were all optional
     await Promise.all(
       norisPaymentData
@@ -381,15 +395,9 @@ export class AdminService {
                 sum: 0,
                 count: 0,
               }
-              const payedFromNoris =
-                typeof norisPayment.uhrazeno === 'number'
-                  ? currency(norisPayment.uhrazeno).intValue
-                  : currency(norisPayment.uhrazeno!.replace(',', '.')).intValue // we know it's not undefined from filter
-              const forPayment =
-                typeof norisPayment.zbyva_uhradit === 'number'
-                  ? currency(norisPayment.zbyva_uhradit).intValue
-                  : currency(norisPayment.zbyva_uhradit!.replace(',', '.')) // we know it's not undefined from filter
-                      .intValue
+              const payedFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
+              const forPayment = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
+
               if (payerData.sum === null || payerData.sum < payedFromNoris) {
                 created += 1
                 const createdTaxPayment =
@@ -403,9 +411,7 @@ export class AdminService {
                     },
                   })
                 const userFromCityAccount =
-                  await this.cityAccountSubservice.getUserDataAdmin(
-                    taxData.taxPayer.birthNumber,
-                  )
+                  userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
                 if (userFromCityAccount && userFromCityAccount.externalId) {
                   await this.bloomreachService.trackEventTaxPayment(
                     {

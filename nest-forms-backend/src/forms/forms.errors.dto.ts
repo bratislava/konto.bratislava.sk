@@ -119,3 +119,17 @@ export class FormDefinitionNotSupportedTypeErrorDto extends UnprocessableEntityE
   })
   declare message: string
 }
+
+export class EmptyFormDataErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.EMPTY_FORM_DATA,
+    default: FormsErrorsEnum.EMPTY_FORM_DATA,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+    default: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+  })
+  declare message: string
+}

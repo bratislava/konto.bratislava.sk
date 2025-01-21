@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -75,7 +74,7 @@ export default class WebhookSubservice {
 
     const formData = omitExtraData(
       formDefinition.schema,
-      form.formDataJson as GenericObjectType,
+      form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
     )
 

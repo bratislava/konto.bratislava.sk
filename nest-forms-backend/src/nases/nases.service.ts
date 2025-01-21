@@ -1,12 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import {
-  FormError,
-  FormOwnerType,
-  Forms,
-  FormState,
-  Prisma,
-} from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import {
   FormDefinition,
@@ -283,7 +276,7 @@ export default class NasesService {
     try {
       return getFormSummary(
         formDefinition,
-        form.formDataJson as GenericObjectType,
+        form.formDataJson,
         this.formValidatorRegistryService.getRegistry(),
       )
     } catch (error) {
@@ -384,7 +377,7 @@ export default class NasesService {
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
-      formSummary: formSummary as unknown as Prisma.JsonObject,
+      formSummary,
       // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
       jsonVersion: formDefinition.jsonVersion,
     })
@@ -480,7 +473,7 @@ export default class NasesService {
       formDefinition,
       user.sub,
       {
-        formSummary: formSummary as unknown as Prisma.JsonObject,
+        formSummary,
         // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
         jsonVersion: formDefinition.jsonVersion,
       },

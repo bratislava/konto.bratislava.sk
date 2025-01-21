@@ -1,9 +1,7 @@
-import { GenericObjectType } from '@rjsf/utils'
-
 export default interface WebhookDto {
   formId: string
   slug: string
   jsonVersion: string
-  data: GenericObjectType
+  data: PrismaJson.FormDataJson
   files: Record<string, { url: string; fileName: string }>
 }

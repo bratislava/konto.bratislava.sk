@@ -2,7 +2,7 @@
 /* eslint-disable pii/no-email */
 
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormOwnerType, FormState, Prisma } from '@prisma/client'
+import { FormError, FormOwnerType, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsDate,
@@ -61,7 +61,7 @@ export class FormUpdateBodyDto {
     nullable: true,
   })
   @IsOptional()
-  formDataJson?: Prisma.JsonObject
+  formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
     description: 'State of form ',
@@ -156,7 +156,7 @@ export class FormUpdateBodyDto {
   })
   @IsObject()
   @IsOptional()
-  formSummary?: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue
+  formSummary?: PrismaJson.FormSummary
 
   @ApiPropertyOptional({
     description: 'JSON version of the form',

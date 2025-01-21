@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Prisma } from '@prisma/client'
 import {
   IsBoolean,
   IsNotEmpty,
@@ -26,7 +25,7 @@ export class SignerDataRequestDto {
   })
   @IsNotEmpty()
   @IsOptional()
-  formDataJson!: Prisma.JsonObject
+  formDataJson!: PrismaJson.FormDataJson
 }
 
 /**

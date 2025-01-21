@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GenericObjectType } from '@rjsf/utils'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
@@ -81,7 +80,7 @@ export default class SignerService {
     const signerData = await getSignerData({
       formDefinition,
       formId: data.formId,
-      formData: data.formDataJson as GenericObjectType,
+      formData: data.formDataJson,
       validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       serverFiles: files,
     })

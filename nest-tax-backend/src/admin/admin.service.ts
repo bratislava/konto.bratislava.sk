@@ -372,7 +372,7 @@ export class AdminService {
     // Get batch data from city account
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
-        Object.values(taxesDataMap).map(
+        [...taxesDataMap.values()].map(
           (taxData) => taxData.taxPayer.birthNumber,
         ),
       )

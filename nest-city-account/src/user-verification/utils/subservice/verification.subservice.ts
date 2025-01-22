@@ -34,7 +34,7 @@ export class VerificationSubservice {
     if (rfoData.datumUmrtia && rfoData.datumUmrtia !== 'unknown' && rfoData.datumUmrtia !== '') {
       return this.errorMessengerGuard.rfoDeadPerson()
     }
-    if (!rfoData.doklady) {
+    if (!rfoData.doklady || Object.keys(rfoData.doklady).length === 0) {
       return this.errorMessengerGuard.birthNumberICInconsistency()
     }
     for (const document of rfoData.doklady) {

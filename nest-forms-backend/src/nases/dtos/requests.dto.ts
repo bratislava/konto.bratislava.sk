@@ -1,6 +1,6 @@
 /* eslint-disable pii/no-phone-number */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormState, Prisma } from '@prisma/client'
+import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -62,7 +62,7 @@ export class UpdateFormRequestDto {
     default: {},
   })
   @IsOptional()
-  formDataJson?: Prisma.JsonObject
+  formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
     description: 'Signed ASiC-E container in Base64 format',
@@ -241,7 +241,7 @@ export class GetFormResponseDto {
     nullable: true,
   })
   @IsOptional()
-  declare formDataJson: Prisma.JsonValue | null
+  declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiPropertyOptional({
     description: 'Signed ASiC-E container in Base64 format',
@@ -345,7 +345,7 @@ export class GetFormResponseSimpleDto {
     nullable: true,
   })
   @IsOptional()
-  declare formDataJson: Prisma.JsonValue | null
+  declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiProperty({
     description: 'Message subject created from uiSchema',

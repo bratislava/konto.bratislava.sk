@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -73,9 +72,16 @@ export default class WebhookSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const formData = omitExtraData(
       formDefinition.schema,
-      form.formDataJson as GenericObjectType,
+      form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
     )
 

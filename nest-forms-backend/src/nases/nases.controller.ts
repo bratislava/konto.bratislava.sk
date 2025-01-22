@@ -35,6 +35,7 @@ import {
 } from '../files/files.errors.dto'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import {
+  EmptyFormDataErrorDto,
   FormDataInvalidErrorDto,
   FormDefinitionNotFoundErrorDto,
   FormDefinitionNotSupportedTypeErrorDto,
@@ -474,6 +475,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -501,6 +503,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
+        },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
       ],
     },
@@ -551,6 +556,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -578,6 +584,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
+        },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
       ],
     },
@@ -648,6 +657,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -676,7 +686,16 @@ export default class NasesController {
   @ApiResponse({
     status: 422,
     description: 'Unprocessable entity error.',
-    type: UnableAddFormToRabbitErrorDto,
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
+        },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+      ],
+    },
   })
   @ApiInternalServerErrorResponse({
     status: 500,
@@ -727,6 +746,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -754,6 +774,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
+        },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
       ],
     },

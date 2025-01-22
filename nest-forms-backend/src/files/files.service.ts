@@ -496,7 +496,7 @@ export default class FilesService {
 
   async checkFilesAttachmentsInJson(
     formId: string,
-    formDataJson: Prisma.JsonObject,
+    formDataJson: PrismaJson.FormDataJson,
   ): Promise<void> {
     const fileUuidsFromForm = getFileUuidsNaive(formDataJson)
     const fileUuidsFromDatabase: string[] =

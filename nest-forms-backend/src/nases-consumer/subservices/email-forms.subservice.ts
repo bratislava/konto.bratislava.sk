@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
@@ -92,9 +91,17 @@ export default class EmailFormsSubservice {
     const formTitle =
       getFrontendFormTitleFromForm(form, formDefinition) ||
       getSubjectTextFromForm(form, formDefinition)
+
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const jsonDataExtraDataOmitted = omitExtraData(
       formDefinition.schema,
-      form.formDataJson as GenericObjectType,
+      form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
     )
 
@@ -123,8 +130,7 @@ export default class EmailFormsSubservice {
     )
 
     const userConfirmationEmail =
-      userEmail ??
-      formDefinition.extractEmail(form.formDataJson as GenericObjectType)
+      userEmail ?? formDefinition.extractEmail(form.formDataJson)
 
     // Send confirmation email to user
     if (userConfirmationEmail) {
@@ -145,11 +151,7 @@ export default class EmailFormsSubservice {
           return userFirstName
         }
         if (formDefinition.extractName) {
-          return (
-            formDefinition.extractName(
-              form.formDataJson as GenericObjectType,
-            ) ?? null
-          )
+          return formDefinition.extractName(form.formDataJson) ?? null
         }
 
         return null

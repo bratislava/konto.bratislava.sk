@@ -2,7 +2,6 @@
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Prisma } from '@prisma/client'
 import { Job, JobId, Queue } from 'bull'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
 import { TaxFormData } from 'forms-shared/tax-form/types'
@@ -59,7 +58,7 @@ export default class TaxService {
   }
 
   async getFilledInPdfBase64(
-    formData: Prisma.JsonValue,
+    formData: PrismaJson.FormDataJson,
     formId?: string,
   ): Promise<string> {
     // NestJS adapter for Bull doesn't implement `enableOfflineQueue`, therefore if we are not connected to Redis,

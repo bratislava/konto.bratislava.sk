@@ -4,7 +4,6 @@ import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -141,7 +140,8 @@ describe('EmailFormsSubservice', () => {
         email: 'test@example.com',
         schema: {},
         slug: 'test-slug',
-        extractEmail: (formData: GenericObjectType) => formData.user.email,
+        extractEmail: (formData: PrismaJson.FormDataJson) =>
+          formData.user.email,
       }
 
       prismaMock.forms.findUnique.mockResolvedValue(

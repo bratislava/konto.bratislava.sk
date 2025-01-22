@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { createSingleUseValidatorRegistry } from 'forms-shared/form-utils/validatorRegistry'
 import { getFormSummary } from 'forms-shared/summary/summary'
@@ -40,10 +39,14 @@ async function main() {
             `Definition not found for slug ${form.formDefinitionSlug}`,
           )
 
+        if (!form.formDataJson) {
+          throw new Error(`Form ${form.id} has no data`)
+        }
+
         console.log(`Generating summary for form ${form.id}...`)
         const formSummary = getFormSummary(
           formDefinition,
-          form.formDataJson as GenericObjectType,
+          form.formDataJson,
           validatorRegistry,
         )
 
@@ -51,7 +54,7 @@ async function main() {
         await tx.forms.update({
           where: { id: form.id },
           data: {
-            formSummary: formSummary as unknown as Prisma.JsonObject,
+            formSummary,
           },
         })
         console.log(`Successfully processed form ${form.id}`)

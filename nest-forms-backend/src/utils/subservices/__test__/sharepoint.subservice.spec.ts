@@ -7,6 +7,7 @@ import axios from 'axios'
 import Bull from 'bull'
 import {
   FormDefinition,
+  FormDefinitionSlovenskoSkGeneric,
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -17,6 +18,7 @@ import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint
 
 import prismaMock from '../../../../test/singleton'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
+import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import * as textHandler from '../../handlers/text.handler'
@@ -333,7 +335,9 @@ describe('SharepointSubservice', () => {
     })
 
     it('should correctly post data to sharepoint', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue({} as Forms)
+      prismaMock.forms.findUnique.mockResolvedValue({
+        formDataJson: {},
+      } as Forms)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
         .mockReturnValue({
@@ -410,6 +414,40 @@ describe('SharepointSubservice', () => {
           state: FormState.PROCESSING,
         },
       })
+    })
+
+    it('should throw UnprocessableEntityException when formDataJson is null', async () => {
+      const mockForm = {
+        id: 'formId',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: null,
+        archived: false,
+      } as Forms
+
+      const mockFormDefinition = {
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        sharepointData: {
+          databaseName: 'testDb',
+          columnMap: {},
+        },
+        schema: {},
+        slug: 'test-slug',
+      } as FormDefinitionSlovenskoSkGeneric
+
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm)
+      jest
+        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
+        .mockReturnValue(mockFormDefinition)
+
+      await expect(service.postNewRecord('formId')).rejects.toThrow(
+        expect.objectContaining({
+          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+      )
+
+      // Verify that no update was attempted
+      expect(prismaMock.forms.update).not.toHaveBeenCalled()
     })
   })
 })

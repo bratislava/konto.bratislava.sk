@@ -179,7 +179,7 @@ describe('NasesConsumerService', () => {
 
       const updateFormSpy = jest.spyOn(formsService, 'updateForm')
       const additionalFormUpdates = {
-        formSummary: {},
+        formSummary: {} as PrismaJson.FormSummary,
       }
 
       await service.sendToNasesAndUpdateState(

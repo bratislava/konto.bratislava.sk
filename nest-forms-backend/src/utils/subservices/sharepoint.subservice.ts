@@ -1,8 +1,7 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, Forms, FormState, Prisma } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
+import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
 import {
@@ -101,7 +100,7 @@ export default class SharepointSubservice {
     sharepointDataOneToOne: Record<string, SharepointRelationData>,
     form: Forms,
     formTitle: string,
-    jsonDataExtraDataOmitted: Prisma.JsonValue,
+    jsonDataExtraDataOmitted: PrismaJson.FormDataJson,
     accessToken: string,
     fields: SharepointDataAllColumnMappingsToFields,
   ): Promise<Record<string, number>> {
@@ -135,7 +134,7 @@ export default class SharepointSubservice {
     sharepointDataOneToMany: Record<string, SharepointRelationData>,
     form: Forms,
     formTitle: string,
-    jsonDataExtraDataOmitted: Prisma.JsonValue,
+    jsonDataExtraDataOmitted: PrismaJson.FormDataJson,
     accessToken: string,
     fields: SharepointDataAllColumnMappingsToFields,
   ): Promise<Record<string, number[]>> {
@@ -204,6 +203,13 @@ export default class SharepointSubservice {
       )
     }
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const accessToken = await this.getAccessToken()
     const { sharepointData, schema } = formDefinition
     const formTitle = this.getTitle(form, formDefinition)
@@ -211,7 +217,7 @@ export default class SharepointSubservice {
 
     const jsonDataExtraDataOmitted = omitExtraData(
       schema,
-      form.formDataJson as GenericObjectType,
+      form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
     )
     const valuesForFields = getValuesForFields(

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Prisma } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
 import {
   IsNotEmpty,
@@ -26,7 +25,7 @@ export class GetSignerDataRequestDto {
   })
   @IsNotEmpty()
   @IsOptional()
-  jsonForm!: Prisma.JsonObject
+  jsonForm!: PrismaJson.FormDataJson
 }
 
 export class JsonToXmlV2RequestDto {
@@ -45,7 +44,7 @@ export class JsonToXmlV2RequestDto {
   })
   @IsNotEmpty()
   @IsOptional()
-  jsonData?: Prisma.JsonValue
+  jsonData?: PrismaJson.FormDataJson
 }
 
 export class XmlToJsonRequestDto {
@@ -105,7 +104,7 @@ export class ConvertToPdfRequestDto {
   })
   @IsNotEmpty()
   @IsOptional()
-  jsonData?: Prisma.JsonValue
+  jsonData?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
     description:

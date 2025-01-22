@@ -44,7 +44,7 @@ describe('VerificationSubservice', () => {
 
   describe('checkIdentityCard', () => {
     it('should return ok if identity card is in RFO', () => {
-      const identityCard = '1234567890'
+      const identityCard = 'AB123456'
       const rfoData: RfoIdentityListElement = {
         doklady: [
           {
@@ -56,7 +56,33 @@ describe('VerificationSubservice', () => {
           {
             druhDokladuKod: 111,
             druhDokladu: IDENTITY_CARD,
-            jednoznacnyIdentifikator: '1234567890',
+            jednoznacnyIdentifikator: 'AB123456',
+            udrzitela: true,
+          },
+        ],
+      }
+      const result = service['checkIdentityCard'](rfoData, identityCard)
+      expect(result).toEqual({
+        statusCode: 200,
+        status: 'OK',
+        message: { message: 'ok' },
+      })
+    })
+
+    it('should return ok if identity card is in RFO in another format', () => {
+      const identityCard = 'AB123456'
+      const rfoData: RfoIdentityListElement = {
+        doklady: [
+          {
+            druhDokladuKod: 111,
+            druhDokladu: IDENTITY_CARD,
+            jednoznacnyIdentifikator: 'INVALID',
+            udrzitela: true,
+          },
+          {
+            druhDokladuKod: 111,
+            druhDokladu: IDENTITY_CARD,
+            jednoznacnyIdentifikator: '123456 AB',
             udrzitela: true,
           },
         ],
@@ -70,7 +96,7 @@ describe('VerificationSubservice', () => {
     })
 
     it('should return error if identity card is not in RFO', () => {
-      const identityCard = '1234567890'
+      const identityCard = 'AB123456'
       const rfoData: RfoIdentityListElement = {
         doklady: [
           {
@@ -99,7 +125,7 @@ describe('VerificationSubservice', () => {
     })
 
     it('should return error if RFO returned empty object for identity cards', () => {
-      const identityCard = '1234567890'
+      const identityCard = 'AB123456'
       const rfoData: RfoIdentityListElement = {
         doklady: {},
       } as RfoIdentityListElement // This can happen, sometimes it returns empty object instead of empty array
@@ -115,7 +141,7 @@ describe('VerificationSubservice', () => {
     })
 
     it('should return error if RFO returned empty array for identity cards', () => {
-      const identityCard = '1234567890'
+      const identityCard = 'AB123456'
       const rfoData: RfoIdentityListElement = { doklady: [] }
       const result = service['checkIdentityCard'](rfoData, identityCard)
       expect(result).toEqual(
@@ -128,14 +154,14 @@ describe('VerificationSubservice', () => {
       )
     })
 
-    it('should return error if the person died', () => {
-      const identityCard = '1234567890'
+    it('should return error if the person is dead', () => {
+      const identityCard = 'AB123456'
       const rfoData: RfoIdentityListElement = {
         doklady: [
           {
             druhDokladuKod: 111,
             druhDokladu: IDENTITY_CARD,
-            jednoznacnyIdentifikator: '1234567890',
+            jednoznacnyIdentifikator: 'AB123456',
             udrzitela: true,
           },
           {

@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import {
   ApiOperation,
   ApiResponse,
@@ -9,9 +16,9 @@ import { AdminGuard } from 'src/auth/guards/admin.guard'
 
 import { AdminService } from './admin.service'
 import {
-  CreateBirthNumbersRequestDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
+  RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 
@@ -76,21 +83,35 @@ export class AdminController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Creates tax payers for birth numbers',
-    description:
-      'For a list of birth numbers this tries to create tax payers in the database, by taking data from NORIS.',
+    summary: 'Update delivery methods for given birth numbers and date.',
   })
   @ApiResponse({
     status: 200,
-    description:
-      'Returns birth numbers of created tax payers which were possible (were in Noris)',
-    type: CreateBirthNumbersResponseDto,
+    description: 'Records succesfully updated in Noris',
   })
   @UseGuards(AdminGuard)
-  @Post('create-tax-payers')
-  async createTaxPayersFromBirthNumbers(
-    @Body() data: CreateBirthNumbersRequestDto,
-  ): Promise<CreateBirthNumbersResponseDto> {
-    return this.adminService.createTaxPayers(data.birthNumbers)
+  @Post('update-delivery-methods-in-noris')
+  async updateDeliveryMethodsInNoris(
+    @Body() data: RequestUpdateNorisDeliveryMethodsDto,
+  ): Promise<void> {
+    return this.adminService.updateDeliveryMethodsInNoris(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Remove delivery methods for given birth number.',
+    description:
+      'Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Records succesfully updated in Noris',
+  })
+  @UseGuards(AdminGuard)
+  @Post('remove-delivery-methods-from-noris/:birthNumber')
+  async removeDeliveryMethodsFromNoris(
+    @Param('birthNumber') birthNumber: string,
+  ): Promise<void> {
+    return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
   }
 }

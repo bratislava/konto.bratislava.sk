@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { IsObject } from 'class-validator'
+
+import { DeliveryMethod } from '../../noris/noris.types'
 
 export class RequestPostNorisLoadDataDto {
   @ApiProperty({
@@ -64,6 +67,25 @@ export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
     isArray: true,
   })
   variableSymbols: string[]
+}
+
+export type RequestUpdateNorisDeliveryMethodsData = {
+  [key: string]:
+    | { deliveryMethod: DeliveryMethod.CITY_ACCOUNT; date: string }
+    | { deliveryMethod: DeliveryMethod.EDESK | DeliveryMethod.POSTAL }
+}
+
+export class RequestUpdateNorisDeliveryMethodsDto {
+  @ApiProperty({
+    description: 'The new delivery methods for the birth numbers',
+    example: {
+      '010366/4554': DeliveryMethod.EDESK,
+      '010366/554': DeliveryMethod.EDESK,
+      '017766/2244': DeliveryMethod.POSTAL,
+    },
+  })
+  @IsObject()
+  data: RequestUpdateNorisDeliveryMethodsData
 }
 
 export type NorisRequestGeneral =

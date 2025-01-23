@@ -338,12 +338,13 @@ export default class NasesUtilsService {
   }
 
   private async getFormMessage(
+    formDefinition: FormDefinitionSlovenskoSk,
     form: Forms,
     isSigned: boolean,
   ): Promise<string | object> {
     let message: string | object | null = null
 
-    if (form.formSignature?.signatureBase64) {
+    if (formDefinition.isSigned && form.formSignature?.signatureBase64) {
       // Remove any whitespace characters - data saved from signer software may contain those & slovensko.sk can't handle them
       message = form.formSignature.signatureBase64.replaceAll(/\s/g, '')
     }
@@ -403,7 +404,7 @@ export default class NasesUtilsService {
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
-    const message = await this.getFormMessage(form, isSigned)
+    const message = await this.getFormMessage(formDefinition, form, isSigned)
 
     const senderId =
       senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''

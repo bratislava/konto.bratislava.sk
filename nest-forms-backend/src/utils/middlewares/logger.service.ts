@@ -10,7 +10,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     const { method, originalUrl, body, ip, userAgent, userId } =
       this.extractRequestData(request)
     const startAt = process.hrtime()
-    const { statusMessage, statusCode } = response
+    const { statusMessage } = response
 
     const { send } = response
     response.send = (exitData: string | object | Buffer | Array<any>) => {
@@ -26,7 +26,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
       const logObj: Record<string, string | number> = {
         method,
         originalUrl,
-        statusCode,
+        statusCode : response.statusCode,
         responseTime,
         userAgent,
         ip,

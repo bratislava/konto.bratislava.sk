@@ -343,9 +343,9 @@ export default class NasesUtilsService {
   ): Promise<string | object> {
     let message: string | object | null = null
 
-    if (form.formDataBase64) {
+    if (form.formSignature?.signatureBase64) {
       // Remove any whitespace characters - data saved from signer software may contain those & slovensko.sk can't handle them
-      message = form.formDataBase64.replaceAll(/\s/g, '')
+      message = form.formSignature.signatureBase64.replaceAll(/\s/g, '')
     }
 
     if (!isSigned) {
@@ -409,14 +409,14 @@ export default class NasesUtilsService {
       senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
     const correlationId = uuidv4()
     let subject: string = form.id
-    let mimeType = 'application/x-eform-xml'
-    let encoding = 'XML'
+    const mimeType = isSigned
+      ? 'application/vnd.etsi.asic-e+zip'
+      : 'application/x-eform-xml'
+    const encoding = isSigned ? 'Base64' : 'XML'
     let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
-      mimeType = 'application/vnd.etsi.asic-e+zip'
-      encoding = 'Base64'
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 

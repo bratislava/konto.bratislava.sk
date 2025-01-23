@@ -183,8 +183,15 @@ describe('NasesUtilsService', () => {
         jsonVersion: '1.0',
         formDataJson: {},
         formDataGinis: null,
-        // eslint-disable-next-line xss/no-mixed-html
-        formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+        formSignature: {
+          pospID: 'esmao.eforms.bratislava.obec_024',
+          pospVersion: '1.0',
+          jsonVersion: '1.0',
+          // eslint-disable-next-line xss/no-mixed-html
+          signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+          formDataHash: '',
+        },
+        formDataBase64: null,
         formSummary: null,
         ginisDocumentId: null,
         senderId: null,
@@ -256,8 +263,8 @@ describe('NasesUtilsService', () => {
         jsonVersion: '1.0',
         formDataJson: {},
         formDataGinis: null,
-        // eslint-disable-next-line xss/no-mixed-html
-        formDataBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+        formSignature: null,
+        formDataBase64: null,
         formSummary: null,
         ginisDocumentId: null,
         senderId: null,

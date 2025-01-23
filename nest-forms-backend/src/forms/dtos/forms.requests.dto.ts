@@ -1,13 +1,15 @@
 /* eslint-disable pii/no-phone-number */
 /* eslint-disable pii/no-email */
 
-import { ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormOwnerType, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
+  IsBase64,
   IsDate,
   IsEmail,
   IsEnum,
+  IsHash,
   IsNotEmpty,
   IsObject,
   IsOptional,
@@ -51,6 +53,45 @@ export class FormCreateBodyDto {
   @IsOptional()
   @IsEnum(FormOwnerType)
   ownerType?: FormOwnerType
+}
+
+export class FormSignatureDto {
+  @ApiProperty({
+    description: 'Base64 encoded signature',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsBase64()
+  signatureBase64: string
+
+  @ApiProperty({
+    description: 'POSP ID of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  pospID: string
+
+  @ApiProperty({
+    description: 'POSP version of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  pospVersion: string
+
+  @ApiProperty({
+    description: 'JSON version of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  jsonVersion: string
+
+  @ApiProperty({
+    description: 'Hash of the form data',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsHash('sha1')
+  formDataHash: string
 }
 
 export class FormUpdateBodyDto {
@@ -165,6 +206,16 @@ export class FormUpdateBodyDto {
   @IsString()
   @IsOptional()
   jsonVersion?: string
+
+  @ApiPropertyOptional({
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
+    nullable: true,
+  })
+  @IsOptional()
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  formSignature?: FormSignatureDto
 }
 
 /* eslint-enable pii/no-phone-number */

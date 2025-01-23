@@ -30,7 +30,7 @@ const useGetContext = () => {
         {
           formDataJson: formData,
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
-          formDataBase64: signature?.signature ?? null,
+          formSignature: signature ?? null,
         },
         { accessToken: 'onlyAuthenticated' },
       ),

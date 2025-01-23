@@ -25,6 +25,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { Forms } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
@@ -60,7 +61,6 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import parseJwt from '../utils/tokens'
 import {
   CreateFormRequestDto,
   EidSendFormRequestDto,
@@ -440,15 +440,15 @@ export default class NasesController {
     @Body() data: EidSendFormRequestDto,
     @User() cognitoUser?: CognitoGetUserData,
   ): Promise<CanSendResponseDto> {
-    const jwt = this.nasesUtilsService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwt)) === null) {
+    const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
+    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
       )
     }
 
-    const user = parseJwt<JwtNasesPayloadDto>(data.eidToken)
+    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
     const canSend = await this.nasesService.canSendForm(
       id,
       user,
@@ -631,7 +631,7 @@ export default class NasesController {
       )
     }
 
-    const user = parseJwt<JwtNasesPayloadDto>(body.eidToken)
+    const user = jwt.decode(body.eidToken, { json: true }) as JwtNasesPayloadDto
     const data = await this.nasesService.sendFormEid(
       id,
       body.eidToken,
@@ -821,7 +821,7 @@ export default class NasesController {
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
       )
     }
-    const user = parseJwt<JwtNasesPayloadDto>(data.eidToken)
+    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
 
     if (!(await this.nasesService.canSendForm(id, user, cognitoUser?.sub))) {
       throw this.throwerErrorGuard.ForbiddenException(

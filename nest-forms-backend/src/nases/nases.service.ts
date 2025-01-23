@@ -6,6 +6,10 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  verifyFormSignature,
+  VerifyFormSignatureError,
+} from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
@@ -45,6 +49,7 @@ import {
   CreateFormResponseDto,
   ResponseGdprDataDto,
 } from './dtos/responses.dto'
+import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
@@ -434,6 +439,42 @@ export default class NasesService {
       )
     }
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
+    if (formDefinition.isSigned) {
+      if (!form.formSignature) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          NasesErrorsEnum.SIGNATURE_MISSING,
+          NasesErrorsResponseEnum.SIGNATURE_MISSING,
+        )
+      }
+
+      try {
+        verifyFormSignature(
+          formDefinition,
+          form.formDataJson,
+          form.formSignature,
+        )
+      } catch (error) {
+        if (error instanceof VerifyFormSignatureError) {
+          const { error: errorEnum, message: errorMessage } =
+            verifyFormSignatureErrorMapping[error.type]
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
+            errorEnum,
+            errorMessage,
+          )
+        } else {
+          throw error
+        }
+      }
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -495,9 +536,11 @@ export default class NasesService {
 
       // TODO temp SEND_TO_NASES_ERROR log, remove
       console.log(
-        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formDataBase64 from db: ${
-          form.formDataBase64
-        }`,
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
+          form.formSignature,
+          null,
+          2,
+        )}`,
       )
 
       throw this.throwerErrorGuard.InternalServerErrorException(

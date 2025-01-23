@@ -413,6 +413,7 @@ export default class NasesService {
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async sendFormEid(
     id: string,
     oboToken: string,

@@ -9,11 +9,13 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumberString,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator'
 
+import { FormSignatureDto } from '../../forms/dtos/forms.requests.dto'
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -71,6 +73,16 @@ export class UpdateFormRequestDto {
   @IsOptional()
   @IsString()
   formDataBase64?: string | null
+
+  @ApiPropertyOptional({
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
+    nullable: true,
+  })
+  @IsOptional()
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  formSignature?: FormSignatureDto
 
   @ApiPropertyOptional({
     description: 'State of form ',
@@ -244,12 +256,14 @@ export class GetFormResponseDto {
   declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiPropertyOptional({
-    description: 'Signed ASiC-E container in Base64 format',
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
     nullable: true,
   })
   @IsOptional()
-  @IsString()
-  declare formDataBase64?: string | null
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  formSignature?: FormSignatureDto | null
 
   @ApiProperty({
     description: 'Technical NASES id of sender',

@@ -85,7 +85,7 @@ export const getServerSideProps = amplifyGetServerSideProps<
           formId,
           initialFormDataJson,
           initialServerFiles: files,
-          initialSignature: form.formSignature,
+          initialSignature: form.formSignature ?? null,
           formSent,
           initialSummaryJson: getInitialSummaryJson(
             context.query,

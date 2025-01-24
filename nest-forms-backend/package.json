@@ -25,7 +25,7 @@
     "test:send-form": "jest --config test/jest-send-form.json",
     "test:generate-pdf": "jest --config test/jest-generate-pdf.json",
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
-    "build-migrate-add-form-signature": "tsc --project ./prisma/migrations/20250122144235_add_form_signature/tsconfig.json --outDir ./prisma/migrations/20250110152852_add_form_signature",
+    "build-migrate-add-form-signature": "tsc --project ./prisma/migrations/20250122144235_add_form_signature/tsconfig.json --outDir ./prisma/migrations/20250122144235_add_form_signature",
     "migrate-add-form-signature": "node ./prisma/migrations/20250122144235_add_form_signature/data-migration.js"
   },
   "dependencies": {

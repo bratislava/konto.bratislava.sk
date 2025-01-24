@@ -42,6 +42,7 @@ const SummaryFormSignature = () => {
               title: 'Podpísať znova',
               icon: <EditIcon className="size-6" />,
               onPress: () => sign(),
+              disabled: signerButtonDisabled,
             },
             {
               title: 'Odstrániť podpis',

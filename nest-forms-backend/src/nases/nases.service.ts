@@ -6,6 +6,11 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { hashFormData } from 'forms-shared/signer/hashFormData'
+import {
+  verifyFormSignature,
+  VerifyFormSignatureError,
+} from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
@@ -45,6 +50,7 @@ import {
   CreateFormResponseDto,
   ResponseGdprDataDto,
 } from './dtos/responses.dto'
+import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
@@ -265,6 +271,18 @@ export default class NasesService {
             : undefined,
       ico,
     }
+
+    // TEMPORARY FOR REQUESTS RUNNING DURING MIGRATION
+    if (data.formDataBase64 && data.formDataJson && !data.formSignature) {
+      this.logger.log(`Updating form ${id} with formSignature during migration`)
+      data.formSignature = {
+        signatureBase64: data.formDataBase64,
+        pospID: 'esmao.eforms.bratislava.obec_024',
+        pospVersion: '201501.2',
+        jsonVersion: '1.0',
+        formDataHash: hashFormData(data.formDataJson),
+      }
+    }
     const result = await this.formsService.updateForm(id, data)
     return result
   }
@@ -395,6 +413,7 @@ export default class NasesService {
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async sendFormEid(
     id: string,
     oboToken: string,
@@ -432,6 +451,42 @@ export default class NasesService {
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `sendFormEid: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
       )
+    }
+
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
+    if (formDefinition.isSigned) {
+      if (!form.formSignature) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          NasesErrorsEnum.SIGNATURE_MISSING,
+          NasesErrorsResponseEnum.SIGNATURE_MISSING,
+        )
+      }
+
+      try {
+        verifyFormSignature(
+          formDefinition,
+          form.formDataJson,
+          form.formSignature,
+        )
+      } catch (error) {
+        if (error instanceof VerifyFormSignatureError) {
+          const { error: errorEnum, message: errorMessage } =
+            verifyFormSignatureErrorMapping[error.type]
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
+            errorEnum,
+            errorMessage,
+          )
+        } else {
+          throw error
+        }
+      }
     }
 
     const validator = this.formValidatorRegistryService
@@ -495,9 +550,11 @@ export default class NasesService {
 
       // TODO temp SEND_TO_NASES_ERROR log, remove
       console.log(
-        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formDataBase64 from db: ${
-          form.formDataBase64
-        }`,
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
+          form.formSignature,
+          null,
+          2,
+        )}`,
       )
 
       throw this.throwerErrorGuard.InternalServerErrorException(

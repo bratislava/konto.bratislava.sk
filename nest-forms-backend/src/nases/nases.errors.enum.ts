@@ -8,6 +8,9 @@ export enum NasesErrorsEnum {
   SEND_TO_NASES_ERROR = 'SEND_TO_NASES_ERROR',
   SEND_UNVERIFIED = 'SEND_UNVERIFIED',
   FORM_SUMMARY_GENERATION_ERROR = 'FORM_SUMMARY_GENERATION_ERROR',
+  SIGNATURE_MISSING = 'SIGNATURE_MISSING',
+  SIGNATURE_FORM_DEFINITION_MISMATCH = 'SIGNATURE_FORM_DEFINITION_MISMATCH',
+  SIGNATURE_FORM_DATA_HASH_MISMATCH = 'SIGNATURE_FORM_DATA_HASH_MISMATCH',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -20,6 +23,9 @@ export enum NasesErrorsResponseEnum {
   SEND_TO_NASES_ERROR = 'There was an error when sending to NASES.',
   SEND_UNVERIFIED = 'Sending is allowed only for verified users.',
   FORM_SUMMARY_GENERATION_ERROR = 'Error while generating form summary.',
+  SIGNATURE_MISSING = 'Signature is missing.',
+  SIGNATURE_FORM_DEFINITION_MISMATCH = 'Signature form definition mismatch.',
+  SIGNATURE_FORM_DATA_HASH_MISMATCH = 'Signature form data hash mismatch.',
 }
 
 export enum NasesErrorCodesEnum {

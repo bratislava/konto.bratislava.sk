@@ -82,6 +82,9 @@ import {
   ForbiddenFormSendDto,
   FormAssignedToOtherUserErrorDto,
   FormSummaryGenerationErrorDto,
+  SignatureFormDataHashMismatchErrorDto,
+  SignatureFormDefinitionMismatchErrorDto,
+  SignatureMissingErrorDto,
   UnableAddFormToRabbitErrorDto,
 } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -557,6 +560,9 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -587,6 +593,15 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureMissingErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
         },
       ],
     },
@@ -658,6 +673,9 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -778,6 +796,15 @@ export default class NasesController {
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
+        {
+          $ref: getSchemaPath(SignatureMissingErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
+        },
       ],
     },
   })
@@ -835,7 +862,7 @@ export default class NasesController {
     // TODO temp SEND_TO_NASES_ERROR log, remove
     console.log(
       `Signed data from request for formId ${id} before send:`,
-      updateData.formDataBase64,
+      updateData.formSignature,
     )
 
     await this.nasesService.updateFormEid(

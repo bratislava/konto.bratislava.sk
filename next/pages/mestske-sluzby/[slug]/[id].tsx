@@ -12,7 +12,6 @@ import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
 import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
-import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
@@ -57,12 +56,11 @@ export const getServerSideProps = amplifyGetServerSideProps<
       return { notFound: true }
     }
 
-    const [{ data: files }, initialSignature, strapiForm] = await Promise.all([
+    const [{ data: files }, strapiForm] = await Promise.all([
       formsApi.filesControllerGetFilesStatusByForm(formId, {
         accessToken: 'onlyAuthenticated',
         accessTokenSsrGetFn: getAccessToken,
       }),
-      getInitialFormSignature(form.formDataBase64),
       fetchStrapiForm(slug),
     ])
 
@@ -87,7 +85,7 @@ export const getServerSideProps = amplifyGetServerSideProps<
           formId,
           initialFormDataJson,
           initialServerFiles: files,
-          initialSignature,
+          initialSignature: form.formSignature,
           formSent,
           initialSummaryJson: getInitialSummaryJson(
             context.query,

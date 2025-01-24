@@ -3,7 +3,12 @@ import { SignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { hashFormData } from 'forms-shared/signer/hashFormData'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  createFormSignature,
+  FormSignature,
+  verifyFormSignature,
+} from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
@@ -16,19 +21,10 @@ import { useFormModals } from '../useFormModals'
 import { SignerErrorType } from './mapDitecError'
 import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
 
-export type FormSignature = {
-  /**
-   * We store the hash of the object that was signed. This is the easiest way to ensure the validity of the signature
-   * for the current data.
-   */
-  formDataHash: string
-  signature: string
-}
-
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
-  const { formId, isSigned, initialSignature } = useFormContext()
+  const { formDefinition, formId, isSigned, initialSignature } = useFormContext()
   const { formData, formDataRef } = useFormData()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   const { sign: signerSign } = useFormSigner({
@@ -59,7 +55,6 @@ const useGetContext = () => {
     formDataRequest: GenericObjectType,
     signerPayload: SignerDataResponseDto,
   ) => {
-    const currentHash = hashFormData(formDataRequest)
     const result = await signerSign(signerPayload)
     if (!isMounted()) {
       return
@@ -70,7 +65,11 @@ const useGetContext = () => {
       handleSignatureChange(null)
       return
     }
-    handleSignatureChange({ formDataHash: currentHash, signature: result })
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw new Error('Unsupported form definition')
+    }
+
+    handleSignatureChange(createFormSignature(formDefinition, result, formDataRequest))
   }
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
@@ -124,8 +123,17 @@ const useGetContext = () => {
       return false
     }
 
-    return signature.formDataHash === hashFormData(formData)
-  }, [isSigned, signature, formData])
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw new Error('Unsupported form definition')
+    }
+
+    try {
+      verifyFormSignature(formDefinition, formData, signature)
+      return true
+    } catch (error) {
+      return false
+    }
+  }, [isSigned, signature, formDefinition, formData])
 
   return { signature, sign, remove, isValidSignature, getSingerDataIsPending }
 }

@@ -6,13 +6,13 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { SerializableFormDefinition } from './serializableFormDefinition'
-import type { FormSignature } from './signer/useFormSignature'
 
 declare global {
   interface Window {

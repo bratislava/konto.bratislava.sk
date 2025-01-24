@@ -14,7 +14,7 @@ export const createFormSignatureId = (formData: GenericObjectType) => {
 }
 
 export const parseFormDataHashFromFormSignatureId = (formSignature: string) => {
-  const signatureRegex = /^form_data_([\da-f]{40})_\d{14}$/
+  const signatureRegex = /^(?:form_data_|object_)([\da-f]{40})_\d{14}$/
   const match = formSignature.match(signatureRegex)
 
   return match?.[1] ?? null

@@ -10,6 +10,7 @@ export type MenuItemBase = {
   onPress?: () => Promise<void> | void
   url?: string
   itemClassName?: string
+  disabled?: boolean
 }
 
 type MenuDropdownBase = {
@@ -46,6 +47,7 @@ const MenuDropdown = ({
                 title={item.title}
                 url={item.url}
                 onPress={item.onPress}
+                disabled={item.disabled}
               />
             ))}
           {itemVariant === 'header' &&
@@ -57,6 +59,7 @@ const MenuDropdown = ({
                 title={item.title}
                 url={item.url}
                 onPress={item.onPress}
+                disabled={item.disabled}
               />
             ))}
         </DropdownMenu.Content>

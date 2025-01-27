@@ -599,8 +599,8 @@ SELECT
         FROM
             lcs.dane21_doklad
         WHERE
-            lcs.dane21_doklad.rok_podkladu = {%YEAR%}
-            AND lcs.dane21_doklad.rok_podkladu = {%YEAR%}
+            lcs.dane21_doklad.rok_podkladu {%YEARS%}
+            AND lcs.dane21_doklad.rok_podkladu {%YEARS%}
         ) as dane21_doklad
     JOIN 
         (SELECT 

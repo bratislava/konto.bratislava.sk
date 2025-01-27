@@ -52,10 +52,12 @@ export class RequestPostNorisPaymentDataLoadDto {
 
 export class RequestPostNorisPaymentDataLoadByVariableSymbolsDto {
   @ApiProperty({
-    description: 'Year of tax',
-    default: 2022,
+    description:
+      'Years of taxes for which it should find payments. Used for more effective querying.',
+    default: [2022, 2023],
+    type: [Number],
   })
-  year: number
+  years: number[]
 
   @ApiProperty({
     description: 'Variable symbols which should be checked.',

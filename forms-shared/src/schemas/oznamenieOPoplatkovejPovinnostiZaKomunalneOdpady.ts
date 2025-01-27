@@ -15,6 +15,7 @@ import { number } from '../generator/functions/number'
 import { textArea } from '../generator/functions/textArea'
 import { arrayField } from '../generator/functions/arrayField'
 import { match, P } from 'ts-pattern'
+import { checkboxGroup } from '../generator/functions/checkboxGroup'
 
 const komunalnyOdpadOptions = {
   fyzickaOsoba: {
@@ -38,7 +39,6 @@ const komunalnyOdpadOptions = {
         items: [
           { value: '1X7Dni', label: '1× 7 dní' },
           { value: '1X14Dni', label: '1× 14 dní' },
-          { value: '1X28Dni', label: '1× 28 dní' },
         ],
       },
       {
@@ -48,6 +48,7 @@ const komunalnyOdpadOptions = {
           },
         }),
         items: [{ value: '', label: '' }],
+        disabled: true,
       },
     ],
   },
@@ -99,6 +100,7 @@ const komunalnyOdpadOptions = {
           },
         }),
         items: [{ value: '', label: '' }],
+        disabled: true,
       },
     ],
   },
@@ -168,6 +170,7 @@ const komunalnyOdpadOptions = {
           },
         }),
         items: [{ value: '', label: '' }],
+        disabled: true,
       },
     ],
   },
@@ -254,6 +257,7 @@ const komunalnyOdpadOptions = {
           },
         }),
         items: [{ value: '', label: '' }],
+        disabled: true,
       },
     ],
   },
@@ -325,7 +329,7 @@ const getKomunalnyOdpadNadoby = (
     ),
     ...match(typZmeny)
       .with('zmena', () =>
-        komunalnyOdpadOptions[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
+        komunalnyOdpadOptions[oznamovatelTyp].frekvencie.map(({ condition, items, disabled }) =>
           conditionalFields(condition('povodnyObjemNadoby', 'povodnyPocetNadob'), [
             select(
               'povodnaFrekvenciaOdvozu',
@@ -333,6 +337,7 @@ const getKomunalnyOdpadNadoby = (
                 title: 'Pôvodna frekvencia odvozu',
                 required: true,
                 items,
+                disabled,
               },
               { selfColumn: '2/4' },
             ),
@@ -340,7 +345,7 @@ const getKomunalnyOdpadNadoby = (
         ),
       )
       .otherwise(() => []),
-    ...komunalnyOdpadOptions[oznamovatelTyp].frekvencie.map(({ condition, items }) =>
+    ...komunalnyOdpadOptions[oznamovatelTyp].frekvencie.map(({ condition, items, disabled }) =>
       conditionalFields(
         condition(
           match(typZmeny)
@@ -364,6 +369,7 @@ const getKomunalnyOdpadNadoby = (
                 .with('zmena', () => 'Nová frekvencia odvozu')
                 .exhaustive(),
               required: true,
+              disabled,
               items,
             },
             { selfColumn: '2/4' },
@@ -423,6 +429,11 @@ const getVznikKomunalnyOdpadFields = (
         itemTitle: 'Nádoba č. {index}',
       },
       getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
+    ),
+    input(
+      'poznamka',
+      { title: 'Poznámka', type: 'text' },
+      { helptext: 'Tu môžete napísať doplnkové informácie' },
     ),
   ]
 }
@@ -519,15 +530,28 @@ const getZmenaKomunalnyOdpadFields = (
         getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
       ),
     ]),
+    input(
+      'poznamka',
+      { title: 'Poznámka', type: 'text' },
+      { helptext: 'Tu môžete napísať doplnkové informácie' },
+    ),
   ]
 }
 
-const adresaFields = [
-  input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-  input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
-  input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+const getAdresaFields = (title: string, postfix?: string) => [
+  input(
+    `ulicaACislo${postfix}`,
+    { title, required: true, type: 'text' },
+    { helptext: 'Vyplňte ulicu a číslo' },
+  ),
+  input(`mesto${postfix}`, { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+  input(
+    `psc${postfix}`,
+    { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+    { selfColumn: '1/4' },
+  ),
   select(
-    'stat',
+    `stat${postfix}`,
     {
       title: 'Štát',
       required: true,
@@ -615,30 +639,24 @@ const getOsobaFields = (
       { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
       { size: 'medium', placeholder: '+421', helptext: 'Vyplňte vo formáte +421' },
     ),
-    object(
-      'adresa',
-      { required: true },
-      {
-        objectDisplay: 'boxed',
-        title: match(osobaTyp)
-          .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')
-          .with(
-            P.union(
-              'pravnickaOsoba',
-              'fyzickaOsobaPodnikatel',
-              'spravcaSpolocenstvoVlastnikov',
-              'splnomocnenecPravnickaOsoba',
-            ),
-            () => 'Adresa sídla',
-          )
-          .with(P.union('splnomocnenecFyzickaOsoba'), () => 'Adresa trvalého/prechodného pobytu')
-          .with(
-            P.union('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
-            () => 'Adresa trvalého pobytu/sídla',
-          )
-          .exhaustive(),
-      },
-      adresaFields,
+    ...getAdresaFields(
+      match(osobaTyp)
+        .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')
+        .with(
+          P.union(
+            'pravnickaOsoba',
+            'fyzickaOsobaPodnikatel',
+            'spravcaSpolocenstvoVlastnikov',
+            'splnomocnenecPravnickaOsoba',
+          ),
+          () => 'Adresa sídla',
+        )
+        .with(P.union('splnomocnenecFyzickaOsoba'), () => 'Adresa trvalého/prechodného pobytu')
+        .with(
+          P.union('spravcaSpolocenstvoVlastnikovPravnickaOsobaOpravnenaOsoba'),
+          () => 'Adresa trvalého pobytu/sídla',
+        )
+        .exhaustive(),
     ),
     ...match(osobaTyp)
       .with('fyzickaOsoba', () => [
@@ -658,17 +676,10 @@ const getOsobaFields = (
             orientations: 'row',
           },
         ),
-        conditionalFields(createCondition([[['maPrechodnyPobyt'], { const: true }]]), [
-          object(
-            'adresaPrechodnehoPobytu',
-            { required: true },
-            {
-              objectDisplay: 'boxed',
-              title: 'Adresa prechodného pobytu',
-            },
-            adresaFields,
-          ),
-        ]),
+        conditionalFields(
+          createCondition([[['maPrechodnyPobyt'], { const: true }]]),
+          getAdresaFields('Adresa prechodného pobytu', 'PrechodnyPobyt'),
+        ),
       ])
       .otherwise(() => []),
   ]
@@ -676,7 +687,7 @@ const getOsobaFields = (
 
 export default schema(
   {
-    title: 'Oznámenie o vzniku, zmene alebo zániku poplatkovej povinnosti',
+    title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
   },
   {},
   [
@@ -915,17 +926,7 @@ export default schema(
           [['maElektronickuSchranku'], { const: false }],
           [['adresaRozhodnutia'], { const: 'inaAdresa' }],
         ]),
-        [
-          object(
-            'inaAdresa',
-            { required: true },
-            {
-              objectDisplay: 'boxed',
-              title: 'Iná doručovacia adresa',
-            },
-            adresaFields,
-          ),
-        ],
+        getAdresaFields('Iná doručovacia adresa', 'InaDorucovaciaAdresa'),
       ),
     ]),
     ...createCombinations(
@@ -972,7 +973,7 @@ export default schema(
                   .with(
                     'zanik',
                     () =>
-                      'Povinnosť zaniká dňom, keď prestanete užívať nehnuteľnosť (napr. odsťahovanie, predaj nehnuteľnosti, úmrtie).',
+                      'Poplatková povinnosť za komunálny odpad zaniká dňom, keď prestanete užívať nehnuteľnosť (napr. odsťahovanie, predaj nehnuteľnosti, úmrtie, zmena správcu bytového domu).',
                   )
                   .exhaustive(),
                 size: 'medium',
@@ -993,11 +994,10 @@ export default schema(
               },
               { helptext: 'Vypíšte názov ulice' },
             ),
-            radioGroup(
+            checkboxGroup(
               'typCisla',
               {
-                type: 'string',
-                title: 'Vyberte, ktorú možnosť chcete vyplniť',
+                title: 'Vyberte, ktoré možnosti chcete vyplniť',
                 required: true,
                 items: [
                   {
@@ -1010,11 +1010,10 @@ export default schema(
               },
               {
                 variant: 'boxed',
-                orientations: 'row',
               },
             ),
             conditionalFields(
-              createCondition([[['typCisla'], { const: 'supisneOrientacneCislo' }]]),
+              createCondition([[['typCisla'], { contains: { const: 'supisneOrientacneCislo' } }]]),
               [
                 input(
                   'supisneCislo',
@@ -1023,13 +1022,16 @@ export default schema(
                 ),
               ],
             ),
-            conditionalFields(createCondition([[['typCisla'], { const: 'parcelneCislo' }]]), [
-              input(
-                'parcelneCislo',
-                { type: 'text', title: 'Parcelné číslo', required: true },
-                { size: 'medium' },
-              ),
-            ]),
+            conditionalFields(
+              createCondition([[['typCisla'], { contains: { const: 'parcelneCislo' } }]]),
+              [
+                input(
+                  'parcelneCislo',
+                  { type: 'text', title: 'Parcelné číslo', required: true },
+                  { size: 'medium' },
+                ),
+              ],
+            ),
             input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
             input(
               'psc',
@@ -1195,7 +1197,10 @@ export default schema(
     ),
     conditionalStep(
       'poplatnici',
-      createCondition([[['oznamovatel', 'oznamovatelTyp'], { const: 'fyzickaOsoba' }]]),
+      createCondition([
+        [['typOznamenia', 'typOznamenia'], { enum: ['vznik', 'zmena'] }],
+        [['oznamovatel', 'oznamovatelTyp'], { const: 'fyzickaOsoba' }],
+      ]),
       {
         title: 'Údaje o všetkých poplatníkoch, ktorí užívajú danú nehnuteľnosť',
         stepperTitle: 'Údaje o poplatníkoch',
@@ -1241,17 +1246,10 @@ export default schema(
                 orientations: 'row',
               },
             ),
-            conditionalFields(createCondition([[['zhodujeSaAdresa'], { const: false }]]), [
-              object(
-                'adresaPoplatnika',
-                { required: true },
-                {
-                  objectDisplay: 'boxed',
-                  title: 'Adresa trvalého/prechodného pobytu',
-                },
-                adresaFields,
-              ),
-            ]),
+            conditionalFields(
+              createCondition([[['zhodujeSaAdresa'], { const: false }]]),
+              getAdresaFields('Adresa trvalého/prechodného pobytu'),
+            ),
           ],
         ),
       ],
@@ -1322,17 +1320,17 @@ export default schema(
                       P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
                     ],
                     () =>
-                      'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                      'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
                     ['biologickyRozlozitelnyOdpadZKuchyne', 'fyzickaOsoba'],
                     () =>
-                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
                     ['biologickyRozlozitelnyOdpadZKuchyne', 'spravcaSpolocenstvoVlastnikov'],
                     () =>
-                      'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://olo.sk/).',
+                      'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .exhaustive(),
                 descriptionMarkdown: true,
@@ -1351,6 +1349,7 @@ export default schema(
                           title: 'Objem nádoby',
                           required: true,
                           items: getBioOdpadNadobaItems(matchInner),
+                          disabled: true,
                         },
                         { selfColumn: '2/4' },
                       ),
@@ -1414,6 +1413,11 @@ export default schema(
                   ])
                   .exhaustive(),
               ],
+            ),
+            input(
+              'poznamka',
+              { title: 'Poznámka', type: 'text' },
+              { helptext: 'Tu môžete napísať doplnkové informácie' },
             ),
           ],
         ),
@@ -1514,10 +1518,12 @@ export default schema(
                   () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - kúpna zmluva
+- darovacia zmluva
 - osvedčenie o dedičstve
 - nájomná zmluva
 - preberací protokol
 - úmrtný list
+- iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
                 )
@@ -1527,6 +1533,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 - list vlastníctva
 - zmluva o výkone správy
 - zmluva o spoločenstve
+- iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,
                 )
@@ -1535,6 +1542,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
                   () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - kúpna zmluva
+- darovacia zmluva
 - nájomná zmluva
 - iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 

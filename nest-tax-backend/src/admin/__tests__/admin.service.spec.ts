@@ -38,7 +38,6 @@ describe('TasksService', () => {
     expect(service).toBeDefined()
   })
 
-  // eslint-disable-next-line no-secrets/no-secrets
   describe('updateDeliveryMethodsInNoris', () => {
     const mockDate1 = '2024-01-01'
     const mockDate2 = '2024-01-02'

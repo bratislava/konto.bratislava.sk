@@ -12,9 +12,13 @@ export type FormSignature = {
 
 export const createFormSignature = (
   formDefinition: FormDefinitionSlovenskoSk,
-  signatureBase64: string,
+  rawSignatureBase64: string,
   formDataJson: GenericObjectType,
 ): FormSignature => {
+  // Slovensko.sk cannot handle whitespace in the signature, also the validation on BE (IsBase64 from class-validator)
+  // fails if there is whitespace. However, some signers return the signature with whitespace, so we remove it here.
+  const signatureBase64 = rawSignatureBase64.replaceAll(/\s/g, '')
+
   return {
     signatureBase64,
     pospID: formDefinition.pospID,

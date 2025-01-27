@@ -37,6 +37,20 @@ describe('signature', () => {
         formDataHash: mockFormDataHash,
       })
     })
+
+    it('should remove whitespace from signature', () => {
+      const signatureWithWhitespace = '  test \n signature  \t'
+      const result = createFormSignature(mockFormDefinition, signatureWithWhitespace, mockFormData)
+
+      expect(result.signatureBase64).toBe('testsignature')
+    })
+
+    it('should handle signature with no whitespace', () => {
+      const signatureNoWhitespace = 'testsignature'
+      const result = createFormSignature(mockFormDefinition, signatureNoWhitespace, mockFormData)
+
+      expect(result.signatureBase64).toBe('testsignature')
+    })
   })
 
   describe('verifyFormSignature', () => {

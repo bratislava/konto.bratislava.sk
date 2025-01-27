@@ -687,7 +687,7 @@ const getOsobaFields = (
 
 export default schema(
   {
-    title: 'Oznámenie o vzniku, zmene alebo zániku poplatkovej povinnosti',
+    title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
   },
   {},
   [

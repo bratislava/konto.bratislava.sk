@@ -13,6 +13,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator'
 
 import { FormSignatureDto } from '../../forms/dtos/forms.requests.dto'
@@ -82,6 +83,7 @@ export class UpdateFormRequestDto {
   @IsOptional()
   @Type(() => FormSignatureDto)
   @IsObject()
+  @ValidateNested()
   formSignature?: FormSignatureDto
 
   @ApiPropertyOptional({
@@ -263,6 +265,7 @@ export class GetFormResponseDto {
   @IsOptional()
   @Type(() => FormSignatureDto)
   @IsObject()
+  @ValidateNested()
   formSignature?: FormSignatureDto | null
 
   @ApiProperty({

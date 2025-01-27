@@ -15,6 +15,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator'
 
 export class FormCreateBodyDto {
@@ -215,6 +216,7 @@ export class FormUpdateBodyDto {
   @IsOptional()
   @Type(() => FormSignatureDto)
   @IsObject()
+  @ValidateNested()
   formSignature?: FormSignatureDto
 }
 

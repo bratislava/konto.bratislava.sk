@@ -77,11 +77,16 @@ export type RequestUpdateNorisDeliveryMethodsData = {
 
 export class RequestUpdateNorisDeliveryMethodsDto {
   @ApiProperty({
-    description: 'The new delivery methods for the birth numbers',
+    description:
+      'The new delivery methods for the birth numbers. For city account notification, date must be provided.',
     example: {
-      '010366/4554': DeliveryMethod.EDESK,
-      '010366/554': DeliveryMethod.EDESK,
-      '017766/2244': DeliveryMethod.POSTAL,
+      '010366/4554': { deliveryMethod: DeliveryMethod.EDESK },
+      '010366/554': { deliveryMethod: DeliveryMethod.EDESK },
+      '017766/2244': { deliveryMethod: DeliveryMethod.POSTAL },
+      '022176/2244': {
+        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+        date: '2024-01-01',
+      },
     },
   })
   @IsObject()

@@ -161,6 +161,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -347,6 +348,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -359,6 +361,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -371,6 +374,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -383,6 +387,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -401,5 +406,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: '',
     },
     isSigned: true,
+    exampleFormNotRequired: true,
   },
 ]

@@ -37,7 +37,7 @@ import { PaymentService } from './payment.service'
 export class PaymentController {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private paymentService: PaymentService) {
+  constructor(private readonly paymentService: PaymentService) {
     this.logger = new LineLoggerSubservice(PaymentController.name)
   }
 

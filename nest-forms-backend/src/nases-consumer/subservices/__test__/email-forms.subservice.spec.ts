@@ -1,10 +1,9 @@
 /* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus, Logger } from '@nestjs/common'
+import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
@@ -16,6 +15,7 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
 
@@ -69,7 +69,7 @@ describe('EmailFormsSubservice', () => {
       warn: jest.fn(),
       debug: jest.fn(),
       verbose: jest.fn(),
-    } as unknown as Logger
+    } as unknown as LineLoggerSubservice
   })
 
   it('should be defined', () => {
@@ -140,7 +140,8 @@ describe('EmailFormsSubservice', () => {
         email: 'test@example.com',
         schema: {},
         slug: 'test-slug',
-        extractEmail: (formData: GenericObjectType) => formData.user.email,
+        extractEmail: (formData: PrismaJson.FormDataJson) =>
+          formData.user.email,
       }
 
       prismaMock.forms.findUnique.mockResolvedValue(

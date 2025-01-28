@@ -60,8 +60,8 @@ export interface NorisTaxPayersDto {
   det_stavba_DAN_E: string
   det_stavba_DAN_F: string
   det_stavba_DAN_G: string
-  det_stavba_j_DAN_H: string
-  det_stavba_j_DAN_I: string
+  det_stavba_DAN_jH: string
+  det_stavba_DAN_jI: string
   det_stavba_ZAKLAD_A: string
   det_stavba_ZAKLAD_B: string
   det_stavba_ZAKLAD_C: string
@@ -69,8 +69,8 @@ export interface NorisTaxPayersDto {
   det_stavba_ZAKLAD_E: string
   det_stavba_ZAKLAD_F: string
   det_stavba_ZAKLAD_G: string
-  det_stavba_j_ZAKLAD_H: string
-  det_stavba_j_ZAKLAD_I: string
+  det_stavba_ZAKLAD_jH: string
+  det_stavba_ZAKLAD_jI: string
   det_stavba_DAN_H: string
   det_stavba_ZAKLAD_H: string
   TXT_MENO: string

@@ -1,10 +1,9 @@
-/* eslint-disable sonarjs/no-nested-template-literals */
 import { TaxDetailareaType } from '@prisma/client'
 import currency from 'currency.js'
 
 import { NorisTaxPayersDto } from '../../noris/noris.dto'
 
-enum AreaTypesEnum {
+export enum AreaTypesEnum {
   APARTMENT = 'APARTMENT',
   CONSTRUCTION = 'CONSTRUCTION',
   GROUND = 'GROUND',
@@ -57,39 +56,33 @@ export const taxDetail = (
   taxId: number,
 ): TaxDetail[] => {
   const response: TaxDetail[] = []
+
   Object.entries(config).forEach(([keyTaxConfig, valueTaxConfig]) => {
     valueTaxConfig.types.forEach((taxType) => {
-      response.push({
+      const prefix = keyTaxConfig === 'byt' ? 'det' : `det_${keyTaxConfig}`
+
+      const baseKey =
+        `${prefix}_${valueTaxConfig.base}_${taxType}` as keyof NorisTaxPayersDto
+      const amountKey =
+        `${prefix}_${valueTaxConfig.amount}_${taxType}` as keyof NorisTaxPayersDto
+
+      const taxDetailItem: TaxDetail = {
         taxId,
         areaType: taxType,
         type: valueTaxConfig.areaType,
-        base: currency(
-          (
-            data[
-              `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-                valueTaxConfig.base
-              }_${taxType}` as keyof NorisTaxPayersDto
-            ] as string
-          ).replace(',', '.'),
-        ).intValue,
-        amount: currency(
-          (
-            data[
-              `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-                valueTaxConfig.amount
-              }_${taxType}` as keyof NorisTaxPayersDto
-            ] as string
-          ).replace(',', '.'),
-        ).intValue,
+        base: currency((data[baseKey] as string).replace(',', '.')).intValue,
+        amount: currency((data[amountKey] as string).replace(',', '.'))
+          .intValue,
         area: valueTaxConfig.area
           ? (data[
-              `det${keyTaxConfig === 'byt' ? '' : `_${keyTaxConfig}`}_${
-                valueTaxConfig.area
-              }_${taxType}` as keyof NorisTaxPayersDto
+              `${prefix}_${valueTaxConfig.area}_${taxType}` as keyof NorisTaxPayersDto
             ] as string)
           : null,
-      })
+      }
+
+      response.push(taxDetailItem)
     })
   })
+
   return response
 }

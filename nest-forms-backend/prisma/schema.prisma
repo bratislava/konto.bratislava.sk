@@ -6,6 +6,10 @@ generator client {
   binaryTargets = ["native", "linux-musl", "linux-arm64-openssl-1.1.x", "darwin-arm64", "linux-musl-openssl-3.0.x"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -28,9 +32,14 @@ model Forms {
   ico                String?
   state              FormState      @default(DRAFT)
   error              FormError      @default(NONE)
+  // either the version taken from schema at the time of form creation, or at the time of successful send where applicable (TODO: change when implementing versioning)
+  jsonVersion        String
+  /// [FormDataJson]
   formDataJson       Json?
   formDataGinis      String?
   formDataBase64     String?
+  /// [FormSignature]
+  formSignature      Json?
   // ID from Ginis, which is generated after registering the submission
   ginisDocumentId    String?        @unique
   // nases id FO, PO, alebo mesto cez tech. ucet
@@ -40,6 +49,8 @@ model Forms {
   // kedy to bolo podane
   finishSubmission   DateTime?
   formDefinitionSlug String
+  /// [FormSummary]
+  formSummary        Json?
   // relation to files
   files              Files[]
   archived           Boolean        @default(false)

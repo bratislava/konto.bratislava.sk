@@ -24,9 +24,9 @@ import { getTaxStatus } from './utils/helpers/tax.helper'
 @Injectable()
 export class TaxService {
   constructor(
-    private prisma: PrismaService,
-    private qrCodeSubservice: QrCodeSubservice,
-    private throwerErrorGuard: ThrowerErrorGuard,
+    private readonly prisma: PrismaService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
 
   async getTaxByYear(

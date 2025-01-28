@@ -37,7 +37,7 @@ export class TaxController {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private taxService: TaxService,
+    private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new LineLoggerSubservice(TaxController.name)

@@ -69,6 +69,13 @@ export default class ConvertPdfService {
       )
     }
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     // putObject requires bucket name on it's own
     const filePath = await this.getPdfExportFilePathWithoutBucket(
       formId,

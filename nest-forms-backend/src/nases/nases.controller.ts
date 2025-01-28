@@ -25,6 +25,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 import { Forms } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
@@ -35,6 +36,7 @@ import {
 } from '../files/files.errors.dto'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import {
+  EmptyFormDataErrorDto,
   FormDataInvalidErrorDto,
   FormDefinitionNotFoundErrorDto,
   FormDefinitionNotSupportedTypeErrorDto,
@@ -59,9 +61,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import parseJwt from '../utils/tokens'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   EidSendFormRequestDto,
   EidUpdateSendFormRequestDto,
@@ -81,6 +81,10 @@ import {
 import {
   ForbiddenFormSendDto,
   FormAssignedToOtherUserErrorDto,
+  FormSummaryGenerationErrorDto,
+  SignatureFormDataHashMismatchErrorDto,
+  SignatureFormDefinitionMismatchErrorDto,
+  SignatureMissingErrorDto,
   UnableAddFormToRabbitErrorDto,
 } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -279,39 +283,6 @@ export default class NasesController {
   }
 
   @ApiOperation({
-    deprecated: true,
-    description:
-      'Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Return charging details - price and used free minutes / hours.',
-    type: GetFormResponseDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiInternalServerErrorResponse({
-    status: 500,
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-      ],
-    },
-  })
-  @UseGuards(NasesAuthGuard)
-  @Post('eid/create-form')
-  async createFormEid(
-    @User() user: JwtNasesPayloadDto,
-    @Body() data: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const returnData = await this.nasesService.createFormEid(user, data)
-    return returnData
-  }
-
-  @ApiOperation({
     summary: '',
     description: 'Update form',
   })
@@ -472,15 +443,15 @@ export default class NasesController {
     @Body() data: EidSendFormRequestDto,
     @User() cognitoUser?: CognitoGetUserData,
   ): Promise<CanSendResponseDto> {
-    const jwt = this.nasesUtilsService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwt)) === null) {
+    const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
+    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
       )
     }
 
-    const user = parseJwt<JwtNasesPayloadDto>(data.eidToken)
+    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
     const canSend = await this.nasesService.canSendForm(
       id,
       user,
@@ -506,6 +477,8 @@ export default class NasesController {
   @ApiExtraModels(NoFormXmlDataErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -534,16 +507,22 @@ export default class NasesController {
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
         },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -579,6 +558,11 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -607,16 +591,31 @@ export default class NasesController {
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
         },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureMissingErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -647,7 +646,7 @@ export default class NasesController {
       )
     }
 
-    const user = parseJwt<JwtNasesPayloadDto>(body.eidToken)
+    const user = jwt.decode(body.eidToken, { json: true }) as JwtNasesPayloadDto
     const data = await this.nasesService.sendFormEid(
       id,
       body.eidToken,
@@ -672,6 +671,11 @@ export default class NasesController {
   @ApiExtraModels(UnableAddFormToRabbitErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -700,15 +704,27 @@ export default class NasesController {
   @ApiResponse({
     status: 422,
     description: 'Unprocessable entity error.',
-    type: UnableAddFormToRabbitErrorDto,
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
+        },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+      ],
+    },
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -747,6 +763,8 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(FormSummaryGenerationErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -775,16 +793,31 @@ export default class NasesController {
         {
           $ref: getSchemaPath(FormNotEditableErrorDto),
         },
+        {
+          $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureMissingErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
     status: 500,
-    description: 'Internal server error, usually database connected.',
+    description: 'Internal server error.',
     schema: {
       anyOf: [
         {
           $ref: getSchemaPath(DatabaseErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
         },
       ],
     },
@@ -815,7 +848,7 @@ export default class NasesController {
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
       )
     }
-    const user = parseJwt<JwtNasesPayloadDto>(data.eidToken)
+    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
 
     if (!(await this.nasesService.canSendForm(id, user, cognitoUser?.sub))) {
       throw this.throwerErrorGuard.ForbiddenException(
@@ -825,6 +858,13 @@ export default class NasesController {
     }
 
     const updateData = { ...data, eidToken: undefined }
+
+    // TODO temp SEND_TO_NASES_ERROR log, remove
+    console.log(
+      `Signed data from request for formId ${id} before send:`,
+      updateData.formSignature,
+    )
+
     await this.nasesService.updateFormEid(
       id,
       user,

@@ -1,5 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
-import { HttpStatus, Logger } from '@nestjs/common'
+import { HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
@@ -16,6 +16,7 @@ import FormValidatorRegistryService from '../../../form-validator-registry/form-
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { WebhookErrorsResponseEnum } from '../dtos/webhook.errors.enum'
 import WebhookSubservice from '../webhook.subservice'
 
@@ -51,7 +52,7 @@ describe('WebhookSubservice', () => {
       warn: jest.fn(),
       debug: jest.fn(),
       verbose: jest.fn(),
-    } as unknown as Logger
+    } as unknown as LineLoggerSubservice
     throwerErrorGuard = module.get(
       ThrowerErrorGuard,
     ) as jest.Mocked<ThrowerErrorGuard>
@@ -143,6 +144,32 @@ describe('WebhookSubservice', () => {
           message: expect.stringContaining(
             WebhookErrorsResponseEnum.NOT_WEBHOOK_FORM,
           ),
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+      )
+    })
+
+    it('should throw UnprocessableEntityException when formDataJson is null', async () => {
+      const mockForm = {
+        id: 'test-form-id',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: null,
+      }
+      const mockFormDefinition: FormDefinition = {
+        type: FormDefinitionType.Webhook,
+        webhookUrl: 'https://example.com/webhook',
+        schema: {},
+        slug: 'test-slug',
+      } as FormDefinition
+
+      prismaMock.forms.findUnique.mockResolvedValue(mockForm as Forms)
+      ;(
+        getFormDefinitionBySlug.getFormDefinitionBySlug as jest.Mock
+      ).mockReturnValue(mockFormDefinition)
+
+      await expect(service.sendWebhook(mockFormId)).rejects.toThrow(
+        expect.objectContaining({
+          message: FormsErrorsResponseEnum.EMPTY_FORM_DATA,
           status: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
       )

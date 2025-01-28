@@ -37,18 +37,14 @@ export const getZevoSchema = (type: ZevoType) => [
       { variant: 'boxed', orientations: 'column' },
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-      object(
-        'menoPriezvisko',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-        ],
-      ),
+      object('menoPriezvisko', { required: true }, {}, [
+        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+        input(
+          'priezvisko',
+          { title: 'Priezvisko', required: true, type: 'text' },
+          { selfColumn: '2/4' },
+        ),
+      ]),
       sharedAddressField('adresaObyvatel', 'Adresa trvalého pobytu', true),
     ]),
     conditionalFields(
@@ -85,22 +81,34 @@ export const getZevoSchema = (type: ZevoType) => [
         conditionalFields(createCondition([[['platcaDph'], { const: true }]]), [
           input('icDph', { type: 'text', title: 'IČ DPH', required: true }, {}),
         ]),
-        input(
-          'konatel',
-          { type: 'text', title: 'Konateľ', required: true },
-          { helptext: 'Uveďte meno a priezvisko konateľa' },
-        ),
-        input(
-          'zastupeny',
-          {
-            type: 'text',
-            title: 'Zastúpený - na základe splnomocnenia',
-            required: true,
-          },
-          {
-            helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
-          },
-        ),
+      ],
+    ),
+    conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
+      input(
+        'konatel',
+        { type: 'text', title: 'Konateľ', required: true },
+        { helptext: 'Uveďte meno a priezvisko konateľa' },
+      ),
+      input(
+        'zastupeny',
+        {
+          type: 'text',
+          title: 'Zastúpený - na základe splnomocnenia',
+          required: true,
+        },
+        {
+          helptext: 'Uveďte meno a priezvisko osoby zastupujúcej na základe splnomocnenia',
+        },
+      ),
+    ]),
+    conditionalFields(
+      createCondition([
+        [
+          ['ziadatelTyp'],
+          { enum: ['Právnická osoba', 'Právnická osoba s povolením na vstup do ZEVO'] },
+        ],
+      ]),
+      [
         input(
           'kontaktnaOsoba',
           { type: 'text', title: 'Meno kontaktnej osoby', required: true },

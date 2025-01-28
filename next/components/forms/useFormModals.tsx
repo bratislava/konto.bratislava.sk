@@ -59,14 +59,7 @@ const useGetContext = () => {
   )
 
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
-  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>(
-    { isOpen: false },
-  )
-  const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
-    useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
-  const [sendFilesScanningNonAuthenticatedEidModal, setSendFilesScanningNonAuthenticatedEidModal] =
-    useState(false)
   const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
   const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithSendCallback>({
     isOpen: false,
@@ -74,14 +67,10 @@ const useGetContext = () => {
   const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState<ModalWithSendCallback>({
     isOpen: false,
   })
-  const [sendFilesScanningModal, setSendFilesScanningModal] = useState<ModalWithSendCallback>({
-    isOpen: false,
-  })
+  const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
   const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
     useState<ModalWithSendCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
-  const [sendFilesScanningNotVerified, setSendFilesScanningNotVerified] =
     useState<ModalWithSendCallback>({ isOpen: false })
   const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
     isOpen: false,
@@ -117,16 +106,8 @@ const useGetContext = () => {
     setConceptSaveErrorModal,
     sendFilesScanningModal,
     setSendFilesScanningModal,
-    sendFilesScanningEidModal,
-    setSendFilesScanningEidModal,
-    sendFilesScanningNotVerifiedEidModal,
-    setSendFilesScanningNotVerifiedEidModal,
-    sendFilesScanningNotVerified,
-    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
-    sendFilesScanningNonAuthenticatedEidModal,
-    setSendFilesScanningNonAuthenticatedEidModal,
     sendFilesUploadingModal,
     setSendFilesUploadingModal,
     sendConfirmationModal,

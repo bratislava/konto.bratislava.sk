@@ -12,6 +12,7 @@ type FormDefinitionBase = {
   slug: string
   title: string
   schema: RJSFSchema
+  jsonVersion: string
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string

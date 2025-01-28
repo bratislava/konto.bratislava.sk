@@ -170,12 +170,15 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Žiadosť o nájom bytu",
-    "announcement_card_text_first": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
-    "announcement_card_button_first": "Mám záujem",
-    "announcement_card_title_second": "Založte si komunitnú záhradu",
-    "announcement_card_text_second": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
-    "announcement_card_button_second": "Viac informácií",
+    "announcement_card_title_first": "Daňové priznanie z nehnuteľností online",
+    "announcement_card_text_first": "Teraz môžete podať daňové priznanie k nehnuteľnostiam už aj z pohodlia domova. Potrebujete len elektronický občiansky preukaz, aktívnu schránku na slovensko.sk a vyplnený formulár. Online a bez návštevy daňového úradu.",
+    "announcement_card_button_first": "Vyplniť podanie",
+    "announcement_card_title_second": "Žiadosť o nájom bytu",
+    "announcement_card_text_second": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
+    "announcement_card_button_second": "Mám záujem",
+    "announcement_card_title_third": "Založte si komunitnú záhradu",
+    "announcement_card_text_third": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
+    "announcement_card_button_third": "Viac informácií",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
     "banner_button_text": "Prejsť na otázky"
@@ -354,7 +357,7 @@
         "buttonText": "Kúpiť lístok do GMB"
       },
       "34": {
-        "title": "Záväzné stanovisko k investičnej činnosti",
+        "title": "Záväzné stanovisko hlavného mesta SR Bratislavy",
         "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
         "buttonText": "Požiadať"
       },
@@ -408,6 +411,12 @@
         "title": "Žiadosť o nájom bytu",
         "description": "Možnosť podať si žiadosť o mestský nájomný byt, pri ktorej sa bude posudzovať splnenie stanovených podmienok pre pridelenie nájomného bytu.",
         "buttonText": "Mám záujem",
+        "tag": "Nová služba"
+      },
+      "45": {
+        "title": "Oznámenie za komunálne odpady",
+        "description": "Vyplňte jednoducho oznámenie o vzniku, zmene a zániku poplatkovej povinnosti za komunálny odpad.",
+        "buttonText": "Prejsť na priznanie",
         "tag": "Nová služba"
       }
     }
@@ -617,7 +626,8 @@
     },
     "form_submit_tax": {
       "title": "Ďakujeme za odoslanie priznania",
-      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.",
+      "feedbackTitle": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka."
     }
   },
   "bank_info": {

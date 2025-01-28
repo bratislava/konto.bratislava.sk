@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -22,6 +22,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
@@ -29,7 +30,7 @@ import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 // TODO missing tests
 @Injectable()
 export default class FilesHelper {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   private readonly supportedMimeTypes: string[]
 
@@ -40,7 +41,7 @@ export default class FilesHelper {
     private scannerClientService: ScannerClientService,
     private throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new Logger('FilesHelper')
+    this.logger = new LineLoggerSubservice('FilesHelper')
     const mimeTypeList: string = <string>(
       this.configService.get(`MIMETYPE_WHITELIST`)
     )

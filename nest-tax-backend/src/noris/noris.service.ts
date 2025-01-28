@@ -13,7 +13,7 @@ import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 
 @Injectable()
 export class NorisService {
-  private logger: Logger = new Logger('NorisService')
+  private readonly logger: Logger = new Logger('NorisService')
 
   constructor(
     private readonly configService: ConfigService,
@@ -104,7 +104,7 @@ export class NorisService {
             ${overpayments}
         )`,
         )
-        .replaceAll('{%YEAR%}', data.year.toString())
+        .replaceAll('{%YEARS%}', `= ${data.year.toString()}`)
         .replaceAll('{%VARIABLE_SYMBOLS%}', ''),
     )
     connection.close()
@@ -140,9 +140,15 @@ export class NorisService {
     })
     variableSymbols = `(${variableSymbols.slice(0, -1)})`
 
+    if (data.years.length === 0) {
+      throw new Error(
+        'ERROR - Status-500: Years are empty in payment data import from Noris request.',
+      )
+    }
+
     const norisData = await connection.query(
       queryPaymentsFromNoris
-        .replaceAll('{%YEAR%}', data.year.toString())
+        .replaceAll('{%YEARS%}', `IN (${data.years.join(',')})`)
         .replaceAll(
           '{%VARIABLE_SYMBOLS%}',
           `AND dane21_doklad.variabilny_symbol IN ${variableSymbols}`,

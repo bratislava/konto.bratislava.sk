@@ -1,5 +1,5 @@
 import { AxiosError } from '@bratislava/ginis-sdk'
-import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiInternalServerErrorResponse,
@@ -42,15 +42,11 @@ import GinisAPIService from './subservices/ginis-api.service'
 })
 @Controller('ginis')
 export default class GinisController {
-  private readonly logger: Logger
-
   constructor(
     private readonly ginisAPIService: GinisAPIService,
     private readonly formsService: FormsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.logger = new Logger('GinisController')
-  }
+  ) {}
 
   @ApiOperation({
     summary: '',

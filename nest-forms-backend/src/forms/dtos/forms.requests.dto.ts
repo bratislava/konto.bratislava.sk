@@ -1,17 +1,21 @@
 /* eslint-disable pii/no-phone-number */
 /* eslint-disable pii/no-email */
 
-import { ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormOwnerType, FormState, Prisma } from '@prisma/client'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { FormError, FormOwnerType, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
+  IsBase64,
   IsDate,
   IsEmail,
   IsEnum,
+  IsHash,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator'
 
 export class FormCreateBodyDto {
@@ -52,6 +56,45 @@ export class FormCreateBodyDto {
   ownerType?: FormOwnerType
 }
 
+export class FormSignatureDto {
+  @ApiProperty({
+    description: 'Base64 encoded signature',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsBase64()
+  signatureBase64: string
+
+  @ApiProperty({
+    description: 'POSP ID of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  pospID: string
+
+  @ApiProperty({
+    description: 'POSP version of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  pospVersion: string
+
+  @ApiProperty({
+    description: 'JSON version of the form',
+  })
+  @IsString()
+  @IsNotEmpty()
+  jsonVersion: string
+
+  @ApiProperty({
+    description: 'Hash of the form data',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsHash('sha1')
+  formDataHash: string
+}
+
 export class FormUpdateBodyDto {
   // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
@@ -60,7 +103,7 @@ export class FormUpdateBodyDto {
     nullable: true,
   })
   @IsOptional()
-  formDataJson?: Prisma.JsonObject
+  formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
     description: 'State of form ',
@@ -148,6 +191,33 @@ export class FormUpdateBodyDto {
   @IsString()
   @IsOptional()
   actorUri?: string | null
+
+  @ApiPropertyOptional({
+    description: 'Form summary for sent forms',
+    nullable: true,
+  })
+  @IsObject()
+  @IsOptional()
+  formSummary?: PrismaJson.FormSummary
+
+  @ApiPropertyOptional({
+    description: 'JSON version of the form',
+    example: '1.0',
+  })
+  @IsString()
+  @IsOptional()
+  jsonVersion?: string
+
+  @ApiPropertyOptional({
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
+    nullable: true,
+  })
+  @IsOptional()
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  @ValidateNested()
+  formSignature?: FormSignatureDto
 }
 
 /* eslint-enable pii/no-phone-number */

@@ -2,7 +2,7 @@ import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
@@ -28,7 +28,9 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
-import alertError from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import {
   GinisAssignSubmissionResponseInfo,
@@ -56,7 +58,7 @@ const GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE = 'ginis-automation.edit'
 
 @Injectable()
 export default class GinisService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -66,7 +68,7 @@ export default class GinisService {
     private readonly rabbitMqClientService: RabbitmqClientService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
-    this.logger = new Logger('GinisService')
+    this.logger = new LineLoggerSubservice('GinisService')
 
     if (
       !['production', 'development', 'staging'].includes(
@@ -88,7 +90,7 @@ export default class GinisService {
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       alertError(
         `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}, message: ${JSON.stringify(message)}`,
-        new Logger('GinisService'),
+        new LineLoggerSubservice('GinisService'),
       )
       channel.reject(message, false)
     },
@@ -140,7 +142,7 @@ export default class GinisService {
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       alertError(
         `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new Logger('GinisService'),
+        new LineLoggerSubservice('GinisService'),
       )
       channel.reject(message, false)
     },
@@ -190,7 +192,7 @@ export default class GinisService {
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       alertError(
         `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new Logger('GinisService'),
+        new LineLoggerSubservice('GinisService'),
       )
       channel.reject(message, false)
     },
@@ -240,7 +242,7 @@ export default class GinisService {
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       alertError(
         `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new Logger('GinisService'),
+        new LineLoggerSubservice('GinisService'),
       )
       channel.reject(message, false)
     },

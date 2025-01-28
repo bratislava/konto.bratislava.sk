@@ -58,7 +58,7 @@ jobs:
 
       - name: Run unit tests
         working-directory: ${{ inputs.directory }}
-        run: npm run test
+        run: NODE_OPTIONS="--max-old-space-size=4096" npm run test
 
       - name: Typescript reviewdog check
         uses: EPMatt/reviewdog-action-tsc@v1.7.0

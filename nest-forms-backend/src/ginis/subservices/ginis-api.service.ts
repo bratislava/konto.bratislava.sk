@@ -1,5 +1,5 @@
 import { Ginis } from '@bratislava/ginis-sdk'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 import {
   DetailDokumentu,
@@ -7,17 +7,18 @@ import {
 } from '../../utils/ginis/ginis-api-helper'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
  * Handles all communication through @bratislava/ginis-sdk
  */ @Injectable()
 export default class GinisAPIService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   private readonly ginis: Ginis
 
   constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    this.logger = new Logger('GinisAPIService')
+    this.logger = new LineLoggerSubservice('GinisAPIService')
     if (
       !(
         process.env.GINIS_USERNAME &&

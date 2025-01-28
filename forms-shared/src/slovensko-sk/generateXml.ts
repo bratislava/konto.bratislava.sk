@@ -49,9 +49,7 @@ export async function generateSlovenskoSkXmlObject(
   serverFiles?: FormsBackendFile[],
 ) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
-    // Before versioning for JSON is implemented, we will hardcode the version to 1.0 as we want to have the version
-    // in Slovensko.sk XMLs beforehand to accommodate for future changes.
-    JsonVersion: '1.0',
+    JsonVersion: formDefinition.jsonVersion,
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary(
       formDefinition,

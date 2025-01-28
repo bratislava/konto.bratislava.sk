@@ -13,7 +13,7 @@ import {
 export class BloomreachService {
   private readonly logger: LineLoggerSubservice
 
-  private bloomreachCredentials = Buffer.from(
+  private readonly bloomreachCredentials = Buffer.from(
     `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
     'binary',
   ).toString('base64')

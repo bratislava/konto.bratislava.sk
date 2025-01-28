@@ -3,9 +3,14 @@ export enum NasesErrorsEnum {
   FORM_ASSIGNED_TO_OTHER_USER = 'FORM_ASSIGNED_TO_OTHER_USER',
   CITY_ACCOUNT_USER_GET_ERROR = 'CITY_ACCOUNT_USER_GET_ERROR',
   FORBIDDEN_SEND = 'FORBIDDEN_SEND',
-  UNABLE_TO_SEND = 'UNABLE_TO_SEND',
+  INFECTED_FILE = 'INFECTED_FILE',
+  FILE_NOT_SCANNED = 'FILE_NOT_SCANNED',
   SEND_TO_NASES_ERROR = 'SEND_TO_NASES_ERROR',
   SEND_UNVERIFIED = 'SEND_UNVERIFIED',
+  FORM_SUMMARY_GENERATION_ERROR = 'FORM_SUMMARY_GENERATION_ERROR',
+  SIGNATURE_MISSING = 'SIGNATURE_MISSING',
+  SIGNATURE_FORM_DEFINITION_MISMATCH = 'SIGNATURE_FORM_DEFINITION_MISMATCH',
+  SIGNATURE_FORM_DATA_HASH_MISMATCH = 'SIGNATURE_FORM_DATA_HASH_MISMATCH',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -13,9 +18,14 @@ export enum NasesErrorsResponseEnum {
   FORM_ASSIGNED_TO_OTHER_USER = 'This form is already assigned to another user.',
   CITY_ACCOUNT_USER_GET_ERROR = 'There was an error when getting user info from city account backend.',
   FORBIDDEN_SEND = 'Sending this form is forbidden to given user.',
-  UNABLE_TO_SEND = 'This form is unable to send. Check if all files are scanned.',
+  INFECTED_FILE = 'This form contains an infected file.',
+  FILE_NOT_SCANNED = "This form contains a file that hasn't been scanned.",
   SEND_TO_NASES_ERROR = 'There was an error when sending to NASES.',
   SEND_UNVERIFIED = 'Sending is allowed only for verified users.',
+  FORM_SUMMARY_GENERATION_ERROR = 'Error while generating form summary.',
+  SIGNATURE_MISSING = 'Signature is missing.',
+  SIGNATURE_FORM_DEFINITION_MISMATCH = 'Signature form definition mismatch.',
+  SIGNATURE_FORM_DATA_HASH_MISMATCH = 'Signature form data hash mismatch.',
 }
 
 export enum NasesErrorCodesEnum {

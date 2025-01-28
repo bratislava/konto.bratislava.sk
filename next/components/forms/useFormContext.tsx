@@ -6,13 +6,13 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { SerializableFormDefinition } from './serializableFormDefinition'
-import type { FormSignature } from './signer/useFormSignature'
 
 declare global {
   interface Window {
@@ -38,7 +38,6 @@ export type FormServerContext = {
 const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
-  const { eIdTaxFormAllowed } = useSsrAuth()
 
   const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
 
@@ -80,11 +79,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
 
-  const isSigned =
-    isSlovenskoSkFormDefinition(formDefinition) &&
-    formDefinition.isSigned &&
-    // Temporary feature toggle for eID tax form
-    eIdTaxFormAllowed
+  const isSigned = isSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned
 
   return {
     ...formServerContext,

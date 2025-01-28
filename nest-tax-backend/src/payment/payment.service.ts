@@ -32,10 +32,10 @@ export class PaymentService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private prisma: PrismaService,
-    private gpWebpaySubservice: GpWebpaySubservice,
-    private cityAccountSubservice: CityAccountSubservice,
-    private bloomreachService: BloomreachService,
+    private readonly prisma: PrismaService,
+    private readonly gpWebpaySubservice: GpWebpaySubservice,
+    private readonly cityAccountSubservice: CityAccountSubservice,
+    private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {

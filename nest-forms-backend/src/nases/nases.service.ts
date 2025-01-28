@@ -1,8 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinition,
+  FormDefinitionSlovenskoSkTax,
+  isSlovenskoSkFormDefinition,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  createFormSignature,
+  verifyFormSignature,
+  VerifyFormSignatureError,
+} from 'forms-shared/signer/signature'
+import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
+import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
@@ -26,8 +37,8 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
-  CreateFormEidRequestDto,
   CreateFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -40,12 +51,13 @@ import {
   CreateFormResponseDto,
   ResponseGdprDataDto,
 } from './dtos/responses.dto'
+import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 @Injectable()
 export default class NasesService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly formsService: FormsService,
@@ -58,7 +70,7 @@ export default class NasesService {
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('NasesService')
+    this.logger = new LineLoggerSubservice('NasesService')
   }
 
   async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {
@@ -85,26 +97,25 @@ export default class NasesService {
     return result
   }
 
-  async createFormEid(
-    nasesUser: JwtNasesPayloadDto,
-    requestData: CreateFormEidRequestDto,
-  ): Promise<Forms> {
-    const data = {
-      mainUri: nasesUser.sub,
-      actorUri: nasesUser.actor.sub,
-      ...requestData,
-    }
-    return this.formsService.createForm(data)
-  }
-
   async createForm(
     requestData: CreateFormRequestDto,
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<CreateFormResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(
+      requestData.formDefinitionSlug,
+    )
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${requestData.formDefinitionSlug}`,
+      )
+    }
+
     const data = {
       userExternalId: user ? user.sub : null,
-      ...requestData,
+      formDefinitionSlug: requestData.formDefinitionSlug,
+      jsonVersion: formDefinition.jsonVersion,
       ico,
       ownerType:
         user?.['custom:account_type'] === 'po' ||
@@ -115,13 +126,6 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
-    if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(
-        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
-        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`,
-      )
-    }
 
     const messageSubject = getSubjectTextFromForm(result, formDefinition)
     const frontendTitle =
@@ -268,8 +272,48 @@ export default class NasesService {
             : undefined,
       ico,
     }
+
+    // TEMPORARY FOR REQUESTS RUNNING DURING MIGRATION
+    if (data.formDataBase64 && data.formDataJson && !data.formSignature) {
+      this.logger.log(`Updating form ${id} with formSignature during migration`)
+      data.formSignature = createFormSignature(
+        getFormDefinitionBySlug(
+          'priznanie-k-dani-z-nehnutelnosti',
+        ) as FormDefinitionSlovenskoSkTax,
+        data.formDataBase64,
+        data.formDataJson,
+      )
+    }
     const result = await this.formsService.updateForm(id, data)
     return result
+  }
+
+  private getFormSummaryOrThrow(
+    form: Forms,
+    formDefinition: FormDefinition,
+  ): FormSummary {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
+    try {
+      return getFormSummary(
+        formDefinition,
+        form.formDataJson,
+        this.formValidatorRegistryService.getRegistry(),
+      )
+    } catch (error) {
+      this.logger.error(
+        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,
+      )
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+        NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+      )
+    }
   }
 
   async sendForm(
@@ -330,6 +374,10 @@ export default class NasesService {
       )
     }
 
+    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
+
+    const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
+
     this.logger.log(`Sending form ${form.id} to rabbitmq`)
     try {
       await this.rabbitmqClientService.publishDelay(
@@ -355,6 +403,9 @@ export default class NasesService {
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
+      formSummary,
+      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+      jsonVersion: formDefinition.jsonVersion,
     })
     return {
       id: form.id,
@@ -363,6 +414,7 @@ export default class NasesService {
     }
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async sendFormEid(
     id: string,
     oboToken: string,
@@ -402,6 +454,42 @@ export default class NasesService {
       )
     }
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
+    if (formDefinition.isSigned) {
+      if (!form.formSignature) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          NasesErrorsEnum.SIGNATURE_MISSING,
+          NasesErrorsResponseEnum.SIGNATURE_MISSING,
+        )
+      }
+
+      try {
+        verifyFormSignature(
+          formDefinition,
+          form.formDataJson,
+          form.formSignature,
+        )
+      } catch (error) {
+        if (error instanceof VerifyFormSignatureError) {
+          const { error: errorEnum, message: errorMessage } =
+            verifyFormSignatureErrorMapping[error.type]
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            // eslint-disable-next-line custom-rules/thrower-error-guard-enum
+            errorEnum,
+            errorMessage,
+          )
+        } else {
+          throw error
+        }
+      }
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -422,6 +510,8 @@ export default class NasesService {
       )
     }
 
+    const formSummary = this.getFormSummaryOrThrow(form, formDefinition)
+
     await this.formsService.updateForm(id, {
       mainUri: form.mainUri ?? user.sub,
       actorUri: form.actorUri ?? user.actor.sub,
@@ -436,15 +526,7 @@ export default class NasesService {
       },
     }
 
-    // Check send conditions
-    const formAttachmentsReady =
-      await this.filesService.areFormAttachmentsReady(id)
-    if (!formAttachmentsReady.filesReady) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.UNABLE_TO_SEND,
-        NasesErrorsResponseEnum.UNABLE_TO_SEND,
-      )
-    }
+    this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
     // Send to nases
     const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
@@ -453,6 +535,11 @@ export default class NasesService {
       data,
       formDefinition,
       user.sub,
+      {
+        formSummary,
+        // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+        jsonVersion: formDefinition.jsonVersion,
+      },
     )
 
     if (!isSent) {
@@ -461,6 +548,15 @@ export default class NasesService {
         state: FormState.DRAFT,
         error: FormError.NASES_SEND_ERROR,
       })
+
+      // TODO temp SEND_TO_NASES_ERROR log, remove
+      console.log(
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
+          form.formSignature,
+          null,
+          2,
+        )}`,
+      )
 
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
@@ -509,6 +605,26 @@ export default class NasesService {
     return (
       user['custom:tier'] === Tier.IDENTITY_CARD ||
       user['custom:tier'] === Tier.EID
+    )
+  }
+
+  private checkAttachments(
+    formAttachmentsReady: FormFilesReadyResultDto,
+  ): void {
+    if (formAttachmentsReady.filesReady) {
+      return
+    }
+
+    if (formAttachmentsReady.error === FormError.INFECTED_FILES) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.INFECTED_FILE,
+        NasesErrorsResponseEnum.INFECTED_FILE,
+      )
+    }
+
+    throw this.throwerErrorGuard.BadRequestException(
+      NasesErrorsEnum.FILE_NOT_SCANNED,
+      NasesErrorsResponseEnum.FILE_NOT_SCANNED,
     )
   }
 }

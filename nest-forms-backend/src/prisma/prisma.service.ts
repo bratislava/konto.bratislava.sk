@@ -1,19 +1,46 @@
-import {
-  INestApplication,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
+import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common'
+import { Prisma, PrismaClient } from '@prisma/client'
 
-import alertError from '../utils/logging'
+import { escapeForLogfmt } from '../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class PrismaService
-  extends PrismaClient
+  extends PrismaClient<Prisma.PrismaClientOptions, 'info' | 'warn' | 'error'>
   implements OnModuleInit
 {
-  private logger: Logger = new Logger('PrismaService')
+  private readonly logger: LineLoggerSubservice
+
+  constructor() {
+    super({
+      log: [
+        { emit: 'event', level: 'info' },
+        { emit: 'event', level: 'warn' },
+        { emit: 'event', level: 'error' },
+      ],
+      errorFormat: 'colorless',
+    })
+    this.logger = new LineLoggerSubservice(PrismaService.name)
+    this.$on('info', (e) => {
+      this.logger.log(
+        `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`,
+      )
+    })
+    this.$on('warn', (e) => {
+      this.logger.warn(
+        `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`,
+      )
+    })
+
+    // We can catch the exceptions thrown, no need to log here.
+    // this.$on('error', (e) => {
+    //   this.logger.error(
+    //     `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`
+    //   )
+    // })
+  }
 
   async onModuleInit(): Promise<void> {
     await this.$connect()
@@ -25,7 +52,7 @@ export default class PrismaService
       await this.$queryRaw`SELECT 1`
       return true
     } catch (error) {
-      alertError('Prisma is not running.', this.logger, <string>error)
+      alertError('Prisma is not running.', this.logger, error)
       return false
     }
   }

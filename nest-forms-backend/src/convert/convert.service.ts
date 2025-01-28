@@ -1,7 +1,7 @@
 import { PassThrough, Readable } from 'node:stream'
 
-import { Injectable, Logger, StreamableFile } from '@nestjs/common'
-import { Forms, Prisma } from '@prisma/client'
+import { Injectable, StreamableFile } from '@nestjs/common'
+import { Forms } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
 import {
@@ -32,6 +32,7 @@ import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { patchConvertServiceTaxFormDefinition } from './convert.helper'
@@ -49,7 +50,7 @@ import {
 
 @Injectable()
 export default class ConvertService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly taxService: TaxService,
@@ -59,13 +60,13 @@ export default class ConvertService {
     private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
-    this.logger = new Logger('ConvertService')
+    this.logger = new LineLoggerSubservice('ConvertService')
   }
 
   private async convertJsonToXmlObject(
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
-    formDataJson: Prisma.JsonValue,
+    formDataJson: PrismaJson.FormDataJson,
   ): Promise<GenericObjectType> {
     // Find a better way how to get the form with files
     const formWithFiles = (await this.prismaService.forms.findUnique({
@@ -81,7 +82,7 @@ export default class ConvertService {
       isSlovenskoSkTaxFormDefinition(formDefinition)
         ? patchConvertServiceTaxFormDefinition(formDefinition)
         : formDefinition,
-      formDataJson as GenericObjectType,
+      formDataJson,
       this.formValidatorRegistryService.getRegistry(),
       formWithFiles.files,
     )
@@ -94,7 +95,7 @@ export default class ConvertService {
    */
   async convertJsonToXmlObjectForForm(
     form: Forms,
-    formDataJsonOverride?: Prisma.JsonValue,
+    formDataJsonOverride?: PrismaJson.FormDataJson,
   ): Promise<GenericObjectType> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (formDefinition === null) {
@@ -110,6 +111,13 @@ export default class ConvertService {
       )
     }
     const formDataJson = formDataJsonOverride ?? form.formDataJson
+
+    if (formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `convertJsonToXmlForForm: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      )
+    }
 
     return this.convertJsonToXmlObject(form, formDefinition, formDataJson)
   }
@@ -185,7 +193,7 @@ export default class ConvertService {
   }
 
   private async generateTaxPdf(
-    formDataJson: Prisma.JsonValue,
+    formDataJson: PrismaJson.FormDataJson,
     formId?: string,
   ): Promise<Readable> {
     try {
@@ -205,7 +213,7 @@ export default class ConvertService {
   }
 
   public async generatePdf(
-    jsonForm: Prisma.JsonValue,
+    jsonForm: PrismaJson.FormDataJson,
     formId: string,
     formDefinition: FormDefinition,
     clientFiles?: ClientFileInfo[],
@@ -240,7 +248,7 @@ export default class ConvertService {
     try {
       pdfBuffer = await renderSummaryPdf({
         formDefinition,
-        formData: jsonForm as GenericObjectType,
+        formData: jsonForm,
         launchBrowser: () => chromium.launch(),
         clientFiles,
         serverFiles: form.files,
@@ -285,6 +293,13 @@ export default class ConvertService {
     }
 
     const formJsonData = data.jsonData ?? form.formDataJson
+
+    if (formJsonData == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
 
     // common init for both json and pdf debug storage
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
@@ -352,7 +367,7 @@ export default class ConvertService {
     return new StreamableFile(responseStream)
   }
 
-  getTaxDebugBucketDirectoryName(jsonData: Prisma.JsonValue): string {
+  getTaxDebugBucketDirectoryName(jsonData: PrismaJson.FormDataJson): string {
     /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions */
     const udajeODanovnikovi = (jsonData as any)?.udajeODanovnikovi
     const directoryName = [

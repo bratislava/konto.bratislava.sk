@@ -35,5 +35,13 @@
   },
   "ignorePatterns": [
     "src/generated-clients/**/*"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/dot-notation": "off" // to test private methods
+      }
+    }
   ]
 }

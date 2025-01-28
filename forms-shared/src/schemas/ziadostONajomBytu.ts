@@ -26,18 +26,10 @@ enum StepType {
 
 const adresaSharedFields = [
   input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-  object(
-    'mestoPsc',
-    { required: true },
-    {
-      columns: true,
-      columnsRatio: '3/1',
-    },
-    [
-      input('mesto', { type: 'text', title: 'Mesto', required: true }, {}),
-      input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, {}),
-    ],
-  ),
+  object('mestoPsc', { required: true }, {}, [
+    input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+    input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+  ]),
 ]
 
 const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
@@ -217,18 +209,14 @@ const getOsobneUdajeSection = (stepType: StepType) => {
     { required: true },
     { objectDisplay: 'boxed', title: 'Osobné údaje' },
     [
-      object(
-        'menoPriezvisko',
-        { required: true },
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-        ],
-      ),
+      object('menoPriezvisko', { required: true }, {}, [
+        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+        input(
+          'priezvisko',
+          { title: 'Priezvisko', required: true, type: 'text' },
+          { selfColumn: '2/4' },
+        ),
+      ]),
       stepType !== StepType.Dieta
         ? input(
             'rodnePriezvisko',
@@ -1528,7 +1516,7 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
             links: [
               {
                 title: 'Overiť príjem',
-                href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2023_73347e5bc2.pdf',
+                href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Tabulka_zivotne_minimum_2024_25970f264b.pdf',
               },
             ],
           },

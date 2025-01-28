@@ -75,6 +75,8 @@ export type WidgetUiOptions = WidgetSpacing & {
   rightComponents?: CustomComponentType[]
   size?: 'full' | 'medium' | 'small'
   labelSize?: LabelSize
+  /* @defaultValue `4/4` */
+  selfColumn?: '1/4' | '2/4' | '3/4' | '4/4'
 }
 
 export type CheckboxGroupUiOptions = {
@@ -143,25 +145,13 @@ export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBotto
       }
   )
 
-export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> &
-  ({
-    /* @defaultValue `wrapper` */
-    objectDisplay?: 'wrapper' | 'boxed'
-    title?: string
-    description?: string
-    descriptionMarkdown?: boolean
-  } & (
-    | {
-        columns?: false
-      }
-    | {
-        columns: true
-        /**
-         * Slash separated numeric values, e.g. '1/2' or '1/2/3'
-         */
-        columnsRatio: string
-      }
-  ))
+export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
+  /* @defaultValue `wrapper` */
+  objectDisplay?: 'wrapper' | 'boxed'
+  title?: string
+  description?: string
+  descriptionMarkdown?: boolean
+}
 
 export type StepUiOptions = {
   stepQueryParam?: string

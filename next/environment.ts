@@ -107,15 +107,15 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
       ) === 'true',
-    eIdTaxWithoutBetaFlag:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG,
-      ) === 'true',
     hideStatusbar:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR,
+      ) === 'true',
+    komunalnyOdpadFormServicesList:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST,
       ) === 'true',
   },
   formsMimetypes: assertEnv(

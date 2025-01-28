@@ -1,5 +1,5 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Replies } from 'amqplib'
 
 import { GinisCheckNasesPayloadDto } from '../ginis/dtos/ginis.response.dto'
@@ -9,13 +9,14 @@ import {
   RABBIT_MQ,
   RABBIT_NASES,
 } from '../utils/constants'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export default class RabbitmqClientService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly amqpConnection: AmqpConnection) {
-    this.logger = new Logger('RabbitmqClientService')
+    this.logger = new LineLoggerSubservice('RabbitmqClientService')
   }
 
   public async publish(message: RabbitPayloadDto): Promise<Replies.Empty> {

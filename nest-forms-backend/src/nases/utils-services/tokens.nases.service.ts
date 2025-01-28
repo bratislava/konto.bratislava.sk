@@ -3,7 +3,7 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
 import axios, { AxiosError, AxiosResponse } from 'axios'
@@ -28,7 +28,9 @@ import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError from '../../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import {
   NasesIsMessageDeliveredDto,
@@ -45,7 +47,7 @@ import {
 
 @Injectable()
 export default class NasesUtilsService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly convertService: ConvertService,
@@ -55,7 +57,7 @@ export default class NasesUtilsService {
     private taxService: TaxService,
     private configService: ConfigService,
   ) {
-    this.logger = new Logger('NasesUtilsService')
+    this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
 
   private tokenValidation(
@@ -97,6 +99,13 @@ export default class NasesUtilsService {
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<NasesAttachmentXmlObject[]> {
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const result: NasesAttachmentXmlObject[] = []
     const files = await this.prismaService.files.findMany({
       where: {
@@ -281,7 +290,7 @@ export default class NasesUtilsService {
       }
       birthNumber = userInfo.birthNumber
     } catch (error) {
-      alertError('Error when retrieving user info', this.logger, <string>error)
+      alertError('Error when retrieving user info', this.logger, error)
       return null
     }
 
@@ -320,7 +329,7 @@ export default class NasesUtilsService {
         alertError(
           'There was an error when retrieving uri from slovensko.sk',
           this.logger,
-          <string>error
+          error
         )
         return null;
       });
@@ -329,14 +338,15 @@ export default class NasesUtilsService {
   }
 
   private async getFormMessage(
+    formDefinition: FormDefinitionSlovenskoSk,
     form: Forms,
     isSigned: boolean,
   ): Promise<string | object> {
     let message: string | object | null = null
 
-    if (form.formDataBase64) {
+    if (formDefinition.isSigned && form.formSignature?.signatureBase64) {
       // Remove any whitespace characters - data saved from signer software may contain those & slovensko.sk can't handle them
-      message = form.formDataBase64.replaceAll(/\s/g, '')
+      message = form.formSignature.signatureBase64.replaceAll(/\s/g, '')
     }
 
     if (!isSigned) {
@@ -394,20 +404,20 @@ export default class NasesUtilsService {
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
-    const message = await this.getFormMessage(form, isSigned)
+    const message = await this.getFormMessage(formDefinition, form, isSigned)
 
     const senderId =
       senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
     const correlationId = uuidv4()
     let subject: string = form.id
-    let mimeType = 'application/x-eform-xml'
-    let encoding = 'XML'
+    const mimeType = isSigned
+      ? 'application/vnd.etsi.asic-e+zip'
+      : 'application/x-eform-xml'
+    const encoding = isSigned ? 'Base64' : 'XML'
     let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
-      mimeType = 'application/vnd.etsi.asic-e+zip'
-      encoding = 'Base64'
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 
@@ -523,6 +533,13 @@ export default class NasesUtilsService {
       )
 
       if (!response.data) {
+        // TODO temp SEND_TO_NASES_ERROR log, remove
+        console.log(
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
+            response.data
+          }, message: ${message}`,
+        )
+
         return {
           status: 422,
           data: {
@@ -533,6 +550,13 @@ export default class NasesUtilsService {
       }
 
       if (response.data.receive_result !== 0) {
+        // TODO temp SEND_TO_NASES_ERROR log, remove
+        console.log(
+          `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, response.data: ${
+            response.data
+          }, message: ${message}`,
+        )
+
         return {
           status: 422,
           data: {
@@ -546,6 +570,10 @@ export default class NasesUtilsService {
       if (error instanceof AxiosError && error.response?.data) {
         return { status: error.response.status, data: error.response.data }
       }
+      // TODO temp SEND_TO_NASES_ERROR log, remove
+      console.log(
+        `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${data.id}, message: ${message}`,
+      )
       return {
         status: 400,
         data: {
@@ -576,7 +604,7 @@ export default class NasesUtilsService {
         alertError(
           'Error when checking if message is in eDesk',
           this.logger,
-          <string>error,
+          error,
         )
         return false
       })

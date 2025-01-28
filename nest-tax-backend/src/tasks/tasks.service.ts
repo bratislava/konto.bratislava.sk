@@ -21,19 +21,22 @@ export class TasksService {
   @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async updatePaymentsFromNoris() {
-    const year = new Date().getFullYear()
-
-    let variableSymbolsDb: { variableSymbol: string; id: number }[] = []
+    let variableSymbolsDb: {
+      variableSymbol: string
+      id: number
+      year: number
+    }[] = []
     try {
       variableSymbolsDb = await this.prismaService.$transaction(
         async (prisma) => {
           await prisma.$executeRaw`SET LOCAL statement_timeout = '120000'`
 
-          return prisma.$queryRaw<{ variableSymbol: string; id: number }[]>`
-          SELECT t."variableSymbol", t."id"
+          return prisma.$queryRaw<
+            { variableSymbol: string; id: number; year: number }[]
+          >`
+          SELECT t."variableSymbol", t."id", t."year"
           FROM "Tax" t
           LEFT JOIN "TaxPayment" tp ON t."id" = tp."taxId" AND tp.status = 'SUCCESS'
-          WHERE t.year = ${year}
           GROUP BY t."id", t."variableSymbol", t."lastCheckedPayments"
           HAVING COALESCE(SUM(tp."amount"), 0) < t."amount"
           ORDER BY t."lastCheckedPayments" ASC
@@ -51,7 +54,6 @@ export class TasksService {
       }
       this.logger.error('Failed to fetch variable symbols from database', {
         error: error instanceof Error ? error.message : 'Unknown error',
-        year,
       })
       throw error
     }
@@ -59,10 +61,14 @@ export class TasksService {
     if (variableSymbolsDb.length === 0) return
 
     const data = {
-      year,
       variableSymbols: variableSymbolsDb.map(
         (variableSymbolDb) => variableSymbolDb.variableSymbol,
       ),
+      years: [
+        ...new Set(
+          variableSymbolsDb.map((variableSymbolDb) => variableSymbolDb.year),
+        ),
+      ],
     }
 
     this.logger.log(

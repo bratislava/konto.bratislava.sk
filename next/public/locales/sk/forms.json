@@ -109,7 +109,6 @@
     "title": "Sumár",
     "form_has_errors": "Pre odoslanie opravte vyznačené chyby.",
     "form_has_errors_signed": "Pre podpísanie a odoslanie opravte vyznačené chyby.",
-    "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
     "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
@@ -142,15 +141,7 @@
   },
   "send_files_scanning_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. Nájdete ju Mojich žiadostiach, v časti Odosiela sa.\n\nV prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
-    "button_title": "Odoslať žiadosť",
-    "button_title_loading": "Odosiela sa"
-  },
-  "send_files_scanning_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Odoslať cez Bratislavské konto",
-    "button_title_loading": "Odosiela sa"
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Na odoslanie žiadosti je potrebné počkať na jej ukončenie."
   },
   "send_confirmation_modal": {
     "title": "Odoslať žiadosť",
@@ -158,27 +149,10 @@
     "button_title": "Odoslať žiadosť",
     "button_title_loading": "Odosiela sa"
   },
-  "send_files_scanning_not_verified_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Overiť identitu"
-  },
-  "send_files_scanning_not_verified": {
-    "title": "Overenie identity",
-    "content": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.\n\n",
-    "content_small": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť a odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
-    "button_title": "Overiť identitu",
-    "button_title_eid": "Odoslať s eID"
-  },
   "send_identity_missing_modal": {
     "title": "Overenie identity",
     "content": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.",
     "button_title": "Overiť identitu"
-  },
-  "send_files_scanning_non_authenticated_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak si vytvoríte Bratislavské konto a následne overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Vytvoriť Bratislavské konto"
   },
   "send_files_uploading_modal": {
     "title": "Nahrávajú sa prílohy",

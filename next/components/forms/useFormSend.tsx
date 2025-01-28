@@ -74,10 +74,6 @@ const useGetContext = () => {
     setRegistrationModal,
     setSendIdentityMissingModal,
     setSendFilesScanningModal,
-    setSendFilesScanningEidModal,
-    setSendFilesScanningNotVerifiedEidModal,
-    setSendFilesScanningNotVerified,
-    setSendFilesScanningNonAuthenticatedEidModal,
     setSendFilesUploadingModal,
     setSendConfirmationModal,
     setSendConfirmationEidModal,
@@ -126,7 +122,7 @@ const useGetContext = () => {
           {
             formDataJson: formData,
             // `null` must be set explicitly, otherwise the signature would not be removed if needed
-            formDataBase64: signature?.signature ?? null,
+            formSignature: signature ?? null,
           },
           { accessToken: 'onlyAuthenticated' },
         ),
@@ -154,6 +150,8 @@ const useGetContext = () => {
         formId,
         {
           formDataJson: formData,
+          // `null` must be set explicitly, otherwise the signature would not be removed if needed
+          formSignature: signature ?? null,
           eidToken: sendEidTokenRef.current as string,
         },
         { accessToken: 'onlyAuthenticated' },
@@ -245,19 +243,6 @@ const useGetContext = () => {
       return
     }
 
-    const modalValueEid = {
-      isOpen: true,
-      sendCallback: async () => {
-        saveConceptAndSendEidMutate()
-      },
-    }
-
-    // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
-    if (isSignedIn && verificationMissing && getScanFiles().length === 0) {
-      setSendFilesScanningNotVerified(modalValueEid)
-      return
-    }
-
     if (verificationMissing) {
       setSendIdentityMissingModal(true)
       return
@@ -268,17 +253,15 @@ const useGetContext = () => {
       return
     }
 
-    const modalValue = {
-      isOpen: true,
-      sendCallback: () => sendFormMutate(),
-    }
-
     if (getScanFiles().length > 0) {
-      setSendFilesScanningModal(modalValue)
+      setSendFilesScanningModal(true)
       return
     }
 
-    setSendConfirmationModal(modalValue)
+    setSendConfirmationModal({
+      isOpen: true,
+      sendCallback: () => sendFormMutate(),
+    })
   }
 
   const handleSendEidButtonPress = () => {
@@ -298,22 +281,8 @@ const useGetContext = () => {
       return
     }
 
-    if (isSignedIn && !verificationMissing && getScanFiles().length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setSendFilesScanningEidModal({
-        isOpen: true,
-        sendCallback: () => sendFormMutate(),
-      })
-      return
-    }
-
-    if (isSignedIn && verificationMissing && getScanFiles().length > 0) {
-      setSendFilesScanningNotVerifiedEidModal(true)
-      return
-    }
-
-    if (!isSignedIn && getScanFiles().length > 0) {
-      setSendFilesScanningNonAuthenticatedEidModal(true)
+    if (getScanFiles().length > 0) {
+      setSendFilesScanningModal(true)
       return
     }
 

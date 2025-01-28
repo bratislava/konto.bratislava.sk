@@ -86,6 +86,14 @@ export type ConvertControllerConvertJsonToXmlV2404Response =
   | FormNotFoundErrorDto
 
 /**
+ * @type ConvertControllerConvertJsonToXmlV2422Response
+ * @export
+ */
+export type ConvertControllerConvertJsonToXmlV2422Response =
+  | EmptyFormDataErrorDto
+  | FormDefinitionNotSupportedTypeErrorDto
+
+/**
  * @type ConvertControllerConvertXmlToJson400Response
  * @export
  */
@@ -119,25 +127,6 @@ export interface ConvertToPdfRequestDto {
    * @memberof ConvertToPdfRequestDto
    */
   clientFiles?: Array<SimplifiedClientFileInfoDto>
-}
-/**
- *
- * @export
- * @interface CreateFormEidRequestDto
- */
-export interface CreateFormEidRequestDto {
-  /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof CreateFormEidRequestDto
-   */
-  formDefinitionSlug: string
-  /**
-   * Email, if it is not registered user by city account, and it is logged in only by Eid
-   * @type {string}
-   * @memberof CreateFormEidRequestDto
-   */
-  email: string
 }
 /**
  *
@@ -237,11 +226,11 @@ export interface CreateFormResponseDto {
    */
   formDataJson: object | null
   /**
-   * Signed ASiC-E container in Base64 format
-   * @type {string}
+   * Form signature with metadata
+   * @type {FormSignatureDto}
    * @memberof CreateFormResponseDto
    */
-  formDataBase64?: string | null
+  formSignature?: FormSignatureDto | null
   /**
    * Technical NASES id of sender
    * @type {string}
@@ -406,6 +395,12 @@ export interface EidUpdateSendFormRequestDto {
    */
   formDataBase64?: string | null
   /**
+   * Form signature with metadata
+   * @type {FormSignatureDto}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  formSignature?: FormSignatureDto | null
+  /**
    * State of form
    * @type {object}
    * @memberof EidUpdateSendFormRequestDto
@@ -442,6 +437,56 @@ export interface EidUpdateSendFormRequestDto {
    */
   eidToken: string
 }
+/**
+ *
+ * @export
+ * @interface EmptyFormDataErrorDto
+ */
+export interface EmptyFormDataErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof EmptyFormDataErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof EmptyFormDataErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof EmptyFormDataErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof EmptyFormDataErrorDto
+   */
+  errorName: EmptyFormDataErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof EmptyFormDataErrorDto
+   */
+  object?: object
+}
+
+export const EmptyFormDataErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type EmptyFormDataErrorDtoErrorNameEnum =
+  (typeof EmptyFormDataErrorDtoErrorNameEnum)[keyof typeof EmptyFormDataErrorDtoErrorNameEnum]
+
 /**
  *
  * @export
@@ -1801,6 +1846,43 @@ export type FormNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FormSignatureDto
+ */
+export interface FormSignatureDto {
+  /**
+   * Base64 encoded signature
+   * @type {string}
+   * @memberof FormSignatureDto
+   */
+  signatureBase64: string
+  /**
+   * POSP ID of the form
+   * @type {string}
+   * @memberof FormSignatureDto
+   */
+  pospID: string
+  /**
+   * POSP version of the form
+   * @type {string}
+   * @memberof FormSignatureDto
+   */
+  pospVersion: string
+  /**
+   * JSON version of the form
+   * @type {string}
+   * @memberof FormSignatureDto
+   */
+  jsonVersion: string
+  /**
+   * Hash of the form data
+   * @type {string}
+   * @memberof FormSignatureDto
+   */
+  formDataHash: string
+}
+/**
+ *
+ * @export
  * @enum {string}
  */
 
@@ -1818,6 +1900,56 @@ export const FormState = {
 } as const
 
 export type FormState = (typeof FormState)[keyof typeof FormState]
+
+/**
+ *
+ * @export
+ * @interface FormSummaryGenerationErrorDto
+ */
+export interface FormSummaryGenerationErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormSummaryGenerationErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormSummaryGenerationErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormSummaryGenerationErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormSummaryGenerationErrorDto
+   */
+  errorName: FormSummaryGenerationErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormSummaryGenerationErrorDto
+   */
+  object?: object
+}
+
+export const FormSummaryGenerationErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormSummaryGenerationErrorDtoErrorNameEnum =
+  (typeof FormSummaryGenerationErrorDtoErrorNameEnum)[keyof typeof FormSummaryGenerationErrorDtoErrorNameEnum]
 
 /**
  *
@@ -2110,11 +2242,11 @@ export interface GetFormResponseDto {
    */
   formDataJson: object | null
   /**
-   * Signed ASiC-E container in Base64 format
-   * @type {string}
+   * Form signature with metadata
+   * @type {FormSignatureDto}
    * @memberof GetFormResponseDto
    */
-  formDataBase64?: string | null
+  formSignature?: FormSignatureDto | null
   /**
    * Technical NASES id of sender
    * @type {string}
@@ -2313,25 +2445,6 @@ export interface GetFormsResponseDto {
    * @memberof GetFormsResponseDto
    */
   meta: GetFormMetaDto
-}
-/**
- *
- * @export
- * @interface GetSignerDataRequestDto
- */
-export interface GetSignerDataRequestDto {
-  /**
-   * Form id
-   * @type {string}
-   * @memberof GetSignerDataRequestDto
-   */
-  formId: string
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof GetSignerDataRequestDto
-   */
-  jsonForm: object
 }
 /**
  *
@@ -2736,6 +2849,56 @@ export type NasesControllerGetForm404ResponseErrorNameEnum =
 /**
  *
  * @export
+ * @interface NasesControllerSendAndUpdateForm422Response
+ */
+export interface NasesControllerSendAndUpdateForm422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendAndUpdateForm422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateForm422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateForm422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateForm422Response
+   */
+  errorName: NasesControllerSendAndUpdateForm422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendAndUpdateForm422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
+  (typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface NasesControllerSendForm422Response
  */
 export interface NasesControllerSendForm422Response {
@@ -2782,6 +2945,106 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendForm500Response
+ */
+export interface NasesControllerSendForm500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendForm500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendForm500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendForm500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendForm500Response
+   */
+  errorName: NasesControllerSendForm500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendForm500Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendForm500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendForm500ResponseErrorNameEnum =
+  (typeof NasesControllerSendForm500ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendFormEid422Response
+ */
+export interface NasesControllerSendFormEid422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendFormEid422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendFormEid422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendFormEid422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendFormEid422Response
+   */
+  errorName: NasesControllerSendFormEid422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendFormEid422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendFormEid422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendFormEid422ResponseErrorNameEnum =
+  (typeof NasesControllerSendFormEid422ResponseErrorNameEnum)[keyof typeof NasesControllerSendFormEid422ResponseErrorNameEnum]
 
 /**
  *
@@ -3279,6 +3542,278 @@ export interface ServiceRunningDto {
 /**
  *
  * @export
+ * @interface SignatureFormDataHashMismatchErrorDto
+ */
+export interface SignatureFormDataHashMismatchErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SignatureFormDataHashMismatchErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SignatureFormDataHashMismatchErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SignatureFormDataHashMismatchErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SignatureFormDataHashMismatchErrorDto
+   */
+  errorName: SignatureFormDataHashMismatchErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SignatureFormDataHashMismatchErrorDto
+   */
+  object?: object
+}
+
+export const SignatureFormDataHashMismatchErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SignatureFormDataHashMismatchErrorDtoErrorNameEnum =
+  (typeof SignatureFormDataHashMismatchErrorDtoErrorNameEnum)[keyof typeof SignatureFormDataHashMismatchErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface SignatureFormDefinitionMismatchErrorDto
+ */
+export interface SignatureFormDefinitionMismatchErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SignatureFormDefinitionMismatchErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SignatureFormDefinitionMismatchErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SignatureFormDefinitionMismatchErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SignatureFormDefinitionMismatchErrorDto
+   */
+  errorName: SignatureFormDefinitionMismatchErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SignatureFormDefinitionMismatchErrorDto
+   */
+  object?: object
+}
+
+export const SignatureFormDefinitionMismatchErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SignatureFormDefinitionMismatchErrorDtoErrorNameEnum =
+  (typeof SignatureFormDefinitionMismatchErrorDtoErrorNameEnum)[keyof typeof SignatureFormDefinitionMismatchErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface SignatureMissingErrorDto
+ */
+export interface SignatureMissingErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SignatureMissingErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SignatureMissingErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SignatureMissingErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SignatureMissingErrorDto
+   */
+  errorName: SignatureMissingErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SignatureMissingErrorDto
+   */
+  object?: object
+}
+
+export const SignatureMissingErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SignatureMissingErrorDtoErrorNameEnum =
+  (typeof SignatureMissingErrorDtoErrorNameEnum)[keyof typeof SignatureMissingErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface SignerDataRequestDto
+ */
+export interface SignerDataRequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof SignerDataRequestDto
+   */
+  formId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof SignerDataRequestDto
+   */
+  formDataJson: object
+}
+/**
+ *
+ * @export
+ * @interface SignerDataResponseDto
+ */
+export interface SignerDataResponseDto {
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  signatureId: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectId: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectDescription: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  objectFormatIdentifier: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcXMLData: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcIdentifier: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcVersion: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcUsedXSD: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xsdReferenceURI: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcUsedXSLT: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslReferenceURI: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslMediaDestinationTypeDescription: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslXSLTLanguage: string
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xslTargetEnvironment: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof SignerDataResponseDto
+   */
+  xdcIncludeRefs: boolean
+  /**
+   *
+   * @type {string}
+   * @memberof SignerDataResponseDto
+   */
+  xdcNamespaceURI: string
+}
+/**
+ *
+ * @export
  * @interface SimpleBadRequestErrorDto
  */
 export interface SimpleBadRequestErrorDto {
@@ -3344,103 +3879,6 @@ export interface StatusResponseDto {
    * @memberof StatusResponseDto
    */
   scanner: ServiceRunningDto
-}
-/**
- *
- * @export
- * @interface TaxSignerDataResponseDto
- */
-export interface TaxSignerDataResponseDto {
-  /**
-   * Name of the xml \"file\" to be signed
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectId: string
-  /**
-   * Free text description - we are using name of the form
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectDescription: string
-  /**
-   * We do not really know the available values - might allow something other than XML to be signed ? If left empty it works with xml.
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  objectFormatIdentifier: string
-  /**
-   * Form values in XML
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcXMLData: string
-  /**
-   * Same as NASES schema id (pospId)
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcIdentifier: string
-  /**
-   * Same as NASES schema version (pospVersion)
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcVersion: string
-  /**
-   * XSD validation
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcUsedXSD: string
-  /**
-   * XSD Reference URI, put together on request from pospId and pospVersion
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xsdReferenceURI: string
-  /**
-   * XSLT text transformation, used to convert xml into what is displayed in signer
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcUsedXSLT: string
-  /**
-   * XSLT Reference URI, put together on request from pospId and pospVersion
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslReferenceURI: string
-  /**
-   * Type of XSLT transformation - likely always TXT
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslMediaDestinationTypeDescription: string
-  /**
-   * XSLT language
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslXSLTLanguage: string
-  /**
-   * TODO find out what is this, empty even on ESBS
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xslTargetEnvironment: string
-  /**
-   * (always true) - TODO find out what is this
-   * @type {boolean}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcIncludeRefs: boolean
-  /**
-   * Should always be the value from example
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  xdcNamespaceURI: string
 }
 /**
  *
@@ -3674,6 +4112,12 @@ export interface UpdateFormRequestDto {
    */
   formDataBase64?: string | null
   /**
+   * Form signature with metadata
+   * @type {FormSignatureDto}
+   * @memberof UpdateFormRequestDto
+   */
+  formSignature?: FormSignatureDto | null
+  /**
    * State of form
    * @type {object}
    * @memberof UpdateFormRequestDto
@@ -3836,6 +4280,55 @@ export interface XmlToJsonResponseDto {
    */
   jsonForm: object
 }
+/**
+ *
+ * @export
+ * @interface XmlValidationErrorDto
+ */
+export interface XmlValidationErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof XmlValidationErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof XmlValidationErrorDto
+   */
+  errorName: XmlValidationErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof XmlValidationErrorDto
+   */
+  object?: object
+}
+
+export const XmlValidationErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type XmlValidationErrorDtoErrorNameEnum =
+  (typeof XmlValidationErrorDtoErrorNameEnum)[keyof typeof XmlValidationErrorDtoErrorNameEnum]
 
 /**
  * ADMINApi - axios parameter creator
@@ -5614,60 +6107,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
-     * @summary
-     * @param {CreateFormEidRequestDto} createFormEidRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateFormEid: async (
-      createFormEidRequestDto: CreateFormEidRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'createFormEidRequestDto' is not null or undefined
-      assertParamExists(
-        'nasesControllerCreateFormEid',
-        'createFormEidRequestDto',
-        createFormEidRequestDto,
-      )
-      const localVarPath = `/nases/eid/create-form`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        createFormEidRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
      * @param {string} id
@@ -6275,34 +6714,6 @@ export const NasesApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
-     * @summary
-     * @param {CreateFormEidRequestDto} createFormEidRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async nasesControllerCreateFormEid(
-      createFormEidRequestDto: CreateFormEidRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateFormEid(
-        createFormEidRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['NasesApi.nasesControllerCreateFormEid']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
      * @param {string} id
@@ -6640,22 +7051,6 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
-     * @summary
-     * @param {CreateFormEidRequestDto} createFormEidRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    nasesControllerCreateFormEid(
-      createFormEidRequestDto: CreateFormEidRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
-      return localVarFp
-        .nasesControllerCreateFormEid(createFormEidRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Archive form (hide from user but keep in database)
      * @summary
      * @param {string} id
@@ -6875,24 +7270,6 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
-   * @summary
-   * @param {CreateFormEidRequestDto} createFormEidRequestDto
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerCreateFormEid(
-    createFormEidRequestDto: CreateFormEidRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerCreateFormEid(createFormEidRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Archive form (hide from user but keep in database)
    * @summary
    * @param {string} id
@@ -7073,6 +7450,160 @@ export class NasesApi extends BaseAPI {
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * SignerApi - axios parameter creator
+ * @export
+ */
+export const SignerApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerGetSignerData: async (
+      signerDataRequestDto: SignerDataRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'signerDataRequestDto' is not null or undefined
+      assertParamExists(
+        'signerControllerGetSignerData',
+        'signerDataRequestDto',
+        signerDataRequestDto,
+      )
+      const localVarPath = `/signer/get-signer-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        signerDataRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * SignerApi - functional programming interface
+ * @export
+ */
+export const SignerApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = SignerApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async signerControllerGetSignerData(
+      signerDataRequestDto: SignerDataRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SignerDataResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.signerControllerGetSignerData(
+        signerDataRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SignerApi.signerControllerGetSignerData']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * SignerApi - factory interface
+ * @export
+ */
+export const SignerApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = SignerApiFp(configuration)
+  return {
+    /**
+     * Generates signer data including XML and metadata for form signing
+     * @summary Get signer data
+     * @param {SignerDataRequestDto} signerDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    signerControllerGetSignerData(
+      signerDataRequestDto: SignerDataRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SignerDataResponseDto> {
+      return localVarFp
+        .signerControllerGetSignerData(signerDataRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * SignerApi - object-oriented interface
+ * @export
+ * @class SignerApi
+ * @extends {BaseAPI}
+ */
+export class SignerApi extends BaseAPI {
+  /**
+   * Generates signer data including XML and metadata for form signing
+   * @summary Get signer data
+   * @param {SignerDataRequestDto} signerDataRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SignerApi
+   */
+  public signerControllerGetSignerData(
+    signerDataRequestDto: SignerDataRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return SignerApiFp(this.configuration)
+      .signerControllerGetSignerData(signerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -7442,170 +7973,6 @@ export class StatusesApi extends BaseAPI {
   public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerStatus(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * TaxApi - axios parameter creator
- * @export
- */
-export const TaxApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerSignerData: async (
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'slug' is not null or undefined
-      assertParamExists('taxControllerSignerData', 'slug', slug)
-      // verify required parameter 'getSignerDataRequestDto' is not null or undefined
-      assertParamExists(
-        'taxControllerSignerData',
-        'getSignerDataRequestDto',
-        getSignerDataRequestDto,
-      )
-      const localVarPath = `/tax/signer-data/{slug}`.replace(
-        `{${'slug'}}`,
-        encodeURIComponent(String(slug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        getSignerDataRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * TaxApi - functional programming interface
- * @export
- */
-export const TaxApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = TaxApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async taxControllerSignerData(
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerSignerData(
-        slug,
-        getSignerDataRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['TaxApi.taxControllerSignerData']?.[localVarOperationServerIndex]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * TaxApi - factory interface
- * @export
- */
-export const TaxApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = TaxApiFp(configuration)
-  return {
-    /**
-     * Returns input data for ditec signer from JSON data and shcema version id
-     * @summary
-     * @param {string} slug
-     * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    taxControllerSignerData(
-      slug: string,
-      getSignerDataRequestDto: GetSignerDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<TaxSignerDataResponseDto> {
-      return localVarFp
-        .taxControllerSignerData(slug, getSignerDataRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * TaxApi - object-oriented interface
- * @export
- * @class TaxApi
- * @extends {BaseAPI}
- */
-export class TaxApi extends BaseAPI {
-  /**
-   * Returns input data for ditec signer from JSON data and shcema version id
-   * @summary
-   * @param {string} slug
-   * @param {GetSignerDataRequestDto} getSignerDataRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof TaxApi
-   */
-  public taxControllerSignerData(
-    slug: string,
-    getSignerDataRequestDto: GetSignerDataRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return TaxApiFp(this.configuration)
-      .taxControllerSignerData(slug, getSignerDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

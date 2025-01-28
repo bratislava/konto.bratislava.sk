@@ -1,4 +1,15 @@
-import { HttpException, HttpStatus } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
+
+import {
+  CustomErrorPaymentResponseTypesEnum,
+  CustomErrorPaymentTypesEnum,
+  CustomErrorPdfCreateTypesEnum,
+  CustomErrorTaxTypesEnum,
+} from './dtos/error.dto'
+
+@Injectable()
+export class ErrorThrowerGuard {
+  private readonly logger: Logger = new Logger('CUSTOM ERRORS')
 
 import alertReporting from '../constants/error.alerts'
 import { CustomErrorEnums, ResponseErrorInternalDto } from './dtos/error.dto'

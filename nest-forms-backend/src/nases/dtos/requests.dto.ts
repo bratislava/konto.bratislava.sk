@@ -1,6 +1,6 @@
 /* eslint-disable pii/no-phone-number */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormState, Prisma } from '@prisma/client'
+import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -9,11 +9,14 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumberString,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator'
 
+import { FormSignatureDto } from '../../forms/dtos/forms.requests.dto'
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -55,17 +58,6 @@ export class CreateFormRequestDto {
   declare formDefinitionSlug: string
 }
 
-/* eslint-disable pii/no-email */
-export class CreateFormEidRequestDto extends CreateFormRequestDto {
-  @ApiProperty({
-    description:
-      'Email, if it is not registered user by city account, and it is logged in only by Eid',
-    default: 'janko.mrkvicka@bratislava.sk',
-  })
-  @IsString()
-  email!: string
-}
-
 export class UpdateFormRequestDto {
   // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @ApiPropertyOptional({
@@ -73,7 +65,7 @@ export class UpdateFormRequestDto {
     default: {},
   })
   @IsOptional()
-  formDataJson?: Prisma.JsonObject
+  formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
     description: 'Signed ASiC-E container in Base64 format',
@@ -82,6 +74,17 @@ export class UpdateFormRequestDto {
   @IsOptional()
   @IsString()
   formDataBase64?: string | null
+
+  @ApiPropertyOptional({
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
+    nullable: true,
+  })
+  @IsOptional()
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  @ValidateNested()
+  formSignature?: FormSignatureDto
 
   @ApiPropertyOptional({
     description: 'State of form ',
@@ -145,6 +148,8 @@ export class EidUpdateSendFormRequestDto extends UpdateFormRequestDto {
 }
 
 export class GetFormResponseDto {
+  /* For some reason, eslint-disable-next-line is not working here. */
+  /* eslint-disable pii/no-email */
   @ApiProperty({
     description: 'Change email, on which you can be contacted',
     default: 'janko.mrkvicka@bratislava.sk',
@@ -153,7 +158,6 @@ export class GetFormResponseDto {
   @IsOptional()
   @IsString()
   declare email: string | null
-
   /* eslint-enable pii/no-email */
 
   @ApiProperty({
@@ -251,15 +255,18 @@ export class GetFormResponseDto {
     nullable: true,
   })
   @IsOptional()
-  declare formDataJson: Prisma.JsonValue | null
+  declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiPropertyOptional({
-    description: 'Signed ASiC-E container in Base64 format',
+    description: 'Form signature with metadata',
+    type: FormSignatureDto,
     nullable: true,
   })
   @IsOptional()
-  @IsString()
-  declare formDataBase64?: string | null
+  @Type(() => FormSignatureDto)
+  @IsObject()
+  @ValidateNested()
+  formSignature?: FormSignatureDto | null
 
   @ApiProperty({
     description: 'Technical NASES id of sender',
@@ -355,7 +362,7 @@ export class GetFormResponseSimpleDto {
     nullable: true,
   })
   @IsOptional()
-  declare formDataJson: Prisma.JsonValue | null
+  declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiProperty({
     description: 'Message subject created from uiSchema',

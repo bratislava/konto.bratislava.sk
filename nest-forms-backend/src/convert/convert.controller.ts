@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Logger,
   Post,
   Res,
   StreamableFile,
@@ -26,6 +25,7 @@ import { Response } from 'express'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
+  EmptyFormDataErrorDto,
   FormDefinitionNotFoundErrorDto,
   FormDefinitionNotSupportedTypeErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
@@ -33,6 +33,7 @@ import {
 } from '../forms/forms.errors.dto'
 import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import { User, UserInfo } from '../utils/decorators/request.decorator'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
   ConvertToPdfRequestDto,
@@ -52,10 +53,10 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(private readonly convertService: ConvertService) {
-    this.logger = new Logger('ConvertController')
+    this.logger = new LineLoggerSubservice('ConvertController')
   }
 
   @ApiOperation({
@@ -70,6 +71,7 @@ export default class ConvertController {
   })
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',
@@ -87,8 +89,14 @@ export default class ConvertController {
   })
   @ApiUnprocessableEntityResponse({
     status: HttpStatusCode.UnprocessableEntity,
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
+    description:
+      'Got wrong type of form definition for its slug or empty form data.',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(FormDefinitionNotSupportedTypeErrorDto) },
+        { $ref: getSchemaPath(EmptyFormDataErrorDto) },
+      ],
+    },
   })
   @UseGuards(new CognitoGuard(true))
   @Post('json-to-xml-v2')
@@ -175,17 +183,14 @@ export default class ConvertController {
     summary: '',
     description: 'Generates PDF for given form data.',
   })
+  @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiNotFoundResponse({
     status: 404,
     description: 'Form or form definition not found',
     schema: {
       oneOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
+        { $ref: getSchemaPath(FormNotFoundErrorDto) },
+        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
       ],
     },
   })
@@ -193,6 +198,11 @@ export default class ConvertController {
     status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else, the access is not granted.',
     type: FormIsOwnedBySomeoneElseErrorDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatusCode.UnprocessableEntity,
+    description: 'Empty form data.',
+    type: EmptyFormDataErrorDto,
   })
   @ApiInternalServerErrorResponse({
     status: HttpStatusCode.InternalServerError,

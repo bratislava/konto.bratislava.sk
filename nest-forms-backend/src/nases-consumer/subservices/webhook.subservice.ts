@@ -1,7 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import axios from 'axios'
 import { isWebhookFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
@@ -15,7 +14,9 @@ import {
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import alertError from '../../utils/logging'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import WebhookDto from './dtos/webhook.dto'
 import {
   WebhookErrorsEnum,
@@ -24,7 +25,9 @@ import {
 
 @Injectable()
 export default class WebhookSubservice {
-  private logger: Logger = new Logger(WebhookSubservice.name)
+  private logger: LineLoggerSubservice = new LineLoggerSubservice(
+    WebhookSubservice.name,
+  )
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -69,9 +72,16 @@ export default class WebhookSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
     const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        FormsErrorsResponseEnum.EMPTY_FORM_DATA,
+      )
+    }
+
     const formData = omitExtraData(
       formDefinition.schema,
-      form.formDataJson as GenericObjectType,
+      form.formDataJson,
       this.formValidatorRegistryService.getRegistry(),
     )
 
@@ -81,6 +91,7 @@ export default class WebhookSubservice {
 
     const webhookDto: WebhookDto = {
       formId: form.id,
+      jsonVersion: form.jsonVersion,
       slug: form.formDefinitionSlug,
       data: formData,
       files: fileIdInfoMap,

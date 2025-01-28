@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-array-reduce */
 import crypto from 'node:crypto'
 
 import { Injectable } from '@nestjs/common'
@@ -18,7 +17,7 @@ export class GpWebpaySubservice {
     this.configService.getOrThrow<string>('PAYGATE_SIGN_CERT')
   }
 
-  private getDataToSign = (data: CreateOrderData): string => {
+  private readonly getDataToSign = (data: CreateOrderData): string => {
     const digestData: Array<keyof CreateOrderData> = [
       'MERCHANTNUMBER',
       'OPERATION',
@@ -32,12 +31,11 @@ export class GpWebpaySubservice {
       'PAYMETHODS',
     ]
 
-    return digestData
-      .reduce(
-        (string, item) => (data[item] ? `${string}|${data[item]}` : string),
-        '',
-      )
-      .slice(1)
+    const validValues = digestData
+      .filter((item) => data[item])
+      .map((item) => data[item])
+
+    return validValues.join('|')
   }
 
   getDataToVerify = (data: PaymentResponseQueryToVerifyDto): string => {
@@ -49,18 +47,14 @@ export class GpWebpaySubservice {
       'RESULTTEXT',
     ]
 
-    return digestData
-      .reduce(
-        (string, item) =>
-          data[item as keyof PaymentResponseQueryToVerifyDto]
-            ? `${string}|${data[item as keyof PaymentResponseQueryToVerifyDto]}`
-            : string,
-        '',
-      )
-      .slice(1)
+    const validValues = digestData
+      .filter((item) => data[item as keyof PaymentResponseQueryToVerifyDto])
+      .map((item) => data[item as keyof PaymentResponseQueryToVerifyDto])
+
+    return validValues.join('|')
   }
 
-  private getPaymentErrorMessage = (
+  private readonly getPaymentErrorMessage = (
     PRCODE: any,
     SRCODE: any,
   ): PaymentErrorStatus => {

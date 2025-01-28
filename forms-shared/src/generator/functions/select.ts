@@ -12,6 +12,9 @@ export const select = (
   property: string,
   options: GeneratorBaseOptions & {
     items: OptionItem<string>[]
+    // TODO: Add to all fields
+    // @default false
+    disabled?: boolean
   },
   uiOptions: Omit<SelectUiOptions, 'enumMetadata'>,
 ): GeneratorField => {
@@ -28,6 +31,7 @@ export const select = (
           ...uiOptions,
           enumMetadata: createEnumMetadata(options.items),
         },
+        'ui:disabled': options.disabled,
       },
     }),
     required: Boolean(options.required),

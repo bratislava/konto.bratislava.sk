@@ -167,32 +167,26 @@ const innerArray = (kalkulacka: boolean) =>
             'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV).',
         },
       ),
-      object(
-        'datumy',
-        {},
-        {
-          columns: true,
-          columnsRatio: '1/1',
-        },
-        [
-          datePicker(
-            'datumVznikuDanovejPovinnosti',
-            { title: 'Dátum vzniku daňovej povinnosti' },
-            {
-              helptextFooter:
-                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
-            },
-          ),
-          datePicker(
-            'datumZanikuDanovejPovinnosti',
-            { title: 'Dátum zániku daňovej povinnosti' },
-            {
-              helptextFooter:
-                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
-            },
-          ),
-        ],
-      ),
+      object('datumy', {}, {}, [
+        datePicker(
+          'datumVznikuDanovejPovinnosti',
+          { title: 'Dátum vzniku daňovej povinnosti' },
+          {
+            selfColumn: '2/4',
+            helptextFooter:
+              'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
+          },
+        ),
+        datePicker(
+          'datumZanikuDanovejPovinnosti',
+          { title: 'Dátum zániku daňovej povinnosti' },
+          {
+            selfColumn: '2/4',
+            helptextFooter:
+              'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+          },
+        ),
+      ]),
       number(
         'celkovaVymera',
         {

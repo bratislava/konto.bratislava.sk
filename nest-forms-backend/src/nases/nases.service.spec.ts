@@ -10,6 +10,7 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormSummary } from 'forms-shared/summary/summary'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -30,6 +31,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
+jest.mock('forms-shared/summary/summary')
 
 describe('NasesService', () => {
   let service: NasesService
@@ -276,13 +278,18 @@ describe('NasesService', () => {
   describe('sendFormEid', () => {
     it('should throw an error if sendMessageNases returns a status different than 200', async () => {
       // Mock dependencies
-      const mockForm = { id: '1', formDefinitionSlug: 'test-slug' } as Forms
+      const mockForm = {
+        id: '1',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: {},
+      } as Forms
       const mockUser = {
         sub: 'user-sub',
         actor: { sub: 'actor-sub' },
       } as JwtNasesPayloadDto
       const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
+        jsonVersion: '1.0',
         schema: {},
         slug: 'test-slug',
         type: FormDefinitionType.SlovenskoSkTax,
@@ -467,6 +474,30 @@ describe('NasesService', () => {
         state: FormState.QUEUED,
       })
     })
+
+    it('should include form summary in form update', async () => {
+      const mockSummary = { summary: 'test' }
+      jest
+        .spyOn(service as any, 'getFormSummaryOrThrow')
+        .mockReturnValue(mockSummary)
+
+      await service.sendForm('1')
+
+      expect(service['formsService'].updateForm).toHaveBeenCalledWith('1', {
+        state: FormState.QUEUED,
+        formSummary: mockSummary,
+      })
+    })
+
+    it('should throw error if form summary generation fails', async () => {
+      jest
+        .spyOn(service as any, 'getFormSummaryOrThrow')
+        .mockImplementation(() => {
+          throw new Error('Summary generation failed')
+        })
+
+      await expect(service.sendForm('1')).rejects.toThrow()
+    })
   })
 
   describe('isUserVerified', () => {
@@ -488,6 +519,45 @@ describe('NasesService', () => {
 
     it('should return false if the user is not provided', () => {
       expect(service['isUserVerified']()).toBeFalsy()
+    })
+  })
+
+  describe('getFormSummaryOrThrow', () => {
+    const mockForm = {
+      id: '1',
+      formDataJson: { test: 'data' },
+    } as unknown as Forms
+
+    const mockFormDefinition = {
+      slug: 'test-slug',
+      schema: {},
+    } as FormDefinition
+
+    it('should return form summary when successful', () => {
+      const mockSummary = { summary: 'test' }
+      ;(getFormSummary as jest.Mock).mockReturnValue(mockSummary)
+
+      const result = service['getFormSummaryOrThrow'](
+        mockForm,
+        mockFormDefinition,
+      )
+
+      expect(result).toEqual(mockSummary)
+      expect(getFormSummary).toHaveBeenCalledWith(
+        mockFormDefinition,
+        mockForm.formDataJson,
+        service['formValidatorRegistryService'].getRegistry(),
+      )
+    })
+
+    it('should throw InternalServerError when getFormSummary fails', () => {
+      ;(getFormSummary as jest.Mock).mockImplementation(() => {
+        throw new Error('Summary generation failed')
+      })
+
+      expect(() =>
+        service['getFormSummaryOrThrow'](mockForm, mockFormDefinition),
+      ).toThrow(NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR)
     })
   })
 })

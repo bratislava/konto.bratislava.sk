@@ -1,9 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Forms, FormState } from '@prisma/client'
 
 import PrismaService from '../../prisma/prisma.service'
-import alertError from '../../utils/logging'
+import HandleErrors from '../../utils/decorators/errorHandler.decorators'
+import alertError, {
+  LineLoggerSubservice,
+} from '../../utils/subservices/line-logger.subservice'
 import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,
@@ -22,13 +25,13 @@ const BATCH_LIMIT = 50
 
 @Injectable()
 export default class GinisTasksSubservice {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly ginisApiService: GinisAPIService,
   ) {
-    this.logger = new Logger('GinisTasksSubservice')
+    this.logger = new LineLoggerSubservice('GinisTasksSubservice')
   }
 
   private async updateSubmissionState(submission: Forms): Promise<void> {
@@ -77,6 +80,7 @@ export default class GinisTasksSubservice {
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('GinisTasksCron')
   async checkSubmissionState(): Promise<void> {
     const submissions = await this.prisma.forms.findMany({
       where: {

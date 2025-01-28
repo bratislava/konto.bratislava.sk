@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import PrismaModule from '../prisma/prisma.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import TaxController from './tax.controller'
 import TaxService from './tax.service'
 
 @Module({
@@ -49,6 +48,5 @@ import TaxService from './tax.service'
   ],
   providers: [TaxService, ThrowerErrorGuard],
   exports: [TaxService],
-  controllers: [TaxController],
 })
 export default class TaxModule {}

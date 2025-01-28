@@ -1,20 +1,15 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
+import alertReporting from '../constants/error.alerts'
 import {
-  CustomErrorPaymentResponseTypesEnum,
-  CustomErrorPaymentTypesEnum,
-  CustomErrorPdfCreateTypesEnum,
-  CustomErrorTaxTypesEnum,
+  CustomErrorEnums,
+  ErrorSymbols,
+  ResponseErrorInternalDto,
 } from './dtos/error.dto'
 
 @Injectable()
 export class ErrorThrowerGuard {
-  private readonly logger: Logger = new Logger('CUSTOM ERRORS')
 
-import alertReporting from '../constants/error.alerts'
-import { CustomErrorEnums, ResponseErrorInternalDto } from './dtos/error.dto'
-
-export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,
@@ -24,9 +19,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_ACCEPTABLE,
+      status || 'Resource was not accepted.',
       errorEnum,
       message,
-      status || 'Resource was not accepted.',
       console,
       object,
     )
@@ -41,9 +36,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.GONE,
+      status || 'Resource is gone.',
       errorEnum,
       message,
-      status || 'Resource is gone.',
       console,
       object,
     )
@@ -58,9 +53,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.PAYLOAD_TOO_LARGE,
+      status || 'Payload to large.',
       errorEnum,
       message,
-      status || 'Payload to large.',
       console,
       object,
     )
@@ -75,9 +70,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.INTERNAL_SERVER_ERROR,
+      status || 'Internal server error',
       errorEnum,
       message,
-      status || 'Internal server error',
       console,
       object,
     )
@@ -92,9 +87,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.FORBIDDEN,
+      status || 'Forbidden',
       errorEnum,
       message,
-      status || 'Forbidden',
       console,
       object,
     )
@@ -109,9 +104,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNPROCESSABLE_ENTITY,
+      status || 'Unprocessable entity',
       errorEnum,
       message,
-      status || 'Unprocessable entity',
       console,
       object,
     )
@@ -126,9 +121,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_FOUND,
+      status || 'Not found',
       errorEnum,
       message,
-      status || 'Not found',
       console,
       object,
     )
@@ -143,9 +138,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.BAD_REQUEST,
+      status || 'Bad Request',
       errorEnum,
       message,
-      status || 'Bad Request',
       console,
       object,
     )
@@ -160,9 +155,9 @@ export default class ThrowerErrorGuard {
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNAUTHORIZED,
+      status || 'Unauthorized',
       errorEnum,
       message,
-      status || 'Unauthorized',
       console,
       object,
     )
@@ -170,22 +165,25 @@ export default class ThrowerErrorGuard {
 
   private LoggingHttpException(
     statusCode: number,
-    errorEnum: CustomErrorEnums,
-    message: string,
     status: string,
+    errorsEnum: CustomErrorEnums,
+    message: string,
     console?: string,
     object?: object,
   ): HttpException {
     const response: ResponseErrorInternalDto = {
       statusCode,
       status,
-      errorName: errorEnum,
-      [Symbol('alert')]: alertReporting.includes(errorEnum) ? 1 : 0,
+      errorName: errorsEnum,
+      [ErrorSymbols.alert]: 0,
       message,
       object,
-      [Symbol('console')]: console,
+      [ErrorSymbols.console]: console,
     }
 
+    if (alertReporting.includes(errorsEnum)) {
+      response[ErrorSymbols.alert] = 1
+    }
     return new HttpException(response, statusCode)
   }
 }

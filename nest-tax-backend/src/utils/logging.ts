@@ -1,6 +1,7 @@
 import { HttpException } from '@nestjs/common'
 
 import { RequiredError } from '../generated-clients/nest-city-account/base'
+import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
 /**
  * Escapes occurrences of the `"` and `\` characters in input string for logfmt compatibility
@@ -11,8 +12,10 @@ import { RequiredError } from '../generated-clients/nest-city-account/base'
  * breaks is preserved. Loki can correct this formatting with a single button click, without any
  * need for a query.
  */
-export function escapeForLogfmt(value: string) {
-  return value.replaceAll(/["\\]/g, '\\$&').replaceAll('\n', '\\n')
+export function escapeForLogfmt(value: string): string {
+  return value
+    .replaceAll(/["\\]/g, String.raw`\$&`)
+    .replaceAll('\n', String.raw`\n`)
 }
 
 /**
@@ -22,24 +25,30 @@ export function escapeForLogfmt(value: string) {
  * will be put in one object and keys that are a string will be put in another. Keys with symbol as
  * a key will be replaced by their descriptions.
  */
-export function separateLogFromResponseObj(obj: object) {
-  const responseLog: Record<string, unknown> = {}
-  const responseMessage: Record<string, unknown> = {}
+export function separateLogFromResponseObj<T extends object>(
+  obj: T,
+): {
+  responseLog: { [K: string]: T[keyof T] }
+  responseMessage: { [K: string]: T[keyof T] }
+} {
+  const responseLog: ReturnType<
+    typeof separateLogFromResponseObj
+  >['responseLog'] = {}
+  const responseMessage: ReturnType<
+    typeof separateLogFromResponseObj
+  >['responseLog'] = {}
 
-  const keys = Object.getOwnPropertyNames(obj)
-  const symbols = Object.getOwnPropertySymbols(obj)
-
-  keys.forEach((key) => {
-    if (key.startsWith('$Symbol-')) {
-      responseLog[key.slice(8)] = (obj as any)[key]
+  Object.getOwnPropertyNames(obj).forEach((objKey) => {
+    if (errorTypeStrings.includes(objKey)) {
+      responseLog[objKey.slice(8)] = obj[objKey as keyof T]
     } else {
-      responseMessage[key] = (obj as any)[key]
+      responseMessage[objKey] = obj[objKey as keyof T]
     }
   })
 
-  symbols.forEach((symbol) => {
+  Object.getOwnPropertySymbols(obj).forEach((symbol) => {
     if (symbol.description) {
-      responseLog[symbol.description] = (obj as any)[symbol]
+      responseLog[symbol.description] = obj[symbol as keyof T]
     }
   })
 
@@ -65,16 +74,14 @@ export function objToLogfmt(obj: object): string {
   }
   return Object.entries(objAll)
     .map(([key, value]) => {
-      let newValue = value
-      if (typeof newValue === 'object') {
-        newValue = JSON.stringify(newValue)
-      }
-      // not else if because we want to sanitize strings in object
-      if (typeof newValue === 'string') {
-        newValue = escapeForLogfmt(newValue)
-      }
+      const formattedValue =
+        typeof value === 'object'
+          ? errorToLogfmt(JSON.stringify(value))
+          : typeof value === 'string'
+            ? escapeForLogfmt(value)
+            : value
 
-      return `${key}="${newValue}"`
+      return `${key}="${formattedValue}"`
     })
     .join(' ')
 }
@@ -131,50 +138,48 @@ export function errorToLogfmt(
   error: unknown,
   methodName?: string | symbol,
 ): string {
-  let logObj: object
   if (error instanceof HttpException) {
-    logObj = httpExceptionToObj(error, methodName)
-  } else if (error instanceof RequiredError) {
-    logObj = requiredErrorToObj(error, methodName)
-  } else if (error instanceof Error) {
-    logObj = genericErrorToObj(error, methodName)
-  } else {
-    logObj = {
-      errorType: 'UnknownError',
-      message: 'Unknown error was thrown. This should not happen',
-      method: methodName,
-      alert: 1,
-    }
+    return objToLogfmt(httpExceptionToObj(error, methodName))
   }
-  return objToLogfmt(logObj)
+  if (error instanceof RequiredError){
+    return objToLogfmt(requiredErrorToObj(error, methodName))
+  }
+  if (error instanceof Error) {
+    return objToLogfmt(genericErrorToObj(error, methodName))
+  }
+  return objToLogfmt({
+    errorType: 'UnknownError',
+    message: 'Unknown error was thrown. This should not happen',
+    method: methodName,
+    alert: 1,
+  })
 }
 
 export function isLogfmt(input: string): boolean {
-  const regex = /((^| )[\w-_]+="([^\n"\\]|\\\\|\\"|\\n)*")+$/
+  const regex = /((^| )\w+="([^\n"\\]|\\\\|\\"|\\n)*")+$/
   return regex.test(input)
 }
 
 export function ToLogfmt(input: unknown): string {
-  let message = ''
   if (!input) {
     return ''
   }
   if (input instanceof Error) {
-    message = errorToLogfmt(input)
-  } else if (typeof input === 'object') {
-    message = objToLogfmt(input)
-  } else if (typeof input === 'string') {
-    message = isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
-  } else {
-    message = `message="${escapeForLogfmt(input.toString())}"`
+    return errorToLogfmt(input)
   }
-  return message
+  if (typeof input === 'object') {
+    return objToLogfmt(input)
+  }
+  if (typeof input === 'string') {
+    return isLogfmt(input) ? input : `message="${escapeForLogfmt(input)}"`
+  }
+  return `message="${escapeForLogfmt(input.toString())}"`
 }
 
 /**
  * Converts keys in an object, that are `Symbol` into strings that start with '$Symbol-'
  */
-export function symbolKeysToStrings(obj: object) {
+export function symbolKeysToStrings(obj: object): Record<string, unknown> {
   const response: Record<string, unknown> = { ...obj }
 
   const symbols = Object.getOwnPropertySymbols(obj)

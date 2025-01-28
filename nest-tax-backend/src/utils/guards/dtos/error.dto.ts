@@ -41,6 +41,25 @@ export class ResponseErrorDto {
   errorName: CustomErrorPaymentTypesEnum
 }
 
+export class ErrorSymbols {
+  static readonly alert: unique symbol = Symbol('alert')
+
+  static readonly console: unique symbol = Symbol('console')
+
+  static readonly errorType: unique symbol = Symbol('errorType')
+
+  static readonly stack: unique symbol = Symbol('stack')
+}
+
+export const errorTypeKeys: Record<string, string> = {
+  alert: `$Symbol-alert`,
+  console: `$Symbol-console`,
+  errorType: `$Symbol-errorType`,
+  stack: `$Symbol-stack`,
+}
+
+export const errorTypeStrings = Object.values(errorTypeKeys)
+
 export class ResponseErrorInternalDto {
   statusCode!: number
 
@@ -48,11 +67,13 @@ export class ResponseErrorInternalDto {
 
   message!: string
 
-  errorName!: CustomErrorEnums
+  errorName!: CustomErrorEnums;
+
+  [ErrorSymbols.alert]?: number
 
   object?: object | undefined;
 
-  [key: string]: string | object | number | undefined
+  [ErrorSymbols.console]?: string
 }
 
 export enum CustomErrorTaxTypesEnum {

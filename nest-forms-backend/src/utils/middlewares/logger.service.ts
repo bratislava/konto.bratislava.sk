@@ -128,10 +128,12 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     )
     const returnExitData = JSON.stringify(responseMessage)
 
+    const logData = 'message' in responseMessage ? {...responseLog, ...responseMessage } : responseLog
+
     return {
       returnExitData: responseMessage,
       responseData: returnExitData,
-      logData: responseLog,
+      logData,
     }
   }
 }

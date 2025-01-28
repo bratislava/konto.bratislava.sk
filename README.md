@@ -32,12 +32,6 @@ Each sub-project contains a README which should get you up and running. More doc
 
 👀 `/tests/cypress` Automated cypress tests
 
-🐳 `docker-compose.yml` - if you need to quickly set up a postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
-
-## Development
-
-In this section, you will find instructions for development.
-
 ## Deployment
 
 ### Full Project Deployment

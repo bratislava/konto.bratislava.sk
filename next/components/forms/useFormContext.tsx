@@ -38,7 +38,6 @@ export type FormServerContext = {
 const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
-  const { eIdTaxFormAllowed } = useSsrAuth()
 
   const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
 
@@ -80,11 +79,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
 
-  const isSigned =
-    isSlovenskoSkFormDefinition(formDefinition) &&
-    formDefinition.isSigned &&
-    // Temporary feature toggle for eID tax form
-    eIdTaxFormAllowed
+  const isSigned = isSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned
 
   return {
     ...formServerContext,

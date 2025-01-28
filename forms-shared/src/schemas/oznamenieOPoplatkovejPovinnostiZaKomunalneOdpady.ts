@@ -498,6 +498,9 @@ const getZmenaKomunalnyOdpadFields = (
           variant: 'topLevel',
           addButtonLabel: 'Pridať daľšiu nádobu',
           itemTitle: 'Nádoba na zmenu č. {index}',
+          description:
+            'Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
+          descriptionMarkdown: true,
         },
         getKomunalnyOdpadNadoby('zmena', oznamovatelTyp),
       ),
@@ -526,6 +529,9 @@ const getZmenaKomunalnyOdpadFields = (
           variant: 'topLevel',
           addButtonLabel: 'Pridať daľšiu nádobu',
           itemTitle: 'Nádoba na zrušenie č. {index}',
+          description:
+            'Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
+          descriptionMarkdown: true,
         },
         getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
       ),

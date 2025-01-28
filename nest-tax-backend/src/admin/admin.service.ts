@@ -5,12 +5,15 @@ import currency from 'currency.js'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
+import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
+import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
+  RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
@@ -445,42 +448,77 @@ export class AdminService {
     }
   }
 
-  /**
-   * Adds birth numbers to the taxpayer table in the database from Noris. The birth numbers must include a slash.
-   *
-   * First, the function checks which birth numbers are already in the database. Then, it attempts to add the remaining birth numbers from Noris.
-   *
-   * @param {string[]} birthNumbers - A list of birth numbers in the format with a slash, which should be added from Noris to the taxpayer table if they are not already present.
-   * @returns {string[]} A list of birth numbers that were either already in the taxpayer table or were successfully added from Noris.
-   */
-  async createTaxPayers(
-    birthNumbers: string[],
-  ): Promise<CreateBirthNumbersResponseDto> {
-    const birthNumbersResult: string[] = []
-    const taxPayersAlreadyInDb = await this.prismaService.taxPayer.findMany({
-      select: {
-        birthNumber: true,
-      },
-      where: {
-        birthNumber: {
-          in: birthNumbers,
-        },
-      },
-    })
-    birthNumbersResult.push(
-      ...taxPayersAlreadyInDb.map(
-        (birthNumberRow) => birthNumberRow.birthNumber,
-      ),
-    )
+  async updateDeliveryMethodsInNoris({
+    data,
+  }: RequestUpdateNorisDeliveryMethodsDto) {
+    /**
+     * TODO - concurrency (if someone somehow changes his delivery method during its updating in Noris)
+     */
+    const deliveryGroups: Record<
+      DeliveryMethod,
+      { birthNumber: string; date: string | null }[]
+    > = {
+      [DeliveryMethod.EDESK]: [],
+      [DeliveryMethod.CITY_ACCOUNT]: [],
+      [DeliveryMethod.POSTAL]: [],
+    }
 
-    const birthNumbersCreatedFromNoris = await this.loadDataFromNoris({
-      birthNumbers: birthNumbers.filter(
-        (item) => !birthNumbersResult.includes(item),
-      ),
-      year: new Date().getFullYear(),
+    Object.entries(data).forEach(([birthNumber, methodInfo]) => {
+      if (methodInfo.deliveryMethod in deliveryGroups) {
+        if (
+          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT &&
+          !methodInfo.date
+        ) {
+          // We must enforce that the date is present for CITY_ACCOUNT delivery method.
+          throw new Error(
+            `ERROR - Status-500: Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
+          )
+        }
+        deliveryGroups[methodInfo.deliveryMethod].push({
+          birthNumber: addSlashToBirthNumber(birthNumber),
+          date:
+            methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT
+              ? methodInfo.date
+              : null,
+        })
+      }
     })
-    birthNumbersResult.push(...birthNumbersCreatedFromNoris.birthNumbers)
 
-    return { birthNumbers: [...new Set(birthNumbersResult)] }
+    const updates = Object.entries(deliveryGroups)
+      .filter(
+        ([deliveryMethod, birthNumbers]) =>
+          birthNumbers.length > 0 &&
+          deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
+      )
+      .map(([deliveryMethod, birthNumbers]) =>
+        this.norisService.updateDeliveryMethods({
+          birthNumbers: birthNumbers.map((item) => item.birthNumber),
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: deliveryMethod as DeliveryMethod,
+          date: null, // date of confirmation of delivery method should be set only for city account notification
+        }),
+      )
+
+    deliveryGroups[DeliveryMethod.CITY_ACCOUNT].forEach((item) => {
+      updates.push(
+        this.norisService.updateDeliveryMethods({
+          birthNumbers: [item.birthNumber],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: item.date,
+        }),
+      )
+    })
+
+    await Promise.all(updates)
+  }
+
+  async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
+    await this.norisService.updateDeliveryMethods({
+      birthNumbers: [addSlashToBirthNumber(birthNumber)],
+      inCityAccount: IsInCityAccount.NO,
+      deliveryMethod: null,
+      date: null,
+    })
   }
 }

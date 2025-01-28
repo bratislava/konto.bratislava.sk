@@ -1,13 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect } from 'mssql'
+import { connect, Request } from 'mssql'
 import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
   RequestPostNorisPaymentDataLoadDto,
 } from 'src/admin/dtos/requests.dto'
 
-import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
+import {
+  queryPayersFromNoris,
+  queryPaymentsFromNoris,
+  setDeliveryMethodsForUser,
+} from './noris.queries'
+import { UpdateNorisDeliveryMethods } from './noris.types'
 
 @Injectable()
 export class NorisService {
@@ -151,5 +156,54 @@ export class NorisService {
     )
     connection.close()
     return norisData.recordset
+  }
+
+  async updateDeliveryMethods(data: UpdateNorisDeliveryMethods): Promise<void> {
+    const connection = await connect({
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      port: 1433,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    try {
+      const request = new Request(connection)
+
+      // Set parameters for the query
+      request.input('dkba_stav', data.inCityAccount)
+      request.input(
+        'dkba_datum_suhlasu',
+        data.date ? new Date(data.date) : null,
+      )
+      request.input('dkba_sposob_dorucovania', data.deliveryMethod)
+
+      const birthNumberPlaceholders = data.birthNumbers
+        .map((_, index) => `@birthnumber${index}`)
+        .join(',')
+      data.birthNumbers.forEach((birthNumber, index) => {
+        request.input(`birthnumber${index}`, birthNumber)
+      })
+      const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+        '@birth_numbers',
+        birthNumberPlaceholders,
+      )
+
+      // Execute the query
+      await request.query(queryWithPlaceholders)
+    } catch (error) {
+      throw new Error(
+        `Failed to update delivery methods: ${(error as Error).message}`,
+      )
+    } finally {
+      // Always close the connection
+      await connection.close()
+    }
   }
 }

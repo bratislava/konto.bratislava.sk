@@ -645,3 +645,18 @@ SELECT
         AND lcs.dane21_priznanie.podnikatel = 'N'
         {%VARIABLE_SYMBOLS%}
 `
+
+export const setDeliveryMethodsForUser = `
+    UPDATE lcs.uda_21_organizacia_mag
+    SET
+        dkba_stav = @dkba_stav,
+        dkba_datum_suhlasu = @dkba_datum_suhlasu,
+        dkba_sposob_dorucovania = @dkba_sposob_dorucovania
+    WHERE
+        cislo_subjektu IN (
+            SELECT DISTINCT subjekt
+            FROM lcs.dane21_priznanie
+            WHERE podnikatel = 'N' 
+            AND rodne_cislo IN (@birth_numbers)
+        )
+`

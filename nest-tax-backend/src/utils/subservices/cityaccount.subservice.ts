@@ -6,6 +6,7 @@ import {
   Configuration,
   ResponseUserByBirthNumberDto,
 } from '../../generated-clients/nest-city-account'
+import { addSlashToBirthNumber } from '../functions/birthNumber'
 
 @Injectable()
 export class CityAccountSubservice {
@@ -71,9 +72,7 @@ export class CityAccountSubservice {
 
     const result: Record<string, ResponseUserByBirthNumberDto> = {}
     Object.keys(userDataResult.data.users).forEach((birthNumber) => {
-      const modifiedKey = birthNumber.includes('/')
-        ? birthNumber
-        : `${birthNumber.slice(0, 6)}/${birthNumber.slice(6)}`
+      const modifiedKey = addSlashToBirthNumber(birthNumber)
       result[modifiedKey] = userDataResult.data.users[birthNumber]
     })
 

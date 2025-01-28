@@ -10,7 +10,7 @@ import RabbitmqClientService from './rabbitmq-client.service'
 
 @Module({
   imports: [
-    RabbitMQModule.forRootAsync(RabbitMQModule, {
+    RabbitMQModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get('RABBIT_MQ_URI') ?? '',

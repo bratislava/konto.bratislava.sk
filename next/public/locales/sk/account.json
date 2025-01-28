@@ -412,6 +412,12 @@
         "description": "Možnosť podať si žiadosť o mestský nájomný byt, pri ktorej sa bude posudzovať splnenie stanovených podmienok pre pridelenie nájomného bytu.",
         "buttonText": "Mám záujem",
         "tag": "Nová služba"
+      },
+      "45": {
+        "title": "Oznámenie za komunálne odpady",
+        "description": "Vyplňte jednoducho oznámenie o vzniku, zmene a zániku poplatkovej povinnosti za komunálny odpad.",
+        "buttonText": "Prejsť na priznanie",
+        "tag": "Nová služba"
       }
     }
   },

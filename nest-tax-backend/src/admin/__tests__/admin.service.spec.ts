@@ -169,6 +169,32 @@ describe('TasksService', () => {
         }),
       ).rejects.toThrow(mockError)
     })
+
+    it('should throw if date is missing for CITY_ACCOUNT', async () => {
+      const mockData: RequestUpdateNorisDeliveryMethodsData = {
+        '123456/789': { deliveryMethod: DeliveryMethod.EDESK },
+        '234567/890': { deliveryMethod: DeliveryMethod.EDESK },
+        '345678/901': { deliveryMethod: DeliveryMethod.POSTAL },
+        '345678/902': { deliveryMethod: DeliveryMethod.POSTAL },
+        '456789/0123': {
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: undefined,
+        },
+        '456789/0103': {
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: mockDate2,
+        },
+      } as unknown as RequestUpdateNorisDeliveryMethodsData
+
+      await expect(
+        service.updateDeliveryMethodsInNoris({
+          data: mockData,
+        }),
+      ).rejects.toThrow()
+      expect(
+        service['norisService'].updateDeliveryMethods,
+      ).not.toHaveBeenCalled()
+    })
   })
 
   describe('removeDeliveryMethodsFromNoris', () => {

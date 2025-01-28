@@ -465,6 +465,15 @@ export class AdminService {
 
     Object.entries(data).forEach(([birthNumber, methodInfo]) => {
       if (methodInfo.deliveryMethod in deliveryGroups) {
+        if (
+          methodInfo.deliveryMethod === DeliveryMethod.CITY_ACCOUNT &&
+          !methodInfo.date
+        ) {
+          // We must enforce that the date is present for CITY_ACCOUNT delivery method.
+          throw new Error(
+            `ERROR - Status-500: Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
+          )
+        }
         deliveryGroups[methodInfo.deliveryMethod].push({
           birthNumber: addSlashToBirthNumber(birthNumber),
           date:

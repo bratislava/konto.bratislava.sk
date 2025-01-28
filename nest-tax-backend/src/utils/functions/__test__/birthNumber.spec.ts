@@ -12,4 +12,14 @@ describe('addSlashToBirthNumber', () => {
   it('should work on birth number with length 9', () => {
     expect(addSlashToBirthNumber('123456789')).toBe('123456/789')
   })
+
+  it('should throw if the format is wrong', () => {
+    expect(() => addSlashToBirthNumber('12345678901')).toThrow()
+    expect(() => addSlashToBirthNumber('abcdef')).toThrow()
+    expect(() => addSlashToBirthNumber('123456/11a')).toThrow()
+    expect(() => addSlashToBirthNumber('12345611a')).toThrow()
+    expect(() => addSlashToBirthNumber('123456/11')).toThrow()
+    expect(() => addSlashToBirthNumber('12456/1155')).toThrow()
+    expect(() => addSlashToBirthNumber('12345611')).toThrow()
+  })
 })

@@ -70,11 +70,16 @@ const BAArrayFieldTemplate = <
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}
-          {title && variant === 'topLevel' && <h3 className="text-h3 mb-6">{title}</h3>}
+          {title && variant === 'topLevel' && (
+            <h3 className={cx('text-h3', { 'mb-2': description, 'mb-6': !description })}>
+              {title}
+            </h3>
+          )}
           {title && variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}
+      {/* TODO: Unified implementation of description. */}
       {description && variant === 'nested' && (
         <Alert
           type="info"
@@ -87,6 +92,13 @@ const BAArrayFieldTemplate = <
           fullWidth
           className="mb-6 whitespace-pre-wrap"
         />
+      )}
+      {description && variant === 'topLevel' && (
+        <div className="mb-6">
+          <ConditionalFormMarkdown isMarkdown={descriptionMarkdown}>
+            {description}
+          </ConditionalFormMarkdown>
+        </div>
       )}
       <div className={containerStyle}>
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">

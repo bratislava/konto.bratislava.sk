@@ -87,7 +87,7 @@ export class AdminController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Records succesfully updated in Noris',
+    description: 'Records successfully updated in Noris',
   })
   @UseGuards(AdminGuard)
   @Post('update-delivery-methods-in-noris')
@@ -105,7 +105,7 @@ export class AdminController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Records succesfully updated in Noris',
+    description: 'Records successfully updated in Noris',
   })
   @UseGuards(AdminGuard)
   @Post('remove-delivery-methods-from-noris/:birthNumber')

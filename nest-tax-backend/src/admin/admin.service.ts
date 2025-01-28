@@ -272,8 +272,8 @@ export class AdminService {
       where: {
         variableSymbol: {
           in: norisPaymentData
-            .filter((item) => item.variabilny_symbol !== undefined)
-            .map((item) => item.variabilny_symbol as string),
+            .map((item) => item.variabilny_symbol)
+            .filter((item) => item !== undefined),
         },
       },
       include: {

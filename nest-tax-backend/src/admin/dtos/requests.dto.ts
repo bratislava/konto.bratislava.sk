@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsObject } from 'class-validator'
+import { IsObject, ValidateNested } from 'class-validator'
 
 import { DeliveryMethod } from '../../noris/noris.types'
 
@@ -88,8 +88,38 @@ export class RequestUpdateNorisDeliveryMethodsDto {
         date: '2024-01-01',
       },
     },
+    type: 'object',
+    additionalProperties: {
+      oneOf: [
+        {
+          type: 'object',
+          properties: {
+            deliveryMethod: {
+              type: 'string',
+              enum: [DeliveryMethod.CITY_ACCOUNT],
+            },
+            date: {
+              type: 'string',
+              format: 'date',
+            },
+          },
+          required: ['deliveryMethod', 'date'],
+        },
+        {
+          type: 'object',
+          properties: {
+            deliveryMethod: {
+              type: 'string',
+              enum: [DeliveryMethod.EDESK, DeliveryMethod.POSTAL],
+            },
+          },
+          required: ['deliveryMethod'],
+        },
+      ],
+    },
   })
   @IsObject()
+  @ValidateNested()
   data: RequestUpdateNorisDeliveryMethodsData
 }
 

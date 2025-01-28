@@ -26,6 +26,8 @@ import ExcavationsIcon from '../../assets/icons/transport-and-maps/excavations.s
 import ManagmentCommunicationsIcon from '../../assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../assets/icons/transport-and-maps/towing.svg'
+import { environment } from '../../environment'
+import { isDefined } from '../utils/general'
 
 export const MunicipalServicesCategories = {
   ALL_CATEGORY: 'Všetky kategórie',
@@ -466,7 +468,22 @@ export const serviceCards: ServiceCardBase[] = [
     category: [MunicipalServicesCategories.SOCIAL_SERVICES_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-najom-bytu'),
   },
-]
+  environment.featureToggles.komunalnyOdpadFormServicesList
+    ? {
+        id: 45,
+        title: 'account_section_services.cards.45.title',
+        description: 'account_section_services.cards.45.description',
+        buttonText: 'account_section_services.cards.45.buttonText',
+        icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
+        tag: 'account_section_services.cards.45.tag',
+        tagStyle: 'text-main-700 bg-main-100',
+        category: [MunicipalServicesCategories.TAXES_CATEGORY],
+        href: ROUTES.MUNICIPAL_SERVICES_FORM(
+          'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
+        ),
+      }
+    : null,
+].filter(isDefined)
 
 export const formsFeedbackLinks = {
   'stanovisko-k-investicnemu-zameru': 'https://bravo.staffino.com/bratislava/id=WW1hkstR',

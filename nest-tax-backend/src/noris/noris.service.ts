@@ -178,13 +178,19 @@ export class NorisService {
       )
       request.input('dkba_sposob_dorucovania', data.deliveryMethod)
 
-      const queryWithBirthNumbers = setDeliveryMethodsForUser.replaceAll(
+      const birthNumberPlaceholders = data.birthNumbers
+        .map((_, index) => `@birthnumber${index}`)
+        .join(',')
+      data.birthNumbers.forEach((birthNumber, index) => {
+        request.input(`birthnumber${index}`, birthNumber)
+      })
+      const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
         '@birth_numbers',
-        data.birthNumbers.map((bn) => `'${bn}'`).join(','),
+        birthNumberPlaceholders,
       )
 
       // Execute the query
-      await request.query(queryWithBirthNumbers)
+      await request.query(queryWithPlaceholders)
     } catch (error) {
       throw new Error(
         `Failed to update delivery methods: ${(error as Error).message}`,

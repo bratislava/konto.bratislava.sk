@@ -2,7 +2,6 @@ import { AccountType, Tier } from 'frontend/dtos/accountDto'
 import { useContext } from 'react'
 
 import { SsrAuthContext, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
-import { environment } from '../../environment'
 
 export const useSsrAuth = () => {
   const ssrAuthContext =
@@ -24,9 +23,5 @@ export const useSsrAuth = () => {
       isIdentityVerificationNotYetAttempted: !tier || tier === Tier.NEW,
       isInQueue: tier === Tier.QUEUE_IDENTITY_CARD,
     },
-    // Temporary feature toggle for eID tax form
-    eIdTaxFormAllowed:
-      environment.featureToggles.eIdTaxWithoutBetaFlag ||
-      userAttributes?.['custom:2024_tax_form_beta'] === 'true',
   }
 }

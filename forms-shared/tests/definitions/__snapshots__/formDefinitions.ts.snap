@@ -13575,7 +13575,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Meno",
                               "type": "string",
                             },
-                            "mestoundefined": {
+                            "mesto": {
                               "baOrder": 10,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -13601,7 +13601,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Priezvisko",
                               "type": "string",
                             },
-                            "pscundefined": {
+                            "psc": {
                               "baOrder": 11,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -13611,7 +13611,6 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                 },
                                 "ui:widget": "Input",
                               },
-                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -13629,7 +13628,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Rodné číslo",
                               "type": "string",
                             },
-                            "statundefined": {
+                            "stat": {
                               "baOrder": 12,
                               "baUiSchema": {
                                 "ui:options": {
@@ -14938,7 +14937,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Titul",
                               "type": "string",
                             },
-                            "ulicaACisloundefined": {
+                            "ulicaACislo": {
                               "baOrder": 9,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -14958,10 +14957,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                             "rodneCislo",
                             "email",
                             "telefon",
-                            "ulicaACisloundefined",
-                            "mestoundefined",
-                            "pscundefined",
-                            "statundefined",
+                            "ulicaACislo",
+                            "mesto",
+                            "psc",
+                            "stat",
                           ],
                           "type": "object",
                         },
@@ -15007,7 +15006,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "IČO",
                               "type": "string",
                             },
-                            "mestoundefined": {
+                            "mesto": {
                               "baOrder": 18,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -15032,7 +15031,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Obchodné meno alebo názov",
                               "type": "string",
                             },
-                            "pscundefined": {
+                            "psc": {
                               "baOrder": 19,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -15042,11 +15041,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                 },
                                 "ui:widget": "Input",
                               },
-                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
-                            "statundefined": {
+                            "stat": {
                               "baOrder": 20,
                               "baUiSchema": {
                                 "ui:options": {
@@ -16342,7 +16340,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "title": "Telefónne číslo",
                               "type": "string",
                             },
-                            "ulicaACisloundefined": {
+                            "ulicaACislo": {
                               "baOrder": 17,
                               "baUiSchema": {
                                 "ui:label": false,
@@ -16361,10 +16359,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                             "ico",
                             "email",
                             "telefon",
-                            "ulicaACisloundefined",
-                            "mestoundefined",
-                            "pscundefined",
-                            "statundefined",
+                            "ulicaACislo",
+                            "mesto",
+                            "psc",
+                            "stat",
                           ],
                           "type": "object",
                         },
@@ -16489,7 +16487,6 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                             },
                             "ui:widget": "Input",
                           },
-                          "format": "ba-slovak-zip",
                           "title": "PSČ",
                           "type": "string",
                         },
@@ -17851,7 +17848,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Meno",
                     "type": "string",
                   },
-                  "mestoundefined": {
+                  "mesto": {
                     "baOrder": 11,
                     "baUiSchema": {
                       "ui:label": false,
@@ -17877,7 +17874,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Priezvisko",
                     "type": "string",
                   },
-                  "pscundefined": {
+                  "psc": {
                     "baOrder": 12,
                     "baUiSchema": {
                       "ui:label": false,
@@ -17887,7 +17884,6 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-slovak-zip",
                     "title": "PSČ",
                     "type": "string",
                   },
@@ -17905,7 +17901,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Rodné číslo",
                     "type": "string",
                   },
-                  "statundefined": {
+                  "stat": {
                     "baOrder": 13,
                     "baUiSchema": {
                       "ui:options": {
@@ -19214,7 +19210,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Titul",
                     "type": "string",
                   },
-                  "ulicaACisloundefined": {
+                  "ulicaACislo": {
                     "baOrder": 10,
                     "baUiSchema": {
                       "ui:label": false,
@@ -19234,10 +19230,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   "rodneCislo",
                   "email",
                   "telefon",
-                  "ulicaACisloundefined",
-                  "mestoundefined",
-                  "pscundefined",
-                  "statundefined",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
+                  "stat",
                   "maPrechodnyPobyt",
                 ],
                 "type": "object",
@@ -19284,7 +19280,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "IČO",
                     "type": "string",
                   },
-                  "mestoundefined": {
+                  "mesto": {
                     "baOrder": 24,
                     "baUiSchema": {
                       "ui:label": false,
@@ -19309,7 +19305,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Obchodné meno správcu / názov spoločenstva",
                     "type": "string",
                   },
-                  "pscundefined": {
+                  "psc": {
                     "baOrder": 25,
                     "baUiSchema": {
                       "ui:label": false,
@@ -19319,11 +19315,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-slovak-zip",
                     "title": "PSČ",
                     "type": "string",
                   },
-                  "statundefined": {
+                  "stat": {
                     "baOrder": 26,
                     "baUiSchema": {
                       "ui:options": {
@@ -20619,7 +20614,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Telefónne číslo",
                     "type": "string",
                   },
-                  "ulicaACisloundefined": {
+                  "ulicaACislo": {
                     "baOrder": 23,
                     "baUiSchema": {
                       "ui:label": false,
@@ -20638,10 +20633,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   "ico",
                   "email",
                   "telefon",
-                  "ulicaACisloundefined",
-                  "mestoundefined",
-                  "pscundefined",
-                  "statundefined",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
+                  "stat",
                 ],
                 "type": "object",
               },
@@ -20700,7 +20695,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Meno",
                     "type": "string",
                   },
-                  "mestoundefined": {
+                  "mesto": {
                     "baOrder": 36,
                     "baUiSchema": {
                       "ui:label": false,
@@ -20738,7 +20733,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Priezvisko",
                     "type": "string",
                   },
-                  "pscundefined": {
+                  "psc": {
                     "baOrder": 37,
                     "baUiSchema": {
                       "ui:label": false,
@@ -20748,7 +20743,6 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-slovak-zip",
                     "title": "PSČ",
                     "type": "string",
                   },
@@ -20766,7 +20760,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Rodné číslo",
                     "type": "string",
                   },
-                  "statundefined": {
+                  "stat": {
                     "baOrder": 38,
                     "baUiSchema": {
                       "ui:options": {
@@ -22075,7 +22069,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Titul",
                     "type": "string",
                   },
-                  "ulicaACisloundefined": {
+                  "ulicaACislo": {
                     "baOrder": 35,
                     "baUiSchema": {
                       "ui:label": false,
@@ -22097,10 +22091,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   "ico",
                   "email",
                   "telefon",
-                  "ulicaACisloundefined",
-                  "mestoundefined",
-                  "pscundefined",
-                  "statundefined",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
+                  "stat",
                 ],
                 "type": "object",
               },
@@ -22146,7 +22140,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "IČO",
                     "type": "string",
                   },
-                  "mestoundefined": {
+                  "mesto": {
                     "baOrder": 44,
                     "baUiSchema": {
                       "ui:label": false,
@@ -22171,7 +22165,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Obchodné meno",
                     "type": "string",
                   },
-                  "pscundefined": {
+                  "psc": {
                     "baOrder": 45,
                     "baUiSchema": {
                       "ui:label": false,
@@ -22181,11 +22175,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-slovak-zip",
                     "title": "PSČ",
                     "type": "string",
                   },
-                  "statundefined": {
+                  "stat": {
                     "baOrder": 46,
                     "baUiSchema": {
                       "ui:options": {
@@ -23481,7 +23474,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "title": "Telefónne číslo",
                     "type": "string",
                   },
-                  "ulicaACisloundefined": {
+                  "ulicaACislo": {
                     "baOrder": 43,
                     "baUiSchema": {
                       "ui:label": false,
@@ -23500,10 +23493,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   "ico",
                   "email",
                   "telefon",
-                  "ulicaACisloundefined",
-                  "mestoundefined",
-                  "pscundefined",
-                  "statundefined",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
+                  "stat",
                 ],
                 "type": "object",
               },
@@ -23564,7 +23557,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                         "title": "Meno",
                         "type": "string",
                       },
-                      "mestoundefined": {
+                      "mesto": {
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:label": false,
@@ -23614,7 +23607,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                         "title": "Priezvisko",
                         "type": "string",
                       },
-                      "pscundefined": {
+                      "psc": {
                         "baOrder": 9,
                         "baUiSchema": {
                           "ui:label": false,
@@ -23624,11 +23617,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                           },
                           "ui:widget": "Input",
                         },
-                        "format": "ba-slovak-zip",
                         "title": "PSČ",
                         "type": "string",
                       },
-                      "statundefined": {
+                      "stat": {
                         "baOrder": 10,
                         "baUiSchema": {
                           "ui:options": {
@@ -24937,7 +24929,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                         "title": "Titul",
                         "type": "string",
                       },
-                      "ulicaACisloundefined": {
+                      "ulicaACislo": {
                         "baOrder": 7,
                         "baUiSchema": {
                           "ui:label": false,
@@ -24957,10 +24949,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "priezvisko",
                       "email",
                       "telefon",
-                      "ulicaACisloundefined",
-                      "mestoundefined",
-                      "pscundefined",
-                      "statundefined",
+                      "ulicaACislo",
+                      "mesto",
+                      "psc",
+                      "stat",
                     ],
                     "type": "object",
                   },
@@ -25199,7 +25191,6 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "ui:widget": "Input",
                     },
-                    "format": "ba-slovak-zip",
                     "title": "PSČ",
                     "type": "string",
                   },
@@ -26781,109 +26772,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -27144,109 +27135,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -27559,109 +27550,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -27961,109 +27952,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -28345,109 +28336,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -28721,109 +28712,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -29135,109 +29126,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -29550,109 +29541,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -29935,109 +29926,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -30296,109 +30287,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -30695,109 +30686,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -31095,109 +31086,109 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                     "enumMetadata": [
                       {
                         "label": "Čunovo",
-                        "value": "cunovo",
+                        "value": "809985",
                       },
                       {
                         "label": "Devín",
-                        "value": "devin",
+                        "value": "805301",
                       },
                       {
                         "label": "Devínska Nová Ves",
-                        "value": "devinskaNovaVes",
+                        "value": "810649",
                       },
                       {
                         "label": "Dúbravka",
-                        "value": "dubravka",
+                        "value": "806099",
                       },
                       {
                         "label": "Jarovce",
-                        "value": "jarovce",
+                        "value": "822256",
                       },
                       {
                         "label": "Karlova Ves",
-                        "value": "karlovaVes",
+                        "value": "805211",
                       },
                       {
                         "label": "Lamač",
-                        "value": "lamac",
-                      },
-                      {
-                        "label": "Nové Mesto",
-                        "value": "noveMesto",
-                      },
-                      {
-                        "label": "Vinohrady",
-                        "value": "vinohrady",
-                      },
-                      {
-                        "label": "Petržalka",
-                        "value": "petrzalka",
-                      },
-                      {
-                        "label": "Podunajské Biskupice",
-                        "value": "podunajskeBiskupice",
-                      },
-                      {
-                        "label": "Rača",
-                        "value": "raca",
-                      },
-                      {
-                        "label": "Rusovce",
-                        "value": "rusovce",
-                      },
-                      {
-                        "label": "Ružinov",
-                        "value": "ruzinov",
-                      },
-                      {
-                        "label": "Trnávka",
-                        "value": "trnavka",
+                        "value": "806005",
                       },
                       {
                         "label": "Nivy",
-                        "value": "nivy",
+                        "value": "804274",
+                      },
+                      {
+                        "label": "Nové Mesto",
+                        "value": "804690",
+                      },
+                      {
+                        "label": "Petržalka",
+                        "value": "804959",
+                      },
+                      {
+                        "label": "Podunajské Biskupice",
+                        "value": "847755",
+                      },
+                      {
+                        "label": "Rača",
+                        "value": "805866",
+                      },
+                      {
+                        "label": "Rusovce",
+                        "value": "853771",
+                      },
+                      {
+                        "label": "Ružinov",
+                        "value": "805556",
                       },
                       {
                         "label": "Staré Mesto",
-                        "value": "stareMesto",
+                        "value": "804096",
+                      },
+                      {
+                        "label": "Trnávka",
+                        "value": "805343",
                       },
                       {
                         "label": "Vajnory",
-                        "value": "vajnory",
+                        "value": "805700",
+                      },
+                      {
+                        "label": "Vinohrady",
+                        "value": "804380",
                       },
                       {
                         "label": "Vrakuňa",
-                        "value": "vrakuna",
+                        "value": "870293",
                       },
                       {
                         "label": "Záhorská Bystrica",
-                        "value": "zahorskaBystrica",
+                        "value": "871796",
                       },
                     ],
                   },
                   "ui:widget": "Select",
                 },
                 "enum": [
-                  "cunovo",
-                  "devin",
-                  "devinskaNovaVes",
-                  "dubravka",
-                  "jarovce",
-                  "karlovaVes",
-                  "lamac",
-                  "noveMesto",
-                  "vinohrady",
-                  "petrzalka",
-                  "podunajskeBiskupice",
-                  "raca",
-                  "rusovce",
-                  "ruzinov",
-                  "trnavka",
-                  "nivy",
-                  "stareMesto",
-                  "vajnory",
-                  "vrakuna",
-                  "zahorskaBystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "title": "Katastrálne územie",
                 "type": "string",
@@ -31380,7 +31371,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       },
                       "then": {
                         "properties": {
-                          "mestoundefined": {
+                          "mesto": {
                             "baOrder": 7,
                             "baUiSchema": {
                               "ui:label": false,
@@ -31393,7 +31384,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                             "title": "Mesto",
                             "type": "string",
                           },
-                          "pscundefined": {
+                          "psc": {
                             "baOrder": 8,
                             "baUiSchema": {
                               "ui:label": false,
@@ -31403,11 +31394,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               },
                               "ui:widget": "Input",
                             },
-                            "format": "ba-slovak-zip",
                             "title": "PSČ",
                             "type": "string",
                           },
-                          "statundefined": {
+                          "stat": {
                             "baOrder": 9,
                             "baUiSchema": {
                               "ui:options": {
@@ -32687,7 +32677,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                             "title": "Štát",
                             "type": "string",
                           },
-                          "ulicaACisloundefined": {
+                          "ulicaACislo": {
                             "baOrder": 6,
                             "baUiSchema": {
                               "ui:label": false,
@@ -32702,10 +32692,10 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                           },
                         },
                         "required": [
-                          "ulicaACisloundefined",
-                          "mestoundefined",
-                          "pscundefined",
-                          "statundefined",
+                          "ulicaACislo",
+                          "mesto",
+                          "psc",
+                          "stat",
                         ],
                         "type": "object",
                       },
@@ -32864,7 +32854,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "addButtonLabel": "Pridať daľšiu nádobu",
+                    "addButtonLabel": "Pridať ďalšiu nádobu",
                     "itemTitle": "Nádoba č. {index}",
                     "variant": "topLevel",
                   },
@@ -33130,7 +33120,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "addButtonLabel": "Pridať daľšiu nádobu",
+                    "addButtonLabel": "Pridať ďalšiu nádobu",
                     "itemTitle": "Nádoba č. {index}",
                     "variant": "topLevel",
                   },
@@ -33458,7 +33448,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "addButtonLabel": "Pridať daľšiu nádobu",
+                    "addButtonLabel": "Pridať ďalšiu nádobu",
                     "itemTitle": "Nádoba č. {index}",
                     "variant": "topLevel",
                   },
@@ -33872,7 +33862,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "addButtonLabel": "Pridať daľšiu nádobu",
+                    "addButtonLabel": "Pridať ďalšiu nádobu",
                     "itemTitle": "Nádoba č. {index}",
                     "variant": "topLevel",
                   },
@@ -34183,11 +34173,11 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                               "value": "kontajner1100L",
                             },
                             {
-                              "label": "Lisovací kontajner 10 000",
+                              "label": "Lisovací kontajner 10 000 l",
                               "value": "lisovaciKontajner10000L",
                             },
                             {
-                              "label": "Lisovací kontajner 13 000",
+                              "label": "Lisovací kontajner 13 000 l",
                               "value": "lisovaciKontajner13000L",
                             },
                             {
@@ -34320,7 +34310,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 2,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "itemTitle": "Nová nádoba č. {index}",
                           "variant": "topLevel",
                         },
@@ -34538,7 +34528,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 4,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
@@ -34588,7 +34578,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "1X14Dni",
                                     "1X28Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -34634,7 +34624,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "1X7Dni",
                                     "1X14Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -34672,7 +34662,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                   "enum": [
                                     "",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -34933,7 +34923,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 6,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zrušenie č. {index}",
@@ -35234,7 +35224,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre existujúcich nádob?",
+                "title": "Chcete zmeniť parametre svojich nádob?",
                 "type": "boolean",
               },
             },
@@ -35307,7 +35297,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 2,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "itemTitle": "Nová nádoba č. {index}",
                           "variant": "topLevel",
                         },
@@ -35587,7 +35577,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 4,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
@@ -35660,7 +35650,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "6X7Dni",
                                     "1X14Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -35730,7 +35720,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "5X7Dni",
                                     "6X7Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -35768,7 +35758,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                   "enum": [
                                     "",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -36106,7 +36096,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 6,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zrušenie č. {index}",
@@ -36469,7 +36459,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre existujúcich nádob?",
+                "title": "Chcete zmeniť parametre svojich nádob?",
                 "type": "boolean",
               },
             },
@@ -36542,7 +36532,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 2,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "itemTitle": "Nová nádoba č. {index}",
                           "variant": "topLevel",
                         },
@@ -36908,7 +36898,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 4,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
@@ -36980,7 +36970,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "5X7Dni",
                                     "6X7Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -37081,7 +37071,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "6X7Dni",
                                     "1X14Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -37147,7 +37137,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "5X7Dni",
                                     "6X7Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -37185,7 +37175,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                   "enum": [
                                     "",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -37599,7 +37589,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 6,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zrušenie č. {index}",
@@ -38048,7 +38038,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre existujúcich nádob?",
+                "title": "Chcete zmeniť parametre svojich nádob?",
                 "type": "boolean",
               },
             },
@@ -38121,7 +38111,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 2,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "itemTitle": "Nová nádoba č. {index}",
                           "variant": "topLevel",
                         },
@@ -38432,11 +38422,11 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "value": "kontajner1100L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 10 000",
+                                    "label": "Lisovací kontajner 10 000 l",
                                     "value": "lisovaciKontajner10000L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 13 000",
+                                    "label": "Lisovací kontajner 13 000 l",
                                     "value": "lisovaciKontajner13000L",
                                   },
                                   {
@@ -38513,7 +38503,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 4,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
@@ -38585,7 +38575,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "5X7Dni",
                                     "6X7Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -38686,7 +38676,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "6X7Dni",
                                     "1X14Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -38758,7 +38748,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "5X7Dni",
                                     "6X7Dni",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -38796,7 +38786,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                   "enum": [
                                     "",
                                   ],
-                                  "title": "Pôvodna frekvencia odvozu",
+                                  "title": "Pôvodná frekvencia odvozu",
                                   "type": "string",
                                 },
                               },
@@ -39110,11 +39100,11 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "value": "kontajner1100L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 10 000",
+                                    "label": "Lisovací kontajner 10 000 l",
                                     "value": "lisovaciKontajner10000L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 13 000",
+                                    "label": "Lisovací kontajner 13 000 l",
                                     "value": "lisovaciKontajner13000L",
                                   },
                                   {
@@ -39173,11 +39163,11 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "value": "kontajner1100L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 10 000",
+                                    "label": "Lisovací kontajner 10 000 l",
                                     "value": "lisovaciKontajner10000L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 13 000",
+                                    "label": "Lisovací kontajner 13 000 l",
                                     "value": "lisovaciKontajner13000L",
                                   },
                                   {
@@ -39256,7 +39246,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       "baOrder": 6,
                       "baUiSchema": {
                         "ui:options": {
-                          "addButtonLabel": "Pridať daľšiu nádobu",
+                          "addButtonLabel": "Pridať ďalšiu nádobu",
                           "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zrušenie č. {index}",
@@ -39569,11 +39559,11 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                                     "value": "kontajner1100L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 10 000",
+                                    "label": "Lisovací kontajner 10 000 l",
                                     "value": "lisovaciKontajner10000L",
                                   },
                                   {
-                                    "label": "Lisovací kontajner 13 000",
+                                    "label": "Lisovací kontajner 13 000 l",
                                     "value": "lisovaciKontajner13000L",
                                   },
                                   {
@@ -39731,7 +39721,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre existujúcich nádob?",
+                "title": "Chcete zmeniť parametre svojich nádob?",
                 "type": "boolean",
               },
             },
@@ -40143,7 +40133,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       true,
                       false,
                     ],
-                    "title": "Chcete zmeniť objem existujúcej nádoby?",
+                    "title": "Chcete zmeniť objem vašej nádoby?",
                     "type": "boolean",
                   },
                 },
@@ -40340,7 +40330,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       true,
                       false,
                     ],
-                    "title": "Chcete zmeniť objem existujúcej nádoby?",
+                    "title": "Chcete zmeniť objem vašej nádoby?",
                     "type": "boolean",
                   },
                 },
@@ -40854,7 +40844,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
                       true,
                       false,
                     ],
-                    "title": "Chcete zmeniť objem existujúcej nádoby?",
+                    "title": "Chcete zmeniť objem vašej nádoby?",
                     "type": "boolean",
                   },
                 },

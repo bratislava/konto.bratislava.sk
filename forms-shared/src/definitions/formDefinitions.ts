@@ -406,6 +406,5 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: '',
     },
     isSigned: true,
-    exampleFormNotRequired: true,
   },
 ]

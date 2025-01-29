@@ -4238,6 +4238,658 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
 }
 `;
 
+exports[`getSummaryJson oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample summary JSON should match snapshot 1`] = `
+{
+  "id": "root",
+  "steps": [
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Vznik poplatkovej povinnosti",
+            },
+          ],
+          "id": "root_typOznamenia_typOznamenia",
+          "label": "Vyberte, prosím, druh oznámenia",
+          "type": "Field",
+          "value": "vznik",
+        },
+      ],
+      "id": "root_typOznamenia",
+      "title": "Typ oznámenia",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_oznamovatel_voSvojomMene",
+          "label": "Podávate oznámenie vo svojom mene?",
+          "type": "Field",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Fyzická osoba",
+            },
+          ],
+          "id": "root_oznamovatel_oznamovatelTyp",
+          "label": "Oznamovateľ je",
+          "type": "Field",
+          "value": "fyzickaOsoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Ján",
+            },
+          ],
+          "id": "root_oznamovatel_meno",
+          "label": "Meno",
+          "type": "Field",
+          "value": "Ján",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Kováč",
+            },
+          ],
+          "id": "root_oznamovatel_priezvisko",
+          "label": "Priezvisko",
+          "type": "Field",
+          "value": "Kováč",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Ing.",
+            },
+          ],
+          "id": "root_oznamovatel_titul",
+          "label": "Titul",
+          "type": "Field",
+          "value": "Ing.",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "910313/1234",
+            },
+          ],
+          "id": "root_oznamovatel_rodneCislo",
+          "label": "Rodné číslo",
+          "type": "Field",
+          "value": "910313/1234",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "jan.kovac@priklad.sk",
+            },
+          ],
+          "id": "root_oznamovatel_email",
+          "label": "Email",
+          "type": "Field",
+          "value": "jan.kovac@priklad.sk",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "+421905987654",
+            },
+          ],
+          "id": "root_oznamovatel_telefon",
+          "label": "Telefónne číslo",
+          "type": "Field",
+          "value": "+421905987654",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Mierová 12",
+            },
+          ],
+          "id": "root_oznamovatel_ulicaACislo",
+          "label": "Adresa trvalého pobytu",
+          "type": "Field",
+          "value": "Mierová 12",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bratislava",
+            },
+          ],
+          "id": "root_oznamovatel_mesto",
+          "label": "Mesto",
+          "type": "Field",
+          "value": "Bratislava",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "82108",
+            },
+          ],
+          "id": "root_oznamovatel_psc",
+          "label": "PSČ",
+          "type": "Field",
+          "value": "82108",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Slovenská republika",
+            },
+          ],
+          "id": "root_oznamovatel_stat",
+          "label": "Štát",
+          "type": "Field",
+          "value": "703",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Nie",
+            },
+          ],
+          "id": "root_oznamovatel_maPrechodnyPobyt",
+          "label": "Máte prechodný pobyt?",
+          "type": "Field",
+          "value": false,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Áno",
+            },
+          ],
+          "id": "root_oznamovatel_maElektronickuSchranku",
+          "label": "Máte aktivovanú elektronickú schránku na portáli Slovensko.sk?",
+          "type": "Field",
+          "value": true,
+        },
+      ],
+      "id": "root_oznamovatel",
+      "title": "Oznamovateľ",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "1. 1. 2025",
+            },
+          ],
+          "id": "root_informacieOOdvoze_datum",
+          "label": "Dátum vzniku poplatkovej povinnosti odo dňa",
+          "type": "Field",
+          "value": "2025-01-01",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Mierová 12",
+            },
+          ],
+          "id": "root_informacieOOdvoze_odvozneMiesto",
+          "label": "Odvozné miesto",
+          "type": "Field",
+          "value": "Mierová 12",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Súpisné/orientačné číslo",
+            },
+          ],
+          "id": "root_informacieOOdvoze_typCisla",
+          "label": "Vyberte, ktoré možnosti chcete vyplniť",
+          "type": "Field",
+          "value": [
+            "supisneOrientacneCislo",
+          ],
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "1234",
+            },
+          ],
+          "id": "root_informacieOOdvoze_supisneCislo",
+          "label": "Súpisné/orientačné číslo",
+          "type": "Field",
+          "value": "1234",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bratislava",
+            },
+          ],
+          "id": "root_informacieOOdvoze_mesto",
+          "label": "Mesto",
+          "type": "Field",
+          "value": "Bratislava",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "82108",
+            },
+          ],
+          "id": "root_informacieOOdvoze_psc",
+          "label": "PSČ",
+          "type": "Field",
+          "value": "82108",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Ružinov",
+            },
+          ],
+          "id": "root_informacieOOdvoze_katastralneUzemie",
+          "label": "Katastrálne územie",
+          "type": "Field",
+          "value": "805556",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Mierová 12",
+            },
+          ],
+          "id": "root_informacieOOdvoze_stanoviste",
+          "label": "Stanovište",
+          "type": "Field",
+          "value": "Mierová 12",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "rodinný dom",
+            },
+          ],
+          "id": "root_informacieOOdvoze_druhNehnutelnosti",
+          "label": "Druh nehnuteľnosti",
+          "type": "Field",
+          "value": "rodinnyDom",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "4",
+            },
+          ],
+          "id": "root_informacieOOdvoze_pocetOsob",
+          "label": "Počet osôb užívajúcich nehnuteľnosť",
+          "type": "Field",
+          "value": 4,
+        },
+      ],
+      "id": "root_informacieOOdvoze",
+      "title": "Informácie o odvoze",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "id": "root_poplatnici_poplatnici",
+          "items": [
+            {
+              "children": [
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Ján",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_0_meno",
+                  "label": "Meno",
+                  "type": "Field",
+                  "value": "Ján",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Kováč",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_0_priezvisko",
+                  "label": "Priezvisko",
+                  "type": "Field",
+                  "value": "Kováč",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Ing.",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_0_titul",
+                  "label": "Titul",
+                  "type": "Field",
+                  "value": "Ing.",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "910313/1234",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_0_rodneCislo",
+                  "label": "Rodné číslo",
+                  "type": "Field",
+                  "value": "910313/1234",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Áno",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_0_zhodujeSaAdresa",
+                  "label": "Zhoduje sa adresa trvalého alebo prechodného pobytu poplatníka s adresou miesta odvozu, na ktorú sa táto žiadosť vzťahuje?",
+                  "type": "Field",
+                  "value": true,
+                },
+              ],
+              "id": "root_poplatnici_poplatnici_0",
+              "title": "Poplatník č. 1",
+              "type": "ArrayItem",
+            },
+            {
+              "children": [
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Marta",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_1_meno",
+                  "label": "Meno",
+                  "type": "Field",
+                  "value": "Marta",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Nováková",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_1_priezvisko",
+                  "label": "Priezvisko",
+                  "type": "Field",
+                  "value": "Nováková",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Mgr.",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_1_titul",
+                  "label": "Titul",
+                  "type": "Field",
+                  "value": "Mgr.",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "920414/5678",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_1_rodneCislo",
+                  "label": "Rodné číslo",
+                  "type": "Field",
+                  "value": "920414/5678",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "Áno",
+                    },
+                  ],
+                  "id": "root_poplatnici_poplatnici_1_zhodujeSaAdresa",
+                  "label": "Zhoduje sa adresa trvalého alebo prechodného pobytu poplatníka s adresou miesta odvozu, na ktorú sa táto žiadosť vzťahuje?",
+                  "type": "Field",
+                  "value": true,
+                },
+              ],
+              "id": "root_poplatnici_poplatnici_1",
+              "title": "Poplatník č. 2",
+              "type": "ArrayItem",
+            },
+          ],
+          "title": "Poplatníci",
+          "type": "Array",
+        },
+      ],
+      "id": "root_poplatnici",
+      "title": "Údaje o všetkých poplatníkoch, ktorí užívajú danú nehnuteľnosť",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "id": "root_komunalnyOdpad_nadoby",
+          "items": [
+            {
+              "children": [
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "120 l zberná nádoba",
+                    },
+                  ],
+                  "id": "root_komunalnyOdpad_nadoby_0_objemNadoby",
+                  "label": "Objem nádoby",
+                  "type": "Field",
+                  "value": "120LZbernaNadoba",
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "2",
+                    },
+                  ],
+                  "id": "root_komunalnyOdpad_nadoby_0_pocetNadob",
+                  "label": "Počet nádob",
+                  "type": "Field",
+                  "value": 2,
+                },
+                {
+                  "displayValues": [
+                    {
+                      "type": "String",
+                      "value": "1× 7 dní",
+                    },
+                  ],
+                  "id": "root_komunalnyOdpad_nadoby_0_frekvenciaOdvozu",
+                  "label": "Frekvencia odvozu",
+                  "type": "Field",
+                  "value": "1X7Dni",
+                },
+              ],
+              "id": "root_komunalnyOdpad_nadoby_0",
+              "title": "Nádoba č. 1",
+              "type": "ArrayItem",
+            },
+          ],
+          "title": "Nádoby",
+          "type": "Array",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Odpad bude odvážaný každý týždeň.",
+            },
+          ],
+          "id": "root_komunalnyOdpad_poznamka",
+          "label": "Poznámka",
+          "type": "Field",
+          "value": "Odpad bude odvážaný každý týždeň.",
+        },
+      ],
+      "id": "root_komunalnyOdpad",
+      "title": "Komunálny odpad",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "240 l zberná nádoba",
+            },
+          ],
+          "id": "root_biologickyRozlozitelnyOdpadZoZahrad_nadoba_objemNadoby",
+          "label": "Objem nádoby",
+          "type": "Field",
+          "value": "240LZbernaNadoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Záhrada produkuje veľa bioodpadu.",
+            },
+          ],
+          "id": "root_biologickyRozlozitelnyOdpadZoZahrad_poznamka",
+          "label": "Poznámka",
+          "type": "Field",
+          "value": "Záhrada produkuje veľa bioodpadu.",
+        },
+      ],
+      "id": "root_biologickyRozlozitelnyOdpadZoZahrad",
+      "title": "Biologicky rozložiteľný odpad zo záhrad",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "20-23l zberná nádoba",
+            },
+          ],
+          "id": "root_biologickyRozlozitelnyOdpadZKuchyne_nadoba_objemNadoby",
+          "label": "Objem nádoby",
+          "type": "Field",
+          "value": "20az23LZbernaNadoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Kuchynský bioodpad bude zbieraný do menších nádob.",
+            },
+          ],
+          "id": "root_biologickyRozlozitelnyOdpadZKuchyne_poznamka",
+          "label": "Poznámka",
+          "type": "Field",
+          "value": "Kuchynský bioodpad bude zbieraný do menších nádob.",
+        },
+      ],
+      "id": "root_biologickyRozlozitelnyOdpadZKuchyne",
+      "title": "Biologicky rozložiteľný odpad z kuchyne",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bezhotovostným prevodom na účet správcu poplatku",
+            },
+          ],
+          "id": "root_sposobPlatby_sposobPlatby",
+          "label": "Spôsob platby",
+          "type": "Field",
+          "value": "bezhotovostnyPrevod",
+        },
+      ],
+      "id": "root_sposobPlatby",
+      "title": "Spôsob platby",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "id": "4f01b72e-f5d6-429e-a4b4-ecb6432f05f7",
+              "type": "File",
+            },
+          ],
+          "id": "root_prilohy_prilohy",
+          "label": "Prílohy",
+          "type": "Field",
+          "value": [
+            "4f01b72e-f5d6-429e-a4b4-ecb6432f05f7",
+          ],
+        },
+      ],
+      "id": "root_prilohy",
+      "title": "Prílohy",
+      "type": "Step",
+    },
+  ],
+  "title": "Oznámenie o poplatkovej povinnosti za komunálne odpady",
+  "type": "Form",
+}
+`;
+
 exports[`getSummaryJson predzahradkyExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",

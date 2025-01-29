@@ -402,10 +402,8 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
     ginisAssignment: {
-      ginisOrganizationName: '',
-      ginisPersonName: '',
+      ginisOrganizationName: 'OMDP',
     },
     isSigned: true,
-    exampleFormNotRequired: true,
   },
 ]

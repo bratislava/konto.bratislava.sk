@@ -1,3 +1,11 @@
+# E2E Cypress Tests for Next.js frontend
+
+## Install
+
+```sh
+npm i
+```
+
 ## Run App Locally in E2E Setup
 
 The tests are configured to run against http://localhost:3000, so you must have the app running locally. You can set up your environment for end-to-end (e2e) testing by following the instructions in the [Next app README](../next/README.md), or you can quickly rebuild and restart the app using the following command from this directory:

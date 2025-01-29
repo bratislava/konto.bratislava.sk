@@ -55,10 +55,9 @@ npm run start:prod
 
 ## Test
 
-TBD
-
-#Deployment
-[deployment](readme/deployment)
+```
+npm run test
+```
 
 ## Used external services and tools
 

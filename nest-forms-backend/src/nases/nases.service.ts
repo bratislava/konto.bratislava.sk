@@ -528,6 +528,14 @@ export default class NasesService {
 
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
+    // TODO rework! this is super fragile and QUEUED state was not originally meant for this
+    // just before sending to nases, update form state to QUEUED
+    // if the operation takes long, this prevents repeated sending
+    // sendToNasesAndUpdateState must never throw, and if it does not succeed we update the state back to DRAFT & set NASES_SEND_ERROR
+    await this.formsService.updateForm(id, {
+      state: FormState.QUEUED,
+    })
+
     // Send to nases
     const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
       jwt,

@@ -1,11 +1,12 @@
-const { withPlausibleProxy } = require('next-plausible')
-const { i18n } = require('./next-i18next.config')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const { join } = require('node:path')
-const fs = require('node:fs')
-const path = require('node:path')
+import { withPlausibleProxy } from 'next-plausible'
+import { i18n } from './next-i18next.config'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import path, { join } from 'node:path'
+import fs from 'node:fs'
+import type { NextConfig } from 'next'
+import withBundleAnalyzer from '@next/bundle-analyzer'
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
@@ -17,10 +18,7 @@ const iframeResizerPublicPath = (() => {
   return `/scripts/iframe-resizer-child-${version}.js`
 })()
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+const nextConfig: NextConfig = {
   env: {
     IFRAME_RESIZER_PUBLIC_PATH: iframeResizerPublicPath,
   },
@@ -191,6 +189,6 @@ const nextConfig = {
 }
 
 // https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script
-module.exports = withPlausibleProxy()({
-  ...withBundleAnalyzer(nextConfig),
+export default withPlausibleProxy()({
+  ...bundleAnalyzer(nextConfig),
 })

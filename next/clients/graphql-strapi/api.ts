@@ -962,6 +962,8 @@ export type StringFilterInput = {
 export type Tax = {
   __typename?: 'Tax'
   accountCommunicationConsentText: Scalars['String']['output']
+  channelChangeEffectiveNextYearText?: Maybe<Scalars['String']['output']>
+  channelChangeEffectiveNextYearTitle?: Maybe<Scalars['String']['output']>
   createdAt?: Maybe<Scalars['DateTime']['output']>
   currentYearTaxInPreparationText?: Maybe<Scalars['String']['output']>
   currentYearTaxInPreparationTitle?: Maybe<Scalars['String']['output']>
@@ -982,6 +984,8 @@ export type TaxEntityResponse = {
 
 export type TaxInput = {
   accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
+  channelChangeEffectiveNextYearText?: InputMaybe<Scalars['String']['input']>
+  channelChangeEffectiveNextYearTitle?: InputMaybe<Scalars['String']['input']>
   currentYearTaxInPreparationText?: InputMaybe<Scalars['String']['input']>
   currentYearTaxInPreparationTitle?: InputMaybe<Scalars['String']['input']>
   displayCurrentYearTaxInPreparation?: InputMaybe<Scalars['Boolean']['input']>
@@ -1541,6 +1545,8 @@ export type TaxFragment = {
   currentYearTaxInPreparationText?: string | null
   currentYearTaxInPreparationTitle?: string | null
   displayCurrentYearTaxInPreparation: boolean
+  channelChangeEffectiveNextYearText?: string | null
+  channelChangeEffectiveNextYearTitle?: string | null
 }
 
 export type TaxQueryVariables = Exact<{ [key: string]: never }>
@@ -1557,6 +1563,8 @@ export type TaxQuery = {
         currentYearTaxInPreparationText?: string | null
         currentYearTaxInPreparationTitle?: string | null
         displayCurrentYearTaxInPreparation: boolean
+        channelChangeEffectiveNextYearText?: string | null
+        channelChangeEffectiveNextYearTitle?: string | null
       } | null
     } | null
   } | null
@@ -1640,6 +1648,8 @@ export const TaxFragmentDoc = gql`
     currentYearTaxInPreparationText
     currentYearTaxInPreparationTitle
     displayCurrentYearTaxInPreparation
+    channelChangeEffectiveNextYearText
+    channelChangeEffectiveNextYearTitle
   }
 `
 export const FormBaseBySlugDocument = gql`

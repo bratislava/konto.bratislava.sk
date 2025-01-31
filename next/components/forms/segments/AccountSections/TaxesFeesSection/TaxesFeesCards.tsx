@@ -12,7 +12,8 @@ import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()
-  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
+  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen, strapiTax } =
+    useTaxFeesSection()
   const displayTaxAdministratorCard =
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
   const { showEmailCommunicationBanner, channelChangeEffectiveNextYear } = useTaxChannel()
@@ -38,7 +39,9 @@ const TaxesFeesCards = () => {
           <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />
         )}
       </div>
-      {channelChangeEffectiveNextYear && <TaxesChannelChangeEffectiveNextYearAlert />}
+      {channelChangeEffectiveNextYear && (
+        <TaxesChannelChangeEffectiveNextYearAlert strapiTax={strapiTax} />
+      )}
     </div>
   )
 }

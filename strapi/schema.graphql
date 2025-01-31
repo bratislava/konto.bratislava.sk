@@ -771,6 +771,8 @@ input StringFilterInput {
 
 type Tax {
   accountCommunicationConsentText: String!
+  channelChangeEffectiveNextYearText: String
+  channelChangeEffectiveNextYearTitle: String
   createdAt: DateTime
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
@@ -795,6 +797,8 @@ type TaxEntityResponseCollection {
 input TaxFiltersInput {
   accountCommunicationConsentText: StringFilterInput
   and: [TaxFiltersInput]
+  channelChangeEffectiveNextYearText: StringFilterInput
+  channelChangeEffectiveNextYearTitle: StringFilterInput
   createdAt: DateTimeFilterInput
   currentYearTaxInPreparationText: StringFilterInput
   currentYearTaxInPreparationTitle: StringFilterInput
@@ -806,6 +810,8 @@ input TaxFiltersInput {
 
 input TaxInput {
   accountCommunicationConsentText: String
+  channelChangeEffectiveNextYearText: String
+  channelChangeEffectiveNextYearTitle: String
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
   displayCurrentYearTaxInPreparation: Boolean

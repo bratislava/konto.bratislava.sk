@@ -48,7 +48,7 @@ export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
           return getQueryParamByStepIndex(getCurrentStepSchemas(), value) as string
         },
       })
-        .withOptions({ history: 'push' })
+        .withOptions({ history: 'push', clearOnDefault: false })
         .withDefault(getCurrentStepSchemas()[0].index),
     [],
   )

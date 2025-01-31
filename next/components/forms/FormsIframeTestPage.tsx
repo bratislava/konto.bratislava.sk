@@ -20,6 +20,7 @@ export type FormsIframeTestPageProps = {
 const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
   const [selectedSlug, setSelectedSlug] = useQueryState('slug', {
     defaultValue: embeddedForms[0].slug,
+    clearOnDefault: false,
   })
   useEffectOnce(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)

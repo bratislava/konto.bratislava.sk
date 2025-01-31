@@ -28,8 +28,8 @@ interface IProps extends LanguageSelectProps {
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
   hiddenHeaderNav?: boolean
-  desktopNavbarRef: RefObject<HTMLDivElement>
-  mobileNavbarRef: RefObject<HTMLDivElement>
+  desktopNavbarRef: RefObject<HTMLDivElement | null>
+  mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
 interface LanguageSelectProps {

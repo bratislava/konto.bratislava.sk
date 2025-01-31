@@ -5,7 +5,7 @@ import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
 import Spinner from 'components/forms/simple-components/Spinner'
 import NextLink from 'next/link'
-import { ComponentProps, forwardRef, MutableRefObject, PropsWithChildren, ReactNode } from 'react'
+import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 import { twMerge } from 'tailwind-merge'
 
@@ -239,7 +239,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       return (
         <MLinkNew
           href={rest.href}
-          ref={ref as MutableRefObject<HTMLAnchorElement>}
+          ref={ref as Ref<HTMLAnchorElement>}
           // following conventions from react-aria-components, slightly changed for easier styling of hovered state
           data-pressed={isPressed || undefined}
           data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}
@@ -264,7 +264,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     return (
       <button
         type="button"
-        ref={ref as MutableRefObject<HTMLButtonElement>}
+        ref={ref as Ref<HTMLButtonElement>}
         // following conventions from react-aria-components, slightly changed for easier styling of hovered state
         data-pressed={isPressed || undefined}
         data-hovered={(isHovered && !isPressed) || (isFocusVisible && !isPressed) || undefined}

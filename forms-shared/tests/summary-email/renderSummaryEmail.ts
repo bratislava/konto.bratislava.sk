@@ -1,12 +1,10 @@
+import { describe, test, expect, beforeAll } from 'vitest'
 import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
-import { toMatchImageSnapshot } from 'jest-image-snapshot'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { renderSummaryEmail } from '../../src/summary-email/renderSummaryEmail'
 import { mapValues } from 'lodash'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
-
-expect.extend({ toMatchImageSnapshot })
 
 describe('renderSummaryEmail', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
@@ -34,7 +32,7 @@ describe('renderSummaryEmail', () => {
         })
       })
       ;(['desktop', 'mobile'] as const).forEach((size) => {
-        it(
+        test(
           `summary email should match ${size} screenshot snapshot`,
           async () => {
             const screenshot = await generatePageScreenshot(emailHtml, size)

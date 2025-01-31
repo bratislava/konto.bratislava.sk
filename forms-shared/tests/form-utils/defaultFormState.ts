@@ -15,21 +15,22 @@ import { object } from '../../src/generator/object'
 import { arrayField } from '../../src/generator/functions/arrayField'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
+import { describe, test, expect } from 'vitest'
 
 describe('defaultFormState', () => {
-  it('isFileMultipleSchema should return true for file array schema', () => {
+  test('isFileMultipleSchema should return true for file array schema', () => {
     const definition = fileUploadMultiple('file', { title: 'File' }, {})
 
     expect(isFileMultipleSchema(definition.schema)).toBe(true)
   })
 
-  it('isFileMultipleSchema should return false for any other schema', () => {
+  test('isFileMultipleSchema should return false for any other schema', () => {
     const definition = arrayField('array', { title: 'Array' }, {} as ArrayFieldUiOptions, [])
 
     expect(isFileMultipleSchema(definition.schema)).toBe(false)
   })
 
-  it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
+  test('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
     const items = [
       {
         value: 'option',
@@ -101,7 +102,7 @@ describe('defaultFormState', () => {
     })
   })
 
-  it('getDefaultForm should not prefill const values', () => {
+  test('getDefaultForm should not prefill const values', () => {
     const definition = object('defaultFormState', {}, {}, [
       checkbox(
         'checkboxWithConstValue',
@@ -122,7 +123,7 @@ describe('baGetDefaultFormStateStable', () => {
     ]),
   ])
 
-  it('should return correct default values', () => {
+  test('should return correct default values', () => {
     filterConsole(
       'warn',
       (message) =>

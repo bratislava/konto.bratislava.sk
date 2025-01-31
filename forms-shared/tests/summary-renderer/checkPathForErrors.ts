@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { ErrorSchema } from '@rjsf/utils'
 import { checkPathForErrors } from '../../src/summary-renderer/checkPathForErrors'
 

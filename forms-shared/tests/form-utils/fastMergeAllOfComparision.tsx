@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { renderTestForm } from '../../test-utils/testForm'
 import type { baFastMergeAllOf } from '../../src/form-utils/fastMergeAllOf'
 import type mergeAllOf from 'json-schema-merge-allof'
@@ -7,19 +8,22 @@ import { getBaFormDefaults } from '../../src/form-utils/formDefaults'
 import { JSONSchema7 } from 'json-schema'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
-const mockFastMergeAllOf = jest.fn(
-  jest.requireActual('../../src/form-utils/fastMergeAllOf')
-    .baFastMergeAllOf as typeof baFastMergeAllOf,
+const mockFastMergeAllOf = vi.fn(
+  (
+    await vi.importActual<typeof import('../../src/form-utils/fastMergeAllOf')>(
+      '../../src/form-utils/fastMergeAllOf',
+    )
+  ).baFastMergeAllOf,
 )
-jest.mock('../../src/form-utils/fastMergeAllOf', () => ({
-  ...jest.requireActual('../../src/form-utils/fastMergeAllOf'),
+vi.mock('../../src/form-utils/fastMergeAllOf', () => ({
+  ...vi.importActual('../../src/form-utils/fastMergeAllOf'),
   baFastMergeAllOf: ((...args) => mockFastMergeAllOf(...args)) as typeof baFastMergeAllOf,
 }))
 
-const mockOriginalMergeAllOf = jest.fn(
-  jest.requireActual('json-schema-merge-allof') as typeof mergeAllOf,
+const mockOriginalMergeAllOf = vi.fn(
+  (await vi.importActual<{ default: typeof mergeAllOf }>('json-schema-merge-allof')).default,
 )
-jest.mock('json-schema-merge-allof', () => ({
+vi.mock('json-schema-merge-allof', () => ({
   __esModule: true,
   default: ((...args) => mockOriginalMergeAllOf(...args)) as typeof mergeAllOf<BAJSONSchema7>,
 }))
@@ -75,12 +79,12 @@ describe('fastMergeAllOfComparision', () => {
     describe(`json-schema-merge-allof results for ${exampleForm.name}`, () => {
       let originalForm: ReturnType<typeof renderTestForm>
       let fastForm: ReturnType<typeof renderTestForm>
-      let originalFormCalls: jest.Mock['mock']['calls']
-      let originalFormResults: jest.Mock['mock']['results']
-      let originalFormFastCalls: jest.Mock['mock']['calls']
-      let fastFormCalls: jest.Mock['mock']['calls']
-      let fastFormResults: jest.Mock['mock']['results']
-      let fastFormOriginalCalls: jest.Mock['mock']['calls']
+      let originalFormCalls: vi.Mock['mock']['calls']
+      let originalFormResults: vi.Mock['mock']['results']
+      let originalFormFastCalls: vi.Mock['mock']['calls']
+      let fastFormCalls: vi.Mock['mock']['calls']
+      let fastFormResults: vi.Mock['mock']['results']
+      let fastFormOriginalCalls: vi.Mock['mock']['calls']
 
       beforeEach(() => {
         mockOriginalMergeAllOf.mockClear()
@@ -109,18 +113,18 @@ describe('fastMergeAllOfComparision', () => {
         fastFormOriginalCalls = mockOriginalMergeAllOf.mock.calls
       })
 
-      it('should render identical forms', () => {
+      test('should render identical forms', () => {
         expect(originalForm).toEqual(fastForm)
       })
 
-      it('should use correct merge functions', () => {
+      test('should use correct merge functions', () => {
         expect(originalFormResults).not.toHaveLength(0)
         expect(fastFormResults).not.toHaveLength(0)
         expect(originalFormCalls).not.toHaveLength(0)
         expect(fastFormCalls).not.toHaveLength(0)
       })
 
-      it('should produce identical merge results', () => {
+      test('should produce identical merge results', () => {
         expect(originalFormResults.every((result) => result.type === 'return')).toBe(true)
         expect(fastFormResults.every((result) => result.type === 'return')).toBe(true)
 
@@ -133,7 +137,7 @@ describe('fastMergeAllOfComparision', () => {
         expect(normalizedOriginalFormResults).toEqual(normalizedFastFormResults)
       })
 
-      it('should receive identical input schemas', () => {
+      test('should receive identical input schemas', () => {
         const normalizedOriginalFormCalls = originalFormCalls
           .map(([schema]) => schema as JSONSchema7)
           .map(normalizeObjectAllOfs)
@@ -143,7 +147,7 @@ describe('fastMergeAllOfComparision', () => {
         expect(normalizedOriginalFormCalls).toEqual(normalizedFastFormCalls)
       })
 
-      it('should not cross-use merge functions', () => {
+      test('should not cross-use merge functions', () => {
         // Original form should not use fast merge
         expect(originalFormFastCalls).toHaveLength(0)
 

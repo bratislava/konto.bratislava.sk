@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeAll, afterAll, vi } from 'vitest'
 import { getTaxFormPdfMapping } from '../../src/tax-form/mapping/pdf/pdf'
 import { generateTaxPdf } from '../../src/tax-form/generateTaxPdf'
 import { generateTaxXml } from '../../src/tax-form/generateTaxXml'
@@ -7,24 +8,27 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { getFormDefinitionBySlug } from '../../src/definitions/getFormDefinitionBySlug'
+import { toMatchImageSnapshot } from 'jest-image-snapshot'
+
+expect.extend({ toMatchImageSnapshot })
 
 describe('tax-form', () => {
-  beforeEach(() => {
-    // Without `advanceTimers` the PDF generation would hang indefinitely.
-    jest.useFakeTimers({ now: new Date('2024-01-01'), advanceTimers: 1 })
+  beforeAll(() => {
+    // Without `shouldAdvanceTime` the PDF generation would hang indefinitely.
+    vi.useFakeTimers({ now: new Date('2024-01-01'), shouldAdvanceTime: true })
   })
 
   afterAll(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   getExampleFormPairs({ formDefinitionFilterFn: isSlovenskoSkTaxFormDefinition }).forEach(
     ({ exampleForm }) => {
-      it(`should return correct PDF mapping for ${exampleForm.name}`, () => {
+      test(`should return correct PDF mapping for ${exampleForm.name}`, () => {
         expect(getTaxFormPdfMapping(exampleForm.formData, undefined)).toMatchSnapshot()
       })
 
-      it(`should return correct XML for ${exampleForm.name}`, () => {
+      test(`should return correct XML for ${exampleForm.name}`, () => {
         const formDefinition = getFormDefinitionBySlug('priznanie-k-dani-z-nehnutelnosti')
         if (!formDefinition || !isSlovenskoSkTaxFormDefinition(formDefinition)) {
           throw new Error('Form definition not found')
@@ -33,7 +37,7 @@ describe('tax-form', () => {
         expect(generateTaxXml(exampleForm.formData, true, formDefinition)).toMatchSnapshot()
       })
 
-      it(
+      test(
         `should match snapshot for generated PDF ${exampleForm.name}`,
         async () => {
           filterConsole(

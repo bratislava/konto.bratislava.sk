@@ -1,9 +1,10 @@
+import { describe, test, expect } from 'vitest'
 import { join } from 'path'
 import AdmZip from 'adm-zip'
 import { validateExtractAsice } from '../../src/signer/validateExtractAsice'
 
 describe('validateExtractAsice', () => {
-  it('should extract xml and hash from mock test container', async () => {
+  test('should extract xml and hash from mock test container', async () => {
     const zip = new AdmZip()
     const containerPath = join(__dirname, 'test-container')
     zip.addLocalFolder(containerPath, '')

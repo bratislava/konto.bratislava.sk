@@ -1,3 +1,4 @@
+import { expect } from 'vitest'
 import { toMatchImageSnapshot } from 'jest-image-snapshot'
 
 // "pdf-to-img" is not the most popular package, but it is one of the few that use PDF.js internally and doesn't

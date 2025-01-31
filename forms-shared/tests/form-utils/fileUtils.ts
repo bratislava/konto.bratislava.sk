@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { getFileUuids, getFileUuidsNaive } from '../../src/form-utils/fileUtils'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { input } from '../../src/generator/functions/input'
@@ -38,7 +39,7 @@ describe('fileUtils', () => {
     anotherField: 'some value',
   }
 
-  it('getFileUuidsNaive should return all valid UUIDs entries from the data', () => {
+  test('getFileUuidsNaive should return all valid UUIDs entries from the data', () => {
     expect(getFileUuidsNaive(data)).toEqual([
       'f3603d59-49f4-4059-9a3d-555184217357',
       '7459535f-96c2-47ed-bf32-55143e52a4ea',
@@ -47,7 +48,7 @@ describe('fileUtils', () => {
     ])
   })
 
-  it('getFileUuidsNaive should return only file ids from the data', () => {
+  test('getFileUuids should return only file ids from the data', () => {
     expect(getFileUuids(fileUploadSchema.schema, data)).toEqual([
       'f3603d59-49f4-4059-9a3d-555184217357',
       '7459535f-96c2-47ed-bf32-55143e52a4ea',

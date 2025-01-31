@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -25,7 +26,7 @@ describe('signature', () => {
   const mockFormDataHash = '47e22393eae489a887dc05e62b1bf8fc5285f869'
 
   describe('createFormSignature', () => {
-    it('should create a valid form signature', () => {
+    test('should create a valid form signature', () => {
       const signatureBase64 = 'test-signature'
       const result = createFormSignature(mockFormDefinition, signatureBase64, mockFormData)
 
@@ -38,14 +39,14 @@ describe('signature', () => {
       })
     })
 
-    it('should remove whitespace from signature', () => {
+    test('should remove whitespace from signature', () => {
       const signatureWithWhitespace = '  test \n signature  \t'
       const result = createFormSignature(mockFormDefinition, signatureWithWhitespace, mockFormData)
 
       expect(result.signatureBase64).toBe('testsignature')
     })
 
-    it('should handle signature with no whitespace', () => {
+    test('should handle signature with no whitespace', () => {
       const signatureNoWhitespace = 'testsignature'
       const result = createFormSignature(mockFormDefinition, signatureNoWhitespace, mockFormData)
 
@@ -62,13 +63,13 @@ describe('signature', () => {
       formDataHash: mockFormDataHash,
     }
 
-    it('should not throw for valid signature', () => {
+    test('should not throw for valid signature', () => {
       expect(() => {
         verifyFormSignature(mockFormDefinition, mockFormData, validSignature)
       }).not.toThrow()
     })
 
-    it('should throw FormDefinitionMismatch when pospID differs', () => {
+    test('should throw FormDefinitionMismatch when pospID differs', () => {
       const invalidSignature = {
         ...validSignature,
         pospID: 'different.form',
@@ -79,7 +80,7 @@ describe('signature', () => {
       }).toThrow(new VerifyFormSignatureError(VerifyFormSignatureErrorType.FormDefinitionMismatch))
     })
 
-    it('should throw FormDefinitionMismatch when pospVersion differs', () => {
+    test('should throw FormDefinitionMismatch when pospVersion differs', () => {
       const invalidSignature = {
         ...validSignature,
         pospVersion: '2.0',
@@ -90,7 +91,7 @@ describe('signature', () => {
       }).toThrow(new VerifyFormSignatureError(VerifyFormSignatureErrorType.FormDefinitionMismatch))
     })
 
-    it('should throw FormDefinitionMismatch when jsonVersion differs', () => {
+    test('should throw FormDefinitionMismatch when jsonVersion differs', () => {
       const invalidSignature = {
         ...validSignature,
         jsonVersion: '2.0',
@@ -101,7 +102,7 @@ describe('signature', () => {
       }).toThrow(new VerifyFormSignatureError(VerifyFormSignatureErrorType.FormDefinitionMismatch))
     })
 
-    it('should throw FormDataHashMismatch when form data has been modified', () => {
+    test('should throw FormDataHashMismatch when form data has been modified', () => {
       const modifiedFormData = {
         ...mockFormData,
         field1: 'modified value',

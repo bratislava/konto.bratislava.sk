@@ -9,10 +9,10 @@
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
     "test": "vitest",
-    "test:update": "jest --u",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci",
+    "test:update": "vitest --u",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest --ci",
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
     "generate-assets": "ts-node scripts/assets/generate.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
@@ -102,7 +102,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "unzipper": "^0.12.3",
-    "vitest": "^3.0.4"
+    "vitest": "2.1.8"
   },
   "engines": {
     "node": ">=20.9.x",

@@ -1,15 +1,14 @@
 import { EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import { ReactElement } from 'react'
+import { PropsWithChildren } from 'react'
 
-interface SummaryRowProps {
+type SummaryRowProps = PropsWithChildren<{
   label: string
-  children: ReactElement
   isError: boolean
   size?: 'small' | 'large'
   isEditable?: boolean
   onGoToStep?: () => void
-}
+}>
 
 const SummaryRowSimple = (props: SummaryRowProps) => {
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props

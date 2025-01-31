@@ -19,6 +19,16 @@ const iframeResizerPublicPath = (() => {
   return `/scripts/iframe-resizer-child-${version}.js`
 })()
 
+const iframeResizerSourcePath = join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js')
+const iframeResizerTargetPath = join(__dirname, 'public', iframeResizerPublicPath)
+
+if (process.env.TURBOPACK) {
+  // Turbopack doesn't support CopyWebpackPlugin, so we need to copy the file manually. This is fine as Turbopack is
+  // only used in development mode.
+  fs.mkdirSync(path.dirname(iframeResizerTargetPath), { recursive: true })
+  fs.copyFileSync(iframeResizerSourcePath, iframeResizerTargetPath)
+}
+
 const svgrLoader = {
   loader: '@svgr/webpack',
   options: {
@@ -70,7 +80,6 @@ const nextConfig: NextConfig = {
         'react-dom': 'react-dom',
       },
     },
-    // TODO: Implement CopyWebpackPlugin (not critical as it affects only embedded forms in development)
   },
   async redirects() {
     return [
@@ -152,8 +161,8 @@ const nextConfig: NextConfig = {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js'),
-            to: join(__dirname, 'public', iframeResizerPublicPath),
+            from: iframeResizerSourcePath,
+            to: iframeResizerTargetPath,
           },
         ],
       }),

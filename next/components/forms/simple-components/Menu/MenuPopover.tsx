@@ -6,7 +6,7 @@ import type { OverlayTriggerState } from 'react-stately'
 interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   children: React.ReactNode
   state: OverlayTriggerState
-  triggerRef: RefObject<HTMLDivElement>
+  triggerRef: RefObject<HTMLDivElement | null>
 }
 
 const MenuPopover = (props: PopoverProps) => {

@@ -12,7 +12,6 @@ import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
 import ButtonNewShowCase from '../components/styleguide/showcases/ButtonNewShowCase'
 import ButtonShowCase from '../components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '../components/styleguide/showcases/CheckboxGroupedShowCase'
-import DropdownShowCase from '../components/styleguide/showcases/DropdownShowCase'
 import FieldHeaderShowCase from '../components/styleguide/showcases/FieldHeaderShowCase'
 import IconShowCase from '../components/styleguide/showcases/IconShowCase'
 import ModalShowCase from '../components/styleguide/showcases/ModalShowCase'
@@ -60,7 +59,6 @@ const Styleguide = () => {
         <TextAreaFieldShowCase />
         <SearchFieldShowCase />
         <SelectMultiNewShowCase />
-        <DropdownShowCase />
         <ToggleShowCase />
         <AlertShowCase />
         <UploadShowCase />

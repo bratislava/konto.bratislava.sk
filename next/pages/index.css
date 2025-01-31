@@ -1,9 +1,9 @@
+@import './bratislava.css';
+@import './typography.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './bratislava.css';
-@import './typography.css';
 
 @layer components {
   /* THESE SHOULD COVER ALL FONT VARIANTS ON PAGE */

@@ -2,7 +2,7 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import express from 'express'
+import express, { json } from 'express'
 
 import AppModule from './app.module'
 import { INNOVATION_MAIL } from './utils/constants'
@@ -40,6 +40,9 @@ async function bootstrap(): Promise<void> {
   )
   app.useGlobalFilters(new ErrorFilter()) // This filter must be first
   app.useGlobalFilters(new HttpExceptionFilter())
+  // https://stackoverflow.com/a/59978098
+  app.use(json({ limit: '50mb' }))
+
   const config = new DocumentBuilder()
     .setTitle('Nest Forms Backend')
     .setDescription('Backend od processing forms and handling the attachments')

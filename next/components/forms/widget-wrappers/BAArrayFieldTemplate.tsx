@@ -9,6 +9,7 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import cx from 'classnames'
+import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
@@ -16,6 +17,7 @@ import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
 import ButtonNew from '../simple-components/ButtonNew'
+import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
 
 /**
@@ -50,7 +52,8 @@ const BAArrayFieldTemplate = <
     'ArrayFieldItemTemplate',
     registry,
     uiOptions,
-  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & { parentUiOptions: ArrayFieldUiOptions }>
+  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps>
+  const { selfId } = getObjectFieldInfo(idSchema)
 
   const containerStyle = cx('flex flex-col', {
     'gap-6': variant === 'topLevel',
@@ -104,7 +107,12 @@ const BAArrayFieldTemplate = <
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
           {items &&
             items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-              <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
+              <ArrayFieldItemTemplate
+                key={key}
+                {...itemProps}
+                parentUiOptions={uiOptions}
+                parentSelfId={selfId}
+              />
             ))}
         </div>
         <div>

@@ -13,8 +13,8 @@ interface LoginRegisterNavBarProps {
   className?: string
   currentLanguage?: string
   backButtonHidden?: boolean
-  desktopNavbarRef: RefObject<HTMLDivElement>
-  mobileNavbarRef: RefObject<HTMLDivElement>
+  desktopNavbarRef: RefObject<HTMLDivElement | null>
+  mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
 const BackButton = () => {

@@ -2,7 +2,7 @@ import { ArrowRightIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, MutableRefObject, ReactNode, RefObject } from 'react'
+import { forwardRef, type JSX, ReactNode, Ref, RefObject } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
@@ -31,7 +31,7 @@ type ButtonBase = {
   fullWidth?: boolean
   form?: string
   hrefTarget?: '_blank' | '_self' | '_parent' | '_top'
-  ref?: RefObject<HTMLButtonElement>
+  ref?: RefObject<HTMLButtonElement | null>
 }
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps> &
@@ -251,7 +251,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           href={rest.href}
           label={rest.label}
           labelCenter={hrefLabelCenter}
-          ref={ref as MutableRefObject<HTMLAnchorElement>}
+          ref={ref as Ref<HTMLAnchorElement>}
           className={style}
           {...buttonPropsFixed}
         >
@@ -285,7 +285,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     return (
       <button
         type="button"
-        ref={ref as MutableRefObject<HTMLButtonElement>}
+        ref={ref as Ref<HTMLButtonElement>}
         className={style}
         form={form}
         {...buttonProps}

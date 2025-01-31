@@ -12,7 +12,7 @@ import { useNavMenuContext } from './navMenuContext'
 interface MobileMenuNavBarProps {
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
-  mobileNavbarRef: RefObject<HTMLDivElement>
+  mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
 export interface MenuSectionItemBase {

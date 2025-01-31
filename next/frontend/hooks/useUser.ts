@@ -55,7 +55,7 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   )
 
   const subType = currentGdprData?.subType
-  const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe ?? false
+  const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
 
   const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
     AxiosResponse<ResponseUserDataDto>,

@@ -537,18 +537,24 @@ export default class NasesService {
     })
 
     // Send to nases
-    const isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
-      jwt,
-      form,
-      data,
-      formDefinition,
-      user.sub,
-      {
-        formSummary,
-        // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-        jsonVersion: formDefinition.jsonVersion,
-      },
-    )
+    let isSent = false
+
+    try {
+      isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
+        jwt,
+        form,
+        data,
+        formDefinition,
+        user.sub,
+        {
+          formSummary,
+          // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
+          jsonVersion: formDefinition.jsonVersion,
+        },
+      )
+    } catch (error) {
+      this.logger.error(`Error sending form to nases: ${error}`)
+    }
 
     if (!isSent) {
       // TODO: It would be better to rewrite how sendToNasesAndUpdateState works or use a different function

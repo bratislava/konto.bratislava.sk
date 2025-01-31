@@ -5,6 +5,7 @@ import path, { join } from 'node:path'
 import fs from 'node:fs'
 import type { NextConfig } from 'next'
 import withBundleAnalyzer from '@next/bundle-analyzer'
+import type { Config as SvgrConfig } from '@svgr/core'
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -17,6 +18,20 @@ const iframeResizerPublicPath = (() => {
   // The path must contain the version so that the browser does not serve the old cached version when the package is updated.
   return `/scripts/iframe-resizer-child-${version}.js`
 })()
+
+const svgrLoader = {
+  loader: '@svgr/webpack',
+  options: {
+    svgoConfig: {
+      plugins: [
+        {
+          name: 'removeViewBox',
+          active: false,
+        },
+      ],
+    },
+  } satisfies SvgrConfig,
+}
 
 const nextConfig: NextConfig = {
   env: {
@@ -46,21 +61,7 @@ const nextConfig: NextConfig = {
       root: path.join(__dirname, '..'),
       rules: {
         '*.svg': {
-          loaders: [
-            {
-              loader: '@svgr/webpack',
-              options: {
-                svgoConfig: {
-                  plugins: [
-                    {
-                      name: 'removeViewBox',
-                      active: false,
-                    },
-                  ],
-                },
-              },
-            },
-          ],
+          loaders: [svgrLoader],
           as: '*.js',
         },
       },
@@ -143,19 +144,7 @@ const nextConfig: NextConfig = {
   webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: {
-        loader: '@svgr/webpack',
-        options: {
-          svgoConfig: {
-            plugins: [
-              {
-                name: 'removeViewBox',
-                active: false,
-              },
-            ],
-          },
-        },
-      },
+      use: svgrLoader,
     })
 
     // See `IframeResizerChild.tsx`

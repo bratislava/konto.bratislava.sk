@@ -42,6 +42,37 @@ const nextConfig = {
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
   },
+  experimental: {
+    turbo: {
+      // https://github.com/vercel/next.js/issues/73360
+      root: path.join(__dirname, '..'),
+      rules: {
+        '*.svg': {
+          loaders: [
+            {
+              loader: '@svgr/webpack',
+              options: {
+                svgoConfig: {
+                  plugins: [
+                    {
+                      name: 'removeViewBox',
+                      active: false,
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+          as: '*.js',
+        },
+      },
+      resolveAlias: {
+        react: 'react',
+        'react-dom': 'react-dom',
+      },
+    },
+    // TODO: Implement CopyWebpackPlugin (not critical as it affects only embedded forms in development)
+  },
   async redirects() {
     return [
       {

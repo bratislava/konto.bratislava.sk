@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { Prisma, PrismaClient } from '@prisma/client'
-import { LineLoggerSubservice } from 'src/utils/subservices/line-logger.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 import { escapeForLogfmt } from '../utils/logging'
 

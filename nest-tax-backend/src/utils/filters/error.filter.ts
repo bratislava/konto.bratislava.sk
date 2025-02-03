@@ -8,7 +8,9 @@ import {
 import { Response } from 'express'
 
 import { RequiredError } from '../../generated-clients/nest-city-account/base'
+import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { symbolKeysToStrings } from '../logging'
+import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
@@ -19,13 +21,21 @@ export class ErrorFilter implements ExceptionFilter {
     const field =
       exception instanceof RequiredError ? exception.field : undefined
 
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      '$Symbol-errorType': name,
-      message,
-      '$Symbol-field': field,
-      '$Symbol-stack': stack,
-    })
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+    if (response.get('middlewareUsed')) {
+      response.json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        [errorTypeKeys.errorType]: name,
+        message,
+        [errorTypeKeys.field]: field,
+        [errorTypeKeys.stack]: stack,
+      })
+    } else {
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+
+      logger.error(exception)
+    }
   }
 }
 
@@ -36,12 +46,20 @@ export class TypeErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
 
-    response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      '$Symbol-errorType': name,
-      message,
-      '$Symbol-stack': stack,
-    })
+    response.status(HttpStatus.INTERNAL_SERVER_ERROR)
+
+    if (response.get('middlewareUsed')) {
+      response.json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        [errorTypeKeys.errorType]: name,
+        message,
+        [errorTypeKeys.stack]: stack,
+      })
+    } else {
+      const logger = new LineLoggerSubservice(TypeErrorFilter.name)
+
+      logger.error(exception)
+    }
   }
 }
 
@@ -54,18 +72,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const exceptionResponse = exception.getResponse()
     response.status(status)
-    if (typeof exceptionResponse === 'object') {
-      response.json({
-        ...symbolKeysToStrings(exceptionResponse),
-        '$Symbol-errorType': 'HttpException',
-        '$Symbol-stack': exception.stack,
-      })
+
+    if (response.get('middlewareUsed')) {
+      if (typeof exceptionResponse === 'object') {
+        response.json({
+          ...symbolKeysToStrings(exceptionResponse),
+          [errorTypeKeys.errorType]: 'HttpException',
+          [errorTypeKeys.stack]: exception.stack,
+        })
+      } else {
+        response.json({
+          response: exceptionResponse,
+          [errorTypeKeys.errorType]: 'HttpException',
+          [errorTypeKeys.stack]: exception.stack,
+        })
+      }
     } else {
-      response.json({
-        response: exceptionResponse,
-        '$Symbol-errorType': 'HttpException',
-        '$Symbol-stack': exception.stack,
-      })
+      const logger = new LineLoggerSubservice(ErrorFilter.name)
+
+      logger.error(exception)
     }
   }
 }

@@ -14,7 +14,7 @@ import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
-  catch(exception: Error, host: ArgumentsHost) {
+  catch(exception: Error, host: ArgumentsHost): void {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
@@ -65,7 +65,7 @@ export class TypeErrorFilter implements ExceptionFilter {
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const status = exception.getStatus()

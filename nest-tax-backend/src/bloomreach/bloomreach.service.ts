@@ -18,7 +18,7 @@ export class BloomreachService {
     'binary',
   ).toString('base64')
 
-  constructor(private throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||

@@ -8,8 +8,7 @@ import {
 } from './dtos/error.dto'
 
 @Injectable()
-export class ErrorThrowerGuard {
-
+export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,

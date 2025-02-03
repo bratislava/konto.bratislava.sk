@@ -19,7 +19,7 @@ export function HandleErrors(
         const result = await originalMethod.apply(this, args)
         return result
       } catch (error) {
-        logger.error(errorToLogfmt(error, propertyKey))
+        logger.error(error)
       }
       return null
     }

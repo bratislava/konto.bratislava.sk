@@ -8,8 +8,8 @@ import {
 } from 'src/admin/dtos/requests.dto'
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Injectable()
 export class NorisService {

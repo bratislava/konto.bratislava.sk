@@ -141,7 +141,7 @@ export function errorToLogfmt(
   if (error instanceof HttpException) {
     return objToLogfmt(httpExceptionToObj(error, methodName))
   }
-  if (error instanceof RequiredError){
+  if (error instanceof RequiredError) {
     return objToLogfmt(requiredErrorToObj(error, methodName))
   }
   if (error instanceof Error) {
@@ -185,8 +185,12 @@ export function symbolKeysToStrings(obj: object): Record<string, unknown> {
   const symbols = Object.getOwnPropertySymbols(obj)
 
   symbols.forEach((symbol) => {
-    if (symbol.description) {
-      response[`$Symbol-${symbol.description}`] = (obj as any)[symbol]
+    const { description } = symbol
+    if (description) {
+      const encodedKey = errorTypeKeys[description]
+      if (encodedKey) {
+        response[encodedKey] = (obj as any)[symbol]
+      }
     }
   })
 

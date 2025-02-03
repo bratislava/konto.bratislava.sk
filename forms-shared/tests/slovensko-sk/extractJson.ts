@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import {
   extractJsonFromSlovenskoSkXml,
   ExtractJsonFromSlovenskoSkXmlErrorType,
@@ -18,12 +19,12 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     schema: {},
   } as FormDefinitionSlovenskoSk
 
-  it('should successfully extract JSON from valid XML', async () => {
+  test('should successfully extract JSON from valid XML', async () => {
     const result = await extractJsonFromSlovenskoSkXml(formDefinition, validXmlString)
     expect(result).toEqual({ key: 'value' })
   })
 
-  it('should successfully extract JSON from valid XML without version (backwards compatibility)', async () => {
+  test('should successfully extract JSON from valid XML without version (backwards compatibility)', async () => {
     const xmlWithoutVersion = validXmlString
       .split('\n')
       .filter((line) => !line.includes('<JsonVersion>1.0</JsonVersion>'))
@@ -32,7 +33,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     expect(result).toEqual({ key: 'value' })
   })
 
-  it('should throw InvalidXml error for malformed XML', async () => {
+  test('should throw InvalidXml error for malformed XML', async () => {
     const invalidXml = '<invalid></xml>'
     await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidXml)).rejects.toThrow(
       expect.objectContaining({
@@ -42,7 +43,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     )
   })
 
-  it('should throw XmlDoesntMatchSchema error for incorrect XML structure', async () => {
+  test('should throw XmlDoesntMatchSchema error for incorrect XML structure', async () => {
     const incorrectXmlStructure = `
       <?xml version="1.0" encoding="UTF-8"?>
       <wrongRoot xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -60,7 +61,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     )
   })
 
-  it('should throw XmlDoesntMatchSchema error for incorrect xmlns format', async () => {
+  test('should throw XmlDoesntMatchSchema error for incorrect xmlns format', async () => {
     const incorrectXmlns = validXmlString.replace(
       'http://schemas.gov.sk/form/App.GeneralAgenda/1.9',
       'invalid-xmlns',
@@ -73,7 +74,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     )
   })
 
-  it('should throw WrongPospId error when pospID doesnt match', async () => {
+  test('should throw WrongPospId error when pospID doesnt match', async () => {
     const mismatchedPospIdDefinition = {
       ...formDefinition,
       pospID: 'DifferentApp',
@@ -88,7 +89,7 @@ describe('extractJsonFromSlovenskoSkXml', () => {
     )
   })
 
-  it('should throw InvalidJson error for malformed JSON in XML', async () => {
+  test('should throw InvalidJson error for malformed JSON in XML', async () => {
     const invalidJsonXml = validXmlString.replace('{"key":"value"}', '{invalid json}')
     await expect(extractJsonFromSlovenskoSkXml(formDefinition, invalidJsonXml)).rejects.toThrow(
       expect.objectContaining({

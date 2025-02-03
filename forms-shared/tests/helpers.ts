@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import {
   createCamelCaseItems,
   createCamelCaseItemsV2,
@@ -7,7 +8,7 @@ import {
 } from '../src/generator/helpers'
 
 describe('createCondition', () => {
-  it('should create a condition object with a single property', () => {
+  test('should create a condition object with a single property', () => {
     const result = createCondition([[['a'], { const: 'value1' }]])
     expect(result).toEqual({
       type: 'object',
@@ -18,7 +19,7 @@ describe('createCondition', () => {
     })
   })
 
-  it('should create a condition object with nested properties', () => {
+  test('should create a condition object with nested properties', () => {
     const result = createCondition([
       [['a', 'b'], { const: 'value1' }],
       [['a', 'c'], { const: 'value2' }],
@@ -39,7 +40,7 @@ describe('createCondition', () => {
     })
   })
 
-  it('should handle array properties correctly', () => {
+  test('should handle array properties correctly', () => {
     const result = createCondition([
       [['a', 'array:b', 'c'], { const: 'value1' }],
       [['a', 'array:b', 'd'], { const: 'value2' }],
@@ -69,7 +70,7 @@ describe('createCondition', () => {
     })
   })
 
-  it('should handle duplicate paths correctly', () => {
+  test('should handle duplicate paths correctly', () => {
     const result = createCondition([
       [['a', 'b'], { const: 'value1' }],
       [['a', 'b'], { const: 'value2' }],
@@ -89,7 +90,7 @@ describe('createCondition', () => {
     })
   })
 
-  it('should handle empty input correctly', () => {
+  test('should handle empty input correctly', () => {
     const result = createCondition([])
     expect(result).toEqual({
       type: 'object',
@@ -98,7 +99,7 @@ describe('createCondition', () => {
     })
   })
 
-  it('should throw an error if array tries to overwrite an existing object', () => {
+  test('should throw an error if array tries to overwrite an existing object', () => {
     expect(() =>
       createCondition([
         [['a', 'b', 'c'], { const: 'value' }],
@@ -107,7 +108,7 @@ describe('createCondition', () => {
     ).toThrowError('A non-array path already exists at "a.array:b"')
   })
 
-  it('should throw an error if object tries to overwrite an existing array', () => {
+  test('should throw an error if object tries to overwrite an existing array', () => {
     expect(() =>
       createCondition([
         [['a', 'array:b', 'c'], { const: 'value' }],
@@ -116,7 +117,7 @@ describe('createCondition', () => {
     ).toThrowError('A non-object path already exists at "a.b"')
   })
 
-  it('should throw an error if path interferes with already existing user object', () => {
+  test('should throw an error if path interferes with already existing user object', () => {
     expect(() =>
       createCondition([
         [
@@ -136,7 +137,7 @@ describe('createCondition', () => {
 })
 
 describe('createStringItems', () => {
-  it('should create items from a list of strings with default item', () => {
+  test('should create items from a list of strings with default item', () => {
     const result = createStringItems(['Item 1', 'Item 2', 'Item 3'])
     expect(result).toEqual([
       { value: 'Item 1', label: 'Item 1', isDefault: true },
@@ -145,7 +146,7 @@ describe('createStringItems', () => {
     ])
   })
 
-  it('should create items from a list of strings without default item', () => {
+  test('should create items from a list of strings without default item', () => {
     const result = createStringItems(['Item 1', 'Item 2', 'Item 3'], false)
     expect(result).toEqual([
       { value: 'Item 1', label: 'Item 1' },
@@ -154,17 +155,17 @@ describe('createStringItems', () => {
     ])
   })
 
-  it('should handle an empty input array', () => {
+  test('should handle an empty input array', () => {
     const result = createStringItems([])
     expect(result).toEqual([])
   })
 
-  it('should handle a single string input', () => {
+  test('should handle a single string input', () => {
     const result = createStringItems(['Item 1'])
     expect(result).toEqual([{ value: 'Item 1', label: 'Item 1', isDefault: true }])
   })
 
-  it('should throw an error if items have duplicate values', () => {
+  test('should throw an error if items have duplicate values', () => {
     expect(() => createStringItems(['Item 1', 'Item 2', 'Item 1'])).toThrowError(
       'Items must have unique values',
     )
@@ -172,7 +173,7 @@ describe('createStringItems', () => {
 })
 
 describe('createStringItemsV2', () => {
-  it('should create items from a list of objects with default item', () => {
+  test('should create items from a list of objects with default item', () => {
     const result = createStringItemsV2([
       { label: 'Item 1', description: 'Description 1' },
       { label: 'Item 2' },
@@ -185,7 +186,7 @@ describe('createStringItemsV2', () => {
     ])
   })
 
-  it('should create items from a list of objects without default item', () => {
+  test('should create items from a list of objects without default item', () => {
     const result = createStringItemsV2(
       [{ label: 'Item 1', description: 'Description 1' }, { label: 'Item 2' }, { label: 'Item 3' }],
       false,
@@ -197,23 +198,23 @@ describe('createStringItemsV2', () => {
     ])
   })
 
-  it('should handle an empty input array', () => {
+  test('should handle an empty input array', () => {
     const result = createStringItemsV2([])
     expect(result).toEqual([])
   })
 
-  it('should handle a single object input', () => {
+  test('should handle a single object input', () => {
     const result = createStringItemsV2([{ label: 'Item 1' }])
     expect(result).toEqual([{ value: 'Item 1', label: 'Item 1', isDefault: true }])
   })
 
-  it('should throw an error if items have duplicate values', () => {
+  test('should throw an error if items have duplicate values', () => {
     expect(() => createStringItemsV2([{ label: 'Item 1' }, { label: 'Item 1' }])).toThrowError(
       'Items must have unique values',
     )
   })
 
-  it('should preserve additional properties from input objects', () => {
+  test('should preserve additional properties from input objects', () => {
     const result = createStringItemsV2([
       { label: 'Item 1', extra: 'data1', nested: { prop: 'value' } },
       { label: 'Item 2', extra: 'data2' },
@@ -237,7 +238,7 @@ describe('createStringItemsV2', () => {
 })
 
 describe('createCamelCaseItems', () => {
-  it('should create items from a list of strings with default item', () => {
+  test('should create items from a list of strings with default item', () => {
     const result = createCamelCaseItems(['Item 1', 'Item 2', 'Item 3'])
     expect(result).toEqual([
       { value: 'item1', label: 'Item 1', isDefault: true },
@@ -246,7 +247,7 @@ describe('createCamelCaseItems', () => {
     ])
   })
 
-  it('should create items from a list of strings without default item', () => {
+  test('should create items from a list of strings without default item', () => {
     const result = createCamelCaseItems(['Item 1', 'Item 2', 'Item 3'], false)
     expect(result).toEqual([
       { value: 'item1', label: 'Item 1' },
@@ -255,17 +256,17 @@ describe('createCamelCaseItems', () => {
     ])
   })
 
-  it('should handle an empty input array', () => {
+  test('should handle an empty input array', () => {
     const result = createCamelCaseItems([])
     expect(result).toEqual([])
   })
 
-  it('should handle a single string input', () => {
+  test('should handle a single string input', () => {
     const result = createCamelCaseItems(['Item 1'])
     expect(result).toEqual([{ value: 'item1', label: 'Item 1', isDefault: true }])
   })
 
-  it('should throw an error if items have duplicate camelCase values', () => {
+  test('should throw an error if items have duplicate camelCase values', () => {
     expect(() => createCamelCaseItems(['hello_World', 'HELLO world'])).toThrowError(
       'Items must have unique values',
     )
@@ -273,7 +274,7 @@ describe('createCamelCaseItems', () => {
 })
 
 describe('createCamelCaseItemsV2', () => {
-  it('should create items from a list of objects with default item', () => {
+  test('should create items from a list of objects with default item', () => {
     const result = createCamelCaseItemsV2([
       { label: 'Item 1', description: 'Description 1' },
       { label: 'Item 2' },
@@ -286,7 +287,7 @@ describe('createCamelCaseItemsV2', () => {
     ])
   })
 
-  it('should create items from a list of objects without default item', () => {
+  test('should create items from a list of objects without default item', () => {
     const result = createCamelCaseItemsV2(
       [{ label: 'Item 1', description: 'Description 1' }, { label: 'Item 2' }, { label: 'Item 3' }],
       false,
@@ -298,17 +299,17 @@ describe('createCamelCaseItemsV2', () => {
     ])
   })
 
-  it('should handle an empty input array', () => {
+  test('should handle an empty input array', () => {
     const result = createCamelCaseItemsV2([])
     expect(result).toEqual([])
   })
 
-  it('should handle a single object input', () => {
+  test('should handle a single object input', () => {
     const result = createCamelCaseItemsV2([{ label: 'Item 1' }])
     expect(result).toEqual([{ value: 'item1', label: 'Item 1', isDefault: true }])
   })
 
-  it('should throw an error if items have duplicate camelCase values', () => {
+  test('should throw an error if items have duplicate camelCase values', () => {
     expect(() =>
       createCamelCaseItemsV2([{ label: 'hello_World' }, { label: 'HELLO world' }]),
     ).toThrowError('Items must have unique values')

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`getSummaryJson komunitneZahradyExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > komunitneZahradyExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -357,7 +357,7 @@ exports[`getSummaryJson komunitneZahradyExample summary JSON should match snapsh
 }
 `;
 
-exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloDocistenieStanovistaZbernychNadobExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -580,7 +580,7 @@ exports[`getSummaryJson oloDocistenieStanovistaZbernychNadobExample summary JSON
 }
 `;
 
-exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -1438,7 +1438,7 @@ exports[`getSummaryJson oloEnergetickeZhodnotenieOdpaduVZevoExample summary JSON
 }
 `;
 
-exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloKoloTaxiExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -1722,7 +1722,7 @@ exports[`getSummaryJson oloKoloTaxiExample summary JSON should match snapshot 1`
 }
 `;
 
-exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -1978,7 +1978,7 @@ exports[`getSummaryJson oloMimoriadnyOdvozAZhodnotenieOdpaduExample summary JSON
 }
 `;
 
-exports[`getSummaryJson oloOdvozObjemnehoOdpaduValnikomExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloOdvozObjemnehoOdpaduValnikomExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -2225,7 +2225,7 @@ exports[`getSummaryJson oloOdvozObjemnehoOdpaduValnikomExample summary JSON shou
 }
 `;
 
-exports[`getSummaryJson oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -2544,7 +2544,7 @@ exports[`getSummaryJson oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromEx
 }
 `;
 
-exports[`getSummaryJson oloOloTaxiExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloOloTaxiExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -2743,7 +2743,7 @@ exports[`getSummaryJson oloOloTaxiExample summary JSON should match snapshot 1`]
 }
 `;
 
-exports[`getSummaryJson oloPodnetyAPochvalyObcanovExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloPodnetyAPochvalyObcanovExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -2858,7 +2858,7 @@ exports[`getSummaryJson oloPodnetyAPochvalyObcanovExample summary JSON should ma
 }
 `;
 
-exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -3270,7 +3270,7 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExamp
 }
 `;
 
-exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -3566,7 +3566,7 @@ exports[`getSummaryJson oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocno
 }
 `;
 
-exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -4238,7 +4238,7 @@ exports[`getSummaryJson oloUzatvorenieZmluvyONakladaniSOdpadom summary JSON shou
 }
 `;
 
-exports[`getSummaryJson oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -4890,7 +4890,7 @@ exports[`getSummaryJson oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample 
 }
 `;
 
-exports[`getSummaryJson predzahradkyExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > predzahradkyExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -5125,7 +5125,7 @@ exports[`getSummaryJson predzahradkyExample summary JSON should match snapshot 1
 }
 `;
 
-exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample1 summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample1 summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -5661,7 +5661,7 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample1 summary JSON should
 }
 `;
 
-exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample2 summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample2 summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -6449,7 +6449,7 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample2 summary JSON should
 }
 `;
 
-exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample3 summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample3 summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -7046,7 +7046,7 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample3 summary JSON should
 }
 `;
 
-exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample4 summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample4 summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -7386,7 +7386,7 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample4 summary JSON should
 }
 `;
 
-exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample5 summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5 summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -9033,7 +9033,7 @@ exports[`getSummaryJson priznanieKDaniZNehnutelnostiExample5 summary JSON should
 }
 `;
 
-exports[`getSummaryJson stanoviskoKInvesticnemuZameruExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > stanoviskoKInvesticnemuZameruExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -9423,7 +9423,7 @@ exports[`getSummaryJson stanoviskoKInvesticnemuZameruExample summary JSON should
 }
 `;
 
-exports[`getSummaryJson zavazneStanoviskoKInvesticnejCinnostiExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > zavazneStanoviskoKInvesticnejCinnostiExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [
@@ -9877,7 +9877,7 @@ exports[`getSummaryJson zavazneStanoviskoKInvesticnejCinnostiExample summary JSO
 }
 `;
 
-exports[`getSummaryJson ziadostONajomBytuExample summary JSON should match snapshot 1`] = `
+exports[`getSummaryJson > ziadostONajomBytuExample summary JSON should match snapshot 1`] = `
 {
   "id": "root",
   "steps": [

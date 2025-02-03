@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach } from 'vitest'
 import { validateSummary } from '../../src/summary-renderer/validateSummary'
 import { FileStatusType } from '../../src/form-files/fileStatus'
 import { filterConsole } from '../../test-utils/filterConsole'
@@ -22,7 +23,7 @@ describe('validateSummary', () => {
       input('optionalInput', { type: 'text', title: 'Optional input' }, {}),
     ])
 
-    it('should validate successfully when required field is provided', () => {
+    test('should validate successfully when required field is provided', () => {
       const result = validateSummary(
         schema,
         { requiredInput: 'some value' },
@@ -36,7 +37,7 @@ describe('validateSummary', () => {
       expect(result.errors.length).toBe(0)
     })
 
-    it('should report errors for missing required field', () => {
+    test('should report errors for missing required field', () => {
       const result = validateSummary(schema, {}, {}, testValidatorRegistry)
 
       expect(result.hasErrors).toBe(true)
@@ -49,7 +50,7 @@ describe('validateSummary', () => {
   describe('File upload validation', () => {
     const { schema } = object('wrapper', {}, {}, [fileUpload('file', { title: 'File' }, {})])
 
-    it('should validate successfully for valid file status', () => {
+    test('should validate successfully for valid file status', () => {
       const result = validateSummary(
         schema,
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
@@ -70,7 +71,7 @@ describe('validateSummary', () => {
       expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeDefined()
     })
 
-    it('should report errors for files with errors', () => {
+    test('should report errors for files with errors', () => {
       const result = validateSummary(
         schema,
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
@@ -91,7 +92,7 @@ describe('validateSummary', () => {
       expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeDefined()
     })
 
-    it('should report errors for missing file information', () => {
+    test('should report errors for missing file information', () => {
       const result = validateSummary(
         schema,
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
@@ -112,7 +113,7 @@ describe('validateSummary', () => {
       fileUploadMultiple('files', { title: 'File' }, {}),
     ])
 
-    it('should handle multiple file upload scenario', () => {
+    test('should handle multiple file upload scenario', () => {
       const result = validateSummary(
         schema,
         {

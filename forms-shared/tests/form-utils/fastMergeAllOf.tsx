@@ -1,8 +1,9 @@
+import { describe, test, expect } from 'vitest'
 import { baFastMergeAllOf } from '../../src/form-utils/fastMergeAllOf'
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 
 describe('fastMergeAllOf', () => {
-  it('should merge properties from allOf array', () => {
+  test('should merge properties from allOf array', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -25,7 +26,7 @@ describe('fastMergeAllOf', () => {
     })
   })
 
-  it('should merge required properties from allOf array', () => {
+  test('should merge required properties from allOf array', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -55,7 +56,7 @@ describe('fastMergeAllOf', () => {
     })
   })
 
-  it('should preserve object references in properties', () => {
+  test('should preserve object references in properties', () => {
     const nameProperty = { type: 'string', minLength: 3 } as const
     const ageProperty = { type: 'number', minimum: 0 } as const
 
@@ -79,7 +80,7 @@ describe('fastMergeAllOf', () => {
     expect(result?.properties?.age).toBe(ageProperty)
   })
 
-  it('should handle schema without allOf', () => {
+  test('should handle schema without allOf', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -91,7 +92,7 @@ describe('fastMergeAllOf', () => {
     expect(result).toBe(schema)
   })
 
-  it('should add type: "object" when missing in input schema', () => {
+  test('should add type: "object" when missing in input schema', () => {
     const schema: BAJSONSchema7 = {
       properties: { name: { type: 'string' } },
       allOf: [{ properties: { age: { type: 'number' } } }],
@@ -106,7 +107,7 @@ describe('fastMergeAllOf', () => {
     })
   })
 
-  it('should throw error when schema type is not "object"', () => {
+  test('should throw error when schema type is not "object"', () => {
     const schema: BAJSONSchema7 = {
       type: 'string',
     }
@@ -116,7 +117,7 @@ describe('fastMergeAllOf', () => {
     )
   })
 
-  it('should throw error when allOf item type is not "object"', () => {
+  test('should throw error when allOf item type is not "object"', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -132,7 +133,7 @@ describe('fastMergeAllOf', () => {
     )
   })
 
-  it('should throw error when allOf item contains unsupported properties', () => {
+  test('should throw error when allOf item contains unsupported properties', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -149,7 +150,7 @@ describe('fastMergeAllOf', () => {
     )
   })
 
-  it('should throw error when allOf item is not defined', () => {
+  test('should throw error when allOf item is not defined', () => {
     const schema: BAJSONSchema7 = {
       type: 'object',
       properties: { name: { type: 'string' } },
@@ -159,7 +160,7 @@ describe('fastMergeAllOf', () => {
     expect(() => baFastMergeAllOf(schema)).toThrow('allOf item must be an object')
   })
 
-  it('should throw error when schema is not an object', () => {
+  test('should throw error when schema is not an object', () => {
     const schema = 'not an object' as any
 
     expect(() => baFastMergeAllOf(schema)).toThrow('Schema must be an object')

@@ -8,6 +8,8 @@ import { NorisService } from '../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
@@ -21,6 +23,8 @@ import { taxDetail } from './utils/tax-detail.helper'
 @Injectable()
 export class AdminService {
   private readonly logger: Logger
+
+  private readonly throwerErrorGuard: ThrowerErrorGuard
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -470,8 +474,9 @@ export class AdminService {
           !methodInfo.date
         ) {
           // We must enforce that the date is present for CITY_ACCOUNT delivery method.
-          throw new Error(
-            `ERROR - Status-500: Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
           )
         }
         deliveryGroups[methodInfo.deliveryMethod].push({

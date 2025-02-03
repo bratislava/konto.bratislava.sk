@@ -1,15 +1,12 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-} from '@nestjs/common'
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
 import {
   Configuration,
   UsersManipulationApi,
 } from '../../generated-clients/nest-city-account'
+import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 
 export const BratislavaUser = createParamDecorator(
   async (data: string, ctx: ExecutionContext) => {

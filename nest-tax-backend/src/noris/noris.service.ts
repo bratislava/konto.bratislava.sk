@@ -7,15 +7,14 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from 'src/admin/dtos/requests.dto'
 
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   queryPayersFromNoris,
   queryPaymentsFromNoris,
   setDeliveryMethodsForUser,
 } from './noris.queries'
 import { UpdateNorisDeliveryMethods } from './noris.types'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { queryPayersFromNoris, queryPaymentsFromNoris } from './noris.queries'
 
 @Injectable()
 export class NorisService {
@@ -206,8 +205,12 @@ export class NorisService {
       // Execute the query
       await request.query(queryWithPlaceholders)
     } catch (error) {
-      throw new Error(
-        `Failed to update delivery methods: ${(error as Error).message}`,
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to update delivery methods`,
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     } finally {
       // Always close the connection

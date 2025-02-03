@@ -52,6 +52,7 @@ import objednavkaZakresuSieti from '../schemas/tsb/objednavkaZakresuSieti'
 import objednavkaVytycenia from '../schemas/tsb/objednavkaVytycenie'
 import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
 import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
+import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -160,6 +161,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -346,6 +348,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -358,6 +361,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -370,6 +374,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
   },
   {
     type: FormDefinitionType.Webhook,
@@ -382,5 +387,23 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
+    exampleFormNotRequired: true,
+  },
+  {
+    type: FormDefinitionType.SlovenskoSkGeneric,
+    slug: 'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
+    title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
+    jsonVersion: '1.0',
+    schema: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady,
+    pospID: '00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady',
+    pospVersion: '1.0',
+    publisher: 'ico://sk/00603481',
+    gestor: 'ico://sk/00603481',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
+    ginisAssignment: {
+      ginisOrganizationName: 'OMDP',
+    },
+    isSigned: true,
   },
 ]

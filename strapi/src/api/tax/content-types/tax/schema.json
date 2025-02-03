@@ -26,6 +26,12 @@
     },
     "currentYearTaxInPreparationText": {
       "type": "richtext"
+    },
+    "channelChangeEffectiveNextYearTitle": {
+      "type": "string"
+    },
+    "channelChangeEffectiveNextYearText": {
+      "type": "richtext"
     }
   }
 }

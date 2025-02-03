@@ -29,15 +29,15 @@ describe('Form definitions', () => {
         ).toMatchSnapshot()
       })
 
-      it('for selected forms, has at least one example form', () => {
-        const examples = getExampleFormPairs({
-          formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
-            formDefinitionInner.slug === formDefinition.slug,
-        })
-        if (!(formDefinition.slug.startsWith('tsb-') || formDefinition.slug.endsWith('-test'))) {
+      if (!formDefinition.exampleFormNotRequired) {
+        it('for forms with required example, has at least one example form', () => {
+          const examples = getExampleFormPairs({
+            formDefinitionFilterFn: (formDefinitionInner): formDefinitionInner is FormDefinition =>
+              formDefinitionInner.slug === formDefinition.slug,
+          })
           expect(examples.length).toBeGreaterThan(0)
-        }
-      })
+        })
+      }
     })
   })
 })

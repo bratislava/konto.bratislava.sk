@@ -1,4 +1,4 @@
-import { createCamelCaseItems, createCondition } from '../generator/helpers'
+import { createCondition } from '../generator/helpers'
 import { esbsNationalityCiselnik } from './priznanie-k-dani-z-nehnutelnosti/esbsCiselniky'
 import { select } from '../generator/functions/select'
 import { input } from '../generator/functions/input'
@@ -16,6 +16,7 @@ import { textArea } from '../generator/functions/textArea'
 import { arrayField } from '../generator/functions/arrayField'
 import { match, P } from 'ts-pattern'
 import { checkboxGroup } from '../generator/functions/checkboxGroup'
+import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 
 const komunalnyOdpadOptions = {
   fyzickaOsoba: {
@@ -179,8 +180,8 @@ const komunalnyOdpadOptions = {
       { value: '120LZbernaNadoba', label: '120 l zberná nádoba' },
       { value: '240LZbernaNadoba', label: '240 l zberná nádoba' },
       { value: 'kontajner1100L', label: 'Kontajner 1100 l' },
-      { value: 'lisovaciKontajner10000L', label: 'Lisovací kontajner 10 000' },
-      { value: 'lisovaciKontajner13000L', label: 'Lisovací kontajner 13 000' },
+      { value: 'lisovaciKontajner10000L', label: 'Lisovací kontajner 10 000 l' },
+      { value: 'lisovaciKontajner13000L', label: 'Lisovací kontajner 13 000 l' },
       { value: 'PPKontajner3000L', label: 'PP kontajner 3000 l' },
       { value: 'PPKontajner5000L', label: 'PP kontajner 5000 l' },
     ],
@@ -334,7 +335,7 @@ const getKomunalnyOdpadNadoby = (
             select(
               'povodnaFrekvenciaOdvozu',
               {
-                title: 'Pôvodna frekvencia odvozu',
+                title: 'Pôvodná frekvencia odvozu',
                 required: true,
                 items,
                 disabled,
@@ -425,7 +426,7 @@ const getVznikKomunalnyOdpadFields = (
       { title: 'Nádoby', required: true },
       {
         variant: 'topLevel',
-        addButtonLabel: 'Pridať daľšiu nádobu',
+        addButtonLabel: 'Pridať ďalšiu nádobu',
         itemTitle: 'Nádoba č. {index}',
       },
       getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
@@ -468,7 +469,7 @@ const getZmenaKomunalnyOdpadFields = (
         { title: 'Nové nádoby na objednanie', required: true },
         {
           variant: 'topLevel',
-          addButtonLabel: 'Pridať daľšiu nádobu',
+          addButtonLabel: 'Pridať ďalšiu nádobu',
           itemTitle: 'Nová nádoba č. {index}',
         },
         getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
@@ -478,7 +479,7 @@ const getZmenaKomunalnyOdpadFields = (
       'zmena',
       {
         type: 'boolean',
-        title: 'Chcete zmeniť parametre existujúcich nádob?',
+        title: 'Chcete zmeniť parametre svojich nádob?',
         required: true,
         items: [
           { value: true, label: 'Áno' },
@@ -496,8 +497,11 @@ const getZmenaKomunalnyOdpadFields = (
         { title: 'Nádoby na zmenu parametrov', required: true },
         {
           variant: 'topLevel',
-          addButtonLabel: 'Pridať daľšiu nádobu',
+          addButtonLabel: 'Pridať ďalšiu nádobu',
           itemTitle: 'Nádoba na zmenu č. {index}',
+          description:
+            'Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
+          descriptionMarkdown: true,
         },
         getKomunalnyOdpadNadoby('zmena', oznamovatelTyp),
       ),
@@ -524,8 +528,11 @@ const getZmenaKomunalnyOdpadFields = (
         { title: 'Nádoby na zrušenie', required: true },
         {
           variant: 'topLevel',
-          addButtonLabel: 'Pridať daľšiu nádobu',
+          addButtonLabel: 'Pridať ďalšiu nádobu',
           itemTitle: 'Nádoba na zrušenie č. {index}',
+          description:
+            'Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
+          descriptionMarkdown: true,
         },
         getKomunalnyOdpadNadoby('vznikZanik', oznamovatelTyp),
       ),
@@ -538,7 +545,7 @@ const getZmenaKomunalnyOdpadFields = (
   ]
 }
 
-const getAdresaFields = (title: string, postfix?: string) => [
+const getAdresaFields = (title: string, postfix: string = '') => [
   input(
     `ulicaACislo${postfix}`,
     { title, required: true, type: 'text' },
@@ -547,7 +554,8 @@ const getAdresaFields = (title: string, postfix?: string) => [
   input(`mesto${postfix}`, { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
   input(
     `psc${postfix}`,
-    { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+    // No validation for ZIP code, because it is not only Slovak one.
+    { type: 'text', title: 'PSČ', required: true },
     { selfColumn: '1/4' },
   ),
   select(
@@ -1043,31 +1051,10 @@ export default schema(
               {
                 title: 'Katastrálne územie',
                 required: true,
-                items: createCamelCaseItems(
-                  [
-                    'Čunovo',
-                    'Devín',
-                    'Devínska Nová Ves',
-                    'Dúbravka',
-                    'Jarovce',
-                    'Karlova Ves',
-                    'Lamač',
-                    'Nové Mesto',
-                    'Vinohrady',
-                    'Petržalka',
-                    'Podunajské Biskupice',
-                    'Rača',
-                    'Rusovce',
-                    'Ružinov',
-                    'Trnávka',
-                    'Nivy',
-                    'Staré Mesto',
-                    'Vajnory',
-                    'Vrakuňa',
-                    'Záhorská Bystrica',
-                  ],
-                  false,
-                ),
+                items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+                  value: Code,
+                  label: Name,
+                })),
               },
               {},
             ),
@@ -1365,7 +1352,7 @@ export default schema(
                           'zmena',
                           {
                             type: 'boolean',
-                            title: 'Chcete zmeniť objem existujúcej nádoby?',
+                            title: 'Chcete zmeniť objem vašej nádoby?',
                             required: true,
                             items: [
                               { value: true, label: 'Áno' },

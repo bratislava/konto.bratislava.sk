@@ -791,6 +791,7 @@ export const esbsPredmetDaneCiselnik = [
 
 // https://eformesluzby.bratislava.sk/esmao/api/enums/enumValues?defAtr=2024-01-10T17:31:37.377Z&enumName=KatastralneUzemia
 export const esbsKatastralneUzemiaCiselnik = [
+  { Code: '809985', Name: 'Čunovo', WsEnumCode: 'ICL0079' },
   { Code: '805301', Name: 'Devín', WsEnumCode: 'ICL0079' },
   { Code: '810649', Name: 'Devínska Nová Ves', WsEnumCode: 'ICL0079' },
   { Code: '806099', Name: 'Dúbravka', WsEnumCode: 'ICL0079' },
@@ -810,5 +811,4 @@ export const esbsKatastralneUzemiaCiselnik = [
   { Code: '804380', Name: 'Vinohrady', WsEnumCode: 'ICL0079' },
   { Code: '870293', Name: 'Vrakuňa', WsEnumCode: 'ICL0079' },
   { Code: '871796', Name: 'Záhorská Bystrica', WsEnumCode: 'ICL0079' },
-  { Code: '809985', Name: 'Čunovo', WsEnumCode: 'ICL0079' },
 ] as const

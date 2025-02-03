@@ -141,8 +141,9 @@ export class NorisService {
     variableSymbols = `(${variableSymbols.slice(0, -1)})`
 
     if (data.years.length === 0) {
-      throw new Error(
-        'ERROR - Status-500: Years are empty in payment data import from Noris request.',
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Years are empty in payment data import from Noris request.',
       )
     }
 

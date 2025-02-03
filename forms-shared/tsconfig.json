@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "lib": ["es2023"],
-    "module": "es2022",
+    "module": "node16",
     "target": "es2022",
     "baseUrl": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "jsx": "react",
     "declaration": true,
     "outDir": "./dist"

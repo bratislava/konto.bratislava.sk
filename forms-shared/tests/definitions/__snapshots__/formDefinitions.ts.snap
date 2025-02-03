@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Form definitions komunitne-zahrady default form state should match snapshot 1`] = `
+exports[`Form definitions > komunitne-zahrady > default form state should match snapshot 1`] = `
 {
   "obcianskeZdruzenie": {
     "adresaSidla": {
@@ -22,7 +22,7 @@ exports[`Form definitions komunitne-zahrady default form state should match snap
 }
 `;
 
-exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
+exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -969,7 +969,7 @@ exports[`Form definitions komunitne-zahrady schema matches snapshot 1`] = `
 }
 `;
 
-exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > default form state should match snapshot 1`] = `
 {
   "sluzba": {},
   "suhlasy": {},
@@ -980,7 +980,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob default form 
 }
 `;
 
-exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schema matches snapshot 1`] = `
+exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -1703,7 +1703,7 @@ exports[`Form definitions olo-docistenie-stanovista-zbernych-nadob schema matche
 }
 `;
 
-exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > default form state should match snapshot 1`] = `
 {
   "drzitelOdpadu": {
     "steDrzitelOdpadu": true,
@@ -1763,7 +1763,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo default form
 }
 `;
 
-exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema matches snapshot 1`] = `
+exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -4868,7 +4868,7 @@ exports[`Form definitions olo-energeticke-zhodnotenie-odpadu-v-zevo schema match
 }
 `;
 
-exports[`Form definitions olo-kolo-taxi default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-kolo-taxi > default form state should match snapshot 1`] = `
 {
   "sluzba": {
     "fotoDarovanychVeci": [],
@@ -4880,7 +4880,7 @@ exports[`Form definitions olo-kolo-taxi default form state should match snapshot
 }
 `;
 
-exports[`Form definitions olo-kolo-taxi schema matches snapshot 1`] = `
+exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -5550,7 +5550,7 @@ exports[`Form definitions olo-kolo-taxi schema matches snapshot 1`] = `
 }
 `;
 
-exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > default form state should match snapshot 1`] = `
 {
   "sluzba": {
     "infoOOdpade": [
@@ -5566,7 +5566,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu default form
 }
 `;
 
-exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schema matches snapshot 1`] = `
+exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -6728,7 +6728,7 @@ exports[`Form definitions olo-mimoriadny-odvoz-a-zhodnotenie-odpadu schema match
 }
 `;
 
-exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > default form state should match snapshot 1`] = `
 {
   "sluzba": {},
   "suhlasy": {},
@@ -6742,7 +6742,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom default form state
 }
 `;
 
-exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schema matches snapshot 1`] = `
+exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -7234,7 +7234,7 @@ exports[`Form definitions olo-odvoz-objemneho-odpadu-valnikom schema matches sna
 }
 `;
 
-exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom > default form state should match snapshot 1`] = `
 {
   "sluzba": {},
   "suhlasy": {},
@@ -7245,7 +7245,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
 }
 `;
 
-exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom schema matches snapshot 1`] = `
+exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kontajnerom > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -8065,7 +8065,7 @@ exports[`Form definitions olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-konta
 }
 `;
 
-exports[`Form definitions olo-olo-taxi default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-olo-taxi > default form state should match snapshot 1`] = `
 {
   "sluzba": {},
   "suhlasy": {},
@@ -8079,7 +8079,7 @@ exports[`Form definitions olo-olo-taxi default form state should match snapshot 
 }
 `;
 
-exports[`Form definitions olo-olo-taxi schema matches snapshot 1`] = `
+exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -8441,7 +8441,7 @@ exports[`Form definitions olo-olo-taxi schema matches snapshot 1`] = `
 }
 `;
 
-exports[`Form definitions olo-podnety-a-pochvaly-obcanov default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > default form state should match snapshot 1`] = `
 {
   "podnet": {
     "prilohy": [],
@@ -8449,7 +8449,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov default form state shou
 }
 `;
 
-exports[`Form definitions olo-podnety-a-pochvaly-obcanov schema matches snapshot 1`] = `
+exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -8745,7 +8745,7 @@ exports[`Form definitions olo-podnety-a-pochvaly-obcanov schema matches snapshot
 }
 `;
 
-exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby > default form state should match snapshot 1`] = `
 {
   "sluzba": {
     "infoOOdpade": [
@@ -8765,7 +8765,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
 }
 `;
 
-exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby schema matches snapshot 1`] = `
+exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -10061,7 +10061,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke
 }
 `;
 
-exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti > default form state should match snapshot 1`] = `
 {
   "sluzba": {
     "infoOOdpade": [
@@ -10081,7 +10081,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
 }
 `;
 
-exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti schema matches snapshot 1`] = `
+exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -11302,7 +11302,7 @@ exports[`Form definitions olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovs
 }
 `;
 
-exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default form state should match snapshot 1`] = `
+exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > default form state should match snapshot 1`] = `
 {
   "informacieOMnozstve": {},
   "suhlasy": {},
@@ -11353,7 +11353,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom default f
 }
 `;
 
-exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema matches snapshot 1`] = `
+exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -13443,7 +13443,7 @@ exports[`Form definitions olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom schema ma
 }
 `;
 
-exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady default form state should match snapshot 1`] = `
+exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady > default form state should match snapshot 1`] = `
 {
   "oznamovatel": {
     "maElektronickuSchranku": true,
@@ -13456,7 +13456,7 @@ exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady
 }
 `;
 
-exports[`Form definitions oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady schema matches snapshot 1`] = `
+exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -41306,7 +41306,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
 }
 `;
 
-exports[`Form definitions predzahradky default form state should match snapshot 1`] = `
+exports[`Form definitions > predzahradky > default form state should match snapshot 1`] = `
 {
   "predzahradka": {
     "typRegistracie": "nova",
@@ -41321,7 +41321,7 @@ exports[`Form definitions predzahradky default form state should match snapshot 
 }
 `;
 
-exports[`Form definitions predzahradky schema matches snapshot 1`] = `
+exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -41840,7 +41840,7 @@ exports[`Form definitions predzahradky schema matches snapshot 1`] = `
 }
 `;
 
-exports[`Form definitions priznanie-k-dani-z-nehnutelnosti default form state should match snapshot 1`] = `
+exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > default form state should match snapshot 1`] = `
 {
   "danZBytovANebytovychPriestorov": {
     "vyplnitObject": {
@@ -41879,7 +41879,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti default form state sh
 }
 `;
 
-exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schema matches snapshot 1`] = `
+exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -56773,7 +56773,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
 }
 `;
 
-exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test default form state should match snapshot 1`] = `
+exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > default form state should match snapshot 1`] = `
 {
   "danZBytovANebytovychPriestorov": {
     "vyplnitObject": {
@@ -56812,7 +56812,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test default form sta
 }
 `;
 
-exports[`Form definitions priznanie-k-dani-z-nehnutelnosti-test schema matches snapshot 1`] = `
+exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -71706,7 +71706,7 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
 }
 `;
 
-exports[`Form definitions stanovisko-k-investicnemu-zameru default form state should match snapshot 1`] = `
+exports[`Form definitions > stanovisko-k-investicnemu-zameru > default form state should match snapshot 1`] = `
 {
   "investor": {
     "investorZiadatelom": true,
@@ -71725,7 +71725,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru default form state sh
 }
 `;
 
-exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapshot 1`] = `
+exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -73044,7 +73044,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru schema matches snapsh
 }
 `;
 
-exports[`Form definitions tsb-objednavka-vytycenia default form state should match snapshot 1`] = `
+exports[`Form definitions > tsb-objednavka-vytycenia > default form state should match snapshot 1`] = `
 {
   "objednavatel": {
     "mestoPsc": {},
@@ -73066,7 +73066,7 @@ exports[`Form definitions tsb-objednavka-vytycenia default form state should mat
 }
 `;
 
-exports[`Form definitions tsb-objednavka-vytycenia schema matches snapshot 1`] = `
+exports[`Form definitions > tsb-objednavka-vytycenia > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -74071,7 +74071,7 @@ exports[`Form definitions tsb-objednavka-vytycenia schema matches snapshot 1`] =
 }
 `;
 
-exports[`Form definitions tsb-objednavka-zakresu-sieti default form state should match snapshot 1`] = `
+exports[`Form definitions > tsb-objednavka-zakresu-sieti > default form state should match snapshot 1`] = `
 {
   "objednavatel": {
     "mestoPsc": {},
@@ -74087,7 +74087,7 @@ exports[`Form definitions tsb-objednavka-zakresu-sieti default form state should
 }
 `;
 
-exports[`Form definitions tsb-objednavka-zakresu-sieti schema matches snapshot 1`] = `
+exports[`Form definitions > tsb-objednavka-zakresu-sieti > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -75030,7 +75030,7 @@ Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájd
 }
 `;
 
-exports[`Form definitions tsb-umiestnenie-zariadenia default form state should match snapshot 1`] = `
+exports[`Form definitions > tsb-umiestnenie-zariadenia > default form state should match snapshot 1`] = `
 {
   "informacieOZariadeni": {
     "umiestnenieStoziare": [],
@@ -75046,7 +75046,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia default form state should m
 }
 `;
 
-exports[`Form definitions tsb-umiestnenie-zariadenia schema matches snapshot 1`] = `
+exports[`Form definitions > tsb-umiestnenie-zariadenia > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -75821,7 +75821,7 @@ exports[`Form definitions tsb-umiestnenie-zariadenia schema matches snapshot 1`]
 }
 `;
 
-exports[`Form definitions tsb-ziadost-o-stanovisko-pd default form state should match snapshot 1`] = `
+exports[`Form definitions > tsb-ziadost-o-stanovisko-pd > default form state should match snapshot 1`] = `
 {
   "prilohy": {
     "situacnyVykresFile": [],
@@ -75842,7 +75842,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd default form state should 
 }
 `;
 
-exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`] = `
+exports[`Form definitions > tsb-ziadost-o-stanovisko-pd > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -76648,7 +76648,7 @@ exports[`Form definitions tsb-ziadost-o-stanovisko-pd schema matches snapshot 1`
 }
 `;
 
-exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti default form state should match snapshot 1`] = `
+exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default form state should match snapshot 1`] = `
 {
   "investor": {
     "investorZiadatelom": true,
@@ -76670,7 +76670,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti default form
 }
 `;
 
-exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema matches snapshot 1`] = `
+exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema matches snapshot 1`] = `
 {
   "allOf": [
     {
@@ -78161,7 +78161,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schema match
 }
 `;
 
-exports[`Form definitions ziadost-o-najom-bytu default form state should match snapshot 1`] = `
+exports[`Form definitions > ziadost-o-najom-bytu > default form state should match snapshot 1`] = `
 {
   "deti": {
     "detiSucastouDomacnosti": false,
@@ -78213,7 +78213,7 @@ exports[`Form definitions ziadost-o-najom-bytu default form state should match s
 }
 `;
 
-exports[`Form definitions ziadost-o-najom-bytu schema matches snapshot 1`] = `
+exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] = `
 {
   "allOf": [
     {

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`slovenskoSkForm komunitne-zahrady schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > komunitne-zahrady > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -84,7 +84,7 @@ exports[`slovenskoSkForm komunitne-zahrady schema XSD should match snapshot 1`] 
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm komunitneZahradyExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > komunitneZahradyExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -185,7 +185,7 @@ exports[`slovenskoSkForm komunitneZahradyExample XML should match snapshot 1`] =
 </eform>"
 `;
 
-exports[`slovenskoSkForm oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady/1.0"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -269,7 +269,7 @@ exports[`slovenskoSkForm oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady 
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -445,7 +445,7 @@ exports[`slovenskoSkForm oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample
 </eform>"
 `;
 
-exports[`slovenskoSkForm predzahradky schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > predzahradky > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -529,7 +529,7 @@ exports[`slovenskoSkForm predzahradky schema XSD should match snapshot 1`] = `
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm predzahradkyExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > predzahradkyExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -599,7 +599,7 @@ exports[`slovenskoSkForm predzahradkyExample XML should match snapshot 1`] = `
 </eform>"
 `;
 
-exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanie-k-dani-z-nehnutelnosti > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -683,7 +683,7 @@ exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti schema XSD should matc
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti-test schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanie-k-dani-z-nehnutelnosti-test > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/hmba.eforms.bratislava.obec_024/201501.3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -767,7 +767,7 @@ exports[`slovenskoSkForm priznanie-k-dani-z-nehnutelnosti-test schema XSD should
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample1 XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample1 > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -917,7 +917,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample1 XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample2 XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample2 > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -1134,7 +1134,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample2 XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample3 XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample3 > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -1300,7 +1300,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample3 XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample4 XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample4 > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -1399,7 +1399,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample4 XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample5 XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample5 > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/esmao.eforms.bratislava.obec_024/201501.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -1825,7 +1825,7 @@ exports[`slovenskoSkForm priznanieKDaniZNehnutelnostiExample5 XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm stanovisko-k-investicnemu-zameru schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > stanovisko-k-investicnemu-zameru > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -1909,7 +1909,7 @@ exports[`slovenskoSkForm stanovisko-k-investicnemu-zameru schema XSD should matc
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm stanoviskoKInvesticnemuZameruExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -2017,7 +2017,7 @@ exports[`slovenskoSkForm stanoviskoKInvesticnemuZameruExample XML should match s
 </eform>"
 `;
 
-exports[`slovenskoSkForm zavazne-stanovisko-k-investicnej-cinnosti schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > zavazne-stanovisko-k-investicnej-cinnosti > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -2101,7 +2101,7 @@ exports[`slovenskoSkForm zavazne-stanovisko-k-investicnej-cinnosti schema XSD sh
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>
@@ -2224,7 +2224,7 @@ exports[`slovenskoSkForm zavazneStanoviskoKInvesticnejCinnostiExample XML should
 </eform>"
 `;
 
-exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1`] = `
+exports[`slovenskoSkForm > ziadost-o-najom-bytu > schema XSD should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -2308,7 +2308,7 @@ exports[`slovenskoSkForm ziadost-o-najom-bytu schema XSD should match snapshot 1
 </xs:schema>"
 `;
 
-exports[`slovenskoSkForm ziadostONajomBytuExample XML should match snapshot 1`] = `
+exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0</JsonVersion>

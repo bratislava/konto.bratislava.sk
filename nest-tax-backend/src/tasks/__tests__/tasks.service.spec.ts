@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 
 import { AdminService } from '../../admin/admin.service'
 import { PrismaService } from '../../prisma/prisma.service'
-import { TasksService } from '../tasks.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
   let service: TasksService

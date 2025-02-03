@@ -2,7 +2,6 @@
   "name": "forms-shared",
   "version": "1.0.0",
   "license": "EUPL-1.2",
-  "type": "module",
   "scripts": {
     "generate-slovensko-sk": "ts-node scripts/generateSlovenskoSkContainer.ts",
     "update": "ts-node src/update.ts",
@@ -50,7 +49,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-email": "^3.0.1",
-    "react-markdown": "^9.0.3",
+    "react-markdown": "6.0.3",
     "remove-markdown": "^0.6.0",
     "rodnecislo": "^1.6.0",
     "traverse": "^0.6.10",

@@ -139,7 +139,10 @@ export class NorisService {
         variableSymbols += `'${variableSymbol}',`
       } else {
         this.logger.error(
-          `ERROR 500 - variable symbol has a wrong format: "${variableSymbol}"`,
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Variable symbol has a wrong format: "${variableSymbol}"`,
+          ),
         )
       }
     })

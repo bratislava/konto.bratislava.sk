@@ -58,7 +58,10 @@ export class BloomreachService {
     )
     if (eventResponse.status !== 200) {
       this.logger.error(
-        `Error in send data to Bloomreach for user id ${cognitoId}`,
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error in send data to Bloomreach for user id ${cognitoId}`,
+        ),
       )
       return false
     }

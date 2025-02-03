@@ -8,7 +8,7 @@ import { NorisService } from '../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
@@ -225,7 +225,10 @@ export class AdminService {
               )
             if (!bloomreachTracker) {
               this.logger.error(
-                `ERROR - Status-500: Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                this.throwerErrorGuard.InternalServerErrorException(
+                  ErrorsEnum.INTERNAL_SERVER_ERROR,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                ),
               )
             }
           }
@@ -307,7 +310,10 @@ export class AdminService {
   ) {
     if (payedFromNoris > taxData.amount && forPayment === 0) {
       this.logger.error(
-        'ERROR - Status-500: ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+        ),
       )
     } else if (
       payerDataCountAll === 0 &&
@@ -315,7 +321,10 @@ export class AdminService {
       forPayment > 0
     ) {
       this.logger.error(
-        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+        ),
       )
     } else if (
       payerDataCountAll > 0 &&
@@ -323,7 +332,10 @@ export class AdminService {
       forPayment > 0
     ) {
       this.logger.error(
-        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+        ),
       )
     }
   }
@@ -441,7 +453,15 @@ export class AdminService {
               }
             }
           } catch (error) {
-            this.logger.error(`ERROR - Status-500: ${(error as Error).message}`)
+            this.logger.log(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+                undefined,
+                undefined,
+                error as Error,
+              ),
+            )
           }
         }),
     )

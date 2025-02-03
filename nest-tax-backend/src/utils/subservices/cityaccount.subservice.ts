@@ -7,12 +7,16 @@ import {
   ResponseUserByBirthNumberDto,
 } from '../../generated-clients/nest-city-account'
 import { addSlashToBirthNumber } from '../functions/birthNumber'
+import ThrowerErrorGuard from '../guards/errors.guard'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 @Injectable()
 export class CityAccountSubservice {
   private readonly cityAccountApi: AdminApi
 
   private readonly logger: Logger
+
+  private readonly throwerErrorGuard: ThrowerErrorGuard
 
   constructor() {
     this.cityAccountApi = new AdminApi(
@@ -49,7 +53,13 @@ export class CityAccountSubservice {
       ) {
         return null
       }
-      this.logger.error(`error to get birthnumber: ${<string>error}`)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Failed to get birthnumber:`,
+          undefined,
+          error instanceof Error ? undefined : <string>error,
+          error instanceof Error ? error : undefined)
+      )
       return null
     }
   }

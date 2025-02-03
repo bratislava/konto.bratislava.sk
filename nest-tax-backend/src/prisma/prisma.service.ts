@@ -32,13 +32,6 @@ export class PrismaService
         `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`,
       )
     })
-
-    // We can catch the exceptions thrown, no need to log here.
-    // this.$on('error', (e) => {
-    //   this.logger.error(
-    //     `target="${escapeForLogfmt(e.target)}" message="${escapeForLogfmt(e.message)}"`
-    //   )
-    // })
   }
 
   async onModuleInit() {

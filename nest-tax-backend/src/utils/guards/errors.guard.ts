@@ -185,17 +185,13 @@ export default class ThrowerErrorGuard {
       response[ErrorSymbols.alert] = 1
     }
     const exception = new HttpException(response, statusCode)
-    if (exception.stack && errorCause && errorCause.stack) {
-      exception.stack = exception.stack
-        .concat('\nWas directly caused by:\n\n')
-        .concat(errorCause.stack)
-    }
-    const newException = new HttpException(response, statusCode)
 
     if (errorCause && errorCause.stack) {
-      newException.stack = newException.stack
-        ?.concat('\nWas directly caused by:\n\n')
-        .concat(errorCause.stack)
+      exception.stack = [
+        exception.stack,
+        'Was directly caused by:\n',
+        errorCause.stack,
+      ].join('\n')
     }
 
     return exception

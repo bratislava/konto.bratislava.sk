@@ -74,12 +74,14 @@ export function objToLogfmt(obj: object): string {
   }
   return Object.entries(objAll)
     .map(([key, value]) => {
-      const formattedValue =
-        typeof value === 'object'
-          ? errorToLogfmt(JSON.stringify(value))
-          : typeof value === 'string'
-            ? escapeForLogfmt(value)
-            : value
+      let formattedValue: unknown = value
+      if (typeof formattedValue === 'object') {
+        formattedValue = JSON.stringify(formattedValue)
+      }
+      // not else if because we want to sanitize strings in objects
+      if (typeof formattedValue === 'string') {
+        formattedValue = escapeForLogfmt(formattedValue)
+      }
 
       return `${key}="${formattedValue}"`
     })

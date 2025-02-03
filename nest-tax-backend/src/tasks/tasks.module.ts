@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 
 import { AdminModule } from '../admin/admin.module'
-import { TasksService } from './tasks.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { TasksService } from './tasks.service'
 
 @Module({
   imports: [AdminModule],

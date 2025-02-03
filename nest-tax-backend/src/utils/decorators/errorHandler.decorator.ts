@@ -1,4 +1,3 @@
-import { errorToLogfmt } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
 export function HandleErrors(

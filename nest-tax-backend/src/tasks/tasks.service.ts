@@ -6,8 +6,8 @@ import { AdminService } from '../admin/admin.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Injectable()
 export class TasksService {

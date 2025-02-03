@@ -159,7 +159,10 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^react-markdown$": "<rootDir>/../test/react-markdown-mock.js"
+    }
   },
   "volta": {
     "node": "20.9.0",

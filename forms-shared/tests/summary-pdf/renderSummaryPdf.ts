@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeAll } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { filterConsole } from '../../test-utils/filterConsole'
 import { renderSummaryPdf } from '../../src/summary-pdf/renderSummaryPdf'
@@ -8,7 +9,7 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 describe('getSummaryJson', () => {
   getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
-    it(
+    test(
       `${exampleForm.name} summary PDF should match snapshot`,
       async () => {
         filterConsole(

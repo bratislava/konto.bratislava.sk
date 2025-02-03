@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ROOT_SCHEMA_PREFIX } from '@rjsf/utils'
 import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 import {
@@ -7,10 +8,10 @@ import {
 import Ajv from 'ajv'
 
 describe('Validator Registry', () => {
-  let addSchemaSpy: jest.SpyInstance<Ajv, Parameters<typeof Ajv.prototype.addSchema>>
+  let addSchemaSpy = vi.spyOn(Ajv.prototype, 'addSchema')
 
   beforeEach(() => {
-    addSchemaSpy = jest.spyOn(Ajv.prototype, 'addSchema')
+    addSchemaSpy = vi.spyOn(Ajv.prototype, 'addSchema')
   })
 
   afterEach(() => {
@@ -26,7 +27,7 @@ describe('Validator Registry', () => {
     addSchemaSpy.mock.calls.filter(([, key]) => key === ROOT_SCHEMA_PREFIX)
 
   describe('SingleUseValidatorRegistry', () => {
-    it('should create new validator instance for each call', () => {
+    test('should create new validator instance for each call', () => {
       const registry = createSingleUseValidatorRegistry()
 
       const validator1 = registry.getValidator(mockSchema1)
@@ -38,7 +39,7 @@ describe('Validator Registry', () => {
       expect(validator1).not.toBe(validator3)
     })
 
-    it('should compile schema for each validation', () => {
+    test('should compile schema for each validation', () => {
       const registry = createSingleUseValidatorRegistry()
 
       // First schema validation
@@ -60,7 +61,7 @@ describe('Validator Registry', () => {
   })
 
   describe('WeakMapRegistry', () => {
-    it('should cache validator instances', () => {
+    test('should cache validator instances', () => {
       const registry = createWeakMapRegistry()
 
       const validator1 = registry.getValidator(mockSchema1)
@@ -71,7 +72,7 @@ describe('Validator Registry', () => {
       expect(validator2).not.toBe(validator3)
     })
 
-    it('should compile schema only once per unique schema', () => {
+    test('should compile schema only once per unique schema', () => {
       const registry = createWeakMapRegistry()
 
       // First schema validation

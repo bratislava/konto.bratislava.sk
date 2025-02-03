@@ -1,5 +1,7 @@
+import { vi } from 'vitest'
+
 /**
- * Filters console method calls based on a matching function in Jest tests.
+ * Filters console method calls based on a matching function in Vitest tests.
  *
  * @example
  * ```typescript
@@ -12,9 +14,9 @@ export function filterConsole(
   method: 'log' | 'warn' | 'error',
   matchFn: (...args: any[]) => boolean,
 ): void {
-  jest.spyOn(global.console, method).mockImplementation((...args) => {
+  vi.spyOn(console, method).mockImplementation((...args) => {
     if (!matchFn(...args)) {
-      return global.console[method](...args)
+      return console[method](...args)
     }
   })
 }

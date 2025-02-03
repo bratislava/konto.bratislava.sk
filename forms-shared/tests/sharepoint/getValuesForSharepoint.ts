@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import {
   FormDefinitionSlovenskoSkGeneric,
   isSlovenskoSkGenericFormDefinition,
@@ -12,7 +13,7 @@ import {
 import { get as lodashGet } from 'lodash'
 
 describe('getArrayForOneToMany', () => {
-  it('should throw error if at the path there is no array', () => {
+  test('should throw error if at the path there is no array', () => {
     try {
       getArrayForOneToMany(
         { jsonDataExtraDataOmitted: { val1: { val2: 'val3' } }, id: 'id' },
@@ -34,21 +35,21 @@ describe('getArrayForOneToMany', () => {
     }
   })
 
-  it('should return the array at the path', () => {
+  test('should return the array at the path', () => {
     const array = [{ val1: '' }, { val2: '', val3: '' }, 'val3']
     const data = { val1: { val2: array } }
     const result = getArrayForOneToMany({ jsonDataExtraDataOmitted: data, id: 'id' }, 'val1.val2')
     expect(result).toEqual(array)
   })
 
-  it('should return empty array for non-existing path', () => {
+  test('should return empty array for non-existing path', () => {
     const result = getArrayForOneToMany({ jsonDataExtraDataOmitted: {}, id: 'id' }, 'val1.val2')
     expect(result).toEqual([])
   })
 })
 
 describe('getValueAtJsonPath', () => {
-  it('should throw error if at the path there is some object', () => {
+  test('should throw error if at the path there is some object', () => {
     const data = { val1: { val2: 'val3' } }
     try {
       getValueAtJsonPath(data, 'val1')
@@ -58,7 +59,7 @@ describe('getValueAtJsonPath', () => {
     }
   })
 
-  it('should throw error if there is array on non-primitives', () => {
+  test('should throw error if there is array on non-primitives', () => {
     const dataArray = { val1: { val2: ['val3', 'val4', ['val5']] } }
     const data = { val1: { val2: ['val3', 'val4', { val5: 'val6' }] } }
 
@@ -76,7 +77,7 @@ describe('getValueAtJsonPath', () => {
     }
   })
 
-  it('should return the value', () => {
+  test('should return the value', () => {
     const data = { arr: ['val3', 'val4', 'val5'], bool: true, num: 1234, str: 'string' }
     expect(getValueAtJsonPath(data, 'arr')).toBe('val3, val4, val5')
     expect(getValueAtJsonPath(data, 'bool')).toBeTruthy()
@@ -86,7 +87,7 @@ describe('getValueAtJsonPath', () => {
 })
 
 describe('getValuesForFields', () => {
-  it('should correctly fill in the data', () => {
+  test('should correctly fill in the data', () => {
     const data = { arr: ['val3', 'val4', 'val5'], bool: true, num: 1234, str: 'string' }
     const result = getValuesForFields(
       {
@@ -135,7 +136,7 @@ describe('getValuesForFields', () => {
     })
   })
 
-  it('should throw error if there is unknown error', () => {
+  test('should throw error if there is unknown error', () => {
     const data = { arr: ['val3', 'val4', 'val5'], bool: true, num: 1234, str: 'string' }
 
     try {
@@ -184,7 +185,7 @@ describe('getValuesForFields', () => {
     }
   })
 
-  it('should throw error if there is nonexistent field', () => {
+  test('should throw error if there is nonexistent field', () => {
     const data = { arr: ['val3', 'val4', 'val5'], bool: true, num: 1234, str: 'string' }
 
     try {
@@ -209,7 +210,7 @@ describe('getValuesForFields', () => {
     } catch (error) {}
   })
 
-  it('should match snapshots', () => {
+  test('should match snapshots', () => {
     getExampleFormPairs({
       formDefinitionFilterFn: (
         formDefinition,

@@ -1,52 +1,52 @@
-# Formulare Support
+# Formuláre Support
 
-## Stavy formularov
+## Stavy formulárov
 
-Formulare spracovava [nest-forms-backend](https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend). Aktualne stavy su definovane v [schema.prisma](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/prisma/schema.prisma).
+Formuláre spracováva [nest-forms-backend](https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend). Aktuálne stavy sú definované v [schema.prisma](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/prisma/schema.prisma).
 
-### Hlavne stavy:
+### Hlavné stavy:
 
-- `DRAFT` - ulozeny formular
-- `QUEUED` - odoslany formular
-- `DELIVERED_NASES` - doruceny na NASES
-- `DELIVERED_GINIS` - doruceny do GINISu
-- `SENDING_TO_SHAREPOINT` - posiela sa do SharePointu (najomne byvanie)
-- `PROCESSING` - spracovava sa oddelenim
-- `FINISHED` - spracovany
-- `REJECTED` - odmietnuty
+- `DRAFT` - uložený formulár
+- `QUEUED` - odoslaný formulár
+- `DELIVERED_NASES` - doručený na NASES
+- `DELIVERED_GINIS` - doručený do GINISu
+- `SENDING_TO_SHAREPOINT` - posiela sa do SharePointu (nájomné bývanie)
+- `PROCESSING` - spracováva sa oddelením
+- `FINISHED` - spracovaný
+- `REJECTED` - odmietnutý
 - `ERROR` - chyba
 
-Formular sa spracuva cez RabbitMQ od stavu `QUEUED` az po koncove stavy (`PROCESSING`, `FINISHED`).
+Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PROCESSING`, `FINISHED`).
 
 ### GINIS stavy:
 
-- `CREATED` - vytvoreny v queue
-- `RUNNING_REGISTER` / `REGISTERED` - registracia cez podatelnu
-- `RUNNING_UPLOAD_ATTACHMENTS` / `ATTACHMENTS_UPLOADED` - upload priloh
-- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - uprava podania
+- `CREATED` - vytvorený v queue
+- `RUNNING_REGISTER` / `REGISTERED` - registrácia cez podateľňu
+- `RUNNING_UPLOAD_ATTACHMENTS` / `ATTACHMENTS_UPLOADED` - upload príloh
+- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - úprava podania
 - `RUNNING_ASSIGN_SUBMISSION` / `SUBMISSION_ASSIGNED` - priradenie oddeleniu
-- `FINISHED` - dokoncene
-- `ERROR_*` - rozne chybove stavy
+- `FINISHED` - dokončené
+- `ERROR_*` - rôzne chybové stavy
 
-## Riesenie problemov
+## Riešenie problémov
 
 ### Kontrola stavu
 
-1. Kontroluj [metabase](https://metabase.bratislava.sk/dashboard/11-forms-dashboard?date_filter=past7days) alebo #metabase-forms
-2. Sleduj hlavne stavy `DELIVERED_GINIS` a `DELIVERED_NASES`
+1. Kontrolovať [metabase](https://metabase.bratislava.sk/dashboard/11-forms-dashboard?date_filter=past7days) alebo #metabase-forms
+2. Sledovať hlavne stavy `DELIVERED_GINIS`, `DELIVERED_NASES`, `SENDING_TO_SHAREPOINT`, v prípade daní `SENDING_TO_NASES`
 
-### Zaseknuty formular v GINIS
+### Zaseknutý formulár v GINIS
 
-1. Pripoj sa na VPN
-2. Pristup do databazy (IP: 10.10.10.45)
-3. Najdi formular podla ID
-4. Vrat stav o krok spat (napr. z `RUNNING_UPLOAD_ATTACHMENTS` na `REGISTERED`)
-5. Ak sa nepohne, pridaj ho manualne do RabbitMQ queue
+1. Pripojiť sa na VPN
+2. Pristúpiť do databázy (IP: 10.10.10.45)
+3. Nájsť formulár podľa ID
+4. Vrátiť stav o krok späť (napr. z `RUNNING_UPLOAD_ATTACHMENTS` na `REGISTERED`)
+5. Ak sa nepohne, pridať ho manuálne do RabbitMQ queue
 
 ### Pridanie do RabbitMQ
 
 1. Port-forward RabbitMQ (port 15672)
-2. Prihlasenie do admin rozhrania
+2. Prihlásenie do admin rozhrania
 3. Queue > `nases_check_delivery`
 4. Publish message s JSON:
 
@@ -61,9 +61,9 @@ Formular sa spracuva cez RabbitMQ od stavu `QUEUED` az po koncove stavy (`PROCES
 }
 ```
 
-> Ak potrebujes formular odstranit z queue, nastav mu v databaze `archived: true`. Po par minutach ho vrat spat na `archived: false`.
+> Pre odstránenie formulára z queue nastav v databáze `archived: true`. Po tom čo v logoch (Grafana) pribudne záznam o tom, že formulár bol spracovaný (= vyhodený), nastav `archived: false`.
 
-### Co robit ked formular skonci v SHAREPOINT_ERROR?
+### Zaseknutý formulár v SHAREPOINT_ERROR
 
 Vo veľkej väčšine prípadov je to z toho dôvodu, že používateľ zadal do niektorého poľa dátum s rokom menej ako 1900. Sharepoint z nejakého dôvodu toto neakceptuje ako validný rok, preto toto treba upraviť a zopakovať odoslanie. V prvom rade je teda fajn si pozrieť log toho erroru, ak je tam v dátach naozaj dátum s rokom menej ako 1900, tak je to jasné, v opačnom prípade je treba zreprodukovať odosielanie, čo je popísané nižšie.
 
@@ -101,16 +101,16 @@ Podľa tohoto sa dá zistiť kde bola chyba. Nie všetky polia musia byť vyplne
 
 Nemôžeme meniť ale dáta, ktoré majú vplyv na bodovanie, teda napr. diagnózy, dĺžka bytovej núdze a podobne.
 
-### Dalsie problemy
+### Ďalšie problémy
 
-- **Chyba klikacky**: Kontaktuj Ondra pre update
-- **SHAREPOINT_ERROR**: Kontaktuj Erika Řehulku
-- **Problem s GINIS**: Skontroluj v GINIS podla cisla `MAG0X*` na `ginis.bratislava.sk/pod/?c=OpenDetail&ixx1=CISLO`
+- **Chyba klikačky**: Kontaktovať maintainera https://github.com/bratislava/ginis-automation
+- **SHAREPOINT_ERROR**: Kontaktovať Erika Řehulku
+- **Problém s GINIS**: Skontrolovať v GINIS podľa čísla `MAG0X*` na `ginis.bratislava.sk/pod/?c=OpenDetail&ixx1=CISLO`
 
-### Akceptovatelne koncove stavy
+### Akceptovateľné koncové stavy
 
-- Stanovisko/zavazne stanovisko k investicnej cinnosti: `PROCESSING`, `FINISHED`
-- Najom bytu: `PROCESSING`
-- Danove priznanie: `DELIVERED_NASES`
+- Stanovisko/záväzné stanovisko k investičnej činnosti: `PROCESSING`, `FINISHED`
+- Nájom bytu: `PROCESSING`
+- Daňové priznanie: `DELIVERED_NASES`
 - OLO: `FINISHED` (email)
-- Predzahradky: `PROCESSING`
+- Predzáhradky: `PROCESSING`

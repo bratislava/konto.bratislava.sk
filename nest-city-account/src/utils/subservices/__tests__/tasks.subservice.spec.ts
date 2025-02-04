@@ -9,6 +9,21 @@ import ThrowerErrorGuard from '../../guards/errors.guard'
 import { DeliveryMethod } from '../../types/tax.types'
 import { TasksSubservice } from '../tasks.subservice'
 
+jest.mock('../../decorators/errorHandler.decorators', () => ({
+  HandleErrors: () => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value
+
+    descriptor.value = async function (...args: undefined[]) {
+      try {
+        const result = await originalMethod.apply(this, args)
+        return result
+      } catch (error) {}
+      return null
+    }
+    return descriptor
+  },
+}))
+
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {
     physicalEntity: true
@@ -21,7 +36,10 @@ describe('TasksSubservice', () => {
 
   let throwerErrorGuard: ThrowerErrorGuard
 
+  const OLD_ENV = process.env
+
   beforeEach(async () => {
+    process.env = { ...OLD_ENV, TAX_BACKEND_URL: 'www.testurl.com', TAX_BACKEND_API_KEY: 'testkey' }
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksSubservice,

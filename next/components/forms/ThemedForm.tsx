@@ -47,7 +47,7 @@ const theme: ThemeProps = {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,
     FieldTemplate: BAFieldTemplate,
-    // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
+    // It contains extra props that is not present in the original ArrayFieldItemTemplate, so we need to
     // cast it to the original type
     ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
   },

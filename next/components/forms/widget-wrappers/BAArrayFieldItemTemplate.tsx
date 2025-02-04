@@ -11,8 +11,9 @@ import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import Button from '../simple-components/ButtonNew'
 
-interface ChildrenProps {
-  name: string
+export type BAArrayFieldItemTemplateAdditionalProps = {
+  parentUiOptions: ArrayFieldUiOptions
+  parentSelfId: string
 }
 
 /**
@@ -25,11 +26,9 @@ const BAArrayFieldItemTemplate = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   F extends FormContextType = any,
 >(
-  props: ArrayFieldTemplateItemType<T, S, F> & {
-    parentUiOptions: ArrayFieldUiOptions
-  },
+  props: ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps,
 ) => {
-  const { children, hasRemove, index, onDropIndexClick, parentUiOptions } = props
+  const { children, hasRemove, index, onDropIndexClick, parentUiOptions, parentSelfId } = props
   const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cx({
@@ -55,10 +54,8 @@ const BAArrayFieldItemTemplate = <
     onDropIndexClick(innerIndex)({ preventDefault: () => {} })
   }
 
-  const dataCyProps: ChildrenProps = children.props
-
   return (
-    <div className={boxStyle} data-cy={`section-${dataCyProps.name}`}>
+    <div className={boxStyle} data-cy={`section-${parentSelfId}-${index}`}>
       <div className={headingStyle}>
         {variant === 'topLevel' && <h3 className="text-h3 grow">{title}</h3>}
         {variant === 'nested' && <h4 className="text-h4 grow">{title}</h4>}

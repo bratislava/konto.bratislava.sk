@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, type JSX, SetStateAction, useState } from 'react'
 
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import Button from '../../simple-components/Button'

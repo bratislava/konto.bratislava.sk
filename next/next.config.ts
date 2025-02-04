@@ -1,11 +1,13 @@
-const { withPlausibleProxy } = require('next-plausible')
-const { i18n } = require('./next-i18next.config')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const { join } = require('node:path')
-const fs = require('node:fs')
-const path = require('node:path')
+import { withPlausibleProxy } from 'next-plausible'
+import { i18n } from './next-i18next.config'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
+import path, { join } from 'node:path'
+import fs from 'node:fs'
+import type { NextConfig } from 'next'
+import withBundleAnalyzer from '@next/bundle-analyzer'
+import type { Config as SvgrConfig } from '@svgr/core'
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
@@ -17,10 +19,31 @@ const iframeResizerPublicPath = (() => {
   return `/scripts/iframe-resizer-child-${version}.js`
 })()
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+const iframeResizerSourcePath = join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js')
+const iframeResizerTargetPath = join(__dirname, 'public', iframeResizerPublicPath)
+
+if (process.env.TURBOPACK) {
+  // Turbopack doesn't support CopyWebpackPlugin, so we need to copy the file manually. This is fine as Turbopack is
+  // only used in development mode.
+  fs.mkdirSync(path.dirname(iframeResizerTargetPath), { recursive: true })
+  fs.copyFileSync(iframeResizerSourcePath, iframeResizerTargetPath)
+}
+
+const svgrLoader = {
+  loader: '@svgr/webpack',
+  options: {
+    svgoConfig: {
+      plugins: [
+        {
+          name: 'removeViewBox',
+          active: false,
+        },
+      ],
+    },
+  } satisfies SvgrConfig,
+}
+
+const nextConfig: NextConfig = {
   env: {
     IFRAME_RESIZER_PUBLIC_PATH: iframeResizerPublicPath,
   },
@@ -41,6 +64,22 @@ const nextConfig = {
   output: 'standalone',
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
+  },
+  experimental: {
+    turbo: {
+      // https://github.com/vercel/next.js/issues/73360
+      root: path.join(__dirname, '..'),
+      rules: {
+        '*.svg': {
+          loaders: [svgrLoader],
+          as: '*.js',
+        },
+      },
+      resolveAlias: {
+        react: 'react',
+        'react-dom': 'react-dom',
+      },
+    },
   },
   async redirects() {
     return [
@@ -114,19 +153,7 @@ const nextConfig = {
   webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: {
-        loader: '@svgr/webpack',
-        options: {
-          svgoConfig: {
-            plugins: [
-              {
-                name: 'removeViewBox',
-                active: false,
-              },
-            ],
-          },
-        },
-      },
+      use: svgrLoader,
     })
 
     // See `IframeResizerChild.tsx`
@@ -134,8 +161,8 @@ const nextConfig = {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: join(__dirname, './node_modules/@iframe-resizer/child/index.umd.js'),
-            to: join(__dirname, 'public', iframeResizerPublicPath),
+            from: iframeResizerSourcePath,
+            to: iframeResizerTargetPath,
           },
         ],
       }),
@@ -160,6 +187,6 @@ const nextConfig = {
 }
 
 // https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script
-module.exports = withPlausibleProxy()({
-  ...withBundleAnalyzer(nextConfig),
+export default withPlausibleProxy()({
+  ...bundleAnalyzer(nextConfig),
 })

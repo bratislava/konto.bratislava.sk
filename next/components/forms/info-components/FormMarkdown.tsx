@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
 import remarkDirective from 'remark-directive'
@@ -73,20 +73,20 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
             target={href?.startsWith('http') ? '_blank' : ''}
             variant="underlined"
           >
-            {childrenInner}
+            {childrenInner as ReactNode}
           </MLinkNew>
         ),
         ul: ({ children: childrenInner }) => (
-          <ul className="list-disc whitespace-normal pl-8">{childrenInner}</ul>
+          <ul className="list-disc whitespace-normal pl-8">{childrenInner as ReactNode}</ul>
         ),
         ol: ({ children: childrenInner }) => (
-          <ol className="list-decimal  whitespace-normal pl-8">{childrenInner}</ol>
+          <ol className="list-decimal  whitespace-normal pl-8">{childrenInner as ReactNode}</ol>
         ),
         'tax-year': () => <>{getTaxYear()}</>,
         'tax-year-next': () => <>{getTaxYear() + 1}</>,
         ...(pAsSpan
           ? {
-              p: ({ children: childrenInner }) => <span>{childrenInner}</span>,
+              p: ({ children: childrenInner }) => <span>{childrenInner as ReactNode}</span>,
             }
           : {}),
       }}

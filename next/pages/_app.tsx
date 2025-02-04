@@ -15,6 +15,7 @@ import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
+import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
@@ -77,11 +78,13 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                   // trackLocalhost
                 >
                   <NavMenuContextProvider>
-                    {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                    <div id="root">
-                      <Component {...pageProps} />
-                    </div>
-                    {allowCookies ? <CookieConsent /> : null}
+                    <NuqsAdapter>
+                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
+                      {allowCookies ? <CookieConsent /> : null}
+                    </NuqsAdapter>
                   </NavMenuContextProvider>
                 </PlausibleProvider>
               </SnackbarProvider>

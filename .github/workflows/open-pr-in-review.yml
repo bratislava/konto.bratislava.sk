@@ -1,0 +1,113 @@
+# Workflow written by Claude AI, if updates are needed move the script to a js/ts file
+name: Update Project Status
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  update_project_status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update project status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prBody = context.payload.pull_request.body;
+
+            // Extract issue number from PR description using common formats
+            const issueMatch = prBody?.match(/(fix|fixes|close|closes|resolved|resolves)\s*#(\d+)/i);
+            if (!issueMatch) {
+              console.log('No linked issue found in PR description');
+              return;
+            }
+
+            const issueNumber = issueMatch[2];
+
+            // Get project data for the repository
+            const projectQuery = `
+              query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                  projectsV2(first: 1) {
+                    nodes {
+                      id
+                      fields(first: 20) {
+                        nodes {
+                          ... on ProjectV2Field {
+                            id
+                            name
+                          }
+                          ... on ProjectV2SingleSelectField {
+                            id
+                            name
+                            options {
+                              id
+                              name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            const projectData = await github.graphql(projectQuery, {
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            const project = projectData.repository.projectsV2.nodes[0];
+            const statusField = project.fields.nodes.find(field => field.name.toLowerCase() === 'status');
+            const inReviewOption = statusField.options.find(option => option.name.toLowerCase() === 'in review');
+
+            // Get issue's node ID
+            const issueQuery = `
+              query($owner: String!, $repo: String!, $number: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $number) {
+                    id
+                    projectItems(first: 1) {
+                      nodes {
+                        id
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            const issueData = await github.graphql(issueQuery, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              number: parseInt(issueNumber)
+            });
+
+            const projectItemId = issueData.repository.issue.projectItems.nodes[0].id;
+
+            // Update the status
+            await github.graphql(`
+              mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(
+                  input: {
+                    projectId: $projectId
+                    itemId: $itemId
+                    fieldId: $fieldId
+                    value: { 
+                      singleSelectOptionId: $optionId
+                    }
+                  }
+                ) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }
+            `, {
+              projectId: project.id,
+              itemId: projectItemId,
+              fieldId: statusField.id,
+              optionId: inReviewOption.id
+            });

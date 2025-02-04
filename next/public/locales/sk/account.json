@@ -599,20 +599,20 @@
     "result": {
       "failed-to-verify": {
         "title": "Nepodarilo sa overiť platbu",
-        "content": "<span className='text-p2'>Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne.</span>"
+        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
       "payment-failed": {
         "title": "Platba bola zamietnutá",
-        "content": "<span className='text-p2'>Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne.</span>"
+        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
       "payment-success": {
         "title": "Platba prebehla úspešne",
-        "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.</span>",
+        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
         "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
       },
       "payment-already-paid": {
         "title": "Platba už bola vykonaná",
-        "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.</span>",
+        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
         "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
       }
     },

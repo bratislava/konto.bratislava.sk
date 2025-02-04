@@ -16,6 +16,27 @@ export const PaymentStatusOptions = {
   SUCCESS: 'payment-success',
 }
 
+const statusToTranslationPath = {
+  [PaymentStatusOptions.FAILED_TO_VERIFY]: {
+    title: 'thank_you.result.failed-to-verify.title',
+    content: 'thank_you.result.failed-to-verify.content',
+  },
+  [PaymentStatusOptions.ALREADY_PAYED]: {
+    title: 'thank_you.result.payment-already-paid.title',
+    content: 'thank_you.result.payment-already-paid.content',
+    feedbackTitle: 'thank_you.result.payment-already-paid.feedback_title',
+  },
+  [PaymentStatusOptions.FAILED]: {
+    title: 'thank_you.result.payment-failed.title',
+    content: 'thank_you.result.payment-failed.content',
+  },
+  [PaymentStatusOptions.SUCCESS]: {
+    title: 'thank_you.result.payment-success.title',
+    content: 'thank_you.result.payment-success.content',
+    feedbackTitle: 'thank_you.result.payment-success.feedback_title',
+  },
+}
+
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
@@ -41,18 +62,18 @@ const ThankYouSection = () => {
         {success ? (
           <ThankYouCard
             success={success}
-            title={t(`thank_you.result.${status}.title`)}
-            content={t(`thank_you.result.${status}.content`)}
+            title={t(statusToTranslationPath[status].title)}
+            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
-            feedbackTitle={t(`thank_you.result.${status}.feedback_title`)}
+            feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
             feedbackUrl={formsFeedbackLinks['platba-dane-z-nehnutelnosti']}
           />
         ) : (
           <ThankYouCard
             success={success}
-            title={t(`thank_you.result.${status}.title`)}
-            content={t(`thank_you.result.${status}.content`)}
+            title={t(statusToTranslationPath[status].title)}
+            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}`}
             firstButtonTitle={t('thank_you.button_restart_text')}
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />

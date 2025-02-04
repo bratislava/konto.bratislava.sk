@@ -15,21 +15,6 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 
-jest.mock('../decorators/errorHandler.decorators', () => ({
-  HandleErrors: () => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
-    const originalMethod = descriptor.value
-
-    descriptor.value = async function (...args: undefined[]) {
-      try {
-        const result = await originalMethod.apply(this, args)
-        return result
-      } catch (error) {}
-      return null
-    }
-    return descriptor
-  },
-}))
-
 const UPLOAD_BIRTHNUMBERS_BATCH = 200
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 

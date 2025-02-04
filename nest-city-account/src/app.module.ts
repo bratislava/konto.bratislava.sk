@@ -8,11 +8,12 @@ import { PrismaModule } from './prisma/prisma.module'
 import { VerificationModule } from './user-verification/verification.module'
 import { UserModule } from './user/user.module'
 import { AppLoggerMiddleware } from './utils/middlewares/logger.service'
+import { TasksSubservice } from './utils/subservices/tasks.subservice'
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule, VerificationModule, AdminModule, ScheduleModule.forRoot()],
   controllers: [AppController],
-  providers: [],
+  providers: [TasksSubservice],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

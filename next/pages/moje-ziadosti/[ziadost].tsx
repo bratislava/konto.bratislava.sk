@@ -3,7 +3,7 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/ope
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { getFakeGinisData } from 'frontend/utils/ginis'
+import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
@@ -31,12 +31,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       })
       myApplicationDetailsData = response?.data // getApplicationDetailsData(ctx.query.ziadost) || null
       if (myApplicationDetailsData.ginisDocumentId) {
-        // TODO commented out while GINIS API endpoints don't work as expected
-        // const ginisRequest = await formsApi.ginisControllerGetGinisDocumentByFormId(id, {
-        //   accessToken: 'always',
-        //   accessTokenSsrGetFn: getAccessToken,
-        // })
-        myApplicationGinisData = getFakeGinisData(myApplicationDetailsData.formDefinitionSlug)
+        const ginisRequest = await formsApi.ginisControllerGetGinisDocumentByFormId(id, {
+          accessToken: 'always',
+          accessTokenSsrGetFn: getAccessToken,
+        })
+        myApplicationGinisData = ginisRequest?.data
       }
     } catch (error) {
       logger.error(error)
@@ -54,7 +53,10 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
       props: {
         formDefinitionTitle: formDefinition.title,
         myApplicationDetailsData,
-        myApplicationGinisData,
+        myApplicationGinisData: modifyGinisDataForSchemaSlug(
+          myApplicationGinisData,
+          myApplicationDetailsData.formDefinitionSlug,
+        ),
         ...(await slovakServerSideTranslations()),
       },
     }

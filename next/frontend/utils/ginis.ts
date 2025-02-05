@@ -35,38 +35,3 @@ export const modifyGinisDataForSchemaSlug = (
     ownerPhone: '',
   }
 }
-
-// temp workaround while GINIS API endpoints don't work as expected
-export const getFakeGinisData = (schemaSlug: string): GinisDocumentDetailResponseDto => {
-  const prefilteredData = {
-    id: '',
-    dossierId: '',
-    documentHistory: [],
-    ownerName: '',
-    ownerEmail: '',
-    ownerPhone: '',
-  }
-  if (
-    ['stanovisko-k-investicnemu-zameru', 'zavazne-stanovisko-k-investicnej-cinnosti'].includes(
-      schemaSlug,
-    )
-  ) {
-    return {
-      ...prefilteredData,
-      ownerEmail: 'usmernovanievystavby@bratislava.sk',
-      ownerName: '',
-      ownerPhone: '',
-    }
-  }
-  // taxes want to share the contact for referents (as far as we know)
-  if (schemaSlug === 'priznanie-k-dani-z-nehnutelnosti') {
-    return prefilteredData
-  }
-  // we don't have any direction for other schemas, but we have a few complaints, so playing it safe until the details page is fixed
-  return {
-    ...prefilteredData,
-    ownerEmail: 'info@bratislava.sk',
-    ownerName: '',
-    ownerPhone: '',
-  }
-}

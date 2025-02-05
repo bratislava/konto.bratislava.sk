@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { CustomErrorPaymentResponseTypesEnum, CustomErrorPaymentTypesEnum } from '../../../payment/dtos/error.dto'
+import { CustomErrorPdfCreateTypesEnum, CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto'
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
@@ -38,7 +40,7 @@ export class ResponseErrorDto {
     default: 'INTERNAL_SERVER_ERROR',
     enumName: 'CustomErrorPaymentTypesEnum',
   })
-  errorName: CustomErrorPaymentTypesEnum
+  errorName: CustomErrorEnums
 }
 
 export class ErrorSymbols {
@@ -76,48 +78,17 @@ export class ResponseErrorInternalDto {
 
   message!: string
 
-  errorName!: CustomErrorEnums;
+  errorName!: CustomErrorEnums
 
-  [ErrorSymbols.alert]?: number;
+  [ErrorSymbols.alert]?: number
 
-  [ErrorSymbols.console]?: string;
+  [ErrorSymbols.console]?: string
 
-  [ErrorSymbols.errorCause]?: string;
+  [ErrorSymbols.errorCause]?: string
 
   [ErrorSymbols.causedByMessage]?: string
 }
 
-export enum CustomErrorTaxTypesEnum {
-  TAXYEAR_OR_USER_NOT_FOUND = 'TAXYEAR_OR_USER_NOT_FOUND',
-  BIRTNUMBER_NOT_EXISTS = 'BIRTNUMBER_NOT_EXISTS',
-}
-
-export enum CustomErrorTaxTypesResponseEnum {
-  TAXYEAR_OR_USER_NOT_FOUND = 'Tax year or user was not found',
-  BIRTNUMBER_NOT_EXISTS = 'Birthnumber not exists',
-}
-
-export enum CustomErrorPaymentTypesEnum {
-  TAX_NOT_FOUND = 'TAX_NOT_FOUND',
-  PAYMENT_ALREADY_PAYED = 'PAYMENT_ALREADY_PAYED',
-  OLD_TAX_NOT_PAYABLE = 'OLD_TAX_NOT_PAYABLE',
-  DATABASE_ERROR = 'DATABASE_ERROR',
-  CREATE_PAYMENT_URL = 'CREATE_PAYMENT_URL',
-  QR_CODE_NOT_FOUND = 'QR_CODE_NOT_FOUND',
-}
-
-export enum CustomErrorPaymentTypesResponseEnum {
-  OLD_TAX_NOT_PAYABLE = 'Tax is not payable, because tax is from past year.',
-  QR_CODE_NOT_FOUND = 'QR code was not found',
-}
-
-export enum CustomErrorPaymentResponseTypesEnum {
-  PAYMENT_RESPONSE_ERROR = 'PAYMENT_RESPONSE_ERROR',
-}
-
-export enum CustomErrorPdfCreateTypesEnum {
-  PDF_CREATE_ERROR = 'PDF_CREATE_ERROR',
-}
 
 export enum ErrorsEnum {
   NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',

@@ -1,12 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  PaymentStatus,
-  Tax,
-  TaxPayer,
-  TaxPayment,
-  TaxPaymentSource,
-} from '@prisma/client'
+import { PaymentStatus, Tax, TaxPayer, TaxPayment, TaxPaymentSource } from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 import { BloomreachService } from 'src/bloomreach/bloomreach.service'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -17,19 +11,19 @@ import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
 import {
+  ErrorsResponseEnum,
+} from '../utils/guards/dtos/error.dto'
+import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
+import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
   CustomErrorPaymentTypesResponseEnum,
-  CustomErrorTaxTypesEnum,
-  CustomErrorTaxTypesResponseEnum,
-} from '../utils/guards/dtos/error.dto'
-import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+} from './dtos/error.dto'
+import { CustomErrorTaxTypesEnum, CustomErrorTaxTypesResponseEnum } from '../tax/dtos/error.dto'
 
 @Injectable()
 export class PaymentService {
-  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly prisma: PrismaService,
@@ -39,7 +33,6 @@ export class PaymentService {
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new LineLoggerSubservice(PaymentService.name)
   }
 
   private async getPaymentUrl(tax: Tax): Promise<string> {
@@ -63,6 +56,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not load data from taxPayment',
         'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
 
@@ -95,6 +90,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not create order',
         'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
 
@@ -124,7 +121,8 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
         'Can not create url',
         'Create url error',
-        `${error}`,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
   }
@@ -142,14 +140,16 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
 
     if (!tax) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
         'Tax was not found',
-        'Not Found',
       )
     }
 
@@ -167,14 +167,16 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get taxpayer error',
         'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
 
     if (!taxPayer) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
         'Tax was not found',
-        'Not Found',
       )
     }
 
@@ -193,14 +195,16 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
 
     if (!tax) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
         'Tax was not found',
-        'Not Found',
       )
     }
 
@@ -313,7 +317,8 @@ export class PaymentService {
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
         'Error to redirect to response',
         'Error to redirect',
-        `${error}`,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
   }
@@ -322,8 +327,8 @@ export class PaymentService {
     const qrBase64 = await this.prisma.tax.findUnique({ where: { uuid } })
     if (!qrBase64) {
       throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAXYEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAXYEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
       )
     }
     if (!qrBase64.qrCodeEmail) {

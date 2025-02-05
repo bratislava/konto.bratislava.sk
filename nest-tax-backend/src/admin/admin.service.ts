@@ -453,14 +453,12 @@ export class AdminService {
               }
             }
           } catch (error) {
-            this.logger.log(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-                undefined,
-                undefined,
-                error as Error,
-              ),
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+              undefined,
+              undefined,
+              error as Error,
             )
           }
         }),

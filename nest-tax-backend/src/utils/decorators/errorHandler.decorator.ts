@@ -12,8 +12,8 @@ export function HandleErrors(
     const originalMethod = descriptor.value
     const logger = new LineLoggerSubservice(loggerName)
 
-    // eslint-disable-next-line no-param-reassign,func-names
-    descriptor.value = async function (...args: undefined[]) {
+    const modifiedDescriptor = descriptor
+    modifiedDescriptor.value = async function (...args: undefined[]) {
       try {
         const result = await originalMethod.apply(this, args)
         return result
@@ -22,6 +22,6 @@ export function HandleErrors(
       }
       return null
     }
-    return descriptor
+    return modifiedDescriptor
   }
 }

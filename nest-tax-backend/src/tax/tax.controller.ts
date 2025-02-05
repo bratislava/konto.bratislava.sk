@@ -1,34 +1,19 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  Query,
-  Res,
-  UseGuards,
-} from '@nestjs/common'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { Controller, Get, HttpCode, Query, Res, UseGuards } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import pdf, { CreateOptions } from 'html-pdf'
 import { BratislavaUser } from 'src/auth/guards/cognito.guard'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
-import {
-  CustomErrorPdfCreateTypesEnum,
-  ResponseErrorDto,
-  ResponseInternalServerErrorDto,
-} from 'src/utils/guards/dtos/error.dto'
+import { ResponseErrorDto, ResponseInternalServerErrorDto } from 'src/utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
 import { TaxService } from './tax.service'
+import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
 
 @ApiTags('tax')
 @ApiBearerAuth()
@@ -129,7 +114,8 @@ export class TaxController {
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
         'Error to create pdf',
         'Error to create pdf',
-        `${error}`,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
   }

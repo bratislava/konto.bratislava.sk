@@ -23,7 +23,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
-    if (response.get('middlewareUsed')) {
+    if (response.locals['middlewareUsed']) {
       response.json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         [errorTypeKeys.errorType]: name,
@@ -48,7 +48,7 @@ export class TypeErrorFilter implements ExceptionFilter {
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
-    if (response.get('middlewareUsed')) {
+    if (response.locals['middlewareUsed']) {
       response.json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         [errorTypeKeys.errorType]: name,
@@ -73,7 +73,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse()
     response.status(status)
 
-    if (response.get('middlewareUsed')) {
+    if (response.locals['middlewareUsed']) {
       if (typeof exceptionResponse === 'object') {
         response.json({
           ...symbolKeysToStrings(exceptionResponse),

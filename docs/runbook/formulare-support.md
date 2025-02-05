@@ -136,7 +136,37 @@ Treba kontaktovať vlastníkov formuláru na strane magistrátu. Ak ide o závä
 
 ### Co robit ked formular skonci v SHAREPOINT_ERROR?
 
-Najlepsie je pingnut Řehulka Erik a on ti povie ako dalej. Ked sa to od neho dozvies, napis to sem aby sme vedeli.
+Vo veľkej väčšine prípadov je to z toho dôvodu, že používateľ zadal do niektorého poľa dátum s rokom menej ako 1900. Sharepoint z nejakého dôvodu toto neakceptuje ako validný rok, preto toto treba upraviť a zopakovať odoslanie. V prvom rade je teda fajn si pozrieť log toho erroru, ak je tam v dátach naozaj dátum s rokom menej ako 1900, tak je to jasné, v opačnom prípade je treba zreprodukovať odosielanie, čo je popísané nižšie.
+
+Postup pri zlom roku je nasledovný:
+1. Otvorím si daný formulár v databáze, a vo `formDataJson` upravím rok tak, aby nebol menej ako 1900. Vo väčšine prípadov stačí zmeniť 18xx -> 19xx, prípadne niekto zabudne dať prvú cifru, teda 9xx -> 19xx.
+2. Rovnako tomuto formuláru nastavím `ginisState: SUBMISSION_ASSIGNED`.
+3. Otvorím [sharepoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejdem si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do sharepointu dostali. Do sharepointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v sharepointe. Stačí v tabuľke vyhľadať záznamy podľa Ginis ID, ak sa tam nejaký nachádza, tak ho treba odstrániť, ak nie, tak netreba robiť nič.
+4. Ak je všetko zo sharepointu odstránené a formulár je fixnutý aj so správnym `ginisState`, tak ho stačí hodiť do Ginis queue ako je popísané vyššie. Následne prebehne pokus o odoslanie, ak je všetko v poriadku tak sa dostane do stavu `PROCESSING`.
+
+Ak toto nebol ten problém a roky sú teda všetky v poriadku, tak treba skúšať ďalej. Niekedy sa môže stať, že Sharepoint timeoutne - toto sa stalo asi iba raz, ale v tom prípade treba spraviť rovnaké kroky ako vyššie, len netreba upravovať dáta.
+
+Párkrát sa stalo, že nesedel dátový typ, ktorý bol odoslaný s tým, ktorý bol v sharepointe pre daný stĺpec. Všetky problémy s týmto boli, že bol nastavený príliš malý limit na dĺžku textov. V tom prípade treba zmeniť stĺpec v sharepointe z "jedného riadku textu" na "viac riadkov textu" a znova zopakovať odoslanie.
+
+Ak stále nič nefunguje, tak sa dá zreprodukovať odosielanie aj lokálne. Sharepoint vráti nejaký error log, ktorý je nie vždy veľa hovoriaci, ale vie niekedy pomôcť. Na toto treba mať nejaký tool na posielanie requestov, napríklad postman.
+1. Na toto treba získať bearer token. Treba si nastaviť env hodnoty `SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL` na produkčné hodnoty a nejak lokálne zavolať `getAccessToken` v `sharepoint.subservice`. Funkcia vráti access token, s ktorým vieme simulovať potom posielanie do sharepointu.
+2. V logoch je vidno, že do akej tabuľky/zoznamu zlyhalo odoslanie, má to tvar `dtb_NajomneByvanie...` a aj aké dáta sa tam poslali.
+3. Ak je napríklad tabuľka `dtb_NajomneByvanieZiadatel`, tak budeme posielať POST request na `https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_api/web/lists/getbytitle('dtb_NajomneByvanieZiadatel')/items`. Pre iný zoznam stačí samozrejme zmeniť za iný v url v `getbytitle`.
+4. Autorizujeme sa bearer tokenom ktorý máme z prvého kroku.
+5. Do body dáme posielané dáta z logov v JSON formáte, teda
+```json
+{
+  "GinisID": "MAG0X04WAYYY",
+  "KontaktovanyEmailom": true,
+  "ZiadatelMeno": "Erik",
+  ...
+}
+```
+6. Tento request odošleme a v odpovedi dostaneme buď success, alebo error s nejakým popisom, sharepoint bohužiaľ nevracia detailné errory.
+
+Podľa tohoto sa dá zistiť kde bola chyba. Nie všetky polia musia byť vyplnené, teda viem poslať len podmnožinu dát. Takto sa dá zistiť kde je chyba, request sa dá poslať viackrát (treba pregenerovať token keď vyprší) s rôznymi dátami, ak niečo nepošlem a zrazu to prejde, tak problém bol v nejakom poli čo som neposlal. Na konci samozrejme treba všetky tieto záznamy vymazať, až potom môžeme zopakovať odoslanie celej žiadosti cez ginis queue.
+
+Nemôžeme meniť ale dáta, ktoré majú vplyv na bodovanie, teda napr. diagnózy, dĺžka bytovej núdze a podobne.
 
 ### Co robit ked formular je v stave RUNNING_REGISTER?
 

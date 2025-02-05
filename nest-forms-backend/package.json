@@ -107,13 +107,13 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-markdown": "^5.1.0",
     "eslint-plugin-no-constructor-bind": "^2.0.4",
-    "eslint-plugin-no-secrets": "^1.0.2",
+    "eslint-plugin-no-secrets": "^2.1.1",
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "eslint-plugin-no-use-extend-native": "^0.5.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-optimize-regex": "^1.2.1",
     "eslint-plugin-pii": "^1.0.2",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-scanjs-rules": "^0.2.1",
     "eslint-plugin-security": "^3.0.1",
@@ -159,7 +159,10 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^react-markdown$": "<rootDir>/../test/react-markdown-mock.js"
+    }
   },
   "volta": {
     "node": "20.9.0",

@@ -28,6 +28,9 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
     >
       <OverlayArrow>
         {({ placement }) => {
+          if (!placement) {
+            return null
+          }
           const ArrowIcon = iconComponentMap[placement]
           if (!ArrowIcon) {
             return null

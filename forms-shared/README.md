@@ -7,8 +7,6 @@ It turned out that it's challenging and error-prone to write schemas and UI sche
 - We can encapsulate our custom logic into more meaningful components. For example, steps are not something that is supported natively by the form library. Each step is an item in the root `allOf` array of the schema. However, the generator exposes the `step` function which allows us to write the steps in a more declarative way.
 - The types are shared between the generator and the application logic. This brings us type safety and allows us to refactor the code with confidence.
 
-The generator is part of the `/next` folder out of necessity. It's not possible to easily share types between the generator and the application logic if the generator is not located in the same folder as the application logic. It also shares the same instance of RJSF form library.
-
 ## Usage
 
 ### Instalation
@@ -26,7 +24,7 @@ Then to install node dependencies on macOS:
   npm install
 ```
 
-if you are having problems with npm installing, you need to propably relink brew libraries:
+if you are having problems with npm installing, you likely need to relink brew libraries:
 
 ```bash
   export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
@@ -41,10 +39,10 @@ on Windows just use npm install as the binaries are included in the npm packages
   npm install
 ```
 
-Installing on Windows under WSL Ubuntu might need similar dependencies as macOS, so if install throws errors, simply run:
+Installing on Windows under WSL Ubuntu might need similar dependencies as macOS, so if install throws errors, run:
 
 ```bash
-  sudo apt-get update 
+  sudo apt-get update
   sudo apt-get install pkg-config libcairo2-dev libpango1.0-dev libpng-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
 

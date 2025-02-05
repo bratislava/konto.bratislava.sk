@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { addBaOrderToFields } from '../../src/generator/addBaOrderToFields'
 import { createCondition } from '../../src/generator/helpers'
 import { GeneratorConditionalFields, GeneratorField } from '../../src/generator/generatorTypes'
@@ -5,7 +6,7 @@ import { input } from '../../src/generator/functions/input'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 
 describe('addBaOrderToFields', () => {
-  it('assigns sequential order to regular fields', () => {
+  test('assigns sequential order to regular fields', () => {
     const fields = [
       input('field1', { title: 'Field 1', type: 'text' }, {}),
       input('field2', { title: 'Field 2', type: 'text' }, {}),
@@ -19,7 +20,7 @@ describe('addBaOrderToFields', () => {
     expect((result[2] as GeneratorField).schema.baOrder).toBe(3)
   })
 
-  it('handles conditional fields with then/else branches', () => {
+  test('handles conditional fields with then/else branches', () => {
     const fields = [
       input('field1', { title: 'Field 1', type: 'text' }, {}),
       conditionalFields(
@@ -32,11 +33,9 @@ describe('addBaOrderToFields', () => {
 
     const result = addBaOrderToFields(fields)
 
-    // Regular fields get sequential numbers
     expect((result[0] as GeneratorField).schema.baOrder).toBe(1)
     expect((result[2] as GeneratorField).schema.baOrder).toBe(4)
 
-    // Check then/else schemas have correct ordering
     const conditional = result[1] as GeneratorConditionalFields
     // @ts-expect-error Improve BAJONSchema7 type
     expect(conditional.thenSchema.properties.field2.baOrder).toBe(2)
@@ -44,7 +43,7 @@ describe('addBaOrderToFields', () => {
     expect(conditional.elseSchema.properties.field3.baOrder).toBe(3)
   })
 
-  it('handles nested conditional fields with else branches', () => {
+  test('handles nested conditional fields with else branches', () => {
     const fields = [
       input('field1', { title: 'Field 1', type: 'text' }, {}),
       conditionalFields(

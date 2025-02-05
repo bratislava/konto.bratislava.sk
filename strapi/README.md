@@ -11,7 +11,11 @@ cp .env.example .env.local
 
 You need postgres running locally (with correct credentials & database available). The default setup is in `.env.example`, you can override any of the variables by passing them in you `.env.local` file.
 
-If you need to quickly setup postgres see the readme and the docker-compose file in the root of the project.
+You can use docker-compose to run postgres locally:
+
+```
+docker compose up postgres
+```
 
 ### Starting from empty database
 

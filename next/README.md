@@ -78,3 +78,43 @@ After removing a snackbar plugin, these overrides can be safely removed from pac
 "react-dom": "18.3.1"
 }
 ```
+
+## `react-simple-snackbar` patched package
+Unfortunately, `react-transition-group` which is used by `react-simple-snackbar` uses `findDOMNode` that was removed in React 19.
+
+It allows bypassing this feature by providing [`nodeRef`](https://github.com/reactjs/react-transition-group/issues/559). However, the snackbar package doesn't implement it so we need to patch it. 
+
+The patch is built version of `react-simple-snackbar` with the following changes:
+```
+diff --git a/src/Snackbar.js b/src/Snackbar.js
+--- a/src/Snackbar.js	(revision f1ea5e49cf59e6cdf834f6e8015f016ba6918f68)
++++ b/src/Snackbar.js	(date 1738591704284)
+@@ -1,4 +1,4 @@
+-import React, { createContext, useState } from 'react'
++import React, { createContext, useState, useRef } from 'react'
+ import { CSSTransition } from 'react-transition-group'
+ import styles from './Snackbar.css'
+ 
+@@ -61,6 +61,8 @@
+     setOpen(false)
+   }
+ 
++  const nodeRef = useRef(null)
++
+   // Returns the Provider that must wrap the application
+   return (
+     <SnackbarContext.Provider value={{ openSnackbar, closeSnackbar }}>
+@@ -90,9 +92,10 @@
+             styles[`snackbar-exit-active-${position}`]
+           }`,
+         }}
++        nodeRef={nodeRef}
+       >
+         {/* This div will be rendered with CSSTransition classNames */}
+-        <div>
++        <div ref={nodeRef}>
+           <div className={styles.snackbar} style={customStyles}>
+             {/* Snackbar's text */}
+             <div className={styles.snackbar__text}>{text}</div>
+
+```

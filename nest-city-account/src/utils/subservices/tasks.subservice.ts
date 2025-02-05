@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import {
-  AdminApi,
-  Configuration,
-  RequestUpdateNorisDeliveryMethodsDtoDataValue,
-} from '../../generated-clients/nest-tax-backend'
+import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../../generated-clients/nest-tax-backend'
 import { PrismaService } from '../../prisma/prisma.service'
 import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../birthNumbers'
@@ -14,36 +10,20 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
+import { TaxSubservice } from './tax.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 200
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
 @Injectable()
 export class TasksSubservice {
-  private readonly taxBackendAdminApi: AdminApi
-
   private readonly logger: LineLoggerSubservice
-
-  private readonly config: {
-    taxBackendUrl: string
-    taxBackendApiKey: string
-  }
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly taxSubservice: TaxSubservice
   ) {
-    if (!process.env.TAX_BACKEND_URL || !process.env.TAX_BACKEND_API_KEY) {
-      throw new Error('Tax backend ENV vars are not set ')
-    }
-
-    /** Config */
-    this.config = {
-      taxBackendUrl: process.env.TAX_BACKEND_URL,
-      taxBackendApiKey: process.env.TAX_BACKEND_API_KEY,
-    }
-
-    this.taxBackendAdminApi = new AdminApi(new Configuration({}), this.config.taxBackendUrl)
     this.logger = new LineLoggerSubservice(TasksSubservice.name)
   }
 
@@ -102,14 +82,7 @@ export class TasksSubservice {
 
     this.logger.log(`Found ${birthNumbers.length} birth numbers to be added to tax backend.`)
 
-    const result = await this.taxBackendAdminApi.adminControllerLoadDataFromNorris(
-      { year, birthNumbers },
-      {
-        headers: {
-          apiKey: this.config.taxBackendApiKey,
-        },
-      }
-    )
+    const result = await this.taxSubservice.loadDataFromNoris({ year, birthNumbers })
     const addedBirthNumbers = result.data.birthNumbers.map((birthNumber) =>
       birthNumber.replaceAll('/', '')
     )
@@ -213,7 +186,7 @@ export class TasksSubservice {
       data[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
     })
 
-    this.taxBackendAdminApi.adminControllerUpdateDeliveryMethodsInNoris({ data })
+    await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
 
     // Now we should check if some user was not deactivated during his update in Noris.
     // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However it is an edge case.

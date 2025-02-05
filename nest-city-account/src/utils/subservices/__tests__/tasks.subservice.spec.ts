@@ -8,6 +8,7 @@ import { GdprSubType } from '../../../user/dtos/gdpr.user.dto'
 import ThrowerErrorGuard from '../../guards/errors.guard'
 import { DeliveryMethod } from '../../types/tax.types'
 import { TasksSubservice } from '../tasks.subservice'
+import { TaxSubservice } from '../tax.subservice'
 
 jest.mock('../../decorators/errorHandler.decorators', () => ({
   HandleErrors: () => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -36,14 +37,12 @@ describe('TasksSubservice', () => {
 
   let throwerErrorGuard: ThrowerErrorGuard
 
-  const OLD_ENV = process.env
-
   beforeEach(async () => {
-    process.env = { ...OLD_ENV, TAX_BACKEND_URL: 'www.testurl.com', TAX_BACKEND_API_KEY: 'testkey' }
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksSubservice,
         { provide: PrismaService, useValue: prismaMock },
+        { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
         ThrowerErrorGuard,
       ],
     }).compile()
@@ -55,10 +54,7 @@ describe('TasksSubservice', () => {
 
   describe('updateDeliveryMethodsInNoris', () => {
     it('should call the endpoint with the correct data', async () => {
-      const adminApiUpdateSpy = jest.spyOn(
-        service['taxBackendAdminApi'],
-        'adminControllerUpdateDeliveryMethodsInNoris'
-      )
+      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
 
@@ -189,10 +185,7 @@ describe('TasksSubservice', () => {
     })
 
     it('should not call the endpoint if there are no users', async () => {
-      const adminApiUpdateSpy = jest.spyOn(
-        service['taxBackendAdminApi'],
-        'adminControllerUpdateDeliveryMethodsInNoris'
-      )
+      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'updateMany')
 
       prismaMock.user.findMany.mockResolvedValue([])
@@ -204,10 +197,7 @@ describe('TasksSubservice', () => {
     })
 
     it('should throw error if some user was deactivated during his update in Noris', async () => {
-      const adminApiUpdateSpy = jest.spyOn(
-        service['taxBackendAdminApi'],
-        'adminControllerUpdateDeliveryMethodsInNoris'
-      )
+      const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')
       const prismaUserUpdateSpy = jest.spyOn(prismaMock.user, 'update')
 

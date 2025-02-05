@@ -45,7 +45,7 @@ export class ResponseErrorDto {
   @ApiProperty({
     description: 'Name of the error',
     default: 'INTERNAL_SERVER_ERROR',
-    enumName: 'CustomErrorPaymentTypesEnum',
+    enumName: 'CustomErrorEnums',
   })
   errorName: CustomErrorEnums
 }

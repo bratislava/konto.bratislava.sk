@@ -40,7 +40,7 @@ export class PaymentService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
-  private async getTaxPaumentByTaxId(
+  private async getTaxPaymentByTaxId(
     id: number,
   ): Promise<TaxPaymentWithTaxYear | null> {
     try {
@@ -70,7 +70,7 @@ export class PaymentService {
 
   private async getPaymentUrl(tax: Tax): Promise<string> {
     const taxPayment: TaxPaymentWithTaxYear | null =
-      await this.getTaxPaumentByTaxId(tax.id)
+      await this.getTaxPaymentByTaxId(tax.id)
 
     if (taxPayment) {
       throw this.throwerErrorGuard.UnprocessableEntityException(

@@ -36,19 +36,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  *
  * @export
- * @interface CreateBirthNumbersRequestDto
- */
-export interface CreateBirthNumbersRequestDto {
-  /**
-   * Birth numbers which should be added to tax payers in database. They must be in format with slash.
-   * @type {Array<string>}
-   * @memberof CreateBirthNumbersRequestDto
-   */
-  birthNumbers: Array<string>
-}
-/**
- *
- * @export
  * @interface CreateBirthNumbersResponseDto
  */
 export interface CreateBirthNumbersResponseDto {
@@ -112,125 +99,104 @@ export interface RequestPostNorisPaymentDataLoadDto {
 /**
  *
  * @export
- * @interface ResponseCustomCreatePdfErrorDto
+ * @interface RequestUpdateNorisDeliveryMethodsDto
  */
-export interface ResponseCustomCreatePdfErrorDto {
+export interface RequestUpdateNorisDeliveryMethodsDto {
   /**
-   *
-   * @type {number}
-   * @memberof ResponseCustomCreatePdfErrorDto
+   * The new delivery methods for the birth numbers. For city account notification, date must be provided.
+   * @type {{ [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue; }}
+   * @memberof RequestUpdateNorisDeliveryMethodsDto
    */
-  statusCode: number
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
-   */
-  status: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
-   */
-  message: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
-   */
-  errorName: ResponseCustomCreatePdfErrorDtoErrorNameEnum
+  data: { [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }
 }
-
-export const ResponseCustomCreatePdfErrorDtoErrorNameEnum = {
-  PdfCreateError: 'PDF_CREATE_ERROR',
-} as const
-
-export type ResponseCustomCreatePdfErrorDtoErrorNameEnum =
-  (typeof ResponseCustomCreatePdfErrorDtoErrorNameEnum)[keyof typeof ResponseCustomCreatePdfErrorDtoErrorNameEnum]
+/**
+ * @type RequestUpdateNorisDeliveryMethodsDtoDataValue
+ * @export
+ */
+export type RequestUpdateNorisDeliveryMethodsDtoDataValue =
+  | RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf
+  | RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1
 
 /**
  *
  * @export
- * @interface ResponseCustomPaymentErrorDto
+ * @interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf
  */
-export interface ResponseCustomPaymentErrorDto {
-  /**
-   *
-   * @type {number}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  statusCode: number
+export interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf {
   /**
    *
    * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
+   * @memberof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf
    */
-  status: string
+  deliveryMethod: RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum
   /**
    *
    * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
+   * @memberof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf
    */
-  message: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  errorName: ResponseCustomPaymentErrorDtoErrorNameEnum
+  date: string
 }
 
-export const ResponseCustomPaymentErrorDtoErrorNameEnum = {
-  TaxNotFound: 'TAX_NOT_FOUND',
-  PaymentAlreadyPayed: 'PAYMENT_ALREADY_PAYED',
-  OldTaxNotPayable: 'OLD_TAX_NOT_PAYABLE',
-  DatabaseError: 'DATABASE_ERROR',
-  CreatePaymentUrl: 'CREATE_PAYMENT_URL',
-  QrCodeNotFound: 'QR_CODE_NOT_FOUND',
+export const RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum = {
+  O: 'O',
 } as const
 
-export type ResponseCustomPaymentErrorDtoErrorNameEnum =
-  (typeof ResponseCustomPaymentErrorDtoErrorNameEnum)[keyof typeof ResponseCustomPaymentErrorDtoErrorNameEnum]
+export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum =
+  (typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum)[keyof typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOfDeliveryMethodEnum]
 
 /**
  *
  * @export
- * @interface ResponseCustomTaxErrorDto
+ * @interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1
  */
-export interface ResponseCustomTaxErrorDto {
+export interface RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1 {
   /**
    *
+   * @type {string}
+   * @memberof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1
+   */
+  deliveryMethod: RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum
+}
+
+export const RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum = {
+  E: 'E',
+  P: 'P',
+} as const
+
+export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum =
+  (typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum)[keyof typeof RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnum]
+
+/**
+ *
+ * @export
+ * @interface ResponseErrorDto
+ */
+export interface ResponseErrorDto {
+  /**
+   * statusCode
    * @type {number}
-   * @memberof ResponseCustomTaxErrorDto
+   * @memberof ResponseErrorDto
    */
   statusCode: number
   /**
-   *
+   * status
    * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
+   * @memberof ResponseErrorDto
    */
   status: string
   /**
-   *
+   * Message about error
    * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
+   * @memberof ResponseErrorDto
    */
   message: string
   /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
+   * Name of the error
+   * @type {object}
+   * @memberof ResponseErrorDto
    */
-  errorName: ResponseCustomTaxErrorDtoErrorNameEnum
+  errorName: object
 }
-
-export const ResponseCustomTaxErrorDtoErrorNameEnum = {
-  TaxyearOrUserNotFound: 'TAXYEAR_OR_USER_NOT_FOUND',
-} as const
-
-export type ResponseCustomTaxErrorDtoErrorNameEnum =
-  (typeof ResponseCustomTaxErrorDtoErrorNameEnum)[keyof typeof ResponseCustomTaxErrorDtoErrorNameEnum]
-
 /**
  *
  * @export
@@ -498,11 +464,11 @@ export interface ResponseTaxDto {
    */
   amount: number
   /**
-   * Amount which was already payed in cents - integer
+   * Amount which was already paid in cents - integer
    * @type {number}
    * @memberof ResponseTaxDto
    */
-  payedAmount: number
+  paidAmount: number
   /**
    * Variable symbol of payment
    * @type {string}
@@ -768,7 +734,7 @@ export type TaxDetailTypeEnum = (typeof TaxDetailTypeEnum)[keyof typeof TaxDetai
  */
 
 export const TaxPaidStatusEnum = {
-  NotPayed: 'NOT_PAYED',
+  NotPaid: 'NOT_PAID',
   PartiallyPaid: 'PARTIALLY_PAID',
   Paid: 'PAID',
   OverPaid: 'OVER_PAID',
@@ -782,58 +748,6 @@ export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidS
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
-    /**
-     * For a list of birth numbers this tries to create tax payers in the database, by taking data from NORIS.
-     * @summary Creates tax payers for birth numbers
-     * @param {CreateBirthNumbersRequestDto} createBirthNumbersRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerCreateTaxPayersFromBirthNumbers: async (
-      createBirthNumbersRequestDto: CreateBirthNumbersRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'createBirthNumbersRequestDto' is not null or undefined
-      assertParamExists(
-        'adminControllerCreateTaxPayersFromBirthNumbers',
-        'createBirthNumbersRequestDto',
-        createBirthNumbersRequestDto,
-      )
-      const localVarPath = `/admin/create-tax-payers`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        createBirthNumbersRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
     /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
@@ -887,6 +801,50 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
+     * @summary Remove delivery methods for given birth number.
+     * @param {string} birthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerRemoveDeliveryMethodsFromNoris: async (
+      birthNumber: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'birthNumber' is not null or undefined
+      assertParamExists('adminControllerRemoveDeliveryMethodsFromNoris', 'birthNumber', birthNumber)
+      const localVarPath = `/admin/remove-delivery-methods-from-noris/{birthNumber}`.replace(
+        `{${'birthNumber'}}`,
+        encodeURIComponent(String(birthNumber)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      *
      * @summary Integrate data from norris
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -929,6 +887,58 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         requestPostNorisLoadDataDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Update delivery methods for given birth numbers and date.
+     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateDeliveryMethodsInNoris: async (
+      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestUpdateNorisDeliveryMethodsDto' is not null or undefined
+      assertParamExists(
+        'adminControllerUpdateDeliveryMethodsInNoris',
+        'requestUpdateNorisDeliveryMethodsDto',
+        requestUpdateNorisDeliveryMethodsDto,
+      )
+      const localVarPath = `/admin/update-delivery-methods-in-noris`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestUpdateNorisDeliveryMethodsDto,
         localVarRequestOptions,
         configuration,
       )
@@ -1001,37 +1011,6 @@ export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
   return {
     /**
-     * For a list of birth numbers this tries to create tax payers in the database, by taking data from NORIS.
-     * @summary Creates tax payers for birth numbers
-     * @param {CreateBirthNumbersRequestDto} createBirthNumbersRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerCreateTaxPayersFromBirthNumbers(
-      createBirthNumbersRequestDto: CreateBirthNumbersRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateBirthNumbersResponseDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerCreateTaxPayersFromBirthNumbers(
-          createBirthNumbersRequestDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.adminControllerCreateTaxPayersFromBirthNumbers']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1062,6 +1041,35 @@ export const AdminApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
+     * @summary Remove delivery methods for given birth number.
+     * @param {string} birthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerRemoveDeliveryMethodsFromNoris(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerRemoveDeliveryMethodsFromNoris(
+          birthNumber,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerRemoveDeliveryMethodsFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      *
      * @summary Integrate data from norris
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1079,6 +1087,35 @@ export const AdminApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['AdminApi.adminControllerUpdateDataFromNorris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Update delivery methods for given birth numbers and date.
+     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpdateDeliveryMethodsInNoris(
+      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerUpdateDeliveryMethodsInNoris(
+          requestUpdateNorisDeliveryMethodsDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdateDeliveryMethodsInNoris']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1133,21 +1170,6 @@ export const AdminApiFactory = function (
   const localVarFp = AdminApiFp(configuration)
   return {
     /**
-     * For a list of birth numbers this tries to create tax payers in the database, by taking data from NORIS.
-     * @summary Creates tax payers for birth numbers
-     * @param {CreateBirthNumbersRequestDto} createBirthNumbersRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerCreateTaxPayersFromBirthNumbers(
-      createBirthNumbersRequestDto: CreateBirthNumbersRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<CreateBirthNumbersResponseDto> {
-      return localVarFp
-        .adminControllerCreateTaxPayersFromBirthNumbers(createBirthNumbersRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1163,6 +1185,21 @@ export const AdminApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
+     * @summary Remove delivery methods for given birth number.
+     * @param {string} birthNumber
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerRemoveDeliveryMethodsFromNoris(
+      birthNumber: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      *
      * @summary Integrate data from norris
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1175,6 +1212,21 @@ export const AdminApiFactory = function (
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdateDataFromNorris(requestPostNorisLoadDataDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Update delivery methods for given birth numbers and date.
+     * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateDeliveryMethodsInNoris(
+      requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1203,23 +1255,6 @@ export const AdminApiFactory = function (
  */
 export class AdminApi extends BaseAPI {
   /**
-   * For a list of birth numbers this tries to create tax payers in the database, by taking data from NORIS.
-   * @summary Creates tax payers for birth numbers
-   * @param {CreateBirthNumbersRequestDto} createBirthNumbersRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof AdminApi
-   */
-  public adminControllerCreateTaxPayersFromBirthNumbers(
-    createBirthNumbersRequestDto: CreateBirthNumbersRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return AdminApiFp(this.configuration)
-      .adminControllerCreateTaxPayersFromBirthNumbers(createBirthNumbersRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    *
    * @summary Integrate data from norris if not exists by birth numbers or all
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1237,6 +1272,23 @@ export class AdminApi extends BaseAPI {
   }
 
   /**
+   * Used when deactivating user from city account, to mark that this user does not have delivery methods anymore.
+   * @summary Remove delivery methods for given birth number.
+   * @param {string} birthNumber
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminControllerRemoveDeliveryMethodsFromNoris(
+    birthNumber: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    *
    * @summary Integrate data from norris
    * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1250,6 +1302,23 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdateDataFromNorris(requestPostNorisLoadDataDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Update delivery methods for given birth numbers and date.
+   * @param {RequestUpdateNorisDeliveryMethodsDto} requestUpdateNorisDeliveryMethodsDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminControllerUpdateDeliveryMethodsInNoris(
+    requestUpdateNorisDeliveryMethodsDto: RequestUpdateNorisDeliveryMethodsDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerUpdateDeliveryMethodsInNoris(requestUpdateNorisDeliveryMethodsDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1434,7 +1503,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1479,7 +1548,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -1646,7 +1715,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1675,7 +1744,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -1776,7 +1845,7 @@ export const PaymentApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1791,7 +1860,7 @@ export const PaymentApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -1864,7 +1933,7 @@ export class PaymentApi extends BaseAPI {
   }
 
   /**
-   * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+   * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link to logged user for submitted year if there is no payment.
    * @param {string} year
    * @param {*} [options] Override http request option.
@@ -1878,7 +1947,7 @@ export class PaymentApi extends BaseAPI {
   }
 
   /**
-   * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+   * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link and redirect to this link to gpwebpay.
    * @param {string} uuid
    * @param {*} [options] Override http request option.
@@ -1937,7 +2006,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1983,7 +2052,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2021,7 +2090,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2078,7 +2147,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2105,7 +2174,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2128,7 +2197,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2170,7 +2239,7 @@ export const TaxApiFactory = function (
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2185,7 +2254,7 @@ export const TaxApiFactory = function (
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2198,7 +2267,7 @@ export const TaxApiFactory = function (
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2224,7 +2293,7 @@ export const TaxApiFactory = function (
 export class TaxApi extends BaseAPI {
   /**
    *
-   * @summary Get tax by year and how much is payed
+   * @summary Get tax by year and how much is paid
    * @param {number} year
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2238,7 +2307,7 @@ export class TaxApi extends BaseAPI {
 
   /**
    *
-   * @summary Get all taxes (payed and not payed)
+   * @summary Get all taxes (paid and not paid)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof TaxApi
@@ -2251,7 +2320,7 @@ export class TaxApi extends BaseAPI {
 
   /**
    *
-   * @summary Get tax by year and how much is payed
+   * @summary Get tax by year and how much is paid
    * @param {number} year
    * @param {*} [options] Override http request option.
    * @deprecated

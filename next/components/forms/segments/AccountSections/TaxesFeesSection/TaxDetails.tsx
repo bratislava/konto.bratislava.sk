@@ -68,7 +68,7 @@ const TaxDetails = () => {
               {t('tax_detail_section.tax_already_paid')}
             </div>
             <div className="text-p2 w-max">
-              <FormatCurrencyFromCents value={taxData.payedAmount} />
+              <FormatCurrencyFromCents value={taxData.paidAmount} />
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@ const TaxDetails = () => {
         <div className="flex w-full flex-col gap-2 xs:flex-row lg:gap-6">
           <div className="text-h4 w-full grow xs:w-min">{t('tax_detail_section.tax_to_pay')}</div>
           <div className="text-h4 w-max">
-            <FormatCurrencyFromCents value={taxData.amount - taxData.payedAmount} />
+            <FormatCurrencyFromCents value={taxData.amount - taxData.paidAmount} />
           </div>
         </div>
       </div>

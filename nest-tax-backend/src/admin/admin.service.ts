@@ -297,18 +297,18 @@ export class AdminService {
   /**
    * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
    *
-   * @param payedFromNoris Already paid amount in Noris.
+   * @param paidFromNoris Already paid amount in Noris.
    * @param taxData Tax object, containing all the information about the tax.
    * @param forPayment Left to be paid amount in Noris.
    * @param payerDataCountAll How many payments for this tax we have in the database.
    */
   private handlePaymentsErrors(
-    payedFromNoris: number,
+    paidFromNoris: number,
     taxData: Tax,
     forPayment: number,
     payerDataCountAll: number,
   ) {
-    if (payedFromNoris > taxData.amount && forPayment === 0) {
+    if (paidFromNoris > taxData.amount && forPayment === 0) {
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -317,7 +317,7 @@ export class AdminService {
       )
     } else if (
       payerDataCountAll === 0 &&
-      payedFromNoris >= taxData.amount &&
+      paidFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
       this.logger.error(
@@ -328,7 +328,7 @@ export class AdminService {
       )
     } else if (
       payerDataCountAll > 0 &&
-      payedFromNoris >= taxData.amount &&
+      paidFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
       this.logger.error(
@@ -414,15 +414,15 @@ export class AdminService {
                 sum: 0,
                 count: 0,
               }
-              const payedFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
+              const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
               const forPayment = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
 
-              if (payerData.sum === null || payerData.sum < payedFromNoris) {
+              if (payerData.sum === null || payerData.sum < paidFromNoris) {
                 created += 1
                 const createdTaxPayment =
                   await this.prismaService.taxPayment.create({
                     data: {
-                      amount: payedFromNoris - (payerData.sum ?? 0),
+                      amount: paidFromNoris - (payerData.sum ?? 0),
                       source: 'BANK_ACCOUNT',
                       specificSymbol: norisPayment.specificky_symbol,
                       taxId: taxData.id,
@@ -443,7 +443,7 @@ export class AdminService {
                 }
 
                 this.handlePaymentsErrors(
-                  payedFromNoris,
+                  paidFromNoris,
                   taxData,
                   forPayment,
                   payerData.count,

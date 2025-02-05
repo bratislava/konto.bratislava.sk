@@ -25,7 +25,7 @@ export enum TaxDetailareaTypeEnum {
 }
 
 export enum TaxPaidStatusEnum {
-  NOT_PAID = 'NOT_PAYED',
+  NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
@@ -311,10 +311,10 @@ export class ResponseTaxDto {
   amount: number
 
   @ApiProperty({
-    description: 'Amount which was already payed in cents - integer',
+    description: 'Amount which was already paid in cents - integer',
     default: 1000,
   })
-  payedAmount: number
+  paidAmount: number
 
   @ApiProperty({
     description: 'Variable symbol of payment',

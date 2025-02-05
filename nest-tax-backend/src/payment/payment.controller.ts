@@ -46,7 +46,7 @@ export class PaymentController {
     summary:
       'Generate payment link to logged user for submitted year if there is no payment.',
     description:
-      'If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate',
+      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
   })
   @ApiResponse({
     status: 200,
@@ -83,7 +83,7 @@ export class PaymentController {
   @ApiOperation({
     summary: 'Generate payment link and redirect to this link to gpwebpay.',
     description:
-      'If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate',
+      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
   })
   @ApiResponse({
     status: 302,

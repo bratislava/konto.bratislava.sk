@@ -68,9 +68,9 @@ export class PaymentService {
 
     if (taxPayment) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        CustomErrorPaymentTypesEnum.PAYMENT_ALREADY_PAYED,
-        'Payment or part of payment or some installment was already payed, you can not pay whole amount',
-        'Already payed',
+        CustomErrorPaymentTypesEnum.PAYMENT_ALREADY_PAID,
+        'Payment or part of payment or some installment was already paid, you can not pay whole amount',
+        'Already paid',
       )
     }
 

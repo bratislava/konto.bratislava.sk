@@ -45,7 +45,7 @@ export class TaxController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax by year and how much is payed',
+    summary: 'Get tax by year and how much is paid',
   })
   @ApiResponse({
     status: 200,
@@ -75,7 +75,7 @@ export class TaxController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax by year and how much is payed',
+    summary: 'Get tax by year and how much is paid',
     deprecated: true,
   })
   @ApiResponse({
@@ -136,7 +136,7 @@ export class TaxController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get all taxes (payed and not payed)',
+    summary: 'Get all taxes (paid and not paid)',
   })
   @ApiResponse({
     status: 200,

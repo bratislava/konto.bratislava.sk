@@ -115,7 +115,7 @@ export class TaxService {
     return {
       ...tax,
       taxInstallments,
-      payedAmount: total,
+      paidAmount: total,
       paidStatus,
       pdfExport,
       isPayable,

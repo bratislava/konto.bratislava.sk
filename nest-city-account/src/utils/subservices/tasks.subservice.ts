@@ -120,6 +120,7 @@ export class TasksSubservice {
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
+    const taxDeadlineDate = new Date(getTaxDeadlineDateString())
 
     const users = await this.prisma.user.findMany({
       where: {
@@ -128,6 +129,10 @@ export class TasksSubservice {
         },
         lastTaxDeliveryMethodsUpdateYear: {
           not: currentYear,
+        },
+        lastVerificationIdentityCard: {
+          not: null,
+          lte: taxDeadlineDate,
         },
       },
       include: {
@@ -139,7 +144,7 @@ export class TasksSubservice {
             category: GdprCategory.TAXES,
             type: GdprType.FORMAL_COMMUNICATION,
             createdAt: {
-              lte: getTaxDeadlineDateString(),
+              lte: taxDeadlineDate,
             },
           },
           take: 1,

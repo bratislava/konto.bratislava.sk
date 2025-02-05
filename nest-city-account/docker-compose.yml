@@ -3,7 +3,7 @@ services:
   db:
     image: "postgres:13"
     ports:
-      - "5432:5432"
+      - "5422:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     restart: always
@@ -14,11 +14,10 @@ services:
 
   rabbitmq:
     image: heidiks/rabbitmq-delayed-message-exchange:latest
-    container_name: 'rabbitmq'
     restart: always
     ports:
-        - 5672:5672
-        - 15672:15672
+        - 5633:5672
+        - 15633:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq

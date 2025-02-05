@@ -2,7 +2,7 @@
 
 ## Stavy formulárov
 
-Formuláre spracováva [nest-forms-backend](https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend). Aktuálne stavy sú definované v [schema.prisma](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/prisma/schema.prisma).
+Formuláre spracúva [nest-forms-backend](https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend). Aktuálne stavy sú definované v [schema.prisma](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/prisma/schema.prisma).
 
 ### Hlavné stavy
 
@@ -18,6 +18,14 @@ Formuláre spracováva [nest-forms-backend](https://github.com/bratislava/konto.
 
 Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PROCESSING`, `FINISHED`).
 
+`nest-forms-backend` je **producer** aj **consumer** tejto queue ([detaily implementácie](https://github.com/bratislava/konto.bratislava.sk/blob/c0332af5d71159a0a42dd20ce9a386b2279bf912/nest-forms-backend/src/nases-consumer/nases-consumer.service.ts)):
+
+1. vyberie id formulára, ktorý sa spracúva z queue
+2. pokúsi sa vykonať krok, ktorý formulár posunie do ďalšieho stavu
+   - ak sa mu to podarí upraví stav
+   - ak nie, ostane v rovnakom stave
+3. formulár opäť vloží do queue s oneskorením niekoľko sekúnd, príp. minút
+
 ### GINIS stavy
 
 - `CREATED` - vytvorený v queue
@@ -27,6 +35,18 @@ Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PR
 - `RUNNING_ASSIGN_SUBMISSION` / `SUBMISSION_ASSIGNED` - priradenie oddeleniu
 - `FINISHED` - dokončené
 - `ERROR_*` - rôzne chybové stavy
+
+Ginis historicky nemal potrebné API pre naše potreby. Preto sa formulár zatiaľ posiela do ginisu cez [klikačku](https://github.com/bratislava/ginis-automation), ktorá využíva `selenium` a manuálne tam robí kroky, ako keby ich robil používateľ. Je to veľmi nespoľahlivé, a každý update Ginisu nám klikačku môže pokaziť (a často aj kazí). Z tohto dôvodu máme samostatnú RabbitMQ, ktorá slúži na manažment pridávania formulára do ginisu, pretože [ginis service](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/src/ginis/ginis.service.ts) musí čakať na kroky vykonané klikačkou.
+
+Tento prístup sa ale aktívne snažíme odstrániť po tom, ako nám Ginis v roku 2025 sprístupnil nové API spĺňajúce všetky naše potreby.
+
+### Akceptovateľné koncové stavy
+
+- Stanovisko/záväzné stanovisko k investičnej činnosti: `PROCESSING`, `FINISHED`
+- Nájom bytu: `PROCESSING`
+- Daňové priznanie: `DELIVERED_NASES`
+- OLO: `FINISHED` (email)
+- Predzáhradky: `PROCESSING`
 
 ## Identifikácia a riešenie zaseknutých formulárov
 
@@ -179,11 +199,3 @@ Z nich sa dá zistiť, či klikačka beží, a či nenastáva nejaká plošná c
 Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.
 
 Pri akýchkoľvek problémoch s klikačkou alebo konkrétnych otázok pri analýze formulárového problému treba kontaktovať maintainera <https://github.com/bratislava/ginis-automation>.
-
-## Akceptovateľné koncové stavy
-
-- Stanovisko/záväzné stanovisko k investičnej činnosti: `PROCESSING`, `FINISHED`
-- Nájom bytu: `PROCESSING`
-- Daňové priznanie: `DELIVERED_NASES`
-- OLO: `FINISHED` (email)
-- Predzáhradky: `PROCESSING`

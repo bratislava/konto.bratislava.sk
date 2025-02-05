@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { PaymentStatus, Tax, TaxPayer, TaxPayment, TaxPaymentSource } from '@prisma/client'
+import {
+  PaymentStatus,
+  Tax,
+  TaxPayer,
+  TaxPayment,
+  TaxPaymentSource,
+} from '@prisma/client'
 import formurlencoded from 'form-urlencoded'
 import { BloomreachService } from 'src/bloomreach/bloomreach.service'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -11,20 +17,20 @@ import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
 import {
-  ErrorsResponseEnum,
-} from '../utils/guards/dtos/error.dto'
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../tax/dtos/error.dto'
+import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
-import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
   CustomErrorPaymentTypesResponseEnum,
 } from './dtos/error.dto'
-import { CustomErrorTaxTypesEnum, CustomErrorTaxTypesResponseEnum } from '../tax/dtos/error.dto'
+import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
 @Injectable()
 export class PaymentService {
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly gpWebpaySubservice: GpWebpaySubservice,
@@ -32,16 +38,16 @@ export class PaymentService {
     private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-  }
+  ) {}
 
-  private async getPaymentUrl(tax: Tax): Promise<string> {
-    let taxPayment: TaxPaymentWithTaxYear | null
+  private async getTaxPaumentByTaxId(
+    id: number,
+  ): Promise<TaxPaymentWithTaxYear | null> {
     try {
-      taxPayment = await this.prisma.taxPayment.findFirst({
+      return await this.prisma.taxPayment.findFirst({
         where: {
           status: PaymentStatus.SUCCESS,
-          taxId: tax.id,
+          taxId: id,
         },
         include: {
           tax: {
@@ -60,6 +66,11 @@ export class PaymentService {
         error instanceof Error ? error : undefined,
       )
     }
+  }
+
+  private async getPaymentUrl(tax: Tax): Promise<string> {
+    const taxPayment: TaxPaymentWithTaxYear | null =
+      await this.getTaxPaumentByTaxId(tax.id)
 
     if (taxPayment) {
       throw this.throwerErrorGuard.UnprocessableEntityException(

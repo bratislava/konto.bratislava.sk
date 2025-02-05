@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { CustomErrorPaymentResponseTypesEnum, CustomErrorPaymentTypesEnum } from '../../../payment/dtos/error.dto'
-import { CustomErrorPdfCreateTypesEnum, CustomErrorTaxTypesEnum } from '../../../tax/dtos/error.dto'
+
+import {
+  CustomErrorPaymentResponseTypesEnum,
+  CustomErrorPaymentTypesEnum,
+} from '../../../payment/dtos/error.dto'
+import {
+  CustomErrorPdfCreateTypesEnum,
+  CustomErrorTaxTypesEnum,
+} from '../../../tax/dtos/error.dto'
 
 export class ResponseInternalServerErrorDto {
   @ApiProperty({
@@ -78,17 +85,16 @@ export class ResponseErrorInternalDto {
 
   message!: string
 
-  errorName!: CustomErrorEnums
+  errorName!: CustomErrorEnums;
 
-  [ErrorSymbols.alert]?: number
+  [ErrorSymbols.alert]?: number;
 
-  [ErrorSymbols.console]?: string
+  [ErrorSymbols.console]?: string;
 
-  [ErrorSymbols.errorCause]?: string
+  [ErrorSymbols.errorCause]?: string;
 
   [ErrorSymbols.causedByMessage]?: string
 }
-
 
 export enum ErrorsEnum {
   NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',

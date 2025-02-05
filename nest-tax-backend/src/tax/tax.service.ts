@@ -7,14 +7,19 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
-import { ResponseGetTaxesBodyDto, ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
-import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { getTaxStatus } from './utils/helpers/tax.helper'
+
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
+import {
+  ResponseGetTaxesBodyDto,
+  ResponseGetTaxesDto,
+  ResponseTaxDto,
+} from './dtos/requests.tax.dto'
+import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
+import { getTaxStatus } from './utils/helpers/tax.helper'
 
 @Injectable()
 export class TaxService {
@@ -22,8 +27,7 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
-  ) {
-  }
+  ) {}
 
   async getTaxByYear(
     year: number,

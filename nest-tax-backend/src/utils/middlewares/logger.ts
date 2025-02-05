@@ -11,11 +11,11 @@ export default class AppLoggerMiddleware implements NestMiddleware {
       this.extractRequestData(request)
     const startAt = process.hrtime()
     const { statusMessage, statusCode } = response
-    response.locals['middlewareUsed'] = 'true'
+    response.locals.middlewareUsed = 'true'
 
     const { send } = response
     response.send = (exitData: string | object | Buffer | Array<any>) => {
-      response.locals['middlewareUsed'] = undefined
+      response.locals.middlewareUsed = undefined
 
       const { responseData, logData, returnExitData } = this.parseExitData(
         response,

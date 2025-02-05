@@ -6,6 +6,4 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
  * Do not add errors, which are not not necessary to alert, for example some NOT_FOUND errors from a controller,
  * invoked when a client tries to retrieve a form with nonexistent uuid.
  */
-export default [
-  ErrorsEnum.INTERNAL_SERVER_ERROR
-] as string[]
+export default [ErrorsEnum.INTERNAL_SERVER_ERROR] as string[]

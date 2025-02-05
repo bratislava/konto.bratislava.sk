@@ -1,5 +1,13 @@
-import { Injectable } from "@nestjs/common"
-import { AdminApi, Configuration } from "../../generated-clients/nest-tax-backend"
+import { Injectable } from '@nestjs/common'
+import {
+  AdminApi,
+  Configuration,
+  RequestPostNorisLoadDataDto,
+  RequestUpdateNorisDeliveryMethodsDto,
+} from '../../generated-clients/nest-tax-backend'
+import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
+import { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
 export class TaxSubservice {
@@ -9,8 +17,10 @@ export class TaxSubservice {
     taxBackendUrl: string
     taxBackendApiKey: string
   }
-  
-  constructor() {
+
+  private readonly logger: LineLoggerSubservice
+
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     if (!process.env.TAX_BACKEND_URL || !process.env.TAX_BACKEND_API_KEY) {
       throw new Error('Tax backend ENV vars are not set ')
     }
@@ -22,14 +32,39 @@ export class TaxSubservice {
     }
 
     this.taxBackendAdminApi = new AdminApi(new Configuration({}), this.config.taxBackendUrl)
+
+    this.logger = new LineLoggerSubservice(TaxSubservice.name)
   }
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {
     try {
       this.taxBackendAdminApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber)
       return true
-    } catch (_) {
+    } catch (error) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+          JSON.stringify(error)
+        )
+      )
       return false
     }
+  }
+
+  async loadDataFromNoris(data: RequestPostNorisLoadDataDto) {
+    return this.taxBackendAdminApi.adminControllerLoadDataFromNorris(data, {
+      headers: {
+        apiKey: this.config.taxBackendApiKey,
+      },
+    })
+  }
+
+  async updateDeliveryMethodsInNoris(data: RequestUpdateNorisDeliveryMethodsDto) {
+    return this.taxBackendAdminApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
+      headers: {
+        apiKey: this.config.taxBackendApiKey,
+      },
+    })
   }
 }

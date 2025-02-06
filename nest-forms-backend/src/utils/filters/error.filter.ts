@@ -19,7 +19,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
-    if (response.get('middlewareUsed')) {
+    if (response.locals.middlewareUsed) {
       response.json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         '$Symbol-errorType': name,
@@ -58,7 +58,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     response.status(status)
 
-    if (response.get('middlewareUsed')) {
+    if (response.locals.middlewareUsed) {
       if (typeof exceptionResponse === 'object') {
         response.json({
           ...symbolKeysToStrings(exceptionResponse),

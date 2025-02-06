@@ -7,15 +7,15 @@ import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 @Injectable()
 export default class AppLoggerMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: NextFunction): void {
-    response.set('middlewareUsed', 'true')
     const { method, originalUrl, body, ip, userAgent, userId } =
       this.extractRequestData(request)
     const startAt = process.hrtime()
     const { statusMessage, statusCode } = response
 
+    response.locals.middlewareUsed = 'true'
     const { send } = response
     response.send = (exitData: string | object | Buffer | Array<any>) => {
-      response.set('middlewareUsed', undefined)
+      response.locals.middlewareUsed = undefined
       const { responseData, logData, returnExitData } = this.parseExitData(
         response,
         exitData,

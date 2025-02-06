@@ -29,22 +29,8 @@ export class ErrorFilter implements ExceptionFilter {
     } else {
       const logger = new LineLoggerSubservice(ErrorFilter.name)
 
-      const responseJson = {
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message,
-      }
-
-      logger.error({
-        errorType: name,
-        message,
-        response: responseJson,
-        stack: stack,
-      })
-
-      response.json(responseJson)
+      logger.error(exception)
     }
-
-
   }
 }
 
@@ -74,17 +60,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     } else {
       const logger = new LineLoggerSubservice(HttpExceptionFilter.name)
-      logger.error({
-        errorName: exception.name,
-        errorType: 'HttpException',
-        message: exception.message,
-        response:
-          typeof exceptionResponse === 'object'
-            ? JSON.stringify(exceptionResponse)
-            : exceptionResponse,
-        stack: exception.stack,
-      })
-      response.json(exceptionResponse)
+
+      logger.error(exception)
     }
   }
 }

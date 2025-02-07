@@ -166,7 +166,7 @@ Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú
    }
    ```
 
-_**NOTE:** Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish mesage._
+_**NOTE:** Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish message._
 
 Formulár môže byť najviac v jednej queue a najviac raz. V opačnom prípade ho treba odstrániť (a potom prípadne pridať jedenkrát správne).
 

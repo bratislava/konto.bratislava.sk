@@ -16,9 +16,7 @@ export class CityAccountSubservice {
 
   private readonly logger: Logger
 
-  private readonly throwerErrorGuard: ThrowerErrorGuard
-
-  constructor() {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     this.cityAccountApi = new AdminApi(
       new Configuration({}),
       process.env.CITY_ACCOUNT_API_URL,

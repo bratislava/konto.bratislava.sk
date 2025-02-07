@@ -24,14 +24,13 @@ import { taxDetail } from './utils/tax-detail.helper'
 export class AdminService {
   private readonly logger: Logger
 
-  private readonly throwerErrorGuard: ThrowerErrorGuard
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly qrCodeSubservice: QrCodeSubservice,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly norisService: NorisService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new Logger(AdminService.name)
   }

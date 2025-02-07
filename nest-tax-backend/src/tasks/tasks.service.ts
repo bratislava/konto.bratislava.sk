@@ -5,6 +5,9 @@ import { Prisma } from '@prisma/client'
 import { AdminService } from '../admin/admin.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
+import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Injectable()
 export class TasksService {
@@ -13,11 +16,13 @@ export class TasksService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.logger = new Logger('TasksService')
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
   async updatePaymentsFromNoris() {
     let variableSymbolsDb: {
       variableSymbol: string
@@ -47,13 +52,29 @@ export class TasksService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.meta?.code === '57014'
       ) {
-        this.logger.warn('Query timed out after 2 minutes')
-        throw error
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Query timed out after 2 minutes',
+          undefined,
+          undefined,
+          error,
+        )
       }
-      this.logger.error('Failed to fetch variable symbols from database', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-      })
-      throw error
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          error.message,
+          undefined,
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Unknown error',
+        undefined,
+        <string>error,
+      )
     }
 
     if (variableSymbolsDb.length === 0) return

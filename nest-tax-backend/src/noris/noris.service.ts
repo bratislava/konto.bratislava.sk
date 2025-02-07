@@ -7,6 +7,8 @@ import {
   RequestPostNorisPaymentDataLoadDto,
 } from 'src/admin/dtos/requests.dto'
 
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   queryPayersFromNoris,
   queryPaymentsFromNoris,
@@ -18,15 +20,19 @@ import { UpdateNorisDeliveryMethods } from './noris.types'
 export class NorisService {
   private readonly logger: Logger = new Logger('NorisService')
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
     if (
       !process.env.MSSQL_HOST ||
       !process.env.MSSQL_DB ||
       !process.env.MSSQL_USERNAME ||
       !process.env.MSSQL_PASSWORD
     ) {
-      throw new Error(
-        'Missing on of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Missing one of pricing api envs: MSSQL_HOST, MSSQL_DB, MSSQL_USERNAME, MSSQL_PASSWORD.',
       )
     }
   }
@@ -133,15 +139,19 @@ export class NorisService {
         variableSymbols += `'${variableSymbol}',`
       } else {
         this.logger.error(
-          `ERROR 500 - variable symbol has a wrong format: "${variableSymbol}"`,
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Variable symbol has a wrong format: "${variableSymbol}"`,
+          ),
         )
       }
     })
     variableSymbols = `(${variableSymbols.slice(0, -1)})`
 
     if (data.years.length === 0) {
-      throw new Error(
-        'ERROR - Status-500: Years are empty in payment data import from Noris request.',
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Years are empty in payment data import from Noris request.',
       )
     }
 
@@ -198,8 +208,12 @@ export class NorisService {
       // Execute the query
       await request.query(queryWithPlaceholders)
     } catch (error) {
-      throw new Error(
-        `Failed to update delivery methods: ${(error as Error).message}`,
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to update delivery methods`,
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     } finally {
       // Always close the connection

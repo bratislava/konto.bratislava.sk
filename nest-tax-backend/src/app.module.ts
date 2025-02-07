@@ -9,7 +9,7 @@ import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
 import { TaxModule } from './tax/tax.module'
-import { AppLoggerMiddleware } from './utils/middlewares/logger'
+import AppLoggerMiddleware from './utils/middlewares/logger'
 
 @Module({
   imports: [

@@ -23,7 +23,7 @@ const Details = () => {
   const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
   const hasMultipleInstallments = taxData.taxInstallments.length > 1
   const { channelChangeEffectiveNextYear } = useTaxChannel()
-  const cardPaymentDisabled = taxData.paidStatus !== TaxPaidStatusEnum.NotPayed
+  const cardPaymentDisabled = taxData.paidStatus !== TaxPaidStatusEnum.NotPaid
   const taxDueTextKey = (() => {
     if (hasMultipleInstallments) {
       return 'tax_due_multiple_installments'

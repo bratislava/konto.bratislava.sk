@@ -10,7 +10,7 @@ import logger from '../../../../../frontend/utils/logger'
 
 export const PaymentStatusOptions = {
   FAILED_TO_VERIFY: 'failed-to-verify',
-  ALREADY_PAYED: 'payment-already-paid',
+  ALREADY_PAID: 'payment-already-paid',
   FAILED: 'payment-failed',
   SUCCESS: 'payment-success',
 }
@@ -27,7 +27,7 @@ const ThankYouSection = () => {
     [router.query.status],
   )
   const success =
-    status === PaymentStatusOptions.SUCCESS || status === PaymentStatusOptions.ALREADY_PAYED
+    status === PaymentStatusOptions.SUCCESS || status === PaymentStatusOptions.ALREADY_PAID
   useEffect(() => {
     if (status === PaymentStatusOptions.FAILED_TO_VERIFY) {
       logger.error('Failed to verify payment', router.query)

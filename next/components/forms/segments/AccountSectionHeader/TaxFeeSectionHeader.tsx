@@ -65,7 +65,7 @@ const TaxFeeSectionHeader = () => {
                   <span className="lg:text-p2 text-p3">
                     {t('tax_detail_section.tax_remainder_text', {
                       amount: currencyFromCentsFormatter.format(
-                        taxData.amount - taxData.payedAmount,
+                        taxData.amount - taxData.paidAmount,
                       ),
                     })}
                   </span>

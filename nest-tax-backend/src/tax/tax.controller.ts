@@ -19,13 +19,14 @@ import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
 import {
-  ResponseCustomCreatePdfErrorDto,
-  ResponseCustomTaxErrorDto,
+  ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from 'src/utils/guards/dtos/error.dto'
-import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
+import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
 import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
 import { TaxService } from './tax.service'
 
@@ -33,14 +34,18 @@ import { TaxService } from './tax.service'
 @ApiBearerAuth()
 @Controller('tax')
 export class TaxController {
+  private readonly logger: LineLoggerSubservice
+
   constructor(
     private readonly taxService: TaxService,
-    private readonly errorThrowerGuard: ErrorThrowerGuard,
-  ) {}
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
+    this.logger = new LineLoggerSubservice(TaxController.name)
+  }
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax by year and how much is payed',
+    summary: 'Get tax by year and how much is paid',
   })
   @ApiResponse({
     status: 200,
@@ -50,7 +55,7 @@ export class TaxController {
   @ApiResponse({
     status: 422,
     description: 'Error to load tax data',
-    type: ResponseCustomTaxErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,
@@ -70,7 +75,7 @@ export class TaxController {
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax by year and how much is payed',
+    summary: 'Get tax by year and how much is paid',
     deprecated: true,
   })
   @ApiResponse({
@@ -81,7 +86,7 @@ export class TaxController {
   @ApiResponse({
     status: 422,
     description: 'Error generate pdf',
-    type: ResponseCustomCreatePdfErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,
@@ -113,20 +118,26 @@ export class TaxController {
       }
       pdf.create(pdfData, options).toBuffer((err, buffer) => {
         if (err) {
-          console.error(err)
+          this.logger.error(err)
         } else {
           res.header('Content-type', 'application/pdf')
           res.send(buffer)
         }
       })
     } catch (error) {
-      this.errorThrowerGuard.renderPdfError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
+        'Error to create pdf',
+        'Error to create pdf',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
   }
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get all taxes (payed and not payed)',
+    summary: 'Get all taxes (paid and not paid)',
   })
   @ApiResponse({
     status: 200,
@@ -136,7 +147,7 @@ export class TaxController {
   @ApiResponse({
     status: 422,
     description: 'Error to load tax data',
-    type: ResponseCustomTaxErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,

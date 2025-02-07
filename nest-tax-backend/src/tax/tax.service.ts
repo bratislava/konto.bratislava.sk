@@ -1,13 +1,18 @@
 import path from 'node:path'
 
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { PaymentStatus } from '@prisma/client'
 import ejs from 'ejs'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
+import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
+import {
+  CustomErrorPdfCreateTypesEnum,
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from './dtos/error.dto'
 import {
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
@@ -20,7 +25,7 @@ import { getTaxStatus } from './utils/helpers/tax.helper'
 export class TaxService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly errorThrowerGuard: ErrorThrowerGuard,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
 
@@ -29,7 +34,10 @@ export class TaxService {
     birthNumber: string,
   ): Promise<ResponseTaxDto> {
     if (!birthNumber || !year) {
-      throw this.errorThrowerGuard.taxNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      )
     }
     const tax = await this.prisma.tax.findFirst({
       where: {
@@ -47,7 +55,10 @@ export class TaxService {
     })
 
     if (!tax) {
-      throw this.errorThrowerGuard.taxNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      )
     }
 
     const taxPayment = await this.prisma.taxPayment.groupBy({
@@ -104,7 +115,7 @@ export class TaxService {
     return {
       ...tax,
       taxInstallments,
-      payedAmount: total,
+      paidAmount: total,
       paidStatus,
       pdfExport,
       isPayable,
@@ -113,7 +124,10 @@ export class TaxService {
 
   async loadTaxes(birthNumber: string): Promise<ResponseGetTaxesDto> {
     if (!birthNumber) {
-      throw new HttpException({ message: 'Birthnumber not exists' }, 403)
+      throw this.throwerErrorGuard.ForbiddenException(
+        CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+        CustomErrorTaxTypesResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+      )
     }
     const taxPayments = await this.prisma.taxPayment.groupBy({
       by: ['taxId'],
@@ -186,7 +200,13 @@ export class TaxService {
       })
       return ejsData
     } catch (error) {
-      throw this.errorThrowerGuard.renderPdfError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
+        'Error to create pdf',
+        'Error to create pdf',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
   }
 }

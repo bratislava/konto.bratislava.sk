@@ -10,13 +10,23 @@ import {
 import formurlencoded from 'form-urlencoded'
 import { BloomreachService } from 'src/bloomreach/bloomreach.service'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { ErrorThrowerGuard } from 'src/utils/guards/errors.guard'
+import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
 import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 import { TaxPaymentWithTaxYear } from 'src/utils/types/types.prisma'
 
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../tax/dtos/error.dto'
+import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
+import {
+  CustomErrorPaymentResponseTypesEnum,
+  CustomErrorPaymentTypesEnum,
+  CustomErrorPaymentTypesResponseEnum,
+} from './dtos/error.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
 @Injectable()
@@ -24,19 +34,20 @@ export class PaymentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly gpWebpaySubservice: GpWebpaySubservice,
-    private readonly errorThrowerGuard: ErrorThrowerGuard,
     private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
-  private async getPaymentUrl(tax: Tax): Promise<string> {
-    let taxPayment: TaxPaymentWithTaxYear | null
+  private async getTaxPaymentByTaxId(
+    id: number,
+  ): Promise<TaxPaymentWithTaxYear | null> {
     try {
-      taxPayment = await this.prisma.taxPayment.findFirst({
+      return await this.prisma.taxPayment.findFirst({
         where: {
           status: PaymentStatus.SUCCESS,
-          taxId: tax.id,
+          taxId: id,
         },
         include: {
           tax: {
@@ -47,18 +58,35 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      throw this.errorThrowerGuard.paymentDatabaseError(
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not load data from taxPayment',
+        'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     }
+  }
+
+  private async getPaymentUrl(tax: Tax): Promise<string> {
+    const taxPayment: TaxPaymentWithTaxYear | null =
+      await this.getTaxPaymentByTaxId(tax.id)
 
     if (taxPayment) {
-      throw this.errorThrowerGuard.paymentAlreadyPayed()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.PAYMENT_ALREADY_PAID,
+        'Payment or part of payment or some installment was already paid, you can not pay whole amount',
+        'Already paid',
+      )
     }
 
     const isPayable = computeIsPayableYear(tax.year)
     if (!isPayable) {
-      throw this.errorThrowerGuard.taxNotPayable()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.OLD_TAX_NOT_PAYABLE,
+        CustomErrorPaymentTypesResponseEnum.OLD_TAX_NOT_PAYABLE,
+        'Not payable',
+      )
     }
 
     let orderId: string
@@ -69,7 +97,13 @@ export class PaymentService {
         data: { orderId, amount: tax.amount, taxId: tax.id },
       })
     } catch (error) {
-      throw this.errorThrowerGuard.paymentDatabaseError('Can not create order')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Can not create order',
+        'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
 
     try {
@@ -94,7 +128,13 @@ export class PaymentService {
         },
       )}`
     } catch (error) {
-      throw this.errorThrowerGuard.paymentGenerateUrlError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
+        'Can not create url',
+        'Create url error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
   }
 
@@ -107,11 +147,21 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      this.errorThrowerGuard.paymentDatabaseError('Get tax error')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Get tax error',
+        'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
 
     if (!tax) {
-      throw this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
+        'Tax was not found',
+      )
     }
 
     return this.getPaymentUrl(tax)
@@ -124,11 +174,21 @@ export class PaymentService {
         where: { birthNumber },
       })
     } catch (error) {
-      this.errorThrowerGuard.paymentDatabaseError('Get taxpayer error')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Get taxpayer error',
+        'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
 
     if (!taxPayer) {
-      throw this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
+        'Tax was not found',
+      )
     }
 
     let tax: Tax | null = null
@@ -142,11 +202,21 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      this.errorThrowerGuard.paymentDatabaseError('Get tax error')
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Get tax error',
+        'Database error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
 
     if (!tax) {
-      throw this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.TAX_NOT_FOUND,
+        ErrorsResponseEnum.NOT_FOUND_ERROR,
+        'Tax was not found',
+      )
     }
 
     return this.getPaymentUrl(tax)
@@ -254,17 +324,29 @@ export class PaymentService {
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
     } catch (error) {
-      throw this.errorThrowerGuard.paymentResponseRedirectError(error)
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
+        'Error to redirect to response',
+        'Error to redirect',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
     }
   }
 
   async getQrCodeByTaxUuid(uuid: string): Promise<string> {
     const qrBase64 = await this.prisma.tax.findUnique({ where: { uuid } })
     if (!qrBase64) {
-      throw this.errorThrowerGuard.paymentTaxNotFound()
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      )
     }
     if (!qrBase64.qrCodeEmail) {
-      throw this.errorThrowerGuard.qrCodeNotFound()
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
+        CustomErrorPaymentTypesResponseEnum.QR_CODE_NOT_FOUND,
+      )
     }
     return qrBase64.qrCodeEmail
   }

@@ -45,6 +45,9 @@ module.exports = {
     /** This is similar to using const to let */
     '@typescript-eslint/prefer-readonly': 'error',
 
+    /** Please use logger **/
+    'no-console': 'error',
+
     // TODO: discuss these rules in nest-prisma-template repo
     'max-classes-per-file': 'off',
     'const-case/uppercase': 'off',

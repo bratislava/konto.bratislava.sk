@@ -1,14 +1,12 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-  HttpException,
-} from '@nestjs/common'
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
 import {
   Configuration,
   UsersManipulationApi,
 } from '../../generated-clients/nest-city-account'
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 
 export const BratislavaUser = createParamDecorator(
   async (data: string, ctx: ExecutionContext) => {
@@ -33,6 +31,10 @@ export const BratislavaUser = createParamDecorator(
       return { ...user, birthNumber: birthNumberWithSlash }
     }
 
-    throw new HttpException('error to get birthnumber', 400)
+    const thrower = new ThrowerErrorGuard()
+    throw thrower.BadRequestException(
+      ErrorsEnum.BAD_REQUEST_ERROR,
+      'error to get birthnumber',
+    )
   },
 )

@@ -8,6 +8,8 @@ import { NorisService } from '../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
@@ -21,6 +23,8 @@ import { taxDetail } from './utils/tax-detail.helper'
 @Injectable()
 export class AdminService {
   private readonly logger: Logger
+
+  private readonly throwerErrorGuard: ThrowerErrorGuard
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -221,7 +225,10 @@ export class AdminService {
               )
             if (!bloomreachTracker) {
               this.logger.error(
-                `ERROR - Status-500: Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                this.throwerErrorGuard.InternalServerErrorException(
+                  ErrorsEnum.INTERNAL_SERVER_ERROR,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                ),
               )
             }
           }
@@ -290,36 +297,45 @@ export class AdminService {
   /**
    * This function handles errors in the payment process. It logs an error message if the payment process is not correct, with the info about why it is not correct.
    *
-   * @param payedFromNoris Already paid amount in Noris.
+   * @param paidFromNoris Already paid amount in Noris.
    * @param taxData Tax object, containing all the information about the tax.
    * @param forPayment Left to be paid amount in Noris.
    * @param payerDataCountAll How many payments for this tax we have in the database.
    */
   private handlePaymentsErrors(
-    payedFromNoris: number,
+    paidFromNoris: number,
     taxData: Tax,
     forPayment: number,
     payerDataCountAll: number,
   ) {
-    if (payedFromNoris > taxData.amount && forPayment === 0) {
+    if (paidFromNoris > taxData.amount && forPayment === 0) {
       this.logger.error(
-        'ERROR - Status-500: ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'ZAPLATENE VSETKO ALE V NORISE JE VACSIA CIASTKA AKO U NAS',
+        ),
       )
     } else if (
       payerDataCountAll === 0 &&
-      payedFromNoris >= taxData.amount &&
+      paidFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
       this.logger.error(
-        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na 1x',
+        ),
       )
     } else if (
       payerDataCountAll > 0 &&
-      payedFromNoris >= taxData.amount &&
+      paidFromNoris >= taxData.amount &&
       forPayment > 0
     ) {
       this.logger.error(
-        'ERROR - Status-500: U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'U NAS ZAPLATENE VSETKO ALE V NORISE NIE - na x krat',
+        ),
       )
     }
   }
@@ -398,15 +414,15 @@ export class AdminService {
                 sum: 0,
                 count: 0,
               }
-              const payedFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
+              const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
               const forPayment = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
 
-              if (payerData.sum === null || payerData.sum < payedFromNoris) {
+              if (payerData.sum === null || payerData.sum < paidFromNoris) {
                 created += 1
                 const createdTaxPayment =
                   await this.prismaService.taxPayment.create({
                     data: {
-                      amount: payedFromNoris - (payerData.sum ?? 0),
+                      amount: paidFromNoris - (payerData.sum ?? 0),
                       source: 'BANK_ACCOUNT',
                       specificSymbol: norisPayment.specificky_symbol,
                       taxId: taxData.id,
@@ -427,7 +443,7 @@ export class AdminService {
                 }
 
                 this.handlePaymentsErrors(
-                  payedFromNoris,
+                  paidFromNoris,
                   taxData,
                   forPayment,
                   payerData.count,
@@ -437,7 +453,15 @@ export class AdminService {
               }
             }
           } catch (error) {
-            this.logger.error(`ERROR - Status-500: ${(error as Error).message}`)
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+                undefined,
+                undefined,
+                error as Error,
+              ),
+            )
           }
         }),
     )
@@ -470,8 +494,9 @@ export class AdminService {
           !methodInfo.date
         ) {
           // We must enforce that the date is present for CITY_ACCOUNT delivery method.
-          throw new Error(
-            `ERROR - Status-500: Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Date must be provided for birth number ${birthNumber} when delivery method is CITY_ACCOUNT`,
           )
         }
         deliveryGroups[methodInfo.deliveryMethod].push({

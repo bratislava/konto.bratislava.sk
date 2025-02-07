@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BloomreachEventNameEnum,
   TaxBloomreachDataDto,
@@ -8,22 +11,26 @@ import {
 
 @Injectable()
 export class BloomreachService {
+  private readonly logger: LineLoggerSubservice
+
   private readonly bloomreachCredentials = Buffer.from(
     `${process.env.BLOOMREACH_API_KEY}:${process.env.BLOOMREACH_API_SECRET}`,
     'binary',
   ).toString('base64')
 
-  constructor() {
+  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
       !process.env.BLOOMREACH_API_SECRET ||
       !process.env.BLOOMREACH_PROJECT_TOKEN
     ) {
-      throw new Error(
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Missing on of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.',
       )
     }
+    this.logger = new LineLoggerSubservice(BloomreachService.name)
   }
 
   private async trackEvent(
@@ -50,7 +57,12 @@ export class BloomreachService {
       },
     )
     if (eventResponse.status !== 200) {
-      console.error(`Error in send data to Bloomreach for user id ${cognitoId}`)
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error in send data to Bloomreach for user id ${cognitoId}`,
+        ),
+      )
       return false
     }
     return true

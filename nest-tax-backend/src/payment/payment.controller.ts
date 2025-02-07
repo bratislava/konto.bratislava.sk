@@ -22,26 +22,31 @@ import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
 import {
-  ResponseCustomPaymentErrorDto,
+  ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from 'src/utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from 'src/utils/subservices/dtos/gpwebpay.dto'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'
 import { PaymentService } from './payment.service'
 
 @ApiTags('payment')
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  private readonly logger: LineLoggerSubservice
+
+  constructor(private readonly paymentService: PaymentService) {
+    this.logger = new LineLoggerSubservice(PaymentController.name)
+  }
 
   @HttpCode(200)
   @ApiOperation({
     summary:
       'Generate payment link to logged user for submitted year if there is no payment.',
     description:
-      'If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate',
+      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
   })
   @ApiResponse({
     status: 200,
@@ -51,7 +56,7 @@ export class PaymentController {
   @ApiResponse({
     status: 422,
     description: 'Custom error to create url',
-    type: ResponseCustomPaymentErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,
@@ -78,7 +83,7 @@ export class PaymentController {
   @ApiOperation({
     summary: 'Generate payment link and redirect to this link to gpwebpay.',
     description:
-      'If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate',
+      'If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate',
   })
   @ApiResponse({
     status: 302,
@@ -87,7 +92,7 @@ export class PaymentController {
   @ApiResponse({
     status: 422,
     description: 'Error to redirect',
-    type: ResponseCustomPaymentErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,
@@ -100,7 +105,7 @@ export class PaymentController {
       const url = await this.paymentService.redirectToPayGateByTaxId(uuid)
       res.redirect(url)
     } catch (error) {
-      console.error(error)
+      this.logger.error(error)
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' })
       const response = (error as HttpException).getResponse()
       if (typeof response === 'object' && 'messageSk' in response) {
@@ -119,12 +124,12 @@ export class PaymentController {
   @ApiResponse({
     status: 422,
     description: 'Error to redirect',
-    type: ResponseCustomPaymentErrorDto,
+    type: ResponseErrorDto,
   })
   @ApiResponse({
     status: 500,
     description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
+    type: ResponseErrorDto,
   })
   @Redirect()
   @Get('cardpay/response')
@@ -143,7 +148,7 @@ export class PaymentController {
   @ApiResponse({
     status: 500,
     description: 'Internal server error',
-    type: ResponseInternalServerErrorDto,
+    type: ResponseErrorDto,
   })
   @Get('qrcode/email/:taxUuid')
   async getQrCodeByTaxUuid(@Param('taxUuid') taxUuid: string, @Res() res: any) {

@@ -1,14 +1,19 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import AWS from 'aws-sdk'
 
 import { CognitoTiersEnum } from '../global-dtos/cognito.dto'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export class CognitoSubservice {
   cognitoIdentity: AWS.CognitoIdentityServiceProvider
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly configService: ConfigService,
+  ) {
     this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider({
       accessKeyId: process.env.AWS_COGNITO_ACCESS,
       secretAccessKey: process.env.AWS_COGNITO_SECRET,
@@ -35,12 +40,10 @@ export class CognitoSubservice {
       )
       .promise()
     if (cognitoData.$response.error) {
-      throw new HttpException(
-        {
-          status: cognitoData.$response.error.statusCode,
-          message: cognitoData.$response.error.code,
-        },
-        400,
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        cognitoData.$response.error.code,
+        cognitoData.$response.error.statusCode?.toString(),
       )
     } else {
       let result: CognitoTiersEnum = CognitoTiersEnum.NEW

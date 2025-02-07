@@ -5,9 +5,9 @@ import { NorisModule } from 'src/noris/noris.module'
 import { CityAccountSubservice } from 'src/utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Module({
   imports: [BloomreachModule, NorisModule],
@@ -16,7 +16,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
     AdminStrategy,
     QrCodeSubservice,
     CityAccountSubservice,
-    ThrowerErrorGuard
+    ThrowerErrorGuard,
   ],
   exports: [AdminService],
   controllers: [AdminController],

@@ -7,7 +7,7 @@ export function addSlashToBirthNumber(birthNumber: string): string {
     const thrower = new ThrowerErrorGuard()
     throw thrower.InternalServerErrorException(
       ErrorsEnum.INTERNAL_SERVER_ERROR,
-      `Invalid birth number passed to addSlashToBirthNumber ${birthNumber}`,
+      `Invalid birth number passed to addSlashToBirthNumber: "${birthNumber}"`,
     )
   }
   return birthNumber.includes('/')

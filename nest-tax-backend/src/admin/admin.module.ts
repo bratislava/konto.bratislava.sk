@@ -7,6 +7,7 @@ import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @Module({
   imports: [BloomreachModule, NorisModule],
@@ -15,6 +16,7 @@ import { AdminService } from './admin.service'
     AdminStrategy,
     QrCodeSubservice,
     CityAccountSubservice,
+    ThrowerErrorGuard
   ],
   exports: [AdminService],
   controllers: [AdminController],

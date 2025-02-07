@@ -5,6 +5,7 @@ import { BloomreachService } from '../../bloomreach/bloomreach.service'
 import { NorisService } from '../../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../../noris/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { AdminService } from '../admin.service'
@@ -28,6 +29,7 @@ describe('TasksService', () => {
           useValue: createMock<BloomreachService>(),
         },
         { provide: NorisService, useValue: createMock<NorisService>() },
+        ThrowerErrorGuard,
       ],
     }).compile()
 

@@ -55,7 +55,7 @@
     "prisma": "^6.1.0",
     "rimraf": "^6.0.1",
     "rxjs": "^7.8.1",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",

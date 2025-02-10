@@ -68,14 +68,6 @@ export class UpdateFormRequestDto {
   formDataJson?: PrismaJson.FormDataJson
 
   @ApiPropertyOptional({
-    description: 'Signed ASiC-E container in Base64 format',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsString()
-  formDataBase64?: string | null
-
-  @ApiPropertyOptional({
     description: 'Form signature with metadata',
     type: FormSignatureDto,
     nullable: true,

@@ -37,7 +37,6 @@ model Forms {
   /// [FormDataJson]
   formDataJson       Json?
   formDataGinis      String?
-  formDataBase64     String?
   /// [FormSignature]
   formSignature      Json?
   // ID from Ginis, which is generated after registering the submission

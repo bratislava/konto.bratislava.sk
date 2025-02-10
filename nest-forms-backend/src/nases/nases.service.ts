@@ -3,12 +3,10 @@ import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import {
   FormDefinition,
-  FormDefinitionSlovenskoSkTax,
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
-  createFormSignature,
   verifyFormSignature,
   VerifyFormSignatureError,
 } from 'forms-shared/signer/signature'
@@ -273,17 +271,6 @@ export default class NasesService {
       ico,
     }
 
-    // TEMPORARY FOR REQUESTS RUNNING DURING MIGRATION
-    if (data.formDataBase64 && data.formDataJson && !data.formSignature) {
-      this.logger.log(`Updating form ${id} with formSignature during migration`)
-      data.formSignature = createFormSignature(
-        getFormDefinitionBySlug(
-          'priznanie-k-dani-z-nehnutelnosti',
-        ) as FormDefinitionSlovenskoSkTax,
-        data.formDataBase64,
-        data.formDataJson,
-      )
-    }
     const result = await this.formsService.updateForm(id, data)
     return result
   }

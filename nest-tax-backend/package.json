@@ -38,7 +38,7 @@
     "@types/mssql": "^9.1.5",
     "aws-sdk": "^2.1691.0",
     "axios": "^1.7.7",
-    "bysquare": "^2.1.0",
+    "bysquare": "^2.12.1",
     "class-validator": "^0.14.1",
     "currency.js": "^2.0.4",
     "ejs": "^3.1.10",

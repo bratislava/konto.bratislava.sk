@@ -132,7 +132,7 @@ export class TasksSubservice {
         },
         lastVerificationIdentityCard: {
           not: null,
-          lte: taxDeadlineDate,
+          lt: taxDeadlineDate,
         },
       },
       include: {
@@ -144,7 +144,7 @@ export class TasksSubservice {
             category: GdprCategory.TAXES,
             type: GdprType.FORMAL_COMMUNICATION,
             createdAt: {
-              lte: taxDeadlineDate,
+              lt: taxDeadlineDate,
             },
           },
           take: 1,

@@ -36,7 +36,7 @@ export class UserService {
       if (verificationDate === null) {
         return false
       }
-      if (verificationDate <= verificationDeadlineDate) {
+      if (verificationDate < verificationDeadlineDate) {
         return true
       }
       return false

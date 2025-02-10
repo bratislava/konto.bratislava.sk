@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { AdminErrorsEnum } from '../../admin/admin.errors.enum'
 import { MagproxyErrorsEnum } from '../../magproxy/magproxy.errors.enum'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
-import { UserErrorsEnum } from '../../user/user.error.enum'
 import {
   SendToQueueErrorsEnum,
   VerificationErrorsEnum,
 } from '../../user-verification/verification.errors.enum'
+import { UserErrorsEnum } from '../../user/user.error.enum'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
 
 /**
  * This set contains all of the errors, which should be alerted in grafana when they are thrown.
@@ -14,4 +12,17 @@ import {
  * Do not add errors, which are not not necessary to alert, for example some NOT_FOUND errors from a controller,
  * invoked when a client tries to retrieve a form with nonexistent uuid.
  */
-export default [] as string[]
+export default [
+  VerificationErrorsEnum.INVALID_CAPTCHA,
+  ErrorsEnum.DATABASE_ERROR,
+  ErrorsEnum.INTERNAL_SERVER_ERROR,
+  SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+  VerificationErrorsEnum.DATABASE_ERROR,
+  SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
+  UserErrorsEnum.COGNITO_TYPE_ERROR,
+  MagproxyErrorsEnum.RFO_ACCESS_ERROR,
+  MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
+  VerificationErrorsEnum.UNEXPECTED_UPVS_RESPONSE,
+  VerificationErrorsEnum.EMPTY_RFO_RESPONSE,
+  VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
+] as string[]

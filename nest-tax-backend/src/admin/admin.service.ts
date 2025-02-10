@@ -235,6 +235,9 @@ export class AdminService {
       }),
     )
 
+    // Add the payments for these added taxes to database
+    await this.updatePaymentsFromNorisWithData(norisData)
+
     return { birthNumbers: birthNumbersResult }
   }
 
@@ -346,14 +349,20 @@ export class AdminService {
   }
 
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
-    let created = 0
-    let alreadyCreated = 0
     const norisPaymentData: Partial<NorisPaymentsDto>[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )
+    return this.updatePaymentsFromNorisWithData(norisPaymentData)
+  }
+
+  async updatePaymentsFromNorisWithData(
+    norisPaymentData: Partial<NorisPaymentsDto>[],
+  ) {
+    let created = 0
+    let alreadyCreated = 0
     const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
 
     // Get all tax IDs from taxesDataMap

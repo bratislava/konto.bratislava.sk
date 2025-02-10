@@ -4,26 +4,29 @@ import { removeUndefinedValues } from '../helpers'
 
 export const number = (
   property: string,
-  options: GeneratorBaseOptions & {
-    type?: 'number' | 'integer'
-    default?: number
-    minimum?: number
-    exclusiveMinimum?: number
-    maximum?: number
-    exclusiveMaximum?: number
-  },
+  options: GeneratorBaseOptions &
+    (
+      | {
+          type: 'number'
+          step: number
+        }
+      | { type: 'integer'; step?: number }
+    ) & {
+      default?: number
+      minimum?: number
+      maximum?: number
+    },
   uiOptions: NumberUiOptions,
 ): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
-      type: options.type ?? 'number',
+      type: options.type,
       title: options.title,
       default: options.default,
       minimum: options.minimum,
-      exclusiveMinimum: options.exclusiveMinimum,
       maximum: options.maximum,
-      exclusiveMaximum: options.exclusiveMaximum,
+      multipleOf: options.step,
       baUiSchema: {
         'ui:widget': BaWidgetType.Number,
         'ui:label': false,

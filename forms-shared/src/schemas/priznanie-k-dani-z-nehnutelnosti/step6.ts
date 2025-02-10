@@ -58,6 +58,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
           : 'Celková výmera podlahovej plochy vášho nebytového priestoru',
       required: true,
       minimum: 0,
+      step: 0.01,
     },
     {
       helptextFooter:

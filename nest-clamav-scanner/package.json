@@ -25,7 +25,7 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@nestjs/common": "^10.4.15",
+    "@nestjs/common": "^11.0.8",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.4.7",
     "@nestjs/passport": "^10.0.3",

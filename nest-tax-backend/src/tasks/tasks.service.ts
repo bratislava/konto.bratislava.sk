@@ -108,7 +108,7 @@ export class TasksService {
       throw this.throwerErrorGuard.InternalServerErrorException(
         NorisErrorsEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
         'Failed to update payments from Noris',
-        'Noris error',
+        undefined,
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,
       )

@@ -194,7 +194,7 @@ export class AdminService {
       throw this.throwerErrorGuard.InternalServerErrorException(
         NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',
-        'Noris error',
+        undefined,
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,
       )
@@ -260,7 +260,7 @@ export class AdminService {
       throw this.throwerErrorGuard.InternalServerErrorException(
         NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',
-        'Noris error',
+        undefined,
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,
       )

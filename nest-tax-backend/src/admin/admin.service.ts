@@ -4,6 +4,7 @@ import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
+import { NorisErrorsEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
@@ -184,9 +185,20 @@ export class AdminService {
     data: RequestPostNorisLoadDataDto,
   ): Promise<CreateBirthNumbersResponseDto> {
     this.logger.log('Start Loading data from noris')
-    const norisData = (await this.norisService.getDataFromNoris(
-      data,
-    )) as NorisTaxPayersDto[]
+    let norisData: NorisTaxPayersDto[]
+    try {
+      norisData = (await this.norisService.getDataFromNoris(
+        data,
+      )) as NorisTaxPayersDto[]
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        'Noris error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
     const birthNumbersResult: string[] = []
 
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
@@ -239,7 +251,20 @@ export class AdminService {
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    const norisData = await this.norisService.getDataFromNoris(data)
+    let norisData: NorisTaxPayersDto[]
+    try {
+      norisData = (await this.norisService.getDataFromNoris(
+        data,
+      )) as NorisTaxPayersDto[]
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        'Noris error',
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
+      )
+    }
     let count = 0
     await Promise.all(
       norisData.map(async (elem) => {

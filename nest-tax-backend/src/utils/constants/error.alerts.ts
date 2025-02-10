@@ -1,3 +1,4 @@
+import { NorisErrorsEnum } from '../../noris/noris.errors'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
@@ -19,4 +20,6 @@ export default [
   CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
   CustomErrorPaymentTypesEnum.QR_CODE_NOT_FOUND,
   CustomErrorTaxTypesEnum.BIRTHNUMBER_NOT_EXISTS,
+  NorisErrorsEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
+  NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
 ] as string[]

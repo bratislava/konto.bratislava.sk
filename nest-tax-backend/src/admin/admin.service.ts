@@ -4,7 +4,7 @@ import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
-import { NorisErrorsEnum } from '../noris/noris.errors'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
@@ -192,7 +192,7 @@ export class AdminService {
       )) as NorisTaxPayersDto[]
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
-        NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',
         undefined,
         error instanceof Error ? undefined : <string>error,
@@ -258,7 +258,7 @@ export class AdminService {
       )) as NorisTaxPayersDto[]
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
-        NorisErrorsEnum.GET_TAXES_FROM_NORIS_ERROR,
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',
         undefined,
         error instanceof Error ? undefined : <string>error,

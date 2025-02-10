@@ -1,4 +1,4 @@
-export enum NorisErrorsEnum {
+export enum CustomErrorNorisTypesEnum {
   UPDATE_PAYMENTS_FROM_NORIS_ERROR = 'UPDATE_PAYMENTS_FROM_NORIS_ERROR',
   GET_TAXES_FROM_NORIS_ERROR = 'GET_TAXES_FROM_NORIS_ERROR',
 }

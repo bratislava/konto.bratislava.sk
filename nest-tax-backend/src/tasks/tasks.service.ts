@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
-import { NorisErrorsEnum } from '../noris/noris.errors'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { PrismaService } from '../prisma/prisma.service'
 import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
@@ -106,7 +106,7 @@ export class TasksService {
       })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
-        NorisErrorsEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
+        CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
         'Failed to update payments from Noris',
         undefined,
         error instanceof Error ? undefined : <string>error,

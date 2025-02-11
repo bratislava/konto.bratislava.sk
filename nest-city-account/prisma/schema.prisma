@@ -20,25 +20,26 @@ enum CognitoUserAttributesTierEnum {
 }
 
 model User {
-  id                              String                         @id @default(uuid()) @db.Uuid
-  createdAt                       DateTime                       @default(now())
-  updatedAt                       DateTime                       @updatedAt
-  externalId                      String?                        @unique
-  email                           String?                        @unique
-  ifo                             String?                        @unique
-  birthNumber                     String?                        @unique
-  lastVerificationIdentityCard    DateTime?
-  oldMagproxyDatabase             Int                            @default(0)
-  requeuedInVerification          Int                            @default(0)
-  birthnumberAlreadyExistsLast    String?
-  birthnumberAlreadyExistsCounter Int                            @default(0)
-  userAttribute                   String?
-  userGdprData                    UserGdprData[]
-  physicalEntity                  PhysicalEntity?
-  lastTaxYear                     Int?
-  lastTaxBackendUploadTry         DateTime                       @default(now())
-  cognitoTier                     CognitoUserAttributesTierEnum?
-  userIdCardVerify                UserIdCardVerify[]
+  id                               String                         @id @default(uuid()) @db.Uuid
+  createdAt                        DateTime                       @default(now())
+  updatedAt                        DateTime                       @updatedAt
+  externalId                       String?                        @unique
+  email                            String?                        @unique
+  ifo                              String?                        @unique
+  birthNumber                      String?                        @unique
+  lastVerificationIdentityCard     DateTime?
+  oldMagproxyDatabase              Int                            @default(0)
+  requeuedInVerification           Int                            @default(0)
+  birthnumberAlreadyExistsLast     String?
+  birthnumberAlreadyExistsCounter  Int                            @default(0)
+  userAttribute                    String?
+  userGdprData                     UserGdprData[]
+  physicalEntity                   PhysicalEntity?
+  lastTaxYear                      Int?
+  lastTaxBackendUploadTry          DateTime                       @default(now())
+  lastTaxDeliveryMethodsUpdateYear Int?
+  cognitoTier                      CognitoUserAttributesTierEnum?
+  userIdCardVerify                 UserIdCardVerify[]
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.

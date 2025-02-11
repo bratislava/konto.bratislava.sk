@@ -106,7 +106,7 @@ Ak tlačidlo `Nová elektronická príloha` po [kontrole priamo v Ginise](#kontr
 7. Zmeniť `ginisState` na `SUBMISSION_ASSIGNED`.
 8. Ak sa odtiaľ nepohne, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 
-### Zaseknutý formulár v `RUNNING_REGISTE`
+### Zaseknutý formulár v `RUNNING_REGISTER`
 
 1. Skontrolovať, či sa [podanie nachádza v Ginise](#kontrola-podania-v-ginise) pre formulár s týmto `id`. Ak nie, čakať a skúsiť znova neskôr
 2. Ak áno, zmeniť `ginisState` na `CREATED`.

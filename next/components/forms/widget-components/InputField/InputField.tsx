@@ -10,7 +10,7 @@ import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
-export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
+export type InputType = 'text' | 'password' | 'email' | 'tel'
 
 export type InputFieldProps = FieldWrapperProps & {
   type?: InputType // capitalize input value after field un-focus with type === text

@@ -3144,13 +3144,13 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExa
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "-1",
+                      "value": "1",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_pocetNadob",
                   "label": "Počet nádob",
                   "type": "Field",
-                  "value": -1,
+                  "value": 1,
                 },
               ],
               "id": "root_sluzba_infoOOdpade_0",

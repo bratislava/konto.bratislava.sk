@@ -441,7 +441,13 @@ const getPrijemSection = (stepType: StepType) => {
       conditionalFields(createCondition([[['maPrijem'], { const: true }]]), [
         number(
           'prijemVyska',
-          { title: 'Čistý mesačný príjem dieťaťa', required: true, minimum: 0 },
+          {
+            title: 'Čistý mesačný príjem dieťaťa',
+            type: 'number',
+            step: 0.01,
+            required: true,
+            minimum: 0,
+          },
           {
             size: 'medium',
             leftIcon: 'euro',
@@ -517,7 +523,13 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['zamestnanie'], { const: true }]]), [
       number(
         'zamestnaniePrijem',
-        { title: 'Čistý mesačný príjem zo zamestnania', required: true, minimum: 0 },
+        {
+          title: 'Čistý mesačný príjem zo zamestnania',
+          type: 'number',
+          step: 0.01,
+          required: true,
+          minimum: 0,
+        },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -554,7 +566,13 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['samostatnaZarobkovaCinnost'], { const: true }]]), [
       number(
         'samostatnaZarobkovaCinnostPrijem',
-        { title: 'Mesačný príjem z podnikania', required: true, minimum: 0 },
+        {
+          title: 'Mesačný príjem z podnikania',
+          type: 'number',
+          step: 0.01,
+          required: true,
+          minimum: 0,
+        },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -584,7 +602,7 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['dochodok'], { const: true }]]), [
       number(
         'dochodokVyska',
-        { title: 'Mesačná výška dôchodku', required: true, minimum: 0 },
+        { title: 'Mesačná výška dôchodku', type: 'number', step: 0.01, required: true, minimum: 0 },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -607,7 +625,13 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['vyzivne'], { const: true }]]), [
       number(
         'vyzivneVyska',
-        { title: 'Mesačná výška sumy výživného na dieťa/deti', required: true, minimum: 0 },
+        {
+          title: 'Mesačná výška sumy výživného na dieťa/deti',
+          type: 'number',
+          step: 0.01,
+          required: true,
+          minimum: 0,
+        },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -630,7 +654,13 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['davkaVNezamestnanosti'], { const: true }]]), [
       number(
         'davkaVNezamestnanostiVyska',
-        { title: 'Mesačná výška príspevku z úradu práce', required: true, minimum: 0 },
+        {
+          title: 'Mesačná výška príspevku z úradu práce',
+          type: 'number',
+          step: 0.01,
+          required: true,
+          minimum: 0,
+        },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -658,7 +688,13 @@ const getPrijemSection = (stepType: StepType) => {
     conditionalFields(createCondition([[['inePrijmy'], { const: true }]]), [
       number(
         'inePrijmyVyska',
-        { title: 'Iné pravidelné mesačné príjmy', required: true, minimum: 0 },
+        {
+          title: 'Iné pravidelné mesačné príjmy',
+          type: 'number',
+          step: 0.01,
+          required: true,
+          minimum: 0,
+        },
         { leftIcon: 'euro', size: 'medium' },
       ),
     ]),
@@ -1447,6 +1483,8 @@ export default schema(
         {
           title:
             'Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť',
+          type: 'number',
+          step: 0.01,
           required: true,
           minimum: 0,
         },

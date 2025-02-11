@@ -144,21 +144,29 @@ Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú
 
 ### Pridanie do RabbitMQ
 
-1. Port-forward RabbitMQ (port 15672)
+1. Port-forward RabbitMQ (`nest-forms-backend-rabbitmq-server` port 15672)
 2. Prihlásiť sa do admin rozhrania
 3. Queue > `nases_check_delivery`
-4. Publish message s takýmto objektom:
+4. Rozbaliť menu Publish message, vyplniť nasledovné, kliknúť na tlačidlo Publish message
 
-```js
-{
-  formId: ID_FORMULARA,
-  tries: 0,
-  userData: {
-    email: null,
-    firstName: null
-  }
-}
-```
+   **Properties:**  
+   `content_type` = `application/json`
+
+   **Payload:**  
+   _(nezabudnúť nahradiť `ID_FORMULARA`)_
+
+   ```json
+   {
+     "formId": "ID_FORMULARA",
+     "tries": 0,
+     "userData": {
+       "email": "",
+       "firstName": ""
+     }
+   }
+   ```
+
+_**NOTE:** Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish message._
 
 Formulár môže byť najviac v jednej queue a najviac raz. V opačnom prípade ho treba odstrániť (a potom prípadne pridať jedenkrát správne).
 

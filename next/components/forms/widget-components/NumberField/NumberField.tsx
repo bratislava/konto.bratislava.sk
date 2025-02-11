@@ -36,6 +36,7 @@ export type NumberFieldProps = FieldWrapperProps & {
 const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
   (
     {
+      name,
       label,
       placeholder,
       errorMessage = [],
@@ -152,7 +153,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         labelSize={labelSize}
         displayOptionalLabel={displayOptionalLabel}
       >
-        <div className="relative" data-cy={`required-${inputProps.name}`}>
+        <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
             <span
               className={cx(
@@ -170,7 +171,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
             ref={ref}
             name={inputProps.id}
             className={style}
-            data-cy={`number-${inputProps.name}`}
+            data-cy={`number-${name}`}
           />
           {resetIcon && value != null && (
             <ButtonNew

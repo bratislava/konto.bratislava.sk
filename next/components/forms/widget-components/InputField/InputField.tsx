@@ -14,7 +14,7 @@ export type InputType = 'text' | 'password' | 'email' | 'tel'
 
 export type InputFieldProps = FieldWrapperProps & {
   type?: InputType // capitalize input value after field un-focus with type === text
-  name?: string // unique name within the form - in RJSF form this is the name of the field
+  name?: string
   capitalize?: boolean
   value?: string
   leftIcon?: LeftIconVariants
@@ -30,6 +30,7 @@ export type InputFieldProps = FieldWrapperProps & {
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
+      name,
       label,
       type = 'text',
       placeholder,
@@ -157,7 +158,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         labelSize={labelSize}
         displayOptionalLabel={displayOptionalLabel}
       >
-        <div className="relative" data-cy={`required-${inputProps.name}`}>
+        <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
             <span
               className={cx(
@@ -175,7 +176,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             ref={ref}
             name={inputProps.id}
             className={style}
-            data-cy={`input-${inputProps.name}`}
+            data-cy={`input-${name}`}
           />
           {resetIcon && valueState && (
             <ButtonNew

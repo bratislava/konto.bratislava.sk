@@ -9,7 +9,7 @@
     * [Kontrola stavu](#kontrola-stavu)
     * [Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`](#zaseknutý-formulár-v-running_upload_attachments)
       * [Preskočenie nahrávania príloh](#preskočenie-nahrávania-príloh)
-    * [Zaseknutý formulár v `RUNNING_REGISTE`](#zaseknutý-formulár-v-running_registe)
+    * [Zaseknutý formulár v `RUNNING_REGISTER`](#zaseknutý-formulár-v-running_register)
     * [Zaseknutý formulár v `SHAREPOINT_ERROR`](#zaseknutý-formulár-v-sharepoint_error)
       * [Postup pri zlom roku](#postup-pri-zlom-roku)
       * [Možnosti postupu pri inom probléme](#možnosti-postupu-pri-inom-probléme)

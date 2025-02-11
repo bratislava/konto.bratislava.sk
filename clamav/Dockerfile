@@ -1,6 +1,5 @@
 # Dockerfile for clamav service
-# TODO update to newer version (clamav:stable)
-FROM clamav/clamav:0.104.2 AS prod
+FROM clamav/clamav:1.4 AS prod
 
 # install python3 and pip apk
 RUN apk add --no-cache python3

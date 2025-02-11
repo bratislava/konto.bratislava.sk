@@ -6,7 +6,7 @@ This repository contains a containerized ClamAV antivirus scanner service design
 
 ## Technology Stack
 
-- Base Image: ClamAV 0.104.2
+- Base Image: ClamAV 1.4
 - Language: Python 3
 - Networking: TCP socket on port 3310
 
@@ -17,18 +17,19 @@ This repository contains a containerized ClamAV antivirus scanner service design
 The service uses custom configuration files located in the `conf/` directory:
 
 - `clamd.conf`: Configures the ClamAV daemon
-    - Supports extensive logging
-    - Configurable scan size limits
-- `freshclam.conf`: Manages virus signature database updates, important is the location of the database mirror which is our local cvdmirror in kubernetes http://clamav-cvdmirror-database:8080
+  - Supports extensive logging
+  - Configurable scan size limits
+- `freshclam.conf`: Manages virus signature database updates, important is the location of the database mirror which is our local cvdmirror in kubernetes <http://clamav-cvdmirror-database:8080>
 
 ### Docker Compose
 
 Run the service using Docker Compose:
+
 ```bash
 docker-compose up
 ```
-but you need to change the cvd mirror to a different url or spin via `docker-compose up` in the `cvdmirror` directory
 
+but you need to change the cvd mirror to a different url or spin via `docker-compose up` in the `cvdmirror` directory
 
 ## Key Scripts
 
@@ -41,9 +42,7 @@ but you need to change the cvd mirror to a different url or spin via `docker-com
 
 A sample virus test file is included (`virustest`) to verify antivirus functionality. Used by clamav for readiness probe.
 
-
 ⚠️ it can trigger your antivirus software, be calm
-
 
 ## Logging
 

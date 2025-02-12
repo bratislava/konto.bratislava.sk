@@ -11,7 +11,7 @@ import {
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { ResponseErrorDto } from '../../../utils/guards/dtos/error.dto'
+import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { RfoDataDto } from './types/verification-types.dto'
@@ -133,7 +133,7 @@ export class VerificationSubservice {
           rfoData = {
             statusCode: error.getStatus(),
             data: null,
-            errorData: error.getResponse() as ResponseErrorDto,
+            errorData: error.getResponse() as ResponseErrorInternalDto,
           }
         } else {
           throw error

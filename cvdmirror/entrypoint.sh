@@ -66,24 +66,26 @@ update_database() {
 }
 
 # Argument Handler
-case "$1" in
-status)
-    check_config
-    show_config
-;;
+for arg in "$@"; do
+    case "$arg" in
+    status)
+        check_config
+        show_config
+    ;;
 
-serve)
-    check_database
-    serve_database
-;;
+    serve)
+        check_database
+        serve_database
+    ;;
 
-update)
-    check_config
-    show_config
-    update_database
-;;
+    update)
+        check_config
+        show_config
+        update_database
+    ;;
 
-*)
-    echo "Usage: $0 {status|serve|update}"
-    exit 1
-esac
+    *)
+        echo "Usage: $0 {status|serve|update}"
+        exit 1
+    esac
+done

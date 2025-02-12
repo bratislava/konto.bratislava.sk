@@ -3,13 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["./entrypoint.sh", "serve"]
+    entrypoint: ['./entrypoint.sh']
+    command: ['update', 'serve']
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - database:/mnt/cvdupdate
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8080']
       interval: 60s
       timeout: 10s
       retries: 3
@@ -23,7 +24,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["/usr/sbin/crond", "-f"]
+    command: ['/usr/sbin/crond', '-f']
     volumes:
       - database:/mnt/cvdupdate
     networks:

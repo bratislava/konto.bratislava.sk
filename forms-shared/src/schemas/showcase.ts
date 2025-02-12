@@ -227,6 +227,7 @@ export default schema(
       number(
         'basicNumber',
         {
+          type: 'integer',
           title: 'Basic Number',
           required: true,
           minimum: 0,
@@ -247,6 +248,7 @@ export default schema(
           number(
             'width',
             {
+              type: 'integer',
               title: 'Width',
               required: true,
               minimum: 0,
@@ -256,6 +258,7 @@ export default schema(
           number(
             'height',
             {
+              type: 'integer',
               title: 'Height',
               required: true,
               minimum: 0,

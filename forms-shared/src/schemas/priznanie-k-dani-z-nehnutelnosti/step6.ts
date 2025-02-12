@@ -51,7 +51,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
   number(
     'celkovaVymeraSpecialCase',
     {
-      type: 'number',
+      type: 'integer',
       title:
         typ === Typ.Byt
           ? 'Celková výmera podlahovej plochy vášho bytu'

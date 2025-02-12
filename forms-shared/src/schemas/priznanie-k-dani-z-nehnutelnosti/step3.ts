@@ -18,7 +18,7 @@ import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
-  { title: 'Celková výmera pozemku', required: true, minimum: 0 },
+  { type: 'integer', title: 'Celková výmera pozemku', required: true, minimum: 0 },
   {
     helptextFooter:
       'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
@@ -78,10 +78,14 @@ const vymeraPozemkuKalkulacka = customComponentsField(
 
 const vymeraPozemku = number(
   'vymeraPozemku',
-  { title: 'Vaša výmera pozemku', required: true, minimum: 0 },
+  { title: 'Vaša výmera pozemku', type: 'number', required: true, minimum: 0, step: 0.01 },
   {
     helptextFooter:
       'Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)',
+    formatOptions: {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
 )
 

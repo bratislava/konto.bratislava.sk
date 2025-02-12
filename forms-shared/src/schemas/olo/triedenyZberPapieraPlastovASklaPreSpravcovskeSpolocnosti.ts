@@ -323,7 +323,7 @@ export default schema(
           ),
           number(
             'pocetNadob',
-            { type: 'number', title: 'Počet nádob', required: true },
+            { title: 'Počet nádob', type: 'integer', required: true, minimum: 1 },
             { helptext: 'Uveďte počet nádob' },
           ),
         ],

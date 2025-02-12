@@ -100,7 +100,9 @@ export type InputUiOptions = {
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
+  formatOptions?: Intl.NumberFormatOptions
+}
 
 export type RadioGroupUiOptions = {
   enumMetadata: EnumMetadata<string | boolean>[]

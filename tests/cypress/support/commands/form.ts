@@ -201,7 +201,7 @@ Cypress.Commands.add('checkFormValidation', (device, form, required, fields) => 
 
 Cypress.Commands.add('selectState', (form, esbsNationalityCiselnik, state) => {
   if (state !== '703') {
-    let foundState = esbsNationalityCiselnik.find((stateFromCiselnik) => {
+    const foundState = esbsNationalityCiselnik.find((stateFromCiselnik) => {
       return stateFromCiselnik.Code == state
     })
 
@@ -255,7 +255,7 @@ Cypress.Commands.add(
   'fillHouseInformation',
   (form, index, streetHouseNumber, referenceNumber, landRegistry, parcelNumber) => {
     cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', form)).type(streetHouseNumber)
-    cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(referenceNumber)
+    cy.wrap(Cypress.$('[data-cy=number-supisneCislo]', form)).type(referenceNumber)
     cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).click()
     cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).type(
       landRegistry + '{enter}{enter}',
@@ -281,7 +281,7 @@ Cypress.Commands.add('fillOwner', (form, coownership) => {
 })
 
 Cypress.Commands.add('fillTypeOfTaxReturn', (form, typeOfReturn) => {
-  let radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
+  const radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
   if (typeOfReturn === 'priznanie') {
     radioGroup.find(`[data-cy=radio-priznanie]`).click()
   } else if (typeOfReturn === 'ciastkovePriznanie') {
@@ -330,7 +330,7 @@ Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfI
 })
 
 Cypress.Commands.add('clickRadio', (form, radioGroup, condition) => {
-  let radioGroupEl = cy.wrap(Cypress.$(`[data-cy=radio-group-${radioGroup}]`, form))
+  const radioGroupEl = cy.wrap(Cypress.$(`[data-cy=radio-group-${radioGroup}]`, form))
   if (condition) {
     radioGroupEl.find(`[data-cy=radio-áno]`).click()
   } else {

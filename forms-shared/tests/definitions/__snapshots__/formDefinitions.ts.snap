@@ -4693,7 +4693,7 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
               },
               "minimum": 0,
               "title": "Predpokladané množstvo dovezeného odpadu (kg)",
-              "type": "number",
+              "type": "integer",
             },
             "spzVozidla": {
               "baOrder": 1,
@@ -9963,8 +9963,9 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
                       },
                       "ui:widget": "Number",
                     },
+                    "minimum": 1,
                     "title": "Počet nádob",
-                    "type": "number",
+                    "type": "integer",
                   },
                 },
                 "required": [
@@ -11204,8 +11205,9 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
                       },
                       "ui:widget": "Number",
                     },
+                    "minimum": 1,
                     "title": "Počet nádob",
-                    "type": "number",
+                    "type": "integer",
                   },
                 },
                 "required": [
@@ -13281,7 +13283,7 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
               },
               "minimum": 0,
               "title": "Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)",
-              "type": "number",
+              "type": "integer",
             },
           },
           "required": [
@@ -41944,6 +41946,9 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
               "baUiSchema": {
                 "ui:label": false,
                 "ui:options": {
+                  "formatOptions": {
+                    "useGrouping": false,
+                  },
                   "helptextFooter": "Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
                   "helptextFooterMarkdown": true,
                 },
@@ -49041,11 +49046,16 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                       "baUiSchema": {
                                         "ui:label": false,
                                         "ui:options": {
+                                          "formatOptions": {
+                                            "maximumFractionDigits": 2,
+                                            "minimumFractionDigits": 2,
+                                          },
                                           "helptextFooter": "Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                         },
                                         "ui:widget": "Number",
                                       },
                                       "minimum": 0,
+                                      "multipleOf": 0.01,
                                       "title": "Vaša výmera pozemku",
                                       "type": "number",
                                     },
@@ -49443,7 +49453,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti > schema matches sn
                                       },
                                       "minimum": 0,
                                       "title": "Celková výmera pozemku",
-                                      "type": "number",
+                                      "type": "integer",
                                     },
                                     "cisloListuVlastnictva": {
                                       "baOrder": 1,
@@ -50176,7 +50186,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                         "vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb": {
                                           "baOrder": 2,
@@ -50190,7 +50200,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                       },
                                       "required": [
@@ -50410,6 +50420,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -50830,7 +50843,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                         "vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb": {
                                           "baOrder": 2,
@@ -50844,7 +50857,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                       },
                                       "required": [
@@ -51078,6 +51091,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -51692,7 +51708,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                 },
                                 "minimum": 0,
                                 "title": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                                "type": "number",
+                                "type": "integer",
                               },
                               "cisloListuVlastnictva": {
                                 "baOrder": 1,
@@ -51979,6 +51995,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -52432,7 +52451,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                 },
                                 "minimum": 0,
                                 "title": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                                "type": "number",
+                                "type": "integer",
                               },
                               "cisloListuVlastnictva": {
                                 "baOrder": 1,
@@ -52766,6 +52785,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -53650,6 +53672,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -54121,7 +54146,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                 },
                                                 "minimum": 0,
                                                 "title": "Celková výmera podlahovej plochy vášho bytu",
-                                                "type": "number",
+                                                "type": "integer",
                                               },
                                             },
                                             "required": [
@@ -54376,7 +54401,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                                       },
                                                       "minimum": 0,
                                                       "title": "Celková výmera podlahovej plochy vášho nebytového priestoru",
-                                                      "type": "number",
+                                                      "type": "integer",
                                                     },
                                                   },
                                                   "required": [
@@ -54594,6 +54619,9 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -56877,6 +56905,9 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
               "baUiSchema": {
                 "ui:label": false,
                 "ui:options": {
+                  "formatOptions": {
+                    "useGrouping": false,
+                  },
                   "helptextFooter": "Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.",
                   "helptextFooterMarkdown": true,
                 },
@@ -63974,11 +64005,16 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                       "baUiSchema": {
                                         "ui:label": false,
                                         "ui:options": {
+                                          "formatOptions": {
+                                            "maximumFractionDigits": 2,
+                                            "minimumFractionDigits": 2,
+                                          },
                                           "helptextFooter": "Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                         },
                                         "ui:widget": "Number",
                                       },
                                       "minimum": 0,
+                                      "multipleOf": 0.01,
                                       "title": "Vaša výmera pozemku",
                                       "type": "number",
                                     },
@@ -64376,7 +64412,7 @@ exports[`Form definitions > priznanie-k-dani-z-nehnutelnosti-test > schema match
                                       },
                                       "minimum": 0,
                                       "title": "Celková výmera pozemku",
-                                      "type": "number",
+                                      "type": "integer",
                                     },
                                     "cisloListuVlastnictva": {
                                       "baOrder": 1,
@@ -65109,7 +65145,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                         "vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb": {
                                           "baOrder": 2,
@@ -65123,7 +65159,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                       },
                                       "required": [
@@ -65343,6 +65379,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -65763,7 +65802,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Celková výmera podlahových plôch všetkých podlaží stavby",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                         "vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb": {
                                           "baOrder": 2,
@@ -65777,7 +65816,7 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                           },
                                           "minimum": 0,
                                           "title": "Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb",
-                                          "type": "number",
+                                          "type": "integer",
                                         },
                                       },
                                       "required": [
@@ -66011,6 +66050,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -66625,7 +66667,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                 },
                                 "minimum": 0,
                                 "title": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                                "type": "number",
+                                "type": "integer",
                               },
                               "cisloListuVlastnictva": {
                                 "baOrder": 1,
@@ -66912,6 +66954,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -67365,7 +67410,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                 },
                                 "minimum": 0,
                                 "title": "Celková výmera zastavanej plochy viacúčelovej stavby",
-                                "type": "number",
+                                "type": "integer",
                               },
                               "cisloListuVlastnictva": {
                                 "baOrder": 1,
@@ -67699,6 +67744,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -68583,6 +68631,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -69054,7 +69105,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                                 },
                                                 "minimum": 0,
                                                 "title": "Celková výmera podlahovej plochy vášho bytu",
-                                                "type": "number",
+                                                "type": "integer",
                                               },
                                             },
                                             "required": [
@@ -69309,7 +69360,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                                       },
                                                       "minimum": 0,
                                                       "title": "Celková výmera podlahovej plochy vášho nebytového priestoru",
-                                                      "type": "number",
+                                                      "type": "integer",
                                                     },
                                                   },
                                                   "required": [
@@ -69527,6 +69578,9 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                     "baUiSchema": {
                                       "ui:label": false,
                                       "ui:options": {
+                                        "formatOptions": {
+                                          "useGrouping": false,
+                                        },
                                         "selfColumn": "1/4",
                                       },
                                       "ui:widget": "Number",
@@ -78884,6 +78938,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Čistý mesačný príjem zo zamestnania",
                         "type": "number",
                       },
@@ -78919,6 +78974,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Mesačný príjem z podnikania",
                         "type": "number",
                       },
@@ -78954,6 +79010,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Mesačná výška dôchodku",
                         "type": "number",
                       },
@@ -78989,6 +79046,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Mesačná výška sumy výživného na dieťa/deti",
                         "type": "number",
                       },
@@ -79024,6 +79082,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Mesačná výška príspevku z úradu práce",
                         "type": "number",
                       },
@@ -79059,6 +79118,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                           "ui:widget": "Number",
                         },
                         "minimum": 0,
+                        "multipleOf": 0.01,
                         "title": "Iné pravidelné mesačné príjmy",
                         "type": "number",
                       },
@@ -80513,6 +80573,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Čistý mesačný príjem zo zamestnania",
                               "type": "number",
                             },
@@ -80548,6 +80609,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačný príjem z podnikania",
                               "type": "number",
                             },
@@ -80583,6 +80645,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška dôchodku",
                               "type": "number",
                             },
@@ -80618,6 +80681,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška sumy výživného na dieťa/deti",
                               "type": "number",
                             },
@@ -80653,6 +80717,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška príspevku z úradu práce",
                               "type": "number",
                             },
@@ -80688,6 +80753,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Iné pravidelné mesačné príjmy",
                               "type": "number",
                             },
@@ -82128,6 +82194,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Čistý mesačný príjem zo zamestnania",
                               "type": "number",
                             },
@@ -82163,6 +82230,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačný príjem z podnikania",
                               "type": "number",
                             },
@@ -82198,6 +82266,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška dôchodku",
                               "type": "number",
                             },
@@ -82233,6 +82302,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška sumy výživného na dieťa/deti",
                               "type": "number",
                             },
@@ -82268,6 +82338,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Mesačná výška príspevku z úradu práce",
                               "type": "number",
                             },
@@ -82303,6 +82374,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "ui:widget": "Number",
                               },
                               "minimum": 0,
+                              "multipleOf": 0.01,
                               "title": "Iné pravidelné mesačné príjmy",
                               "type": "number",
                             },
@@ -83637,6 +83709,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Čistý mesačný príjem dieťaťa",
                                     "type": "number",
                                   },
@@ -84886,6 +84959,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Čistý mesačný príjem zo zamestnania",
                                     "type": "number",
                                   },
@@ -84921,6 +84995,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Mesačný príjem z podnikania",
                                     "type": "number",
                                   },
@@ -84956,6 +85031,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Mesačná výška dôchodku",
                                     "type": "number",
                                   },
@@ -84991,6 +85067,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Mesačná výška sumy výživného na dieťa/deti",
                                     "type": "number",
                                   },
@@ -85026,6 +85103,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Mesačná výška príspevku z úradu práce",
                                     "type": "number",
                                   },
@@ -85061,6 +85139,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "ui:widget": "Number",
                                     },
                                     "minimum": 0,
+                                    "multipleOf": 0.01,
                                     "title": "Iné pravidelné mesačné príjmy",
                                     "type": "number",
                                   },
@@ -86157,6 +86236,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                 "ui:widget": "Number",
               },
               "minimum": 0,
+              "multipleOf": 0.01,
               "title": "Uveďte, prosím, maximálnu výšku nájomného (vrátane energií), ktorú dokážete mesačne platiť",
               "type": "number",
             },

@@ -997,6 +997,7 @@ export const getZevoSchema = (type: ZevoType) => [
         number(
           'predpokladaneMnozstvo',
           {
+            type: 'integer',
             title: 'Predpokladané množstvo dovezeného odpadu (kg)',
             required: true,
             minimum: 0,
@@ -1022,6 +1023,7 @@ export const getZevoSchema = (type: ZevoType) => [
         number(
           'predpokladaneMnozstvo',
           {
+            type: 'integer',
             title: 'Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)',
             required: true,
             minimum: 0,

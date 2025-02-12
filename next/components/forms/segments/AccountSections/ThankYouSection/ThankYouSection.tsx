@@ -18,22 +18,22 @@ export const PaymentStatusOptions = {
 
 const statusToTranslationPath = {
   [PaymentStatusOptions.FAILED_TO_VERIFY]: {
-    title: 'thank_you.result.failed-to-verify.title',
-    content: 'thank_you.result.failed-to-verify.content',
+    title: 'thank_you.result.failed_to_verify.title',
+    content: 'thank_you.result.failed_to_verify.content',
   },
-  [PaymentStatusOptions.ALREADY_PAYED]: {
-    title: 'thank_you.result.payment-already-paid.title',
-    content: 'thank_you.result.payment-already-paid.content',
-    feedbackTitle: 'thank_you.result.payment-already-paid.feedback_title',
+  [PaymentStatusOptions.ALREADY_PAID]: {
+    title: 'thank_you.result.payment_already_paid.title',
+    content: 'thank_you.result.payment_already_paid.content',
+    feedbackTitle: 'thank_you.result.payment_already_paid.feedback_title',
   },
   [PaymentStatusOptions.FAILED]: {
-    title: 'thank_you.result.payment-failed.title',
-    content: 'thank_you.result.payment-failed.content',
+    title: 'thank_you.result.payment_failed.title',
+    content: 'thank_you.result.payment_failed.content',
   },
   [PaymentStatusOptions.SUCCESS]: {
-    title: 'thank_you.result.payment-success.title',
-    content: 'thank_you.result.payment-success.content',
-    feedbackTitle: 'thank_you.result.payment-success.feedback_title',
+    title: 'thank_you.result.payment_success.title',
+    content: 'thank_you.result.payment_success.content',
+    feedbackTitle: 'thank_you.result.payment_success.feedback_title',
   },
 }
 

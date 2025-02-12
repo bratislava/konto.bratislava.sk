@@ -597,20 +597,20 @@
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
     "result": {
-      "failed-to-verify": {
+      "failed_to_verify": {
         "title": "Nepodarilo sa overiť platbu",
         "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
-      "payment-failed": {
+      "payment_failed": {
         "title": "Platba bola zamietnutá",
         "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
-      "payment-success": {
+      "payment_success": {
         "title": "Platba prebehla úspešne",
         "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
         "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
       },
-      "payment-already-paid": {
+      "payment_already_paid": {
         "title": "Platba už bola vykonaná",
         "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
         "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."

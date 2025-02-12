@@ -1,12 +1,12 @@
 # nest-clamav-scanner
+
 Backend utility responsible for handling requests for files needed to be scanned. It uses ClamAV interface to scan files. As a file storage we use our minio bucket storage.
 
-
-# How it works
+## How it works
 
 It has two main parts: Endpoints where new files are added to the queue for the scanning. And a DB queue run by regular cron jobs.
 
-## DB structure
+### DB structure
 
 We have a table `files` where we store all the files were sent to nest-clamav-scanner. Have a look at the structure in the `schema.prisma` file. The most important part is `FileStatus` enum.
 
@@ -25,7 +25,8 @@ Let`s have a look at the status of the file:
 - `SCAN_NOT_SUCCESSFUL` - After number of tries we get some clamav errors, we set this final status to file.
 - `FORM_ID_NOT_FOUND` - files are bond to forms, and after updating the scanstatus, we are notifying the form about the result. If the form is not found, we set this status to file.
 
-## Endpoints
+### Endpoints
+
 In `/src/scanner/scanner.controller` we have some important endpoints which are primarily used for the communication with the service.
 
 - `POST /api/scan/file` which saves a file to the database and sets the status to `ACCEPTED` if all conditions are met (like a file is available in minio).
@@ -33,7 +34,8 @@ In `/src/scanner/scanner.controller` we have some important endpoints which are 
 - `GET /api/scan/file/{scannerId}` returns the file status and data by provided scanner id
 - `DELETE /api/scan/file/{scannerId}` deletes the file from the database and minio storage.
 
-## Cron worker
+### Cron worker
+
 In `/src/scanner-cron/scanner-cron.service` we have a cron worker which is responsible for picking files from the database and sending them to the ClamAV service.
 It runs every 20s. In the console there is quite a lot of logging, so you can see what is happening. It checks if there is a older cron scanner process already running. If so, it skips the run and falls a sleep.
 
@@ -47,10 +49,9 @@ If there are no error files in the database of files, it will have a look if the
 
 Finally if there are no error files and no stucked files, it will search for files in the status `ACCEPTED` and will send them for scanning.
 
-If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`,` MOVE ERROR SAFE` or `NOT FOUND`, this status will be sent to `nest-forms-backend` as it is final state of the file.
+If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`, `MOVE ERROR SAFE` or `NOT FOUND`, this status will be sent to `nest-forms-backend` as it is final state of the file.
 
-
-# Running the app
+## Running the app
 
 If you want to run an application without installing it locally quickly, you can run it through `docker-compose`:
 
@@ -58,9 +59,9 @@ If you want to run an application without installing it locally quickly, you can
 docker-compose up --build
 ```
 
-This command will build the image and run the container with the app. You can access the app on `http://localhost:3000`.
+This command will build the image and run the container with the app. You can access the app on `http://localhost:3200`.
 
-# Local installation
+## Local installation
 
 - Run npm installation for dependencies
 
@@ -77,17 +78,17 @@ npx prisma
 - Check the `.env` file for your correct local database connection configuration. It looks like this:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/mydatabase?schema=public"
+DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?schema=public"
 ```
 
 If you have issues connecting to your Postgres, maybe you need to set timeout `connect_timeout`. Sometimes macs have
 problems with that:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/?connect_timeout=30&schema=public"
+DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?connect_timeout=30&schema=public"
 ```
 
-## Running the app
+### Starting the app
 
 ```bash
 # development
@@ -114,7 +115,6 @@ npm run test:e2e
 # test coverage
 npm run test:cov
 ```
-
 
 ## Stay in touch
 

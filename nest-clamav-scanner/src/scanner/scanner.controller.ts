@@ -109,7 +109,6 @@ export class ScannerController {
     type: ScanFileResponseDto,
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Wrong parameters provided.',
   })
   @ApiBasicAuth()
@@ -134,23 +133,18 @@ export class ScannerController {
     type: ScanFileResponseDto,
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Wrong parameters provided.',
   })
   @ApiGoneResponse({
-    status: 410,
     description: 'File has already been processed.',
   })
   @ApiPayloadTooLargeResponse({
-    status: 413,
     description: 'File for scanning is too large.',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File or bucket not found.',
   })
   @HttpCode(HttpStatus.ACCEPTED)
@@ -169,11 +163,9 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File or bucket not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()
@@ -194,11 +186,9 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()
@@ -216,11 +206,9 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()

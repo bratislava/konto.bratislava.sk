@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MinioService } from 'nestjs-minio-client';
+import { MinioClient, MinioService } from 'nestjs-minio-client';
 
 @Injectable()
 export class MinioClientService {
@@ -9,7 +9,7 @@ export class MinioClientService {
     this.logger = new Logger('MinioClientService');
   }
 
-  public async client() {
+  public async client(): Promise<MinioClient> {
     this.logger.log('MinioClientService.client');
     return this.minioService.client;
   }
@@ -56,8 +56,9 @@ export class MinioClientService {
     }
   }
 
+  //FIXME promise
   //function which checks if file exists in minio bucket
-  public async fileExists(bucketName: string, fileName: string) {
+  public async fileExists(bucketName: string, fileName: string): Promise<any> {
     try {
       return await this.minioService.client.statObject(bucketName, fileName);
     } catch (error) {

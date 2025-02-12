@@ -1,12 +1,12 @@
-FROM node:20.10-alpine AS base
+FROM node:22.13-alpine AS base
 ENV NODE_ENV=production
 
 FROM base AS app-base
 RUN apk update \
- && apk add tini \
- && rm -rf /var/cache/apk/* \
- && mkdir -p /home/node/app \
- && chown -R node:node /home/node/app
+      && apk add tini \
+      && rm -rf /var/cache/apk/* \
+      && mkdir -p /home/node/app \
+      && chown -R node:node /home/node/app
 USER node
 WORKDIR /home/node/app
 ENTRYPOINT [ "/sbin/tini", "--" ]
@@ -15,12 +15,12 @@ FROM base AS build-base
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
 RUN npm ci --include=dev --frozen-lockfile \
- && npx prisma generate
+      && npx prisma generate
 
 FROM build-base AS build
 COPY --chown=node:node . ./
 RUN npm run build \
- && npm prune --production
+      && npm prune --production
 
 FROM app-base AS dev
 ENV NODE_ENV=development

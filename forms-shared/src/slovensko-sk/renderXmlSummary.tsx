@@ -10,19 +10,21 @@ import {
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
-import { ValidatedSummary, validateSummary } from '../summary-renderer/validateSummary'
+import { validateSummary } from '../summary-renderer/validateSummary'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
 import { renderToString } from 'react-dom/server'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { Parser } from 'xml2js'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { FileInfoSummary } from '../form-files/fileStatus'
 
 type SlovenskoSkSummaryXmlProps = {
   summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
+  validationData: ValidationData<GenericObjectType>
 }
 
 type CustomElement<P = {}> = DetailedHTMLProps<HTMLAttributes<HTMLElement> & P, HTMLElement>
@@ -95,12 +97,14 @@ const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProp
 
 export const SlovenskoSkSummaryXml = ({
   summaryJson,
-  validatedSummary,
+  validationData,
+  fileInfos,
 }: SlovenskoSkSummaryXmlProps) => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
-      validatedSummary={validatedSummary}
+      fileInfos={fileInfos}
+      validationData={validationData}
       renderForm={FormRenderer}
       renderStep={StepRenderer}
       renderField={FieldRenderer}
@@ -145,7 +149,7 @@ export async function renderSlovenskoXmlSummary(
 ) {
   const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
-  const validatedSummary = validateSummary(
+  const { validationData } = validateSummary(
     formDefinition.schema,
     formData,
     fileInfos,
@@ -153,7 +157,11 @@ export async function renderSlovenskoXmlSummary(
   )
 
   const stringXml = renderToString(
-    <SlovenskoSkSummaryXml summaryJson={summaryJson} validatedSummary={validatedSummary} />,
+    <SlovenskoSkSummaryXml
+      summaryJson={summaryJson}
+      fileInfos={fileInfos}
+      validationData={validationData}
+    />,
   )
 
   return await parser.parseStringPromise(stringXml)

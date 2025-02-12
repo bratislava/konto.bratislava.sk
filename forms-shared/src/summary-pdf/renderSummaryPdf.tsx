@@ -39,7 +39,7 @@ export const renderSummaryPdf = async ({
   const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
 
   const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
-  const validatedSummary = validateSummary(
+  const { validationData } = validateSummary(
     formDefinition.schema,
     formData,
     fileInfos,
@@ -51,7 +51,8 @@ export const renderSummaryPdf = async ({
       formDefinition={formDefinition}
       cssToInject={summaryPdfCss.toString()}
       summaryJson={summaryJson}
-      validatedSummary={validatedSummary}
+      fileInfos={fileInfos}
+      validationData={validationData}
       formData={formData}
     ></SummaryPdf>,
   )

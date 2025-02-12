@@ -151,12 +151,9 @@ const useGetContext = () => {
     // missing step in errorSummary === no error on the step
     // we treat errorless steps as "complete"
     const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
-    const { errorSchema } = validateSummary(
-      schema,
-      pickedPropertiesData,
-      fileInfos,
-      validatorRegistry,
-    )
+    const {
+      validationData: { errorSchema },
+    } = validateSummary(schema, pickedPropertiesData, fileInfos, validatorRegistry)
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {

@@ -1571,7 +1571,7 @@ exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample5 > XML should mat
               <StringValue>a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu</StringValue>
             </Field>
             <Field id="root_danZoStaviebJedenUcel_priznania_0_celkovaZastavanaPlocha" label="Celková zastavaná plocha">
-              <StringValue>2659</StringValue>
+              <StringValue>2 659</StringValue>
             </Field>
             <Field id="root_danZoStaviebJedenUcel_priznania_0_spoluvlastnickyPodiel" label="Spoluvlastnícky podiel">
               <StringValue>1/2</StringValue>
@@ -1640,7 +1640,7 @@ exports[`slovenskoSkForm > priznanieKDaniZNehnutelnostiExample5 > XML should mat
               <StringValue>4. 1. 2024</StringValue>
             </Field>
             <Field id="root_danZoStaviebViacereUcely_priznania_0_celkovaVymera" label="Celková výmera zastavanej plochy viacúčelovej stavby">
-              <StringValue>25648</StringValue>
+              <StringValue>25 648</StringValue>
             </Field>
             <Field id="root_danZoStaviebViacereUcely_priznania_0_pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia" label="Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia">
               <StringValue>4</StringValue>
@@ -2377,7 +2377,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
-          <StringValue>1200</StringValue>
+          <StringValue>1 200</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_prijem_samostatnaZarobkovaCinnost" label="Mali ste v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
           <StringValue>Nie</StringValue>
@@ -2470,7 +2470,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
           <StringValue>Áno</StringValue>
         </Field>
         <Field id="root_druhDruzka_prijem_zamestnaniePrijem" label="Čistý mesačný príjem zo zamestnania">
-          <StringValue>1500</StringValue>
+          <StringValue>1 500</StringValue>
         </Field>
         <Field id="root_druhDruzka_prijem_samostatnaZarobkovaCinnost" label="Mal/mala v minulom kalendárnom roku príjem zo samostatnej zárobkovej činnosti?">
           <StringValue>Áno</StringValue>

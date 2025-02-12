@@ -11,10 +11,10 @@ RUN apk add --no-cache bash caddy \
 RUN pip install --no-cache-dir cvdupdate
 
 # Copy configuration and scripts
-COPY Caddyfile health.sh entrypoint.sh ./
+COPY Caddyfile entrypoint.sh ./
 
 # Set permissions and setup cron job
-RUN chmod +x ./health.sh ./entrypoint.sh \
+RUN chmod +x ./entrypoint.sh \
     && echo '0 */4 * * * /opt/app-root/src/entrypoint.sh update' >> /etc/crontabs/root
 
 ARG GIT_COMMIT="undefined"

@@ -10,7 +10,6 @@ We use a small Caddy server to serve the CVD files and a simple script to downlo
 
 - `Caddyfile`: Configuration file for the Caddy server.
 - `entrypoint.sh`: Script to check for updates, download the CVD files and start the Caddy server.
-- `health.sh`: Script to check the health of the Caddy server.
 - `Dockerfile`: Used to build the Docker image for the CVDMirror.
 - `README.md`: This file, providing an overview and instructions for the project.
 
@@ -39,6 +38,7 @@ docker compose up
 The service can be deployed to a Kubernetes cluster using the provided configurations in the kubernetes directory. As it needs a persistent CVD data, it is set up as a StatefulSet with a PersistentVolumeClaim. It contains two containers: one for the Caddy server and one for the cvdupdate script which is initiated by cron.
 
 ## Related Links
+
 - [ClamAV Documentation](https://www.clamav.net/documents)
 - [ClamAV Database Mirror](https://database.clamav.net/)
 - [Caddy Server Documentation](https://caddyserver.com/docs/)

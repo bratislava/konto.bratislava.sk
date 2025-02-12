@@ -1,11 +1,11 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {
-  let service: any // Changed from LineLoggerService
+  let service: any
   let consoleSpy: jest.SpyInstance
 
   beforeEach(() => {
-    service = new LineLoggerSubservice('LineLogger TEST', false)
+    service = new LineLoggerSubservice('LineLogger TEST')
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })

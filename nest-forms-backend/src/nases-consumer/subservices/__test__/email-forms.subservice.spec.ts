@@ -15,7 +15,6 @@ import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
 
@@ -27,7 +26,6 @@ jest.mock('jsonwebtoken')
 describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
   let mailgunService: jest.Mocked<MailgunService>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -59,17 +57,6 @@ describe('EmailFormsSubservice', () => {
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
     mailgunService = module.get(MailgunService) as jest.Mocked<MailgunService>
-    throwerErrorGuard = module.get(
-      ThrowerErrorGuard,
-    ) as jest.Mocked<ThrowerErrorGuard>
-
-    throwerErrorGuard['logger'] = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
   })
 
   it('should be defined', () => {

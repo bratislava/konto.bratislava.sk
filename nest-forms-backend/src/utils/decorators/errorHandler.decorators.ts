@@ -1,4 +1,3 @@
-import { errorToLogfmt } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
 export default function HandleErrors(
@@ -12,15 +11,14 @@ export default function HandleErrors(
   ): PropertyDescriptor {
     const originalMethod = descriptor.value
     const logger = new LineLoggerSubservice(loggerName)
-    const modifiedDescriptor = { ...descriptor }
 
-    // eslint-disable-next-line func-names
+    const modifiedDescriptor = descriptor
     modifiedDescriptor.value = async function (...args: undefined[]) {
       try {
         const result = await originalMethod.apply(this, args)
         return result
       } catch (error) {
-        logger.error(errorToLogfmt(error, propertyKey))
+        logger.error(error)
       }
       return null
     }

@@ -1,65 +1,62 @@
 import { ErrorsEnum } from '../../global-enums/errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
 import HandleErrors from '../errorHandler.decorators'
 
 describe('HandleErrors', () => {
-  let loggerPrototype: LineLoggerSubservice
+  let consoleErrorMock: jest.SpyInstance
+
   beforeEach(async () => {
-    jest.clearAllMocks()
-    loggerPrototype = LineLoggerSubservice.prototype
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    loggerPrototype.error = (message: string) => {}
+    consoleErrorMock = jest.spyOn(console, 'log').mockImplementation(() => {})
   })
+
+  afterEach(() => {
+    consoleErrorMock.mockRestore()
+  })
+
   it('should catch and handle errors', async () => {
     class TestClass {
-      @HandleErrors()
+      @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
         throw new Error('This is a test error')
       }
     }
-
-    const loggerSpy = jest.spyOn(loggerPrototype, 'error')
 
     const t = new TestClass()
 
     // We expect testMethod to throw an error which should be caught and handled by the decorator
     await expect(t.testMethod()).resolves.toBeNull()
 
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.stringContaining(
-        String.raw`errorType="Error" message="This is a test error" method="testMethod"`,
-      ),
-    )
+    const regex =
+      /process="\[Nest]" processPID="\d+" datetime="\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}:\d{2}" severity="ERROR" context="Test error handler" errorType="Error" message="This is a test error" method="undefined" stack="Error: This is a test error.*"/
+
+    expect(consoleErrorMock).toHaveBeenCalledTimes(1)
+    expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))
   })
 
   it('should catch and handle HttpExceptions', async () => {
     class TestClass {
       private throwerErrorGuard = new ThrowerErrorGuard()
 
-      @HandleErrors()
+      @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
         throw this.throwerErrorGuard.BadRequestException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Error',
+          'Error message',
           'Console error',
-          { key_value: 'value_value' },
+          new Error('Caused by error message test'),
         )
       }
     }
-
-    const loggerSpy = jest.spyOn(loggerPrototype, 'error')
 
     const t = new TestClass()
 
     // We expect testMethod to throw an error which should be caught and handled by the decorator
     await expect(t.testMethod()).resolves.toBeNull()
 
-    expect(loggerSpy).toHaveBeenCalledTimes(1)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.stringContaining(
-        String.raw`errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error" object="{\"key_value\":\"value_value\"}" alert="1" console="Console error" method="testMethod" stack="HttpException: Error\n    at ThrowerErrorGuard.LoggingHttpException`,
-      ),
-    )
+    const regex =
+      /process="\[Nest]" processPID="\d+" datetime="\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}:\d{2}" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*/
+
+    expect(consoleErrorMock).toHaveBeenCalledTimes(1)
+    expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))
   })
 })

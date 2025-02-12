@@ -92,6 +92,7 @@ const useGetContext = () => {
     getInfectedFiles,
     getUploadFiles,
     getScanFiles,
+    fileInfos,
   }
 }
 

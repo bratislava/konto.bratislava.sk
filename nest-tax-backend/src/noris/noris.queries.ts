@@ -10,7 +10,19 @@ SELECT
     lcs.dane21_doklad.datum_dorucenia, 
     lcs.dane21_doklad.datum_platnosti, 
     */
-   lcs.dane21_doklad.variabilny_symbol, 
+    lcs.dane21_doklad.variabilny_symbol, 
+    (case 
+        when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
+        else 0 end 
+    ) uhrazeno,
+    (case 
+        when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then (
+            case 
+                when dane21_doklad.stav_dokladu='S' then 0 
+                else view_doklad_saldo.zbyva_uhradit 
+            end)
+        else 0 
+    end ) zbyva_uhradit,
     /* 
     lcs.fn21_dec2string(lcs.dane21_doklad.suma_mena, 2) suma_mena, 
     lcs.fn21_dec2string(ABS(lcs.dane21_doklad.suma_mena), 2) AS abs_suma, 
@@ -563,13 +575,6 @@ ORDER BY
 export const queryPaymentsFromNoris = `
 SELECT 
         dane21_doklad.variabilny_symbol as variabilny_symbol,
-        lcs.dane21_druh_dokladu.posta,
-        lcs.dane21_priznanie.podnikatel,
-        dane21_doklad.suma_mena,
-        dane21_doklad.datum_storno,
-        dane21_doklad.stav_dokladu,
-        dane21_doklad.pohladavka pohladavka,
-        view_doklad_saldo.datum_posledni_platby datum_posledni_platby,
         (case 
             when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
             else 0 end 
@@ -582,16 +587,6 @@ SELECT
                 end)
             else 0 
         end ) zbyva_uhradit,
-        dane21_doklad.datum_odvolania,
-        dane21_doklad.druh_dokladu,
-        dane21_doklad.spis_sluzba_datum,
-        dane21_doklad.rok_podkladu,
-        dane21_doklad.spis_sluzba_stav,
-        lcs.dane21_druh_dokladu.typ_dokladu,
-        (case 
-            when vpodklad.riadne_priznanie IS null then 'Riadne' 
-            else 'Dodatočné' 
-        end) typ_podkladu,
         dane21_doklad.specificky_symbol specificky_symbol
     FROM 
         (SELECT

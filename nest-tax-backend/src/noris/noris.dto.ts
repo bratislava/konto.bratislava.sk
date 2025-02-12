@@ -101,23 +101,13 @@ export interface NorisTaxPayersDto {
   drazba_dedic_od: string
   drazba_dedic_do: string
   uzivatelsky_atribut: string
+  uhrazeno: string
+  zbyva_uhradit: string
 }
 
 export interface NorisPaymentsDto {
   variabilny_symbol: string
-  suma_mena: string
-  datum_storno: Date | null
-  stav_dokladu: string
-  pohladavka: string
-  datum_posledni_platby: Date
   uhrazeno: string
   zbyva_uhradit: string
-  datum_odvolania: Date
-  druh_dokladu: string
-  spis_sluzba_datum: Date
-  rok_podkladu: number
-  spis_sluzba_stav: string
-  typ_dokladu: string
-  typ_podkladu: string
   specificky_symbol: string
 }

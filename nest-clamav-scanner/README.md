@@ -8,7 +8,7 @@ It has two main parts: Endpoints where new files are added to the queue for the 
 
 ### DB structure
 
-We have a table `files` where we store all the files were sent to nest-clamav-scanner. Have a look at the structure in the `schema.prisma` file. The most important part is `FileStatus` enum.
+We have a table `Files` where we store all the files sent to nest-clamav-scanner. Have a look at the structure in the `schema.prisma` file. The most important part is `FileStatus` enum.
 
 Let`s have a look at the status of the file:
 
@@ -23,7 +23,7 @@ Let`s have a look at the status of the file:
 - `SCAN_ERROR` - ClamAV can produce also some errors, so we set this status to knew there was some problem.
 - `SCAN_TIMEOUT` - Also ClamAV service can timeout, so we set this status.
 - `SCAN_NOT_SUCCESSFUL` - After number of tries we get some clamav errors, we set this final status to file.
-- `FORM_ID_NOT_FOUND` - files are bond to forms, and after updating the scanstatus, we are notifying the form about the result. If the form is not found, we set this status to file.
+- `FORM_ID_NOT_FOUND` - files are bond to forms, and after updating the scan status, we are notifying the form about the result. If the form is not found, we set this status to file.
 
 ### Endpoints
 
@@ -37,7 +37,7 @@ In `/src/scanner/scanner.controller` we have some important endpoints which are 
 ### Cron worker
 
 In `/src/scanner-cron/scanner-cron.service` we have a cron worker which is responsible for picking files from the database and sending them to the ClamAV service.
-It runs every 20s. In the console there is quite a lot of logging, so you can see what is happening. It checks if there is a older cron scanner process already running. If so, it skips the run and falls a sleep.
+It runs every 20s. In the console there is quite a lot of logging, so you can see what is happening. It checks if there is a older cron scanner process already running. If so, it skips the run and falls asleep.
 
 If `clamAV` is not running, it will pause the scanning process until it is back online.
 
@@ -45,21 +45,29 @@ If there is no process running it checks if `nest-forms-backend` is online. It i
 
 After checking the online status of `nest-forms-backed` it look if there are some files that ended in error state. If it is possible to send them again for scanning, it will start scanning them. After max number of retries it will set the final status `SCAN_NOT_SUCCESSFUL`.
 
-If there are no error files in the database of files, it will have a look if there are some files stucked in the middle of process (like due `nest-clamav-scaner` was turned down in the middle of scanning of batch of files). It will search for files in the statuses `QUEUED`, `SCANNING`, `SCAN_ERROR`, `SCAN_TIMEOUT` and will try to send them again for scanning.
+If there are no error files in the database of files, it will have a look if there are some files stuck in the middle of process (like due `nest-clamav-scanner` was turned down in the middle of scanning of batch of files). It will search for files in the statuses `QUEUED`, `SCANNING`, `SCAN_ERROR`, `SCAN_TIMEOUT` and will try to send them again for scanning.
 
-Finally if there are no error files and no stucked files, it will search for files in the status `ACCEPTED` and will send them for scanning.
+Finally if there are no error files and no stuck files, it will search for files in the status `ACCEPTED` and will send them for scanning.
 
 If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`, `MOVE ERROR SAFE` or `NOT FOUND`, this status will be sent to `nest-forms-backend` as it is final state of the file.
 
-## Running the app
+## Run locally
 
-If you want to run an application without installing it locally quickly, you can run it through `docker-compose`:
+If you want to run an application without installing it locally quickly, you can run it through `docker-compose`.
+
+You need to have `clamav` running first. To do that, in directories `/cvdmirror` and `/clamav` (in this order) run
 
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 
-This command will build the image and run the container with the app. You can access the app on `http://localhost:3200`.
+Then you can do the same in this `/nest-clamav-scanner` directory:
+
+```bash
+docker-compose up
+```
+
+This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
 
 ## Local installation
 

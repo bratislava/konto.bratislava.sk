@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     entrypoint: ['./entrypoint.sh']
-    command: ['update', 'serve']
+    command: ['serve']
     ports:
       - '8080:8080'
     volumes:
@@ -19,16 +19,6 @@ services:
       konto:
         aliases:
           - clamav-cvdmirror-database
-
-  cron:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: ['/usr/sbin/crond', '-f']
-    volumes:
-      - database:/mnt/cvdupdate
-    networks:
-      - konto
 
 volumes:
   database:

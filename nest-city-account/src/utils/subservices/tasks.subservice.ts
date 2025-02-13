@@ -116,7 +116,7 @@ export class TasksSubservice {
     })
   }
 
-  @Cron('*/10 * 2-31 3-5 *') // Every 10 minutes from 2nd to 31st day of March, April and May
+  @Cron('*/10 * 1-31 4-5 *') // Every 10 minutes from April to May
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()

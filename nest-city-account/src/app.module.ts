@@ -9,11 +9,13 @@ import { VerificationModule } from './user-verification/verification.module'
 import { UserModule } from './user/user.module'
 import { AppLoggerMiddleware } from './utils/middlewares/logger.service'
 import { TasksSubservice } from './utils/subservices/tasks.subservice'
+import ThrowerErrorGuard from './utils/guards/errors.guard'
+import { TaxSubservice } from './utils/subservices/tax.subservice'
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule, VerificationModule, AdminModule, ScheduleModule.forRoot()],
   controllers: [AppController],
-  providers: [TasksSubservice],
+  providers: [TaxSubservice, TasksSubservice, ThrowerErrorGuard],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

@@ -13,7 +13,7 @@ import {
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
 import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
-import { getTaxDeadlineDateString } from '../utils/constants/tax-deadline'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
@@ -31,7 +31,7 @@ export class UserService {
   ) {}
 
   private verificationDeadline(verificationDate: Date | null): boolean {
-    const verificationDeadlineDate = new Date(getTaxDeadlineDateString())
+    const verificationDeadlineDate = getTaxDeadlineDate()
     try {
       if (verificationDate === null) {
         return false

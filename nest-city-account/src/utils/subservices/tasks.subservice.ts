@@ -4,7 +4,7 @@ import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../../generated-c
 import { PrismaService } from '../../prisma/prisma.service'
 import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../birthNumbers'
-import { getTaxDeadlineDateString } from '../constants/tax-deadline'
+import { getTaxDeadlineDate } from '../constants/tax-deadline'
 import { HandleErrors } from '../decorators/errorHandler.decorators'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
@@ -116,20 +116,27 @@ export class TasksSubservice {
     })
   }
 
-  @Cron('*/10 * 1-31 4-5 *') // Every 10 minutes from April to May
+  @Cron('*/10 * 2-31 4-5 *') // Every 10 minutes from April to May, starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
     const currentYear = new Date().getFullYear()
-    const taxDeadlineDate = new Date(getTaxDeadlineDateString())
+    const taxDeadlineDate = getTaxDeadlineDate()
 
     const users = await this.prisma.user.findMany({
       where: {
         birthNumber: {
           not: null,
         },
-        lastTaxDeliveryMethodsUpdateYear: {
-          not: currentYear,
-        },
+        OR: [
+          {
+            lastTaxDeliveryMethodsUpdateYear: {
+              not: currentYear,
+            },
+          },
+          {
+            lastTaxDeliveryMethodsUpdateYear: null,
+          },
+        ],
         lastVerificationIdentityCard: {
           not: null,
           lt: taxDeadlineDate,

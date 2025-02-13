@@ -81,7 +81,7 @@ describe('HandleErrors', () => {
     expect(loggerSpy).toHaveBeenCalledTimes(1)
     expect(loggerSpy).toHaveBeenCalledWith(
       expect.stringContaining(
-        String.raw`errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error" object="{\"key_value\":\"value_value\"}" alert="0" console="Console error" method="testMethod" stack="HttpException: Error\n    at ThrowerErrorGuard.LoggingHttpException`
+        String.raw`errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error" object="{\"key_value\":\"value_value\"}" alert="1" console="Console error" method="testMethod" stack="HttpException: Error\n    at ThrowerErrorGuard.LoggingHttpException`
       )
     )
   })

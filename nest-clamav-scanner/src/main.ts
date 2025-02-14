@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -18,7 +19,7 @@ async function bootstrap() {
       'https://inovacie.bratislava.sk',
       'inovacie@bratislava.sk',
     )
-    .addServer('http://localhost:' + PORT + '/')
+    .addServer(`http://localhost:${PORT}/`)
     .addServer('https://nest-clamav-scanner.dev.bratislava.sk/')
     .addServer('https://nest-clamav-scanner.staging.bratislava.sk/')
     .addServer('https://nest-clamav-scanner.bratislava.sk/')

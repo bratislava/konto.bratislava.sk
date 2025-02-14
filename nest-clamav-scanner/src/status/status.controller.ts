@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
 import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
 import { StatusService } from './status.service';
 
@@ -21,11 +22,11 @@ export class StatusController {
     const clamav = await this.statusService.isClamavRunning();
     const clamavVersion = await this.statusService.clamavVersion();
     return {
-      prisma: prisma,
-      minio: minio,
-      forms: forms,
-      clamav: clamav,
-      clamavVersion: clamavVersion,
+      prisma,
+      minio,
+      forms,
+      clamav,
+      clamavVersion,
     };
   }
 

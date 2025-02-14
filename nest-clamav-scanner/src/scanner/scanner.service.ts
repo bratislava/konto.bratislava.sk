@@ -8,13 +8,14 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ClamavClientService } from 'src/clamav-client/clamav-client.service';
-import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
-import { isBase64, isDefined, isValid } from '../common/utils/helpers';
 import { FileStatus } from '@prisma/client';
 import { contentType } from 'mime-types';
+import { ClamavClientService } from 'src/clamav-client/clamav-client.service';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
+
+import { isBase64, isDefined, isValidUid } from '../common/utils/helpers';
+import { PrismaService } from '../prisma/prisma.service';
+import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
 
 @Injectable()
 export class ScannerService {

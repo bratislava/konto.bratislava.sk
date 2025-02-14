@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FormsClientService } from './forms-client.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { FormsClientService } from './forms-client.service';
 
 @Module({
   imports: [ConfigModule],

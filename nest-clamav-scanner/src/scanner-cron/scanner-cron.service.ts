@@ -3,21 +3,22 @@ import {
   Logger,
   PreconditionFailedException,
 } from '@nestjs/common';
-import { ScannerService } from '../scanner/scanner.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
+import { Files, FileStatus } from '@prisma/client';
+import { Readable as ReadableStream } from 'stream';
+
+import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import {
   chunkArray,
   isValidScanStatus,
   listOfStatuses,
   timeout,
 } from '../common/utils/helpers';
-import { ClamavClientService } from '../clamav-client/clamav-client.service';
-import { MinioClientService } from '../minio-client/minio-client.service';
-import { ConfigService } from '@nestjs/config';
-import { Files, FileStatus } from '@prisma/client';
-import { Readable as ReadableStream } from 'stream';
-import { Cron } from '@nestjs/schedule';
 import { FormsClientService } from '../forms-client/forms-client.service';
+import { MinioClientService } from '../minio-client/minio-client.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { ScannerService } from '../scanner/scanner.service';
 import { UpdateScanStatusDto } from './scanner-cron.dto';
 
 @Injectable()
@@ -76,8 +77,9 @@ export class ScannerCronService {
       } catch (error) {
         global.CronRunning = false;
         throw new PreconditionFailedException(
-          'Unable to send statuses of unnotified files. Sleeping. Error: ' +
-            error,
+          `Unable to send statuses of unnotified files. Sleeping. Error: ${
+            error
+          }`,
         );
       }
     }
@@ -87,7 +89,7 @@ export class ScannerCronService {
     } catch (error) {
       global.CronRunning = false;
       throw new PreconditionFailedException(
-        'Unable to fix files with multiple unscesfull scans. Error: ' + error,
+        `Unable to fix files with multiple unscesfull scans. Error: ${error}`,
       );
     }
 
@@ -97,7 +99,7 @@ export class ScannerCronService {
     } catch (error) {
       global.CronRunning = false;
       throw new PreconditionFailedException(
-        'Unable to fix stacked files. Error: ' + error,
+        `Unable to fix stacked files. Error: ${error}`,
       );
     }
 
@@ -105,7 +107,6 @@ export class ScannerCronService {
     this.logger.log('CronScan sleeping...');
     this.logger.log('----------------------------------------');
     global.CronRunning = false;
-    return;
   }
 
   async mainScanBatchProcess(): Promise<any> {
@@ -276,8 +277,7 @@ export class ScannerCronService {
     //check if from and to status are valid
     if (!isValidScanStatus(to)) {
       throw new Error(
-        'Please provide a valid scan status. Available options are:' +
-          listOfStatuses(),
+        `Please provide a valid scan status. Available options are:${listOfStatuses()}`,
       );
     }
 
@@ -306,8 +306,7 @@ export class ScannerCronService {
   ): Promise<any> {
     if (!isValidScanStatus(status)) {
       throw new Error(
-        'Please provide a valid scan status. Available options are:' +
-          listOfStatuses(),
+        `Please provide a valid scan status. Available options are:${listOfStatuses()}`,
       );
     }
 
@@ -356,7 +355,7 @@ export class ScannerCronService {
     }
 
     let updateScanStatusDto: UpdateScanStatusDto = {
-      status: status,
+      status,
       notified: notifiedStatus,
     };
 
@@ -453,11 +452,10 @@ export class ScannerCronService {
     if (stackedFiles.length === 0) {
       this.logger.log('No stacked files found.');
       return;
-    } else {
-      this.logger.debug(
-        `Found ${stackedFiles.length} stacked files from unfinished runs. Changing state status to ACCEPTED.`,
-      );
     }
+    this.logger.debug(
+      `Found ${stackedFiles.length} stacked files from unfinished runs. Changing state status to ACCEPTED.`,
+    );
 
     //update status of array files to ACCEPTED
     const updateStatus = this.updateScanStatusBatch(
@@ -469,7 +467,6 @@ export class ScannerCronService {
         'Could not update status ACCEPTED of stacked files.',
       );
     }
-    return;
   }
 
   //fix unnotified files  which are in state SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE, NOT FOUND or SCAN NOT SUCCESSFUL and are not notified

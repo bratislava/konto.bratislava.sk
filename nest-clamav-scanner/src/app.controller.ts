@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ApiOperation } from '@nestjs/swagger';
+
+import { AppService } from './app.service';
 import { ServiceRunningDto } from './status/status.dto';
 
 @Controller()

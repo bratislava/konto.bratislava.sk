@@ -1,5 +1,5 @@
-import { isString } from 'class-validator';
 import { FileStatus } from '@prisma/client';
+import { isString } from 'class-validator';
 
 export function isValid(resource: any): boolean {
   if (!isString(resource)) {
@@ -47,6 +47,8 @@ export function chunkArray<T>(arr: T[], n: number): T[][] {
 
 export function timeout(ms) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(FileStatus.SCAN_TIMEOUT), ms);
+    setTimeout(() => {
+      resolve(FileStatus.SCAN_TIMEOUT);
+    }, ms);
   });
 }

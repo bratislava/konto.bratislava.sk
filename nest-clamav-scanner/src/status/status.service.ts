@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
-import { MinioClientService } from '../minio-client/minio-client.service';
-import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
+
+import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import { FormsClientService } from '../forms-client/forms-client.service';
+import { MinioClientService } from '../minio-client/minio-client.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
 
 @Injectable()
 export class StatusService {

@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as clamd from 'clamdjs';
-import { execSync } from 'child_process';
-import { Readable as ReadableStream } from 'stream';
 import { FileStatus } from '@prisma/client';
+import { execSync } from 'child_process';
+import * as clamd from 'clamdjs';
+import { Readable as ReadableStream } from 'stream';
 
 @Injectable()
 export class ClamavClientService {

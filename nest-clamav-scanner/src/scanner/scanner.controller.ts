@@ -21,9 +21,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ScannerService } from './scanner.service';
-import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
+
 import { BasicGuard } from '../auth/guards/auth-basic.guard';
+import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
+import { ScannerService } from './scanner.service';
 
 /*
   Endpoints

@@ -87,7 +87,7 @@ export default tseslint.config(
           allowNullish: true,
         },
       ],
-      '@typescript-eslint/promise-function-async': 'error', // easier to spot async functions
+      '@typescript-eslint/promise-function-async': 'off', // promise passthrough used extensively in nest-clamav-scanner
       '@typescript-eslint/require-array-sort-compare': 'error', // prevent accidental js weirdness
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       // end @typescript-eslint block

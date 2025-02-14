@@ -21,7 +21,7 @@ export class ServiceRunningDto {
 export class ClamavVersionDto {
   @ApiProperty({
     description: 'clamav version',
-    example: '0.102.4',
+    example: '1.4.2',
   })
   version: string;
 }

@@ -6,6 +6,7 @@ import {
   BaWidgetType,
   CheckboxGroupUiOptions,
   CheckboxUiOptions,
+  NumberUiOptions,
   RadioGroupUiOptions,
   SelectUiOptions,
 } from '../generator/uiOptionsTypes'
@@ -147,8 +148,10 @@ export const getSummaryDisplayValues = (
       return [invalidValue]
     }
 
-    // TODO: Format number
-    return [createStringValue(value.toString())]
+    const uiOptionsWithType = uiOptions as WithEnumOptions<NumberUiOptions>
+
+    const formatter = new Intl.NumberFormat('sk-SK', uiOptionsWithType.formatOptions)
+    return [createStringValue(formatter.format(value))]
   }
   if (widgetType === BaWidgetType.TimePicker) {
     if (typeof value !== 'string' || !baTimeRegex.test(value)) {

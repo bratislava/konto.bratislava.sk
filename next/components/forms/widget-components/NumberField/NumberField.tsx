@@ -1,38 +1,43 @@
 import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
+import { useControlledState } from '@react-stately/utils'
+import type { NumberFieldProps as ReactAriaNumberFieldProps } from '@react-types/numberfield'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import { forwardRef, ReactNode, useEffect, useState } from 'react'
-import { useTextField } from 'react-aria'
+import { forwardRef, ReactNode } from 'react'
+import { useLocale, useNumberField } from 'react-aria'
+import { useNumberFieldState } from 'react-stately'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
-export type InputType = 'text' | 'password' | 'email' | 'tel'
 
-export type InputFieldProps = FieldWrapperProps & {
-  type?: InputType // capitalize input value after field un-focus with type === text
+export type NumberFieldProps = FieldWrapperProps & {
   name?: string
-  capitalize?: boolean
-  value?: string
+  value?: number | null
   leftIcon?: LeftIconVariants
   resetIcon?: boolean
-  onChange?: (value?: string) => void
-  onBlur?: () => void
+  onChange?: (value: number | null) => void
   endIcon?: ReactNode
-  autoComplete?: string
   placeholder?: string
   className?: string
-}
+} & Pick<ReactAriaNumberFieldProps, 'minValue' | 'maxValue' | 'step' | 'formatOptions'>
 
-const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
+/**
+ * This is a temporary implementation of the NumberField component. Most of the code is copied from InputField and
+ * adjusted for numbers.
+ *
+ * TODO: Share the common logic between InputField and NumberField in a separate component.
+ *
+ * The component handles conversion between our `null` value and React Aria's `NaN` value.
+ */
+const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
   (
     {
       name,
       label,
-      type = 'text',
       placeholder,
       errorMessage = [],
       helptext,
@@ -41,7 +46,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       helptextFooterMarkdown,
       tooltip,
       required,
-      value = '',
+      value,
       disabled,
       leftIcon,
       resetIcon,
@@ -49,8 +54,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onChange,
       endIcon,
       customErrorPlace = false,
-      capitalize = false,
-      autoComplete,
       size,
       labelSize,
       displayOptionalLabel,
@@ -59,42 +62,35 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     forwardedRef,
   ) => {
     const ref = useObjectRef(forwardedRef)
-    const [valueState, setValueState] = useState<string>(value)
     const { t } = useTranslation('account')
+    const { locale } = useLocale()
 
-    useEffect(() => {
-      setValueState(onChange ? value : valueState)
-    }, [valueState, value, onChange])
+    const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
 
-    const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(
-      {
-        ...rest,
-        placeholder,
-        value: onChange && value ? value : valueState,
-        type,
-        label,
-        errorMessage,
-        description: helptext,
-        onChange(inputValue) {
-          if (onChange) {
-            onChange(inputValue.startsWith(' ') ? inputValue.trim() : inputValue)
-          } else {
-            setValueState(inputValue.startsWith(' ') ? inputValue.trim() : inputValue)
-          }
-        },
-        onFocusChange(isFocused) {
-          if (!isFocused && type === 'text' && capitalize) {
-            if (onChange) {
-              onChange(valueState.replace(/^\w/, (c) => c.toUpperCase()))
-            } else {
-              setValueState(valueState.replace(/^\w/, (c) => c.toUpperCase()))
-            }
-          }
-        },
-        isRequired: required,
-        isDisabled: disabled,
-        autoComplete,
+    // React Aria's NumberField uses NaN as a value for empty input fields
+    // https://github.com/adobe/react-spectrum/issues/5524
+    const sharedProps = {
+      ...rest,
+      placeholder,
+      value: valueControlled ?? NaN,
+      label,
+      errorMessage,
+      description: helptext,
+      onChange: (newValue: number) => {
+        setValueControlled(Number.isNaN(newValue) ? null : newValue)
       },
+      isRequired: required,
+      isDisabled: disabled,
+      isWheelDisabled: true,
+    }
+    const state = useNumberFieldState({
+      ...sharedProps,
+      locale,
+    })
+
+    const { labelProps, inputProps, descriptionProps, errorMessageProps } = useNumberField(
+      sharedProps,
+      state,
       ref,
     )
     const leftIconSwitcher = (icon: string): ReactNode | null => {
@@ -115,8 +111,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     }
 
     const resetIconHandler = () => {
-      if (onChange) onChange('')
-      else setValueState('')
+      setValueControlled(null)
     }
 
     const style = cx(
@@ -176,9 +171,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             ref={ref}
             name={inputProps.id}
             className={style}
-            data-cy={`input-${name}`}
+            data-cy={`number-${name}`}
           />
-          {resetIcon && valueState && (
+          {resetIcon && value != null && (
             <ButtonNew
               onPress={resetIconHandler}
               variant="unstyled"
@@ -195,4 +190,4 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   },
 )
 
-export default InputField
+export default NumberField

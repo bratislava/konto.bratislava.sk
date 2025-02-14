@@ -138,8 +138,8 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 
 const SummaryDetails = () => {
   const { formData } = useFormData()
-  const { getValidatedSummary } = useFormSummary()
-  const validatedSummary = getValidatedSummary()
+  const { getValidatedSummary, fileInfos } = useFormSummary()
+  const { validationData } = getValidatedSummary()
   const {
     formDefinition: { schema },
     initialSummaryJson,
@@ -164,7 +164,8 @@ const SummaryDetails = () => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
-      validatedSummary={validatedSummary}
+      fileInfos={fileInfos}
+      validationData={validationData}
       renderForm={FormRenderer}
       renderStep={StepRenderer}
       renderField={FieldRenderer}

@@ -1,5 +1,26 @@
 # Formuláre Support
-
+<!-- TOC -->
+* [Formuláre Support](#formuláre-support)
+  * [Stavy formulárov](#stavy-formulárov)
+    * [Hlavné stavy](#hlavné-stavy)
+    * [GINIS stavy](#ginis-stavy)
+    * [Akceptovateľné koncové stavy](#akceptovateľné-koncové-stavy)
+  * [Identifikácia a riešenie zaseknutých formulárov](#identifikácia-a-riešenie-zaseknutých-formulárov)
+    * [Kontrola stavu](#kontrola-stavu)
+    * [Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`](#zaseknutý-formulár-v-running_upload_attachments)
+      * [Preskočenie nahrávania príloh](#preskočenie-nahrávania-príloh)
+    * [Zaseknutý formulár v `RUNNING_REGISTER`](#zaseknutý-formulár-v-running_register)
+    * [Zaseknutý formulár v `SHAREPOINT_ERROR`](#zaseknutý-formulár-v-sharepoint_error)
+      * [Postup pri zlom roku](#postup-pri-zlom-roku)
+      * [Možnosti postupu pri inom probléme](#možnosti-postupu-pri-inom-probléme)
+  * [Pomocné úkony pri riešení problémov](#pomocné-úkony-pri-riešení-problémov)
+    * [Pridanie do RabbitMQ](#pridanie-do-rabbitmq)
+    * [Odstránenie z RabbitMQ](#odstránenie-z-rabbitmq)
+    * [Kontrola v Ginise](#kontrola-v-ginise)
+      * [Kontrola podania v Ginise](#kontrola-podania-v-ginise)
+      * [Kontrola formulára v Ginise](#kontrola-formulára-v-ginise)
+    * [Kontrola klikačky](#kontrola-klikačky)
+<!-- TOC -->
 ## Stavy formulárov
 
 Formuláre spracúva [nest-forms-backend](https://github.com/bratislava/konto.bratislava.sk/tree/master/nest-forms-backend). Aktuálne stavy sú definované v [schema.prisma](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/prisma/schema.prisma).
@@ -85,14 +106,14 @@ Ak tlačidlo `Nová elektronická príloha` po [kontrole priamo v Ginise](#kontr
 7. Zmeniť `ginisState` na `SUBMISSION_ASSIGNED`.
 8. Ak sa odtiaľ nepohne, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 
-### Zaseknutý formulár v RUNNING_REGISTER
+### Zaseknutý formulár v `RUNNING_REGISTER`
 
 1. Skontrolovať, či sa [podanie nachádza v Ginise](#kontrola-podania-v-ginise) pre formulár s týmto `id`. Ak nie, čakať a skúsiť znova neskôr
 2. Ak áno, zmeniť `ginisState` na `CREATED`.
 3. Ak zostane v `CREATED`, overiť a [pridať do Rabbita](#pridanie-do-rabbitmq).
 4. Ak sa pohne, ale zasekne opäť v `RUNNING_REGISTER`, tak [skontrolovať klikačku](#kontrola-klikačky).
 
-### Zaseknutý formulár v SHAREPOINT_ERROR
+### Zaseknutý formulár v `SHAREPOINT_ERROR`
 
 Najčastejšie kvôli dátam, kde je dátum s rokom menej ako 1900. Sharepoint toto neakceptuje ako validný rok, preto ho treba upraviť a zopakovať odoslanie. Treba si pozrieť log toho erroru, ak je tam v dátach naozaj dátum s rokom menej ako 1900, tak je to jasné. V opačnom prípade je treba zreprodukovať odosielanie, čo je popísané nižšie.
 
@@ -144,21 +165,29 @@ Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú
 
 ### Pridanie do RabbitMQ
 
-1. Port-forward RabbitMQ (port 15672)
+1. Port-forward RabbitMQ (`nest-forms-backend-rabbitmq-server` port 15672)
 2. Prihlásiť sa do admin rozhrania
 3. Queue > `nases_check_delivery`
-4. Publish message s takýmto objektom:
+4. Rozbaliť menu Publish message, vyplniť nasledovné, kliknúť na tlačidlo Publish message
 
-```js
-{
-  formId: ID_FORMULARA,
-  tries: 0,
-  userData: {
-    email: null,
-    firstName: null
-  }
-}
-```
+   **Properties:**  
+   `content_type` = `application/json`
+
+   **Payload:**  
+   _(nezabudnúť nahradiť `ID_FORMULARA`)_
+
+   ```json
+   {
+     "formId": "ID_FORMULARA",
+     "tries": 0,
+     "userData": {
+       "email": "",
+       "firstName": ""
+     }
+   }
+   ```
+
+_**NOTE:** Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish message._
 
 Formulár môže byť najviac v jednej queue a najviac raz. V opačnom prípade ho treba odstrániť (a potom prípadne pridať jedenkrát správne).
 

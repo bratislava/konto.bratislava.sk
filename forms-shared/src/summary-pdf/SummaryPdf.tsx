@@ -12,17 +12,18 @@ import {
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
-import { ValidatedSummary } from '../summary-renderer/validateSummary'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
 import { renderFormAdditionalInfo } from '../string-templates/renderTemplate'
+import { FileInfoSummary } from '../form-files/fileStatus'
 
 type SummaryPdfProps = {
   formDefinition: FormDefinition
   cssToInject: string
   formData: GenericObjectType
   summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
+  validationData: ValidationData<GenericObjectType>
 }
 
 const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
@@ -175,7 +176,8 @@ export const SummaryPdf = ({
   formDefinition,
   cssToInject,
   summaryJson,
-  validatedSummary,
+  fileInfos,
+  validationData,
   formData,
 }: SummaryPdfProps) => {
   return (
@@ -188,7 +190,8 @@ export const SummaryPdf = ({
         <div className="flex flex-col gap-8">
           <SummaryRenderer
             summaryJson={summaryJson}
-            validatedSummary={validatedSummary}
+            fileInfos={fileInfos}
+            validationData={validationData}
             renderForm={FormRenderer}
             renderStep={StepRenderer}
             renderField={FieldRenderer}

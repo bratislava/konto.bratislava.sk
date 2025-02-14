@@ -179,6 +179,7 @@ const innerArray = (kalkulacka: boolean) =>
             'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
             {
               title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+              type: 'integer',
               required: true,
               minimum: 0,
             },
@@ -191,6 +192,7 @@ const innerArray = (kalkulacka: boolean) =>
           number(
             'vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
             {
+              type: 'integer',
               title:
                 'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
               required: true,

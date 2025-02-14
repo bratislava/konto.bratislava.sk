@@ -55,7 +55,7 @@ const ThankYouCard = ({
           <>
             {firstButtonTitle && feedbackUrl ? (
               feedbackTitle ? (
-                <div className="flex flex-col gap-6 rounded-lg bg-gray-100 p-8">
+                <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-h3 text-left">{feedbackTitle}</h3>
                   <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
                     {firstButtonTitle}

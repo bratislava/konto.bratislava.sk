@@ -3,16 +3,14 @@ import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus
 import { SchemaValidateFunction } from 'ajv'
 import { getFileValidatorBaRjsf } from '../form-utils/validators'
 import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
-import { checkPathForErrors } from './checkPathForErrors'
 import { validateBaFileUuid } from '../form-utils/ajvFormats'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
 export type ValidatedSummary = {
   hasErrors: boolean
-  pathHasError: (path: string) => boolean
+  validationData: ValidationData<GenericObjectType>
   filesInFormData: FileInfoSummary[]
-  getFileById: (id: string) => FileInfoSummary | undefined
-} & ValidationData<any>
+}
 
 /**
  * Validates the summary and returns error schema and info about files.
@@ -59,17 +57,12 @@ export const validateSummary = (
   }
 
   const fileValidator = getFileValidatorBaRjsf(fileValidateFn)
-  const validationResults = fileValidator.validateFormData(defaultFormData, schema)
-
-  const hasErrors = Object.keys(validationResults.errorSchema).length > 0
-  const pathHasError = (path: string) => checkPathForErrors(path, validationResults.errorSchema)
-  const getFileById = (id: string) => filesInFormData.find((file) => file.id === id)
+  const validationData = fileValidator.validateFormData(defaultFormData, schema)
+  const hasErrors = Object.keys(validationData.errorSchema).length > 0
 
   return {
-    ...validationResults,
     hasErrors,
-    pathHasError,
+    validationData,
     filesInFormData,
-    getFileById,
   }
 }

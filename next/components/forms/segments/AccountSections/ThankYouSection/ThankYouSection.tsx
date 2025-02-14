@@ -2,6 +2,7 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
+import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
@@ -13,6 +14,27 @@ export const PaymentStatusOptions = {
   ALREADY_PAID: 'payment-already-paid',
   FAILED: 'payment-failed',
   SUCCESS: 'payment-success',
+}
+
+const statusToTranslationPath = {
+  [PaymentStatusOptions.FAILED_TO_VERIFY]: {
+    title: 'thank_you.result.failed_to_verify.title',
+    content: 'thank_you.result.failed_to_verify.content',
+  },
+  [PaymentStatusOptions.ALREADY_PAID]: {
+    title: 'thank_you.result.payment_already_paid.title',
+    content: 'thank_you.result.payment_already_paid.content',
+    feedbackTitle: 'thank_you.result.payment_already_paid.feedback_title',
+  },
+  [PaymentStatusOptions.FAILED]: {
+    title: 'thank_you.result.payment_failed.title',
+    content: 'thank_you.result.payment_failed.content',
+  },
+  [PaymentStatusOptions.SUCCESS]: {
+    title: 'thank_you.result.payment_success.title',
+    content: 'thank_you.result.payment_success.content',
+    feedbackTitle: 'thank_you.result.payment_success.feedback_title',
+  },
 }
 
 const ThankYouSection = () => {
@@ -40,16 +62,18 @@ const ThankYouSection = () => {
         {success ? (
           <ThankYouCard
             success={success}
-            title={t(`thank_you.result.${status}.title`)}
-            content={t(`thank_you.result.${status}.content`)}
+            title={t(statusToTranslationPath[status].title)}
+            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}</span>`}
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
+            feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
+            feedbackUrl={formsFeedbackLinks['platba-dane-z-nehnutelnosti']}
           />
         ) : (
           <ThankYouCard
             success={success}
-            title={t(`thank_you.result.${status}.title`)}
-            content={t(`thank_you.result.${status}.content`)}
+            title={t(statusToTranslationPath[status].title)}
+            content={`<span className='text-p2'>${t(statusToTranslationPath[status].content)}`}
             firstButtonTitle={t('thank_you.button_restart_text')}
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />

@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import {
   getSummaryDisplayValues,
   SummaryDisplayValueType,
@@ -239,30 +239,111 @@ describe('getSummaryDisplayValues', () => {
   })
 
   describe('Number', () => {
-    const field = number('numberProperty', { title: 'Number title', type: 'number' }, {})
-    const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
+    describe('Integer type', () => {
+      const field = number(
+        'integerProperty',
+        {
+          title: 'Integer Title',
+          type: 'integer',
+        },
+        {},
+      )
+      const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
 
-    test('returns formatted string for a valid decimal number', () => {
-      const validNumber = 123.45
-      const result = getSummaryDisplayValues(validNumber, widgetType, schema, uiOptions)
-      expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123.45' }])
+      test('returns formatted string for a valid integer', () => {
+        const result = getSummaryDisplayValues(123, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123' }])
+      })
+
+      test('returns formatted string for a large integer with thousand separators', () => {
+        const result = getSummaryDisplayValues(1234567, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '1 234 567' }])
+      })
     })
 
-    test('returns formatted string for a valid integer number', () => {
-      const validInteger = 123
-      const result = getSummaryDisplayValues(validInteger, widgetType, schema, uiOptions)
-      expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123' }])
+    describe('Decimal number type', () => {
+      const field = number(
+        'decimalProperty',
+        {
+          title: 'Decimal Title',
+          type: 'number',
+          step: 0.01,
+        },
+        {},
+      )
+      const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
+
+      test('returns formatted string for a decimal number', () => {
+        const result = getSummaryDisplayValues(123.45, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123,45' }])
+      })
+
+      test('returns formatted string for a large decimal number with thousand separators', () => {
+        const result = getSummaryDisplayValues(1234567.89, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '1 234 567,89' }])
+      })
     })
 
-    test('returns invalid value for a non-numeric input', () => {
-      const nonNumberValue = 'not-a-number'
-      const result = getSummaryDisplayValues(nonNumberValue, widgetType, schema, uiOptions)
-      expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+    describe('With custom format options', () => {
+      const field = number(
+        'customFormatProperty',
+        {
+          title: 'Custom Format Title',
+          type: 'number',
+          step: 0.001,
+        },
+        {
+          formatOptions: {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+            useGrouping: false, // Disables thousand separators
+          },
+        },
+      )
+      const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
+
+      test('returns formatted string respecting minimum fraction digits', () => {
+        const result = getSummaryDisplayValues(123.4, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123,400' }])
+      })
+
+      test('returns formatted string without thousand separators', () => {
+        const result = getSummaryDisplayValues(1234567.89, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '1234567,890' }])
+      })
     })
 
-    test('returns none value for undefined Number value', () => {
-      const result = getSummaryDisplayValues(undefined, widgetType, schema, uiOptions)
-      expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
+    describe('Error cases', () => {
+      const field = number(
+        'errorProperty',
+        {
+          title: 'Error Title',
+          type: 'number',
+          step: 0.01,
+        },
+        {},
+      )
+      const { schema, uiOptions, widgetType } = retrieveRuntimeValues(field)
+
+      test('returns invalid value for non-numeric input', () => {
+        const result = getSummaryDisplayValues('not-a-number', widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+      })
+
+      test('returns invalid value for null', () => {
+        const result = getSummaryDisplayValues(null, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
+      })
+
+      test('returns none value for undefined', () => {
+        const result = getSummaryDisplayValues(undefined, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
+      })
+
+      test('returns invalid value for object', () => {
+        const result = getSummaryDisplayValues({}, widgetType, schema, uiOptions)
+        expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+      })
     })
   })
 

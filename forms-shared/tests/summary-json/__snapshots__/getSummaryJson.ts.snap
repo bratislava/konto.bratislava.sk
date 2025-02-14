@@ -1357,7 +1357,7 @@ exports[`getSummaryJson > oloEnergetickeZhodnotenieOdpaduVZevoExample summary JS
           "displayValues": [
             {
               "type": "String",
-              "value": "5547",
+              "value": "5 547",
             },
           ],
           "id": "root_informacieODovoze_predpokladaneMnozstvo",
@@ -3144,13 +3144,13 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExa
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "-1",
+                      "value": "1",
                     },
                   ],
                   "id": "root_sluzba_infoOOdpade_0_pocetNadob",
                   "label": "Počet nádob",
                   "type": "Field",
-                  "value": -1,
+                  "value": 1,
                 },
               ],
               "id": "root_sluzba_infoOOdpade_0",
@@ -8035,7 +8035,7 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5 summary JSON shou
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "2659",
+                      "value": "2 659",
                     },
                   ],
                   "id": "root_danZoStaviebJedenUcel_priznania_0_celkovaZastavanaPlocha",
@@ -8306,7 +8306,7 @@ exports[`getSummaryJson > priznanieKDaniZNehnutelnostiExample5 summary JSON shou
                   "displayValues": [
                     {
                       "type": "String",
-                      "value": "25648",
+                      "value": "25 648",
                     },
                   ],
                   "id": "root_danZoStaviebViacereUcely_priznania_0_celkovaVymera",
@@ -10127,7 +10127,7 @@ exports[`getSummaryJson > ziadostONajomBytuExample summary JSON should match sna
           "displayValues": [
             {
               "type": "String",
-              "value": "1200",
+              "value": "1 200",
             },
           ],
           "id": "root_ziadatelZiadatelka_prijem_zamestnaniePrijem",
@@ -10503,7 +10503,7 @@ exports[`getSummaryJson > ziadostONajomBytuExample summary JSON should match sna
           "displayValues": [
             {
               "type": "String",
-              "value": "1500",
+              "value": "1 500",
             },
           ],
           "id": "root_druhDruzka_prijem_zamestnaniePrijem",

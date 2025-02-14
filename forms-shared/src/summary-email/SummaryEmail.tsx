@@ -13,12 +13,14 @@ import {
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
-import { ValidatedSummary } from '../summary-renderer/validateSummary'
 import { FileIdInfoMap } from './renderSummaryEmail'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { FileInfoSummary } from '../form-files/fileStatus'
 
 type SummaryEmailProps = {
   summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
+  validationData: ValidationData<GenericObjectType>
   fileIdInfoMap: FileIdInfoMap
   withHtmlBodyTags: boolean
 }
@@ -139,7 +141,8 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
 
 export const SummaryEmail = ({
   summaryJson,
-  validatedSummary,
+  fileInfos,
+  validationData,
   fileIdInfoMap,
   withHtmlBodyTags,
 }: SummaryEmailProps) => {
@@ -147,7 +150,8 @@ export const SummaryEmail = ({
     <FileIdInfoMapContext.Provider value={fileIdInfoMap}>
       <SummaryRenderer
         summaryJson={summaryJson}
-        validatedSummary={validatedSummary}
+        fileInfos={fileInfos}
+        validationData={validationData}
         renderForm={FormRenderer}
         renderStep={StepRenderer}
         renderField={FieldRenderer}

@@ -38,7 +38,11 @@ export class TaxSubservice {
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {
     try {
-      this.taxBackendAdminApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber)
+      this.taxBackendAdminApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, {
+        headers: {
+          apiKey: this.config.taxBackendApiKey,
+        },
+      })
       return true
     } catch (error) {
       this.logger.error(

@@ -66,39 +66,35 @@ describe('TasksService', () => {
 
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledTimes(4)
+      ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['123456/789', '234567/890'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['345678/901', '345678/902'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.POSTAL,
-        date: null,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['456789/0123'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: mockDate1,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['456789/0103'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: mockDate2,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['123456/789', '234567/890'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+        {
+          birthNumbers: ['345678/901', '345678/902'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.POSTAL,
+          date: null,
+        },
+        {
+          birthNumbers: ['456789/0123'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: mockDate1,
+        },
+        {
+          birthNumbers: ['456789/0103'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: mockDate2,
+        },
+      ])
     })
 
     it('should skip empty groups', async () => {
@@ -116,12 +112,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['001234/567', '000123/890'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['001234/567', '000123/890'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+      ])
     })
 
     it('should handle empty input data', async () => {
@@ -147,12 +145,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['123456/789'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['123456/789'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+      ])
     })
 
     it('should propagate errors from norisService', async () => {
@@ -210,12 +210,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: [birthNumber],
-        inCityAccount: IsInCityAccount.NO,
-        deliveryMethod: null,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: [birthNumber],
+          inCityAccount: IsInCityAccount.NO,
+          deliveryMethod: null,
+          date: null,
+        },
+      ])
     })
 
     it('should propagate errors from norisService', async () => {

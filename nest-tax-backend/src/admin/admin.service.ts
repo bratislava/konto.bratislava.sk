@@ -5,7 +5,11 @@ import currency from 'currency.js'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
 import { NorisService } from '../noris/noris.service'
-import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
+import {
+  DeliveryMethod,
+  IsInCityAccount,
+  UpdateNorisDeliveryMethods,
+} from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -508,41 +512,43 @@ export class AdminService {
       }
     })
 
-    const updates = Object.entries(deliveryGroups)
+    const updates: UpdateNorisDeliveryMethods[] = Object.entries(deliveryGroups)
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
           deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
       )
-      .map(([deliveryMethod, birthNumbers]) =>
-        this.norisService.updateDeliveryMethods({
+      .map(([deliveryMethod, birthNumbers]) => {
+        return {
           birthNumbers: birthNumbers.map((item) => item.birthNumber),
           inCityAccount: IsInCityAccount.YES,
           deliveryMethod: deliveryMethod as DeliveryMethod,
           date: null, // date of confirmation of delivery method should be set only for city account notification
-        }),
-      )
+        }
+      })
 
     deliveryGroups[DeliveryMethod.CITY_ACCOUNT].forEach((item) => {
-      updates.push(
-        this.norisService.updateDeliveryMethods({
-          birthNumbers: [item.birthNumber],
-          inCityAccount: IsInCityAccount.YES,
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: item.date,
-        }),
-      )
+      updates.push({
+        birthNumbers: [item.birthNumber],
+        inCityAccount: IsInCityAccount.YES,
+        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+        date: item.date,
+      })
     })
 
-    await Promise.all(updates)
+    if (updates.length > 0) {
+      await this.norisService.updateDeliveryMethods(updates)
+    }
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.norisService.updateDeliveryMethods({
-      birthNumbers: [addSlashToBirthNumber(birthNumber)],
-      inCityAccount: IsInCityAccount.NO,
-      deliveryMethod: null,
-      date: null,
-    })
+    await this.norisService.updateDeliveryMethods([
+      {
+        birthNumbers: [addSlashToBirthNumber(birthNumber)],
+        inCityAccount: IsInCityAccount.NO,
+        deliveryMethod: null,
+        date: null,
+      },
+    ])
   }
 }

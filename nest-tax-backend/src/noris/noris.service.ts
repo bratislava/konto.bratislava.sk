@@ -168,7 +168,9 @@ export class NorisService {
     return norisData.recordset
   }
 
-  async updateDeliveryMethods(data: UpdateNorisDeliveryMethods): Promise<void> {
+  async updateDeliveryMethods(
+    data: UpdateNorisDeliveryMethods[],
+  ): Promise<void> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
@@ -184,29 +186,33 @@ export class NorisService {
     })
 
     try {
-      const request = new Request(connection)
+      await Promise.all(
+        data.map(async (dataItem) => {
+          const request = new Request(connection)
 
-      // Set parameters for the query
-      request.input('dkba_stav', data.inCityAccount)
-      request.input(
-        'dkba_datum_suhlasu',
-        data.date ? new Date(data.date) : null,
+          // Set parameters for the query
+          request.input('dkba_stav', dataItem.inCityAccount)
+          request.input(
+            'dkba_datum_suhlasu',
+            dataItem.date ? new Date(dataItem.date) : null,
+          )
+          request.input('dkba_sposob_dorucovania', dataItem.deliveryMethod)
+
+          const birthNumberPlaceholders = dataItem.birthNumbers
+            .map((_, index) => `@birthnumber${index}`)
+            .join(',')
+          dataItem.birthNumbers.forEach((birthNumber, index) => {
+            request.input(`birthnumber${index}`, birthNumber)
+          })
+          const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+            '@birth_numbers',
+            birthNumberPlaceholders,
+          )
+
+          // Execute the query
+          return request.query(queryWithPlaceholders)
+        }),
       )
-      request.input('dkba_sposob_dorucovania', data.deliveryMethod)
-
-      const birthNumberPlaceholders = data.birthNumbers
-        .map((_, index) => `@birthnumber${index}`)
-        .join(',')
-      data.birthNumbers.forEach((birthNumber, index) => {
-        request.input(`birthnumber${index}`, birthNumber)
-      })
-      const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
-        '@birth_numbers',
-        birthNumberPlaceholders,
-      )
-
-      // Execute the query
-      await request.query(queryWithPlaceholders)
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,

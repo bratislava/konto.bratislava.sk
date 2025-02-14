@@ -115,11 +115,11 @@ export class ScannerController {
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
   @HttpCode(HttpStatus.ACCEPTED)
-  scanFiles(
+  async scanFiles(
     @Body() bucketFiles: ScanFileDto[],
   ): Promise<ScanFileResponseDto[]> {
     this.logger.debug(`Scan files request: ${JSON.stringify(bucketFiles)}`);
-    return this.scannerService.scanFiles(bucketFiles);
+    return await this.scannerService.scanFiles(bucketFiles);
   }
 
   @Post('file')
@@ -151,9 +151,11 @@ export class ScannerController {
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  scanFile(@Body() bucketFile: ScanFileDto): Promise<ScanFileResponseDto> {
+  async scanFile(
+    @Body() bucketFile: ScanFileDto,
+  ): Promise<ScanFileResponseDto> {
     this.logger.debug(`Scan file request: ${JSON.stringify(bucketFile)}`);
-    return this.scannerService.scanFile(bucketFile);
+    return await this.scannerService.scanFile(bucketFile);
   }
 
   //get controller which returns status of scanned file. Add swagger documentation.
@@ -171,11 +173,11 @@ export class ScannerController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  getStatus(
+  async getStatus(
     @Param('bucketUid64') bucketId64: string,
     @Param('fileUid64') fileId64: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.getStatus(bucketId64, fileId64);
+    return await this.scannerService.getStatus(bucketId64, fileId64);
   }
 
   //get controller which returns status of scanned file by record id or by name in
@@ -194,10 +196,10 @@ export class ScannerController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  getStatusById(
+  async getStatusById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.getStatusByResourceId(resourceId);
+    return await this.scannerService.getStatusByResourceId(resourceId);
   }
 
   @Delete('file/:resourceId')
@@ -214,9 +216,9 @@ export class ScannerController {
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  deleteFileById(
+  async deleteFileById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.deleteFile(resourceId);
+    return await this.scannerService.deleteFile(resourceId);
   }
 }

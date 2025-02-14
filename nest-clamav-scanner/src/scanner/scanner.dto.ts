@@ -1,6 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { FileStatus } from '@prisma/client'; //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDefined,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
 export class ScanFileDto {
@@ -11,7 +18,7 @@ export class ScanFileDto {
   @IsString()
   fileUid: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'uid/name of the bucket. If not set, default bucket will be used',
     example: 'super-bucket',
@@ -81,18 +88,20 @@ export class ScanStatusDto {
   ])
   status: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'other meta data',
     example: '{ "type": "TIE Fighter"}',
   })
   @IsOptional()
-  meta?: any;
+  meta?: unknown;
 
   //api property for created at
   @ApiProperty({
     description: 'created at',
     example: '2021-05-05T12:00:00.000Z',
   })
+  @IsDefined()
+  @Type(() => Date)
   createdAt: Date;
 
   //api property for updated at
@@ -100,6 +109,8 @@ export class ScanStatusDto {
     description: 'updated at',
     example: '2021-05-05T12:00:00.000Z',
   })
+  @IsDefined()
+  @Type(() => Date)
   updatedAt: Date;
 }
 

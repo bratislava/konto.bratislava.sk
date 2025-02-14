@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { BucketItemStat } from 'minio';
 import { MinioClient, MinioService } from 'nestjs-minio-client';
 
 @Injectable()
@@ -9,7 +10,7 @@ export class MinioClientService {
     this.logger = new Logger('MinioClientService');
   }
 
-  public async client(): Promise<MinioClient> {
+  public client(): MinioClient {
     this.logger.log('MinioClientService.client');
     return this.minioService.client;
   }
@@ -34,7 +35,7 @@ export class MinioClientService {
   public async listFiles(bucketName: string) {
     try {
       const files = await new Promise((resolve, reject) => {
-        const objectsListTemp = [];
+        const objectsListTemp: unknown[] = [];
         const stream = this.minioService.client.listObjectsV2(
           bucketName,
           '',
@@ -56,14 +57,21 @@ export class MinioClientService {
     }
   }
 
-  //FIXME promise
   //function which checks if file exists in minio bucket
-  public async fileExists(bucketName: string, fileName: string): Promise<any> {
+  public async fileExists(
+    bucketName: string,
+    fileName: string,
+  ): Promise<BucketItemStat> {
     try {
       return await this.minioService.client.statObject(bucketName, fileName);
     } catch (error) {
-      this.logger.error(error);
-      return false;
+      if (error instanceof Error) {
+        this.logger.error(error.message);
+      } else {
+        this.logger.error('fileExists is throwing non Error');
+      }
+
+      throw error;
     }
   }
 
@@ -88,8 +96,10 @@ export class MinioClientService {
         conds,
       );
     } catch (error) {
+      const errString =
+        error instanceof Error ? error.message : 'throwing non Error';
       this.logger.error(
-        `Error while moving file ${sourceFileName} from bucket ${sourceBucketName} to bucket ${destinationBucketName} with name ${destinationFileName}. Error: ${error}`,
+        `Error while moving file ${sourceFileName} from bucket ${sourceBucketName} to bucket ${destinationBucketName} with name ${destinationFileName}. Error: ${errString}`,
       );
       return false;
     }
@@ -100,8 +110,10 @@ export class MinioClientService {
         sourceFileName,
       );
     } catch (error) {
+      const errString =
+        error instanceof Error ? error.message : 'throwing non Error';
       this.logger.error(
-        `Error while removing file ${sourceFileName} from bucket ${sourceBucketName}. Error: ${error}`,
+        `Error while removing file ${sourceFileName} from bucket ${sourceBucketName}. Error: ${errString}`,
       );
       return false;
     }

@@ -1,20 +1,12 @@
 import { FileStatus } from '@prisma/client';
 import { isString } from 'class-validator';
 
-export function isValid(resource: any): boolean {
+export function isValidUid(resource: unknown): boolean {
   if (!isString(resource)) {
     return false;
   }
 
-  if (resource.length < 3) {
-    return false;
-  }
-
-  if (resource.length > 1000) {
-    return false;
-  }
-
-  return true;
+  return resource.length >= 3 && resource.length <= 1000;
 }
 
 export const isDefined = (a: unknown) => a !== undefined;
@@ -45,8 +37,8 @@ export function chunkArray<T>(arr: T[], n: number): T[][] {
   return chunks;
 }
 
-export function timeout(ms) {
-  return new Promise((resolve) => {
+export async function timeout(ms: number): Promise<string> {
+  return await new Promise((resolve) => {
     setTimeout(() => {
       resolve(FileStatus.SCAN_TIMEOUT);
     }, ms);

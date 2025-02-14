@@ -1,9 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { AppService } from './app.service';
 import { ServiceRunningDto } from './status/status.dto';
 
+@ApiTags('Health')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -13,8 +14,12 @@ export class AppController {
     summary: 'Check status of this service',
     description: 'This endpoint checks if this service is running',
   })
+  @ApiOkResponse({
+    description: 'Service running status',
+    type: ServiceRunningDto,
+  })
   @Get('health')
-  async isStatusRunning(): Promise<ServiceRunningDto> {
+  isStatusRunning(): ServiceRunningDto {
     return {
       running: true,
     };
@@ -23,6 +28,10 @@ export class AppController {
   @ApiOperation({
     summary: 'Hello world!',
     description: 'See if nest is working!',
+  })
+  @ApiOkResponse({
+    description: 'Returns a hello message',
+    type: String,
   })
   @Get()
   getHello(): string {

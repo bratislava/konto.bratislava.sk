@@ -1,14 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileStatus } from '@prisma/client';
-import { execSync } from 'child_process';
 import * as clamd from 'clamdjs';
 import { Readable as ReadableStream } from 'stream';
 
 @Injectable()
 export class ClamavClientService {
   private readonly logger: Logger;
-  private readonly scanner: clamd;
+  private readonly scanner: clamd.Scanner;
 
   //constructor with configService
   constructor(private readonly configService: ConfigService) {
@@ -16,14 +15,14 @@ export class ClamavClientService {
 
     //connection initialisation to clamav
     this.scanner = clamd.createScanner(
-      configService.get('CLAMAV_HOST'),
-      configService.get('CLAMAV_PORT'),
+      configService.get('CLAMAV_HOST', ''),
+      configService.get('CLAMAV_PORT', 0),
     );
   }
 
-  scanStream(readStream: ReadableStream): any {
+  async scanStream(readStream: ReadableStream) {
     //scan stream with timeout 20 minutes
-    return this.scanner.scanStream(readStream, 60000 * 20);
+    return await this.scanner.scanStream(readStream, 60000 * 20);
   }
 
   //function which gets clam reply
@@ -42,38 +41,40 @@ export class ClamavClientService {
   }
 
   //create function which checks if clamav scanner is running
-  async isRunning(): Promise<boolean> {
+  async isRunning() {
     try {
-      this.logger.debug('Checking if clamav is running...');
-      const cmd = `echo PING | nc -w 3 ${this.configService.get(
-        'CLAMAV_HOST',
-      )} ${this.configService.get('CLAMAV_PORT')}`;
-      const response = execSync(cmd, { encoding: 'utf8' });
-      this.logger.debug(`Clamav running response: ${response.trim()}`);
-      const result = response.trim() === 'PONG';
-
-      this.logger.debug(`Clamav result: ${result}`);
-      return result;
+      return await clamd.ping(
+        this.configService.get('CLAMAV_HOST', ''),
+        this.configService.get('CLAMAV_PORT', 0),
+      );
     } catch (error) {
-      this.logger.debug(`Clamav running error: ${error}`);
+      if (error instanceof Error) {
+        this.logger.debug(`Clamav running error: ${error.message}`);
+      } else {
+        this.logger.error('Clamav running error: throwing not Error.');
+      }
       return false;
     }
   }
 
   //function which shows clamav version
-  async version(): Promise<string> {
+  async version() {
     this.logger.debug('Checking if clamav version...');
     try {
       const version = await clamd.version(
-        this.configService.get('CLAMAV_HOST'),
-        this.configService.get('CLAMAV_PORT'),
+        this.configService.get('CLAMAV_HOST', ''),
+        this.configService.get('CLAMAV_PORT', 0),
         300,
       );
       this.logger.debug(`Clamav version result: ${version}`);
       return version;
     } catch (error) {
-      this.logger.error(`Unable to check if clamav is running: ${error}`);
-      return error;
+      if (error instanceof Error) {
+        this.logger.error(
+          `Unable to check if clamav is running: ${error.message}`,
+        );
+      }
+      throw error;
     }
   }
 }

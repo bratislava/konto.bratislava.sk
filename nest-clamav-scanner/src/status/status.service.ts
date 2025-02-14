@@ -53,9 +53,9 @@ export class StatusService {
   }
 
   //function which checks if minio is running
-  public async isMinioRunning(): Promise<ServiceRunningDto> {
+  public isMinioRunning(): ServiceRunningDto {
     try {
-      const result = await this.minioClientService.client();
+      const result = this.minioClientService.client();
       this.logger.log(result);
       return {
         running: true,
@@ -76,7 +76,10 @@ export class StatusService {
         running: result,
       };
     } catch (error) {
-      this.logger.error(error);
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+      this.logger.error(error.message);
       return {
         running: false,
       };
@@ -91,10 +94,10 @@ export class StatusService {
         version: result,
       };
     } catch (error) {
-      this.logger.error(error);
-      return {
-        version: error,
-      };
+      if (error instanceof Error) {
+        this.logger.error(error.message);
+      }
+      throw error;
     }
   }
 }

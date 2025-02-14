@@ -25,3 +25,21 @@ export class ClamavVersionDto {
   })
   version: string;
 }
+
+//dto for all statuses
+export class ServicesStatusDto {
+  @ApiProperty({ type: ServiceRunningDto })
+  prisma: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  minio: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  forms: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  clamav: ServiceRunningDto;
+
+  @ApiProperty({ type: ClamavVersionDto })
+  clamavVersion: ClamavVersionDto;
+}

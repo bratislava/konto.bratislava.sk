@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 @Injectable()
 export class FormsClientService {
@@ -19,17 +19,21 @@ export class FormsClientService {
       });
       return response.status === 200;
     } catch (error) {
-      this.logger.error(`FormsClientService.healthCheck error: ${error}`);
+      if (error instanceof Error) {
+        this.logger.error(`FormsClientService.healthCheck error: ${error}`);
+      } else {
+        this.logger.error('FormsClientService.healthCheck throwing not Error.');
+      }
+
       return false;
     }
   }
 
-  //create function which will post array of files to forms client with axios and using forms client url NEST_FORMS_BACKEND with upadted statuses
+  //create function which will post array of files to forms client with axios and using forms client url NEST_FORMS_BACKEND with updated statuses
   public async updateFileStatus(id: string, status: string) {
-    let response;
     try {
       const url = `${this.configService.get('NEST_FORMS_BACKEND')}/files/scan/${id}`;
-      response = await axios.patch(
+      return await axios.patch(
         url,
         {
           status,
@@ -37,24 +41,25 @@ export class FormsClientService {
         {
           timeout: 2000,
           auth: {
-            username: this.configService.get('NEST_FORMS_BACKEND_USERNAME'),
-            password: this.configService.get('NEST_FORMS_BACKEND_PASSWORD'),
+            username: this.configService.get('NEST_FORMS_BACKEND_USERNAME', ''),
+            password: this.configService.get('NEST_FORMS_BACKEND_PASSWORD', ''),
           },
         },
       );
-      return response;
     } catch (error) {
-      if (error.response.status === 404) {
+      if (error instanceof AxiosError && error.response?.status === 404) {
         this.logger.error(
-          `File not found in forms backend. Removing from DB: ${error}`,
+          `File not found in forms backend. Removing from DB: ${error.message}`,
         );
-        if (response) {
-          return response;
-        }
-        return false;
+        return error.response;
       }
-      this.logger.error(`Error while notifying forms backend: ${error}`);
-      return false;
+      if (error instanceof Error) {
+        this.logger.error(
+          `Error while notifying forms backend: ${error.message}`,
+        );
+      }
+
+      throw error;
     }
   }
 }

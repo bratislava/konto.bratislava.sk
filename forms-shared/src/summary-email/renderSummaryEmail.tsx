@@ -1,18 +1,15 @@
 import React from 'react'
-import { GenericObjectType } from '@rjsf/utils'
-import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
-import { FormDefinition } from '../definitions/formDefinitionTypes'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { FormSummary } from '../summary/summary'
 
 export type FileIdInfoMap = Record<string, { url: string; fileName: string }>
 
 export type RenderSummaryEmailPayload = {
-  formDefinition: FormDefinition
-  formData: GenericObjectType
+  formSummary: FormSummary
   fileIdInfoMap: FileIdInfoMap
   validatorRegistry: BaRjsfValidatorRegistry
   serverFiles?: FormsBackendFile[]
@@ -20,23 +17,16 @@ export type RenderSummaryEmailPayload = {
 }
 
 export const renderSummaryEmail = async ({
-  formDefinition,
-  formData,
+  formSummary,
   fileIdInfoMap,
-  validatorRegistry,
   serverFiles,
   withHtmlBodyTags = false,
 }: RenderSummaryEmailPayload) => {
-  const summaryJson = getSummaryJsonNode({
-    schema: formDefinition.schema,
-    formData,
-    validatorRegistry,
-  })
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
 
   return render(
     <SummaryEmail
-      summaryJson={summaryJson}
+      formSummary={formSummary}
       fileInfos={fileInfos}
       fileIdInfoMap={fileIdInfoMap}
       withHtmlBodyTags={withHtmlBodyTags}

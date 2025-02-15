@@ -12,12 +12,12 @@ import {
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
-import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import { FileIdInfoMap } from './renderSummaryEmail'
 import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 
 type SummaryEmailProps = {
-  summaryJson: SummaryJsonForm
+  formSummary: FormSummary
   fileInfos: Record<string, FileInfoSummary>
   fileIdInfoMap: FileIdInfoMap
   withHtmlBodyTags: boolean
@@ -138,7 +138,7 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
 )
 
 export const SummaryEmail = ({
-  summaryJson,
+  formSummary: { summaryJson },
   fileInfos,
   fileIdInfoMap,
   withHtmlBodyTags,

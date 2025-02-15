@@ -84,6 +84,9 @@ type DisplayValueRendererProps = {
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
   fileInfos: Record<string, FileInfoSummary>
+  /**
+   * Required only for summaries that display validation errors (FE app, PDF).
+   */
   validationData?: ValidationData<GenericObjectType>
   renderForm: (props: SummaryFormRendererProps) => ReactNode
   renderStep: (props: SummaryStepRendererProps) => ReactNode

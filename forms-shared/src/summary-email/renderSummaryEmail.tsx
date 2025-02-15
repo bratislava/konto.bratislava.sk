@@ -3,7 +3,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
-import { validateSummary } from '../summary-renderer/validateSummary'
 import { render } from '@react-email/components'
 import { SummaryEmail } from './SummaryEmail'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
@@ -30,18 +29,11 @@ export const renderSummaryEmail = async ({
 }: RenderSummaryEmailPayload) => {
   const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
-  const { validationData } = validateSummary(
-    formDefinition.schema,
-    formData,
-    fileInfos,
-    validatorRegistry,
-  )
 
   return render(
     <SummaryEmail
       summaryJson={summaryJson}
       fileInfos={fileInfos}
-      validationData={validationData}
       fileIdInfoMap={fileIdInfoMap}
       withHtmlBodyTags={withHtmlBodyTags}
     ></SummaryEmail>,

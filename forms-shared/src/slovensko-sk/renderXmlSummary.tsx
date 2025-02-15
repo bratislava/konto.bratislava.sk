@@ -10,9 +10,8 @@ import {
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
-import { validateSummary } from '../summary-renderer/validateSummary'
 import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { GenericObjectType } from '@rjsf/utils'
 import { renderToString } from 'react-dom/server'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { Parser } from 'xml2js'
@@ -24,7 +23,6 @@ import { FileInfoSummary } from '../form-files/fileStatus'
 type SlovenskoSkSummaryXmlProps = {
   summaryJson: SummaryJsonForm
   fileInfos: Record<string, FileInfoSummary>
-  validationData: ValidationData<GenericObjectType>
 }
 
 type CustomElement<P = {}> = DetailedHTMLProps<HTMLAttributes<HTMLElement> & P, HTMLElement>
@@ -95,16 +93,11 @@ const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProp
   )
 }
 
-export const SlovenskoSkSummaryXml = ({
-  summaryJson,
-  validationData,
-  fileInfos,
-}: SlovenskoSkSummaryXmlProps) => {
+export const SlovenskoSkSummaryXml = ({ summaryJson, fileInfos }: SlovenskoSkSummaryXmlProps) => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
       fileInfos={fileInfos}
-      validationData={validationData}
       renderForm={FormRenderer}
       renderStep={StepRenderer}
       renderField={FieldRenderer}
@@ -149,19 +142,9 @@ export async function renderSlovenskoXmlSummary(
 ) {
   const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
-  const { validationData } = validateSummary(
-    formDefinition.schema,
-    formData,
-    fileInfos,
-    validatorRegistry,
-  )
 
   const stringXml = renderToString(
-    <SlovenskoSkSummaryXml
-      summaryJson={summaryJson}
-      fileInfos={fileInfos}
-      validationData={validationData}
-    />,
+    <SlovenskoSkSummaryXml summaryJson={summaryJson} fileInfos={fileInfos} />,
   )
 
   return await parser.parseStringPromise(stringXml)

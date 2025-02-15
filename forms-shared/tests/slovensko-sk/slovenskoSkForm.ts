@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll } from 'vitest'
+import { beforeAll, describe, expect, test } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { generateSlovenskoSkXmlObject } from '../../src/slovensko-sk/generateXml'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
@@ -49,12 +49,12 @@ describe('slovenskoSkForm', () => {
       describe(`${exampleForm.name}`, () => {
         let xmlString: string
         beforeAll(async () => {
-          const xmlObject = await generateSlovenskoSkXmlObject(
+          const xmlObject = await generateSlovenskoSkXmlObject({
             formDefinition,
-            exampleForm.formData,
-            testValidatorRegistry,
-            exampleForm.serverFiles,
-          )
+            formData: exampleForm.formData,
+            validatorRegistry: testValidatorRegistry,
+            serverFiles: exampleForm.serverFiles,
+          })
           xmlString = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })
         })
 

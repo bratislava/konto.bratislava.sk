@@ -39,24 +39,31 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
   })
 }
 
+type GenerateSlovenskoSkXmlObjectParams = {
+  formDefinition: FormDefinitionSlovenskoSk
+  formData: GenericObjectType
+  validatorRegistry: BaRjsfValidatorRegistry
+  serverFiles?: FormsBackendFile[]
+}
+
 /**
  * Generates a Slovensko SK XML object that can be built with "xml2js" to create a valid XML.
  */
-export async function generateSlovenskoSkXmlObject(
-  formDefinition: FormDefinitionSlovenskoSk,
-  formData: GenericObjectType,
-  validatorRegistry: BaRjsfValidatorRegistry,
-  serverFiles?: FormsBackendFile[],
-) {
+export async function generateSlovenskoSkXmlObject({
+  formDefinition,
+  formData,
+  validatorRegistry,
+  serverFiles,
+}: GenerateSlovenskoSkXmlObjectParams) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
     JsonVersion: formDefinition.jsonVersion,
     Json: JSON.stringify(formData),
-    Summary: await renderSlovenskoXmlSummary(
+    Summary: await renderSlovenskoXmlSummary({
       formDefinition,
       formData,
       validatorRegistry,
       serverFiles,
-    ),
+    }),
     TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
   })
 }

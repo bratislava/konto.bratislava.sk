@@ -75,12 +75,12 @@ const getSlovenskoSkGenericXmls = async (
 ) => {
   const { formDefinition, formData, validatorRegistry, serverFiles } = params
 
-  const xmlObject = await generateSlovenskoSkXmlObject(
+  const xmlObject = await generateSlovenskoSkXmlObject({
     formDefinition,
     formData,
     validatorRegistry,
     serverFiles,
-  )
+  })
   const xdcXMLData = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: false })
   const xdcUsedXSD = getSchemaXsd(formDefinition)
   const xdcUsedXSLT = getHtmlSbXslt(formDefinition)

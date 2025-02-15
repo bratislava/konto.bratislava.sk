@@ -78,14 +78,14 @@ export default class ConvertService {
       },
     })) as FormWithFiles
 
-    return generateSlovenskoSkXmlObject(
-      isSlovenskoSkTaxFormDefinition(formDefinition)
+    return generateSlovenskoSkXmlObject({
+      formDefinition: isSlovenskoSkTaxFormDefinition(formDefinition)
         ? patchConvertServiceTaxFormDefinition(formDefinition)
         : formDefinition,
-      formDataJson,
-      this.formValidatorRegistryService.getRegistry(),
-      formWithFiles.files,
-    )
+      formData: formDataJson,
+      validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+      serverFiles: formWithFiles.files,
+    })
   }
 
   /**

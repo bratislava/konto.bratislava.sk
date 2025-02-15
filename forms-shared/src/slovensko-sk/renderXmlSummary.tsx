@@ -134,12 +134,19 @@ const parser = new Parser({
   ],
 })
 
-export async function renderSlovenskoXmlSummary(
-  formDefinition: FormDefinition,
-  formData: GenericObjectType,
-  validatorRegistry: BaRjsfValidatorRegistry,
-  serverFiles?: FormsBackendFile[],
-) {
+type RenderSlovenskoXmlSummaryParams = {
+  formDefinition: FormDefinition
+  formData: GenericObjectType
+  validatorRegistry: BaRjsfValidatorRegistry
+  serverFiles?: FormsBackendFile[]
+}
+
+export async function renderSlovenskoXmlSummary({
+  formDefinition,
+  formData,
+  validatorRegistry,
+  serverFiles,
+}: RenderSlovenskoXmlSummaryParams) {
   const summaryJson = getSummaryJsonNode({
     schema: formDefinition.schema,
     formData,

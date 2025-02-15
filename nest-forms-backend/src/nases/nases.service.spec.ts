@@ -543,11 +543,12 @@ describe('NasesService', () => {
       )
 
       expect(result).toEqual(mockSummary)
-      expect(getFormSummary).toHaveBeenCalledWith(
-        mockFormDefinition,
-        mockForm.formDataJson,
-        service['formValidatorRegistryService'].getRegistry(),
-      )
+      expect(getFormSummary).toHaveBeenCalledWith({
+        formDefinition: mockFormDefinition,
+        formDataJson: mockForm.formDataJson,
+        validatorRegistry:
+          service['formValidatorRegistryService'].getRegistry(),
+      })
     })
 
     it('should throw InternalServerError when getFormSummary fails', () => {

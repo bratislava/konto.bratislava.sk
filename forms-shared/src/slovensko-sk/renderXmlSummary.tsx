@@ -140,7 +140,11 @@ export async function renderSlovenskoXmlSummary(
   validatorRegistry: BaRjsfValidatorRegistry,
   serverFiles?: FormsBackendFile[],
 ) {
-  const summaryJson = getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
+  const summaryJson = getSummaryJsonNode({
+    schema: formDefinition.schema,
+    formData,
+    validatorRegistry,
+  })
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
 
   const stringXml = renderToString(

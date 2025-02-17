@@ -25,12 +25,12 @@ describe('validateSummary', () => {
     ])
 
     test('should validate successfully when required field is provided', () => {
-      const result = validateSummary(
+      const result = validateSummary({
         schema,
-        { requiredInput: 'some value' },
-        {},
-        testValidatorRegistry,
-      )
+        formData: { requiredInput: 'some value' },
+        fileInfos: {},
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(false)
       expect(checkPathForErrors('root_requiredInput', result.validationData.errorSchema)).toBe(
@@ -43,7 +43,12 @@ describe('validateSummary', () => {
     })
 
     test('should report errors for missing required field', () => {
-      const result = validateSummary(schema, {}, {}, testValidatorRegistry)
+      const result = validateSummary({
+        schema,
+        formData: {},
+        fileInfos: {},
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(true)
       expect(checkPathForErrors('root_requiredInput', result.validationData.errorSchema)).toBe(true)
@@ -58,18 +63,18 @@ describe('validateSummary', () => {
     const { schema } = object('wrapper', {}, {}, [fileUpload('file', { title: 'File' }, {})])
 
     test('should validate successfully for valid file status', () => {
-      const result = validateSummary(
+      const result = validateSummary({
         schema,
-        { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
-        {
+        formData: { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
+        fileInfos: {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
             id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.ScanDone,
             fileName: '',
           },
         },
-        testValidatorRegistry,
-      )
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(false)
       expect(checkPathForErrors('root_file', result.validationData.errorSchema)).toBe(false)
@@ -81,18 +86,18 @@ describe('validateSummary', () => {
     })
 
     test('should report errors for files with errors', () => {
-      const result = validateSummary(
+      const result = validateSummary({
         schema,
-        { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
-        {
+        formData: { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
+        fileInfos: {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
             id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.UploadServerError,
             fileName: '',
           },
         },
-        testValidatorRegistry,
-      )
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(true)
       expect(checkPathForErrors('root_file', result.validationData.errorSchema)).toBe(true)
@@ -104,12 +109,12 @@ describe('validateSummary', () => {
     })
 
     test('should report errors for missing file information', () => {
-      const result = validateSummary(
+      const result = validateSummary({
         schema,
-        { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
-        {},
-        testValidatorRegistry,
-      )
+        formData: { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
+        fileInfos: {},
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(true)
       expect(checkPathForErrors('root_file', result.validationData.errorSchema)).toBe(true)
@@ -124,16 +129,16 @@ describe('validateSummary', () => {
     ])
 
     test('should handle multiple file upload scenario', () => {
-      const result = validateSummary(
+      const result = validateSummary({
         schema,
-        {
+        formData: {
           files: [
             'e37359e2-2547-42a9-82d6-d40054f17da0',
             'b3d0cd96-d255-4bfb-8b1a-56a185d467f3',
             '7459535f-96c2-47ed-bf32-55143e52a4ea', // File missing in fileInfos
           ],
         },
-        {
+        fileInfos: {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
             id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.ScanDone,
@@ -151,8 +156,8 @@ describe('validateSummary', () => {
             fileName: '',
           },
         },
-        testValidatorRegistry,
-      )
+        validatorRegistry: testValidatorRegistry,
+      })
 
       expect(result.hasErrors).toBe(true)
       expect(checkPathForErrors('root_files', result.validationData.errorSchema)).toBe(true)

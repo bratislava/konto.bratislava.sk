@@ -153,7 +153,7 @@ const useGetContext = () => {
     const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
     const {
       validationData: { errorSchema },
-    } = validateSummary(schema, pickedPropertiesData, fileInfos, validatorRegistry)
+    } = validateSummary({ schema, formData: pickedPropertiesData, fileInfos, validatorRegistry })
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {

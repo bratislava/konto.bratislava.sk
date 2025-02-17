@@ -33,12 +33,12 @@ describe('getSummaryJson', () => {
           exampleForm.clientFiles,
           exampleForm.serverFiles,
         )
-        const { validationData } = validateSummary(
-          formDefinition.schema,
-          exampleForm.formData,
+        const { validationData } = validateSummary({
+          schema: formDefinition.schema,
+          formData: exampleForm.formData,
           fileInfos,
-          testValidatorRegistry,
-        )
+          validatorRegistry: testValidatorRegistry,
+        })
 
         const pdfBuffer = await renderSummaryPdf({
           formSummary,

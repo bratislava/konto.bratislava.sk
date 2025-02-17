@@ -278,12 +278,12 @@ export default class ConvertService {
           clientFiles,
           form.files,
         )
-        const { validationData } = validateSummary(
-          formDefinition.schema,
-          jsonForm,
+        const { validationData } = validateSummary({
+          schema: formDefinition.schema,
+          formData: jsonForm,
           fileInfos,
-          this.formValidatorRegistryService.getRegistry(),
-        )
+          validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+        })
         pdfBuffer = await renderSummaryPdf({
           formSummary,
           validationData,

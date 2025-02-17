@@ -112,3 +112,8 @@ export interface NorisPaymentsDto {
   zbyva_uhradit: string
   specificky_symbol: string
 }
+
+export interface NorisUpdateDto {
+  variabilny_symbol: string
+  datum_platnosti: string | null
+}

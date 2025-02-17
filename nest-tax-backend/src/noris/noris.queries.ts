@@ -651,3 +651,9 @@ export const setDeliveryMethodsForUser = `
             AND rodne_cislo IN (@birth_numbers)
         )
 `
+
+export const getNorisDataForUpdate = `
+    SELECT variabilny_symbol, datum_platnosti
+    FROM lcs.dane21_doklad
+    WHERE variabilny_symbol IN (@variable_symbols)
+`

@@ -60,7 +60,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^3.18.0",
+    "@darraghor/eslint-plugin-nestjs-typed": "^6.2.3",
     "@golevelup/ts-jest": "^0.5.0",
     "@nestjs/cli": "^10.4.4",
     "@nestjs/testing": "^10.4.0",

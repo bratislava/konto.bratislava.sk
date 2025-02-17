@@ -112,6 +112,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,
@@ -129,6 +130,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,

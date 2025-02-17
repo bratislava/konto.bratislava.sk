@@ -5,11 +5,7 @@ SELECT
     lcs.dane21_doklad.cislo_subjektu, 
     subjekty_d1.nazev_subjektu adresa_tp_sidlo,
     subjekty_a.reference_subjektu cislo_konania , 
-    /*subjekty_a.nazev_subjektu subjekty_nazev_subjektu , 
-    lcs.dane21_doklad.datum_realizacie, 
-    lcs.dane21_doklad.datum_dorucenia, 
-    lcs.dane21_doklad.datum_platnosti, 
-    */
+    lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
     (case 
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 

@@ -16,6 +16,7 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
+import { TaxIdVariableSymbol } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
@@ -561,5 +562,31 @@ export class AdminService {
         date: null,
       },
     ])
+  }
+
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbol[]): Promise<void> {
+    const variableSymbolToId = new Map(
+      taxes.map((tax) => [tax.variableSymbol, tax.id]),
+    )
+    const variableSymbols = [...variableSymbolToId.keys()]
+    const data = await this.norisService.getDataForUpdate(variableSymbols)
+    const variableSymbolsToUpdateMap: Map<string, string> = new Map(
+      data
+        .filter((item) => item.datum_platnosti !== null)
+        .map((item) => [
+          item.variabilny_symbol,
+          item.datum_platnosti as string,
+        ]),
+    )
+
+    await this.prismaService.$transaction(
+      [...variableSymbolsToUpdateMap.entries()].map(
+        ([variableSymbol, dateTaxRuling]) =>
+          this.prismaService.tax.update({
+            where: { id: variableSymbolToId.get(variableSymbol) },
+            data: { dateTaxRuling },
+          }),
+      ),
+    )
   }
 }

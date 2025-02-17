@@ -12,6 +12,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import {
   extractJsonFromSlovenskoSkXml,
   ExtractJsonFromSlovenskoSkXmlError,
@@ -20,6 +21,7 @@ import { generateSlovenskoSkXmlObject } from 'forms-shared/slovensko-sk/generate
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { getFormSummary } from 'forms-shared/summary/summary'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
+import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
 import { chromium } from 'playwright'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -266,14 +268,43 @@ export default class ConvertService {
 
     let pdfBuffer: Buffer
     try {
-      pdfBuffer = await renderSummaryPdf({
-        formDefinition,
-        formData: jsonForm,
-        launchBrowser: () => chromium.launch(),
-        clientFiles,
-        serverFiles: form.files,
-        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
-      })
+      if (form.state === FormState.DRAFT) {
+        const formSummary = getFormSummary({
+          formDefinition,
+          formDataJson: jsonForm,
+          validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+        })
+        const fileInfos = mergeClientAndServerFilesSummary(
+          clientFiles,
+          form.files,
+        )
+        const { validationData } = validateSummary(
+          formDefinition.schema,
+          jsonForm,
+          fileInfos,
+          this.formValidatorRegistryService.getRegistry(),
+        )
+        pdfBuffer = await renderSummaryPdf({
+          formSummary,
+          validationData,
+          launchBrowser: () => chromium.launch(),
+          clientFiles,
+          serverFiles: form.files,
+        })
+      } else {
+        if (form.formSummary == null) {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+            FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+          )
+        }
+
+        pdfBuffer = await renderSummaryPdf({
+          formSummary: form.formSummary,
+          launchBrowser: () => chromium.launch(),
+          serverFiles: form.files,
+        })
+      }
     } catch (error) {
       this.logger.error(`Error during generating PDF: ${<string>error}`)
 

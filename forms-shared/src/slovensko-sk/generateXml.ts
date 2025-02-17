@@ -4,7 +4,7 @@ import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { getSlovenskoSkXmlns } from './urls'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { FormSummary } from '../summary/summary'
 
 function getSlovenskoSkXmlObjectBase(
   formDefinition: FormDefinitionSlovenskoSk,
@@ -41,8 +41,8 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
 
 type GenerateSlovenskoSkXmlObjectParams = {
   formDefinition: FormDefinitionSlovenskoSk
+  formSummary: FormSummary
   formData: GenericObjectType
-  validatorRegistry: BaRjsfValidatorRegistry
   serverFiles?: FormsBackendFile[]
 }
 
@@ -51,19 +51,17 @@ type GenerateSlovenskoSkXmlObjectParams = {
  */
 export async function generateSlovenskoSkXmlObject({
   formDefinition,
+  formSummary,
   formData,
-  validatorRegistry,
   serverFiles,
 }: GenerateSlovenskoSkXmlObjectParams) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
     JsonVersion: formDefinition.jsonVersion,
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary({
-      formDefinition,
-      formData,
-      validatorRegistry,
+      formSummary,
       serverFiles,
     }),
-    TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
+    TermsAndConditions: removeMarkdown(formSummary.termsAndConditions),
   })
 }

@@ -15,6 +15,8 @@ import { buildSlovenskoSkXml } from '../slovensko-sk/xmlBuilder'
 import { getSchemaXsd } from '../slovensko-sk/file-templates/schemaXsd'
 import { getHtmlSbXslt } from '../slovensko-sk/file-templates/htmlSbXslt'
 import { createFormSignatureId } from './signatureId'
+import { getFormSummary } from '../summary/summary'
+import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
 export type GetSignerDataParams<
   FormDefinition extends FormDefinitionSlovenskoSk = FormDefinitionSlovenskoSk,
@@ -75,10 +77,15 @@ const getSlovenskoSkGenericXmls = async (
 ) => {
   const { formDefinition, formData, validatorRegistry, serverFiles } = params
 
+  const formSummary = getFormSummary({
+    formDefinition,
+    formDataJson: formData,
+    validatorRegistry: testValidatorRegistry,
+  })
   const xmlObject = await generateSlovenskoSkXmlObject({
     formDefinition,
     formData,
-    validatorRegistry,
+    formSummary,
     serverFiles,
   })
   const xdcXMLData = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: false })

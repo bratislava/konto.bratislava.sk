@@ -16,6 +16,7 @@ import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJso
 import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { getFormSummary } from '../../src/summary/summary'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -49,10 +50,15 @@ describe('slovenskoSkForm', () => {
       describe(`${exampleForm.name}`, () => {
         let xmlString: string
         beforeAll(async () => {
+          const formSummary = getFormSummary({
+            formDefinition,
+            formDataJson: exampleForm.formData,
+            validatorRegistry: testValidatorRegistry,
+          })
           const xmlObject = await generateSlovenskoSkXmlObject({
             formDefinition,
+            formSummary,
             formData: exampleForm.formData,
-            validatorRegistry: testValidatorRegistry,
             serverFiles: exampleForm.serverFiles,
           })
           xmlString = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })

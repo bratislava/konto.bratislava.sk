@@ -9,19 +9,15 @@ import {
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
-import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
-import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { GenericObjectType } from '@rjsf/utils'
 import { renderToString } from 'react-dom/server'
-import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { Parser } from 'xml2js'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 
 type SlovenskoSkSummaryXmlProps = {
-  summaryJson: SummaryJsonForm
+  formSummary: FormSummary
   fileInfos: Record<string, FileInfoSummary>
 }
 
@@ -93,7 +89,10 @@ const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProp
   )
 }
 
-export const SlovenskoSkSummaryXml = ({ summaryJson, fileInfos }: SlovenskoSkSummaryXmlProps) => {
+export const SlovenskoSkSummaryXml = ({
+  formSummary: { summaryJson },
+  fileInfos,
+}: SlovenskoSkSummaryXmlProps) => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
@@ -135,27 +134,18 @@ const parser = new Parser({
 })
 
 type RenderSlovenskoXmlSummaryParams = {
-  formDefinition: FormDefinition
-  formData: GenericObjectType
-  validatorRegistry: BaRjsfValidatorRegistry
+  formSummary: FormSummary
   serverFiles?: FormsBackendFile[]
 }
 
 export async function renderSlovenskoXmlSummary({
-  formDefinition,
-  formData,
-  validatorRegistry,
+  formSummary,
   serverFiles,
 }: RenderSlovenskoXmlSummaryParams) {
-  const summaryJson = getSummaryJsonNode({
-    schema: formDefinition.schema,
-    formData,
-    validatorRegistry,
-  })
   const fileInfos = mergeClientAndServerFilesSummary([], serverFiles)
 
   const stringXml = renderToString(
-    <SlovenskoSkSummaryXml summaryJson={summaryJson} fileInfos={fileInfos} />,
+    <SlovenskoSkSummaryXml formSummary={formSummary} fileInfos={fileInfos} />,
   )
 
   return await parser.parseStringPromise(stringXml)

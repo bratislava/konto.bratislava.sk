@@ -1,7 +1,7 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
-import { Forms } from '@prisma/client'
+import { Forms, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
 import {
@@ -18,6 +18,7 @@ import {
 } from 'forms-shared/slovensko-sk/extractJson'
 import { generateSlovenskoSkXmlObject } from 'forms-shared/slovensko-sk/generateXml'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
+import { getFormSummary } from 'forms-shared/summary/summary'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { chromium } from 'playwright'
 
@@ -78,12 +79,30 @@ export default class ConvertService {
       },
     })) as FormWithFiles
 
+    const formDefinitionPatched = isSlovenskoSkTaxFormDefinition(formDefinition)
+      ? patchConvertServiceTaxFormDefinition(formDefinition)
+      : formDefinition
+
+    const formSummary =
+      form.state === FormState.DRAFT
+        ? getFormSummary({
+            formDefinition: formDefinitionPatched,
+            formDataJson,
+            validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+          })
+        : form.formSummary
+
+    if (formSummary == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        `convertJsonToXmlObject: ${FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY}`,
+      )
+    }
+
     return generateSlovenskoSkXmlObject({
-      formDefinition: isSlovenskoSkTaxFormDefinition(formDefinition)
-        ? patchConvertServiceTaxFormDefinition(formDefinition)
-        : formDefinition,
+      formDefinition: formDefinitionPatched,
+      formSummary,
       formData: formDataJson,
-      validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       serverFiles: formWithFiles.files,
     })
   }

@@ -70,7 +70,7 @@
     "@types/lodash": "^4.17.13",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
-    "@types/react": "19.0.8",
+    "@types/react": "19.0.10",
     "@types/react-dom": "19.0.3",
     "@types/remove-markdown": "^0.3.4",
     "@types/traverse": "^0.6.37",

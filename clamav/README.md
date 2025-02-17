@@ -4,10 +4,7 @@
 
 This repository contains a containerized ClamAV antivirus scanner service designed for backend deployments.
 
-## Technology Stack
-
-- Base Image: ClamAV 0.104.2
-- Language: Python 3
+- Base Image: ClamAV 1.4
 - Networking: TCP socket on port 3310
 
 ## Configuration
@@ -17,34 +14,28 @@ This repository contains a containerized ClamAV antivirus scanner service design
 The service uses custom configuration files located in the `conf/` directory:
 
 - `clamd.conf`: Configures the ClamAV daemon
-    - Supports extensive logging
-    - Configurable scan size limits
-- `freshclam.conf`: Manages virus signature database updates, important is the location of the database mirror which is our local cvdmirror in kubernetes http://clamav-cvdmirror-database:8080
+  - Supports extensive logging
+  - Configurable scan size limits
+- `freshclam.conf`: Manages virus signature database updates, important is the location of the database mirror which is our local cvdmirror in kubernetes <http://clamav-cvdmirror-database:8080>
 
-### Docker Compose
+### Run locally
 
-Run the service using Docker Compose:
-```bash
-docker-compose up
-```
-but you need to change the cvd mirror to a different url or spin via `docker-compose up` in the `cvdmirror` directory
+1. **Prerequisite** - running `cvdmirror` -> in directory `/cvdmirror` run
 
+   ```bash
+   docker-compose up
+   ```
 
-## Key Scripts
+2. Afterwards, run this service using docker-compose in this `/clamav` directory:
 
-- `start.py`: Initializes configuration and starts ClamAV services, lods the cvd database from the cvd mirror and start clamd service
-- `setupconfig.py`: Copies custom configurations from the `/conf` directory
-- `health.sh`: Performs health checks (used in Kubernetes)
-- `readiness.sh`: Verifies ClamAV is running correctly (used in Kubernetes)
+   ```bash
+   docker-compose up
+   ```
 
 ## Virus Testing
 
-A sample virus test file is included (`virustest`) to verify antivirus functionality. Used by clamav for readiness probe.
+A sample virus test file is included inside of zip file `virus-test-inside.zip`, which is `AES-256` encrypted and password protected. The archive itself is safe, the test virus files (`virtustest` and `virustest.pdf`) are inside and available after unzipping using password `Virus123`.
 
+⚠️ After unzipping it can trigger your antivirus software, be calm - the virus detected might look like this: `Virus:DOS/EICAR_Test_File`
 
-⚠️ it can trigger your antivirus software, be calm
-
-
-## Logging
-
-- Log files stored in `/var/log/clamav/`
+This is also the reason why the test files are kept zipped and encrypted - so your antivirus doesn't freak out during regular development and basic git actions including but not limited to pulling, merging and rebasing.

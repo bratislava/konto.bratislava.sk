@@ -6,6 +6,13 @@ import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
 import { validateBaFileUuid } from '../form-utils/ajvFormats'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
+type ValidateSummaryParams = {
+  schema: RJSFSchema
+  formData: GenericObjectType
+  fileInfos: Record<string, FileInfoSummary>
+  validatorRegistry: BaRjsfValidatorRegistry
+}
+
 export type ValidatedSummary = {
   hasErrors: boolean
   validationData: ValidationData<GenericObjectType>
@@ -19,12 +26,12 @@ export type ValidatedSummary = {
  * to traverse the form data for specific values. In this case, we extract the files we need to give a special attention
  * in summary.
  */
-export const validateSummary = (
-  schema: RJSFSchema,
-  formData: GenericObjectType,
-  fileInfos: Record<string, FileInfoSummary>,
-  validatorRegistry: BaRjsfValidatorRegistry,
-): ValidatedSummary => {
+export const validateSummary = ({
+  schema,
+  formData,
+  fileInfos,
+  validatorRegistry,
+}: ValidateSummaryParams): ValidatedSummary => {
   // When displaying summary, all the default data must be present to get correct error schema for each field, e.g. when
   // we have schema like this:
   //  - `wrapper` (object, required)

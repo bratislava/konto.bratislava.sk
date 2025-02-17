@@ -67,7 +67,7 @@ const useGetContext = () => {
         throw new Error('getValidatedSummary should never be called on a form step')
       }
 
-      return memoizedValidateSummary(schema, formData, fileInfos, validatorRegistry)
+      return memoizedValidateSummary({ schema, formData, fileInfos, validatorRegistry })
     },
     [formData, schema, fileInfos, currentStepIndex, validatorRegistry],
   )

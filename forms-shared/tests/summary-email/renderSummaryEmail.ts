@@ -6,6 +6,7 @@ import { mapValues } from 'lodash'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { toMatchImageSnapshot } from 'jest-image-snapshot'
+import { getFormSummary } from '../../src/summary/summary'
 
 expect.extend({ toMatchImageSnapshot })
 
@@ -25,9 +26,13 @@ describe('renderSummaryEmail', () => {
           fileName: `${id}.pdf`,
         }))
 
-        emailHtml = await renderSummaryEmail({
+        const formSummary = getFormSummary({
           formDefinition,
-          formData: exampleForm.formData,
+          formDataJson: exampleForm.formData,
+          validatorRegistry: testValidatorRegistry,
+        })
+        emailHtml = await renderSummaryEmail({
+          formSummary,
           serverFiles: exampleForm.serverFiles,
           fileIdInfoMap,
           validatorRegistry: testValidatorRegistry,

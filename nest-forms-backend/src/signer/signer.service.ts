@@ -81,6 +81,7 @@ export default class SignerService {
       formDefinition,
       formId: data.formId,
       formData: data.formDataJson,
+      jsonVersion: form.jsonVersion,
       validatorRegistry: this.formValidatorRegistryService.getRegistry(),
       serverFiles: files,
     })

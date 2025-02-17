@@ -14,6 +14,12 @@ import {
 import { SummaryXmlForm, SummaryXmlFormTag } from './SummaryXmlForm'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 
+export type GetSummaryJsonParams = {
+  schema: RJSFSchema
+  formData: GenericObjectType
+  validatorRegistry: BaRjsfValidatorRegistry
+}
+
 const allowedChildren: Record<SummaryXmlFormTag, SummaryXmlFormTag[]> = {
   [SummaryXmlFormTag.Form]: [SummaryXmlFormTag.Step],
   [SummaryXmlFormTag.Step]: [SummaryXmlFormTag.Field, SummaryXmlFormTag.Array],
@@ -143,15 +149,15 @@ function parseXml(domParserInstance: DOMParser, xmlString: string) {
 /**
  * Renders the summary form and parses the XML into a JSON object.
  */
-export const getSummaryJson = (
-  schema: RJSFSchema,
-  data: GenericObjectType,
-  domParserInstance: DOMParser,
-  validatorRegistry: BaRjsfValidatorRegistry,
-) => {
+export const getSummaryJson = ({
+  schema,
+  formData,
+  domParserInstance,
+  validatorRegistry,
+}: GetSummaryJsonParams & { domParserInstance: DOMParser }) => {
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const renderedString = renderToString(
-    <SummaryXmlForm schema={schema} formData={data} validatorRegistry={validatorRegistry} />,
+    <SummaryXmlForm schema={schema} formData={formData} validatorRegistry={validatorRegistry} />,
   )
 
   return parseXml(domParserInstance, renderedString)

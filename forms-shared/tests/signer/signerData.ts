@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterAll, vi } from 'vitest'
+import { afterAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { getSignerData } from '../../src/signer/signerData'
@@ -20,6 +20,7 @@ describe('signerData', () => {
           const signerData = await getSignerData({
             formDefinition,
             formId: '123e4567-e89b-12d3-a456-426614174000',
+            jsonVersion: formDefinition.jsonVersion,
             formData: exampleForm.formData,
             validatorRegistry: testValidatorRegistry,
             serverFiles: exampleForm.serverFiles,

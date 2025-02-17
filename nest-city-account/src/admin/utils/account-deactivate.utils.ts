@@ -1,3 +1,4 @@
+import { User } from '@prisma/client'
 import { PrismaService } from '../../prisma/prisma.service'
 
 export const removePhysicalEntityUserIdRelation = async (
@@ -24,7 +25,7 @@ export const removePhysicalEntityUserIdRelation = async (
 export const removeUserDataFromDatabase = async (
   prisma: PrismaService,
   externalId: string
-): Promise<void> => {
+): Promise<User | null> => {
   const user = await prisma.user.findUnique({
     where: {
       externalId,
@@ -51,6 +52,8 @@ export const removeUserDataFromDatabase = async (
 
     await removePhysicalEntityUserIdRelation(prisma, user.id)
   }
+
+  return user
 }
 
 export const removeLegalPersonDataFromDatabase = async (

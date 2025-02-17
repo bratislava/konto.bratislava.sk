@@ -1,5 +1,3 @@
-import '../types/global';
-
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -33,10 +31,12 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   app.getHttpAdapter().get('/spec-json', (req, res) => res.json(document));
 
   await app.listen(PORT);
+  // eslint-disable-next-line no-console
   console.log(`Nest is running on port: ${PORT}`);
 }
 
-bootstrap();
+void bootstrap();

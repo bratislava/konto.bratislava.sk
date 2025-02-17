@@ -1,21 +1,18 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 
 import alertReporting from '../constants/error.alerts'
-import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 import {
   CustomErrorEnums,
   ErrorSymbols,
-  ResponseErrorDto,
+  ResponseErrorInternalDto,
 } from './dtos/error.dto'
 
 export default class ThrowerErrorGuard {
-  private logger: LineLoggerSubservice = new LineLoggerSubservice('Error Guard')
-
   NotAcceptableException(
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_ACCEPTABLE,
@@ -23,7 +20,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -31,7 +28,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.GONE,
@@ -39,7 +36,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -47,7 +44,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.PAYLOAD_TOO_LARGE,
@@ -55,7 +52,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -63,7 +60,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -71,7 +68,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -79,7 +76,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.FORBIDDEN,
@@ -87,7 +84,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -95,7 +92,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNPROCESSABLE_ENTITY,
@@ -103,7 +100,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -111,7 +108,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.NOT_FOUND,
@@ -119,7 +116,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -127,7 +124,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.BAD_REQUEST,
@@ -135,7 +132,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -143,7 +140,7 @@ export default class ThrowerErrorGuard {
     errorEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    error?: Error,
   ): HttpException {
     return this.LoggingHttpException(
       HttpStatus.UNAUTHORIZED,
@@ -151,7 +148,7 @@ export default class ThrowerErrorGuard {
       errorEnum,
       message,
       console,
-      object,
+      error,
     )
   }
 
@@ -161,21 +158,32 @@ export default class ThrowerErrorGuard {
     errorsEnum: CustomErrorEnums,
     message: string,
     console?: string,
-    object?: object,
+    errorCause?: Error,
   ): HttpException {
-    const response: ResponseErrorDto = {
+    const response: ResponseErrorInternalDto = {
       statusCode,
       status,
       errorName: errorsEnum,
       [ErrorSymbols.alert]: 0,
       message,
-      object,
+      [ErrorSymbols.errorCause]: errorCause?.name,
+      [ErrorSymbols.causedByMessage]: errorCause?.message,
       [ErrorSymbols.console]: console,
     }
 
     if (alertReporting.includes(errorsEnum)) {
       response[ErrorSymbols.alert] = 1
     }
-    return new HttpException(response, statusCode)
+    const exception = new HttpException(response, statusCode)
+
+    if (errorCause && errorCause.stack) {
+      exception.stack = [
+        exception.stack,
+        'Was directly caused by:\n',
+        errorCause.stack,
+      ].join('\n')
+    }
+
+    return exception
   }
 }

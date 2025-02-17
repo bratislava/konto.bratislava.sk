@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { AdminApi, Configuration } from '../../../generated-clients/nest-tax-backend'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../../../utils/birthNumbers'
-import { HandleErrors } from '../../../utils/decorators/errorHandler.decorators'
+import HandleErrors from '../../../utils/decorators/errorHandler.decorators'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 200
@@ -71,10 +71,7 @@ export class TasksSubservice {
         birthNumber: {
           not: null,
         },
-        OR: [
-          { lastTaxYear: null },
-          { lastTaxYear: { not: year } }
-        ],
+        OR: [{ lastTaxYear: null }, { lastTaxYear: { not: year } }],
       },
       orderBy: {
         lastTaxBackendUploadTry: 'asc',
@@ -92,14 +89,21 @@ export class TasksSubservice {
 
     this.logger.log(`Found ${birthNumbers.length} birth numbers to be added to tax backend.`)
 
-    const result = await this.taxBackendAdminApi.adminControllerLoadDataFromNorris({year, birthNumbers}, {
-      headers: {
-        apiKey: this.config.taxBackendApiKey
+    const result = await this.taxBackendAdminApi.adminControllerLoadDataFromNorris(
+      { year, birthNumbers },
+      {
+        headers: {
+          apiKey: this.config.taxBackendApiKey,
+        },
       }
-    })
-    const addedBirthNumbers = result.data.birthNumbers.map(birthNumber => birthNumber.replaceAll('/', ''))
+    )
+    const addedBirthNumbers = result.data.birthNumbers.map((birthNumber) =>
+      birthNumber.replaceAll('/', '')
+    )
 
-    this.logger.log(`${addedBirthNumbers.length} birth numbers are succesfully added to tax backend.`)
+    this.logger.log(
+      `${addedBirthNumbers.length} birth numbers are succesfully added to tax backend.`
+    )
 
     // Mark birth numbers which are in tax backend.
     await this.prisma.user.updateMany({
@@ -110,7 +114,7 @@ export class TasksSubservice {
       },
       data: {
         lastTaxYear: year,
-      }
+      },
     })
 
     // Set current datetime as the last try for the upload of the birth number to tax backend.

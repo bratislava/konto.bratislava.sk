@@ -122,14 +122,11 @@ describe('Testing logging:', () => {
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Test message',
         'console input',
-        {
-          test: 'data',
-          foo: { level: 'two' },
-        },
+        new Error('Test error message'),
       )
       const logfmt = errorToLogfmt(error, 'testMethod')
 
-      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" object="{\"test\":\"data\",\"foo\":{\"level\":\"two\"}}" alert="1" console="console input" method="testMethod" stack="HttpException: Test message`
+      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="1" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
 
       expect(logfmt).toContain(expected)
     })

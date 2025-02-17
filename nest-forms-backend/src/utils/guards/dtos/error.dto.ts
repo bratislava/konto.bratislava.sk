@@ -33,6 +33,10 @@ export class ErrorSymbols {
   static readonly errorType: unique symbol = Symbol('errorType')
 
   static readonly stack: unique symbol = Symbol('stack')
+
+  static readonly errorCause = Symbol('errorCause')
+
+  static readonly causedByMessage = Symbol('causedByMessage')
 }
 
 export const errorTypeKeys: Record<string, string> = {
@@ -40,11 +44,13 @@ export const errorTypeKeys: Record<string, string> = {
   console: `$Symbol-console`,
   errorType: `$Symbol-errorType`,
   stack: `$Symbol-stack`,
+  errorCause: `$Symbol-errorCause`,
+  causedByMessage: `$Symbol-causedByMessage`,
 }
 
 export const errorTypeStrings = Object.values(errorTypeKeys)
 
-export class ResponseErrorDto {
+export class ResponseErrorInternalDto {
   statusCode!: number
 
   status!: string
@@ -53,9 +59,11 @@ export class ResponseErrorDto {
 
   errorName!: CustomErrorEnums;
 
-  [ErrorSymbols.alert]?: number
+  [ErrorSymbols.alert]?: number;
 
-  object?: object | undefined;
+  [ErrorSymbols.console]?: string;
 
-  [ErrorSymbols.console]?: string
+  [ErrorSymbols.errorCause]?: string;
+
+  [ErrorSymbols.causedByMessage]?: string
 }

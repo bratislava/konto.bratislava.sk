@@ -85,6 +85,8 @@ export default class ConvertService {
       ? patchConvertServiceTaxFormDefinition(formDefinition)
       : formDefinition
 
+    // Forms that are not sent have their summary generated on the fly. For sent forms the summary is stored in the database.
+    // Sent forms cannot contain `clientFiles` and don't render errors (it is not possible to send form with errors).
     const formSummary =
       form.state === FormState.DRAFT
         ? getFormSummary({
@@ -268,6 +270,8 @@ export default class ConvertService {
 
     let pdfBuffer: Buffer
     try {
+      // Forms that are not sent have their summary generated on the fly. For sent forms the summary is stored in the database.
+      // Sent forms cannot contain `clientFiles` and don't render errors (it is not possible to send form with errors).
       if (form.state === FormState.DRAFT) {
         const formSummary = getFormSummary({
           formDefinition,

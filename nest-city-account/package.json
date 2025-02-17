@@ -73,7 +73,7 @@
     "@types/request": "^2.48.12",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
-    "eslint": "^8.33.0",
+    "eslint": "^9.20.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.6.0",

@@ -43,6 +43,7 @@ type GenerateSlovenskoSkXmlObjectParams = {
   formDefinition: FormDefinitionSlovenskoSk
   formSummary: FormSummary
   formData: GenericObjectType
+  jsonVersion: string
   serverFiles?: FormsBackendFile[]
 }
 
@@ -53,10 +54,11 @@ export async function generateSlovenskoSkXmlObject({
   formDefinition,
   formSummary,
   formData,
+  jsonVersion,
   serverFiles,
 }: GenerateSlovenskoSkXmlObjectParams) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
-    JsonVersion: formDefinition.jsonVersion,
+    JsonVersion: jsonVersion,
     Json: JSON.stringify(formData),
     Summary: await renderSlovenskoXmlSummary({
       formSummary,

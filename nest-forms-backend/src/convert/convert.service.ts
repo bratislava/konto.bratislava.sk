@@ -102,6 +102,7 @@ export default class ConvertService {
     return generateSlovenskoSkXmlObject({
       formDefinition: formDefinitionPatched,
       formSummary,
+      jsonVersion: form.jsonVersion,
       formData: formDataJson,
       serverFiles: formWithFiles.files,
     })

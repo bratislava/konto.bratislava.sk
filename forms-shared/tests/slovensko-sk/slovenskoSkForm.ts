@@ -58,6 +58,7 @@ describe('slovenskoSkForm', () => {
           const xmlObject = await generateSlovenskoSkXmlObject({
             formDefinition,
             formSummary,
+            jsonVersion: formDefinition.jsonVersion,
             formData: exampleForm.formData,
             serverFiles: exampleForm.serverFiles,
           })

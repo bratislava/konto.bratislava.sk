@@ -135,7 +135,7 @@ export default class EmailFormsSubservice {
     if (userConfirmationEmail) {
       // Generate confirmation pdf and send to user.
       const file = await this.convertService.generatePdf(
-        jsonDataExtraDataOmitted,
+        form.formDataJson,
         form.id,
         formDefinition,
       )

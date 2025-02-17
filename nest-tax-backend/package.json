@@ -54,7 +54,7 @@
     "@darraghor/eslint-plugin-nestjs-typed": "^5.0.30",
     "@golevelup/ts-jest": "^0.6.2",
     "@nestjs/schematics": "^10.2.3",
-    "@nestjs/testing": "^10.4.12",
+    "@nestjs/testing": "^11.0.10",
     "@openapitools/openapi-generator-cli": "^2.16.3",
     "@types/ejs": "^3.1.5",
     "@types/express": "^4.17.21",

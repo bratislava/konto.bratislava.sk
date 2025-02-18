@@ -287,11 +287,11 @@ export default class NasesService {
     }
 
     try {
-      return getFormSummary(
+      return getFormSummary({
         formDefinition,
-        form.formDataJson,
-        this.formValidatorRegistryService.getRegistry(),
-      )
+        formDataJson: form.formDataJson,
+        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+      })
     } catch (error) {
       this.logger.error(
         `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,

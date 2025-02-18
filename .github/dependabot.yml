@@ -27,3 +27,7 @@ updates:
     directory: '/nest-tax-backend'
     schedule:
       interval: 'weekly'
+  - package-ecosystem: 'npm'
+    directory: '/nest-city-account'
+    schedule:
+      interval: 'weekly'

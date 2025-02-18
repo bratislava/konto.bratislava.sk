@@ -86,6 +86,7 @@ describe('EmailFormsSubservice', () => {
         formDataJson: {},
         files: [],
         email: 'test@example.com',
+        formSummary: {},
       }
       const mockFormDefinition = {
         type: 'Email',
@@ -134,6 +135,7 @@ describe('EmailFormsSubservice', () => {
         },
         files: [],
         email: null,
+        formSummary: {},
       }
       const mockFormDefinition = {
         type: 'Email',

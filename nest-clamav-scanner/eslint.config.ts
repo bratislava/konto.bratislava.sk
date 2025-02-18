@@ -32,12 +32,12 @@ export default tseslint.config(
       json,
     },
   },
-  // {
-  //   files: ['**/*.json'],
-  //   ignores: ['package-lock.json'],
-  //   language: 'json/json',
-  //   ...json.configs.recommended,
-  // },
+  {
+    files: ['**/*.json'],
+    ignores: ['package-lock.json'],
+    language: 'json/json',
+    ...json.configs.recommended,
+  },
   {
     plugins: {
       'simple-import-sort': simpleImportSort,

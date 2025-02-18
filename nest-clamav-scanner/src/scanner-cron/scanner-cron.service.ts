@@ -39,6 +39,7 @@ export class ScannerCronService {
     name: 'cronStart',
     timeZone: 'Europe/Berlin',
   })
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async cronStart(): Promise<void> {
     //check if cron is already running
     this.logger.log('CronScan waking up...');
@@ -85,7 +86,7 @@ export class ScannerCronService {
     }
 
     try {
-      await this.fixUnsucessfullScanFiles();
+      await this.fixUnsuccessfulScanFiles();
     } catch (error) {
       globalThis.cronRunning = false;
       const errString =
@@ -393,7 +394,7 @@ export class ScannerCronService {
   }
 
   //function which search for files which have 3 or more runs and are in state SCAN TIMEOUT or SCAN ERROR and changes their state to SCAN NOT SUCCESSFUL
-  async fixUnsucessfullScanFiles(): Promise<void> {
+  async fixUnsuccessfulScanFiles(): Promise<void> {
     //get all files which are in state SCAN TIMEOUT or SCAN ERROR
     const scanNotSuccessfulFiles = await this.prismaService.files.findMany({
       where: {

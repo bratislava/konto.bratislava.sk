@@ -36,6 +36,9 @@ describe('NorisService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks()
+    jest
+      .mocked(mssql.Request)
+      .mockReturnValue(mockRequest as unknown as mssql.Request)
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -112,6 +115,38 @@ describe('NorisService', () => {
             date: '2024-01-01',
           },
         ]),
+      ).rejects.toThrow()
+
+      expect(querySpy).not.toHaveBeenCalled()
+      expect(closeSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('getDataForUpdate', () => {
+    it('should return data for given variable symbols', async () => {
+      const requestSpy = jest.spyOn(mssql, 'Request')
+      const querySpy = jest.spyOn(mockRequest, 'query').mockResolvedValue({
+        recordset: [{ mockData: 'mockData' }],
+      })
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      const result = await service.getDataForUpdate(['123456', '789012'])
+
+      expect(requestSpy).toHaveBeenCalledTimes(1)
+      expect(querySpy).toHaveBeenCalledTimes(1)
+      expect(closeSpy).toHaveBeenCalledTimes(1)
+      expect(result).toEqual([{ mockData: 'mockData' }])
+    })
+
+    it('should throw if something throws', async () => {
+      jest.spyOn(mssql, 'Request').mockImplementation(() => {
+        throw new Error('mock-error')
+      })
+      const querySpy = jest.spyOn(mockRequest, 'query')
+      const closeSpy = jest.spyOn(mockConnection, 'close')
+
+      await expect(
+        service.getDataForUpdate(['123456', '789012']),
       ).rejects.toThrow()
 
       expect(querySpy).not.toHaveBeenCalled()

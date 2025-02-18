@@ -64,7 +64,7 @@ RUN npx playwright install chromium --with-deps
 COPY . ./
 
 FROM test-base AS test
-CMD [ "npm", "run", "test" ]
+CMD [ "npm", "run", "test:ci" ]
 
 FROM test-base AS test-update
 CMD [ "npm", "run", "test:update" ]

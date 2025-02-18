@@ -25,11 +25,11 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org"
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.9",
+    "@nestjs/common": "^11.0.10",
     "@nestjs/config": "^4.0.0",
-    "@nestjs/core": "^11.0.9",
+    "@nestjs/core": "^11.0.10",
     "@nestjs/passport": "^11.0.5",
-    "@nestjs/platform-express": "^11.0.9",
+    "@nestjs/platform-express": "^11.0.10",
     "@nestjs/schedule": "^5.0.1",
     "@nestjs/swagger": "^11.0.3",
     "@prisma/client": "^6.3.1",
@@ -57,13 +57,13 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^6.2.1",
+    "@darraghor/eslint-plugin-nestjs-typed": "^6.2.4",
     "@eslint/js": "^9.20.0",
     "@eslint/json": "^0.10.0",
     "@eslint/markdown": "^6.2.2",
-    "@nestjs/cli": "^11.0.2",
-    "@nestjs/schematics": "^11.0.0",
-    "@nestjs/testing": "^11.0.9",
+    "@nestjs/cli": "^11.0.4",
+    "@nestjs/schematics": "^11.0.1",
+    "@nestjs/testing": "^11.0.10",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint-plugin-security": "^3.0.0",
     "@types/express": "^5.0.0",
@@ -72,8 +72,8 @@
     "@types/node": "^22.13.4",
     "@types/passport-http": "^0.3.11",
     "@types/supertest": "^6.0.2",
-    "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "@typescript-eslint/parser": "^8.24.0",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-eslint-comments": "^3.2.0",
@@ -96,13 +96,13 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.0"
+    "typescript-eslint": "^8.24.1"
   },
   "overrides": {
     "glob": "^11.0.1"
   },
   "volta": {
-    "node": "22.13.0",
+    "node": "22.14.0",
     "npm": "11.1.0"
   },
   "jest": {

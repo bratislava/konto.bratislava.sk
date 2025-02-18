@@ -1,4 +1,4 @@
-FROM node:22.13-alpine AS base
+FROM node:22.14-alpine AS base
 ENV NODE_ENV=production
 
 FROM base AS app-base

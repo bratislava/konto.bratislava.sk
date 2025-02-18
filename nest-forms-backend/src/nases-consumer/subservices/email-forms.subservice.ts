@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
 
 import ConvertService from '../../convert/convert.service'
@@ -99,11 +98,12 @@ export default class EmailFormsSubservice {
       )
     }
 
-    const jsonDataExtraDataOmitted = omitExtraData(
-      formDefinition.schema,
-      form.formDataJson,
-      this.formValidatorRegistryService.getRegistry(),
-    )
+    if (form.formSummary == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+      )
+    }
 
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
@@ -118,8 +118,7 @@ export default class EmailFormsSubservice {
           firstName: null,
           slug: formDefinition.slug,
           htmlData: await renderSummaryEmail({
-            formDefinition,
-            formData: jsonDataExtraDataOmitted,
+            formSummary: form.formSummary,
             serverFiles: form.files,
             fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
             validatorRegistry: this.formValidatorRegistryService.getRegistry(),
@@ -136,7 +135,7 @@ export default class EmailFormsSubservice {
     if (userConfirmationEmail) {
       // Generate confirmation pdf and send to user.
       const file = await this.convertService.generatePdf(
-        jsonDataExtraDataOmitted,
+        form.formDataJson,
         form.id,
         formDefinition,
       )

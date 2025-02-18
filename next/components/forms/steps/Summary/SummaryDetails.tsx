@@ -154,7 +154,7 @@ const SummaryDetails = () => {
       return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser(schema, formData, validatorRegistry)
+    return getSummaryJsonBrowser({ schema, formData, validatorRegistry })
   }, [isSSR, initialSummaryJson, schema, formData, validatorRegistry])
 
   if (!summaryJson) {

@@ -42,6 +42,7 @@ import {
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
 import {
+  IncompatibleJsonVersionErrorDto,
   InvalidJsonErrorDto,
   InvalidXmlErrorDto,
   PdfGenerationFailedErrorDto,
@@ -133,6 +134,7 @@ export default class ConvertController {
   @ApiExtraModels(XmlDoesntMatchSchemaErrorDto)
   @ApiExtraModels(WrongPospIdErrorDto)
   @ApiExtraModels(InvalidJsonErrorDto)
+  @ApiExtraModels(IncompatibleJsonVersionErrorDto)
   @ApiBadRequestResponse({
     status: 400,
     description: 'There was an error during converting to json.',
@@ -145,6 +147,17 @@ export default class ConvertController {
       ],
     },
   })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatusCode.UnprocessableEntity,
+    description:
+      'Form definition type is wrong or JSON version is incompatible',
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(FormDefinitionNotSupportedTypeErrorDto) },
+        { $ref: getSchemaPath(IncompatibleJsonVersionErrorDto) },
+      ],
+    },
+  })
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',
@@ -154,11 +167,6 @@ export default class ConvertController {
         { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
       ],
     },
-  })
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,

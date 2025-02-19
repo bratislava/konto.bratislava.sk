@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { RJSFSchema } from '@rjsf/utils'
 import {
   IsNotEmpty,
   IsObject,
@@ -70,7 +69,14 @@ export class XmlToJsonResponseDto {
     example: JSON_FORM_EXAMPLE,
   })
   @IsNotEmpty()
-  jsonForm!: RJSFSchema
+  formDataJson: PrismaJson.FormDataJson
+
+  @ApiProperty({
+    description: 'Indicates if version confirmation is required',
+    example: true,
+  })
+  @IsNotEmpty()
+  requiresVersionConfirmation: boolean
 }
 
 /**

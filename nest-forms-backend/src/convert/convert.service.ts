@@ -22,6 +22,10 @@ import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { getFormSummary } from 'forms-shared/summary/summary'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
+import {
+  versionCompareIsContinuable,
+  versionCompareRequiresConfirmationImportXml,
+} from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -190,14 +194,17 @@ export default class ConvertService {
       )
     }
 
+    let extractJsonResult: {
+      formDataJson: GenericObjectType
+      jsonVersion: string
+    }
     try {
-      const jsonForm = await extractJsonFromSlovenskoSkXml(
+      extractJsonResult = await extractJsonFromSlovenskoSkXml(
         isSlovenskoSkTaxFormDefinition(formDefinition)
           ? patchConvertServiceTaxFormDefinition(formDefinition)
           : formDefinition,
         data.xmlForm,
       )
-      return { jsonForm }
     } catch (error) {
       if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
         const { error: errorEnum, message: errorMessage } =
@@ -213,6 +220,25 @@ export default class ConvertService {
         )
         throw error
       }
+    }
+
+    if (
+      !versionCompareIsContinuable({
+        currentVersion: extractJsonResult.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+        ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
+      )
+    }
+    return {
+      formDataJson: extractJsonResult.formDataJson,
+      requiresVersionConfirmation: versionCompareRequiresConfirmationImportXml({
+        currentVersion: extractJsonResult.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      }),
     }
   }
 

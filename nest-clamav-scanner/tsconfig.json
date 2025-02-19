@@ -13,9 +13,6 @@
     "strict": true,
     "incremental": true,
     "skipLibCheck": true,
-    "strictPropertyInitialization": false,
-    "paths": {
-      "src/*": ["src/*"]
-    }
+    "strictPropertyInitialization": false
   }
 }

@@ -2,10 +2,12 @@ import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 
 import prismaMock from '../../test/singleton'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
 import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
@@ -25,6 +27,10 @@ jest.mock('../files/files.service')
 jest.mock('../utils/subservices/minio-client.subservice')
 jest.mock('../nases-consumer/nases-consumer.helper')
 jest.mock('../scanner-client/scanner-client.service')
+jest.mock('forms-shared/form-utils/omitExtraData', () => ({
+  omitExtraData: jest.fn(),
+}))
+jest.mock('../form-validator-registry/form-validator-registry.service')
 
 describe('FormsService', () => {
   let service: FormsService
@@ -42,6 +48,7 @@ describe('FormsService', () => {
         ThrowerErrorGuard,
         FormsHelper,
         ConfigService,
+        FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
       ],
     }).compile()
@@ -184,6 +191,83 @@ describe('FormsService', () => {
         } else {
           expect(result[state]).toBe(0)
         }
+      })
+    })
+  })
+
+  describe('bumpJsonVersion', () => {
+    it('should throw error if form is not in DRAFT state', async () => {
+      const form = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        state: FormState.PROCESSING,
+      } as Forms
+
+      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+    })
+
+    it('should throw error if form definition is not found', async () => {
+      const form = {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        state: FormState.DRAFT,
+        formDefinitionSlug: 'non-existent',
+      } as Forms
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+
+      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+    })
+
+    it('should throw error if version bump is not possible', async () => {
+      const form = {
+        id: '123e4567-e89b-12d3-a456-426614174001',
+        state: FormState.DRAFT,
+        formDefinitionSlug: 'test-form',
+        jsonVersion: '1.0.0',
+      } as Forms
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        jsonVersion: '2.0.0',
+        schema: { type: 'object' },
+      })
+
+      await expect(service.bumpJsonVersion(form)).rejects.toThrow()
+    })
+
+    it('should update form version and data when bump is possible', async () => {
+      const formDataJson = { existingData: true, dataToRemove: true }
+      const form = {
+        id: '123e4567-e89b-12d3-a456-426614174002',
+        state: FormState.DRAFT,
+        formDefinitionSlug: 'test-form',
+        jsonVersion: '1.0.0',
+        formDataJson,
+      } as Partial<Forms> as Forms
+
+      const mockRegistry = {}
+      ;(
+        FormValidatorRegistryService.prototype.getRegistry as jest.Mock
+      ).mockReturnValue(mockRegistry)
+
+      const omittedData = { existingData: true }
+      ;(omitExtraData as jest.Mock).mockReturnValue(omittedData)
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        jsonVersion: '1.1.0',
+        schema: { type: 'object' },
+      })
+
+      const updateSpy = jest.spyOn(prismaMock.forms, 'update')
+      await service.bumpJsonVersion(form)
+
+      expect(omitExtraData).toHaveBeenCalledWith(
+        { type: 'object' },
+        formDataJson,
+        mockRegistry,
+      )
+
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: form.id },
+        data: {
+          jsonVersion: '1.1.0',
+          formDataJson: omittedData,
+        },
       })
     })
   })

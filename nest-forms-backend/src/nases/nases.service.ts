@@ -11,6 +11,10 @@ import {
   VerifyFormSignatureError,
 } from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
+import {
+  versionCompareBumpDuringSend,
+  versionCompareCanSendForm,
+} from 'forms-shared/versioning/version-compare'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -341,6 +345,18 @@ export default class NasesService {
       )
     }
 
+    if (
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      )
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -387,12 +403,18 @@ export default class NasesService {
       )
     }
 
+    const shouldBumpJsonVersion = versionCompareBumpDuringSend({
+      currentVersion: form.jsonVersion,
+      latestVersion: formDefinition.jsonVersion,
+    })
+
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary,
-      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-      jsonVersion: formDefinition.jsonVersion,
+      ...(shouldBumpJsonVersion
+        ? { jsonVersion: formDefinition.jsonVersion }
+        : undefined),
     })
     return {
       id: form.id,
@@ -477,6 +499,18 @@ export default class NasesService {
       }
     }
 
+    if (
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      )
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -526,6 +560,11 @@ export default class NasesService {
     // Send to nases
     let isSent = false
 
+    const shouldBumpJsonVersion = versionCompareBumpDuringSend({
+      currentVersion: form.jsonVersion,
+      latestVersion: formDefinition.jsonVersion,
+    })
+
     try {
       isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
         jwt,
@@ -535,8 +574,9 @@ export default class NasesService {
         user.sub,
         {
           formSummary,
-          // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-          jsonVersion: formDefinition.jsonVersion,
+          ...(shouldBumpJsonVersion
+            ? { jsonVersion: formDefinition.jsonVersion }
+            : undefined),
         },
       )
     } catch (error) {

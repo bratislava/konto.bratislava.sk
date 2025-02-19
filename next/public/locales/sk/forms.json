@@ -7,6 +7,7 @@
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
+    "xml_import_incompatible_version": "XML súbor nie je možné importovať. Formulár prešiel zmenami a staršia verzia už nie je podporovaná.",
     "json_import": "JSON sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť.",
     "concept_save": "Koncept sa nepodarilo uložiť.",
@@ -221,5 +222,11 @@
   "signer_deploying_modal": {
     "title": "Spúšťa sa podpisovacia aplikácia",
     "content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>."
+  },
+  "xml_import_version_confirmation_modal": {
+    "title": "Upozornenie na zmenu formulára",
+    "content": "Formulár prešiel zmenami od vytvorenia tohto XML súboru. Importované údaje sa nemusia presne zhodovať s pôvodnými. Prajete si pokračovať?",
+    "button_title": "Pokračovať",
+    "button_cancel": "Zrušiť"
   }
 }

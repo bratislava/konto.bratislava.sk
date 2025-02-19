@@ -55,6 +55,8 @@ const FormModals = () => {
     setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
+    xmlImportVersionConfirmationModal,
+    setXmlImportVersionConfirmationModal,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
@@ -369,6 +371,38 @@ const FormModals = () => {
         // TODO Replace statusBar variant
         <AccountMarkdown variant="statusBar" content={t('signer_deploying_modal.content')} />
       ),
+    },
+    {
+      key: 'xmlImportVersionConfirmationModal',
+      isOpen: xmlImportVersionConfirmationModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setXmlImportVersionConfirmationModal({ isOpen: false })
+        }
+      },
+      title: t('xml_import_version_confirmation_modal.title'),
+      type: 'warning',
+      buttons: [
+        <Button
+          variant="black-plain"
+          onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
+          fullWidthMobile
+        >
+          {t('xml_import_version_confirmation_modal.button_cancel')}
+        </Button>,
+        <Button
+          variant="black-solid"
+          size="small"
+          onPress={() =>
+            xmlImportVersionConfirmationModal.isOpen &&
+            xmlImportVersionConfirmationModal.sendCallback()
+          }
+          fullWidthMobile
+        >
+          {t('xml_import_version_confirmation_modal.button_title')}
+        </Button>,
+      ],
+      children: t('xml_import_version_confirmation_modal.content'),
     },
   ]
 

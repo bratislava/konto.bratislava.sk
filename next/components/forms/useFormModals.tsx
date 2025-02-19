@@ -95,6 +95,9 @@ const useGetContext = () => {
   const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
     useState<TaxFormPdfExportModalState | null>(null)
 
+  const [xmlImportVersionConfirmationModal, setXmlImportVersionConfirmationModal] =
+    useState<ModalWithSendCallback>({ isOpen: false })
+
   return {
     migrationRequiredModal,
     setMigrationRequiredModal,
@@ -135,6 +138,8 @@ const useGetContext = () => {
     setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
+    xmlImportVersionConfirmationModal,
+    setXmlImportVersionConfirmationModal,
   }
 }
 

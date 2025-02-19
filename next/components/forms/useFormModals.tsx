@@ -6,13 +6,13 @@ import { RegistrationModalType } from './segments/RegistrationModal/Registration
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from './useFormContext'
 
-type ModalWithSendCallback =
+type ModalWithConfirmCallback =
   | {
       isOpen: false
     }
   | {
       isOpen: true
-      sendCallback: (() => void) | (() => Promise<void>)
+      confirmCallback: (() => void) | (() => Promise<void>)
     }
 
 enum InitialModal {
@@ -61,22 +61,23 @@ const useGetContext = () => {
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
   const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
-  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithSendCallback>({
+  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
-  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState<ModalWithSendCallback>({
-    isOpen: false,
-  })
+  const [sendConfirmationEidModal, setSendConfirmationEidModal] =
+    useState<ModalWithConfirmCallback>({
+      isOpen: false,
+    })
   const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
   const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
+    useState<ModalWithConfirmCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
-  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
+    useState<ModalWithConfirmCallback>({ isOpen: false })
+  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [eidSendingModal, setEidSendingModal] = useState(false)
-  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
+  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [sendPending, setSendPending] = useState(false)
@@ -96,7 +97,7 @@ const useGetContext = () => {
     useState<TaxFormPdfExportModalState | null>(null)
 
   const [xmlImportVersionConfirmationModal, setXmlImportVersionConfirmationModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
+    useState<ModalWithConfirmCallback>({ isOpen: false })
 
   return {
     migrationRequiredModal,

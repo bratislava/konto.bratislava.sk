@@ -173,7 +173,7 @@ const FormModals = () => {
         <Button
           variant="black-solid"
           size="small"
-          onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
+          onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
           fullWidthMobile
           isLoading={sendPending}
           isLoadingText={t('send_confirmation_modal.button_title_loading')}
@@ -207,7 +207,9 @@ const FormModals = () => {
         <Button
           variant="black-solid"
           size="small"
-          onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
+          onPress={() =>
+            sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
+          }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
@@ -247,7 +249,7 @@ const FormModals = () => {
           variant="black-solid"
           size="small"
           onPress={() =>
-            sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
+            sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
           }
           isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
@@ -284,7 +286,7 @@ const FormModals = () => {
           size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
-            sendConfirmationNonAuthenticatedEidModal.sendCallback()
+            sendConfirmationNonAuthenticatedEidModal.confirmCallback()
           }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
@@ -352,7 +354,7 @@ const FormModals = () => {
         <Button
           variant="negative-solid"
           size="small"
-          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.sendCallback()}
+          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.confirmCallback()}
         >
           {t('concept_delete_modal.button_title')}
         </Button>,
@@ -395,7 +397,7 @@ const FormModals = () => {
           size="small"
           onPress={() =>
             xmlImportVersionConfirmationModal.isOpen &&
-            xmlImportVersionConfirmationModal.sendCallback()
+            xmlImportVersionConfirmationModal.confirmCallback()
           }
           fullWidthMobile
         >

@@ -79,7 +79,10 @@ describe('slovenskoSkForm', () => {
         test('extractJsonFromSlovenskoSkXml should extract the same JSON from XML', async () => {
           const extractedJson = await extractJsonFromSlovenskoSkXml(formDefinition, xmlString)
 
-          expect(extractedJson).toEqual(exampleForm.formData)
+          expect(extractedJson).toEqual({
+            jsonVersion: formDefinition.jsonVersion,
+            formDataJson: exampleForm.formData,
+          })
         })
 
         test(

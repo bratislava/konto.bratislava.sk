@@ -17,6 +17,7 @@ import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
+import { environment } from '../../environment'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
@@ -164,7 +165,7 @@ export const useGetContext = () => {
         openSnackbarSuccess(t('success_messages.xml_import'))
       }
 
-      if (data.requiresVersionConfirmation) {
+      if (environment.featureToggles.versioning && data.requiresVersionConfirmation) {
         setXmlImportVersionConfirmationModal({
           isOpen: true,
           confirmCallback: () => {

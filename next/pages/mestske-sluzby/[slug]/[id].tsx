@@ -4,13 +4,17 @@ import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { versionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import {
+  VersionCompareContinueAction,
+  versionCompareContinueAction,
+} from 'forms-shared/versioning/version-compare'
 
 import FormPageWrapper, {
   FormPageWrapperWithContextProps,
 } from '../../../components/forms/FormPageWrapper'
 import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
+import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
@@ -98,10 +102,12 @@ export const getServerSideProps = amplifyGetServerSideProps<
           formMigrationRequired,
           isEmbedded,
           strapiForm: strapiForm ?? null,
-          versionCompareContinueAction: versionCompareContinueAction({
-            currentVersion: form.jsonVersion,
-            latestVersion: formDefinition.jsonVersion,
-          }),
+          versionCompareContinueAction: environment.featureToggles.versioning
+            ? versionCompareContinueAction({
+                currentVersion: form.jsonVersion,
+                latestVersion: formDefinition.jsonVersion,
+              })
+            : VersionCompareContinueAction.None,
         },
         appProps: {
           externallyEmbedded: isEmbedded,

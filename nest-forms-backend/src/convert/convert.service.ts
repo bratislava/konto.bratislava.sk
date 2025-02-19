@@ -1,6 +1,7 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
@@ -59,6 +60,8 @@ import {
 export default class ConvertService {
   private readonly logger: LineLoggerSubservice
 
+  private readonly versioningEnabled: boolean
+
   constructor(
     private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -66,8 +69,12 @@ export default class ConvertService {
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('ConvertService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
   private async convertJsonToXmlObject(
@@ -223,6 +230,7 @@ export default class ConvertService {
     }
 
     if (
+      this.versioningEnabled &&
       !versionCompareIsContinuable({
         currentVersion: extractJsonResult.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -235,10 +243,12 @@ export default class ConvertService {
     }
     return {
       formDataJson: extractJsonResult.formDataJson,
-      requiresVersionConfirmation: versionCompareRequiresConfirmationImportXml({
-        currentVersion: extractJsonResult.jsonVersion,
-        latestVersion: formDefinition.jsonVersion,
-      }),
+      requiresVersionConfirmation: this.versioningEnabled
+        ? versionCompareRequiresConfirmationImportXml({
+            currentVersion: extractJsonResult.jsonVersion,
+            latestVersion: formDefinition.jsonVersion,
+          })
+        : false,
     }
   }
 

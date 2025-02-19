@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import {
@@ -61,6 +62,8 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
 
+  private readonly versioningEnabled: boolean
+
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
@@ -71,8 +74,12 @@ export default class NasesService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
   async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {
@@ -346,6 +353,7 @@ export default class NasesService {
     }
 
     if (
+      this.versioningEnabled &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -403,10 +411,12 @@ export default class NasesService {
       )
     }
 
-    const shouldBumpJsonVersion = versionCompareBumpDuringSend({
-      currentVersion: form.jsonVersion,
-      latestVersion: formDefinition.jsonVersion,
-    })
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
 
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
@@ -500,6 +510,7 @@ export default class NasesService {
     }
 
     if (
+      this.versioningEnabled &&
       !versionCompareCanSendForm({
         currentVersion: form.jsonVersion,
         latestVersion: formDefinition.jsonVersion,
@@ -560,10 +571,12 @@ export default class NasesService {
     // Send to nases
     let isSent = false
 
-    const shouldBumpJsonVersion = versionCompareBumpDuringSend({
-      currentVersion: form.jsonVersion,
-      latestVersion: formDefinition.jsonVersion,
-    })
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
 
     try {
       isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(

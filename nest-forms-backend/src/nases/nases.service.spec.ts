@@ -1,6 +1,7 @@
 /* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
@@ -74,6 +75,10 @@ describe('NasesService', () => {
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
+        },
+        {
+          provide: ConfigService,
+          useValue: createMock<ConfigService>(),
         },
       ],
     }).compile()

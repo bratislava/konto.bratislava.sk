@@ -53,6 +53,15 @@ describe('WebhookSubservice', () => {
       verbose: jest.fn(),
     } as unknown as LineLoggerSubservice
     service['logger'] = mockLogger
+
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should be defined', () => {

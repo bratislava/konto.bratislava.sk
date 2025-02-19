@@ -126,8 +126,10 @@ export class AdminCronSubservice {
         return
       }
     } catch (error) {
-      this.logger.error(error)
-      this.logger.error(`Failed to validate entity with id: ${entityToValidate.id}, skipping`)
+      this.logger.error(
+        `Failed to validate entity with id: ${entityToValidate.id}, skipping`,
+        error
+      )
     }
 
     const newOffset = config.offset + 1

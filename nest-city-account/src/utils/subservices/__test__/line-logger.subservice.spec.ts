@@ -1,6 +1,6 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
-describe('LineLoggerService', () => {
+describe('LineLoggerSubservice', () => {
   let service: any
   let consoleSpy: jest.SpyInstance
 

@@ -33,7 +33,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
         },
       ],
       connectionInitOptions: { wait: false },
-      logger: new LineLoggerSubservice("RabbitMQ")
+      logger: new LineLoggerSubservice('RabbitMQ'),
     }),
     NasesModule,
     MagproxyModule,

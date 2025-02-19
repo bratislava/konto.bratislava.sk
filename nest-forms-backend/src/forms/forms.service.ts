@@ -49,9 +49,18 @@ export default class FormsService {
         data,
       })
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'There was an error when creating form.',
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error when creating form: ${<string>error}`,
+        'There was an error when creating form.',
+        <string>error,
       )
     }
   }
@@ -78,9 +87,18 @@ export default class FormsService {
         data,
       })
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.NotFoundException(
+          FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
+          `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+        <string>error,
       )
     }
     return formsResult
@@ -109,9 +127,18 @@ export default class FormsService {
         },
       })
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.BadRequestException(
+          ErrorsEnum.DATABASE_ERROR,
+          ErrorsResponseEnum.DATABASE_ERROR,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
+        <string>error,
       )
     }
   }
@@ -139,6 +166,16 @@ export default class FormsService {
         where: { id },
       })
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.NotFoundException(
+          FormsErrorsEnum.FORM_OR_USER_NOT_FOUND_ERROR,
+          `Form with formId: ${id}, does not exist for the user: ${<string>(
+            userExternalId
+          )}`,
+          `Form ${id} does not exist for the user: ${<string>userExternalId}`,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_OR_USER_NOT_FOUND_ERROR,
         `Form with formId: ${id}, does not exist for the user: ${<string>(

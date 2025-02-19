@@ -154,11 +154,18 @@ export default class MinioClientSubservice {
         file.buffer,
       )
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        `${
-          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR
-        } Error: ${<string>error}`,
+        FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        <string>error,
       )
     }
   }
@@ -183,11 +190,18 @@ export default class MinioClientSubservice {
       )
       return result
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        `${
-          FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR
-        } Error: ${<string>error}`,
+        FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        <string>error,
       )
     }
   }

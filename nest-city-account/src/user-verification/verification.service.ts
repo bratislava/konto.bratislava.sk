@@ -80,9 +80,18 @@ export class VerificationService {
           user['custom:account_type']
         )
       } catch (error) {
+        if (error instanceof Error) {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
+            SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+            undefined,
+            error
+          )
+        }
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR
+          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+          JSON.stringify(error)
         )
       }
 
@@ -94,6 +103,14 @@ export class VerificationService {
 
         await this.addEncryptedVerificationDataToDatabase(user, data, type)
       } catch (error) {
+        if (error instanceof Error) {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
+            SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
+            undefined,
+            error
+          )
+        }
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
           SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
@@ -286,6 +303,14 @@ export class VerificationService {
     try {
       await this.nasesService.getUpvsIdentity(jwtToken)
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          VerificationErrorsEnum.VERIFY_EID_ERROR,
+          VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,
         VerificationErrorsResponseEnum.VERIFY_EID_ERROR,

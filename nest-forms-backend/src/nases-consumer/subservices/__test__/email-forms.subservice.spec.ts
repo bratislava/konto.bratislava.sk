@@ -57,6 +57,15 @@ describe('EmailFormsSubservice', () => {
 
     service = module.get<EmailFormsSubservice>(EmailFormsSubservice)
     mailgunService = module.get(MailgunService) as jest.Mocked<MailgunService>
+
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should be defined', () => {

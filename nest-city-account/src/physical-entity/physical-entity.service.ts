@@ -153,7 +153,7 @@ export class PhysicalEntityService {
     try {
       upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
     } catch (error) {
-      this.logger.error(`An error occurred while requesting data from UPVS: ${error}`)
+      this.logger.error(`An error occurred while requesting data from UPVS`, error)
     }
     if (!upvsResult) {
       return rfoData

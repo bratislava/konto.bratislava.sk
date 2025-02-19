@@ -200,12 +200,20 @@ export class TaxService {
       })
       return ejsData
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.UnprocessableEntityException(
+          CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
+          'Error to create pdf',
+          'Error to create pdf',
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
         'Error to create pdf',
         'Error to create pdf',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        <string>error,
       )
     }
   }

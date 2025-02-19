@@ -15,7 +15,7 @@ import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { RfoDataDto } from './types/verification-types.dto'
-import { VerificationErrorsEnum } from "../../verification.errors.enum";
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
 
 @Injectable()
 export class VerificationSubservice {

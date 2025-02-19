@@ -263,11 +263,18 @@ export default class NasesUtilsService {
       )
       .then((response: AxiosResponse<ResponseGdprDataDto>) => response.data)
       .catch((error) => {
+        if (error instanceof Error) {
+          throw this.throwerErrorGuard.NotFoundException(
+            NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
+            NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
+            undefined,
+            error,
+          )
+        }
         throw this.throwerErrorGuard.NotFoundException(
           NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${<
-            string
-          >error}`,
+          NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
+          <string>error,
         )
       })
   }
@@ -353,9 +360,18 @@ export default class NasesUtilsService {
       try {
         message = await this.convertService.convertJsonToXmlObjectForForm(form)
       } catch (error) {
+        if (error instanceof Error) {
+          throw this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            'There was an error during converting json form data to xml.',
+            undefined,
+            error,
+          )
+        }
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `There was an error during converting json form data to xml: ${<string>error}`,
+          'There was an error during converting json form data to xml.',
+          <string>error,
         )
       }
     }
@@ -363,7 +379,7 @@ export default class NasesUtilsService {
     if (!message) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Message of body is not defined. There is no base64 nor schema`,
+        'Message of body is not defined. There is no base64 nor schema',
       )
     }
 

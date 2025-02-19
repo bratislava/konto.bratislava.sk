@@ -9,6 +9,7 @@ import {
 } from '../../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 
+@Injectable()
 export default class ThrowerErrorGuard {
   NotAcceptableException(
     errorEnum: CustomErrorEnums,

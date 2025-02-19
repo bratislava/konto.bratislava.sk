@@ -101,6 +101,14 @@ export class MagproxyService {
           return response.data
         })
         .catch((error) => {
+          if (error instanceof Error) {
+            throw this.throwerErrorGuard.UnprocessableEntityException(
+              MagproxyErrorsEnum.RFO_ACCESS_ERROR,
+              MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+              undefined,
+              error
+            )
+          }
           throw this.throwerErrorGuard.UnprocessableEntityException(
             MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
@@ -160,19 +168,25 @@ export class MagproxyService {
         magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
         throw this.throwerErrorGuard.UnauthorizedException(
           MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR
+          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+          undefined,
+          error
         )
       }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
         throw this.throwerErrorGuard.NotFoundException(
           MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS
+          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+          undefined,
+          error
         )
       }
       // RFO responded but with unexpected data
       throw this.throwerErrorGuard.UnprocessableEntityException(
         MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
-        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE
+        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
+        undefined,
+        error
       )
     }
   }

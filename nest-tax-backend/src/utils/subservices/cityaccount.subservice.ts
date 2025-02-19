@@ -51,13 +51,23 @@ export class CityAccountSubservice {
       ) {
         return null
       }
+      if (error instanceof Error) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Failed to get birthnumber:`,
+            undefined,
+            undefined,
+            error,
+          ),
+        )
+      }
       this.logger.error(
         this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Failed to get birthnumber:`,
           undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
+          <string>error,
         ),
       )
       return null

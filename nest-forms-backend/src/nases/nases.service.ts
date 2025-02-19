@@ -294,8 +294,17 @@ export default class NasesService {
       )
     } catch (error) {
       this.logger.error(
-        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,
+        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
+        error,
       )
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
+          NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
         NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
@@ -379,11 +388,22 @@ export default class NasesService {
         10_000,
       )
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.NotFoundException(
+          NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
+          `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
+            form.id
+          }`,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.NotFoundException(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-        `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
+        `a${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
-        } Error: ${error as string}`,
+        }`,
+        <string>error,
       )
     }
 
@@ -540,7 +560,7 @@ export default class NasesService {
         },
       )
     } catch (error) {
-      this.logger.error(`Error sending form to nases: ${error}`)
+      this.logger.error(`Error sending form to nases.`, error)
     }
 
     if (!isSent) {

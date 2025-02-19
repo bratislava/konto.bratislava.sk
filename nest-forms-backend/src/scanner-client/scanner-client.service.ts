@@ -67,11 +67,18 @@ export default class ScannerClientService {
       )
       return response.data
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
+          ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ScannerClientErrorsEnum.PROBLEM_WITH_SCANNER,
-        `${ScannerClientResponseEnum.PROBLEM_WITH_SCANNER}. Error: ${<string>(
-          error
-        )}`,
+        ScannerClientResponseEnum.PROBLEM_WITH_SCANNER,
+        <string>error,
       )
     }
   }

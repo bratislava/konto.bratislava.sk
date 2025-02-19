@@ -82,6 +82,7 @@ import {
   ForbiddenFormSendDto,
   FormAssignedToOtherUserErrorDto,
   FormSummaryGenerationErrorDto,
+  FormVersionNotCompatibleErrorDto,
   SignatureFormDataHashMismatchErrorDto,
   SignatureFormDefinitionMismatchErrorDto,
   SignatureMissingErrorDto,
@@ -479,6 +480,7 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -509,6 +511,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
         },
       ],
     },
@@ -563,6 +568,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureMissingErrorDto)
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -602,6 +608,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
         },
       ],
     },
@@ -676,6 +685,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureMissingErrorDto)
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -711,6 +721,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
         },
       ],
     },
@@ -765,6 +778,10 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -804,6 +821,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
         },
       ],
     },

@@ -106,6 +106,20 @@ export class SignatureFormDataHashMismatchErrorDto extends UnprocessableEntityEr
   declare message: string
 }
 
+export class FormVersionNotCompatibleErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+    default: NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+    default: NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+  })
+  declare message: string
+}
+
 export const verifyFormSignatureErrorMapping: Record<
   VerifyFormSignatureErrorType,
   { error: NasesErrorsEnum; message: NasesErrorsResponseEnum }

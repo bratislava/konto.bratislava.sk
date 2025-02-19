@@ -11,6 +11,7 @@ export enum NasesErrorsEnum {
   SIGNATURE_MISSING = 'SIGNATURE_MISSING',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'SIGNATURE_FORM_DEFINITION_MISMATCH',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'SIGNATURE_FORM_DATA_HASH_MISMATCH',
+  FORM_VERSION_NOT_COMPATIBLE = 'FORM_VERSION_NOT_COMPATIBLE',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -26,6 +27,7 @@ export enum NasesErrorsResponseEnum {
   SIGNATURE_MISSING = 'Signature is missing.',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'Signature form definition mismatch.',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'Signature form data hash mismatch.',
+  FORM_VERSION_NOT_COMPATIBLE = 'Form version is not compatible for sending.',
 }
 
 export enum NasesErrorCodesEnum {
@@ -168,7 +170,7 @@ export enum NasesErrorCodesResponseEnum {
   '03100124' = 'Výstupný nárazník dostal pri odosielaní správy na cieľový systém ako odpoveď Exception',
   '03100125' = 'Smerovanie SkTalk2 správ do Upvs14 je zrušené.',
   '03100126' = 'Token bol vystavený na základe neplatného certifikátu (nahláseného CRAC do cache G2G), prístup k službe nebude povolený.',
-  '03100127' = 'Odmietnutie prijatia správy v G2G, ak autentifikácia (token), ktorá je súčasťou správy obsahuje informáciu o tom, že autentifikovaným subjektom je zrušená identita (token obsahuje dátum zrušenia identity „terminationDate“)',
+  '03100127' = 'Odmietnutie prijatia správy v G2G, ak autentifikácia (token), ktorá je súčasťou správy obsahuje informáciu o tom, že autentifikovaným subjektom je zrušená identita (token obsahuje dátum zrušenia identity "terminationDate")',
   '03100128' = 'Chyba pri odosielaní správy na Biztalk z aplikácie Sb2BizTalkService',
   '03100129' = 'Nastala chyba pri uložení správy do MessageStore.',
   '03100130' = 'Sprava prisla duplicitne',

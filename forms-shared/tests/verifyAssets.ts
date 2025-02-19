@@ -1,6 +1,7 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { getRenderedAssets } from '../scripts/assets/assets'
 import fs from 'fs/promises'
+import { createPatch } from 'diff'
 
 describe('Verify assets', () => {
   test('should have file contents that match the expected contents', async () => {
@@ -10,8 +11,19 @@ describe('Verify assets', () => {
         const fileContent = await fs.readFile(path, 'utf-8')
         // Normalize line endings to \n
         const normalizedFileContent = fileContent.replace(/\r\n/g, '\n')
+        const normalizedContent = content.replace(/\r\n/g, '\n')
 
-        expect(normalizedFileContent).toEqual(content)
+        const patch = createPatch(
+          path,
+          normalizedContent,
+          normalizedFileContent,
+          'Expected',
+          'Actual',
+        )
+        console.log('\nDetailed diff:')
+        console.log(patch)
+
+        expect(normalizedFileContent).toEqual(normalizedContent)
       }),
     )
   })

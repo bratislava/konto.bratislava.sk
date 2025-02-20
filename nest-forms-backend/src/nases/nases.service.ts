@@ -400,7 +400,7 @@ export default class NasesService {
       }
       throw this.throwerErrorGuard.NotFoundException(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-        `a${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
+        `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
         }`,
         <string>error,

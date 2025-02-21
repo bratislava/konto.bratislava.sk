@@ -294,7 +294,7 @@ describe('NasesService', () => {
       } as JwtNasesPayloadDto
       const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
-        jsonVersion: '1.0',
+        jsonVersion: '1.0.0',
         schema: {},
         slug: 'test-slug',
         type: FormDefinitionType.SlovenskoSkTax,

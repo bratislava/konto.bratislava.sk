@@ -306,6 +306,14 @@ export class GetFormResponseDto {
   @IsNotEmpty()
   @IsString()
   declare formDefinitionSlug: string
+
+  @ApiProperty({
+    description: 'JSON version',
+    example: '1.0.0',
+  })
+  @IsNotEmpty()
+  @IsString()
+  declare jsonVersion: string
 }
 
 export class GetFormResponseSimpleDto {

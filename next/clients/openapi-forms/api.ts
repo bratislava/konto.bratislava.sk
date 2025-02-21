@@ -286,6 +286,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   formDefinitionSlug: string
+  /**
+   * JSON version
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  jsonVersion: string
 }
 
 export const CreateFormResponseDtoStateEnum = {
@@ -2404,6 +2410,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   formDefinitionSlug: string
+  /**
+   * JSON version
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  jsonVersion: string
 }
 
 export const GetFormResponseDtoStateEnum = {

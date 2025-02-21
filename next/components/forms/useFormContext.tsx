@@ -8,6 +8,7 @@ import {
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
@@ -33,6 +34,7 @@ export type FormServerContext = {
   isEmbedded: boolean
   isDevRoute?: boolean
   strapiForm: FormBaseFragment | null
+  versionCompareContinueAction: VersionCompareContinueAction
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {

@@ -228,5 +228,14 @@
     "content": "Formulár prešiel zmenami od vytvorenia tohto XML súboru. Importované údaje sa nemusia presne zhodovať s pôvodnými. Prajete si pokračovať?",
     "button_title": "Pokračovať",
     "button_cancel": "Zrušiť"
+  },
+  "form_version_compare_action": {
+    "title_requires_bump": "Formulár prešiel zmenami",
+    "title_cannot_continue": "Formulár prešiel zásadnými zmenami",
+    "content_requires_bump": "Formulár prešiel zmenami od vašej poslednej návštevy. Pre pokračovanie je potrebné potvrdiť, že ste si vedomý/á možných zmien.",
+    "content_cannot_continue": "Formulár prešiel zásadnými zmenami od vašej poslednej návštevy a nie je možné pokračovať v jeho vypĺňaní. Je potrebné začať s novou verziou formulára.",
+    "button_back": "Späť",
+    "button_confirm": "Potvrdiť",
+    "button_create_new": "Vytvoriť novú žiadosť"
   }
 }

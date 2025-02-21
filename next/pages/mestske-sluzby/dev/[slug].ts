@@ -1,6 +1,9 @@
 import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
-import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import FormPageWrapper, {
+  FormPageWrapperWithContextProps,
+} from '../../../components/forms/FormPageWrapper'
 import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
@@ -19,7 +22,7 @@ type Params = {
  * A route to preview forms in `forms-shared` folder. Backend functionality doesn't work. Works only in development.
  */
 export const getServerSideProps = amplifyGetServerSideProps<
-  FormPageWrapperProps & GlobalAppProps,
+  FormPageWrapperWithContextProps & GlobalAppProps,
   Params
 >(async ({ context }) => {
   if (!environment.featureToggles.developmentForms || !context.params) {
@@ -59,6 +62,7 @@ export const getServerSideProps = amplifyGetServerSideProps<
         isEmbedded,
         isDevRoute: true,
         strapiForm: { slug },
+        versionCompareContinueAction: VersionCompareContinueAction.None,
       },
       appProps: {
         externallyEmbedded: isEmbedded,

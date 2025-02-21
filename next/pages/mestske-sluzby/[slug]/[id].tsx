@@ -4,8 +4,11 @@ import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { versionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
-import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import FormPageWrapper, {
+  FormPageWrapperWithContextProps,
+} from '../../../components/forms/FormPageWrapper'
 import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
@@ -29,7 +32,7 @@ type Params = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<
-  FormPageWrapperProps & GlobalAppProps,
+  FormPageWrapperWithContextProps & GlobalAppProps,
   Params
 >(async ({ context, getAccessToken, isSignedIn }) => {
   if (!context.params) {
@@ -95,6 +98,10 @@ export const getServerSideProps = amplifyGetServerSideProps<
           formMigrationRequired,
           isEmbedded,
           strapiForm: strapiForm ?? null,
+          versionCompareContinueAction: versionCompareContinueAction({
+            currentVersion: form.jsonVersion,
+            latestVersion: formDefinition.jsonVersion,
+          }),
         },
         appProps: {
           externallyEmbedded: isEmbedded,

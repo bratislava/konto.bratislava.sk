@@ -1,3 +1,4 @@
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
 import React, { useEffect } from 'react'
@@ -6,6 +7,7 @@ import { useEffectOnce } from 'usehooks-ts'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormPage from './FormPage'
 import FormProviders from './FormProviders'
+import FormVersionCompareAction from './FormVersionCompareAction'
 import IframeResizerChild from './IframeResizerChild'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import ConditionalWrap from './simple-components/ConditionalWrap'
@@ -39,8 +41,9 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
 }
 
 const FormPageWrapper = () => {
-  const { formDefinition, isEmbedded } = useFormContext()
-  useCustomPlausibleFormPagesTracking(formDefinition.slug)
+  const { isEmbedded, versionCompareContinueAction } = useFormContext()
+  const showVersionCompareAction =
+    versionCompareContinueAction !== VersionCompareContinueAction.None
 
   return (
     <IframeResizerChild enabled={isEmbedded}>
@@ -52,9 +55,15 @@ const FormPageWrapper = () => {
           <FormProviders>
             <ConditionalWrap
               condition={!isEmbedded}
-              wrap={(children) => <AccountPageLayout>{children}</AccountPageLayout>}
+              wrap={(children) => (
+                <AccountPageLayout
+                  className={showVersionCompareAction ? 'bg-gray-0 md:bg-gray-50' : undefined}
+                >
+                  {children}
+                </AccountPageLayout>
+              )}
             >
-              <FormPage />
+              {showVersionCompareAction ? <FormVersionCompareAction /> : <FormPage />}
             </ConditionalWrap>
           </FormProviders>
         }

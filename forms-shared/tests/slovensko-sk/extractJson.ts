@@ -113,4 +113,19 @@ describe('extractJsonFromSlovenskoSkXml', () => {
       }),
     )
   })
+
+  test('should throw InvalidXml error for invalid version format', async () => {
+    const xmlWithInvalidVersion = validXmlString.replace(
+      '<JsonVersion>1.0.0</JsonVersion>',
+      '<JsonVersion>invalid.version</JsonVersion>',
+    )
+    await expect(
+      extractJsonFromSlovenskoSkXml(formDefinition, xmlWithInvalidVersion),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml,
+      }),
+    )
+  })
 })

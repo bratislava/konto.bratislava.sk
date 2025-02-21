@@ -3,6 +3,7 @@ import { Parser } from 'xml2js'
 import Ajv from 'ajv'
 import { parseSlovenskoSkXmlnsString } from './urls'
 import { GenericObjectType } from '@rjsf/utils'
+import { isValidVersion } from '../versioning/version-compare'
 
 const baseFormXmlSchema = {
   type: 'object',
@@ -118,6 +119,10 @@ export async function extractJsonFromSlovenskoSkXml(
   const jsonVersionXml = parsedXml.eform.JsonVersion?.[0]
   const backwardsCompatibleDefault = !jsonVersionXml || jsonVersionXml === '1.0'
   const jsonVersion = backwardsCompatibleDefault ? '1.0.0' : jsonVersionXml
+
+  if (!isValidVersion(jsonVersion)) {
+    throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml)
+  }
 
   return { formDataJson, jsonVersion }
 }

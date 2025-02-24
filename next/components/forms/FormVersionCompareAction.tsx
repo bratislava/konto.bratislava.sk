@@ -72,11 +72,16 @@ const FormVersionCompareAction = () => {
 
           <div className="flex flex-col items-center gap-8 md:gap-6">
             <h2 className="text-h2 text-center">
-              {t(
-                versionCompareContinueAction === VersionCompareContinueAction.CannotContinue
-                  ? 'form_version_compare_action.title_cannot_continue'
-                  : 'form_version_compare_action.title_requires_bump',
-              )}
+              {
+                {
+                  [VersionCompareContinueAction.CannotContinue]: t(
+                    'form_version_compare_action.title_cannot_continue',
+                  ),
+                  [VersionCompareContinueAction.RequiresBump]: t(
+                    'form_version_compare_action.title_requires_bump',
+                  ),
+                }[versionCompareContinueAction]
+              }
             </h2>
             <AccountMarkdown
               variant="sm"

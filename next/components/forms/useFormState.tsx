@@ -125,9 +125,9 @@ const useGetContext = () => {
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
-    const omittedData = omitExtraData(schema, importedFormData, validatorRegistry)
+    const sanitizedFormData = omitExtraData(schema, importedFormData, validatorRegistry)
 
-    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, omittedData, validatorRegistry)
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, sanitizedFormData, validatorRegistry)
     const afterImportStepperData = getStepperData(evaluatedSchemas)
 
     if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
@@ -135,12 +135,12 @@ const useGetContext = () => {
       setCurrentStepIndex(afterImportStepperData[0].index)
     }
 
-    const fileUuids = getFileUuidsNaive(omittedData)
+    const fileUuids = getFileUuidsNaive(sanitizedFormData)
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     refetchAfterImportIfNeeded(fileUuids)
 
     setSubmittedStepsIndexes(new Set())
-    setFormData(omittedData)
+    setFormData(sanitizedFormData)
     turnOnLeaveProtection()
 
     // the next section sets the correct state of the form stepper after import
@@ -150,7 +150,7 @@ const useGetContext = () => {
     const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
     const {
       validationData: { errorSchema },
-    } = validateSummary({ schema, formData: omittedData, fileInfos, validatorRegistry })
+    } = validateSummary({ schema, formData: sanitizedFormData, fileInfos, validatorRegistry })
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {

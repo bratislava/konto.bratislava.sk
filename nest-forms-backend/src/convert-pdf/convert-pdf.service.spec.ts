@@ -68,10 +68,6 @@ describe('ConvertPdfService', () => {
       providers: [
         FormsHelper,
         {
-          provide: ConfigService,
-          useValue: createMock<ConfigService>(),
-        },
-        {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
         },

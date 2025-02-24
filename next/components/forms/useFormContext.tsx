@@ -5,7 +5,6 @@ import {
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
-import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
@@ -25,7 +24,6 @@ export type FormServerContext = {
   formDefinition: SerializableFormDefinition
   formId: string
   initialFormDataJson: GenericObjectType
-  initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
   initialSummaryJson?: SummaryJsonForm | null

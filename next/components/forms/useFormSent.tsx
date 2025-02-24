@@ -1,6 +1,10 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-const useGetContext = (initialFormSent: boolean) => {
+type FormSentProviderProps = {
+  initialFormSent: boolean
+}
+
+const useGetContext = ({ initialFormSent }: FormSentProviderProps) => {
   const [formSent, setFormSent] = useState(initialFormSent)
 
   return {
@@ -11,32 +15,20 @@ const useGetContext = (initialFormSent: boolean) => {
 
 const FormSentContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-type FormSentProviderProps = {
-  initialFormSent: boolean
-  notSentChildren?: ReactNode
-  sentChildren?: ReactNode
-}
-export const FormSentRenderer = ({
+export const FormSentProvider = ({
   initialFormSent,
-  notSentChildren,
-  sentChildren,
-}: FormSentProviderProps) => {
-  const context = useGetContext(initialFormSent)
+  children,
+}: PropsWithChildren<FormSentProviderProps>) => {
+  const context = useGetContext({ initialFormSent })
 
-  return (
-    <FormSentContext.Provider value={context}>
-      {context.formSent ? sentChildren : notSentChildren}
-    </FormSentContext.Provider>
-  )
+  return <FormSentContext.Provider value={context}>{children}</FormSentContext.Provider>
 }
 
 export const useFormSent = () => {
   const context = useContext(FormSentContext)
+
   if (!context) {
-    return {
-      formSent: false,
-      setFormIsSent: () => {},
-    } satisfies ReturnType<typeof useGetContext>
+    throw new Error('useFormSent must be used within a FormSentProvider')
   }
 
   return context

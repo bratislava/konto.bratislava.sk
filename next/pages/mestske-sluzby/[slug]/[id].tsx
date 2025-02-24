@@ -67,7 +67,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
         fetchStrapiForm(slug),
       ])
 
-      const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
+      const initialFormSent = form.state !== GetFormResponseDtoStateEnum.Draft
       // If the form was created by an unauthenticated user, a migration modal is displayed and form is not editable.
       const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
 
@@ -89,7 +89,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
             initialFormDataJson,
             initialServerFiles: files,
             initialSignature: form.formSignature ?? null,
-            formSent,
+            initialFormSent,
             initialSummaryJson: getInitialSummaryJson(
               context.query,
               formDefinition,

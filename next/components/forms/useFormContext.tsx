@@ -27,7 +27,7 @@ export type FormServerContext = {
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
   initialSummaryJson?: SummaryJsonForm | null
-  formSent: boolean
+  initialFormSent: boolean
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
@@ -39,7 +39,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
 
-  const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
+  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
 
   // TODO: Revisit this logic
   const requiresVerification =
@@ -74,8 +74,8 @@ const useGetContext = (formServerContext: FormServerContext) => {
     }
   }, [isSSR, setJsonImportExportAllowed])
 
-  const isReadonly = formMigrationRequired || formSent
-  const isDeletable = formMigrationRequired && !formSent
+  const isReadonly = formMigrationRequired
+  const isDeletable = formMigrationRequired && !initialFormSent
 
   const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
 

@@ -62,7 +62,7 @@ export type FormPageProps = {
 const FormPage = ({ formServerContext }: FormPageProps) => {
   return (
     <FormContextProvider formServerContext={formServerContext}>
-      <FormSentProvider initialFormSent={formServerContext.formSent}>
+      <FormSentProvider initialFormSent={formServerContext.initialFormSent}>
         <FormLayoutContainer />
       </FormSentProvider>
     </FormContextProvider>

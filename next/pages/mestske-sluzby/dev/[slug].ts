@@ -48,7 +48,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
           formId: '',
           initialFormDataJson,
           initialServerFiles: [],
-          formSent: false,
+          initialFormSent: false,
           initialSummaryJson: getInitialSummaryJson(
             context.query,
             formDefinition,

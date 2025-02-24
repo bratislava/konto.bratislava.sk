@@ -196,11 +196,12 @@ describe('FormsService', () => {
   })
 
   describe('bumpJsonVersion', () => {
-    it('should throw error if form is not in DRAFT state', async () => {
+    it('should throw error if form is not editable', async () => {
       const form = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         state: FormState.PROCESSING,
       } as Forms
+      FormsHelper.isEditable = jest.fn().mockReturnValue(false)
 
       await expect(service.bumpJsonVersion(form)).rejects.toThrow()
     })
@@ -211,6 +212,7 @@ describe('FormsService', () => {
         state: FormState.DRAFT,
         formDefinitionSlug: 'non-existent',
       } as Forms
+      FormsHelper.isEditable = jest.fn().mockReturnValue(true)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
 
       await expect(service.bumpJsonVersion(form)).rejects.toThrow()

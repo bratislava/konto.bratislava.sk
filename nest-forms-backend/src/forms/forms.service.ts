@@ -370,7 +370,7 @@ export default class FormsService {
   }
 
   async bumpJsonVersion(form: Forms): Promise<void> {
-    if (form.state !== FormState.DRAFT) {
+    if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
         FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,

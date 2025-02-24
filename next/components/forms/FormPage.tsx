@@ -20,6 +20,7 @@ const FormStateRouter = () => {
     return <ThankYouFormSection />
   }
 
+  // It is not possible to display outdated form in any meaningful way, user needs to first make an action (if possible)
   if (versionCompareContinueAction !== VersionCompareContinueAction.None) {
     return <FormVersionCompareAction />
   }

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import {
@@ -11,6 +12,10 @@ import {
   VerifyFormSignatureError,
 } from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
+import {
+  versionCompareBumpDuringSend,
+  versionCompareCanSendForm,
+} from 'forms-shared/versioning/version-compare'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -57,6 +62,8 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
 
+  private readonly versioningEnabled: boolean
+
   constructor(
     private readonly formsService: FormsService,
     private readonly filesService: FilesService,
@@ -67,8 +74,12 @@ export default class NasesService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
   async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {
@@ -341,6 +352,19 @@ export default class NasesService {
       )
     }
 
+    if (
+      this.versioningEnabled &&
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      )
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -387,12 +411,20 @@ export default class NasesService {
       )
     }
 
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary,
-      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-      jsonVersion: formDefinition.jsonVersion,
+      ...(shouldBumpJsonVersion
+        ? { jsonVersion: formDefinition.jsonVersion }
+        : undefined),
     })
     return {
       id: form.id,
@@ -477,6 +509,19 @@ export default class NasesService {
       }
     }
 
+    if (
+      this.versioningEnabled &&
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      )
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -526,6 +571,13 @@ export default class NasesService {
     // Send to nases
     let isSent = false
 
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+
     try {
       isSent = await this.nasesConsumerService.sendToNasesAndUpdateState(
         jwt,
@@ -535,8 +587,9 @@ export default class NasesService {
         user.sub,
         {
           formSummary,
-          // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-          jsonVersion: formDefinition.jsonVersion,
+          ...(shouldBumpJsonVersion
+            ? { jsonVersion: formDefinition.jsonVersion }
+            : undefined),
         },
       )
     } catch (error) {

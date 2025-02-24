@@ -77,7 +77,7 @@ export const useFormMenuItems = (): FormMenuItem[] => {
       : {
           title: t('menu_list.delete'),
           icon: <BinIcon className="size-6" />,
-          onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
+          onPress: () => setDeleteConceptModal({ isOpen: true, confirmCallback: deleteConcept }),
           className: 'text-negative-700',
         },
   ].filter(isDefined)

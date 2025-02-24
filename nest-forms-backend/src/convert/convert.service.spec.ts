@@ -25,7 +25,15 @@ describe('ConvertService', () => {
           provide: getQueueToken('tax'),
           useValue: {},
         },
-        ConfigService,
+        {
+          provide: ConfigService,
+          useValue: {
+            getOrThrow: jest.fn((key: string) => {
+              if (key === 'FEATURE_TOGGLE_VERSIONING') return 'true'
+              throw new Error(`Unexpected config key: ${key}`)
+            }),
+          },
+        },
         {
           provide: FormsService,
           useValue: createMock<FormsService>(),

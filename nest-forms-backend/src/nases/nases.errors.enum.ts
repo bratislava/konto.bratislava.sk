@@ -11,6 +11,7 @@ export enum NasesErrorsEnum {
   SIGNATURE_MISSING = 'SIGNATURE_MISSING',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'SIGNATURE_FORM_DEFINITION_MISMATCH',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'SIGNATURE_FORM_DATA_HASH_MISMATCH',
+  FORM_VERSION_NOT_COMPATIBLE = 'FORM_VERSION_NOT_COMPATIBLE',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -26,6 +27,7 @@ export enum NasesErrorsResponseEnum {
   SIGNATURE_MISSING = 'Signature is missing.',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'Signature form definition mismatch.',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'Signature form data hash mismatch.',
+  FORM_VERSION_NOT_COMPATIBLE = 'Form version is not compatible for sending.',
 }
 
 export enum NasesErrorCodesEnum {

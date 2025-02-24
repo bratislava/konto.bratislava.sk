@@ -61,6 +61,25 @@ export interface BadRequestDecoratorErrorDto {
 /**
  *
  * @export
+ * @interface BumpJsonVersionResponseDto
+ */
+export interface BumpJsonVersionResponseDto {
+  /**
+   * UUID of the form.
+   * @type {string}
+   * @memberof BumpJsonVersionResponseDto
+   */
+  formId: string
+  /**
+   * True if the form was successfully bumped.
+   * @type {boolean}
+   * @memberof BumpJsonVersionResponseDto
+   */
+  success: boolean
+}
+/**
+ *
+ * @export
  * @interface CanSendResponseDto
  */
 export interface CanSendResponseDto {
@@ -78,14 +97,6 @@ export interface CanSendResponseDto {
   formId: string
 }
 /**
- * @type ConvertControllerConvertJsonToXmlV2404Response
- * @export
- */
-export type ConvertControllerConvertJsonToXmlV2404Response =
-  | FormDefinitionNotFoundErrorDto
-  | FormNotFoundErrorDto
-
-/**
  * @type ConvertControllerConvertJsonToXmlV2422Response
  * @export
  */
@@ -102,6 +113,14 @@ export type ConvertControllerConvertXmlToJson400Response =
   | InvalidXmlErrorDto
   | WrongPospIdErrorDto
   | XmlDoesntMatchSchemaErrorDto
+
+/**
+ * @type ConvertControllerConvertXmlToJson422Response
+ * @export
+ */
+export type ConvertControllerConvertXmlToJson422Response =
+  | FormDefinitionNotSupportedTypeErrorDto
+  | IncompatibleJsonVersionErrorDto
 
 /**
  *
@@ -267,6 +286,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   formDefinitionSlug: string
+  /**
+   * JSON version
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  jsonVersion: string
 }
 
 export const CreateFormResponseDtoStateEnum = {
@@ -388,12 +413,6 @@ export interface EidUpdateSendFormRequestDto {
    * @memberof EidUpdateSendFormRequestDto
    */
   formDataJson?: object
-  /**
-   * Signed ASiC-E container in Base64 format
-   * @type {string}
-   * @memberof EidUpdateSendFormRequestDto
-   */
-  formDataBase64?: string | null
   /**
    * Form signature with metadata
    * @type {FormSignatureDto}
@@ -1979,6 +1998,114 @@ export interface FormUserInformationDto {
 /**
  *
  * @export
+ * @interface FormVersionBumpNotPossible
+ */
+export interface FormVersionBumpNotPossible {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormVersionBumpNotPossible
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormVersionBumpNotPossible
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormVersionBumpNotPossible
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormVersionBumpNotPossible
+   */
+  errorName: FormVersionBumpNotPossibleErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormVersionBumpNotPossible
+   */
+  object?: object
+}
+
+export const FormVersionBumpNotPossibleErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormVersionBumpNotPossibleErrorNameEnum =
+  (typeof FormVersionBumpNotPossibleErrorNameEnum)[keyof typeof FormVersionBumpNotPossibleErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormVersionNotCompatibleErrorDto
+ */
+export interface FormVersionNotCompatibleErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormVersionNotCompatibleErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormVersionNotCompatibleErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormVersionNotCompatibleErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormVersionNotCompatibleErrorDto
+   */
+  errorName: FormVersionNotCompatibleErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormVersionNotCompatibleErrorDto
+   */
+  object?: object
+}
+
+export const FormVersionNotCompatibleErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormVersionNotCompatibleErrorDtoErrorNameEnum =
+  (typeof FormVersionNotCompatibleErrorDtoErrorNameEnum)[keyof typeof FormVersionNotCompatibleErrorDtoErrorNameEnum]
+
+/**
+ * @type FormsControllerBumpJsonVersion404Response
+ * @export
+ */
+export type FormsControllerBumpJsonVersion404Response =
+  | FormDefinitionNotFoundErrorDto
+  | FormNotFoundErrorDto
+
+/**
+ *
+ * @export
  * @interface GetFileResponseDto
  */
 export interface GetFileResponseDto {
@@ -2283,6 +2410,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   formDefinitionSlug: string
+  /**
+   * JSON version
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  jsonVersion: string
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -2557,6 +2690,56 @@ export const GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
 
 export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
   (typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum)[keyof typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum]
+
+/**
+ *
+ * @export
+ * @interface IncompatibleJsonVersionErrorDto
+ */
+export interface IncompatibleJsonVersionErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof IncompatibleJsonVersionErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof IncompatibleJsonVersionErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof IncompatibleJsonVersionErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof IncompatibleJsonVersionErrorDto
+   */
+  errorName: IncompatibleJsonVersionErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof IncompatibleJsonVersionErrorDto
+   */
+  object?: object
+}
+
+export const IncompatibleJsonVersionErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type IncompatibleJsonVersionErrorDtoErrorNameEnum =
+  (typeof IncompatibleJsonVersionErrorDtoErrorNameEnum)[keyof typeof IncompatibleJsonVersionErrorDtoErrorNameEnum]
 
 /**
  *
@@ -4106,12 +4289,6 @@ export interface UpdateFormRequestDto {
    */
   formDataJson?: object
   /**
-   * Signed ASiC-E container in Base64 format
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  formDataBase64?: string | null
-  /**
    * Form signature with metadata
    * @type {FormSignatureDto}
    * @memberof UpdateFormRequestDto
@@ -4278,7 +4455,13 @@ export interface XmlToJsonResponseDto {
    * @type {object}
    * @memberof XmlToJsonResponseDto
    */
-  jsonForm: object
+  formDataJson: object
+  /**
+   * Indicates if version confirmation is required
+   * @type {boolean}
+   * @memberof XmlToJsonResponseDto
+   */
+  requiresVersionConfirmation: boolean
 }
 /**
  *
@@ -5727,6 +5910,151 @@ export class FilesApi extends BaseAPI {
   ) {
     return FilesApiFp(this.configuration)
       .filesControllerUploadFile(formId, file, filename, id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * FormsApi - axios parameter creator
+ * @export
+ */
+export const FormsApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Updates form JSON version if a newer version is available
+     * @summary Bump form JSON version to latest available version
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerBumpJsonVersion: async (
+      id: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('formsControllerBumpJsonVersion', 'id', id)
+      const localVarPath = `/forms/{id}/bump-version`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * FormsApi - functional programming interface
+ * @export
+ */
+export const FormsApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = FormsApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Updates form JSON version if a newer version is available
+     * @summary Bump form JSON version to latest available version
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsControllerBumpJsonVersion(
+      id: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<BumpJsonVersionResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsControllerBumpJsonVersion(
+        id,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsApi.formsControllerBumpJsonVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * FormsApi - factory interface
+ * @export
+ */
+export const FormsApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = FormsApiFp(configuration)
+  return {
+    /**
+     * Updates form JSON version if a newer version is available
+     * @summary Bump form JSON version to latest available version
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsControllerBumpJsonVersion(
+      id: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<BumpJsonVersionResponseDto> {
+      return localVarFp
+        .formsControllerBumpJsonVersion(id, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * FormsApi - object-oriented interface
+ * @export
+ * @class FormsApi
+ * @extends {BaseAPI}
+ */
+export class FormsApi extends BaseAPI {
+  /**
+   * Updates form JSON version if a newer version is available
+   * @summary Bump form JSON version to latest available version
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FormsApi
+   */
+  public formsControllerBumpJsonVersion(id: string, options?: RawAxiosRequestConfig) {
+    return FormsApiFp(this.configuration)
+      .formsControllerBumpJsonVersion(id, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

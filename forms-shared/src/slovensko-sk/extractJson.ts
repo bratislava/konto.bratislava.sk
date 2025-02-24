@@ -3,6 +3,7 @@ import { Parser } from 'xml2js'
 import Ajv from 'ajv'
 import { parseSlovenskoSkXmlnsString } from './urls'
 import { GenericObjectType } from '@rjsf/utils'
+import { isValidVersion } from '../versioning/version-compare'
 
 const baseFormXmlSchema = {
   type: 'object',
@@ -47,7 +48,7 @@ type BaseFormXml = {
     $: {
       xmlns: string
     }
-    JsonVersion: [string]
+    JsonVersion?: [string]
     Json: [string]
   }
 }
@@ -74,7 +75,8 @@ export enum ExtractJsonFromSlovenskoSkXmlErrorType {
 }
 
 /**
- * Extracts JSON data from Slovensko.sk XML string
+ * Extracts JSON data and version from Slovensko.sk XML string
+ * @returns Object containing parsed JSON data and version (defaults to '1.0.0' for backwards compatibility)
  */
 export async function extractJsonFromSlovenskoSkXml(
   formDefinition: FormDefinitionSlovenskoSk,
@@ -104,9 +106,23 @@ export async function extractJsonFromSlovenskoSkXml(
     throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.WrongPospId)
   }
 
+  let formDataJson: GenericObjectType
   try {
-    return JSON.parse(parsedXml.eform.Json[0]) as GenericObjectType
+    formDataJson = JSON.parse(parsedXml.eform.Json[0])
   } catch {
     throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidJson)
   }
+
+  // For backwards compatibility:
+  // - If version is missing or equals '1.0', return '1.0.0'
+  // - Otherwise return the specified version
+  const jsonVersionXml = parsedXml.eform.JsonVersion?.[0]
+  const backwardsCompatibleDefault = !jsonVersionXml || jsonVersionXml === '1.0'
+  const jsonVersion = backwardsCompatibleDefault ? '1.0.0' : jsonVersionXml
+
+  if (!isValidVersion(jsonVersion)) {
+    throw new ExtractJsonFromSlovenskoSkXmlError(ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml)
+  }
+
+  return { formDataJson, jsonVersion }
 }

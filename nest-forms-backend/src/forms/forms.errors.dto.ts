@@ -133,3 +133,17 @@ export class EmptyFormDataErrorDto extends UnprocessableEntityErrorDto {
   })
   declare message: string
 }
+
+export class FormVersionBumpNotPossible extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+    default: FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+    default: FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+  })
+  declare message: string
+}

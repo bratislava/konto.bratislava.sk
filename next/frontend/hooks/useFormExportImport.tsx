@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
+import { AxiosResponse, isAxiosError } from 'axios'
 import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
@@ -17,6 +17,7 @@ import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
+import { environment } from '../../environment'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
@@ -31,7 +32,8 @@ export const useGetContext = () => {
   } = useFormContext()
   const { setImportedFormData } = useFormState()
   const { formData } = useFormData()
-  const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
+  const { setRegistrationModal, setTaxFormPdfExportModal, setXmlImportVersionConfirmationModal } =
+    useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
@@ -149,19 +151,38 @@ export const useGetContext = () => {
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
       const xmlForm = await file.text()
-      const response = await formsApi.convertControllerConvertXmlToJson(
+      const { data } = await formsApi.convertControllerConvertXmlToJson(
         {
           formId,
           xmlForm,
         },
         { accessToken: 'onlyAuthenticated' },
       )
-      setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_import'))
+
+      const importData = () => {
+        setImportedFormData(data.formDataJson)
+        openSnackbarSuccess(t('success_messages.xml_import'))
+      }
+
+      if (environment.featureToggles.versioning && data.requiresVersionConfirmation) {
+        setXmlImportVersionConfirmationModal({
+          isOpen: true,
+          confirmCallback: () => {
+            importData()
+            setXmlImportVersionConfirmationModal({ isOpen: false })
+          },
+        })
+      } else {
+        importData()
+      }
       plausible(`${slug}#import-xml`)
     } catch (error) {
-      openSnackbarError(t('errors.xml_import'))
+      if (isAxiosError(error) && error.response?.data?.errorName === 'INCOMPATIBLE_JSON_VERSION') {
+        openSnackbarError(t('errors.xml_import_incompatible_version'))
+      } else {
+        openSnackbarError(t('errors.xml_import'))
+      }
     }
   }
 

@@ -70,9 +70,6 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                   domain={
                     isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
                   }
-                  // exclude instances of forms (i.e./mestske-sluzby/priznanie-k-dani-z-nehnutelnosti is still tracked)
-                  // we track those manually along with step hashes so that we can track "funnels" across steps
-                  exclude="/mestske-sluzby/*/*"
                   taggedEvents
                   // uncomment for local testing, needs to be run with `yarn build && yarn start`
                   // trackLocalhost

@@ -5,6 +5,7 @@ import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { describe, test, expect } from 'vitest'
+import { isValidVersion } from '../../src/versioning/version-compare'
 
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
@@ -16,6 +17,10 @@ describe('Form definitions', () => {
       test('is valid schema', () => {
         const validator = testValidatorRegistry.getValidator(formDefinition.schema)
         expect(validator.ajv.validateSchema(formDefinition.schema, true)).toBe(true)
+      })
+
+      test('has valid jsonVersion', () => {
+        expect(isValidVersion(formDefinition.jsonVersion)).toBe(true)
       })
 
       test('default form state should match snapshot', () => {

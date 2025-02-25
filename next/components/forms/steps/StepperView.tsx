@@ -70,7 +70,7 @@ const StepperView = () => {
   }
 
   return (
-    <>
+    <div>
       <nav className="hidden w-[332px] lg:block" data-cy="stepper-desktop">
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </nav>
@@ -92,7 +92,7 @@ const StepperView = () => {
           handleOnSkipToStep={handleOnSkipToStep}
         />
       </div>
-    </>
+    </div>
   )
 }
 

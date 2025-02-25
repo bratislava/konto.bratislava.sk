@@ -7,6 +7,10 @@ import {
   NasesErrorsResponseEnum,
 } from '../../nases/nases.errors.enum'
 import { cityAccountApi } from '../clients/cityAccountApi'
+import {
+  ResponseLegalPersonDataDto,
+  ResponseUserDataDto,
+} from '../clients/openapi-city-account'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -20,6 +24,8 @@ export const User = createParamDecorator(
   },
 )
 /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+
+export type UserInfoResponse = ResponseLegalPersonDataDto & ResponseUserDataDto
 
 export const UserInfo = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {

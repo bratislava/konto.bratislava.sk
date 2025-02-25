@@ -17,8 +17,11 @@ import {
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import {
+  User,
+  UserInfo,
+  UserInfoResponse,
+} from '../utils/decorators/request.decorator'
 import {
   DetailDokumentu,
   DetailReferenta,
@@ -77,7 +80,7 @@ export default class GinisController {
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<GinisDocumentDetailResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       formId,

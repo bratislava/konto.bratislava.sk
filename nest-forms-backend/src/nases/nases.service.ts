@@ -34,6 +34,7 @@ import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { UpvsNaturalPerson } from '../utils/clients/openapi-slovensko-sk'
 import { slovenskoSkApi } from '../utils/clients/slovenskoSkApi'
+import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -51,10 +52,7 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import {
-  CreateFormResponseDto,
-  ResponseGdprDataDto,
-} from './dtos/responses.dto'
+import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
@@ -312,7 +310,7 @@ export default class NasesService {
 
   async sendForm(
     id: string,
-    userInfo?: ResponseGdprDataDto,
+    userInfo?: UserInfoResponse,
     user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)

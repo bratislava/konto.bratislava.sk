@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
-import axios, { AxiosResponse } from 'axios'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -33,6 +32,8 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import { UpvsNaturalPerson } from '../utils/clients/openapi-slovensko-sk'
+import { slovenskoSkApi } from '../utils/clients/slovenskoSkApi'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -82,17 +83,12 @@ export default class NasesService {
       'true'
   }
 
-  async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {
-    const result = await axios
-      .get(
-        `${process.env.SLOVENSKO_SK_CONTAINER_URI ?? ''}/api/upvs/identity`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      .then((response: AxiosResponse<JwtNasesPayloadDto>) => response.data)
+  async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+    const result = await slovenskoSkApi
+      .apiUpvsIdentityGet({
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => response.data)
       .catch((error) => {
         console.error(
           this.throwerErrorGuard.InternalServerErrorException(

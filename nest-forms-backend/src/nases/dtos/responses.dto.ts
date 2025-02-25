@@ -90,29 +90,5 @@ export class MigrateFormResponseDto {
 
 export class CreateFormResponseDto extends GetFormResponseDto {}
 
-export class NasesSendFormDataDto {
-  receive_result: number
-
-  receive_timeout: boolean
-
-  save_to_outbox_result: number
-
-  save_to_outbox_timeout: boolean
-}
-
-export class NasesIsMessageDeliveredDto {
-  id: number
-
-  class: string
-
-  message_id: string
-
-  correlation_id: string
-
-  subject: string
-
-  delivered_at: string
-}
-
 /* eslint-enable pii/no-phone-number */
 /* eslint-enable pii/no-email */

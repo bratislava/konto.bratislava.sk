@@ -6,7 +6,7 @@ import { AdminService } from 'src/admin/admin.service'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
 import { PrismaService } from '../../prisma/prisma.service'
-import { HandleErrors } from '../../utils/decorators/errorHandler.decorators'
+import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const ValidateEdeskConfigValueSchema = z.object({
@@ -126,8 +126,10 @@ export class AdminCronSubservice {
         return
       }
     } catch (error) {
-      this.logger.error(error)
-      this.logger.error(`Failed to validate entity with id: ${entityToValidate.id}, skipping`)
+      this.logger.error(
+        `Failed to validate entity with id: ${entityToValidate.id}, skipping`,
+        error
+      )
     }
 
     const newOffset = config.offset + 1

@@ -14,7 +14,7 @@ module.exports = {
     jest: true,
     es2021: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', '/src/utils/clients/openapi-*/*.ts'],
   rules: {
     'max-classes-per-file': 'off',
     'const-case/uppercase': 'off',
@@ -24,7 +24,8 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'sonarjs/no-useless-catch': 'off',
     'no-useless-catch': 'off',
-    '@darraghor/nestjs-typed/api-property-returning-array-should-set-array': 'off',
+    '@darraghor/nestjs-typed/api-property-returning-array-should-set-array':
+      'off',
     'no-restricted-syntax': 2,
     // '@typescript-eslint/interface-name-prefix': 'off',
     // '@typescript-eslint/explicit-function-return-type': 'off',
@@ -43,9 +44,9 @@ module.exports = {
     {
       files: ['**/eslint-custom-rules/**/*.js'],
       rules: {
-        "unicorn/prefer-module": 'off',
-        "global-require": 'off',
-      }
-    }
-  ]
+        'unicorn/prefer-module': 'off',
+        'global-require': 'off',
+      },
+    },
+  ],
 }

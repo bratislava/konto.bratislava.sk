@@ -53,6 +53,7 @@ import objednavkaVytycenia from '../schemas/tsb/objednavkaVytycenie'
 import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
 import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
+import { MailgunTemplateEnum } from './emailFormTypes'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -196,6 +197,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
     extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -210,6 +213,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: zevoExtractEmail,
     extractName: zevoExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -224,6 +229,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: zevoExtractEmail,
     extractName: zevoExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -238,6 +245,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: docisteniStanovistaZbernychNadobExtractEmail,
     extractName: docisteniStanovistaZbernychNadobExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -252,6 +261,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
     extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -266,6 +277,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: koloTaxiExtractEmail,
     extractName: koloTaxiExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -280,6 +293,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: oloTaxiExtractEmail,
     extractName: oloTaxiExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -294,6 +309,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: podnetyAPochvalyObcanovExtractEmail,
     extractName: podnetyAPochvalyObcanovExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -308,6 +325,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: odvozObjemnehoOdpaduValnikomExtractEmail,
     extractName: odvozObjemnehoOdpaduValnikomExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -322,6 +341,8 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
     extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
   {
     type: FormDefinitionType.Email,
@@ -336,58 +357,74 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
     extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
+    sendEmailFunction: 'sendOloEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
   },
+  // TODO extract email and name
+  // TODO maybe add the email to secret
   {
-    type: FormDefinitionType.Webhook,
+    type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-zakresu-sieti',
     title: 'TEST - Objednávka zákresu sietí',
     jsonVersion: '1.0.0',
     schema: objednavkaZakresuSieti,
-    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
-    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    email: 'wf@tsb.sk',
+    extractEmail: zevoExtractEmail, // TODO
+    extractName: zevoExtractName, // TODO
+    sendEmailFunction: 'sendEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
   },
   {
-    type: FormDefinitionType.Webhook,
+    type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-vytycenia',
     title: 'TEST - Objednávka vytýčenia',
     jsonVersion: '1.0.0',
     schema: objednavkaVytycenia,
-    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
-    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    email: 'wf@tsb.sk',
+    extractEmail: zevoExtractEmail, // TODO
+    extractName: zevoExtractName, // TODO
+    sendEmailFunction: 'sendEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
   },
   {
-    type: FormDefinitionType.Webhook,
+    type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-stanovisko-pd',
     title: 'TEST - Žiadosť o stanovisko k projektovej dokumentácii',
     jsonVersion: '1.0.0',
     schema: ziadostOStanoviskoPD,
-    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
-    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    email: 'wf@tsb.sk',
+    extractEmail: zevoExtractEmail, // TODO
+    extractName: zevoExtractName, // TODO
+    sendEmailFunction: 'sendEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
   },
   {
-    type: FormDefinitionType.Webhook,
+    type: FormDefinitionType.Email,
     slug: 'tsb-umiestnenie-zariadenia',
     title: 'TEST - Umiestnenie zariadenia',
     jsonVersion: '1.0.0',
     schema: umiestnenieZariadenia,
-    // temporary test webhook, that can be viewed on https://webhook.cool/share/alive-grandmother-18?id=05a4d568b50e9815
-    webhookUrl: 'https://alive-grandmother-18.webhook.cool',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    email: 'wf@tsb.sk',
+    extractEmail: zevoExtractEmail, // TODO
+    extractName: zevoExtractName, // TODO
+    sendEmailFunction: 'sendEmail',
+    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

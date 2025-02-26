@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
@@ -13,7 +14,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
-import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
@@ -108,7 +108,7 @@ export default class EmailFormsSubservice {
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
-    await this.mailgunService.sendOloEmail(
+    await this.mailgunService[formDefinition.sendEmailFunction](
       {
         to: formDefinition.email,
         template: MailgunTemplateEnum.OLO_SEND_FORM,
@@ -157,10 +157,10 @@ export default class EmailFormsSubservice {
       })()
 
       try {
-        await this.mailgunService.sendOloEmail(
+        await this.mailgunService[formDefinition.sendEmailFunction](
           {
             to: userConfirmationEmail,
-            template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+            template: formDefinition.userEmailTemplate,
             data: {
               formId: form.id,
               messageSubject: formTitle,

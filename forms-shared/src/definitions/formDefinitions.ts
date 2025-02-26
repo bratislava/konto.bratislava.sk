@@ -54,7 +54,7 @@ import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
 import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
-import { tsbExtractEmail } from '../schemas/tsb/shared/extractInfoShared'
+import { tsbExtractEmail, tsbExtractName } from '../schemas/tsb/shared/extractInfoShared'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -385,7 +385,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
     extractEmail: tsbExtractEmail,
-    extractName: zevoExtractName, // TODO
+    extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -402,7 +402,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
     extractEmail: tsbExtractEmail,
-    extractName: zevoExtractName, // TODO
+    extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -419,7 +419,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
     extractEmail: tsbExtractEmail,
-    extractName: zevoExtractName, // TODO
+    extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -436,7 +436,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
     extractEmail: tsbExtractEmail,
-    extractName: zevoExtractName, // TODO
+    extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO

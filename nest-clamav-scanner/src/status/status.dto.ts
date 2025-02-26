@@ -21,7 +21,25 @@ export class ServiceRunningDto {
 export class ClamavVersionDto {
   @ApiProperty({
     description: 'clamav version',
-    example: '0.102.4',
+    example: '1.4.2',
   })
   version: string;
+}
+
+//dto for all statuses
+export class ServicesStatusDto {
+  @ApiProperty({ type: ServiceRunningDto })
+  prisma: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  minio: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  forms: ServiceRunningDto;
+
+  @ApiProperty({ type: ServiceRunningDto })
+  clamav: ServiceRunningDto;
+
+  @ApiProperty({ type: ClamavVersionDto })
+  clamavVersion: ClamavVersionDto;
 }

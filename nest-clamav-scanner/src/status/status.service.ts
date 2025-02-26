@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
-import { MinioClientService } from '../minio-client/minio-client.service';
-import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
+
+import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import { FormsClientService } from '../forms-client/forms-client.service';
+import { MinioClientService } from '../minio-client/minio-client.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
 
 @Injectable()
 export class StatusService {
@@ -52,9 +53,9 @@ export class StatusService {
   }
 
   //function which checks if minio is running
-  public async isMinioRunning(): Promise<ServiceRunningDto> {
+  public isMinioRunning(): ServiceRunningDto {
     try {
-      const result = await this.minioClientService.client();
+      const result = this.minioClientService.client();
       this.logger.log(result);
       return {
         running: true,
@@ -75,7 +76,10 @@ export class StatusService {
         running: result,
       };
     } catch (error) {
-      this.logger.error(error);
+      if (!(error instanceof Error)) {
+        throw error;
+      }
+      this.logger.error(error.message);
       return {
         running: false,
       };
@@ -90,10 +94,10 @@ export class StatusService {
         version: result,
       };
     } catch (error) {
-      this.logger.error(error);
-      return {
-        version: error,
-      };
+      if (error instanceof Error) {
+        this.logger.error(error.message);
+      }
+      throw error;
     }
   }
 }

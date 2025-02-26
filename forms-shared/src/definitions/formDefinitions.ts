@@ -54,6 +54,7 @@ import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
 import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
+import { tsbExtractEmail } from '../schemas/tsb/shared/extractInfoShared'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -383,7 +384,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
-    extractEmail: zevoExtractEmail, // TODO
+    extractEmail: tsbExtractEmail,
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
@@ -400,7 +401,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
-    extractEmail: zevoExtractEmail, // TODO
+    extractEmail: tsbExtractEmail,
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
@@ -417,7 +418,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
-    extractEmail: zevoExtractEmail, // TODO
+    extractEmail: tsbExtractEmail,
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
@@ -434,7 +435,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: 'wf@tsb.sk',
-    extractEmail: zevoExtractEmail, // TODO
+    extractEmail: tsbExtractEmail,
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO

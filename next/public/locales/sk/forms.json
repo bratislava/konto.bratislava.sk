@@ -236,6 +236,7 @@
     "content_cannot_continue": "Formulár prešiel zásadnými zmenami od vašej poslednej návštevy a nie je možné pokračovať v jeho vypĺňaní. Je potrebné začať s novou verziou formulára.",
     "button_back": "Späť",
     "button_confirm": "Potvrdiť",
-    "button_create_new": "Vytvoriť novú žiadosť"
+    "button_create_new": "Vytvoriť novú žiadosť",
+    "error_version_update": "Nie je možné pokračovať. Skúste to prosím znova."
   }
 }

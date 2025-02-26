@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
@@ -111,7 +110,7 @@ export default class EmailFormsSubservice {
     await this.mailgunService[formDefinition.sendEmailFunction](
       {
         to: formDefinition.email,
-        template: MailgunTemplateEnum.OLO_SEND_FORM,
+        template: formDefinition.newSubmissionEmailTemplate,
         data: {
           formId: form.id,
           messageSubject: formTitle,

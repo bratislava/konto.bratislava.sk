@@ -199,6 +199,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -215,6 +216,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -231,6 +233,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -247,6 +250,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: docisteniStanovistaZbernychNadobExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -263,6 +267,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -279,6 +284,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: koloTaxiExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -295,6 +301,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: oloTaxiExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -311,6 +318,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: podnetyAPochvalyObcanovExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -327,6 +335,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: odvozObjemnehoOdpaduValnikomExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -343,6 +352,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   {
     type: FormDefinitionType.Email,
@@ -359,9 +369,9 @@ export const formDefinitions: FormDefinition[] = [
     extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
     sendEmailFunction: 'sendOloEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   // TODO extract email and name
-  // TODO maybe add the email to secret
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-zakresu-sieti',
@@ -377,6 +387,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -393,6 +404,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -409,6 +421,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
   },
   {
     type: FormDefinitionType.Email,
@@ -425,6 +438,7 @@ export const formDefinitions: FormDefinition[] = [
     extractName: zevoExtractName, // TODO
     sendEmailFunction: 'sendEmail',
     userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

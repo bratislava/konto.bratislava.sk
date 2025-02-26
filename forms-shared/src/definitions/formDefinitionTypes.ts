@@ -56,8 +56,9 @@ export type FormDefinitionSlovenskoSk =
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   sendEmailFunction: 'sendOloEmail' | 'sendEmail'
-  userEmailTemplate: MailgunTemplateEnum
   email: string
+  newSubmissionEmailTemplate: MailgunTemplateEnum
+  userEmailTemplate: MailgunTemplateEnum
   extractEmail: (formData: GenericObjectType) => string | undefined
   extractName?: (formData: GenericObjectType) => string | undefined
 }

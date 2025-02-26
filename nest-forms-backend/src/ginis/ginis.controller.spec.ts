@@ -6,7 +6,7 @@ import { AxiosError } from 'axios'
 import { mockGinisDocumentData } from '../__tests__/ginisContants'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FormsService from '../forms/forms.service'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
+import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisController from './ginis.controller'
 import GinisAPIService from './subservices/ginis-api.service'
@@ -50,7 +50,7 @@ describe('GinisController', () => {
       try {
         await controller.getGinisDocumentByFormId('123', undefined, {
           ico: 'ico1',
-        } as ResponseGdprDataDto)
+        } as UserInfoResponse)
       } catch (error) {
         expect(spy).toHaveBeenLastCalledWith('123', null, 'ico1')
       }

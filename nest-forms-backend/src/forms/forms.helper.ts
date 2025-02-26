@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Forms, FormState } from '@prisma/client'
 
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import { EDITABLE_ERRORS } from '../utils/constants'
+import { UserInfoResponse } from '../utils/decorators/request.decorator'
 
 @Injectable()
 export default class FormsHelper {
@@ -56,7 +56,7 @@ export default class FormsHelper {
   userCanSendForm(
     form: Forms,
     allowSendingUnauthenticatedUsers: boolean,
-    userInfo?: ResponseGdprDataDto,
+    userInfo?: UserInfoResponse,
     userSub?: string,
   ): boolean {
     // If owned by company, it must have the same ICO

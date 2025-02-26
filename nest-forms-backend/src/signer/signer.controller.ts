@@ -21,8 +21,11 @@ import {
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import {
+  User,
+  UserInfo,
+  UserInfoResponse,
+} from '../utils/decorators/request.decorator'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import { XmlValidationErrorDto } from './signer.errors.dto'
 import SignerService from './signer.service'
@@ -80,7 +83,7 @@ export default class SignerController {
   async getSignerData(
     @Body() data: SignerDataRequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<SignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {

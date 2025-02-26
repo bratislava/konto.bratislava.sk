@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
+import { UserInfoResponse } from '../utils/decorators/request.decorator'
 // import { Forms } from '@prisma/client'
 import FormsHelper from './forms.helper'
 
@@ -55,13 +55,13 @@ describe('FormsHelper', () => {
   describe('userCanSendForm', () => {
     it('should return true when form is owned by company and ICO matches', () => {
       const form = { ico: '12345' } as Forms
-      const userInfo = { ico: '12345' } as ResponseGdprDataDto
+      const userInfo = { ico: '12345' } as UserInfoResponse
       expect(helper.userCanSendForm(form, false, userInfo)).toBe(true)
     })
 
     it('should return false when form is owned by company and ICO does not match', () => {
       const form = { ico: '12345' } as Forms
-      const userInfo = { ico: '67890' } as ResponseGdprDataDto
+      const userInfo = { ico: '67890' } as UserInfoResponse
       expect(helper.userCanSendForm(form, false, userInfo)).toBe(false)
     })
 

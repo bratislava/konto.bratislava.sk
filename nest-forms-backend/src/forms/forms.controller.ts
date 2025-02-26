@@ -14,8 +14,11 @@ import { getSchemaPath } from '@nestjs/swagger/dist/utils'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import {
+  User,
+  UserInfo,
+  UserInfoResponse,
+} from '../utils/decorators/request.decorator'
 import { BumpJsonVersionResponseDto } from './dtos/forms.responses.dto'
 import {
   FormDefinitionNotFoundErrorDto,
@@ -75,7 +78,7 @@ export default class FormsController {
   async bumpJsonVersion(
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<BumpJsonVersionResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       id,

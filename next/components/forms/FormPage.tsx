@@ -4,7 +4,6 @@ import React from 'react'
 
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormContent from './FormContent'
-import FormProviders from './FormProviders'
 import FormVersionCompareAction from './FormVersionCompareAction'
 import IframeResizerChild from './IframeResizerChild'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
@@ -25,11 +24,7 @@ const FormStateRouter = () => {
     return <FormVersionCompareAction />
   }
 
-  return (
-    <FormProviders>
-      <FormContent />
-    </FormProviders>
-  )
+  return <FormContent />
 }
 
 const FormLayoutContainer = () => {

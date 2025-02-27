@@ -33,6 +33,12 @@ jobs:
           npm install
           npm run build
 
+      - name: Build openapi-clients
+        working-directory: openapi-clients
+        run: |
+          npm install
+          npm run build
+
       - name: Install and build application
         working-directory: next
         run: |
@@ -43,7 +49,7 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          wait-on: "http://localhost:3000"
+          wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           working-directory: tests
           command: npm run cypress:ci

@@ -1,11 +1,12 @@
 import { cityAccountApi } from '@clients/city-account'
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
+  ResponseLegalPersonDataDto,
   ResponseUserDataDto,
-} from '@clients/openapi-city-account'
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
+} from 'openapi-clients/city-account'
 
 const userQueryKey = ['user']
 
@@ -31,7 +32,7 @@ export const useUser = () => {
     queryFn: () =>
       cityAccountApi
         .userControllerGetOrCreateUser({ accessToken: 'always' })
-        .then((response) => response.data),
+        .then((response) => response.data as ResponseLegalPersonDataDto & ResponseUserDataDto),
     staleTime: Infinity,
   })
 
@@ -62,6 +63,7 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
     AxiosError,
     boolean
   >({
+    // @ts-ignore
     mutationFn: (subscribe) => {
       const endpoint = subscribe
         ? cityAccountApi.userControllerSubscribeLoggedUser

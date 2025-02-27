@@ -42,7 +42,7 @@
     "@types/react-dom": "19.0.4"
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "1.4.2",
+    "@aws-amplify/adapter-nextjs": "1.5.2",
     "@grafana/faro-core": "^1.0.5",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
@@ -62,7 +62,7 @@
     "@types/uuid": "^9.0.1",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
-    "aws-amplify": "6.12.2",
+    "aws-amplify": "6.13.2",
     "axios": "1.7.9",
     "classnames": "2.5.1",
     "copy-webpack-plugin": "^12.0.2",

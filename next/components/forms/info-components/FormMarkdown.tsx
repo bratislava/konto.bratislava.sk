@@ -58,7 +58,6 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
         ],
       ]}
       components={{
-        // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
         'form-image-preview': ({ children: childrenInner, node }) => {
           return (
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

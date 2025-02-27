@@ -129,6 +129,7 @@ describe('EmailFormsSubservice', () => {
       slug: 'test-form-email',
       type: FormDefinitionType.Email,
       email: 'department@bratislava.sk',
+      emailFrom: undefined, // Tests the fallback to email
       title: { sk: 'Test Form Email', en: 'Test Form Email' },
       sendEmailFunction: 'sendEmail',
       newSubmissionEmailTemplate: 'new-submission-template',
@@ -138,12 +139,14 @@ describe('EmailFormsSubservice', () => {
       schema: {
         uiOptions: {},
       },
+      sendJsonData: true,
     } as unknown as FormDefinitionEmail
 
     const mockFormDefinitionWithSendOloEmail = {
       slug: 'test-form-olo',
       type: FormDefinitionType.Email,
       email: 'olo@bratislava.sk',
+      emailFrom: 'from-olo@bratislava.sk', // Test with specified emailFrom
       title: { sk: 'Test Form OLO', en: 'Test Form OLO' },
       sendEmailFunction: 'sendOloEmail',
       newSubmissionEmailTemplate: 'olo-submission-template',
@@ -153,6 +156,7 @@ describe('EmailFormsSubservice', () => {
       schema: {
         uiOptions: {},
       },
+      // No sendJsonData specified, to test undefined behavior
     } as unknown as FormDefinitionEmail
 
     beforeEach(() => {
@@ -209,7 +213,13 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
+        expect.arrayContaining([
+          expect.objectContaining({
+            filename: 'submission.json',
+            content: expect.any(Buffer),
+          }),
+        ])
       )
 
       // Should send confirmation email to user
@@ -224,7 +234,7 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -283,7 +293,8 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email,
+        mockFormDefinitionWithSendOloEmail.emailFrom ?? mockFormDefinitionWithSendOloEmail.email,
+        undefined
       )
 
       // Should send confirmation email to user using sendOloEmail
@@ -298,7 +309,7 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email,
+        mockFormDefinitionWithSendOloEmail.emailFrom ?? mockFormDefinitionWithSendOloEmail.email,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -411,7 +422,7 @@ describe('EmailFormsSubservice', () => {
             firstName: 'Extracted Name',
           }),
         }),
-        mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
         expect.any(Array),
       )
     })
@@ -427,7 +438,7 @@ describe('EmailFormsSubservice', () => {
             firstName: null,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
         expect.any(Array),
       )
     })
@@ -503,6 +514,61 @@ describe('EmailFormsSubservice', () => {
       expect(errorSpy).toHaveBeenCalled()
       // Should still update form state
       expect(prismaMock.forms.update).toHaveBeenCalled()
+    })
+    
+    it('should send JSON data as attachment when sendJsonData is true', async () => {
+      await service.sendEmailForm(formId, userEmail, userFirstName)
+
+      // First call (department email) should include JSON attachment
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        expect.anything(),
+        expect.arrayContaining([
+          expect.objectContaining({
+            filename: 'submission.json',
+            content: expect.any(Buffer),
+          }),
+        ]),
+      )
+    })
+    
+    it('should not send JSON data as attachment when sendJsonData is undefined', async () => {
+      prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
+      prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
+
+      await service.sendEmailForm(
+        mockFormWithOloDefinition.id,
+        userEmail,
+        userFirstName,
+      )
+
+      // First call (department email) should not include JSON attachment as sendJsonData is undefined
+      expect(mailgunService.sendOloEmail).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        expect.anything(),
+        undefined,
+      )
+    })
+    
+    it('should not send JSON data as attachment when sendJsonData is false', async () => {
+      // Temporarily set sendJsonData to false for this test
+      const originalSendJsonData = mockFormDefinitionWithSendEmail.sendJsonData;
+      mockFormDefinitionWithSendEmail.sendJsonData = false;
+      
+      await service.sendEmailForm(formId, userEmail, userFirstName)
+
+      // First call (department email) should not include JSON attachment
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
+        1,
+        expect.anything(),
+        expect.anything(),
+        undefined,
+      )
+      
+      // Restore original value
+      mockFormDefinitionWithSendEmail.sendJsonData = originalSendJsonData;
     })
 
     it('should log error but continue when updating form state fails', async () => {

@@ -373,6 +373,7 @@ export const formDefinitions: FormDefinition[] = [
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
   },
   // TODO extract email and name
+  // TODO set from email to @bratislava.sk
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-zakresu-sieti',
@@ -387,8 +388,9 @@ export const formDefinitions: FormDefinition[] = [
     extractEmail: tsbExtractEmail,
     extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
-    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+    sendJsonData: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -404,8 +406,9 @@ export const formDefinitions: FormDefinition[] = [
     extractEmail: tsbExtractEmail,
     extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
-    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+    sendJsonData: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -421,8 +424,9 @@ export const formDefinitions: FormDefinition[] = [
     extractEmail: tsbExtractEmail,
     extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
-    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+    sendJsonData: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -438,8 +442,9 @@ export const formDefinitions: FormDefinition[] = [
     extractEmail: tsbExtractEmail,
     extractName: tsbExtractName,
     sendEmailFunction: 'sendEmail',
-    userEmailTemplate: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS, // TODO
+    userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
     newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+    sendJsonData: true,
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,

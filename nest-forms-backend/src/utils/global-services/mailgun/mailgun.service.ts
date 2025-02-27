@@ -114,18 +114,27 @@ export default class MailgunService {
     return response
   }
 
-  async sendEmail(data: SendEmailInputDto): Promise<void> {
+  async sendEmail(
+    data: SendEmailInputDto,
+    emailFrom?: string,
+    attachments?: nodemailer.SendMailOptions['attachments'],
+  ): Promise<void> {
+    const mailgunAttachments = attachments?.map((attachment) => ({
+      data: attachment.content,
+      filename: attachment.filename,
+    }))
     try {
       const mailgunResponse = await this.mailgunClient.messages.create(
         process.env.MAILGUN_DOMAIN!,
         {
-          from: process.env.MAILGUN_EMAIL_FROM!,
+          from: emailFrom ?? process.env.MAILGUN_EMAIL_FROM!,
           to: data.to,
           template: MAILGUN_CONFIG[data.template].template,
           subject: MAILGUN_CONFIG[data.template].subject,
           'h:X-Mailgun-Variables': JSON.stringify(
             this.createEmailVariables(data),
           ),
+          attachment: mailgunAttachments,
         },
       )
       if (mailgunResponse.status !== 200)

@@ -1,5 +1,7 @@
 ARG FORMS_SHARED_TAG=latest
+ARG OPENAPI_CLIENTS_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${OPENAPI_CLIENTS_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 
 # used as app-base in prodution and development image
@@ -23,6 +25,8 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 FROM base AS build-base
 WORKDIR /forms-shared
 COPY --from=shared /app/ ./
+WORKDIR /openapi-clients
+COPY --from=openapi-clients /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 

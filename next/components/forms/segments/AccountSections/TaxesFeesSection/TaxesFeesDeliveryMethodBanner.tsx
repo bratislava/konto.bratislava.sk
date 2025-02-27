@@ -1,5 +1,5 @@
 import BannerTax from '@assets/images/banner-dane.png'
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'

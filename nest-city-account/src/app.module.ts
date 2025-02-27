@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { VerificationModule } from './user-verification/verification.module'
 import { UserModule } from './user/user.module'
-import { AppLoggerMiddleware } from './utils/middlewares/logger.service'
+import AppLoggerMiddleware from './utils/middlewares/logger.service'
 
 @Module({
   imports: [PrismaModule, AuthModule, UserModule, VerificationModule, AdminModule, ScheduleModule.forRoot()],

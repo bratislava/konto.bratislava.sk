@@ -9,7 +9,6 @@ import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertService from './convert.service'
 
 describe('ConvertService', () => {
@@ -39,10 +38,6 @@ describe('ConvertService', () => {
           useValue: createMock<FormsService>(),
         },
         { provide: PrismaService, useValue: prismaMock },
-        {
-          provide: MinioClientSubservice,
-          useValue: createMock<MinioClientSubservice>(),
-        },
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),

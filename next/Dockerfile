@@ -1,5 +1,3 @@
-ARG FORMS_SHARED_TAG=latest
-ARG OPENAPI_CLIENTS_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM harbor.bratislava.sk/standalone/openapi-clients:${OPENAPI_CLIENTS_TAG} as openapi-clients
 FROM node:20.9-alpine AS base

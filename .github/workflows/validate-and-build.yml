@@ -39,9 +39,24 @@ jobs:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
+  # New job to check OpenAPI clients
+  check-openapi-clients:
+    name: Check OpenAPI clients for changes
+    needs: build-openapi-clients
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run OpenAPI client check
+        working-directory: openapi-clients
+        run: |
+          docker build -f Dockerfile.check -t openapi-check .
+          docker run openapi-check
+        continue-on-error: true
+
   conditions:
     name: Check for conditions
-    needs: [test-forms-shared, build-forms-shared, build-openapi-clients]
+    needs: [test-forms-shared, build-forms-shared, build-openapi-clients, check-openapi-clients]
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@marektest
     permissions: write-all
 

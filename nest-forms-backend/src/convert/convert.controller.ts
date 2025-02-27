@@ -31,8 +31,11 @@ import {
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import {
+  User,
+  UserInfo,
+  UserInfoResponse,
+} from '../utils/decorators/request.decorator'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
@@ -104,7 +107,7 @@ export default class ConvertController {
   async convertJsonToXmlV2(
     @Body() data: JsonToXmlV2RequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<string> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
@@ -178,7 +181,7 @@ export default class ConvertController {
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<XmlToJsonResponseDto> {
     return this.convertService.convertXmlToJson(
       data,
@@ -232,7 +235,7 @@ export default class ConvertController {
     @Res({ passthrough: true }) res: Response,
     @Body() data: ConvertToPdfRequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<StreamableFile> {
     return this.convertService.convertToPdf(
       data,

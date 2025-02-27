@@ -50,6 +50,7 @@ import {
   BearerToken,
   User,
   UserInfo,
+  UserInfoResponse,
 } from '../utils/decorators/request.decorator'
 import {
   DatabaseErrorDto,
@@ -76,7 +77,6 @@ import {
   CanSendResponseDto,
   CreateFormResponseDto,
   MigrateFormResponseDto,
-  ResponseGdprDataDto,
 } from './dtos/responses.dto'
 import {
   ForbiddenFormSendDto,
@@ -143,7 +143,7 @@ export default class NasesController {
   async getForm(
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<GetFormResponseDto> {
     const data = await this.nasesService.getForm(
       id,
@@ -183,7 +183,7 @@ export default class NasesController {
   @Get('forms')
   async getForms(
     @User() user: CognitoGetUserData,
-    @UserInfo() userInfo: ResponseGdprDataDto,
+    @UserInfo() userInfo: UserInfoResponse,
     @Query() query: GetFormsRequestDto,
   ): Promise<GetFormsResponseDto> {
     const data = await this.nasesService.getForms(
@@ -228,7 +228,7 @@ export default class NasesController {
   async deleteForm(
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<FormDeleteResponseDto> {
     await this.formsService.archiveForm(
       id,
@@ -273,7 +273,7 @@ export default class NasesController {
   async createForm(
     @Body() data: CreateFormRequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<CreateFormResponseDto> {
     const returnData = await this.nasesService.createForm(
       data,
@@ -339,7 +339,7 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<Forms> {
     const returnData = await this.nasesService.updateForm(
       id,
@@ -541,7 +541,7 @@ export default class NasesController {
   @Post('send-form/:id')
   async sendForm(
     @Param('id') id: string,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const data = await this.nasesService.sendForm(id, userInfo, user)
@@ -753,7 +753,7 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<SendFormResponseDto> {
     await this.nasesService.updateForm(id, data, userInfo?.ico ?? null, user)
 
@@ -858,7 +858,7 @@ export default class NasesController {
     @Body() data: EidUpdateSendFormRequestDto,
     @Param('id') id: string,
     @User() cognitoUser?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
     @BearerToken() bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
@@ -926,7 +926,7 @@ export default class NasesController {
   async migrateForm(
     @User() user: CognitoGetUserData,
     @Param('id') id: string,
-    @UserInfo() userInfo: ResponseGdprDataDto,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<MigrateFormResponseDto> {
     await this.nasesService.migrateForm(id, user, userInfo.ico ?? null)
     return {

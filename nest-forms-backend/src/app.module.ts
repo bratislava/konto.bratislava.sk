@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
+import { validate } from 'env.validation'
 import { MinioModule } from 'nestjs-minio-client'
 
 import AdminModule from './admin/admin.module'
@@ -27,7 +28,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ validate, isGlobal: true }),
     MinioModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],

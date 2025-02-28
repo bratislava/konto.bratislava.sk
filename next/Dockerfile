@@ -4,6 +4,7 @@ RUN if [ -z "$SHARED_PACKAGE_TAG" ]; then \
     fi \
 
 FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 
 # used as app-base in prodution and development image
@@ -27,6 +28,8 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 FROM base AS build-base
 WORKDIR /forms-shared
 COPY --from=forms-shared /app/ ./
+WORKDIR /openapi-clients
+COPY --from=openapi-clients /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 

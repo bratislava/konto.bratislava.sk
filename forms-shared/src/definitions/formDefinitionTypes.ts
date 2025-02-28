@@ -1,3 +1,4 @@
+import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
 import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
 
@@ -54,7 +55,12 @@ export type FormDefinitionSlovenskoSk =
 
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
+  sendEmailFunction: 'sendOloEmail' | 'sendEmail'
   email: string
+  emailFrom?: string // If undefined, the `email` is used.
+  newSubmissionEmailTemplate: MailgunTemplateEnum
+  userEmailTemplate: MailgunTemplateEnum
+  sendJsonData?: boolean
   extractEmail: (formData: GenericObjectType) => string | undefined
   extractName?: (formData: GenericObjectType) => string | undefined
 }

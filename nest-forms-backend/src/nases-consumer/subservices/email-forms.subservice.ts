@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
-import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionEmail,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
 
 import ConvertService from '../../convert/convert.service'
@@ -13,7 +17,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
-import { MailgunTemplateEnum } from '../../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
@@ -23,6 +26,7 @@ import {
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
+import { EmailFormChecked, isEmailFormChecked } from '../../utils/types/prisma'
 import {
   EmailFormsErrorsEnum,
   EmailFormsErrorsResponseEnum,
@@ -43,12 +47,12 @@ export default class EmailFormsSubservice {
     this.logger = new LineLoggerSubservice('EmailFormsSubservice')
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  async sendEmailForm(
+  /**
+   * Retrieves a form by its ID, validates it, and ensures it's an email form.
+   */
+  private async getValidatedEmailForm(
     formId: string,
-    userEmail: string | null,
-    userFirstName: string | null,
-  ): Promise<void> {
+  ): Promise<{ form: EmailFormChecked; formDefinition: FormDefinitionEmail }> {
     const form = await this.prismaService.forms.findUnique({
       where: {
         id: formId,
@@ -58,6 +62,7 @@ export default class EmailFormsSubservice {
         files: true,
       },
     })
+
     if (form === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
@@ -83,14 +88,6 @@ export default class EmailFormsSubservice {
       )
     }
 
-    this.logger.log(
-      `Sending email of form ${formId} to ${formDefinition.email}`,
-    )
-
-    const formTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-
     if (form.formDataJson == null) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.EMPTY_FORM_DATA,
@@ -105,13 +102,151 @@ export default class EmailFormsSubservice {
       )
     }
 
+    if (!isEmailFormChecked(form)) {
+      // TODO better error
+      throw new Error('Form validation failed')
+    }
+
+    return { form: form as EmailFormChecked, formDefinition }
+  }
+
+  /**
+   * Creates JSON data attachment for the email if sendJsonData is enabled
+   */
+  private createJsonAttachment(
+    formDefinition: FormDefinitionEmail,
+    formDataJson: any,
+  ): { filename: string; content: Buffer }[] {
+    return [
+      {
+        filename: 'submission.json',
+        content: Buffer.from(
+          JSON.stringify(
+            omitExtraData(
+              formDefinition.schema,
+              formDataJson,
+              this.formValidatorRegistryService.getRegistry(),
+            ),
+          ),
+        ),
+      },
+    ]
+  }
+
+  /**
+   * Determines the name to use in the user confirmation email
+   */
+  private resolveUserName(
+    userFirstName: string | null,
+    formDefinition: FormDefinitionEmail,
+    formDataJson: any,
+  ): string | null {
+    if (userFirstName) {
+      return userFirstName
+    }
+
+    if (formDefinition.extractName) {
+      return formDefinition.extractName(formDataJson) ?? null
+    }
+
+    return null
+  }
+
+  /**
+   * Sends confirmation email to the user and handles errors
+   */
+  private async sendUserConfirmationEmail(
+    userEmail: string,
+    form: any,
+    formDefinition: FormDefinitionEmail,
+    formTitle: string,
+    userName: string | null,
+  ): Promise<void> {
+    try {
+      // Generate confirmation pdf
+      const file = await this.convertService.generatePdf(
+        form.formDataJson,
+        form.id,
+        formDefinition,
+      )
+
+      const attachments = [
+        {
+          filename: `potvrdenie.pdf`,
+          content: file,
+        },
+      ]
+
+      await this.mailgunService[formDefinition.sendEmailFunction](
+        {
+          to: userEmail,
+          template: formDefinition.userEmailTemplate,
+          data: {
+            formId: form.id,
+            messageSubject: formTitle,
+            firstName: userName,
+            slug: formDefinition.slug,
+          },
+        },
+        formDefinition.emailFrom ?? formDefinition.email,
+        attachments,
+      )
+    } catch (error) {
+      alertError(
+        `Sending confirmation email to ${userEmail} for form ${form.id} failed.`,
+        this.logger,
+        JSON.stringify(error),
+      )
+    }
+  }
+
+  /**
+   * Updates the form state to FINISHED
+   */
+  private async updateFormState(form: any): Promise<void> {
+    await this.prismaService.forms
+      .update({
+        where: {
+          id: form.id,
+        },
+        data: {
+          state: FormState.FINISHED,
+          error: FormError.NONE,
+        },
+      })
+      .catch((error) => {
+        alertError(
+          `Setting form state with id ${form.id} to FINISHED failed.`,
+          this.logger,
+          JSON.stringify(error),
+        )
+      })
+  }
+
+  async sendEmailForm(
+    formId: string,
+    userEmail: string | null,
+    userFirstName: string | null,
+  ): Promise<void> {
+    // Get and validate the form
+    const { form, formDefinition } = await this.getValidatedEmailForm(formId)
+
+    this.logger.log(
+      `Sending email of form ${formId} to ${formDefinition.email}`,
+    )
+
+    const formTitle =
+      getFrontendFormTitleFromForm(form, formDefinition) ||
+      getSubjectTextFromForm(form, formDefinition)
+
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
-    await this.mailgunService.sendOloEmail(
+    // Send email to the department/office
+    await this.mailgunService[formDefinition.sendEmailFunction](
       {
         to: formDefinition.email,
-        template: MailgunTemplateEnum.OLO_SEND_FORM,
+        template: formDefinition.newSubmissionEmailTemplate,
         data: {
           formId: form.id,
           messageSubject: formTitle,
@@ -125,59 +260,31 @@ export default class EmailFormsSubservice {
           }),
         },
       },
-      formDefinition.email,
+      formDefinition.emailFrom ?? formDefinition.email,
+      formDefinition.sendJsonData
+        ? this.createJsonAttachment(formDefinition, form.formDataJson)
+        : undefined,
     )
 
+    // Determine user email address for confirmation
     const userConfirmationEmail =
       userEmail ?? formDefinition.extractEmail(form.formDataJson)
 
-    // Send confirmation email to user
+    // Send confirmation email to user if we have an email address
     if (userConfirmationEmail) {
-      // Generate confirmation pdf and send to user.
-      const file = await this.convertService.generatePdf(
-        form.formDataJson,
-        form.id,
+      const userName = this.resolveUserName(
+        userFirstName,
         formDefinition,
+        form.formDataJson,
       )
-      const attachments = [
-        {
-          filename: `potvrdenie.pdf`,
-          content: file,
-        },
-      ]
-      const name = (() => {
-        if (userFirstName) {
-          return userFirstName
-        }
-        if (formDefinition.extractName) {
-          return formDefinition.extractName(form.formDataJson) ?? null
-        }
 
-        return null
-      })()
-
-      try {
-        await this.mailgunService.sendOloEmail(
-          {
-            to: userConfirmationEmail,
-            template: MailgunTemplateEnum.OLO_DELIVERED_SUCCESS,
-            data: {
-              formId: form.id,
-              messageSubject: formTitle,
-              firstName: name,
-              slug: formDefinition.slug,
-            },
-          },
-          formDefinition.email,
-          attachments,
-        )
-      } catch (error) {
-        alertError(
-          `Sending confirmation email to ${userConfirmationEmail} for form ${formId} failed.`,
-          this.logger,
-          JSON.stringify(error),
-        )
-      }
+      await this.sendUserConfirmationEmail(
+        userConfirmationEmail,
+        form,
+        formDefinition,
+        formTitle,
+        userName,
+      )
     } else {
       alertError(
         `No email address to send confirmation email to (toEmail) for form ${formId}.`,
@@ -185,22 +292,7 @@ export default class EmailFormsSubservice {
       )
     }
 
-    await this.prismaService.forms
-      .update({
-        where: {
-          id: form.id,
-        },
-        data: {
-          state: FormState.FINISHED,
-          error: FormError.NONE,
-        },
-      })
-      .catch((error) => {
-        alertError(
-          `Setting form state with id ${formId} to FINISHED failed.`,
-          this.logger,
-          JSON.stringify(error),
-        )
-      })
+    // Update form state to FINISHED
+    await this.updateFormState(form)
   }
 }

@@ -3,5 +3,3 @@
 yarn.lock
 package-lock.json
 .next
-
-backend/forms/*/form.*.sef.json

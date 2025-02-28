@@ -19,27 +19,29 @@
     "generate:clamav-scanner": "tsx scripts/generateClient.ts clamav-scanner",
     "generate:slovensko-sk": "tsx scripts/generateClient.ts slovensko-sk",
     "generate": "npm-run-all generate:*",
+    "check-for-changes": "tsx scripts/checkForChanges.ts",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
-    "check-changes": "tsx checkChanges.ts",
     "prettier": "prettier --write ."
-  },
-  "dependencies": {
-    "axios": "1.7.9",
-    "camelcase": "^8.0.0",
-    "prettier": "^3.5.2"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.16.3",
     "@types/diff": "^7.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.0.0",
+    "axios": "^1.8.1",
+    "camelcase": "^8.0.0",
     "chalk": "^5.4.1",
+    "commander": "^13.1.0",
     "diff": "^7.0.0",
     "fs-extra": "^11.3.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^3.5.2",
     "rimraf": "^5.0.0",
     "tsx": "^4.0.0",
     "typescript": "5.7.3"
+  },
+  "peerDependencies": {
+    "axios": "^1.8.1"
   },
   "engines": {
     "node": ">=20.9.x",

@@ -4,7 +4,7 @@ set -eo pipefail
 CVD_DIR="${CVD_DIR:=/mnt/cvdupdate}"
 
 # Configuration Functions
-check_config() {
+check_create_config() {
     if [ ! -e $CVD_DIR/config.json ]; then
         echo "Missing CVD configuration. Creating..."
         cvd config set --config $CVD_DIR/config.json --dbdir $CVD_DIR/database --logdir $CVD_DIR/logs
@@ -19,8 +19,6 @@ check_config() {
     else
       echo "$CVD_DIR/database folder found"
     fi
-
-
 }
 
 show_config() {
@@ -31,31 +29,26 @@ show_config() {
 }
 
 # CVD Database Functions
-check_database() {
-    if [ ! -e $CVD_DIR/database ]; then
-        echo "Missing CVD database directory. Attempting to update..."
-        check_config
-        show_config
-        update_database
-    else
-        echo "CVD database found..."
-    fi
+create_update_database() {
+    check_create_config
+    show_config
+    update_database
 }
 
 serve_database() {
-    if [ -e $CVD_DIR/database ]; then
-        echo "Hosting ClamAV Database..."
-        if [ -e /mnt/Caddyfile ]; then
-            echo "Using mounted Caddyfile config..."
-            exec caddy run --config /mnt/Caddyfile --adapter caddyfile
-        else
-            echo "Using provided Caddyfile config..."
-            # exec caddy file-server --listen :8080 --browse --root $CVD_DIR/database
-            exec caddy run --config ./Caddyfile --adapter caddyfile --resume
-        fi
-    else
+    if [ ! -e $CVD_DIR/database ]; then
         echo "CVD database is missing..."
         exit 1
+    fi
+
+    echo "Hosting ClamAV Database..."
+    if [ -e /mnt/Caddyfile ]; then
+        echo "Using mounted Caddyfile config..."
+        exec caddy run --config /mnt/Caddyfile --adapter caddyfile
+    else
+        echo "Using provided Caddyfile config..."
+        # exec caddy file-server --listen :8080 --browse --root $CVD_DIR/database
+        exec caddy run --config ./Caddyfile --adapter caddyfile --resume
     fi
 }
 
@@ -65,6 +58,16 @@ update_database() {
     echo "ClamAV Database updated..."
 }
 
+usage_fail() {
+    echo "Usage: $0 {status|serve|update}"
+    exit 1
+}
+
+# Argument Check
+if [ $# -ne 1 ]; then
+    usage_fail
+fi
+
 # Argument Handler
 case "$1" in
 status)
@@ -73,17 +76,16 @@ status)
 ;;
 
 serve)
-    check_database
+    create_update_database
+    /usr/sbin/crond -b -L /var/log/cron.log
     serve_database
 ;;
 
 update)
-    check_config
-    show_config
-    update_database
+    create_update_database
 ;;
 
 *)
-    echo "Usage: $0 {status|serve|update}"
-    exit 1
+    echo "Invalid option: $1"
+    usage_fail
 esac

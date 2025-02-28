@@ -47,22 +47,6 @@ spec:
             httpGet:
               path: /
               port: 8080
-        - image: ${IMAGE_TAG}
-          name: cron
-          imagePullPolicy: IfNotPresent
-          command: [ "/usr/sbin/crond" ]
-          args: [ "-f" ]
-          resources:
-            limits:
-              cpu: 100m
-              memory: 1Gi
-          volumeMounts:
-            - name: database
-              mountPath: /mnt/cvdupdate/
-              subPath: database
-          envFrom:
-            - configMapRef:
-                name: env
       imagePullSecrets:
         - name: ${IMAGE_PULL_SECRET}
 

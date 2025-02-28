@@ -1,5 +1,5 @@
-ARG FORMS_SHARED_TAG=latest
-FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
+ARG SHARED_PACKAGE_TAG=latest
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as shared
 FROM node:20.9 AS base
 
 RUN npx playwright install-deps chromium

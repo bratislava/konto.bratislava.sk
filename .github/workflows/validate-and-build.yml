@@ -49,7 +49,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       debug: --debug
       fetch-depth: 1
       build_image_no_registry: ''
@@ -85,7 +85,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=build-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=build-${{ github.sha }}"'
       fetch-depth: 1
       build_image_no_registry: ''
     secrets:
@@ -131,7 +131,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-tax-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.sha }}"'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}

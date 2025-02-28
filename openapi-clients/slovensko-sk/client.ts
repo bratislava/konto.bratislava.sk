@@ -21,6 +21,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type SlovenskoSkClient = ReturnType<typeof createSlovenskoSkClient>
+
 export const createSlovenskoSkClient = ({
   basePath,
   configurationParameters = {},

@@ -47,6 +47,7 @@
     "mime-types": "^2.1.35",
     "minio": "^7.1.3",
     "nestjs-minio-client": "^2.2.0",
+    "openapi-clients": "file:../openapi-clients",
     "passport-azure-ad": "^4.3.5",
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",

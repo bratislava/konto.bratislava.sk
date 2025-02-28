@@ -12,8 +12,16 @@ docker-compose up --build
 
 # Local installation
 
-- Run npm installation for dependencies
+1. Build required shared package:
+```bash
+# Build openapi-clients
+cd ../openapi-clients/
+npm install
+npm run build
+cd ../nest-tax-backend/
+```
 
+2. Install dependencies:
 ```bash
 npm install
 ```

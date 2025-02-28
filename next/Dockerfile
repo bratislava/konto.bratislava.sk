@@ -3,7 +3,7 @@ RUN if [ -z "$SHARED_PACKAGE_TAG" ]; then \
       echo "ERROR: SHARED_PACKAGE_TAG build argument is required" && exit 1; \
     fi \
 
-FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as shared
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
 FROM node:20.9-alpine AS base
 
 # used as app-base in prodution and development image
@@ -26,7 +26,7 @@ ENTRYPOINT [ "/sbin/tini", "--" ]
 # used for build-base for building only
 FROM base AS build-base
 WORKDIR /forms-shared
-COPY --from=shared /app/ ./
+COPY --from=forms-shared /app/ ./
 WORKDIR /build
 COPY ./package.json ./package-lock.json ./
 

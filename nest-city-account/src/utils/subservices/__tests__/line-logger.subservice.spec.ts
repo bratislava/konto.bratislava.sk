@@ -1,4 +1,4 @@
-import { LineLoggerSubservice } from './line-logger.subservice'
+import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {
   let service: any // Changed from LineLoggerService

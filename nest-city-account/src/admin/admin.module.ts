@@ -10,6 +10,7 @@ import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AdminCronSubservice } from './subservices/admin-cron.subservice'
     AdminStrategy,
     CognitoSubservice,
     AdminCronSubservice,
+    TaxSubservice,
   ],
   exports: [],
   controllers: [AdminController],

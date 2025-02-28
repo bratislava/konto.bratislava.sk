@@ -18,6 +18,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type FormsClient = ReturnType<typeof createFormsClient>
+
 export const createFormsClient = ({
   basePath,
   configurationParameters = {},

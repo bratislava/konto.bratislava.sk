@@ -8,6 +8,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type TaxClient = ReturnType<typeof createTaxClient>
+
 export const createTaxClient = ({
   basePath,
   configurationParameters = {},

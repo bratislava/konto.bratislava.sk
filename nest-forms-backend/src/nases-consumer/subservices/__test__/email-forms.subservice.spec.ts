@@ -3,6 +3,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionEmail,
   FormDefinitionSlovenskoSkGeneric,
@@ -10,6 +11,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 
 import prismaMock from '../../../../test/singleton'
@@ -113,51 +115,58 @@ describe('EmailFormsSubservice', () => {
       recipientId: null,
       finishSubmission: null,
       formDefinitionSlug: 'test-form-email',
-      formSummary: { test: 'summary' },
+      formSummary: { test: 'summary' } as unknown as FormSummary,
       files: [],
       archived: false,
       ginisState: 'CREATED',
-    } as unknown as Forms
+      formDataBase64: null,
+    } as Forms
 
     const mockFormWithOloDefinition = {
       ...mockForm,
       id: 'test-form-olo-id',
       formDefinitionSlug: 'test-form-olo',
-    } as unknown as Forms
+    } as Forms
 
     const mockFormDefinitionWithSendEmail = {
       slug: 'test-form-email',
       type: FormDefinitionType.Email,
       email: 'department@bratislava.sk',
       emailFrom: undefined, // Tests the fallback to email
-      title: { sk: 'Test Form Email', en: 'Test Form Email' },
+      title: 'Test Form Email',
       sendEmailFunction: 'sendEmail',
-      newSubmissionEmailTemplate: 'new-submission-template',
-      userEmailTemplate: 'user-confirmation-template',
+      newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+      userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
       extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
       extractName: jest.fn().mockReturnValue('Extracted Name'),
       schema: {
         uiOptions: {},
       },
       sendJsonData: true,
-    } as unknown as FormDefinitionEmail
+      jsonVersion: '1.0',
+      termsAndConditions: 'test-terms',
+      messageSubjectDefault: 'Test Subject',
+    } as FormDefinitionEmail
 
     const mockFormDefinitionWithSendOloEmail = {
       slug: 'test-form-olo',
       type: FormDefinitionType.Email,
       email: 'olo@bratislava.sk',
       emailFrom: 'from-olo@bratislava.sk', // Test with specified emailFrom
-      title: { sk: 'Test Form OLO', en: 'Test Form OLO' },
+      title: 'Test Form Email',
       sendEmailFunction: 'sendOloEmail',
-      newSubmissionEmailTemplate: 'olo-submission-template',
-      userEmailTemplate: 'olo-user-template',
+      newSubmissionEmailTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+      userEmailTemplate: MailgunTemplateEnum.NASES_SENT,
       extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
       extractName: jest.fn().mockReturnValue('Extracted OLO Name'),
       schema: {
         uiOptions: {},
       },
       // No sendJsonData specified, to test undefined behavior
-    } as unknown as FormDefinitionEmail
+      jsonVersion: '1.0',
+      termsAndConditions: 'test-terms',
+      messageSubjectDefault: 'Test Subject',
+    } as FormDefinitionEmail
 
     beforeEach(() => {
       jest.clearAllMocks()
@@ -213,13 +222,14 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ??
+          mockFormDefinitionWithSendEmail.email,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'submission.json',
             content: expect.any(Buffer),
           }),
-        ])
+        ]),
       )
 
       // Should send confirmation email to user
@@ -234,7 +244,8 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ??
+          mockFormDefinitionWithSendEmail.email,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -293,8 +304,10 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.emailFrom ?? mockFormDefinitionWithSendOloEmail.email,
-        undefined
+        mockFormDefinitionWithSendOloEmail.emailFrom ??
+          mockFormDefinitionWithSendOloEmail.email,
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        undefined,
       )
 
       // Should send confirmation email to user using sendOloEmail
@@ -309,7 +322,8 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.emailFrom ?? mockFormDefinitionWithSendOloEmail.email,
+        mockFormDefinitionWithSendOloEmail.emailFrom ??
+          mockFormDefinitionWithSendOloEmail.email,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -350,7 +364,6 @@ describe('EmailFormsSubservice', () => {
       const nonEmailFormDefinition = {
         ...mockFormDefinitionWithSendEmail,
         type: FormDefinitionType.SlovenskoSkGeneric,
-        email: null,
       }
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
@@ -422,7 +435,8 @@ describe('EmailFormsSubservice', () => {
             firstName: 'Extracted Name',
           }),
         }),
-        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ??
+          mockFormDefinitionWithSendEmail.email,
         expect.any(Array),
       )
     })
@@ -438,7 +452,8 @@ describe('EmailFormsSubservice', () => {
             firstName: null,
           }),
         }),
-        mockFormDefinitionWithSendEmail.emailFrom ?? mockFormDefinitionWithSendEmail.email,
+        mockFormDefinitionWithSendEmail.emailFrom ??
+          mockFormDefinitionWithSendEmail.email,
         expect.any(Array),
       )
     })
@@ -515,7 +530,7 @@ describe('EmailFormsSubservice', () => {
       // Should still update form state
       expect(prismaMock.forms.update).toHaveBeenCalled()
     })
-    
+
     it('should send JSON data as attachment when sendJsonData is true', async () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
@@ -532,7 +547,7 @@ describe('EmailFormsSubservice', () => {
         ]),
       )
     })
-    
+
     it('should not send JSON data as attachment when sendJsonData is undefined', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
       prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
@@ -548,15 +563,16 @@ describe('EmailFormsSubservice', () => {
         1,
         expect.anything(),
         expect.anything(),
+        // eslint-disable-next-line unicorn/no-useless-undefined
         undefined,
       )
     })
-    
+
     it('should not send JSON data as attachment when sendJsonData is false', async () => {
       // Temporarily set sendJsonData to false for this test
-      const originalSendJsonData = mockFormDefinitionWithSendEmail.sendJsonData;
-      mockFormDefinitionWithSendEmail.sendJsonData = false;
-      
+      const originalSendJsonData = mockFormDefinitionWithSendEmail.sendJsonData
+      mockFormDefinitionWithSendEmail.sendJsonData = false
+
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       // First call (department email) should not include JSON attachment
@@ -564,11 +580,12 @@ describe('EmailFormsSubservice', () => {
         1,
         expect.anything(),
         expect.anything(),
+        // eslint-disable-next-line unicorn/no-useless-undefined
         undefined,
       )
-      
+
       // Restore original value
-      mockFormDefinitionWithSendEmail.sendJsonData = originalSendJsonData;
+      mockFormDefinitionWithSendEmail.sendJsonData = originalSendJsonData
     })
 
     it('should log error but continue when updating form state fails', async () => {

@@ -17,6 +17,7 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import { getFileIdsToInfoMap } from '../../utils/files'
+import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import MailgunService from '../../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import {
@@ -103,11 +104,13 @@ export default class EmailFormsSubservice {
     }
 
     if (!isEmailFormChecked(form)) {
-      // TODO better error
-      throw new Error('Form validation failed')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        EmailFormsErrorsResponseEnum.NOT_EMAIL_FORM_AFTER_CHECK,
+      )
     }
 
-    return { form: form as EmailFormChecked, formDefinition }
+    return { form, formDefinition }
   }
 
   /**

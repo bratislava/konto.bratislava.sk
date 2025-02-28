@@ -129,7 +129,14 @@ export class DeactivateAccountResponseDto {
     enum: AnonymizeResponse,
   })
   @IsEnum(AnonymizeResponse)
-  bloomreachRemovedStatus!: AnonymizeResponse
+  bloomreachRemoved!: AnonymizeResponse
+
+  @ApiProperty({
+    description: 'Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.',
+    example: true,
+  })
+  @IsBoolean()
+  taxDeliveryMethodsRemoved!: boolean
 }
 
 export class VerificationDataForUser {

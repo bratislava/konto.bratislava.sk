@@ -1,3 +1,5 @@
+ARG SHARED_PACKAGE_TAG
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 ENV NODE_ENV=production
 
@@ -18,6 +20,10 @@ RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
 
 FROM build-base AS build
+WORKDIR /root/openapi-clients
+COPY --from=openapi-clients /app/ ./
+
+WORKDIR /build
 COPY --chown=node:node . ./
 RUN npm run build \
  && npm prune --production
@@ -29,6 +35,15 @@ CMD [ "npm", "run", "start:debug" ]
 
 # production
 FROM app-base AS prod
+# When copying from build, it copies symlink in node_modules to ../../openapi-clients and expects the original directory
+# to be present.
+# TODO: Find a way how to use --install-links flag in npm install to avoid this.
+RUN mkdir -p /home/node/openapi-clients && chown -R node:node /home/node/openapi-clients
+
+WORKDIR /home/node/openapi-clients
+COPY --chown=node:node --from=openapi-clients /app/ ./
+
+WORKDIR /home/node/app
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
 COPY --chown=node:node --from=build /build/dist ./dist

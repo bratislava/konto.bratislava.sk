@@ -4,6 +4,7 @@ RUN if [ -z "$SHARED_PACKAGE_TAG" ]; then \
     fi
 
 FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9 AS base
 
 RUN npx playwright install-deps chromium
@@ -12,6 +13,9 @@ RUN npx playwright install-deps chromium
 FROM base AS build
 WORKDIR /root/forms-shared
 COPY --from=forms-shared /app/ ./
+
+WORKDIR /root/openapi-clients
+COPY --from=openapi-clients /app/ ./
 
 WORKDIR /root/nest-forms-backend
 COPY package*.json ./
@@ -45,14 +49,18 @@ FROM base AS prod
 
 USER node
 
-# When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
+# When copying from build, it copies symlink in node_modules to ../../forms-shared and ../../openapi-clients and expects the original directories
 # to be present.
 # TODO: Find a way how to use --install-links flag in npm install to avoid this.
 RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
+RUN mkdir -p /home/node/openapi-clients && chown -R node:node /home/node/openapi-clients
+
 WORKDIR /home/node/forms-shared
 COPY --chown=node:node --from=forms-shared /app/ ./
 
-RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+WORKDIR /home/node/openapi-clients
+COPY --chown=node:node --from=openapi-clients /app/ ./
+
 WORKDIR /home/node/app
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./

@@ -33,6 +33,12 @@ jobs:
           npm install
           npm run build
 
+      - name: Build openapi-clients
+        working-directory: openapi-clients
+        run: |
+          npm install
+          npm run build
+
       - name: Install and build application
         working-directory: next
         run: |

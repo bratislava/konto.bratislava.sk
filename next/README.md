@@ -6,10 +6,23 @@ This readme should get you up & running. For more detailed documentation, check 
 
 You need `node` and `npm` installed locally.
 
-To install dependencies run:
+To install dependencies and build required packages:
 
-```
+```bash
+# Build required shared packages
+cd ../forms-shared/
 npm install
+npm run build
+cd ../openapi-clients/
+npm install
+npm run build
+
+# Install dependencies
+cd ../next/
+npm install
+
+# Build the project
+npm run dev
 ```
 
 ### VSCode support
@@ -80,11 +93,13 @@ After removing a snackbar plugin, these overrides can be safely removed from pac
 ```
 
 ## `react-simple-snackbar` patched package
+
 Unfortunately, `react-transition-group` which is used by `react-simple-snackbar` uses `findDOMNode` that was removed in React 19.
 
-It allows bypassing this feature by providing [`nodeRef`](https://github.com/reactjs/react-transition-group/issues/559). However, the snackbar package doesn't implement it so we need to patch it. 
+It allows bypassing this feature by providing [`nodeRef`](https://github.com/reactjs/react-transition-group/issues/559). However, the snackbar package doesn't implement it so we need to patch it.
 
 The patch is built version of `react-simple-snackbar` with the following changes:
+
 ```
 diff --git a/src/Snackbar.js b/src/Snackbar.js
 --- a/src/Snackbar.js	(revision f1ea5e49cf59e6cdf834f6e8015f016ba6918f68)
@@ -94,11 +109,11 @@ diff --git a/src/Snackbar.js b/src/Snackbar.js
 +import React, { createContext, useState, useRef } from 'react'
  import { CSSTransition } from 'react-transition-group'
  import styles from './Snackbar.css'
- 
+
 @@ -61,6 +61,8 @@
      setOpen(false)
    }
- 
+
 +  const nodeRef = useRef(null)
 +
    // Returns the Provider that must wrap the application

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Forms, Prisma } from '@prisma/client'
 
 export type FormWithFiles = Prisma.FormsGetPayload<{
   include: {
@@ -17,3 +17,12 @@ export type FormWithSelectedProperties = Prisma.FormsGetPayload<{
     formDefinitionSlug: true
   }
 }>
+
+export type EmailFormChecked = FormWithFiles & {
+  formSummary: NonNullable<Forms['formSummary']>
+  formDataJson: NonNullable<Forms['formDataJson']>
+}
+
+export function isEmailFormChecked(form: Forms): form is EmailFormChecked {
+  return form.formDataJson !== null && form.formSummary !== null
+}

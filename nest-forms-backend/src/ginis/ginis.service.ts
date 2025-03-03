@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -21,8 +22,7 @@ import {
   RABBIT_NASES,
 } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import { MailgunTemplateEnum } from '../utils/global-services/mailgun/mailgun.constants'
-import MailgunService from '../utils/global-services/mailgun/mailgun.service'
+import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
   getFrontendFormTitleFromForm,

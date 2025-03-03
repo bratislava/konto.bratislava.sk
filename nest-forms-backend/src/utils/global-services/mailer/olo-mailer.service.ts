@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import FormData from 'form-data'
 import Handlebars from 'handlebars'
-import Mailgun from 'mailgun.js'
-import { IMailgunClient } from 'mailgun.js/Interfaces'
 import nodemailer from 'nodemailer'
 
 import {
@@ -17,6 +14,7 @@ import {
 } from '../../global-enums/mailgun.errors.enum'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
+import { Mailer } from './mailer.interface'
 import {
   MAILGUN_CONFIG,
   MAILGUN_CONFIG_FEEDBACK_URLS,
@@ -24,9 +22,7 @@ import {
 } from './mailgun.constants'
 
 @Injectable()
-export default class MailgunService {
-  mailgunClient: IMailgunClient
-
+export default class OloMailerService implements Mailer {
   oloTransporter: nodemailer.Transporter
 
   logger: LineLoggerSubservice
@@ -45,13 +41,7 @@ export default class MailgunService {
         'Missing mailgun env, one of: MAILGUN_API_KEY, MAILGUN_HOST, MAILGUN_EMAIL_FROM, MAILGUN_DOMAIN',
       )
     }
-    this.logger = new LineLoggerSubservice(MailgunService.name)
-    const mailgun = new Mailgun(FormData)
-    this.mailgunClient = mailgun.client({
-      username: 'api',
-      key: process.env.MAILGUN_API_KEY || '',
-      url: process.env.MAILGUN_HOST,
-    })
+    this.logger = new LineLoggerSubservice(OloMailerService.name)
 
     this.oloTransporter = nodemailer.createTransport({
       host: 'smtp.office365.com',
@@ -114,34 +104,13 @@ export default class MailgunService {
     return response
   }
 
-  async sendEmail(data: SendEmailInputDto): Promise<void> {
-    try {
-      const mailgunResponse = await this.mailgunClient.messages.create(
-        process.env.MAILGUN_DOMAIN!,
-        {
-          from: process.env.MAILGUN_EMAIL_FROM!,
-          to: data.to,
-          template: MAILGUN_CONFIG[data.template].template,
-          subject: MAILGUN_CONFIG[data.template].subject,
-          'h:X-Mailgun-Variables': JSON.stringify(
-            this.createEmailVariables(data),
-          ),
-        },
-      )
-      if (mailgunResponse.status !== 200)
-        this.logger.warn(`Mailgun message was not sent for email `)
-    } catch (error) {
-      this.logger.error('ERROR to send mailgun message', error)
-    }
-  }
-
   /**
    * Sends an email using OLO SMTP instead of Mailgun.
    * @param data Object containing the email data which should be sent.
    * @param oloEmailFrom The email address to send the email from.
    * @param attachments Optional array of attachments to be sent with the email.
    */
-  async sendOloEmail(
+  async sendEmail(
     data: SendEmailInputDto,
     oloEmailFrom: string,
     attachments?: nodemailer.SendMailOptions['attachments'],

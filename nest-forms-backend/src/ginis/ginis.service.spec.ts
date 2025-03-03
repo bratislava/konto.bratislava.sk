@@ -10,7 +10,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import prismaMock from '../../test/singleton'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import MailgunService from '../utils/global-services/mailgun/mailgun.service'
+import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { FormWithFiles } from '../utils/types/prisma'
 import {

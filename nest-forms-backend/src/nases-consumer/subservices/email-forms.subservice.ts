@@ -51,6 +51,24 @@ export default class EmailFormsSubservice {
     this.logger = new LineLoggerSubservice('EmailFormsSubservice')
   }
 
+  /**
+   * Resolves the address based on the environment.
+   * If the address is a string, it returns the string.
+   * If the address is an object, it returns the production value if CLUSTER_ENV is 'production',
+   * otherwise it returns the test/staging value.
+   */
+  private resolveAddress(
+    address: { test: string; prod: string } | string,
+  ): string {
+    if (typeof address === 'string') {
+      return address
+    }
+
+    const isProd =
+      this.configService.get<string>('CLUSTER_ENV') === 'production'
+    return isProd ? address.prod : address.test
+  }
+
   private getMailer(formDefinition: FormDefinitionEmail): Mailer {
     return formDefinition.email.mailer === 'olo'
       ? this.oloMailerService
@@ -200,7 +218,9 @@ export default class EmailFormsSubservice {
             slug: formDefinition.slug,
           },
         },
-        formDefinition.email.fromAddress ?? formDefinition.email.address,
+        this.resolveAddress(
+          formDefinition.email.fromAddress ?? formDefinition.email.address,
+        ),
         attachments,
       )
     } catch (error) {
@@ -244,7 +264,7 @@ export default class EmailFormsSubservice {
     const { form, formDefinition } = await this.getValidatedEmailForm(formId)
 
     this.logger.log(
-      `Sending email of form ${formId} to ${formDefinition.email.address}.`,
+      `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
     )
 
     const formTitle =
@@ -257,7 +277,7 @@ export default class EmailFormsSubservice {
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail(
       {
-        to: formDefinition.email.address,
+        to: this.resolveAddress(formDefinition.email.address),
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
@@ -272,7 +292,9 @@ export default class EmailFormsSubservice {
           }),
         },
       },
-      formDefinition.email.fromAddress ?? formDefinition.email.address,
+      this.resolveAddress(
+        formDefinition.email.fromAddress ?? formDefinition.email.address,
+      ),
       formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(formDefinition, form.formDataJson)
         : undefined,

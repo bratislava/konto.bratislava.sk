@@ -13,8 +13,8 @@ import {
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
   getSchemaPath,
@@ -67,8 +67,7 @@ export default class ConvertController {
     description:
       'Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return XML form',
     type: String,
   })
@@ -124,8 +123,7 @@ export default class ConvertController {
     summary: 'Convert XML to JSON',
     description: 'Generates JSON form from given XML data and form ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
   })
@@ -211,8 +209,7 @@ export default class ConvertController {
     description: 'There was an error during generating pdf.',
     type: PdfGenerationFailedErrorDto,
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return pdf file stream.',
     type: StreamableFile,
   })

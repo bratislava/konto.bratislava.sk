@@ -5,8 +5,8 @@ import {
   ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger'
@@ -39,8 +39,7 @@ export default class FormsController {
     summary: 'Bump form JSON version to latest available version',
     description: 'Updates form JSON version if a newer version is available',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Version successfully bumped',
     type: BumpJsonVersionResponseDto,
   })

@@ -3,8 +3,8 @@ import { IncomingHttpHeaders } from 'node:http'
 import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
   ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiSecurity,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -32,8 +32,7 @@ export default class AdminController {
     summary: '',
     description: 'Return technical account JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
   })
@@ -47,8 +46,7 @@ export default class AdminController {
     summary: '',
     description: 'Return administration account JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
   })
@@ -62,8 +60,7 @@ export default class AdminController {
     summary: '',
     description: 'Return eid user JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
   })

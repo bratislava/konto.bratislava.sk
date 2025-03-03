@@ -5,8 +5,8 @@ import {
   ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
   getSchemaPath,
@@ -44,8 +44,7 @@ export default class SignerController {
     description:
       'Generates signer data including XML and metadata for form signing',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return signer data',
     type: SignerDataResponseDto,
   })

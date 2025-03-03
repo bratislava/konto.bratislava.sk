@@ -4,8 +4,8 @@ import {
   ApiBearerAuth,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
@@ -55,8 +55,7 @@ export default class GinisController {
     summary: '',
     description: 'Return GINIS document by ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: '',
     type: GinisDocumentDetailResponseDto,
   })

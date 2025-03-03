@@ -16,8 +16,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotAcceptableResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
@@ -112,8 +112,7 @@ export default class NasesController {
     summary: '',
     description: 'Return form by ID and by logged user',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return form',
     type: GetFormResponseDto,
   })
@@ -154,8 +153,7 @@ export default class NasesController {
     summary: 'Get paginated forms',
     description: 'Get paginated forms',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return forms',
     type: GetFormsResponseDto,
   })
@@ -193,8 +191,7 @@ export default class NasesController {
     summary: '',
     description: 'Archive form (hide from user but keep in database)',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form successfully deleted',
   })
   @ApiBadRequestResponse({
@@ -238,8 +235,7 @@ export default class NasesController {
     description:
       'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Create form in db',
     type: GetFormResponseDto,
   })
@@ -277,8 +273,7 @@ export default class NasesController {
     summary: '',
     description: 'Update form',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description:
       'Return charging details - price and used free minutes / hours.',
     type: GetFormResponseDto,
@@ -343,8 +338,7 @@ export default class NasesController {
     description:
       'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Create form in db',
     type: GetFormResponseDto,
   })
@@ -406,8 +400,7 @@ export default class NasesController {
     description:
       'Check if given form can be sent to Nases (all files are scanned etc.)',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: '',
     type: CanSendResponseDto,
   })
@@ -449,8 +442,7 @@ export default class NasesController {
     description:
       'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -531,8 +523,7 @@ export default class NasesController {
     description:
       'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -644,8 +635,7 @@ export default class NasesController {
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -734,8 +724,7 @@ export default class NasesController {
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -870,8 +859,7 @@ export default class NasesController {
     summary: '',
     description: 'Assign form with no assigned user to the authenticated user',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     type: MigrateFormResponseDto,
   })
   @ApiNotFoundResponse({

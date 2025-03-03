@@ -23,9 +23,9 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotAcceptableResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiPayloadTooLargeResponse,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
@@ -107,8 +107,7 @@ export default class FilesController {
     summary: 'Get file by fileId',
     description: 'You get all file info based on fileId.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Status of file',
     type: GetFileResponseDto,
   })
@@ -143,8 +142,7 @@ export default class FilesController {
     description:
       'If you need list of files and their file statuses based on formId.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'List of files and their statuses',
     type: GetFileResponseReducedDto,
     isArray: true,
@@ -177,8 +175,7 @@ export default class FilesController {
     description:
       'You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Successfully updated file status',
     type: UpdateFileStatusResponseDto,
   })
@@ -361,8 +358,7 @@ export default class FilesController {
     summary: 'Download file by jwt token',
     description: 'You can download file byt fileId. ',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Filestream as output.',
     content: {
       'application/octet-stream': {},

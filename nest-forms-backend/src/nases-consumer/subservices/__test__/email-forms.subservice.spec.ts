@@ -30,11 +30,95 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
 jest.mock('forms-shared/form-utils/omitExtraData')
 
+const formId = 'test-form-id'
+const userEmail = 'test@example.com'
+const userFirstName = 'Test'
+
+const mockForm = {
+  id: formId,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  externalId: null,
+  userExternalId: '12345678-1234-1234-1234-123456789012',
+  email: 'form-email@example.com',
+  mainUri: 'uri://test-main-uri',
+  actorUri: 'uri://test-actor-uri',
+  ownerType: null,
+  ico: null,
+  state: FormState.PROCESSING,
+  error: FormError.NONE,
+  jsonVersion: '1.0',
+  formDataJson: { test: 'data' },
+  formDataGinis: null,
+  formSignature: null,
+  ginisDocumentId: null,
+  senderId: null,
+  recipientId: null,
+  finishSubmission: null,
+  formDefinitionSlug: 'test-form-email',
+  formSummary: { test: 'summary' } as unknown as FormSummary,
+  files: [],
+  archived: false,
+  ginisState: 'CREATED',
+  formDataBase64: null,
+} as Forms
+
+const mockFormWithOloDefinition = {
+  ...mockForm,
+  id: 'test-form-olo-id',
+  formDefinitionSlug: 'test-form-olo',
+} as Forms
+
+const mockFormDefinitionWithSendEmail = {
+  slug: 'test-form-email',
+  type: FormDefinitionType.Email,
+  title: 'Test Form Email',
+  schema: {
+    uiOptions: {},
+  },
+  jsonVersion: '1.0',
+  termsAndConditions: 'test-terms',
+  messageSubjectDefault: 'Test Subject',
+  email: {
+    address: 'department@bratislava.sk',
+    fromAddress: undefined, // Tests the fallback to email
+    mailer: 'mailgun',
+    extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
+    extractName: jest.fn().mockReturnValue('Extracted Name'),
+    newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+    userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
+    sendJsonDataAttachmentInTechnicalMail: true,
+  },
+} as FormDefinitionEmail
+
+const mockFormDefinitionWithSendOloEmail = {
+  slug: 'test-form-olo',
+  type: FormDefinitionType.Email,
+  title: 'Test Form Email',
+  schema: {
+    uiOptions: {},
+  },
+  jsonVersion: '1.0',
+  termsAndConditions: 'test-terms',
+  messageSubjectDefault: 'Test Subject',
+  email: {
+    mailer: 'olo',
+    newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+    userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
+    extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
+    extractName: jest.fn().mockReturnValue('Extracted OLO Name'),
+    address: 'olo@bratislava.sk',
+    fromAddress: 'from-olo@bratislava.sk', // Test with specified emailFrom
+    // No sendJsonDataAttachmentInTechnicalMail specified, to test undefined behavior
+  },
+} as FormDefinitionEmail
+
 describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
   let mailgunService: jest.Mocked<MailgunService>
   let oloMailerService: jest.Mocked<OloMailerService>
   let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
+  let configService: jest.Mocked<ConfigService>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -76,6 +160,7 @@ describe('EmailFormsSubservice', () => {
     throwerErrorGuard = module.get(
       ThrowerErrorGuard,
     ) as jest.Mocked<ThrowerErrorGuard>
+    configService = module.get(ConfigService) as jest.Mocked<ConfigService>
 
     throwerErrorGuard['logger'] = {
       error: jest.fn(),
@@ -99,88 +184,6 @@ describe('EmailFormsSubservice', () => {
   })
 
   describe('sendEmailForm', () => {
-    const formId = 'test-form-id'
-    const userEmail = 'test@example.com'
-    const userFirstName = 'Test'
-    const mockForm = {
-      id: formId,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      externalId: null,
-      userExternalId: '12345678-1234-1234-1234-123456789012',
-      email: 'form-email@example.com',
-      mainUri: 'uri://test-main-uri',
-      actorUri: 'uri://test-actor-uri',
-      ownerType: null,
-      ico: null,
-      state: FormState.PROCESSING,
-      error: FormError.NONE,
-      jsonVersion: '1.0',
-      formDataJson: { test: 'data' },
-      formDataGinis: null,
-      formSignature: null,
-      ginisDocumentId: null,
-      senderId: null,
-      recipientId: null,
-      finishSubmission: null,
-      formDefinitionSlug: 'test-form-email',
-      formSummary: { test: 'summary' } as unknown as FormSummary,
-      files: [],
-      archived: false,
-      ginisState: 'CREATED',
-      formDataBase64: null,
-    } as Forms
-
-    const mockFormWithOloDefinition = {
-      ...mockForm,
-      id: 'test-form-olo-id',
-      formDefinitionSlug: 'test-form-olo',
-    } as Forms
-
-    const mockFormDefinitionWithSendEmail = {
-      slug: 'test-form-email',
-      type: FormDefinitionType.Email,
-      title: 'Test Form Email',
-      schema: {
-        uiOptions: {},
-      },
-      jsonVersion: '1.0',
-      termsAndConditions: 'test-terms',
-      messageSubjectDefault: 'Test Subject',
-      email: {
-        address: 'department@bratislava.sk',
-        fromAddress: undefined, // Tests the fallback to email
-        mailer: 'mailgun',
-        extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
-        extractName: jest.fn().mockReturnValue('Extracted Name'),
-        newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
-        userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-        sendJsonDataAttachmentInTechnicalMail: true,
-      },
-    } as FormDefinitionEmail
-
-    const mockFormDefinitionWithSendOloEmail = {
-      slug: 'test-form-olo',
-      type: FormDefinitionType.Email,
-      title: 'Test Form Email',
-      schema: {
-        uiOptions: {},
-      },
-      jsonVersion: '1.0',
-      termsAndConditions: 'test-terms',
-      messageSubjectDefault: 'Test Subject',
-      email: {
-        mailer: 'olo',
-        newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
-        userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-        extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
-        extractName: jest.fn().mockReturnValue('Extracted OLO Name'),
-        address: 'olo@bratislava.sk',
-        fromAddress: 'from-olo@bratislava.sk', // Test with specified emailFrom
-        // No sendJsonDataAttachmentInTechnicalMail specified, to test undefined behavior
-      },
-    } as FormDefinitionEmail
-
     beforeEach(() => {
       jest.clearAllMocks()
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
@@ -614,6 +617,101 @@ describe('EmailFormsSubservice', () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       expect(errorSpy).toHaveBeenCalled()
+    })
+
+    it('should take email based on CLUSTER_ENV', async () => {
+      configService.get.mockReturnValue('production')
+
+      mockFormDefinitionWithSendEmail.email.address = {
+        test: 'test@mail.com',
+        prod: 'prod@mail.com',
+      }
+
+      await service.sendEmailForm(formId, null, null)
+
+      expect(mailgunService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'prod@mail.com',
+        }),
+        'prod@mail.com',
+        expect.any(Array),
+      )
+    })
+
+    it('should take email based on CLUSTER_ENV and different emailFrom', async () => {
+      configService.get.mockReturnValue('staging')
+
+      mockFormDefinitionWithSendEmail.email.address = {
+        test: 'test@mail.com',
+        prod: 'prod@mail.com',
+      }
+      mockFormDefinitionWithSendEmail.email.fromAddress = {
+        test: 'test-from@mail.com',
+        prod: 'prod-from@mail.com',
+      }
+
+      await service.sendEmailForm(formId, null, null)
+
+      expect(mailgunService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'test@mail.com',
+        }),
+        'test-from@mail.com',
+        expect.any(Array),
+      )
+    })
+  })
+
+  describe('resolveAddress', () => {
+    it('should return string address as is', () => {
+      const stringAddress = 'test@example.com'
+      const result = service['resolveAddress'](stringAddress)
+      expect(result).toBe(stringAddress)
+    })
+
+    it('should return prod address when CLUSTER_ENV is production', () => {
+      jest.spyOn(configService, 'get').mockReturnValue('production')
+      const addressObject = {
+        test: 'test@example.com',
+        prod: 'prod@example.com',
+      }
+      const result = service['resolveAddress'](addressObject)
+      expect(result).toBe(addressObject.prod)
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
+
+    it('should return test address when CLUSTER_ENV is staging', () => {
+      configService.get.mockReturnValue('staging')
+      const addressObject = {
+        test: 'test@example.com',
+        prod: 'prod@example.com',
+      }
+      const result = service['resolveAddress'](addressObject)
+      expect(result).toBe(addressObject.test)
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
+
+    it('should return test address when CLUSTER_ENV is development', () => {
+      configService.get.mockReturnValue('development')
+      const addressObject = {
+        test: 'test@example.com',
+        prod: 'prod@example.com',
+      }
+      const result = service['resolveAddress'](addressObject)
+      expect(result).toBe(addressObject.test)
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
+    })
+
+    it('should return test address when CLUSTER_ENV is undefined', () => {
+      // eslint-disable-next-line unicorn/no-useless-undefined
+      configService.get.mockReturnValue(undefined)
+      const addressObject = {
+        test: 'test@example.com',
+        prod: 'prod@example.com',
+      }
+      const result = service['resolveAddress'](addressObject)
+      expect(result).toBe(addressObject.test)
+      expect(configService.get).toHaveBeenCalledWith('CLUSTER_ENV')
     })
   })
 })

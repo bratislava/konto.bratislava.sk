@@ -1,7 +1,8 @@
+import { timingSafeEqual } from 'node:crypto'
+
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import Strategy from 'passport-headerapikey'
-import { timingSafeEqual } from 'crypto'
 
 @Injectable()
 export default class AdminStrategy extends PassportStrategy(

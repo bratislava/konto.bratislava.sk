@@ -8,6 +8,7 @@ import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import CardPaymentReportingSubservice from '../utils/subservices/cardPaymentReporting.subservice'
 
 @Injectable()
 export class TasksService {
@@ -17,6 +18,7 @@ export class TasksService {
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly cardPaymentReportingSubservice: CardPaymentReportingSubservice,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -114,4 +116,11 @@ export class TasksService {
       `TasksService: Updated payments from Noris, result: ${JSON.stringify(result)}`,
     )
   }
+
+  @Cron(CronExpression.EVERY_DAY_AT_8AM)
+  @HandleErrors('Cron Error')
+  async reportCardPayments (){
+    await this.cardPaymentReportingSubservice.generateAndSendPaymentReport()
+  }
+
 }

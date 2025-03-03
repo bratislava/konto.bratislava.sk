@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Query,
@@ -134,7 +133,6 @@ export default class NasesController {
     },
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: 'This form is owned by other user.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
@@ -163,13 +161,11 @@ export default class NasesController {
     type: GetFormsResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form definition not found',
     type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -203,7 +199,6 @@ export default class NasesController {
     description: 'Form successfully deleted',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Bad request error.',
     schema: {
       anyOf: [
@@ -214,12 +209,10 @@ export default class NasesController {
     },
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: "This form is some else's",
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
@@ -252,13 +245,11 @@ export default class NasesController {
     type: GetFormResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form definition not found',
     type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -320,7 +311,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -388,7 +378,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -428,12 +417,10 @@ export default class NasesController {
     type: CanSendResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form was not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: 'It is forbidden to access this form.',
     type: ForbiddenFormSendDto,
   })
@@ -519,7 +506,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -533,7 +519,6 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
@@ -616,7 +601,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -630,12 +614,10 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
     type: FormDefinitionNotSupportedTypeErrorDto,
   })
@@ -729,7 +711,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -743,7 +724,6 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
@@ -829,7 +809,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -843,12 +822,10 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
     type: FormDefinitionNotSupportedTypeErrorDto,
   })
@@ -912,12 +889,10 @@ export default class NasesController {
     type: MigrateFormResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'No such form found.',
     type: NotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: HttpStatus.FORBIDDEN,
     description: 'The form is already assigned to someone',
     type: FormAssignedToOtherUserErrorDto,
   })

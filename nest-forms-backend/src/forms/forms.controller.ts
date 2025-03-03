@@ -49,7 +49,6 @@ export default class FormsController {
   @ApiExtraModels(FormVersionBumpNotPossible)
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form or form definition not found',
     schema: {
       oneOf: [
@@ -59,17 +58,14 @@ export default class FormsController {
     },
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Form version cannot be bumped',
     type: FormVersionBumpNotPossible,
   })
   @ApiUnprocessableEntityResponse({
-    status: 422,
     description: 'Form is not editable',
     type: FormNotEditableErrorDto,
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: 'Form is owned by someone else',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })

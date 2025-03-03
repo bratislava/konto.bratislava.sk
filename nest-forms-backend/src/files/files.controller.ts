@@ -113,17 +113,14 @@ export default class FilesController {
     type: GetFileResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 403,
     description: 'Forbidden.',
     type: FileIsOwnedBySomeoneElseErrorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found.',
     type: FileNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     type: DatabaseErrorDto,
   })
@@ -153,17 +150,14 @@ export default class FilesController {
     isArray: true,
   })
   @ApiNotFoundResponse({
-    status: 403,
     description: 'Form is Forbidden.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     type: DatabaseErrorDto,
   })
@@ -189,17 +183,14 @@ export default class FilesController {
     type: UpdateFileStatusResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File or bucket not found.',
     type: FileByScannerIdNotFoundErrorDto,
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'File status is not acceptable.',
     type: FileWrongStatusNotAcceptedErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     type: DatabaseErrorDto,
   })
@@ -249,7 +240,6 @@ export default class FilesController {
   @ApiExtraModels(FileSizeZeroErrorDto)
   @ApiExtraModels(ScannerNoResponseErrorDto)
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Bad request.',
     schema: {
       anyOf: [
@@ -275,7 +265,6 @@ export default class FilesController {
     },
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -295,27 +284,22 @@ export default class FilesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'File id already exists.',
     type: FileIdAlreadyExistsErrorDto,
   })
   @ApiGoneResponse({
-    status: 410,
     description: 'File is already scanned.',
     type: FileAlreadyProcessedErrorDto,
   })
   @ApiPayloadTooLargeResponse({
-    status: 413,
     description: 'File is too large.',
     type: FileSizeTooLargeErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: 422,
     description: 'Unprocessable Entity',
     type: FileUploadToMinioWasNotSuccessfulErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -356,12 +340,10 @@ export default class FilesController {
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found',
     type: FileNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     type: DatabaseErrorDto,
   })
@@ -392,7 +374,6 @@ export default class FilesController {
   @ApiExtraModels(NoFileIdInJwtErrorDto)
   @ApiExtraModels(SimpleBadRequestErrorDto)
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Bad request error.',
     schema: {
       anyOf: [
@@ -409,17 +390,14 @@ export default class FilesController {
     },
   })
   @ApiUnauthorizedResponse({
-    status: 401,
     description: 'Unauthorized error - invalid or expired jwt token.',
     type: InvalidOrExpiredJwtTokenErrorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Not found error.',
     type: FileNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     type: DatabaseErrorDto,
   })

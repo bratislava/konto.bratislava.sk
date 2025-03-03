@@ -61,17 +61,14 @@ export default class GinisController {
     type: GinisDocumentDetailResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 403,
     description: 'Form is Forbidden.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     type: DatabaseErrorDto,
   })

@@ -118,8 +118,7 @@ export default class NasesController {
     type: GetFormResponseDto,
   })
   @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -288,8 +287,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
   @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: 'Bad request.',
     schema: {
       anyOf: [
@@ -299,8 +297,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -355,8 +352,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
   @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: 'Bad request.',
     schema: {
       anyOf: [
@@ -366,8 +362,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -468,8 +463,7 @@ export default class NasesController {
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -482,8 +476,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -554,8 +547,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -568,8 +560,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -668,8 +659,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: 'Bad request error.',
     schema: {
       anyOf: [
@@ -679,8 +669,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -693,8 +682,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -762,8 +750,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -776,8 +763,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [

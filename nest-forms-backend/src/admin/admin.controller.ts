@@ -1,12 +1,13 @@
 import { IncomingHttpHeaders } from 'node:http'
 
-import { Controller, Get, Headers, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
   ApiExtraModels,
   ApiOperation,
   ApiResponse,
   ApiSecurity,
   ApiTags,
+  ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
 
@@ -67,8 +68,7 @@ export default class AdminController {
     type: 'string',
   })
   @ApiExtraModels(UnauthorizedErrorDto)
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
+  @ApiUnauthorizedResponse({
     description: 'Unauthorized.',
     schema: {
       anyOf: [

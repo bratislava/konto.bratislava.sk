@@ -87,7 +87,7 @@ export interface CognitoGetUserData {
    * @type {string}
    * @memberof CognitoGetUserData
    */
-  'custom:account_type': CognitoGetUserDataCustomaccountTypeEnum
+  'custom:account_type': CognitoGetUserDataCustomAccountTypeEnum
   /**
    * First name
    * @type {string}
@@ -138,14 +138,14 @@ export interface CognitoGetUserData {
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
 
-export const CognitoGetUserDataCustomaccountTypeEnum = {
+export const CognitoGetUserDataCustomAccountTypeEnum = {
   Fo: 'fo',
   Po: 'po',
   FoP: 'fo-p',
 } as const
 
-export type CognitoGetUserDataCustomaccountTypeEnum =
-  (typeof CognitoGetUserDataCustomaccountTypeEnum)[keyof typeof CognitoGetUserDataCustomaccountTypeEnum]
+export type CognitoGetUserDataCustomAccountTypeEnum =
+  (typeof CognitoGetUserDataCustomAccountTypeEnum)[keyof typeof CognitoGetUserDataCustomAccountTypeEnum]
 export const CognitoGetUserDataUserStatusEnum = {
   Archived: 'ARCHIVED',
   Compromised: 'COMPROMISED',
@@ -502,6 +502,55 @@ export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface ResponseGdprLegalPersonDataDto
+ */
+export interface ResponseGdprLegalPersonDataDto {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseGdprLegalPersonDataDto
+   */
+  category: ResponseGdprLegalPersonDataDtoCategoryEnum
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseGdprLegalPersonDataDto
+   */
+  type: ResponseGdprLegalPersonDataDtoTypeEnum
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseGdprLegalPersonDataDto
+   */
+  subType: ResponseGdprLegalPersonDataDtoSubTypeEnum
+}
+
+export const ResponseGdprLegalPersonDataDtoCategoryEnum = {
+  Taxes: 'TAXES',
+  Esbs: 'ESBS',
+} as const
+
+export type ResponseGdprLegalPersonDataDtoCategoryEnum =
+  (typeof ResponseGdprLegalPersonDataDtoCategoryEnum)[keyof typeof ResponseGdprLegalPersonDataDtoCategoryEnum]
+export const ResponseGdprLegalPersonDataDtoTypeEnum = {
+  License: 'LICENSE',
+  Marketing: 'MARKETING',
+  FormalCommunication: 'FORMAL_COMMUNICATION',
+} as const
+
+export type ResponseGdprLegalPersonDataDtoTypeEnum =
+  (typeof ResponseGdprLegalPersonDataDtoTypeEnum)[keyof typeof ResponseGdprLegalPersonDataDtoTypeEnum]
+export const ResponseGdprLegalPersonDataDtoSubTypeEnum = {
+  Unsubscribe: 'unsubscribe',
+  Subscribe: 'subscribe',
+} as const
+
+export type ResponseGdprLegalPersonDataDtoSubTypeEnum =
+  (typeof ResponseGdprLegalPersonDataDtoSubTypeEnum)[keyof typeof ResponseGdprLegalPersonDataDtoSubTypeEnum]
+
+/**
+ *
+ * @export
  * @interface ResponseGdprUserDataDto
  */
 export interface ResponseGdprUserDataDto {
@@ -566,6 +615,110 @@ export interface ResponseInternalServerErrorDto {
    * @memberof ResponseInternalServerErrorDto
    */
   message: string
+}
+/**
+ *
+ * @export
+ * @interface ResponseLegalPersonDataDto
+ */
+export interface ResponseLegalPersonDataDto {
+  /**
+   * Local ID of user
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  id: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  createdAt: string
+  /**
+   * Last updated timestamp
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  updatedAt: string
+  /**
+   * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  externalId: string | null
+  /**
+   * Ico of company, which this user represents
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  ico: string | null
+  /**
+   * Email
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  email: string | null
+  /**
+   * Birth number
+   * @type {string}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  birthNumber: string | null
+  /**
+   * Subscription Data in array
+   * @type {Array<ResponseGdprLegalPersonDataDto>}
+   * @memberof ResponseLegalPersonDataDto
+   */
+  gdprData: Array<ResponseGdprLegalPersonDataDto>
+}
+/**
+ *
+ * @export
+ * @interface ResponseLegalPersonDataSimpleDto
+ */
+export interface ResponseLegalPersonDataSimpleDto {
+  /**
+   * Local ID of user
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  id: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  createdAt: string
+  /**
+   * Last updated timestamp
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  updatedAt: string
+  /**
+   * Id from cognito, it is not required. We can have also only subscribed user, who are not city account users
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  externalId: string | null
+  /**
+   * Ico of company, which this user represents
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  ico: string | null
+  /**
+   * Email
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  email: string | null
+  /**
+   * Birth number
+   * @type {string}
+   * @memberof ResponseLegalPersonDataSimpleDto
+   */
+  birthNumber: string | null
 }
 /**
  *
@@ -904,6 +1057,22 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
+
+/**
+ * @type UserControllerChangeEmail200Response
+ * @export
+ */
+export type UserControllerChangeEmail200Response =
+  | ResponseLegalPersonDataSimpleDto
+  | ResponseUserDataBasicDto
+
+/**
+ * @type UserControllerGetOrCreateUser200Response
+ * @export
+ */
+export type UserControllerGetOrCreateUser200Response =
+  | ResponseLegalPersonDataDto
+  | ResponseUserDataDto
 
 /**
  * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
@@ -1933,7 +2102,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerCheckUserVerifyState(
       email: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<UserVerifyState> {
       return localVarFp
         .adminControllerCheckUserVerifyState(email, options)
@@ -1948,7 +2117,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerDeactivateAccount(
       externalId: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DeactivateAccountResponseDto> {
       return localVarFp
         .adminControllerDeactivateAccount(externalId, options)
@@ -1963,7 +2132,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerGetUserDataByBirthNumber(
       birthNumber: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseUserByBirthNumberDto> {
       return localVarFp
         .adminControllerGetUserDataByBirthNumber(birthNumber, options)
@@ -1978,7 +2147,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerGetUserDataByBirthNumbersBatch(
       requestBatchQueryUsersByBirthNumbersDto: RequestBatchQueryUsersByBirthNumbersDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetUserDataByBirthNumbersBatchResponseDto> {
       return localVarFp
         .adminControllerGetUserDataByBirthNumbersBatch(
@@ -1996,7 +2165,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerGetVerificationDataForUser(
       email: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VerificationDataForUserResponseDto> {
       return localVarFp
         .adminControllerGetVerificationDataForUser(email, options)
@@ -2011,7 +2180,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerValidateEdeskForUserIds(
       requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ValidateEdeskForUserIdsResponseDto> {
       return localVarFp
         .adminControllerValidateEdeskForUserIds(
@@ -2029,7 +2198,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerValidatePhysicalEntityRfo(
       requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseValidatePhysicalEntityRfoDto> {
       return localVarFp
         .adminControllerValidatePhysicalEntityRfo(
@@ -2045,7 +2214,7 @@ export const ADMINApiFactory = function (
      * @throws {RequiredError}
      */
     adminControllerValidatedUsersToPhysicalEntities(
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto> {
       return localVarFp
         .adminControllerValidatedUsersToPhysicalEntities(options)
@@ -2062,7 +2231,7 @@ export const ADMINApiFactory = function (
     adminControllerVerifyUserManually(
       email: string,
       manuallyVerifyUserRequestDto: ManuallyVerifyUserRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<OnlySuccessDto> {
       return localVarFp
         .adminControllerVerifyUserManually(
@@ -2359,7 +2528,9 @@ export const AuthApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    authControllerLogin(options?: any): AxiosPromise<CognitoGetUserData> {
+    authControllerLogin(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<CognitoGetUserData> {
       return localVarFp
         .authControllerLogin(options)
         .then((request) => request(axios, basePath))
@@ -2491,7 +2662,9 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealthCheck(options?: any): AxiosPromise<string> {
+    appControllerHealthCheck(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<string> {
       return localVarFp
         .appControllerHealthCheck(options)
         .then((request) => request(axios, basePath))
@@ -2838,7 +3011,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyBirthNumberAndIdentityCard(
       requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseVerificationIdentityCardToQueueDto> {
       return localVarFp
         .verificationControllerVerifyBirthNumberAndIdentityCard(
@@ -2856,7 +3029,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyIcoBirthNumberAndIdentityCard(
       requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseVerificationDto> {
       return localVarFp
         .verificationControllerVerifyIcoBirthNumberAndIdentityCard(
@@ -2874,7 +3047,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyWithEid(
       requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseVerificationDto> {
       return localVarFp
         .verificationControllerVerifyWithEid(
@@ -3391,7 +3564,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<ResponseUserDataBasicDto>
+      ) => AxiosPromise<UserControllerChangeEmail200Response>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerChangeEmail(
@@ -3423,7 +3596,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<ResponseUserDataDto>
+      ) => AxiosPromise<UserControllerGetOrCreateUser200Response>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerGetOrCreateUser(options)
@@ -3482,7 +3655,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<ResponseUserDataDto>
+      ) => AxiosPromise<UserControllerGetOrCreateUser200Response>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerSubscribeLoggedUser(
@@ -3516,7 +3689,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<ResponseUserDataDto>
+      ) => AxiosPromise<UserControllerGetOrCreateUser200Response>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerUnsubscribeLoggedUser(
@@ -3633,8 +3806,8 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerChangeEmail(
       changeEmailRequestDto: ChangeEmailRequestDto,
-      options?: any,
-    ): AxiosPromise<ResponseUserDataBasicDto> {
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerChangeEmail200Response> {
       return localVarFp
         .userControllerChangeEmail(changeEmailRequestDto, options)
         .then((request) => request(axios, basePath))
@@ -3646,8 +3819,8 @@ export const UsersManipulationApiFactory = function (
      * @throws {RequiredError}
      */
     userControllerGetOrCreateUser(
-      options?: any,
-    ): AxiosPromise<ResponseUserDataDto> {
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerGetOrCreateUser200Response> {
       return localVarFp
         .userControllerGetOrCreateUser(options)
         .then((request) => request(axios, basePath))
@@ -3658,7 +3831,7 @@ export const UsersManipulationApiFactory = function (
      * @throws {RequiredError}
      */
     userControllerRemoveBirthNumber(
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerRemoveBirthNumber(options)
@@ -3673,8 +3846,8 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerSubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: any,
-    ): AxiosPromise<ResponseUserDataDto> {
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerGetOrCreateUser200Response> {
       return localVarFp
         .userControllerSubscribeLoggedUser(requestGdprDataDto, options)
         .then((request) => request(axios, basePath))
@@ -3688,8 +3861,8 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerUnsubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: any,
-    ): AxiosPromise<ResponseUserDataDto> {
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UserControllerGetOrCreateUser200Response> {
       return localVarFp
         .userControllerUnsubscribeLoggedUser(requestGdprDataDto, options)
         .then((request) => request(axios, basePath))
@@ -3707,7 +3880,7 @@ export const UsersManipulationApiFactory = function (
       id: string,
       type: UserControllerUnsubscribePublicUserTypeEnum,
       category: UserControllerUnsubscribePublicUserCategoryEnum,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUser(id, type, category, options)
@@ -3726,7 +3899,7 @@ export const UsersManipulationApiFactory = function (
       id: string,
       type: UserControllerUnsubscribePublicUserByExternalIdTypeEnum,
       category: UserControllerUnsubscribePublicUserByExternalIdCategoryEnum,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUserByExternalId(

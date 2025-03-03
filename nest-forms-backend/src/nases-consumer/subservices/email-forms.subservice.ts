@@ -57,13 +57,7 @@ export default class EmailFormsSubservice {
    * If the address is an object, it returns the production value if CLUSTER_ENV is 'production',
    * otherwise it returns the test/staging value.
    */
-  private resolveAddress(
-    address: { test: string; prod: string } | string,
-  ): string {
-    if (typeof address === 'string') {
-      return address
-    }
-
+  private resolveAddress(address: { test: string; prod: string }): string {
     const isProd =
       this.configService.get<string>('CLUSTER_ENV') === 'production'
     return isProd ? address.prod : address.test

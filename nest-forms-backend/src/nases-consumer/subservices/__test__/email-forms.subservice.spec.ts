@@ -80,7 +80,10 @@ const mockFormDefinitionWithSendEmail = {
   termsAndConditions: 'test-terms',
   messageSubjectDefault: 'Test Subject',
   email: {
-    address: 'department@bratislava.sk',
+    address: {
+      prod: 'department@bratislava.sk',
+      test: 'department-test@bratislava.sk',
+    },
     fromAddress: undefined, // Tests the fallback to email
     mailer: 'mailgun',
     extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
@@ -107,8 +110,11 @@ const mockFormDefinitionWithSendOloEmail = {
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
     extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
     extractName: jest.fn().mockReturnValue('Extracted OLO Name'),
-    address: 'olo@bratislava.sk',
-    fromAddress: 'from-olo@bratislava.sk', // Test with specified emailFrom
+    address: { prod: 'olo@bratislava.sk', test: 'olo-test@bratislava.sk' },
+    fromAddress: {
+      prod: 'from-olo@bratislava.sk',
+      test: 'from-olo-test@bratislava.sk',
+    }, // Test with specified emailFrom
     // No sendJsonDataAttachmentInTechnicalMail specified, to test undefined behavior
   },
 } as FormDefinitionEmail
@@ -161,6 +167,8 @@ describe('EmailFormsSubservice', () => {
       ThrowerErrorGuard,
     ) as jest.Mocked<ThrowerErrorGuard>
     configService = module.get(ConfigService) as jest.Mocked<ConfigService>
+
+    jest.spyOn(configService, 'get').mockReturnValue('production')
 
     throwerErrorGuard['logger'] = {
       error: jest.fn(),
@@ -231,15 +239,14 @@ describe('EmailFormsSubservice', () => {
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
-          to: mockFormDefinitionWithSendEmail.email.address,
+          to: mockFormDefinitionWithSendEmail.email.address.prod,
           template: mockFormDefinitionWithSendEmail.email.newSubmissionTemplate,
           data: expect.objectContaining({
             formId: mockForm.id,
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.fromAddress ??
-          mockFormDefinitionWithSendEmail.email.address,
+        mockFormDefinitionWithSendEmail.email.address.prod,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'submission.json',
@@ -260,8 +267,7 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.fromAddress ??
-          mockFormDefinitionWithSendEmail.email.address,
+        mockFormDefinitionWithSendEmail.email.address.prod,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -312,7 +318,7 @@ describe('EmailFormsSubservice', () => {
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
-          to: mockFormDefinitionWithSendOloEmail.email.address,
+          to: mockFormDefinitionWithSendOloEmail.email.address.prod,
           template:
             mockFormDefinitionWithSendOloEmail.email.newSubmissionTemplate,
           data: expect.objectContaining({
@@ -320,8 +326,7 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email.fromAddress ??
-          mockFormDefinitionWithSendOloEmail.email.address,
+        mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
         // eslint-disable-next-line unicorn/no-useless-undefined
         undefined,
       )
@@ -339,8 +344,7 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email.fromAddress ??
-          mockFormDefinitionWithSendOloEmail.email.address,
+        mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
         expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
@@ -434,8 +438,7 @@ describe('EmailFormsSubservice', () => {
         expect.objectContaining({
           to: 'extracted@example.com',
         }),
-        mockFormDefinitionWithSendEmail.email.fromAddress ??
-          mockFormDefinitionWithSendEmail.email.address,
+        mockFormDefinitionWithSendEmail.email.address.prod,
         expect.any(Array),
       )
     })
@@ -453,8 +456,7 @@ describe('EmailFormsSubservice', () => {
             firstName: 'Extracted Name',
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.fromAddress ??
-          mockFormDefinitionWithSendEmail.email.address,
+        mockFormDefinitionWithSendEmail.email.address.prod,
         expect.any(Array),
       )
     })
@@ -470,8 +472,7 @@ describe('EmailFormsSubservice', () => {
             firstName: null,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.fromAddress ??
-          mockFormDefinitionWithSendEmail.email.address,
+        mockFormDefinitionWithSendEmail.email.address.prod,
         expect.any(Array),
       )
     })
@@ -622,53 +623,63 @@ describe('EmailFormsSubservice', () => {
     it('should take email based on CLUSTER_ENV', async () => {
       configService.get.mockReturnValue('production')
 
-      mockFormDefinitionWithSendEmail.email.address = {
-        test: 'test@mail.com',
-        prod: 'prod@mail.com',
-      }
-
       await service.sendEmailForm(formId, null, null)
 
       expect(mailgunService.sendEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: 'prod@mail.com',
+          to: 'department@bratislava.sk',
         }),
-        'prod@mail.com',
+        'department@bratislava.sk',
         expect.any(Array),
       )
     })
 
     it('should take email based on CLUSTER_ENV and different emailFrom', async () => {
       configService.get.mockReturnValue('staging')
+      prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
 
-      mockFormDefinitionWithSendEmail.email.address = {
-        test: 'test@mail.com',
-        prod: 'prod@mail.com',
-      }
-      mockFormDefinitionWithSendEmail.email.fromAddress = {
-        test: 'test-from@mail.com',
-        prod: 'prod-from@mail.com',
-      }
+      await service.sendEmailForm(mockFormWithOloDefinition.id, null, null)
 
-      await service.sendEmailForm(formId, null, null)
-
-      expect(mailgunService.sendEmail).toHaveBeenCalledWith(
+      expect(oloMailerService.sendEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          to: 'test@mail.com',
+          to: 'olo-test@bratislava.sk',
         }),
-        'test-from@mail.com',
+        'from-olo-test@bratislava.sk',
+        undefined,
+      )
+    })
+
+    it('should send both emails with parsed emailFrom', async () => {
+      configService.get.mockReturnValue('production')
+      prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
+
+      await service.sendEmailForm(
+        mockFormWithOloDefinition.id,
+        'some@mail.com',
+        'Name',
+      )
+
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          to: 'olo@bratislava.sk',
+        }),
+        'from-olo@bratislava.sk',
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        undefined,
+      )
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          to: 'some@mail.com',
+        }),
+        'from-olo@bratislava.sk',
         expect.any(Array),
       )
     })
   })
 
   describe('resolveAddress', () => {
-    it('should return string address as is', () => {
-      const stringAddress = 'test@example.com'
-      const result = service['resolveAddress'](stringAddress)
-      expect(result).toBe(stringAddress)
-    })
-
     it('should return prod address when CLUSTER_ENV is production', () => {
       jest.spyOn(configService, 'get').mockReturnValue('production')
       const addressObject = {

@@ -57,8 +57,8 @@ export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: {
     mailer: 'olo' | 'mailgun'
-    address: { test: string; prod: string } | string
-    fromAddress?: { test: string; prod: string } | string // If undefined, the `address` value is used.
+    address: { test: string; prod: string }
+    fromAddress?: { test: string; prod: string } // If undefined, the `address` value is used.
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
     sendJsonDataAttachmentInTechnicalMail?: boolean

@@ -1,6 +1,7 @@
 /* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 
+import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, FormState, GinisState } from '@prisma/client'
@@ -30,7 +31,6 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('./subservices/ginis.helper')
-jest.mock('../utils/global-services/mailgun/mailgun.service')
 jest.mock('../utils/handlers/text.handler')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
 jest.mock('node:crypto', () => ({
@@ -65,7 +65,7 @@ describe('GinisService', () => {
       providers: [
         GinisService,
         GinisHelper,
-        MailgunService,
+        { provide: MailgunService, useValue: createMock<MailgunService>() },
         ThrowerErrorGuard,
         RabbitmqClientService,
         { provide: PrismaService, useValue: prismaMock },

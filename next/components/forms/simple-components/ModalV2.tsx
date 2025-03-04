@@ -18,6 +18,7 @@ export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
   modalOverlayClassname?: string
   mobileFullScreen?: boolean
   noCloseButton?: boolean
+  dataCy?: string
 } & PropsWithChildren
 
 const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
@@ -64,6 +65,7 @@ const ModalV2 = ({
   modalOverlayClassname,
   mobileFullScreen,
   noCloseButton,
+  dataCy,
   ...rest
 }: ModalV2Props) => {
   const { t } = useTranslation('common')
@@ -71,20 +73,17 @@ const ModalV2 = ({
   // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)
 
-  const newProps = { ...modalProps }
-  delete newProps['data-cy']
-
   return (
     <ModalOverlay
       className={twMerge(
         'fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
         modalOverlayClassname,
       )}
-      {...newProps}
+      {...modalProps}
     >
       <ModalInIframeResizerWrapper>
         <Modal
-          data-cy="add-phone-number"
+          data-cy={dataCy}
           {...modalProps}
           className={twMerge(
             'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',

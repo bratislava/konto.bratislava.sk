@@ -20,7 +20,7 @@ export type MessageModalProps = PropsWithChildren<{
 }> &
   Pick<
     ModalV2Props,
-    'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen'
+    'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen' | 'dataCy'
   >
 
 const icons = {

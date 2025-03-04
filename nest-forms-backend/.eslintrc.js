@@ -33,6 +33,18 @@ module.exports = {
     // '@typescript-eslint/no-explicit-any': 'off',
     'pii/no-phone-number': 'off',
     'custom-rules/thrower-error-guard-enum': 'error',
+    // https://stackoverflow.com/a/53769213
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
+    /* Legacy rule handled by TypeScript */
+    'lodash-fp/no-extraneous-args': 'off',
+    /* Lodash rules that dont make sense */
+    'lodash/prefer-noop': 'off',
+    'lodash-fp/prefer-constant': 'off',
   },
   overrides: [
     {

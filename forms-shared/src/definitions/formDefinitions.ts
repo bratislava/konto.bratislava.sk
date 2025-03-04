@@ -48,13 +48,12 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
-import objednavkaZakresuSieti from '../schemas/tsb/objednavkaZakresuSieti'
-import objednavkaVytycenia from '../schemas/tsb/objednavkaVytycenie'
-import umiestnenieZariadenia from '../schemas/tsb/umiestnenieZariadenia'
-import ziadostOStanoviskoPD from '../schemas/tsb/ziadostOStanoviskoPD'
+import objednavkaZakresuSieti, { objednavkaZakresuSietiExtractEmail, objednavkaZakresuSietiExtractName } from '../schemas/tsb/objednavkaZakresuSieti'
+import objednavkaVytycenia, { objednavkaVytycenieExtractEmail, objednavkaVytycenieExtractName } from '../schemas/tsb/objednavkaVytycenie'
+import umiestnenieZariadenia, { umiestnenieZariadeniaExtractEmail, umiestnenieZariadeniaExtractName } from '../schemas/tsb/umiestnenieZariadenia'
+import ziadostOStanoviskoPD, { ziadostOStanoviskoPDExtractEmail, ziadostOStanoviskoPDExtractName } from '../schemas/tsb/ziadostOStanoviskoPD'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
-import { tsbExtractEmail, tsbExtractName } from '../schemas/tsb/shared/extractInfoShared'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -419,8 +418,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: tsbExtractEmail,
-      extractName: tsbExtractName,
+      extractEmail: objednavkaZakresuSietiExtractEmail,
+      extractName: objednavkaZakresuSietiExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
       newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -440,8 +439,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: tsbExtractEmail,
-      extractName: tsbExtractName,
+      extractEmail: objednavkaVytycenieExtractEmail,
+      extractName: objednavkaZakresuSietiExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
       newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -461,8 +460,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: tsbExtractEmail,
-      extractName: tsbExtractName,
+      extractEmail: ziadostOStanoviskoPDExtractEmail,
+      extractName: ziadostOStanoviskoPDExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
       newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
@@ -482,8 +481,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: tsbExtractEmail,
-      extractName: tsbExtractName,
+      extractEmail: umiestnenieZariadeniaExtractEmail,
+      extractName: umiestnenieZariadeniaExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
       newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO

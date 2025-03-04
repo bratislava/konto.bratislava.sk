@@ -7,6 +7,8 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   {
@@ -289,3 +291,19 @@ Prejdite do katastrálnej mapy ZBGIS. Otvorením menu v ľavom hornom rohu nájd
     ]),
   ],
 )
+
+export const objednavkaZakresuSietiExtractEmail = (formData: GenericObjectType) => {
+  return safeString(formData.objednavatel?.email)
+}
+
+export const objednavkaZakresuSietiExtractName = (formData: GenericObjectType) => {
+  if (
+    formData.objednavatel?.objednavatelTyp === 'Fyzická osoba' ||
+    formData.objednavatel?.objednavatelTyp === 'Fyzická osoba - podnikateľ'
+  ) {
+    return safeString(formData.objednavatel?.menoPriezvisko?.meno)
+  }
+  if (formData.objednavatel?.objednavatelTyp === 'Právnická osoba') {
+    return safeString(formData.objednavatel?.obchodneMeno)
+  }
+}

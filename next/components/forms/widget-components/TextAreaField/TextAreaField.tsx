@@ -69,7 +69,7 @@ const TextAreaField = ({
   )
   const containerStyle = baTwMerge(
     cx(
-      'text-p3 sm:text-16 bg-gray-0 flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 caret-gray-700 focus:border-gray-700 focus:outline-hidden',
+      'text-p3 sm:text-16 bg-gray-0 focus:outline-hidden flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 caret-gray-700 focus:border-gray-700',
       {
         'hover:border-gray-400': !disabled && !isFocused,
         'border-negative-700 hover:border-negative-700 focus:border-negative-700':
@@ -82,7 +82,7 @@ const TextAreaField = ({
 
   const textareaStyle = baTwMerge(
     cx(
-      'h-full w-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
+      'focus:outline-hidden h-full w-full resize-none overflow-y-scroll rounded-lg bg-white px-3 py-2 caret-gray-700 focus:placeholder:text-transparent sm:px-4 sm:py-3',
       {
         'border-gray-300 bg-gray-100': disabled,
       },

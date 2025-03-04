@@ -94,8 +94,8 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       cx(
         'inline-flex items-center',
         rest.href
-          ? 'underline underline-offset-4 focus-visible:outline-hidden'
-          : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-hidden',
+          ? 'focus-visible:outline-hidden underline underline-offset-4'
+          : 'focus:outline-hidden h-fit justify-center rounded-lg text-center align-middle',
         {
           'w-full': fullWidth,
           'w-fit': !fullWidth,

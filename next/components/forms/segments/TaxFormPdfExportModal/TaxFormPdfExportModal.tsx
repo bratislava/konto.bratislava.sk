@@ -125,7 +125,7 @@ const SuccessContent = () => {
               </div>
               <div className="bg-main-100 rounded-b-lg px-4 pb-4 md:px-0 md:pb-0">
                 <AriaButton
-                  className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
+                  className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}

@@ -18,7 +18,7 @@ const MenuButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, forw
       type="button"
       {...mergeProps(buttonProps, focusProps)}
       ref={ref}
-      className="relative flex cursor-pointer items-center focus:outline-hidden"
+      className="focus:outline-hidden relative flex cursor-pointer items-center"
     >
       {children}
     </button>

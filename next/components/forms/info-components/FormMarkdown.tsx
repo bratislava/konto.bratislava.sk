@@ -76,10 +76,10 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
           </MLinkNew>
         ),
         ul: ({ children: childrenInner }) => (
-          <ul className="list-disc pl-8 whitespace-normal">{childrenInner as ReactNode}</ul>
+          <ul className="list-disc whitespace-normal pl-8">{childrenInner as ReactNode}</ul>
         ),
         ol: ({ children: childrenInner }) => (
-          <ol className="list-decimal pl-8 whitespace-normal">{childrenInner as ReactNode}</ol>
+          <ol className="list-decimal whitespace-normal pl-8">{childrenInner as ReactNode}</ol>
         ),
         'tax-year': () => <>{getTaxYear()}</>,
         'tax-year-next': () => <>{getTaxYear() + 1}</>,

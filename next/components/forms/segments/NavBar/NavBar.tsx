@@ -107,11 +107,11 @@ export const NavBar = ({
         id="desktop-navbar"
         className={cx(
           className,
-          'text-p2 shadow-default sticky top-0 left-0 z-40 hidden w-full items-center bg-white lg:block',
+          'text-p2 shadow-default sticky left-0 top-0 z-40 hidden w-full items-center bg-white lg:block',
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] max-w-(--breakpoint-lg) items-center gap-x-6 lg:flex">
+        <div className="max-w-(--breakpoint-lg) m-auto hidden h-[57px] items-center gap-x-6 lg:flex">
           <Brand
             className="group grow"
             url={ROUTES.HOME}
@@ -170,7 +170,7 @@ export const NavBar = ({
         </div>
         {/* Header bottom navigation */}
         {sectionsList && !hiddenHeaderNav && (
-          <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
+          <div className="max-w-(--breakpoint-lg) m-auto hidden h-[57px] w-full items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
               value={menuValue}
               onValueChange={setMenuValue}

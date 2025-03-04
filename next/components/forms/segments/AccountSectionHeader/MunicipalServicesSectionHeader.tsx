@@ -19,7 +19,7 @@ const MunicipalServicesSectionHeader = ({
 }: MunicipalServicesSectionHeaderBase) => {
   return (
     <div className="bg-gray-50">
-      <div className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end pt-6 pb-4 pl-4 lg:px-0 lg:pt-16 lg:pb-8">
+      <div className="max-w-(--breakpoint-lg) m-auto flex size-full flex-col justify-end pb-4 pl-4 pt-6 lg:px-0 lg:pb-8 lg:pt-16">
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
         <SelectFieldNew
           label=""

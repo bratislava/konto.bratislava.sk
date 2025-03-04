@@ -182,24 +182,24 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                   variant === 'category-solid',
                 'border-category-800 bg-category-800': variant === 'category-solid' && isPressed,
 
-                'border-category-700 data-pressed:border-category-800 bg-transparent text-gray-700 data-pressed:text-gray-800':
+                'border-category-700 data-pressed:border-category-800 data-pressed:text-gray-800 bg-transparent text-gray-700':
                   variant === 'category-outline',
-                'border-gray-700 bg-gray-700 text-white data-pressed:border-gray-800 data-pressed:bg-gray-800':
+                'data-pressed:border-gray-800 data-pressed:bg-gray-800 border-gray-700 bg-gray-700 text-white':
                   variant === 'black-solid',
-                'border-gray-200 bg-transparent text-gray-700 data-pressed:border-gray-300 data-pressed:text-gray-800':
+                'data-pressed:border-gray-300 data-pressed:text-gray-800 border-gray-200 bg-transparent text-gray-700':
                   variant === 'black-outline',
                 'border-negative-700 bg-negative-700 data-pressed:border-negative-800 data-pressed:bg-negative-800 text-white':
                   variant === 'negative-solid',
 
                 'text-category-700 data-pressed:bg-category-200 data-pressed:text-category-800':
                   variant === 'category-plain',
-                'text-gray-700 data-pressed:bg-gray-200 data-pressed:text-gray-800':
+                'data-pressed:bg-gray-200 data-pressed:text-gray-800 text-gray-700':
                   variant === 'black-plain',
                 'text-negative-700 data-pressed:bg-negative-200 data-pressed:text-negative-800':
                   variant === 'negative-plain',
 
                 'text-category-700 data-pressed:text-category-800': variant === 'category-link',
-                'text-gray-700 data-pressed:text-gray-800': variant === 'black-link',
+                'data-pressed:text-gray-800 text-gray-700': variant === 'black-link',
 
                 // colors:hover - bg, border, text
                 // using custom `data-hovered:` because `hover:` is not working with `disabled` state

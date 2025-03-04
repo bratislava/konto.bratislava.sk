@@ -18,7 +18,7 @@ const Spinner = ({ size = 'md', variant = 'black', className }: SpinnerBase) => 
     className,
     {
       'h-5 w-5 border-2 border-t-2': size === 'sm',
-      'h-8 w-8 border-3 border-t-3': size === 'md',
+      'border-3 border-t-3 h-8 w-8': size === 'md',
       'h-12 w-12 border-4 border-t-4': size === 'lg',
     },
   )

@@ -77,7 +77,7 @@ const MessageModal = ({
         <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
             className={baTwMerge(
-              'text-p2 text-center whitespace-pre-wrap md:text-left',
+              'text-p2 whitespace-pre-wrap text-center md:text-left',
               childrenClassName,
             )}
           >

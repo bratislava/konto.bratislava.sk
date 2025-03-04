@@ -56,7 +56,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="text-16 border-spacing-0 border-b-2 p-4 text-left not-first:text-center first:rounded-tl last:rounded-tr lg:p-0 lg:py-4"
+            className="text-16 not-first:text-center border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4"
           >
             {header}
           </th>
@@ -73,7 +73,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
       {data.map((taxDetail) => {
         return (
           <tr key={taxDetail.id}>
-            <td className="not-first:text-20-semibold h-max border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
+            <td className="not-first:text-20-semibold not-first:text-center h-max border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4">
               <div className="inline h-0 font-semibold">
                 {t(
                   `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
@@ -85,18 +85,18 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
               )}
             </td>
             {dataType === 'GROUND' && (
-              <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
+              <td className="lg:not-first:text-20-semibold not-first:text-16-semibold not-first:text-center w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4">
                 {taxDetail.area}
               </td>
             )}
-            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
+            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold not-first:text-center w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
             {/* Buggy detection */}
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
+            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold not-first:text-center w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>

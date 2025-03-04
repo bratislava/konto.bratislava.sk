@@ -66,7 +66,7 @@ const MyApplicationsList = ({
   const totalPagesCount = applications?.countPages ?? 0
 
   return (
-    <div className="m-auto w-full max-w-(--breakpoint-lg)">
+    <div className="max-w-(--breakpoint-lg) m-auto w-full">
       {applications?.items.length ? (
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">

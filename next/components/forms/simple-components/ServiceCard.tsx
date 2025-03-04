@@ -29,7 +29,7 @@ const ServiceCard = ({
   plausibleProps,
 }: ServiceCardBase) => {
   const style = cx(
-    'group bg-gray-0 relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 p-4',
+    'bg-gray-0 group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
@@ -43,7 +43,7 @@ const ServiceCard = ({
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
         <h3
-          className={cx('text-h5 leading-5 font-semibold lg:leading-7', {
+          className={cx('text-h5 font-semibold leading-5 lg:leading-7', {
             'group-hover:underline': buttonText,
           })}
         >

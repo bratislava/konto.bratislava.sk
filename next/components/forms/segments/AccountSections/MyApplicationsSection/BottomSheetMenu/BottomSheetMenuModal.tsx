@@ -28,13 +28,13 @@ const BottomSheetMenuModal = ({
       <ModalOverlay
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        className="fixed top-0 left-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-gray-800/40 outline-0"
+        className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-gray-800/40 outline-0"
         isDismissable
       />
       <ModalOverlay
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed top-0 left-0 z-50 h-[var(--visual-viewport-height)] w-screen outline-0"
+        className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen outline-0"
         isDismissable
       >
         <Modal

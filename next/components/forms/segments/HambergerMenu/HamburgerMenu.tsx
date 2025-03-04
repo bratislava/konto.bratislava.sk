@@ -74,7 +74,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
   return (
     <div
       className={cx(
-        'fixed top-16 left-0 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
+        'fixed left-0 top-16 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
       )}
       style={{ height: 'calc(100vh - 60px)' }}
     >

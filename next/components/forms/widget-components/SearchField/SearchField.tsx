@@ -57,7 +57,7 @@ const SearchField = ({
 
   const style = baTwMerge(
     cx(
-      'sm:text-16 text-p3 w-full rounded-lg border-2 border-gray-200 bg-white px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent focus:outline-hidden sm:px-[52px] sm:py-2.5',
+      'sm:text-16 text-p3 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent sm:px-[52px] sm:py-2.5',
       {
         // hover
         'hover:border-gray-400': !disabled,

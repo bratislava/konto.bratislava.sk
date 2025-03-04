@@ -51,11 +51,11 @@ export const LoginRegisterNavBar = ({
         className={cx(
           className,
           'text-p2 items-center',
-          'shadow-default sticky top-0 left-0 z-40 w-full bg-white',
+          'shadow-default sticky left-0 top-0 z-40 w-full bg-white',
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center lg:flex">
+        <div className="max-w-(--breakpoint-lg) m-auto hidden h-[57px] w-full items-center lg:flex">
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
@@ -73,7 +73,7 @@ export const LoginRegisterNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
+        className={cx(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
         <div className="flex h-16 items-center border-b-2 px-8 py-5">

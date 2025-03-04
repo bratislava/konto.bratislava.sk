@@ -33,7 +33,7 @@ const Radio = ({
   const isError = state?.validationState === 'invalid'
 
   const inputStyle = cx(
-    'top-0 right-0 bottom-0 left-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
+    'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
     {
       // "before" pseudo-element is used to display the selected radio button
       'before:h-4 before:min-h-[16px] before:w-4 before:min-w-[16px] before:rounded-full before:bg-gray-700':
@@ -54,7 +54,7 @@ const Radio = ({
     'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
     'flex-row items-center': variant === 'basic' || variant === 'boxed',
     'p-3 lg:px-4 lg:py-3': variant === 'boxed',
-    'flex-col items-start p-5 break-words': variant === 'card',
+    'flex-col items-start break-words p-5': variant === 'card',
     'rounded-8 border-2 border-solid': variant === 'boxed' || variant === 'card',
     'border-gray-200': !isError && !isSelected,
     'border-negative-700': isError,

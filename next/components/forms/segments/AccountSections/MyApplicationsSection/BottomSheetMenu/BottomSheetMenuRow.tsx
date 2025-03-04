@@ -19,7 +19,7 @@ const BottomSheetMenuRow = ({
     <Link className="flex items-center gap-3" href={url} onClick={() => onLinkClick()}>
       <div
         className={cx(
-          'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 py-2 font-sans focus:outline-hidden',
+          'text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden flex cursor-pointer items-center gap-3 py-2 font-sans',
           itemClassName,
         )}
       >
@@ -31,7 +31,7 @@ const BottomSheetMenuRow = ({
     <Button
       onPress={onPress}
       className={cx(
-        'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 py-2 focus:outline-hidden',
+        'text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden flex cursor-pointer items-center gap-3 py-2',
         itemClassName,
       )}
     >

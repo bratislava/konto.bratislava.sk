@@ -76,7 +76,7 @@ const Modal = ({
   return (
     <ModalOverlay
       className={baTwMerge(
-        'fixed top-0 left-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
+        'fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
         modalOverlayClassname,
       )}
       {...modalProps}
@@ -89,7 +89,7 @@ const Modal = ({
             'bg-gray-0 relative overflow-auto px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
             mobileFullScreen
               ? 'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12'
-              : 'mx-4 h-min max-h-full w-full rounded-xl pt-6 pb-4',
+              : 'mx-4 h-min max-h-full w-full rounded-xl pb-4 pt-6',
             modalClassname,
           )}
         >
@@ -98,7 +98,7 @@ const Modal = ({
               <>
                 {noCloseButton ? null : (
                   <AriaButton
-                    className="absolute top-3 right-3 cursor-pointer md:top-4 md:right-4"
+                    className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
                     onPress={close}
                     data-cy="close-modal"
                   >

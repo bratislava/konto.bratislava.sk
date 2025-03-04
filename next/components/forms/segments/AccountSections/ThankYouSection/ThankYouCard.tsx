@@ -26,7 +26,7 @@ const ThankYouCard = ({
   feedbackTitle,
 }: ThankYouCardBase) => {
   return (
-    <div className="bg-gray-0 mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none px-4 pt-6 pb-4 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
+    <div className="bg-gray-0 mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
       <span
         className={cx(
           'bg-negative-100 flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',

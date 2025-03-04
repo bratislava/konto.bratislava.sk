@@ -22,7 +22,7 @@ const TaxFeeSectionHeader = () => {
 
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
-      <div className="m-auto flex max-w-(--breakpoint-lg) flex-col gap-4 py-6">
+      <div className="max-w-(--breakpoint-lg) m-auto flex flex-col gap-4 py-6">
         <div className="flex cursor-pointer items-center gap-0.5">
           <div className="flex size-5 items-center justify-center">
             <ChevronLeftIcon className="size-5" />

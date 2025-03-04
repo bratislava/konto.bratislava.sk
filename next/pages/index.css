@@ -497,21 +497,21 @@
 @utility scroll-fade-left {
   /* useHorizontalScrollFade */
   &::before {
-    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+    @apply z-1 pointer-events-none absolute top-0 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
   &::before {
-    @apply left-0 bg-linear-to-r;
+    @apply bg-linear-to-r left-0;
   }
 }
 
 @utility scroll-fade-right {
   &::after {
-    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+    @apply z-1 pointer-events-none absolute top-0 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
   &::after {
-    @apply right-0 bg-linear-to-l;
+    @apply bg-linear-to-l right-0;
   }
 }
 

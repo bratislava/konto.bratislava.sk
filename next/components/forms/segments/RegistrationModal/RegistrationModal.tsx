@@ -102,7 +102,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => register()}
-            className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
+            className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
             data-cy="registration-modal-button"
           >
             {t('registration_modal.body_action')}

@@ -109,7 +109,7 @@
     "remark-supersub": "^1.0.0",
     "rooks": "5.11.8",
     "slugify": "^1.6.6",
-    "tailwind-merge": "2.2.1",
+    "tailwind-merge": "3.0.2",
     "tailwind-scrollbar-hide": "1.1.7",
     "usehooks-ts": "2.16.0",
     "uuid": "^9.0.0",

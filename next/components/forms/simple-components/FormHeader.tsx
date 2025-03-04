@@ -22,7 +22,7 @@ const FormHeader = () => {
 
   return (
     <div className="relative flex flex-col">
-      <div className="min-h-none size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
+      <div className="min-h-none bg-main-200 size-full p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
         <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
@@ -62,11 +62,7 @@ const FormHeader = () => {
           </div>
         </div>
       </div>
-      <Waves
-        className="hidden lg:block"
-        waveColor="rgb(var(--color-main-200))"
-        wavePosition="bottom"
-      />
+      <Waves className="hidden lg:block" waveColor="var(--color-main-200)" wavePosition="bottom" />
     </div>
   )
 }

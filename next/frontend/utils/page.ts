@@ -119,17 +119,14 @@ export const pageStyle = (pageColor: string) => {
   const category = transformColorToCategory(pageColor)
   const color = getColorsVariables(category)
 
-  return `
-:root {
-  --color-category-800: var(${color.c800}) !important;
-  --color-category-700: var(${color.c700}) !important;
-  --color-category-600: var(${color.c600}) !important;
-  --color-category-500: var(${color.c500}) !important;
-  --color-category-400: var(${color.c400}) !important;
-  --color-category-300: var(${color.c300}) !important;
-  --color-category-200: var(${color.c200}) !important;
-  --color-category-100: var(${color.c100}) !important;
+  return {
+    '--color-category-800': `var(${color.c800})`,
+    '--color-category-700': `var(${color.c700})`,
+    '--color-category-600': `var(${color.c600})`,
+    '--color-category-500': `var(${color.c500})`,
+    '--color-category-400': `var(${color.c400})`,
+    '--color-category-300': `var(${color.c300})`,
+    '--color-category-200': `var(${color.c200})`,
+    '--color-category-100': `var(${color.c100})`,
+  }
 }
-  `
-}
-

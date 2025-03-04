@@ -20,7 +20,8 @@ import { get as getAppRootDir } from 'app-root-dir'
  */
 
 function convertStringToBase64(str: string) {
-  return Buffer.from(str).toString('base64')
+  const normalizedStr = str.replace(/\r\n/g, '\n')
+  return Buffer.from(normalizedStr).toString('base64')
 }
 
 const rootDir = getAppRootDir()

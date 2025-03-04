@@ -41,7 +41,7 @@ const TaxesFeesSection = () => {
           {(displayInPreparationCard || displayTaxCards) && (
             <div className="flex flex-col gap-4">
               {/* TODO: Translation */}
-              <h2 className="text-h5-bold">Daň z nehnuteľností</h2>
+              <h2 className="text-h5-semibold">Daň z nehnuteľností</h2>
               {displayInPreparationCard && <TaxesFeesInPreparationCard />}
               {displayTaxCards && (
                 <ul className="flex flex-col gap-4">

@@ -59,7 +59,7 @@ const TaxFeeSectionHeader = () => {
                 <div className="lg:text-p2 text-p3">{formatDate(taxData?.createdAt)}</div>
               </div>
               <div className="hidden size-1.5 rounded-full bg-black md:block" />
-              <div className="lg:text-p2-bold text-p3">
+              <div className="lg:text-p2-semibold text-p3">
                 <FormatCurrencyFromCents value={taxData.amount} />
                 {taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid && (
                   <span className="lg:text-p2 text-p3">

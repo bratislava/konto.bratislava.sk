@@ -49,5 +49,5 @@ Cypress.Commands.add('checkSuccessSnackbar', () => {
   cy.get('*[class^="Snackbar_snackbar-wrapper"]')
     .find('*[class^="Snackbar_snackbar"]')
     .eq(0)
-    .should('have.attr', 'style', 'background-color: rgb(var(--color-success-700));')
+    .should('have.attr', 'style', 'background-color: var(--color-success-700);')
 })

@@ -125,7 +125,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         ? baTwMerge(stretchedStyle, className)
         : baTwMerge(
             // TODO text-button interferes with text-[color], as quickfix we set size and color here by arbitrary values
-            'inline-flex h-auto items-center justify-center gap-2 text-[1rem] leading-[1.5rem] font-semibold transition',
+            'inline-flex h-auto items-center justify-center gap-2 text-[1rem] font-semibold leading-[1.5rem] transition',
             cx(
               // we use isFocusVisible to show focus ring only on keyboard navigation
               isFocused ? 'outline-2 outline-offset-4' : 'outline-hidden',

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import ButtonNew from '../../forms/simple-components/ButtonNew'
-import ModalV2 from '../../forms/simple-components/ModalV2'
+import Modal from '../../forms/simple-components/Modal'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
@@ -21,7 +21,7 @@ const ModalShowCase = () => {
         </ButtonNew>
 
         {/* Simple Modal Example */}
-        <ModalV2
+        <Modal
           isOpen={simpleModalOpen}
           onOpenChange={setSimpleModalOpen}
           modalClassname="max-w-[700px]"
@@ -44,7 +44,7 @@ const ModalShowCase = () => {
               </div>
             </div>
           </div>
-        </ModalV2>
+        </Modal>
 
         <MessageModal
           type="success"

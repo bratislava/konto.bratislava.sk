@@ -4,7 +4,7 @@ import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 export enum RegistrationModalType {
@@ -43,7 +43,7 @@ type RegistrationModalBase = {
   // register and log in action may depend upon context - when called from inside the form it involves saving work in progress
   register: () => void
   login: () => void
-} & ModalV2Props
+} & ModalProps
 
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
@@ -73,7 +73,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2
+    <Modal
       modalClassname="md:max-w-[796px] md:pt-8"
       mobileFullScreen
       {...rest}
@@ -102,7 +102,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => register()}
-            className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600  md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+            className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
             data-cy="registration-modal-button"
           >
             {t('registration_modal.body_action')}
@@ -161,7 +161,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           </div>
         </div>
       )}
-    </ModalV2>
+    </Modal>
   )
 }
 

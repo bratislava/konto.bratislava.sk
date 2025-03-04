@@ -5,7 +5,7 @@ import { mergeProps } from 'react-aria'
 import {
   Button as AriaButton,
   Dialog,
-  Modal,
+  Modal as AriaModal,
   ModalOverlay,
   ModalOverlayProps,
 } from 'react-aria-components'
@@ -13,7 +13,7 @@ import { twMerge } from 'tailwind-merge'
 
 import { useIframeResizerChildContext } from '../IframeResizerChild'
 
-export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
+export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
   modalOverlayClassname?: string
   mobileFullScreen?: boolean
@@ -59,7 +59,7 @@ const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
   )
 }
 
-const ModalV2 = ({
+const Modal = ({
   children,
   modalClassname,
   modalOverlayClassname,
@@ -67,7 +67,7 @@ const ModalV2 = ({
   noCloseButton,
   dataCy,
   ...rest
-}: ModalV2Props) => {
+}: ModalProps) => {
   const { t } = useTranslation('common')
 
   // Makes `{ isDismissable: true }` default.
@@ -82,7 +82,7 @@ const ModalV2 = ({
       {...modalProps}
     >
       <ModalInIframeResizerWrapper>
-        <Modal
+        <AriaModal
           data-cy={dataCy}
           {...modalProps}
           className={twMerge(
@@ -110,10 +110,10 @@ const ModalV2 = ({
               </>
             )}
           </Dialog>
-        </Modal>
+        </AriaModal>
       </ModalInIframeResizerWrapper>
     </ModalOverlay>
   )
 }
 
-export default ModalV2
+export default Modal

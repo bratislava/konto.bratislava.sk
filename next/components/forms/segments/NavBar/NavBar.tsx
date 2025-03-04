@@ -53,13 +53,13 @@ export interface MenuSectionItemBase {
 
 const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
-    <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
-      <div className="flex size-6 items-center justify-center font-semibold text-main-700">
+    <div className="bg-main-100 relative flex flex-row items-start gap-2 rounded-full p-2">
+      <div className="text-main-700 flex size-6 items-center justify-center font-semibold">
         <span className="uppercase">
           {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
             userAttributes.given_name[0] + userAttributes.family_name[0]
           ) : (
-            <ProfileIcon className="size-6 text-main-700" />
+            <ProfileIcon className="text-main-700 size-6" />
           )}
         </span>
       </div>
@@ -107,7 +107,7 @@ export const NavBar = ({
         id="desktop-navbar"
         className={cx(
           className,
-          'text-p2 sticky left-0 top-0 z-40 hidden w-full items-center bg-white shadow lg:block',
+          'text-p2 shadow-default sticky top-0 left-0 z-40 hidden w-full items-center bg-white lg:block',
         )}
         ref={desktopNavbarRef}
       >
@@ -123,7 +123,7 @@ export const NavBar = ({
             }
           />
           <IdentityVerificationStatus />
-          <nav className="flex gap-x-8 font-semibold text-font/75">
+          <nav className="text-font/75 flex gap-x-8 font-semibold">
             {isSignedIn ? (
               <MenuDropdown
                 setIsOpen={setIsMenuOpen}
@@ -131,7 +131,7 @@ export const NavBar = ({
                   <ButtonNew
                     variant="unstyled"
                     data-cy="account-button"
-                    className="flex items-center gap-4 font-semibold text-font/75"
+                    className="text-font/75 flex items-center gap-4 font-semibold"
                   >
                     <Avatar userAttributes={userAttributes} />
                     <div className="flex items-center gap-1 font-light lg:font-semibold">
@@ -148,7 +148,7 @@ export const NavBar = ({
                 items={menuItems}
               />
             ) : (
-              <div className="flex items-center gap-x-6 font-semibold text-font/75">
+              <div className="text-font/75 flex items-center gap-x-6 font-semibold">
                 <Button
                   className="whitespace-nowrap lg:flex"
                   size="sm"
@@ -186,7 +186,7 @@ export const NavBar = ({
                       <NextLink href={sectionItem.url}>
                         <div
                           className={cx(
-                            'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
+                            'text-p2-semibold hover:border-main-700 hover:text-main-700 flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all',
                             {
                               'border-main-700 text-main-700': isActive(sectionItem),
                               'border-transparent': !isActive(sectionItem),

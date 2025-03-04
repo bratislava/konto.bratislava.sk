@@ -51,7 +51,7 @@ export const LoginRegisterNavBar = ({
         className={cx(
           className,
           'text-p2 items-center',
-          'sticky left-0 top-0 z-40 w-full bg-white shadow',
+          'shadow-default sticky top-0 left-0 z-40 w-full bg-white',
         )}
         ref={desktopNavbarRef}
       >
@@ -73,7 +73,7 @@ export const LoginRegisterNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
+        className={cx(className, 'sticky top-0 left-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
         <div className="flex h-16 items-center border-b-2 px-8 py-5">

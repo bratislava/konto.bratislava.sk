@@ -125,7 +125,7 @@
   /* Box shadows */
   --shadow-lg: 0px 16px 24px rgba(0, 0, 0, 0.12);
   --shadow-md: 0px 8px 16px rgba(0, 0, 0, 0.12);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-default: 0px 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-sm: 0px 2px 8px rgba(0, 0, 0, 0.12);
 
   --animate-stepper-slide: stepper-slide 500ms;

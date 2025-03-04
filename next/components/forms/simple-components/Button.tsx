@@ -7,7 +7,7 @@ import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
 import Spinner from './Spinner'
-import { twMerge } from 'tailwind-merge'
+import baTwMerge from '../../../frontend/baTwMerge'
 
 type ButtonBase = {
   variant?:
@@ -90,7 +90,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       ref,
     )
 
-    const style = twMerge(
+    const style = baTwMerge(
       cx(
         'inline-flex items-center',
         rest.href

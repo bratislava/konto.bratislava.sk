@@ -2,6 +2,7 @@ import { AxiosError } from '@bratislava/ginis-sdk'
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -59,7 +60,7 @@ export default class GinisController {
     description: '',
     type: GinisDocumentDetailResponseDto,
   })
-  @ApiNotFoundResponse({
+  @ApiForbiddenResponse({
     description: 'Form is Forbidden.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })

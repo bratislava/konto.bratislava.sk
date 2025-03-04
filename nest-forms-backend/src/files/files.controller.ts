@@ -19,6 +19,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiExtraModels,
+  ApiForbiddenResponse,
   ApiGoneResponse,
   ApiInternalServerErrorResponse,
   ApiNotAcceptableResponse,
@@ -147,7 +148,7 @@ export default class FilesController {
     type: GetFileResponseReducedDto,
     isArray: true,
   })
-  @ApiNotFoundResponse({
+  @ApiForbiddenResponse({
     description: 'Form is Forbidden.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })

@@ -1,8 +1,8 @@
 import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { PropsWithChildren } from 'react'
-import { twMerge } from 'tailwind-merge'
 
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
+import baTwMerge from '../../../frontend/baTwMerge'
 
 type WidgetWrapperProps = PropsWithChildren<{
   id: string
@@ -19,7 +19,7 @@ const WidgetWrapper = ({ id, options, className, children }: WidgetWrapperProps)
   return (
     <div
       id={id ?? undefined}
-      className={twMerge('flex flex-col gap-4', className, optionsClassName)}
+      className={baTwMerge('flex flex-col gap-4', className, optionsClassName)}
     >
       {hasRightComponents ? (
         <div className="sm:grid sm:grid-cols-2 sm:gap-4">

@@ -2,10 +2,10 @@ import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { twMerge } from 'tailwind-merge'
 
 import { FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
+import baTwMerge from '../../../frontend/baTwMerge'
 
 interface StepperViewRowProps {
   step: FormStepperStep
@@ -35,7 +35,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
   )
 
   return (
-    <div className={twMerge('flex flex-row items-center gap-3', className)}>
+    <div className={baTwMerge('flex flex-row items-center gap-3', className)}>
       <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
         {isCurrent || !isSubmitted ? (
           step.displayIndex

@@ -1,12 +1,12 @@
 import cx from 'classnames'
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
-import { twMerge } from 'tailwind-merge'
 
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
 import WarningIcon from '../../icon-components/WarningIcon'
 import Modal, { ModalProps } from '../../simple-components/Modal'
+import baTwMerge from '../../../../frontend/baTwMerge'
 
 export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
@@ -67,7 +67,7 @@ const MessageModal = ({
           </div>
         </div>
         <div
-          className={twMerge(
+          className={baTwMerge(
             'text-h-base flex h-14 items-center text-center font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
             titleClassName,
           )}
@@ -76,7 +76,7 @@ const MessageModal = ({
         </div>
         <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
-            className={twMerge(
+            className={baTwMerge(
               'text-p2 text-center whitespace-pre-wrap md:text-left',
               childrenClassName,
             )}

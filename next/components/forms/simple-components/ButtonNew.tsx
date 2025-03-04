@@ -7,9 +7,9 @@ import Spinner from 'components/forms/simple-components/Spinner'
 import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
-import { twMerge } from 'tailwind-merge'
 
 import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
+import baTwMerge from '../../../frontend/baTwMerge'
 
 type ButtonOrIconButton =
   | {
@@ -122,8 +122,8 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
      */
     const styles =
       variant === 'unstyled'
-        ? twMerge(stretchedStyle, className)
-        : twMerge(
+        ? baTwMerge(stretchedStyle, className)
+        : baTwMerge(
             // TODO text-button interferes with text-[color], as quickfix we set size and color here by arbitrary values
             'inline-flex h-auto items-center justify-center gap-2 text-[1rem] leading-[1.5rem] font-semibold transition',
             cx(

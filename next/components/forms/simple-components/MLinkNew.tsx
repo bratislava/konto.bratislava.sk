@@ -2,7 +2,7 @@ import cx from 'classnames'
 import NextLink from 'next/link'
 import { usePlausible } from 'next-plausible'
 import { ComponentProps, forwardRef } from 'react'
-import { twMerge } from 'tailwind-merge'
+import baTwMerge from '../../../frontend/baTwMerge'
 
 export type LinkPlausibleProps = { id: string }
 
@@ -27,7 +27,7 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
   ) => {
     const plausible = usePlausible()
 
-    const styles = twMerge(
+    const styles = baTwMerge(
       cx('underline-offset-2 transition', {
         'max-lg:underline lg:hover:underline': variant === 'standard',
         'underline hover:opacity-80': variant === 'underlined' || variant === 'underlined-medium',

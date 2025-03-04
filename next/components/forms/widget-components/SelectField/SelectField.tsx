@@ -11,10 +11,10 @@ import Select, {
   OptionProps,
   Props as ReactSelectProps,
 } from 'react-select'
-import { twMerge } from 'tailwind-merge'
 
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import baTwMerge from '../../../../frontend/baTwMerge'
 
 export type SelectOption = { value: string; label: string; description?: string }
 
@@ -167,7 +167,7 @@ const SelectField = <
   const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)
 
   return (
-    <div className={twMerge('w-full', className)}>
+    <div className={baTwMerge('w-full', className)}>
       <FieldWrapper
         label={label}
         helptext={helptext}

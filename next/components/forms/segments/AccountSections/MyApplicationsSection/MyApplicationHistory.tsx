@@ -47,7 +47,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
         ))}
       </div>
       {/* Mobile */}
-      <div className=" flex flex-col overflow-x-auto md:hidden">
+      <div className="flex flex-col overflow-x-auto md:hidden">
         <div className="w-[548px] rounded-lg border-2 border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
             <span className="text-p2 min-w-[240px]">

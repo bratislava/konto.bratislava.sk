@@ -99,7 +99,7 @@ const TimeSelector = ({
       <div className="flex w-full flex-col justify-between py-10">
         <div className="flex h-fit max-h-52 justify-between overflow-hidden px-4">
           <div className="flex flex-col items-center justify-start overflow-x-hidden">
-            <div ref={hourRef} className="flex flex-col overflow-y-auto scrollbar-hide">
+            <div ref={hourRef} className="scrollbar-hide flex flex-col overflow-y-auto">
               <span className="pt-[84px] focus:outline-hidden" />
               {hoursArray?.map((item) => (
                 <button
@@ -138,7 +138,7 @@ const TimeSelector = ({
             <span className="text-20 flex size-6 items-center justify-center">:</span>
           </div>
           <div className="flex flex-col items-center justify-start overflow-x-hidden">
-            <div ref={minuteRef} className="flex flex-col overflow-y-auto scrollbar-hide">
+            <div ref={minuteRef} className="scrollbar-hide flex flex-col overflow-y-auto">
               <span className="pt-[84px] focus:outline-hidden" />
               {minutesArray?.map((item) => (
                 <button

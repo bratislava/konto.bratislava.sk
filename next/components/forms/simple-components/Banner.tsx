@@ -69,7 +69,7 @@ const Banner = ({
             onPress={onPress}
           />
           {mobileNumber && (
-            <div className="flex items-center gap-2 px-3 py-2 text-gray-0">
+            <div className="text-gray-0 flex items-center gap-2 px-3 py-2">
               <PhoneIcon />
               <span className="text-p2-semibold">{mobileNumber}</span>
             </div>

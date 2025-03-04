@@ -17,7 +17,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
 
   // STYLES
   const classStyles = cx(
-    'tag align-items-center inline-block flex h-5 min-w-14 items-center gap-2.5 px-2 text-center',
+    'tag align-items-center flex inline-block h-5 min-w-14 items-center gap-2.5 px-2 text-center',
     {
       'text-16': size === 'large',
       'text-p3': size === 'small' || !size,

@@ -50,7 +50,7 @@ const AnnouncementBlock = ({
           src={imagePath}
           className={cx('rounded-t-lg', {
             'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
-            'lg:rounded-r-3xl lg:rounded-tl-none': !reversed,
+            'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
           })}
           layout="fill"
           priority

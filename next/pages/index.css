@@ -422,7 +422,6 @@
   @apply text-p-xs font-normal;
 }
 
-
 @utility text-p4-medium {
   @apply text-p-xs font-medium;
 }

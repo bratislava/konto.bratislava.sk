@@ -74,7 +74,7 @@ const SingleCheckBox = ({
     },
   )
 
-  const labelStyle = cx('text-16 flex select-none gap-3 text-gray-700', {
+  const labelStyle = cx('text-16 flex gap-3 text-gray-700 select-none', {
     'w-full': fullWidth,
   })
 
@@ -89,7 +89,7 @@ const SingleCheckBox = ({
         <div className={checkboxStyle}>
           {isSelected && (
             <CheckIcon
-              className={cx('h-5 w-5 text-gray-0', {
+              className={cx('text-gray-0 h-5 w-5', {
                 hidden: !isSelected,
               })}
             />
@@ -111,7 +111,7 @@ const SingleCheckBox = ({
         <div className={labelStyle}>
           <div
             className={cx('relative', {
-              'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
+              'after:text-16-semibold after:text-main-700 after:absolute after:bottom-0.5 after:ml-0.5 after:content-["*"]':
                 required,
             })}
           >

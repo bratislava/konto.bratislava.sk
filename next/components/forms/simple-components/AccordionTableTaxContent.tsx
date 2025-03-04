@@ -51,12 +51,12 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   ]
 
   return (
-    <thead className="self-stretch bg-gray-50 lg:bg-gray-0">
+    <thead className="lg:bg-gray-0 self-stretch bg-gray-50">
       <tr>
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 not-first:text-center"
+            className="text-16 border-spacing-0 border-b-2 p-4 text-left not-first:text-center first:rounded-tl last:rounded-tr lg:p-0 lg:py-4"
           >
             {header}
           </th>
@@ -73,7 +73,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
       {data.map((taxDetail) => {
         return (
           <tr key={taxDetail.id}>
-            <td className="not-first:text-20-semibold h-max border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 not-first:text-center">
+            <td className="not-first:text-20-semibold h-max border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
               <div className="inline h-0 font-semibold">
                 {t(
                   `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
@@ -85,18 +85,18 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
               )}
             </td>
             {dataType === 'GROUND' && (
-              <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 not-first:text-center">
+              <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
                 {taxDetail.area}
               </td>
             )}
-            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 not-first:text-center">
+            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
             {/* Buggy detection */}
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 not-first:text-center">
+            <td className="lg:not-first:text-20-semibold not-first:text-16-semibold w-[15%] border-r-2 p-4 not-first:text-center last:border-r-0 lg:p-0 lg:py-4">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
@@ -139,7 +139,7 @@ const AccordionTableTaxContent = ({
     >
       <div className="flex size-full flex-col gap-6">
         <Table dataType={dataType} data={data} />
-        <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
+        <div className="lg:bg-gray-0 flex rounded-lg bg-gray-100 p-4 lg:p-0">
           <div className="text-h4-bold grow">Celkom</div>
           <div className="text-h4-bold">{secondTitle}</div>
         </div>

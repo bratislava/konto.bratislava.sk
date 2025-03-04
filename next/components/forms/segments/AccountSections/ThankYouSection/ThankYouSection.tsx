@@ -57,7 +57,7 @@ const ThankYouSection = () => {
   }, [router.query, status])
 
   return (
-    <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
+    <div className="bg-gray-0 flex h-screen flex-col justify-between pt-16 md:bg-gray-50 md:pt-28">
       <div className="flex flex-col">
         {success ? (
           <ThankYouCard

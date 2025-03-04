@@ -68,7 +68,7 @@ const MessageModal = ({
         </div>
         <div
           className={twMerge(
-            'flex h-14 items-center text-center text-h-base font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
+            'text-h-base flex h-14 items-center text-center font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
             titleClassName,
           )}
         >
@@ -77,7 +77,7 @@ const MessageModal = ({
         <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
             className={twMerge(
-              'text-p2 whitespace-pre-wrap text-center md:text-left',
+              'text-p2 text-center whitespace-pre-wrap md:text-left',
               childrenClassName,
             )}
           >

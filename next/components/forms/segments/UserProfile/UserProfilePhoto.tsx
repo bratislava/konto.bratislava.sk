@@ -19,7 +19,7 @@ const UserProfilePhoto = ({ userAttributes }: UserProfilePhotoProps) => {
   return (
     <div
       className={cx(
-        'flex h-24 w-24 min-w-24 flex-col items-center justify-center rounded-full bg-main-100 text-main-700',
+        'bg-main-100 text-main-700 flex h-24 w-24 min-w-24 flex-col items-center justify-center rounded-full',
         'md:h-[168px] md:w-[168px] md:min-w-[168px]',
       )}
     >

@@ -34,7 +34,7 @@ const Link = ({
     <NextLink className={className} href={href} target={target}>
       <div
         className={cx('group flex cursor-pointer items-center', {
-          'font-medium text-category-600': variant === 'primary',
+          'text-category-600 font-medium': variant === 'primary',
         })}
       >
         <span className="group-hover:hidden">{hasIconLeft && icon}</span>

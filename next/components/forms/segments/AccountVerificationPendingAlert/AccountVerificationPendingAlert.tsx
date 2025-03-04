@@ -24,9 +24,9 @@ const AccountVerificationPendingAlert = ({
 }: Props) => {
   return (
     <div className="flex flex-col space-y-6">
-      <div className="mx-auto size-14 rounded-full bg-warning-100 p-4">
+      <div className="bg-warning-100 mx-auto size-14 rounded-full p-4">
         <div className="flex size-6 items-center justify-center">
-          <ClockIcon className="size-6 text-warning-700" />
+          <ClockIcon className="text-warning-700 size-6" />
         </div>
       </div>
       <h1 className="text-h3 text-center">{title}</h1>

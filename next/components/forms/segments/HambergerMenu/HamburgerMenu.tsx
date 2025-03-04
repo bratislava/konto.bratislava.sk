@@ -42,7 +42,7 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         {...rest}
         onClick={onClick}
         className={cx(
-          'text-p2-semibold flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
+          'text-p2-semibold hover:bg-main-100 hover:text-main-700 flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 transition-all',
           {
             'bg-main-100 text-main-700': isSelected,
           },
@@ -74,7 +74,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
   return (
     <div
       className={cx(
-        'fixed left-0 top-16 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
+        'fixed top-16 left-0 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
       )}
       style={{ height: 'calc(100vh - 60px)' }}
     >
@@ -109,7 +109,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Trigger
                     className={cx(
-                      'text-p2-semibold flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
+                      'text-p2-semibold hover:bg-main-100 hover:text-main-700 flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all',
                     )}
                     data-cy={`${sectionItem.url ? sectionItem.url.replaceAll('/', '') : sectionItem.title.replaceAll(' ', '-')}-menu-item`}
                     onClick={() => {

@@ -21,7 +21,7 @@ const PaymentScheduleView = () => {
   ]
 
   return (
-    <div className="flex w-full flex-col items-start gap-4 overflow-auto scrollbar-hide lg:gap-6">
+    <div className="scrollbar-hide flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
       <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
         <div className="flex w-full flex-col gap-4">
           <span className="text-p1">

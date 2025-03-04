@@ -74,7 +74,7 @@ const InvalidValueRenderer = () => {
 
   return (
     <span>
-      <div className="flex items-center gap-3 text-error">
+      <div className="text-error flex items-center gap-3">
         <div className="shrink-0">
           <AlertIcon />
         </div>

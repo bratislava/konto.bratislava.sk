@@ -306,7 +306,7 @@ const MyApplicationsCard = ({
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center ">
+                  <span className="text-p3 flex items-center">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (

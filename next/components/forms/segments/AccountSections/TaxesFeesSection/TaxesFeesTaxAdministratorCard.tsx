@@ -18,7 +18,7 @@ const TaxesFeesTaxAdministratorCard = ({
   return (
     <div className="flex w-full items-start gap-4 rounded-lg border-2 border-gray-200 p-5">
       <div className="hidden rounded-lg border-2 border-gray-200 p-3 sm:block">
-        <PhoneIcon className="size-6 text-main-700" />
+        <PhoneIcon className="text-main-700 size-6" />
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">

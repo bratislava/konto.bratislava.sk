@@ -13,7 +13,7 @@ const UploadFieldHeader = (props: UploadFieldHeaderProps) => {
 
   // STYLES
   const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
-    'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
+    'after:text-16-semibold after:text-main-700 after:absolute after:bottom-0.5 after:ml-0.5 after:content-["*"]':
       required,
   })
 

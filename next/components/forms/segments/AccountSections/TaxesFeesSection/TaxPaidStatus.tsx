@@ -14,10 +14,10 @@ const TaxPaidStatus = ({ status, mobileIcon = false }: TaxPaidStatusProps) => {
   })
 
   const icon = {
-    [TaxPaidStatusEnum.NotPaid]: <ErrorIcon className="size-6 text-negative-700" />,
-    [TaxPaidStatusEnum.PartiallyPaid]: <ClockIcon className="size-6 text-warning-700" />,
-    [TaxPaidStatusEnum.Paid]: <CheckIcon className="size-6 text-success-700" />,
-    [TaxPaidStatusEnum.OverPaid]: <ClockIcon className="size-6 text-warning-700" />,
+    [TaxPaidStatusEnum.NotPaid]: <ErrorIcon className="text-negative-700 size-6" />,
+    [TaxPaidStatusEnum.PartiallyPaid]: <ClockIcon className="text-warning-700 size-6" />,
+    [TaxPaidStatusEnum.Paid]: <CheckIcon className="text-success-700 size-6" />,
+    [TaxPaidStatusEnum.OverPaid]: <ClockIcon className="text-warning-700 size-6" />,
   }[status]
 
   // TODO: Translations

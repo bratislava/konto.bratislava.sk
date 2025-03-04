@@ -53,13 +53,13 @@ const IntroSection = () => {
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
               <Button
                 size="sm"
-                className="hidden pl-4 pt-4 sm:flex"
+                className="hidden pt-4 pl-4 sm:flex"
                 label={t('account_section_intro.all_services')}
                 variant="link-category"
                 href={ROUTES.MUNICIPAL_SERVICES}
               />
             </div>
-            <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
+            <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
               {filteredServiceCards.map((card) => (
                 <ServiceCard
                   key={card.id}
@@ -76,7 +76,7 @@ const IntroSection = () => {
             </div>
             <Button
               size="sm"
-              className="flex pl-4 pt-4 sm:hidden"
+              className="flex pt-4 pl-4 sm:hidden"
               label={t('account_section_intro.all_services')}
               variant="link-category"
               href={ROUTES.MUNICIPAL_SERVICES}

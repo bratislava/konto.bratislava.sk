@@ -66,7 +66,7 @@ const ThankYouFormSection = () => {
   return (
     <div
       className={cx(
-        'flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28',
+        'bg-gray-0 flex flex-col justify-between pt-16 md:bg-gray-50 md:pt-28',
         largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
       )}
     >

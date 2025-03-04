@@ -75,7 +75,7 @@ const StepperShowCase = () => {
   return (
     <Wrapper direction="column" title="Stepper">
       <Stack direction="column">
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps1}
             currentStep={currentStep1}
@@ -84,7 +84,7 @@ const StepperShowCase = () => {
         </div>
       </Stack>
       <Stack direction="column">
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps2}
             currentStep={currentStep2}
@@ -93,7 +93,7 @@ const StepperShowCase = () => {
         </div>
       </Stack>
       <Stack direction="column">
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps3}
             currentStep={currentStep3}
@@ -102,7 +102,7 @@ const StepperShowCase = () => {
         </div>
       </Stack>
       <Stack direction="column">
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps3}
             currentStep={currentStep4}
@@ -110,7 +110,7 @@ const StepperShowCase = () => {
             forceMobileSize
           />
         </div>
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps2}
             currentStep={currentStep5}
@@ -118,7 +118,7 @@ const StepperShowCase = () => {
             forceMobileSize
           />
         </div>
-        <div className="w-full xs:w-fit">
+        <div className="xs:w-fit w-full">
           <StepperView
             steps={steps1}
             currentStep={currentStep6}

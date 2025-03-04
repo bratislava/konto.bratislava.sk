@@ -67,7 +67,7 @@ const TextAreaField = ({
     ref,
   )
   const containerStyle = cx(
-    'text-p3 sm:text-16 flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 bg-gray-0 caret-gray-700 focus:border-gray-700 focus:outline-hidden',
+    'text-p3 sm:text-16 bg-gray-0 flex resize-none flex-col overflow-hidden rounded-lg border-2 border-gray-200 caret-gray-700 focus:border-gray-700 focus:outline-hidden',
     className,
     {
       'hover:border-gray-400': !disabled && !isFocused,
@@ -78,7 +78,7 @@ const TextAreaField = ({
   )
 
   const textareaStyle = cx(
-    'h-full w-full resize-none overflow-y-scroll rounded-lg bg-gray-0 px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
+    'bg-gray-0 h-full w-full resize-none overflow-y-scroll rounded-lg px-3 py-2 caret-gray-700 focus:outline-hidden focus:placeholder:text-transparent sm:px-4 sm:py-3',
     {
       'border-gray-300 bg-gray-100': disabled,
     },

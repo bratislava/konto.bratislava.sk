@@ -73,8 +73,8 @@ const AccountMarkdown = ({
     a: ({ href, children }: ChildrenParent) => (
       <Link
         href={href ?? '#'}
-        className={cx('break-words font-semibold underline underline-offset-4', {
-          'text-white hover:text-category-600': uLinkVariant === 'primary',
+        className={cx('font-semibold break-words underline underline-offset-4', {
+          'hover:text-category-600 text-white': uLinkVariant === 'primary',
           'text-font hover:text-category-600': uLinkVariant === 'default',
           'text-white hover:text-white': uLinkVariant === 'error',
         })}

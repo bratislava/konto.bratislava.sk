@@ -64,7 +64,7 @@ const FieldHeader = ({
     'text-h4 after:text-h4': labelSize === 'h4',
     'text-h5 after:text-h5': labelSize === 'h5',
     'mr-2': showOptionalLabel,
-    'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
+    'after:text-main-700 after:absolute after:ml-0.5 after:content-["*"]': displayAsterisk,
   })
 
   return (

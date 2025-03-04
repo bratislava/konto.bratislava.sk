@@ -32,7 +32,7 @@ const BAArrayFieldItemTemplate = <
   const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cx({
-    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pb-6 md:pt-8':
+    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pt-8 md:pb-6':
       variant === 'topLevel',
     'rounded-lg bg-gray-50': variant === 'nested',
   })

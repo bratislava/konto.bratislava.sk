@@ -1,160 +1,64 @@
-// import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
-import RegistrationModal, {
-  RegistrationModalType,
-} from 'components/forms/segments/RegistrationModal/RegistrationModal'
-// import RegistrationModal, {
-//   RegistrationModalType,
-// } from 'components/forms/segments/RegistrationModal/RegistrationModal'
-import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useState } from 'react'
 
-import Button from '../../forms/simple-components/Button'
 import ButtonNew from '../../forms/simple-components/ButtonNew'
+import ModalV2 from '../../forms/simple-components/ModalV2'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const firstScreen = () => {
-  return (
-    <div className="flex w-full items-center justify-center rounded-lg bg-[blue] p-2 text-white">
-      First screen
-    </div>
-  )
-}
-
-const secondScreen = () => {
-  return (
-    <div className="flex w-full items-center justify-center rounded-lg bg-[orange] p-2 text-white">
-      Second screen
-    </div>
-  )
-}
-
-const thirdScreen = () => {
-  return (
-    <div className="flex w-full items-center justify-center rounded-lg bg-[purple] p-2 text-white">
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-      been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer
-      took a galley of type and scrambled it to make a type specimen book. It has survived not only
-      five centuries, but also the leap into electronic typesetting, remaining essentially
-      unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-      Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
-      including versions of Lorem Ipsum.
-    </div>
-  )
-}
-
-const singleModalContent = ({ onSubmit }: any) => {
-  return (
-    <div>
-      <div className="flex w-full items-center justify-center rounded-lg bg-[green] p-2 text-white">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-        been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer
-        took a galley of type and scrambled it to make a type specimen book. It has survived not
-        only five centuries, but also the leap into electronic typesetting, remaining essentially
-        unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-        Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-        PageMaker including versions of Lorem Ipsum.
-      </div>
-      <div className="mt-2 flex justify-between">
-        <Button text="First" variant="black-outline" onPress={onSubmit} />
-        <Button text="Second" variant="black-outline" onPress={onSubmit} />
-      </div>
-    </div>
-  )
-}
-
 const ModalShowCase = () => {
-  const [modalSingleShow, setModalSingleShow] = useState(false)
-  const [modalShow, setModalShow] = useState(false)
+  const [simpleModalOpen, setSimpleModalOpen] = useState(false)
   const [messageModal, setMessageModal] = useState(false)
-  const [registrationModal, setRegistrationModal] = useState(false)
-  // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
-  // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
   return (
     <Wrapper direction="column" title="Modal">
       <Stack direction="column">
-        <Button
-          size="sm"
-          variant="black"
-          text="Open modal single content modal window"
-          onPress={() => setModalSingleShow(true)}
-        />
-        <Button
-          size="sm"
-          variant="black-outline"
-          text="Open modal (divider is optional parameter)"
-          onPress={() => setModalShow(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open message modal"
-          onPress={() => setMessageModal(true)}
-        />
-        {/* <Button
-          size="sm"
-          variant="black"
-          text="Open registration modal"
-          onPress={() => setRegistrationModal(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open Identity Verification Modal"
-          onPress={() => setIdentityVerificationModal(true)}
-        /> */}
-        <Modal
-          divider
-          header="Some header"
-          show={modalSingleShow}
-          onClose={() => setModalSingleShow(false)}
-          onSubmit={() => {
-            alert('Modal submitted')
-            setModalSingleShow(false)
-          }}
-          content={singleModalContent}
-          className="w-[700px]"
-          confirmLabel="Finish"
-          cancelLabel="Zrušit"
-        />
-        <Modal
-          divider
-          header="Some header"
-          show={modalShow}
-          onClose={() => setModalShow(false)}
-          onSubmit={() => {
-            alert('Modal submitted')
-            setModalShow(false)
-          }}
-          content={[firstScreen, secondScreen, thirdScreen]}
-          className="w-[700px]"
-          confirmLabel="Finish"
-          cancelLabel="Zrušit"
-        />
+        <ButtonNew variant="black-solid" onPress={() => setSimpleModalOpen(true)}>
+          Open simple modal
+        </ButtonNew>
+        <ButtonNew variant="black-solid" onPress={() => setMessageModal(true)}>
+          Open message modal
+        </ButtonNew>
+
+        {/* Simple Modal Example */}
+        <ModalV2
+          isOpen={simpleModalOpen}
+          onOpenChange={setSimpleModalOpen}
+          modalClassname="max-w-[700px]"
+        >
+          <div className="flex flex-col gap-4">
+            <h2 className="text-h3 font-semibold">Simple Modal Example</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex w-full items-center justify-center rounded-lg bg-[green] p-4 text-white">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an
+                unknown printer took a galley of type and scrambled it to make a type specimen book.
+              </div>
+              <div className="mt-2 flex justify-between">
+                <ButtonNew variant="black-outline" onPress={() => setSimpleModalOpen(false)}>
+                  Cancel
+                </ButtonNew>
+                <ButtonNew variant="black-solid" onPress={() => setSimpleModalOpen(false)}>
+                  Submit
+                </ButtonNew>
+              </div>
+            </div>
+          </div>
+        </ModalV2>
 
         <MessageModal
           type="success"
           isOpen={messageModal}
           onOpenChange={setMessageModal}
           title="Lorem ipsum"
-          buttons={[<ButtonNew variant="black-plain">Test button</ButtonNew>]}
+          buttons={[
+            <ButtonNew key="test-button" variant="black-plain">
+              Test button
+            </ButtonNew>,
+          ]}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
-        <RegistrationModal
-          type={RegistrationModalType.Initial}
-          isOpen={registrationModal}
-          onOpenChange={setRegistrationModal}
-          login={() => {}}
-          register={() => {}}
-        />
-        {/* <IdentityVerificationModal
-          isOpen={identityVerificationModal}
-          onOpenChange={setIdentityVerificationModal}
-          accountType={AccountType.FyzickaOsoba}
-        /> */}
       </Stack>
     </Wrapper>
   )

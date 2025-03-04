@@ -546,6 +546,14 @@
   }
 }
 
+/* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 body {
   @apply text-font antialiased;
 }

@@ -7,6 +7,8 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { safeString } from '../../form-utils/safeData'
+import { GenericObjectType } from '@rjsf/utils'
 
 export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -239,3 +241,19 @@ export default schema({ title: 'TEST - Umiestnenie zariadenia' }, {}, [
     ),
   ]),
 ])
+
+export const umiestnenieZariadeniaExtractEmail = (formData: GenericObjectType) => {
+  return safeString(formData.ziadatel?.email)
+}
+
+export const umiestnenieZariadeniaExtractName = (formData: GenericObjectType) => {
+  if (
+    formData.ziadatel?.objednavatelTyp === 'Fyzická osoba' ||
+    formData.ziadatel?.objednavatelTyp === 'Fyzická osoba - podnikateľ'
+  ) {
+    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
+  }
+  if (formData.ziadatel?.objednavatelTyp === 'Právnická osoba') {
+    return safeString(formData.ziadatel?.obchodneMeno)
+  }
+}

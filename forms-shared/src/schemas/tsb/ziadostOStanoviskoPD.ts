@@ -8,6 +8,8 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   {
@@ -276,3 +278,19 @@ export default schema(
     ]),
   ],
 )
+
+export const ziadostOStanoviskoPDExtractEmail = (formData: GenericObjectType) => {
+  return safeString(formData.ziadatel?.email)
+}
+
+export const ziadostOStanoviskoPDExtractName = (formData: GenericObjectType) => {
+  if (
+    formData.ziadatel?.objednavatelTyp === 'Fyzická osoba' ||
+    formData.ziadatel?.objednavatelTyp === 'Fyzická osoba - podnikateľ'
+  ) {
+    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
+  }
+  if (formData.ziadatel?.objednavatelTyp === 'Právnická osoba') {
+    return safeString(formData.ziadatel?.obchodneMeno)
+  }
+}

@@ -20,8 +20,8 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
   }
 
   return (
-    <details className="group flex w-full flex-col rounded-xl border-2 border-gray-200 bg-white open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700">
-      <summary className="flex cursor-pointer items-center gap-4 p-4 text-left group-open:pb-2 lg:px-8 lg:py-6 group-open:lg:pb-4">
+    <details className="group flex w-full flex-col rounded-xl border-2 border-gray-200 bg-white open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700">
+      <summary className="flex cursor-pointer items-center gap-4 p-4 text-left group-open:pb-2 lg:px-8 lg:py-6 lg:group-open:pb-4">
         {renderTitle()}
         <span className="shrink-0" aria-hidden>
           <ChevronDownIcon className="size-6 text-category-700 transition-transform group-open:rotate-180 lg:size-8" />

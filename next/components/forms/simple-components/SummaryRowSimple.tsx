@@ -15,7 +15,7 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
 
   const containerClassName = cx('flex flex-wrap gap-2 border-b-2 py-4 sm:flex-nowrap', {
     'border-red-500 [&>div>*]:block': isError,
-    'border-gray-200 [&>div>*]:hover:block': !isError,
+    'border-gray-200 hover:[&>div>*]:block': !isError,
     'hover:border-gray-700': isEditable,
   })
 

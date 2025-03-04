@@ -20,7 +20,7 @@ const MenuContainer = <T extends object>(props: MenuContainerProps<T>) => {
   const { menuProps } = useMenu(props, state, ref)
 
   return (
-    <ul {...menuProps} ref={ref} className="focus:outline-none">
+    <ul {...menuProps} ref={ref} className="focus:outline-hidden">
       {containerHeaderEl}
       <div className={cx('py-2', className)}>
         {Array.from(state.collection).map((item) => (

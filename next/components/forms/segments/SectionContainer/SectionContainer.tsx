@@ -17,7 +17,7 @@ export const SectionContainer = ({
     })}
     {...rest}
   >
-    <div className="mx-auto w-full max-w-screen-lg">{children}</div>
+    <div className="mx-auto w-full max-w-(--breakpoint-lg)">{children}</div>
   </div>
 )
 

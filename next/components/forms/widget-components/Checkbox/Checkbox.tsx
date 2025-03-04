@@ -34,7 +34,7 @@ const CheckboxGroupItem = ({
   const isSelected = state.isSelected(rest.value)
 
   const checkboxStyle = cx(
-    'flex h-6 w-6 items-center justify-center rounded border-2 border-solid border-gray-700',
+    'flex h-6 w-6 items-center justify-center rounded-sm border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || isIndeterminate) && !error,
       'group-hover:border-gray-600':

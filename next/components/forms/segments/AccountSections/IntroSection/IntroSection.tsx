@@ -45,7 +45,7 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
           titleAsParagraph
         />
-        <div className="m-auto w-full max-w-screen-lg">
+        <div className="m-auto w-full max-w-(--breakpoint-lg)">
           <Announcements />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">

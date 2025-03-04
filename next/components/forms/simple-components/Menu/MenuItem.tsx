@@ -23,7 +23,7 @@ const MenuItem = <T,>({ item, state, onAction, onClose }: MenuItemProps<T>) => {
   )
 
   return (
-    <li {...menuItemProps} ref={ref} className="focus:outline-none">
+    <li {...menuItemProps} ref={ref} className="focus:outline-hidden">
       {item.rendered}
     </li>
   )

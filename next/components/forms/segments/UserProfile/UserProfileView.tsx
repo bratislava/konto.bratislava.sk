@@ -90,7 +90,7 @@ const UserProfileView = () => {
           <AccountMarkdown
             content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
             variant="sm"
-            className="mx-auto w-full max-w-screen-lg px-4 pb-5 pt-3 md:px-8 md:pb-6 md:pt-4 lg:px-0"
+            className="mx-auto w-full max-w-(--breakpoint-lg) px-4 pb-5 pt-3 md:px-8 md:pb-6 md:pt-4 lg:px-0"
           />
         </div>
       </div>

@@ -105,7 +105,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
   if (arrayDepth === 1) {
     return (
       <details
-        className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700"
+        className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700"
         open={false}
       >
         <summary className="group flex w-full cursor-pointer p-6">

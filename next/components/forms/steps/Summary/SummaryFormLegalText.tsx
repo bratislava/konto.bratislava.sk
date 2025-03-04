@@ -17,7 +17,7 @@ const SummaryFormLegalText = () => {
         content={termsAndConditions}
         // TODO: Replace variant statusBar
         variant="statusBar"
-        className="rounded-10 bg-gray-50 p-4 md:p-6 lg:p-8"
+        className="rounded-[10px] bg-gray-50 p-4 md:p-6 lg:p-8"
       />
     </div>
   )

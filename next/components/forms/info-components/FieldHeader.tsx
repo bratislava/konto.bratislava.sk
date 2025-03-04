@@ -58,7 +58,7 @@ const FieldHeader = ({
   const displayAsterisk = !displayOptionalLabel && required
 
   const labelStyle = cx('relative text-gray-800', {
-    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold after:sm:text-16-semibold':
+    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold sm:after:text-16-semibold':
       labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',

@@ -9,7 +9,7 @@ const AccountSectionHeader = (props: AccountSectionHeaderBase) => {
   const { title, text, titleAsParagraph } = props
   return (
     <div className="bg-gray-50">
-      <span className="m-auto flex size-full max-w-screen-lg flex-col justify-end py-6 pl-4 lg:px-0 lg:py-16">
+      <span className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end py-6 pl-4 lg:px-0 lg:py-16">
         {titleAsParagraph ? (
           <p className="text-h1">{title}</p>
         ) : (

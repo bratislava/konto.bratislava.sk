@@ -46,7 +46,7 @@ const LoginRegisterLayout = ({
         style={{
           '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
         }}
-        className="flex grow flex-col gap-0 pt-0 md:gap-6 md:bg-main-100 md:pt-8 [&_*]:scroll-mt-[--main-scroll-top-margin]"
+        className="flex grow flex-col gap-0 pt-0 md:gap-6 md:bg-main-100 md:pt-8 **:scroll-mt-(--main-scroll-top-margin)"
       >
         {children}
       </main>

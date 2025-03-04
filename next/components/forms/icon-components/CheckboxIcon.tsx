@@ -9,7 +9,7 @@ interface SelectCheckboxProps {
 const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
   // STYLES
   const checkboxClassName = cx(
-    'flex h-6 w-6 flex-col justify-center rounded',
+    'flex h-6 w-6 flex-col justify-center rounded-sm',
     {
       'bg-gray-700': checked,
       'border-2 border-gray-600': !checked,

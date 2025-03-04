@@ -6,4 +6,5 @@ module.exports = {
   singleQuote: true,
   printWidth: 100,
   tailwindFunctions: ['cx', 'classnames', 'clsx', 'twMerge'],
+  tailwindStylesheet: './index.css',
 }

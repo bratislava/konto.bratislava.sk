@@ -104,7 +104,7 @@ const ThankYouSection = () => {
         </div>
       </div>
 
-      <div className="mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex">
+      <div className="mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex">
         <BratislavaIcon />
         <p className="text-p2">{t('thank_you.footer_text')}</p>
       </div>

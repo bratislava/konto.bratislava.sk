@@ -133,30 +133,3 @@ export const pageStyle = (pageColor: string) => {
   `
 }
 
-export const localePath = (locale: string, slug?: string) => {
-  // Special case for slovak homepage, so it is not empty string
-  if (locale === 'sk' && !slug) return '/'
-  const localePrefix = locale === 'sk' ? '' : `${locale}/`
-  return `${localePrefix}${slug || ''}`
-}
-
-export const pagePath = (
-  page?: {
-    locale?: string | null
-    slug?: string | null
-  } | null,
-): string | null => {
-  if (!page) return null
-  const { locale, slug } = page
-  if (!locale || !slug) return slug ?? null
-  return localePath(locale, slug)
-}
-
-// Page Accordion Item - regex for secondary text
-export const parseCategory = (category: string) => {
-  const match = /(.*)(\(.*\))/.exec(category)
-  if (match) {
-    return { title: match[1], secondaryTitle: match[2] }
-  }
-  return { title: category, secondaryTitle: '' }
-}

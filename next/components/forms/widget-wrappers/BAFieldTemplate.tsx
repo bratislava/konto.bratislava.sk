@@ -10,7 +10,7 @@ const { FieldTemplate } = defaultRegistry.templates
 const BAFieldTemplate = ({ classNames, ...rest }: FieldTemplateProps) => {
   const { selfColumn, spaceBottom, spaceTop } = getUiOptions(rest.uiSchema) as WidgetUiOptions
 
-  // `[&]` is used to override specificity of the parent default `[&>*]:col-span-4`
+  // `[&]` is used to override specificity of the parent default `*:col-span-4`
   const colspanClassname = selfColumn
     ? {
         '1/4': 'sm:[&]:col-span-1',

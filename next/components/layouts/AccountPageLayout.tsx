@@ -174,7 +174,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
         style={{
           '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
         }}
-        className="relative z-0 [&_*]:scroll-mt-[--main-scroll-top-margin]"
+        className="relative z-0 **:scroll-mt-(--main-scroll-top-margin)"
       >
         <div className="bg-gray-0">{children}</div>
       </main>

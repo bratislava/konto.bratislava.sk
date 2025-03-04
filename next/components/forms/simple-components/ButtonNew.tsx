@@ -128,9 +128,9 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             'inline-flex h-auto items-center justify-center gap-2 text-[1rem] font-semibold leading-[1.5rem] transition',
             cx(
               // we use isFocusVisible to show focus ring only on keyboard navigation
-              isFocused ? 'outline-2 outline-offset-4' : 'outline-none',
+              isFocused ? 'outline-2 outline-offset-4' : 'outline-hidden',
               // we change rounded corners for link focus ring
-              isLinkVariant ? 'rounded-sm max-lg:gap-1' : 'rounded-lg',
+              isLinkVariant ? 'rounded-xs max-lg:gap-1' : 'rounded-lg',
 
               {
                 // NOTE: there are some style overrides for link variants below in "twMerge"
@@ -223,7 +223,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 'data-hovered:text-gray-600': variant === 'black-link',
 
                 // svg icons
-                '[&>svg]:h-5 [&>svg]:w-5 [&>svg]:lg:h-6 [&>svg]:lg:w-6': size === 'responsive',
+                '[&>svg]:h-5 [&>svg]:w-5 lg:[&>svg]:h-6 lg:[&>svg]:w-6': size === 'responsive',
                 '[&>svg]:h-5 [&>svg]:w-5': size === 'small',
                 '[&>svg]:h-6 [&>svg]:w-6': size === 'large',
               },

@@ -22,7 +22,7 @@ const HelpSection = ({ helpPage }: HelpSectionProps) => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />
-      <div className="mx-auto w-full max-w-screen-lg py-6 lg:py-16">
+      <div className="mx-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-16">
         <h2 className="text-h2 flex justify-start px-4 lg:px-0">
           {t('account_section_help.faq.title')}
         </h2>

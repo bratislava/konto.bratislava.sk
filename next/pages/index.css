@@ -1,32 +1,559 @@
+@import 'tailwindcss';
 @import './bratislava.css';
-@import './typography.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme inline {
+  --breakpoint-xs: 22.5rem;  /* 360px */
+  --breakpoint-sm: 30rem;    /* 480px */
+  --breakpoint-md: 48rem;    /* 768px */
+  --breakpoint-lg: 76rem;    /* 1216px */
+  --breakpoint-xl: 80rem;    /* 1280px */
+  --breakpoint-2xl: initial;
+
+  --font-sans: var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-error: rgb(var(--error-color));
+  --color-font: rgb(var(--font-color));
+  --color-font-contrast: rgb(var(--font-contrast-color));
+
+  /* Main colors */
+  --color-main-100: rgb(var(--ba-color-main-100));
+  --color-main-200: rgb(var(--ba-color-main-200));
+  --color-main-300: rgb(var(--ba-color-main-300));
+  --color-main-400: rgb(var(--ba-color-main-400));
+  --color-main-500: rgb(var(--ba-color-main-500));
+  --color-main-600: rgb(var(--ba-color-main-600));
+  --color-main-700: rgb(var(--ba-color-main-700));
+  --color-main-800: rgb(var(--ba-color-main-800));
+
+  /* Transport colors */
+  --color-transport-100: rgb(var(--ba-color-transport-100));
+  --color-transport-200: rgb(var(--ba-color-transport-200));
+  --color-transport-300: rgb(var(--ba-color-transport-300));
+  --color-transport-400: rgb(var(--ba-color-transport-400));
+  --color-transport-500: rgb(var(--ba-color-transport-500));
+  --color-transport-600: rgb(var(--ba-color-transport-600));
+  --color-transport-700: rgb(var(--ba-color-transport-700));
+  --color-transport-800: rgb(var(--ba-color-transport-800));
+
+  /* Environment colors */
+  --color-environment-100: rgb(var(--ba-color-environment-100));
+  --color-environment-200: rgb(var(--ba-color-environment-200));
+  --color-environment-300: rgb(var(--ba-color-environment-300));
+  --color-environment-400: rgb(var(--ba-color-environment-400));
+  --color-environment-500: rgb(var(--ba-color-environment-500));
+  --color-environment-600: rgb(var(--ba-color-environment-600));
+  --color-environment-700: rgb(var(--ba-color-environment-700));
+  --color-environment-800: rgb(var(--ba-color-environment-800));
+
+  /* Social colors */
+  --color-social-100: rgb(var(--ba-color-social-100));
+  --color-social-200: rgb(var(--ba-color-social-200));
+  --color-social-300: rgb(var(--ba-color-social-300));
+  --color-social-400: rgb(var(--ba-color-social-400));
+  --color-social-500: rgb(var(--ba-color-social-500));
+  --color-social-600: rgb(var(--ba-color-social-600));
+  --color-social-700: rgb(var(--ba-color-social-700));
+  --color-social-800: rgb(var(--ba-color-social-800));
+
+  /* Education colors */
+  --color-education-100: rgb(var(--ba-color-education-100));
+  --color-education-200: rgb(var(--ba-color-education-200));
+  --color-education-300: rgb(var(--ba-color-education-300));
+  --color-education-400: rgb(var(--ba-color-education-400));
+  --color-education-500: rgb(var(--ba-color-education-500));
+  --color-education-600: rgb(var(--ba-color-education-600));
+  --color-education-700: rgb(var(--ba-color-education-700));
+  --color-education-800: rgb(var(--ba-color-education-800));
+
+  /* Culture colors */
+  --color-culture-100: rgb(var(--ba-color-culture-100));
+  --color-culture-200: rgb(var(--ba-color-culture-200));
+  --color-culture-300: rgb(var(--ba-color-culture-300));
+  --color-culture-400: rgb(var(--ba-color-culture-400));
+  --color-culture-500: rgb(var(--ba-color-culture-500));
+  --color-culture-600: rgb(var(--ba-color-culture-600));
+  --color-culture-700: rgb(var(--ba-color-culture-700));
+  --color-culture-800: rgb(var(--ba-color-culture-800));
+
+  /* Gray colors */
+  --color-gray-0: rgb(var(--ba-color-gray-0));
+  --color-gray-50: rgb(var(--ba-color-gray-50));
+  --color-gray-100: rgb(var(--ba-color-gray-100));
+  --color-gray-200: rgb(var(--ba-color-gray-200));
+  --color-gray-300: rgb(var(--ba-color-gray-300));
+  --color-gray-400: rgb(var(--ba-color-gray-400));
+  --color-gray-500: rgb(var(--ba-color-gray-500));
+  --color-gray-600: rgb(var(--ba-color-gray-600));
+  --color-gray-700: rgb(var(--ba-color-gray-700));
+  --color-gray-800: rgb(var(--ba-color-gray-800));
+
+  /* Success colors */
+  --color-success-50: rgb(var(--ba-color-success-50));
+  --color-success-100: rgb(var(--ba-color-success-100));
+  --color-success-200: rgb(var(--ba-color-success-200));
+  --color-success-300: rgb(var(--ba-color-success-300));
+  --color-success-400: rgb(var(--ba-color-success-400));
+  --color-success-500: rgb(var(--ba-color-success-500));
+  --color-success-600: rgb(var(--ba-color-success-600));
+  --color-success-700: rgb(var(--ba-color-success-700));
+  --color-success-800: rgb(var(--ba-color-success-800));
+
+  /* Negative colors */
+  --color-negative-50: rgb(var(--ba-color-negative-50));
+  --color-negative-100: rgb(var(--ba-color-negative-100));
+  --color-negative-200: rgb(var(--ba-color-negative-200));
+  --color-negative-300: rgb(var(--ba-color-negative-300));
+  --color-negative-400: rgb(var(--ba-color-negative-400));
+  --color-negative-500: rgb(var(--ba-color-negative-500));
+  --color-negative-600: rgb(var(--ba-color-negative-600));
+  --color-negative-700: rgb(var(--ba-color-negative-700));
+  --color-negative-800: rgb(var(--ba-color-negative-800));
+
+  /* Warning colors */
+  --color-warning-50: rgb(var(--ba-color-warning-50));
+  --color-warning-100: rgb(var(--ba-color-warning-100));
+  --color-warning-200: rgb(var(--ba-color-warning-200));
+  --color-warning-300: rgb(var(--ba-color-warning-300));
+  --color-warning-400: rgb(var(--ba-color-warning-400));
+  --color-warning-500: rgb(var(--ba-color-warning-500));
+  --color-warning-600: rgb(var(--ba-color-warning-600));
+  --color-warning-700: rgb(var(--ba-color-warning-700));
+  --color-warning-800: rgb(var(--ba-color-warning-800));
+
+  /* Category colors */
+  --color-category-100: rgb(var(--ba-color-category-100));
+  --color-category-200: rgb(var(--ba-color-category-200));
+  --color-category-300: rgb(var(--ba-color-category-300));
+  --color-category-400: rgb(var(--ba-color-category-400));
+  --color-category-500: rgb(var(--ba-color-category-500));
+  --color-category-600: rgb(var(--ba-color-category-600));
+  --color-category-700: rgb(var(--ba-color-category-700));
+  --color-category-800: rgb(var(--ba-color-category-800));
 
 
-@layer utilities {
+  /* Box shadows */
+  --shadow-lg: 0px 16px 24px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0px 8px 16px rgba(0, 0, 0, 0.12);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0px 2px 8px rgba(0, 0, 0, 0.12);
+
+  --animate-stepper-slide: stepper-slide 500ms;
+  --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
+
+  @keyframes stepper-slide {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0); }
+  };
+
+  /* Button font variables */
+  --text-btn-base: 16px;
+  --text-btn-base--line-height: 24px;
+  --text-btn-lg: 20px;
+  --text-btn-lg--line-height: 32px;
+
+  /* Paragraph font variables */
+  --text-p-xs: 12px;
+  --text-p-xs--line-height: 18px;
+  --text-p-sm: 14px;
+  --text-p-sm--line-height: 20px;
+  --text-p-base: 16px;
+  --text-p-base--line-height: 24px;
+  --text-p-md: 20px;
+  --text-p-md--line-height: 28px;
+
+  /* Heading font variables */
+  --text-h-xs: 16px;
+  --text-h-xs--line-height: 24px;
+  --text-h-sm: 18px;
+  --text-h-sm--line-height: 26px;
+  --text-h-base: 20px;
+  --text-h-base--line-height: 28px;
+  --text-h-md: 24px;
+  --text-h-md--line-height: 32px;
+  --text-h-lg: 28px;
+  --text-h-lg--line-height: 36px;
+  --text-h-xl: 32px;
+  --text-h-xl--line-height: 40px;
+  --text-h-2xl: 40px;
+  --text-h-2xl--line-height: 48px;
+  --text-h-3xl: 56px;
+  --text-h-3xl--line-height: 64px;
+}
+
+@utility text-h1-lg {
+  /* Figma template variables - start */
+
+  /* headings */
+  @apply text-h-xl font-semibold lg:text-h-3xl;
+}
+
+@utility text-h1 {
+  @apply text-h-lg font-semibold lg:text-h-2xl;
+}
+
+@utility text-h1-form {
+  @apply text-h-md font-semibold lg:text-h-2xl;
+}
+
+@utility text-h2 {
+  @apply text-h-md font-semibold lg:text-h-xl;
+}
+
+@utility text-h3 {
+  @apply text-h-base font-semibold lg:text-h-lg;
+}
+
+@utility text-h4 {
+  @apply text-h-sm font-semibold lg:text-h-md;
+}
+
+@utility text-h5 {
+  @apply text-h-xs font-semibold lg:text-h-base;
+}
+
+@utility text-h6 {
+  @apply text-h-xs font-semibold;
+}
+
+@utility text-p1 {
+  /* paragraphs */
+  @apply text-p-base font-normal lg:text-p-md;
+}
+
+@utility text-p1-medium {
+  @apply text-p-base font-medium lg:text-p-md;
+}
+
+@utility text-p1-semibold {
+  @apply text-p-base font-semibold lg:text-p-md;
+  @apply text-p-base font-semibold lg:text-p-md;
+}
+
+@utility text-p1-underline {
+  @apply text-p-base font-medium underline underline-offset-4 lg:text-p-md;
+}
+
+@utility text-p2 {
+  @apply text-p-base font-normal;
+  @apply text-p-base font-normal;
+}
+
+@utility text-p2-medium {
+  @apply text-p-base font-medium;
+}
+
+@utility text-p2-semibold {
+  @apply text-p-base font-semibold;
+}
+
+@utility text-p2-underline {
+  @apply text-p-base font-normal underline underline-offset-4;
+}
+
+@utility text-p3 {
+  @apply text-p-sm font-normal;
+  @apply text-p-sm font-normal;
+}
+
+@utility text-p3-medium {
+  @apply text-p-sm font-medium;
+}
+
+@utility text-p3-semibold {
+  @apply text-p-sm font-semibold;
+  @apply text-p-sm font-semibold;
+}
+
+@utility text-p3-underline {
+  @apply text-p-sm font-normal underline underline-offset-4;
+}
+
+@utility text-h1-lg-light {
+  /* Figma template variables - end */
+
+  /* Other variables - all of these to be removed as the redesign progresses - start */
+
+  /* heading */
+  @apply text-h-xl font-light lg:text-h-3xl;
+}
+
+@utility text-h1-lg-normal {
+  @apply text-h-xl font-normal lg:text-h-3xl;
+}
+
+@utility text-h1-lg-medium {
+  @apply text-h-xl font-medium lg:text-h-3xl;
+}
+
+@utility text-h1-lg-bold {
+  @apply text-h-xl font-bold lg:text-h-3xl;
+}
+
+@utility text-h1-form-light {
+  @apply text-h-md font-light lg:text-h-2xl;
+}
+
+@utility text-h1-form-normal {
+  @apply text-h-md font-normal lg:text-h-2xl;
+}
+
+@utility text-h1-form-medium {
+  @apply text-h-md font-medium lg:text-h-2xl;
+}
+
+@utility text-h1-form-bold {
+  @apply text-h-md font-bold lg:text-h-2xl;
+}
+
+@utility text-h1-light {
+  @apply text-h-lg font-light lg:text-h-2xl;
+}
+
+@utility text-h1-normal {
+  @apply text-h-lg font-normal lg:text-h-2xl;
+}
+
+@utility text-h1-medium {
+  @apply text-h-lg font-medium lg:text-h-2xl;
+}
+
+@utility text-h1-bold {
+  @apply text-h-lg font-bold lg:text-h-2xl;
+}
+
+@utility text-h2-light {
+  @apply text-h-md font-light lg:text-h-xl;
+}
+
+@utility text-h2-normal {
+  @apply text-h-md font-normal lg:text-h-xl;
+}
+
+@utility text-h2-medium {
+  @apply text-h-md font-medium lg:text-h-xl;
+}
+
+@utility text-h2-bold {
+  @apply text-h-md font-bold lg:text-h-xl;
+}
+
+@utility text-h3-light {
+  @apply text-h-base font-light lg:text-h-lg;
+}
+
+@utility text-h3-normal {
+  @apply text-h-base font-normal lg:text-h-lg;
+}
+
+@utility text-h3-medium {
+  @apply text-h-base font-medium lg:text-h-lg;
+}
+
+@utility text-h3-bold {
+  @apply text-h-base font-bold lg:text-h-lg;
+}
+
+@utility text-h4-light {
+  @apply text-h-sm font-light lg:text-h-md;
+}
+
+@utility text-h4-normal {
+  @apply text-h-sm font-normal lg:text-h-md;
+}
+
+@utility text-h4-medium {
+  @apply text-h-sm font-medium lg:text-h-md;
+}
+
+@utility text-h4-bold {
+  @apply text-h-sm font-bold lg:text-h-md;
+}
+
+@utility text-h5-light {
+  @apply text-h-xs font-light lg:text-h-base;
+}
+
+@utility text-h5-normal {
+  @apply text-h-xs font-normal lg:text-h-base;
+}
+
+@utility text-h5-medium {
+  @apply text-h-xs font-medium lg:text-h-base;
+}
+
+@utility text-h5-bold {
+  @apply text-h-xs font-bold lg:text-h-base;
+}
+
+@utility text-h6-light {
+  @apply text-h-xs font-light;
+}
+
+@utility text-h6-normal {
+  @apply text-h-xs font-normal;
+}
+
+@utility text-h6-medium {
+  @apply text-h-xs font-medium;
+}
+
+@utility text-h6-bold {
+  @apply text-h-xs font-bold;
+}
+
+@utility text-p1-light {
+  /* paragraphs */
+  @apply text-p-base font-light lg:text-p-md;
+}
+
+@utility text-p1-bold {
+  @apply text-p-base font-bold lg:text-p-md;
+}
+
+@utility text-p2-light {
+  @apply text-p-base font-light;
+}
+
+@utility text-p2-bold {
+  @apply text-p-base font-bold;
+}
+
+@utility text-p3-light {
+  @apply text-p-sm font-light;
+}
+
+@utility text-p3-bold {
+  @apply text-p-sm font-bold;
+}
+
+@utility text-p4-light {
+  @apply text-p-xs font-light;
+}
+
+@utility text-p4 {
+  @apply text-p-xs font-normal;
+}
+
+@utility text-p4-medium {
+  @apply text-p-xs font-medium;
+}
+
+@utility text-p4-semibold {
+  @apply text-p-xs font-semibold;
+}
+
+@utility text-p4-bold {
+  @apply text-p-xs font-bold;
+}
+@utility text-20-light {
+  /* other */
+  @apply text-p-md font-light;
+}
+
+@utility text-20 {
+  @apply text-p-md font-normal;
+}
+
+@utility text-20-medium {
+  @apply text-p-md font-medium;
+}
+
+@utility text-20-semibold {
+  @apply text-p-md font-semibold;
+}
+
+@utility text-20-bold {
+  @apply text-p-md font-bold;
+}
+
+@utility text-16-light {
+  @apply text-p-base font-light;
+}
+
+@utility text-16 {
+  @apply text-p-base font-normal;
+}
+
+@utility text-16-medium {
+  @apply text-p-base font-medium;
+}
+
+@utility text-16-semibold {
+  @apply text-p-base font-semibold;
+}
+
+@utility text-16-bold {
+  @apply text-p-base font-bold;
+}
+
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility scroll-fade-left {
   /* useHorizontalScrollFade */
-  .scroll-fade-left::before,
-  .scroll-fade-right::after {
-    @apply pointer-events-none absolute top-0 z-[1] block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+  &::before {
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
-  .scroll-fade-left::before {
-    @apply left-0 bg-gradient-to-r;
+  &::before {
+    @apply left-0 bg-linear-to-r;
+  }
+}
+
+@utility scroll-fade-right {
+  &::after {
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
-  .scroll-fade-left-opaque::before {
+  &::after {
+    @apply right-0 bg-linear-to-l;
+  }
+}
+
+@utility scroll-fade-left-opaque {
+  &::before {
     @apply opacity-100;
   }
+}
 
-  .scroll-fade-right::after {
-    @apply right-0 bg-gradient-to-l;
-  }
-
-  .scroll-fade-right-opaque::after {
+@utility scroll-fade-right-opaque {
+  &::after {
     @apply opacity-100;
+  }
+}
+
+/* https://github.com/reslear/tailwind-scrollbar-hide/blob/main/src/index.ts */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-default {
+  -ms-overflow-style: auto;
+  scrollbar-width: auto;
+
+  &::-webkit-scrollbar {
+    display: block;
   }
 }
 

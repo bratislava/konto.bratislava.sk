@@ -53,7 +53,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
     >
       {!tierStatus.isIdentityVerified && (
         <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
-          <div className="md:max-w-screen-lg">
+          <div className="md:max-w-(--breakpoint-lg)">
             <Alert
               title={t('verification_status_required')}
               message={t('verification_status_required_alert')}

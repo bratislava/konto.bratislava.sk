@@ -22,13 +22,13 @@ type SnackbarHookResult = [
 const getBackgroundColor = (variant: Variant) => {
   switch (variant) {
     case 'error':
-      return 'rgb(var(--color-negative-700))'
+      return 'rgb(var(--ba-color-negative-700))'
     case 'warning':
-      return 'rgb(var(--color-warning-700))'
+      return 'rgb(var(--ba-color-warning-700))'
     case 'success':
-      return 'rgb(var(--color-success-700))'
+      return 'rgb(var(--ba-color-success-700))'
     default:
-      return 'rgb(var(--color-gray-700))'
+      return 'rgb(var(--ba-color-gray-700))'
   }
 }
 

@@ -17,7 +17,7 @@ const DateTimeSegment = ({ segment, state }: DateSegmentBase) => {
       {...segmentProps}
       ref={ref}
       data-cy={`date-time-${segment.type}`}
-      className={cx('text-16', { 'focus:bg-gray-100 focus:outline-none': segment.isEditable })}
+      className={cx('text-16', { 'focus:bg-gray-100 focus:outline-hidden': segment.isEditable })}
     >
       <span
         className={cx('w-full text-center uppercase group-focus:text-white', {

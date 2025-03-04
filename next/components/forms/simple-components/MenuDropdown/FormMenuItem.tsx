@@ -16,7 +16,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
     <Link href={url} className="flex items-center gap-3">
       <DropdownMenu.Item
         className={cx(
-          'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 px-5 py-3 focus:outline-none',
+          'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 px-5 py-3 focus:outline-hidden',
           className,
         )}
       >
@@ -28,7 +28,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
     <DropdownMenu.Item
       onClick={onPress}
       className={cx(
-        'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 px-5 py-3 focus:outline-none',
+        'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 px-5 py-3 focus:outline-hidden',
         className,
       )}
     >

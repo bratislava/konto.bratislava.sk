@@ -108,7 +108,7 @@ const ThankYouFormSection = () => {
 
       <div
         className={cx(
-          'mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex',
+          'mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex',
           {
             'mt-10': !displayAccountLinks,
           },

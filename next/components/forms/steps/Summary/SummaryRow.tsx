@@ -23,7 +23,7 @@ const SummaryRow = (props: SummaryRowProps) => {
 
   const containerClassName = cx('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
     'border-red-500 [&>div>*]:block': data.isError,
-    'border-gray-200 [&>div>*]:hover:block': !data.isError,
+    'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
   })
 
@@ -43,7 +43,7 @@ const SummaryRow = (props: SummaryRowProps) => {
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
-          <div className="w-5 lg:hidden hover:lg:block">
+          <div className="w-5 lg:hidden lg:hover:block">
             <EditIcon className="flex size-5 cursor-pointer" onClick={onGoToStep} />
           </div>
         )}

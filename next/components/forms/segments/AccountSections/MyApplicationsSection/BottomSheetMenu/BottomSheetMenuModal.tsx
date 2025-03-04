@@ -34,7 +34,7 @@ const BottomSheetMenuModal = ({
       <ModalOverlay
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen outline-0 data-[entering]:animate-stepperSlide data-[exiting]:animate-stepperSlideReverse"
+        className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
         isDismissable
       >
         <Modal

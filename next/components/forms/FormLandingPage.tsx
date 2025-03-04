@@ -62,7 +62,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     <AccountPageLayout>
       <div className="relative flex flex-col">
         <div className="size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
-          <div className="mx-auto flex max-w-screen-lg justify-between">
+          <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
             <div className="flex flex-col gap-2 lg:gap-4">
               <h1 className="text-h1-form">{formDefinition.title}</h1>
               {strapiForm.moreInformationUrl ? (
@@ -83,7 +83,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
           wavePosition="bottom"
         />
       </div>
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
+      <div className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
         <div className="flex max-w-[800px] flex-col gap-10">
           {strapiForm.landingPage.text && (
             <AccountMarkdown content={strapiForm.landingPage.text} variant="sm" />

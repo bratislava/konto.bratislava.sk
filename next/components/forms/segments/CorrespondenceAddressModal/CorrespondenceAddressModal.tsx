@@ -11,12 +11,7 @@ import Modal, { ModalProps } from '../../simple-components/Modal'
 
 type Props = { parsedAddress: Address; onSuccess: (newAddress: Address) => void } & ModalProps
 
-const CorrespondenceAddressModalV2 = ({
-  parsedAddress,
-  isOpen,
-  onOpenChange,
-  onSuccess,
-}: Props) => {
+const CorrespondenceAddressModal = ({ parsedAddress, isOpen, onOpenChange, onSuccess }: Props) => {
   const [showSnackbar] = useSnackbar({ variant: 'success' })
   const { t } = useTranslation('account')
   const [error, setError] = useState<Error | null>(null)
@@ -77,4 +72,4 @@ const CorrespondenceAddressModalV2 = ({
   )
 }
 
-export default CorrespondenceAddressModalV2
+export default CorrespondenceAddressModal

@@ -5,7 +5,7 @@ import { mergeProps } from 'react-aria'
 import {
   Button as AriaButton,
   Dialog,
-  Modal,
+  Modal as AriaModal,
   ModalOverlay,
   ModalOverlayProps,
 } from 'react-aria-components'
@@ -13,11 +13,12 @@ import { twMerge } from 'tailwind-merge'
 
 import { useIframeResizerChildContext } from '../IframeResizerChild'
 
-export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
+export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
   modalOverlayClassname?: string
   mobileFullScreen?: boolean
   noCloseButton?: boolean
+  dataCy?: string
 } & PropsWithChildren
 
 const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
@@ -58,21 +59,19 @@ const ModalInIframeResizerWrapper = ({ children }: PropsWithChildren) => {
   )
 }
 
-const ModalV2 = ({
+const Modal = ({
   children,
   modalClassname,
   modalOverlayClassname,
   mobileFullScreen,
   noCloseButton,
+  dataCy,
   ...rest
-}: ModalV2Props) => {
+}: ModalProps) => {
   const { t } = useTranslation('common')
 
   // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)
-
-  const newProps = { ...modalProps }
-  delete newProps['data-cy']
 
   return (
     <ModalOverlay
@@ -80,11 +79,11 @@ const ModalV2 = ({
         'fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
         modalOverlayClassname,
       )}
-      {...newProps}
+      {...modalProps}
     >
       <ModalInIframeResizerWrapper>
-        <Modal
-          data-cy="add-phone-number"
+        <AriaModal
+          data-cy={dataCy}
           {...modalProps}
           className={twMerge(
             'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
@@ -111,10 +110,10 @@ const ModalV2 = ({
               </>
             )}
           </Dialog>
-        </Modal>
+        </AriaModal>
       </ModalInIframeResizerWrapper>
     </ModalOverlay>
   )
 }
 
-export default ModalV2
+export default Modal

@@ -7,14 +7,14 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
 import Spinner from '../../simple-components/Spinner'
 import { useFormRedirects } from '../../useFormRedirects'
 import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
-} & ModalV2Props
+} & ModalProps
 
 const LoadingContent = () => {
   const { t } = useTranslation('forms')
@@ -144,7 +144,7 @@ const SuccessContent = () => {
  * in the future.
  */
 const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) => (
-  <ModalV2
+  <Modal
     modalOverlayClassname="md:py-4"
     modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
     mobileFullScreen
@@ -154,11 +154,11 @@ const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) 
           state.onClose()
         }
       },
-    } as ModalV2Props)}
+    } as ModalProps)}
   >
     {state?.type === 'loading' && <LoadingContent />}
     {state?.type === 'success' && <SuccessContent />}
-  </ModalV2>
+  </Modal>
 )
 
 export default TaxFormPdfExportModal

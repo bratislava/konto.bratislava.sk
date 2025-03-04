@@ -9,7 +9,7 @@ import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
 import logger from '../../../../../frontend/utils/logger'
 import ButtonNew from '../../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../../simple-components/Modal'
 import Radio from '../../../widget-components/RadioButton/Radio'
 import RadioGroup from '../../../widget-components/RadioButton/RadioGroup'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
@@ -171,7 +171,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-type TaxesFeesDeliveryMethodChangeModalProps = ModalV2Props & {
+type TaxesFeesDeliveryMethodChangeModalProps = ModalProps & {
   agreementContent: string
 }
 
@@ -199,7 +199,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   }
 
   return (
-    <ModalV2
+    <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       modalOverlayClassname="md:py-4"
@@ -218,7 +218,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
         onSubmit={handleSubmit}
         agreementContent={agreementContent}
       />
-    </ModalV2>
+    </Modal>
   )
 }
 

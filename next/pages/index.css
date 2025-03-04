@@ -1,15 +1,17 @@
 @import 'tailwindcss';
+@theme inline {
+  /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
+  --font-sans: var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
 
 @theme {
-  --breakpoint-xs: 22.5rem;  /* 360px */
-  --breakpoint-sm: 30rem;    /* 480px */
-  --breakpoint-md: 48rem;    /* 768px */
-  --breakpoint-lg: 76rem;    /* 1216px */
-  --breakpoint-xl: 80rem;    /* 1280px */
+  --breakpoint-xs: 22.5rem; /* 360px */
+  --breakpoint-sm: 30rem; /* 480px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 76rem; /* 1216px */
+  --breakpoint-xl: 80rem; /* 1280px */
   --breakpoint-2xl: initial;
-
-  /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
-  --font-sans: var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-main-800: rgb(147, 37, 27); /*#93251B*/
   --color-main-700: rgb(216, 55, 40); /*#D83728*/
@@ -64,7 +66,6 @@
   --color-culture-300: rgb(249, 221, 196); /*#f9ddc4*/
   --color-culture-200: rgb(251, 233, 215); /*#fbe9d7*/
   --color-culture-100: rgb(253, 244, 235); /*#fdf4eb*/
-
 
   --color-gray-800: rgb(31, 31, 31); /*#1F1F1F*/
   --color-gray-700: rgb(51, 51, 51); /*#333333*/
@@ -131,9 +132,13 @@
   --animate-stepper-slide-reverse: stepper-slide 500ms reverse;
 
   @keyframes stepper-slide {
-    0% { transform: translateY(100%); }
-    100% { transform: translateY(0); }
-  };
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 
   /* Button font variables */
   --text-btn-base: 16px;
@@ -171,31 +176,31 @@
 }
 
 @utility text-h1-lg {
-  @apply text-h-xl font-semibold lg:text-h-3xl;
+  @apply text-h-xl lg:text-h-3xl font-semibold;
 }
 
 @utility text-h1 {
-  @apply text-h-lg font-semibold lg:text-h-2xl;
+  @apply text-h-lg lg:text-h-2xl font-semibold;
 }
 
 @utility text-h1-form {
-  @apply text-h-md font-semibold lg:text-h-2xl;
+  @apply text-h-md lg:text-h-2xl font-semibold;
 }
 
 @utility text-h2 {
-  @apply text-h-md font-semibold lg:text-h-xl;
+  @apply text-h-md lg:text-h-xl font-semibold;
 }
 
 @utility text-h3 {
-  @apply text-h-base font-semibold lg:text-h-lg;
+  @apply text-h-base lg:text-h-lg font-semibold;
 }
 
 @utility text-h4 {
-  @apply text-h-sm font-semibold lg:text-h-md;
+  @apply text-h-sm lg:text-h-md font-semibold;
 }
 
 @utility text-h5 {
-  @apply text-h-xs font-semibold lg:text-h-base;
+  @apply text-h-xs lg:text-h-base font-semibold;
 }
 
 @utility text-h6 {
@@ -204,19 +209,19 @@
 
 @utility text-p1 {
   /* paragraphs */
-  @apply text-p-base font-normal lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-normal;
 }
 
 @utility text-p1-medium {
-  @apply text-p-base font-medium lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-medium;
 }
 
 @utility text-p1-semibold {
-  @apply text-p-base font-semibold lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-semibold;
 }
 
 @utility text-p1-underline {
-  @apply text-p-base font-medium underline underline-offset-4 lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-medium underline underline-offset-4;
 }
 
 @utility text-p2 {
@@ -257,115 +262,115 @@
   /* Other variables - all of these to be removed as the redesign progresses - start */
 
   /* heading */
-  @apply text-h-xl font-light lg:text-h-3xl;
+  @apply text-h-xl lg:text-h-3xl font-light;
 }
 
 @utility text-h1-lg-normal {
-  @apply text-h-xl font-normal lg:text-h-3xl;
+  @apply text-h-xl lg:text-h-3xl font-normal;
 }
 
 @utility text-h1-lg-medium {
-  @apply text-h-xl font-medium lg:text-h-3xl;
+  @apply text-h-xl lg:text-h-3xl font-medium;
 }
 
 @utility text-h1-lg-bold {
-  @apply text-h-xl font-bold lg:text-h-3xl;
+  @apply text-h-xl lg:text-h-3xl font-bold;
 }
 
 @utility text-h1-form-light {
-  @apply text-h-md font-light lg:text-h-2xl;
+  @apply text-h-md lg:text-h-2xl font-light;
 }
 
 @utility text-h1-form-normal {
-  @apply text-h-md font-normal lg:text-h-2xl;
+  @apply text-h-md lg:text-h-2xl font-normal;
 }
 
 @utility text-h1-form-medium {
-  @apply text-h-md font-medium lg:text-h-2xl;
+  @apply text-h-md lg:text-h-2xl font-medium;
 }
 
 @utility text-h1-form-bold {
-  @apply text-h-md font-bold lg:text-h-2xl;
+  @apply text-h-md lg:text-h-2xl font-bold;
 }
 
 @utility text-h1-light {
-  @apply text-h-lg font-light lg:text-h-2xl;
+  @apply text-h-lg lg:text-h-2xl font-light;
 }
 
 @utility text-h1-normal {
-  @apply text-h-lg font-normal lg:text-h-2xl;
+  @apply text-h-lg lg:text-h-2xl font-normal;
 }
 
 @utility text-h1-medium {
-  @apply text-h-lg font-medium lg:text-h-2xl;
+  @apply text-h-lg lg:text-h-2xl font-medium;
 }
 
 @utility text-h1-bold {
-  @apply text-h-lg font-bold lg:text-h-2xl;
+  @apply text-h-lg lg:text-h-2xl font-bold;
 }
 
 @utility text-h2-light {
-  @apply text-h-md font-light lg:text-h-xl;
+  @apply text-h-md lg:text-h-xl font-light;
 }
 
 @utility text-h2-normal {
-  @apply text-h-md font-normal lg:text-h-xl;
+  @apply text-h-md lg:text-h-xl font-normal;
 }
 
 @utility text-h2-medium {
-  @apply text-h-md font-medium lg:text-h-xl;
+  @apply text-h-md lg:text-h-xl font-medium;
 }
 
 @utility text-h2-bold {
-  @apply text-h-md font-bold lg:text-h-xl;
+  @apply text-h-md lg:text-h-xl font-bold;
 }
 
 @utility text-h3-light {
-  @apply text-h-base font-light lg:text-h-lg;
+  @apply text-h-base lg:text-h-lg font-light;
 }
 
 @utility text-h3-normal {
-  @apply text-h-base font-normal lg:text-h-lg;
+  @apply text-h-base lg:text-h-lg font-normal;
 }
 
 @utility text-h3-medium {
-  @apply text-h-base font-medium lg:text-h-lg;
+  @apply text-h-base lg:text-h-lg font-medium;
 }
 
 @utility text-h3-bold {
-  @apply text-h-base font-bold lg:text-h-lg;
+  @apply text-h-base lg:text-h-lg font-bold;
 }
 
 @utility text-h4-light {
-  @apply text-h-sm font-light lg:text-h-md;
+  @apply text-h-sm lg:text-h-md font-light;
 }
 
 @utility text-h4-normal {
-  @apply text-h-sm font-normal lg:text-h-md;
+  @apply text-h-sm lg:text-h-md font-normal;
 }
 
 @utility text-h4-medium {
-  @apply text-h-sm font-medium lg:text-h-md;
+  @apply text-h-sm lg:text-h-md font-medium;
 }
 
 @utility text-h4-bold {
-  @apply text-h-sm font-bold lg:text-h-md;
+  @apply text-h-sm lg:text-h-md font-bold;
 }
 
 @utility text-h5-light {
-  @apply text-h-xs font-light lg:text-h-base;
+  @apply text-h-xs lg:text-h-base font-light;
 }
 
 @utility text-h5-normal {
-  @apply text-h-xs font-normal lg:text-h-base;
+  @apply text-h-xs lg:text-h-base font-normal;
 }
 
 @utility text-h5-medium {
-  @apply text-h-xs font-medium lg:text-h-base;
+  @apply text-h-xs lg:text-h-base font-medium;
 }
 
 @utility text-h5-bold {
-  @apply text-h-xs font-bold lg:text-h-base;
+  @apply text-h-xs lg:text-h-base font-bold;
 }
 
 @utility text-h6-light {
@@ -386,11 +391,11 @@
 
 @utility text-p1-light {
   /* paragraphs */
-  @apply text-p-base font-light lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-light;
 }
 
 @utility text-p1-bold {
-  @apply text-p-base font-bold lg:text-p-md;
+  @apply text-p-base lg:text-p-md font-bold;
 }
 
 @utility text-p2-light {
@@ -416,6 +421,7 @@
 @utility text-p4 {
   @apply text-p-xs font-normal;
 }
+
 
 @utility text-p4-medium {
   @apply text-p-xs font-medium;
@@ -468,7 +474,6 @@
 @utility text-16-bold {
   @apply text-p-base font-bold;
 }
-
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
@@ -541,7 +546,7 @@
 }
 
 body {
-  @apply antialiased text-font;
+  @apply text-font antialiased;
 }
 
 /* Display snackbar above modal. */

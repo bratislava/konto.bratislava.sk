@@ -22,6 +22,7 @@ import SnackbarProvider from 'react-simple-snackbar'
 
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
+import cx from 'classnames'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -40,13 +41,6 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
   return (
     <>
-      {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}
-      {/* eslint-disable-next-line react/no-unknown-property */}
-      <style jsx global>{`
-        body {
-          font-family: ${inter.style.fontFamily};
-        }
-      `}</style>
       <Head>
         <title>Bratislavské konto</title>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -77,7 +71,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                   <NavMenuContextProvider>
                     <NuqsAdapter>
                       {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root">
+                      <div id="root" className={cx(inter.variable, 'font-sans')}>
                         <Component {...pageProps} />
                       </div>
                       {allowCookies ? <CookieConsent /> : null}

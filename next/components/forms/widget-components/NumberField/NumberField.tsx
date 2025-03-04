@@ -11,6 +11,7 @@ import { useNumberFieldState } from 'react-stately'
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import baTwMerge from '../../../../frontend/baTwMerge'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 
@@ -114,23 +115,25 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       setValueControlled(null)
     }
 
-    const style = cx(
-      'text-p3 sm:text-16 w-full rounded-lg border-2 border-gray-200 px-3 py-2 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+    const style = baTwMerge(
+      cx(
+        'text-p3 sm:text-16 w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+        {
+          // conditions
+          'pl-12 sm:pl-[52px]': leftIcon,
+          'pr-12 sm:pr-[52px]': resetIcon,
+          // hover
+          'hover:border-gray-400': !disabled,
+
+          // error
+          'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+            errorMessage?.length > 0 && !disabled,
+
+          // disabled
+          'border-gray-300 bg-gray-100': disabled,
+        },
+      ),
       className,
-      {
-        // conditions
-        'pl-12 sm:pl-[52px]': leftIcon,
-        'pr-12 sm:pr-[52px]': resetIcon,
-        // hover
-        'hover:border-gray-400': !disabled,
-
-        // error
-        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
-
-        // disabled
-        'border-gray-300 bg-gray-100': disabled,
-      },
     )
 
     return (

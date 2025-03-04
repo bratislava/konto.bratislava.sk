@@ -6,6 +6,7 @@ import { useTextField } from 'react-aria'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import baTwMerge from '../../../../frontend/baTwMerge'
 
 type SearchFieldProps = FieldWrapperProps & {
   value?: string
@@ -54,20 +55,22 @@ const SearchField = ({
     ref,
   )
 
-  const style = cx(
-    'sm:text-16 text-p3 w-full rounded-lg border-2 border-gray-200 px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent focus:outline-hidden sm:px-[52px] sm:py-2.5',
+  const style = baTwMerge(
+    cx(
+      'sm:text-16 text-p3 w-full rounded-lg border-2 border-gray-200 bg-white px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent focus:outline-hidden sm:px-[52px] sm:py-2.5',
+      {
+        // hover
+        'hover:border-gray-400': !disabled,
+
+        // error
+        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+          errorMessage?.length > 0 && !disabled,
+
+        // disabled
+        'border-gray-300 bg-gray-100': disabled,
+      },
+    ),
     className,
-    {
-      // hover
-      'hover:border-gray-400': !disabled,
-
-      // error
-      'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-        errorMessage?.length > 0 && !disabled,
-
-      // disabled
-      'border-gray-300 bg-gray-100': disabled,
-    },
   )
 
   return (

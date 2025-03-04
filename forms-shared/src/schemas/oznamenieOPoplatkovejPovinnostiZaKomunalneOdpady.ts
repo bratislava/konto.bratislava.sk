@@ -806,6 +806,33 @@ export default schema(
           orientations: 'column',
         },
       ),
+      conditionalFields(
+        createCondition([
+          [
+            ['oznamovatelTyp'],
+            { enum: ['fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'] },
+          ],
+        ]),
+        [
+          radioGroup(
+            'vztahKNehnutelnosti',
+            {
+              type: 'string',
+              title: 'Označte vzťah k nehnuteľnosti',
+              required: true,
+              items: [
+                { value: 'vlastnik', label: 'Vlastník', isDefault: true },
+                { value: 'najomca', label: 'Nájomca' },
+                { value: 'ine', label: 'Iné' },
+              ],
+            },
+            {
+              variant: 'boxed',
+              orientations: 'column',
+            },
+          ),
+        ],
+      ),
       ...(
         [
           'fyzickaOsoba',
@@ -1292,6 +1319,13 @@ export default schema(
                 () => 'Biologicky rozložiteľný odpad z kuchyne',
               )
               .exhaustive(),
+            description: match(typOdpadu)
+              .with(
+                'biologickyRozlozitelnyOdpadZoZahrad',
+                () =>
+                  'Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).',
+              )
+              .otherwise(() => undefined),
           },
           [
             object(

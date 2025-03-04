@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+
+/* When updating theme don't forget to update baTwMerge implementation. */
 @theme inline {
   /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
   --font-sans: var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',

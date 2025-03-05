@@ -164,7 +164,8 @@ Podľa tohto sa dá zistiť kde bola chyba:
 
 Na konci treba všetky tieto záznamy vymazať, a až potom zopakovať odoslanie celej žiadosti cez ginis queue - rovnako ako pri [postupe pri zlom roku](#postup-pri-zlom-roku) od kroku 2.
 
-Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú vplyv na bodovanie, teda napr. diagnózy, dĺžka bytovej núdze a podobne.
+> [!IMPORTANT] Dôležité
+> Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú vplyv na bodovanie, teda napr. diagnózy, dĺžka bytovej núdze a podobne.
 
 ## Pomocné úkony pri riešení problémov
 
@@ -180,7 +181,8 @@ Query pre Loki:
 
 Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.
 
-**_DÔLEŽITÉ_**: V týchto logoch sa vyskytujú aj `debug` level logy o konzumovaní formulárov z rabbit queue obsahujúce `id` formuláru. **Ak sa takéto logy o konzumácii formuláru pravidelne vyskytujú, tak je formulár stále v rabbit queue** a je odtiaľ konzumovaný a pridávaný naspäť.
+> [!CAUTION] Pozor
+> V týchto logoch sa vyskytujú aj `debug` level logy o konzumovaní formulárov z rabbit queue obsahujúce `id` formuláru. **Ak sa takéto logy o konzumácii formuláru pravidelne vyskytujú, tak je formulár stále v rabbit queue** a je odtiaľ konzumovaný a pridávaný naspäť.
 
 ### Pridanie do RabbitMQ
 
@@ -206,7 +208,8 @@ Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains`
    }
    ```
 
-_**NOTE:** Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish message._
+> [!NOTE] Poznámka
+> Po úspešnom pridaní formuláru do queue sa zobrazí potvrdenie, ale všetky údaje zostanú naďalej vyplnené. To je v poriadku, **neklikať znova** na Publish message.
 
 Formulár môže byť najviac v jednej queue a najviac raz. V opačnom prípade ho treba odstrániť (a potom prípadne pridať jedenkrát správne).
 
@@ -246,4 +249,5 @@ Z nich sa dá zistiť, či klikačka beží, a či nenastáva nejaká plošná c
 
 Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.
 
-Pri akýchkoľvek problémoch s klikačkou alebo konkrétnych otázok pri analýze formulárového problému treba kontaktovať maintainera <https://github.com/bratislava/ginis-automation>.
+> [!TIP]
+> Pri akýchkoľvek problémoch s klikačkou alebo konkrétnych otázok pri analýze formulárového problému treba kontaktovať maintainera <https://github.com/bratislava/ginis-automation>.

@@ -7,11 +7,8 @@ RUN npx playwright install-deps chromium
 
 # build
 FROM base AS build
-WORKDIR /root/forms-shared
-COPY --from=forms-shared /app/ ./
-
-WORKDIR /root/openapi-clients
-COPY --from=openapi-clients /app/ ./
+COPY --from=forms-shared /app/ /root/forms-shared
+COPY --from=openapi-clients /app/ /root/openapi-clients
 
 WORKDIR /root/nest-forms-backend
 COPY package*.json ./

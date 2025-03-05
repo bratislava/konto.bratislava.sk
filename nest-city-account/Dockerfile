@@ -21,8 +21,7 @@ RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
 
 FROM build-base AS build
-WORKDIR /root/openapi-clients
-COPY --from=openapi-clients /app/ ./
+COPY --from=openapi-clients /app/ /root/openapi-clients/
 
 WORKDIR /build
 COPY --chown=node:node . ./
@@ -40,9 +39,7 @@ FROM app-base AS prod
 # to be present.
 # TODO: Find a way how to use --install-links flag in npm install to avoid this.
 RUN mkdir -p /home/node/openapi-clients && chown -R node:node /home/node/openapi-clients
-
-WORKDIR /home/node/openapi-clients
-COPY --chown=node:node --from=openapi-clients /app/ ./
+COPY --chown=node:node --from=openapi-clients /app/ /home/node/openapi-clients
 
 WORKDIR /home/node/app
 COPY --chown=node:node --from=build /build/package.json /build/package-lock.json ./

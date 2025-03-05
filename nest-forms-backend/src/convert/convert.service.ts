@@ -1,6 +1,7 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Forms, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
@@ -22,6 +23,10 @@ import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import { getFormSummary } from 'forms-shared/summary/summary'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
 import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
+import {
+  versionCompareIsContinuable,
+  versionCompareRequiresConfirmationImportXml,
+} from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -55,6 +60,8 @@ import {
 export default class ConvertService {
   private readonly logger: LineLoggerSubservice
 
+  private readonly versioningEnabled: boolean
+
   constructor(
     private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -62,8 +69,12 @@ export default class ConvertService {
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('ConvertService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
   private async convertJsonToXmlObject(
@@ -190,14 +201,17 @@ export default class ConvertService {
       )
     }
 
+    let extractJsonResult: {
+      formDataJson: GenericObjectType
+      jsonVersion: string
+    }
     try {
-      const jsonForm = await extractJsonFromSlovenskoSkXml(
+      extractJsonResult = await extractJsonFromSlovenskoSkXml(
         isSlovenskoSkTaxFormDefinition(formDefinition)
           ? patchConvertServiceTaxFormDefinition(formDefinition)
           : formDefinition,
         data.xmlForm,
       )
-      return { jsonForm }
     } catch (error) {
       if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
         const { error: errorEnum, message: errorMessage } =
@@ -213,6 +227,28 @@ export default class ConvertService {
         )
         throw error
       }
+    }
+
+    if (
+      this.versioningEnabled &&
+      !versionCompareIsContinuable({
+        currentVersion: extractJsonResult.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+        ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
+      )
+    }
+    return {
+      formDataJson: extractJsonResult.formDataJson,
+      requiresVersionConfirmation: this.versioningEnabled
+        ? versionCompareRequiresConfirmationImportXml({
+            currentVersion: extractJsonResult.jsonVersion,
+            latestVersion: formDefinition.jsonVersion,
+          })
+        : false,
     }
   }
 

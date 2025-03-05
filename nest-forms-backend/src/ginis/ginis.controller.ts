@@ -2,10 +2,11 @@ import { AxiosError } from '@bratislava/ginis-sdk'
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
@@ -17,8 +18,11 @@ import {
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import {
+  User,
+  UserInfo,
+  UserInfoResponse,
+} from '../utils/decorators/request.decorator'
 import {
   DetailDokumentu,
   DetailReferenta,
@@ -52,23 +56,19 @@ export default class GinisController {
     summary: '',
     description: 'Return GINIS document by ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: '',
     type: GinisDocumentDetailResponseDto,
   })
-  @ApiNotFoundResponse({
-    status: 403,
+  @ApiForbiddenResponse({
     description: 'Form is Forbidden.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     type: DatabaseErrorDto,
   })
@@ -77,7 +77,7 @@ export default class GinisController {
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<GinisDocumentDetailResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       formId,

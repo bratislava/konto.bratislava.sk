@@ -1,5 +1,12 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+  ApiExtraModels,
+} from '@nestjs/swagger'
 
 import { CognitoGuard } from '../auth/guards/cognito.guard'
 import { User } from '../utils/decorators/request.decorator'
@@ -25,6 +32,12 @@ import {
 import { UserService } from './user.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
+@ApiExtraModels(
+  ResponseUserDataDto,
+  ResponseLegalPersonDataDto,
+  ResponseUserDataBasicDto,
+  ResponseLegalPersonDataSimpleDto
+)
 @ApiTags('Users manipulation')
 @ApiBearerAuth()
 @Controller('user')
@@ -43,7 +56,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Return subscribed value for logged user',
-    type: ResponseUserDataDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
   })
   @ApiResponse({
     status: 500,
@@ -111,7 +129,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Return subscribed value for logged user',
-    type: ResponseUserDataDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
   })
   @UseGuards(CognitoGuard)
   @Post('subscribe')
@@ -160,7 +183,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Return unsubscribed and subscribed value for logged user',
-    type: ResponseUserDataDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataDto) },
+      ],
+    },
   })
   @UseGuards(CognitoGuard)
   @Post('unsubscribe')
@@ -249,7 +277,12 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: 'Return info of a given user or a legal person.',
-    type: ResponseUserDataBasicDto,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(ResponseUserDataBasicDto) },
+        { $ref: getSchemaPath(ResponseLegalPersonDataSimpleDto) },
+      ],
+    },
   })
   @UseGuards(CognitoGuard)
   @Post('change-email')

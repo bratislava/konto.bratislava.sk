@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ExtractJsonFromSlovenskoSkXmlErrorType } from 'forms-shared/slovensko-sk/extractJson'
 
-import { BadRequestErrorDto } from '../../utils/global-dtos/errors.dto'
+import {
+  BadRequestErrorDto,
+  UnprocessableEntityErrorDto,
+} from '../../utils/global-dtos/errors.dto'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
@@ -73,6 +76,20 @@ export class InvalidJsonErrorDto extends BadRequestErrorDto {
   @ApiProperty({
     example: ConvertErrorsResponseEnum.INVALID_JSON,
     default: ConvertErrorsResponseEnum.INVALID_JSON,
+  })
+  declare message: string
+}
+
+export class IncompatibleJsonVersionErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+    default: ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
+    default: ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
   })
   declare message: string
 }

@@ -172,7 +172,7 @@ const useGetContext = () => {
       setEidSendingModal(false)
       setEidSendErrorModal({
         isOpen: true,
-        sendCallback: () => {
+        confirmCallback: () => {
           if (!sendFormEidIsPending) {
             sendFormEidMutate({ fromRepeatModal: true })
           }
@@ -260,7 +260,7 @@ const useGetContext = () => {
 
     setSendConfirmationModal({
       isOpen: true,
-      sendCallback: () => sendFormMutate(),
+      confirmCallback: () => sendFormMutate(),
     })
   }
 
@@ -288,7 +288,7 @@ const useGetContext = () => {
 
     const modalValue = {
       isOpen: true,
-      sendCallback: async () => {
+      confirmCallback: async () => {
         saveConceptAndSendEidMutate()
       },
     }

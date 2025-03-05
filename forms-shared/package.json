@@ -42,7 +42,7 @@
     "jsdom": "^26.0.0",
     "json-schema": "^0.4.0",
     "json-schema-merge-allof": "^0.8.1",
-    "libphonenumber-js": "^1.11.17",
+    "libphonenumber-js": "^1.11.20",
     "lodash": "^4.17.21",
     "mutative": "^1.1.0",
     "object-hash": "^3.0.0",
@@ -53,6 +53,7 @@
     "react-markdown": "6.0.3",
     "remove-markdown": "^0.6.0",
     "rodnecislo": "^1.6.0",
+    "semver": "^7.7.1",
     "traverse": "^0.6.10",
     "ts-pattern": "^5.6.0",
     "uuid": "^11.0.5",
@@ -74,6 +75,7 @@
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@types/remove-markdown": "^0.3.4",
+    "@types/semver": "^7.5.8",
     "@types/traverse": "^0.6.37",
     "@types/unzipper": "^0.10.10",
     "@types/uuid": "^9.0.8",
@@ -89,7 +91,7 @@
     "libxmljs": "^1.0.11",
     "node-font2base64": "^0.9.2",
     "pdf-to-img": "^4.4.0",
-    "playwright": "^1.45.0",
+    "playwright": "1.50.1",
     "postcss": "^8.4.47",
     "prettier": "^3.4.2",
     "prompts": "^2.4.2",
@@ -99,7 +101,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "unzipper": "^0.12.3",
-    "vitest": "2.1.8"
+    "vitest": "3.0.6"
   },
   "engines": {
     "node": ">=20.9.x",

@@ -6,7 +6,7 @@ import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
 import WarningIcon from '../../icon-components/WarningIcon'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
 
 export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
@@ -19,8 +19,8 @@ export type MessageModalProps = PropsWithChildren<{
   childrenClassName?: string
 }> &
   Pick<
-    ModalV2Props,
-    'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen'
+    ModalProps,
+    'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen' | 'dataCy'
   >
 
 const icons = {
@@ -43,7 +43,7 @@ const MessageModal = ({
   ...rest
 }: MessageModalProps) => {
   return (
-    <ModalV2 isDismissable {...rest}>
+    <Modal isDismissable {...rest}>
       <div
         className={cx('flex items-center gap-3 p-0 md:gap-5', {
           'flex-col': variant === 'vertical',
@@ -102,7 +102,7 @@ const MessageModal = ({
       </div>
 
       {afterContent}
-    </ModalV2>
+    </Modal>
   )
 }
 

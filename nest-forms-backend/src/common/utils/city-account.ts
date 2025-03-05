@@ -1,5 +1,4 @@
-import axios from 'axios'
-
+import { cityAccountApi } from '../../utils/clients/cityAccountApi'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 /**
@@ -12,9 +11,8 @@ const verifyUserByEidToken = async (
   bearerToken?: string,
 ): Promise<void> => {
   if (!bearerToken) return
-  await axios
-    .post(
-      `${process.env.USER_ACCOUNT_API ?? ''}/user-verification/eid`,
+  await cityAccountApi
+    .verificationControllerVerifyWithEid(
       {
         oboToken,
       },

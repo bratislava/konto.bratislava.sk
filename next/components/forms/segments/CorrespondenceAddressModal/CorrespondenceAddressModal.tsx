@@ -7,16 +7,11 @@ import { Address } from '../../../../frontend/dtos/accountDto'
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from '../../../../frontend/utils/errors'
 import logger from '../../../../frontend/utils/logger'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
 
-type Props = { parsedAddress: Address; onSuccess: (newAddress: Address) => void } & ModalV2Props
+type Props = { parsedAddress: Address; onSuccess: (newAddress: Address) => void } & ModalProps
 
-const CorrespondenceAddressModalV2 = ({
-  parsedAddress,
-  isOpen,
-  onOpenChange,
-  onSuccess,
-}: Props) => {
+const CorrespondenceAddressModal = ({ parsedAddress, isOpen, onOpenChange, onSuccess }: Props) => {
   const [showSnackbar] = useSnackbar({ variant: 'success' })
   const { t } = useTranslation('account')
   const [error, setError] = useState<Error | null>(null)
@@ -53,7 +48,7 @@ const CorrespondenceAddressModalV2 = ({
   }
 
   return (
-    <ModalV2
+    <Modal
       isOpen={isOpen}
       onOpenChange={(value) => {
         if (!value) {
@@ -73,8 +68,8 @@ const CorrespondenceAddressModalV2 = ({
         defaultValues={parsedAddress ?? undefined}
         onHideError={resetError}
       />
-    </ModalV2>
+    </Modal>
   )
 }
 
-export default CorrespondenceAddressModalV2
+export default CorrespondenceAddressModal

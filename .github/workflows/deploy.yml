@@ -385,13 +385,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build OpenAPI client check image
+      - name: Build and run OpenAPI client check
         working-directory: openapi-clients
-        run: docker build -f Dockerfile.check -t openapi-check .
-
-      - name: Run OpenAPI client check
-        working-directory: openapi-clients
-        run: docker run openapi-check
+        run: docker run --rm $(docker build -q -f Dockerfile.check .)
         continue-on-error: true
 
   deploy-prod:

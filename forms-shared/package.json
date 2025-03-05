@@ -50,7 +50,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-email": "3.0.6",
-    "react-markdown": "6.0.3",
+    "react-markdown": "10.0.1",
     "remove-markdown": "^0.6.0",
     "rodnecislo": "^1.6.0",
     "semver": "^7.7.1",

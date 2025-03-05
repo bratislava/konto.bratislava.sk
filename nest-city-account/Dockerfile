@@ -35,9 +35,16 @@ CMD [ "npm", "run", "start:debug" ]
 
 # production
 FROM app-base AS prod
-# When copying from build, it copies symlink in node_modules to ../../openapi-clients and expects the original directory
-# to be present.
-# TODO: Find a way how to use --install-links flag in npm install to avoid this.
+# When copying node_modules from the build stage, symlinks to external dependencies 
+# (like ../../openapi-clients) are preserved. These symlinks expect the target directories
+# to exist at specific paths in the production container. We create these directories and
+# populate them with the actual content so the symlinks work correctly.
+#
+# Note: Using --install-links with npm ci fails because it requires the package-lock.json
+# to be perfectly in sync with package.json. When dependencies have complex version
+# requirements or when using local file dependencies, this synchronization often breaks,
+# causing npm ci to fail with "Missing: X from lock file" or "Invalid: lock file's X does
+# not satisfy Y" errors.
 RUN mkdir -p /home/node/openapi-clients && chown -R node:node /home/node/openapi-clients
 COPY --chown=node:node --from=openapi-clients /app/ /home/node/openapi-clients
 

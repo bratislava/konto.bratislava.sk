@@ -8,6 +8,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type ClamavScannerClient = ReturnType<typeof createClamavScannerClient>
+
 export const createClamavScannerClient = ({
   basePath,
   configurationParameters = {},

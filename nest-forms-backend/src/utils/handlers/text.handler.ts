@@ -1,6 +1,8 @@
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
-import lodash from 'lodash'
+import get from 'lodash/get'
+import isArray from 'lodash/isArray'
+import isString from 'lodash/isString'
 
 import { FormWithSelectedProperties } from '../types/prisma'
 
@@ -15,14 +17,12 @@ export const getSubjectTextFromForm = (
   return formDefinition.messageSubjectFormat.replaceAll(
     /{([^}]+)}/g,
     (match) => {
-      const atPath = lodash.get(data.formDataJson, match.slice(1, -1), '')
-      if (
-        lodash.isArray(atPath) &&
-        atPath.every((elem) => lodash.isString(elem))
-      ) {
+      const atPath = get(data.formDataJson, match.slice(1, -1), '')
+      // eslint-disable-next-line lodash-fp/no-extraneous-function-wrapping
+      if (isArray(atPath) && atPath.every((elem) => isString(elem))) {
         return atPath.join(', ')
       }
-      return lodash.isString(atPath) ? atPath : ''
+      return isString(atPath) ? atPath : ''
     },
   )
 }
@@ -41,7 +41,7 @@ export const getFrontendFormTitleFromForm = (
     (formDefinition.schema as BAJSONSchema7).baUiSchema as MinimalUiSchema
   )?.['ui:options']
   return (
-    (lodash.get(
+    (get(
       data.formDataJson,
       uiOptions?.titlePath && typeof uiOptions.titlePath === 'string'
         ? uiOptions.titlePath

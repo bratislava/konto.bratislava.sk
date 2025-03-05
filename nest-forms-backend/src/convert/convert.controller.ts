@@ -13,13 +13,12 @@ import {
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
-import { HttpStatusCode } from 'axios'
 import { Response } from 'express'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -68,8 +67,7 @@ export default class ConvertController {
     description:
       'Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return XML form',
     type: String,
   })
@@ -77,7 +75,6 @@ export default class ConvertController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',
     schema: {
       oneOf: [
@@ -87,12 +84,10 @@ export default class ConvertController {
     },
   })
   @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
     description:
       'Got wrong type of form definition for its slug or empty form data.',
     schema: {
@@ -128,8 +123,7 @@ export default class ConvertController {
     summary: 'Convert XML to JSON',
     description: 'Generates JSON form from given XML data and form ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
   })
@@ -139,7 +133,6 @@ export default class ConvertController {
   @ApiExtraModels(InvalidJsonErrorDto)
   @ApiExtraModels(IncompatibleJsonVersionErrorDto)
   @ApiBadRequestResponse({
-    status: 400,
     description: 'There was an error during converting to json.',
     schema: {
       oneOf: [
@@ -151,7 +144,6 @@ export default class ConvertController {
     },
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
     description:
       'Form definition type is wrong or JSON version is incompatible',
     schema: {
@@ -162,7 +154,6 @@ export default class ConvertController {
     },
   })
   @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',
     schema: {
       oneOf: [
@@ -172,7 +163,6 @@ export default class ConvertController {
     },
   })
   @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
@@ -196,7 +186,6 @@ export default class ConvertController {
   })
   @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form or form definition not found',
     schema: {
       oneOf: [
@@ -206,26 +195,21 @@ export default class ConvertController {
     },
   })
   @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else, the access is not granted.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
     description: 'Empty form data.',
     type: EmptyFormDataErrorDto,
   })
   @ApiInternalServerErrorResponse({
-    status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating tax pdf.',
   })
   @ApiInternalServerErrorResponse({
-    status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating pdf.',
     type: PdfGenerationFailedErrorDto,
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return pdf file stream.',
     type: StreamableFile,
   })

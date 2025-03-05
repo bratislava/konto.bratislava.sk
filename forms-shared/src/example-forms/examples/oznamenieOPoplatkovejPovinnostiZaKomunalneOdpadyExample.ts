@@ -9,6 +9,7 @@ const exampleForm: ExampleForm = {
     oznamovatel: {
       voSvojomMene: true,
       oznamovatelTyp: 'fyzickaOsoba',
+      vztahKNehnutelnosti: 'vlastnik',
       maElektronickuSchranku: true,
       meno: 'Ján',
       priezvisko: 'Kováč',

@@ -14,6 +14,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type CityAccountClient = ReturnType<typeof createCityAccountClient>
+
 export const createCityAccountClient = ({
   basePath,
   configurationParameters = {},

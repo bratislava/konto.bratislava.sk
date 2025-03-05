@@ -69,6 +69,8 @@ type ClientConfig = {
   axios?: AxiosInstance
 }
 
+export type ${clientName}Client = ReturnType<typeof create${clientName}Client>
+
 export const create${clientName}Client = ({
   basePath,
   configurationParameters = {},

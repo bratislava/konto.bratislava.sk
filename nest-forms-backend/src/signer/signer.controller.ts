@@ -5,13 +5,12 @@ import {
   ApiExtraModels,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnprocessableEntityResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
-import { HttpStatusCode } from 'axios'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
@@ -45,8 +44,7 @@ export default class SignerController {
     description:
       'Generates signer data including XML and metadata for form signing',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return signer data',
     type: SignerDataResponseDto,
   })
@@ -54,7 +52,6 @@ export default class SignerController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(XmlValidationErrorDto)
   @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
     description: 'Form or form definition was not found',
     schema: {
       oneOf: [
@@ -64,17 +61,14 @@ export default class SignerController {
     },
   })
   @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
     description: 'Got wrong type of form definition for its slug.',
     type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @ApiBadRequestResponse({
-    status: HttpStatusCode.BadRequest,
     description: 'XML validation failed against XSD schema.',
     type: XmlValidationErrorDto,
   })

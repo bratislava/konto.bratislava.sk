@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { ServiceRunningDto } from './dtos/status.dto'
 import StatusResponseDto from './dtos/status.response.dto'
@@ -15,8 +15,7 @@ export default class StatusController {
     summary: 'Check all services status',
     description: 'This endpoint checks all services status',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Status of prisma, minio and scanner services.',
     type: StatusResponseDto,
   })
@@ -37,8 +36,7 @@ export default class StatusController {
     summary: 'Check prisma status',
     description: 'This endpoint checks if prisma is running',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Status of prisma.',
     type: ServiceRunningDto,
   })
@@ -52,8 +50,7 @@ export default class StatusController {
     summary: 'Check minio status',
     description: 'This endpoint checks if minio is running',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Status of minio.',
     type: ServiceRunningDto,
   })
@@ -66,8 +63,7 @@ export default class StatusController {
     summary: 'Check scanner backend status',
     description: 'This endpoint checks if forms backend is running',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Status of scanner.',
     type: ServiceRunningDto,
   })

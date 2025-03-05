@@ -5,13 +5,13 @@ import React from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
 import ButtonNew from '../../simple-components/ButtonNew'
-import { ModalV2Props } from '../../simple-components/ModalV2'
+import { ModalProps } from '../../simple-components/Modal'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal from '../../widget-components/Modals/MessageModal'
 
 type IdentityVerificationModalProps = {
   accountType: AccountType | undefined
-} & ModalV2Props
+} & ModalProps
 
 const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificationModalProps) => {
   const { t } = useTranslation('account')

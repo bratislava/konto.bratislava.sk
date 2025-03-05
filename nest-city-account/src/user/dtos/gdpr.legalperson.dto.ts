@@ -21,7 +21,7 @@ export class ResponseLegalPersonDataSimpleDto {
     description: 'Created timestamp',
     default: '2023-02-10T10:31:49.247Z',
   })
-  createdAt!:Date
+  createdAt!: Date
 
   @ApiProperty({
     description: 'Last updated timestamp',

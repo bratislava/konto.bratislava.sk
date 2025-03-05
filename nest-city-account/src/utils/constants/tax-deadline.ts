@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon'
 
 export function getTaxDeadlineDate(): Date {
   return DateTime.now()

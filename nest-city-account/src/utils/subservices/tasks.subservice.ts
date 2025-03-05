@@ -178,7 +178,7 @@ export class TasksSubservice {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const birthNumber: string = user.birthNumber!
-    
+
         if (user.physicalEntity?.activeEdesk) {
           acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
           return acc

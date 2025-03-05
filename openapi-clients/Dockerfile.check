@@ -12,4 +12,4 @@ RUN npm ci
 
 COPY . .
 
-CMD ["npm", "run", "check-changes"]
+CMD ["npm", "run", "check-for-changes"]

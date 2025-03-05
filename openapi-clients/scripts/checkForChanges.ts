@@ -15,7 +15,7 @@ import { get as getAppRootDir } from 'app-root-dir'
  * 5. Exiting with code 1 if changes are detected (useful for CI)
  *
  * Usage:
- * - CLI: `npm run check-changes`
+ * - CLI: `npm run check-for-changes`
  *
  * It will show detailed diffs for any files that have changed, been added, or been deleted.
  */

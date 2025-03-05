@@ -50,6 +50,7 @@
     "jwks-rsa": "^3.0.1",
     "lodash": "^4.17.21",
     "mailgun.js": "^8.2.1",
+    "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "passport-jwt": "^4.0.1",
     "request": "^2.88.2",

@@ -12,7 +12,7 @@ import {
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
 import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
@@ -32,17 +32,10 @@ export class UserService {
 
   private verificationDeadline(verificationDate: Date | null): boolean {
     const verificationDeadlineDate = getTaxDeadlineDate()
-    try {
-      if (verificationDate === null) {
-        return false
-      }
-      if (verificationDate < verificationDeadlineDate) {
-        return true
-      }
-      return false
-    } catch (error) {
+    if (verificationDate === null) {
       return false
     }
+    return verificationDate < verificationDeadlineDate
   }
 
   async getOrCreateUserData(id: string, email: string): Promise<ResponseUserDataDto> {

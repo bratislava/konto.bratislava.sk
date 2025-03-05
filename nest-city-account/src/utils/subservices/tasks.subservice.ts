@@ -173,30 +173,28 @@ export class TasksSubservice {
       return
     }
 
-    const data: { [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue } = {}
-    users.forEach((user) => {
-      // We know that birthNumber is not null from the query.
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const birthNumber: string = user.birthNumber!
-
-      // Check if the user has edesk.
-      if (user.physicalEntity?.activeEdesk) {
-        data[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
-        return
-      }
-
-      // Otherwise check if he has city account notification.
-      else if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
-        data[birthNumber] = {
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),
+    const data = users.reduce<{ [key: string]: RequestUpdateNorisDeliveryMethodsDtoDataValue }>(
+      (acc, user) => {
+        // We know that birthNumber is not null from the query.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const birthNumber: string = user.birthNumber!
+    
+        if (user.physicalEntity?.activeEdesk) {
+          acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
+          return acc
         }
-        return
-      }
-
-      // If not, set the default delivery method.
-      data[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
-    })
+        if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+          acc[birthNumber] = {
+            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+            date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),
+          }
+          return acc
+        }
+        acc[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
+        return acc
+      },
+      {}
+    )
 
     await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
 

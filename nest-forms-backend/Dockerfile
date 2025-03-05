@@ -42,7 +42,7 @@ FROM base AS prod
 
 USER node
 
-# When copying node_modules from the build stage, symlinks to external dependencies 
+# When copying node_modules from the build stage, symlinks to external dependencies
 # (like ../../forms-shared and ../../openapi-clients) are preserved. These symlinks expect the target directories
 # to exist at specific paths in the production container. We create these directories and
 # populate them with the actual content so the symlinks work correctly.
@@ -52,8 +52,10 @@ USER node
 # requirements or when using local file dependencies, this synchronization often breaks,
 # causing npm ci to fail with "Missing: X from lock file" or "Invalid: lock file's X does
 # not satisfy Y" errors.
-RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
-RUN mkdir -p /home/node/openapi-clients && chown -R node:node /home/node/openapi-clients
+RUN mkdir -p /home/node/forms-shared \
+    && chown -R node:node /home/node/forms-shared
+RUN mkdir -p /home/node/openapi-clients \
+    && chown -R node:node /home/node/openapi-clients
 
 WORKDIR /home/node/forms-shared
 COPY --chown=node:node --from=forms-shared /app/ ./

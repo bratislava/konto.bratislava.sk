@@ -19,15 +19,51 @@ updates:
     directory: '/nest-forms-backend'
     schedule:
       interval: 'weekly'
+    groups:
+      nestjs-dependencies:
+        patterns:
+          - '@nestjs/*'
+      prisma-dependencies:
+        patterns:
+          - 'prisma'
+          - 'prisma-*'
+          - '@prisma/*'
   - package-ecosystem: 'npm'
     directory: '/nest-clamav-scanner'
     schedule:
       interval: 'weekly'
+    groups:
+      nestjs-dependencies:
+        patterns:
+          - '@nestjs/*'
+      prisma-dependencies:
+        patterns:
+          - 'prisma'
+          - 'prisma-*'
+          - '@prisma/*'
   - package-ecosystem: 'npm'
     directory: '/nest-tax-backend'
     schedule:
       interval: 'weekly'
+    groups:
+      nestjs-dependencies:
+        patterns:
+          - '@nestjs/*'
+      prisma-dependencies:
+        patterns:
+          - 'prisma'
+          - 'prisma-*'
+          - '@prisma/*'
   - package-ecosystem: 'npm'
     directory: '/nest-city-account'
     schedule:
       interval: 'weekly'
+    groups:
+      nestjs-dependencies:
+        patterns:
+          - '@nestjs/*'
+      prisma-dependencies:
+        patterns:
+          - 'prisma'
+          - 'prisma-*'
+          - '@prisma/*'

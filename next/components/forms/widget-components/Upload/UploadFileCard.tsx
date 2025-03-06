@@ -6,7 +6,6 @@ import {
   ErrorIcon,
   ScanningIcon,
 } from '@assets/ui-icons'
-import cx from 'classnames'
 import {
   FileInfo,
   FileStatusType,
@@ -21,6 +20,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 import Button from '../../simple-components/Button'
 import ButtonNew from '../../simple-components/ButtonNew'
 import PrettyBytes from '../../simple-components/PrettyBytes'
@@ -101,14 +101,14 @@ const UploadFileCard = ({
   return (
     <div className="flex w-full flex-col gap-2">
       <div
-        className={cx('flex w-full items-start gap-4 rounded-lg border-2 p-4', {
+        className={cn('flex w-full items-start gap-4 rounded-lg border-2 p-4', {
           'bg-white': isUploadStatus || isScanStatus,
           'border-success-700 bg-success-50': isDoneStatus,
           'border-negative-600 bg-negative-50': isErrorStatus,
         })}
       >
         <div
-          className={cx('shrink-0 grow-0 rounded-lg p-3 max-md:hidden', {
+          className={cn('shrink-0 grow-0 rounded-lg p-3 max-md:hidden', {
             'bg-gray-50': isUploadStatus || isScanStatus,
             'bg-white': isErrorStatus || isDoneStatus,
           })}
@@ -127,7 +127,7 @@ const UploadFileCard = ({
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full items-center justify-between gap-4">
             <div className="flex grow flex-col">
-              <h3 className="break-all font-bold text-gray-800">{fileInfo.fileName}</h3>
+              <h3 className="font-semibold break-all text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
                 {isDownloadable && (
                   <ReactAriaButton onPress={onFileDownload}>
@@ -154,7 +154,7 @@ const UploadFileCard = ({
                 variant="unstyled"
                 icon={<CrossInCircleIcon />}
                 aria-label={t('aria.removeFile')}
-                className={cx('relative -mr-2', {
+                className={cn('relative -mr-2', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStatus,
                   'hover:bg-success-200 focus:bg-success-300': isDoneStatus,
                 })}
@@ -180,7 +180,7 @@ const UploadFileCard = ({
               onPress={onFileRetry}
               text={t('retry')}
               size="sm"
-              className="font-bold"
+              className="font-semibold"
               disabled={disabled}
             />
           )}

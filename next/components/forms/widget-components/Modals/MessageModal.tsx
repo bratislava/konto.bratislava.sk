@@ -1,7 +1,6 @@
-import cx from 'classnames'
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
-import { twMerge } from 'tailwind-merge'
 
+import cn from '../../../../frontend/cn'
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
@@ -45,14 +44,14 @@ const MessageModal = ({
   return (
     <Modal isDismissable {...rest}>
       <div
-        className={cx('flex items-center gap-3 p-0 md:gap-5', {
+        className={cn('flex items-center gap-3 p-0 md:gap-5', {
           'flex-col': variant === 'vertical',
           'md:grid-row-2 flex-col md:grid md:grid-cols-[3.5rem] md:flex-row md:items-start':
             variant === 'horizontal',
         })}
       >
         <div
-          className={cx(
+          className={cn(
             'relative flex flex-row items-start gap-2 rounded-full p-4 md:col-start-1 md:col-end-1 md:row-start-1 md:row-end-2',
             {
               'bg-gray-100': type === 'info',
@@ -67,7 +66,7 @@ const MessageModal = ({
           </div>
         </div>
         <div
-          className={twMerge(
+          className={cn(
             'flex h-14 items-center text-center text-h-base font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
             titleClassName,
           )}
@@ -76,8 +75,8 @@ const MessageModal = ({
         </div>
         <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
-            className={twMerge(
-              'text-p2 whitespace-pre-wrap text-center md:text-left',
+            className={cn(
+              'text-center text-p2 whitespace-pre-wrap md:text-left',
               childrenClassName,
             )}
           >
@@ -85,7 +84,7 @@ const MessageModal = ({
           </div>
           {buttons && buttons.length > 0 && (
             <div
-              className={cx('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
+              className={cn('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
                 'flex-col-reverse justify-center md:flex-row md:justify-end':
                   buttonsAlign === 'right',
                 'flex-col-reverse justify-center md:flex-row md:justify-start':

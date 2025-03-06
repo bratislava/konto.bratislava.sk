@@ -1,6 +1,7 @@
 import { EditIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { ReactNode } from 'react'
+
+import cn from '../../../../frontend/cn'
 
 export interface SummaryRowData {
   label: string
@@ -21,18 +22,18 @@ interface SummaryRowProps {
 const SummaryRow = (props: SummaryRowProps) => {
   const { data, size = 'large', isEditable = true, onGoToStep } = props
 
-  const containerClassName = cx('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
+  const containerClassName = cn('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
     'border-red-500 [&>div>*]:block': data.isError,
-    'border-gray-200 [&>div>*]:hover:block': !data.isError,
+    'border-gray-200 hover:[&>div>*]:block': !data.isError,
     'hover:border-gray-700': isEditable,
   })
 
-  const labelClassName = cx('w-full flex-1', {
+  const labelClassName = cn('w-full flex-1', {
     'text-p1-semibold': size === 'large',
     'text-p2-semibold': size === 'small',
   })
 
-  const valueClassName = cx('grow', {
+  const valueClassName = cn('grow', {
     'text-p1': size === 'large',
     'text-p2': size === 'small',
   })
@@ -43,7 +44,7 @@ const SummaryRow = (props: SummaryRowProps) => {
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
-          <div className="w-5 lg:hidden hover:lg:block">
+          <div className="w-5 lg:hidden lg:hover:block">
             <EditIcon className="flex size-5 cursor-pointer" onClick={onGoToStep} />
           </div>
         )}

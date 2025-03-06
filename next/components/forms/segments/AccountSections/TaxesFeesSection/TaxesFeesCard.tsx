@@ -24,7 +24,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
         <div className="flex w-full items-center justify-between">
           <div className="flex w-full flex-col pl-6">
             <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
-              <h3 className="text-20-semibold mb-1">
+              <h3 className="mb-1 text-20-semibold">
                 {t('account_section_payment.tax_card_title')}
               </h3>
               <span className="text-p3">{`za rok ${year}`}</span>
@@ -32,11 +32,11 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
           </div>
           <div className="flex w-full items-center justify-end">
             <div className="flex flex-col px-10">
-              <span className="text-16-semibold mb-1">Vytvorená</span>
+              <span className="mb-1 text-16-semibold">Vytvorená</span>
               <span className="w-max">{formatDate(createdAt)}</span>
             </div>
             <div className="flex flex-col border-x-2 px-10">
-              <span className="text-16-semibold mb-1">Suma</span>
+              <span className="mb-1 text-16-semibold">Suma</span>
               {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
                 <span className="flex w-max items-center">
                   <FormatCurrencyFromCents value={paidAmount} /> /{' '}
@@ -67,11 +67,11 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
               href={ROUTES.TAXES_AND_FEES_YEAR(year)}
               variant="unstyled"
               stretched
-              className="text-p2-semibold mb-1 leading-5"
+              className="mb-1 text-p2-semibold leading-5"
             >{`${t('account_section_payment.tax_card_title')} za rok ${year}`}</MLinkNew>
             <div className="flex flex-wrap items-center">
               {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
-                <span className="text-p3 flex w-max items-center">
+                <span className="flex w-max items-center text-p3">
                   <FormatCurrencyFromCents value={paidAmount} /> /{' '}
                   <FormatCurrencyFromCents value={amount} />
                 </span>

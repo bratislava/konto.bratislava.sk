@@ -44,7 +44,7 @@ const FormLandingPageCard = (props: FormLandingPageCardProps) => {
   return (
     <div className="flex flex-col gap-5 border-b-2 border-gray-200 px-5 py-6 last:border-b-0 md:flex-row">
       <div className="flex grow flex-col justify-center gap-2">
-        <div className="text-h6 flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3">
+        <div className="flex flex-col items-start gap-1 text-h6 md:flex-row md:items-center md:gap-3">
           {props.title}
         </div>
         {props.text && <span className="text-p3">{props.text}</span>}

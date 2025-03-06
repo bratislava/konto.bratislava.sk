@@ -12,7 +12,7 @@ const ServiceCardShowCase = () => {
   return (
     <Wrapper direction="column" title="Service Card">
       <Stack>
-        <div className="flex overflow-x-scroll scrollbar-hide">
+        <div className="scrollbar-hide flex overflow-x-scroll">
           <ServiceCard
             title="Záväzné stanovisko k investičnej činnosti"
             description="Záväzné stanovisko slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade."

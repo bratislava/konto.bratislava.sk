@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
+import cn from '../../../../../../frontend/cn'
 import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/ButtonNew'
 
 type AnnouncementBlockProps = {
@@ -25,7 +25,7 @@ const AnnouncementBlock = ({
 
   return (
     <div
-      className={cx(
+      className={cn(
         'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-lg',
         {
           'lg:flex-row-reverse': reversed,
@@ -48,9 +48,9 @@ const AnnouncementBlock = ({
       <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
         <Image
           src={imagePath}
-          className={cx('rounded-t-lg', {
+          className={cn('rounded-t-lg', {
             'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
-            'lg:rounded-r-3xl lg:rounded-tl-none': !reversed,
+            'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
           })}
           layout="fill"
           priority

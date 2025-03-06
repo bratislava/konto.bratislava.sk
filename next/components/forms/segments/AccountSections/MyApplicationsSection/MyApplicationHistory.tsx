@@ -47,26 +47,26 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
         ))}
       </div>
       {/* Mobile */}
-      <div className=" flex flex-col overflow-x-auto md:hidden">
+      <div className="flex flex-col overflow-x-auto md:hidden">
         <div className="w-[548px] rounded-lg border-2 border-gray-200">
           <div className="flex items-center bg-gray-200 p-4">
-            <span className="text-p2 min-w-[240px]">
+            <span className="min-w-[240px] text-p2">
               {t('account_section_applications.details.application_history.edit_date')}
             </span>
-            <span className="text-p2 w-full">
+            <span className="w-full text-p2">
               {t('account_section_applications.details.application_history.description')}
             </span>
           </div>
           <div className="flex flex-col items-center">
             {historyData?.map((data: GenericObjectType, i) => (
               <div className="flex w-full border-t-2 p-4" key={i}>
-                <span className="text-p2 min-w-[240px]">
+                <span className="min-w-[240px] text-p2">
                   <FormatDate>
                     {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
                     {data?.DatumZmeny}
                   </FormatDate>
                 </span>
-                <span className="text-p2 w-full">
+                <span className="w-full text-p2">
                   {t(
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     `account_section_applications.details.application_history.state.${data?.assignedCategory}`,

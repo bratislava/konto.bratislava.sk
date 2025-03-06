@@ -1,6 +1,5 @@
 import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
@@ -15,6 +14,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, RefObject, useState } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
+import cn from '../../../../frontend/cn'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { StatusBar } from '../../info-components/StatusBar'
@@ -105,13 +105,13 @@ export const NavBar = ({
       {/* Desktop */}
       <div
         id="desktop-navbar"
-        className={cx(
+        className={cn(
           className,
-          'text-p2 sticky left-0 top-0 z-40 hidden w-full items-center bg-white shadow lg:block',
+          'sticky top-0 left-0 z-40 hidden w-full items-center bg-white text-p2 shadow-default lg:block',
         )}
         ref={desktopNavbarRef}
       >
-        <div className="m-auto hidden h-[57px] max-w-screen-lg items-center gap-x-6 lg:flex">
+        <div className="m-auto hidden h-[57px] max-w-(--breakpoint-lg) items-center gap-x-6 lg:flex">
           <Brand
             className="group grow"
             url={ROUTES.HOME}
@@ -170,7 +170,7 @@ export const NavBar = ({
         </div>
         {/* Header bottom navigation */}
         {sectionsList && !hiddenHeaderNav && (
-          <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex">
+          <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
               value={menuValue}
               onValueChange={setMenuValue}
@@ -185,8 +185,8 @@ export const NavBar = ({
                     <NavigationMenu.Link asChild>
                       <NextLink href={sectionItem.url}>
                         <div
-                          className={cx(
-                            'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
+                          className={cn(
+                            'flex h-full w-full cursor-pointer items-center justify-center border-b-2 text-p2-semibold transition-all hover:border-main-700 hover:text-main-700',
                             {
                               'border-main-700 text-main-700': isActive(sectionItem),
                               'border-transparent': !isActive(sectionItem),

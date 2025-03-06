@@ -206,7 +206,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <Heading slot="title" className="text-h3 mb-2">
+      <Heading slot="title" className="mb-2 text-h3">
         {/* TODO: Translation */}
         Spôsob doručovania miestnych daní a poplatkov
       </Heading>

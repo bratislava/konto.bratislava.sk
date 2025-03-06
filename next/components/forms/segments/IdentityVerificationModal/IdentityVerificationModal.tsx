@@ -40,7 +40,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
         <>
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="text-p1 px-6">{t('verification_modal.footer_choice')}</span>
+            <span className="px-6 text-p1">{t('verification_modal.footer_choice')}</span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="mt-6 flex justify-center">
@@ -59,7 +59,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       <div className="flex flex-col gap-6 md:gap-4">
         <AccountMarkdown className="text-center" content={t('verification_modal.subtitle')} />
         <AccountMarkdown
-          className="text-p3 text-center"
+          className="text-center text-p3"
           variant="sm"
           content={t('verification_modal.info')}
         />

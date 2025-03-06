@@ -1,8 +1,8 @@
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
-import cx from 'classnames'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
+import cn from '../../../frontend/cn'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import WidgetWrapper from './WidgetWrapper'
 
@@ -19,7 +19,7 @@ const BAObjectFieldTemplate = ({
 }: ObjectFieldTemplateProps) => {
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
   const { isStepObject } = getObjectFieldInfo(idSchema)
-  const fieldsetClassname = cx({
+  const fieldsetClassname = cn({
     'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
   })
 
@@ -33,9 +33,9 @@ const BAObjectFieldTemplate = ({
           </div>
         ) : (
           <>
-            {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
+            {options.title && <h3 className="mb-3 text-h3">{options.title}</h3>}
             {options.description && (
-              <div className="text-p2 mb-3 whitespace-pre-wrap">
+              <div className="mb-3 text-p2 whitespace-pre-wrap">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
                   {options.description}
                 </ConditionalFormMarkdown>
@@ -43,7 +43,7 @@ const BAObjectFieldTemplate = ({
             )}
           </>
         )}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 sm:[&>*]:col-span-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 sm:*:col-span-4">
           {properties.map(({ content }) => content)}
         </div>
       </fieldset>

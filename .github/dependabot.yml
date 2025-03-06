@@ -49,6 +49,7 @@ updates:
       nestjs-dependencies:
         patterns:
           - '@nestjs/*'
+          - '@nestjs-*'
       prisma-dependencies:
         patterns:
           - 'prisma'
@@ -62,7 +63,6 @@ updates:
       nestjs-dependencies:
         patterns:
           - '@nestjs/*'
-          - '@nestjs-*'
       prisma-dependencies:
         patterns:
           - 'prisma'

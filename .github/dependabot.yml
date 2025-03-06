@@ -16,6 +16,10 @@ updates:
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
   - package-ecosystem: 'npm'
+    directory: '/openapi-clients'
+    schedule:
+      interval: 'weekly'
+  - package-ecosystem: 'npm'
     directory: '/next'
     schedule:
       interval: 'weekly'
@@ -25,7 +29,7 @@ updates:
     directory: '/nest-forms-backend'
     schedule:
       interval: 'weekly'
-    # RJSF and Ajv  packages must be updated manually and thoroughly checked if they work
+    # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
     # These packages must be updated synchronously across all packages
     ignore:
       - dependency-name: '@rjsf/*'

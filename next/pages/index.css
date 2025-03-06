@@ -1,4 +1,8 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
+
+@source "./";
+@source "../components/";
+@source "../frontend/";
 
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
 @theme inline {

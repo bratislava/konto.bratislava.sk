@@ -6,5 +6,5 @@ module.exports = {
   singleQuote: true,
   printWidth: 100,
   tailwindFunctions: ['clsx', 'cn'],
-  tailwindStylesheet: './index.css',
+  tailwindStylesheet: './pages/index.css',
 }

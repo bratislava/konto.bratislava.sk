@@ -20,12 +20,10 @@ import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
-import cn from '../frontend/cn'
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 
 const inter = Inter({
-  variable: '--inter-font',
   subsets: ['latin', 'latin-ext'],
 })
 
@@ -53,6 +51,11 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         {/* Prevents automatic zooming on input fields on safari, which some users consider a bug. Source: https://stackoverflow.com/a/46254706 */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
+        <style>{`
+          :root {
+            --inter-font: ${inter.style.fontFamily};
+          }
+        `}</style>
       </Head>
 
       <AmplifyClientProvider>
@@ -71,7 +74,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                   <NavMenuContextProvider>
                     <NuqsAdapter>
                       {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root" className={cn(inter.variable, 'font-sans')}>
+                      <div id="root">
                         <Component {...pageProps} />
                       </div>
                       {allowCookies ? <CookieConsent /> : null}

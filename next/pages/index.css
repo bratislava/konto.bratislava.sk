@@ -556,7 +556,7 @@
 }
 
 body {
-  @apply text-font antialiased;
+  @apply font-sans text-font antialiased;
 }
 
 /* Display snackbar above modal. */

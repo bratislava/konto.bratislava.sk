@@ -53,41 +53,46 @@ If the scanning result is `SAFE`, `INFECTED`, `MOVE ERROR INFECTED`, `MOVE ERROR
 
 ## Run locally
 
-If you want to run an application without installing it locally quickly, you can run it through `docker-compose`.
+If you want to run an application without installing it locally quickly, you can run it through `docker compose`.
 
-You need to have `clamav` running first. To do that, in directories `/cvdmirror` and `/clamav` (in this order) run
+1. You need to have `clamav` running first. To do that, in directories `/cvdmirror` and `/clamav` (in this order) run
 
-```bash
-docker-compose up
-```
+   ```bash
+   docker compose up
+   ```
 
-Then you can do the same in this `/nest-clamav-scanner` directory:
+   > [!NOTE]
+   > in case of any problems or errors, follow _Run locally_ section in respective README
 
-```bash
-docker-compose up
-```
+2. Copy and adjust `.env` from `.env.example`, and populate secrets you need (mainly `MINIO_SECRET_KEY`)
 
-This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
+3. In this `/nest-clamav-scanner` directory, run
+
+   ```bash
+   docker compose up
+   ```
+
+   This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
 
 ## Local installation
 
 - Run npm installation for dependencies
 
-```bash
-npm install
-```
+  ```bash
+  npm install
+  ```
 
 - For Prisma, it comes in handy to have Prisma cli. Check if it is working on your pc:
 
-```bash
-npx prisma
-```
+  ```bash
+  npx prisma
+  ```
 
 - Check the `.env` file for your correct local database connection configuration. It looks like this:
 
-```env
-DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?schema=public"
-```
+  ```env
+  DATABASE_URL="postgresql://user:pass@localhost:54302/mydb?schema=public"
+  ```
 
 If you have issues connecting to your Postgres, maybe you need to set timeout `connect_timeout`. Sometimes macs have
 problems with that:

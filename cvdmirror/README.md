@@ -21,6 +21,9 @@ To run the Docker container, use
 docker compose up
 ```
 
+> [!IMPORTANT]
+> If you are getting startup or entrypoint errors, make sure file `entrypoint.sh` is using LF line endings on your system.
+
 ## Deployment
 
 The service can be deployed to a Kubernetes cluster using the provided configurations in the kubernetes directory. As it needs a persistent CVD data, it is set up as a StatefulSet with a PersistentVolumeClaim. The container contains a Caddy server and in background it runs `cvdupdate` script which is initiated by cron.

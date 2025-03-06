@@ -7,6 +7,7 @@ import MenuPopover from 'components/forms/simple-components/Menu/MenuPopover'
 import React from 'react'
 import { OverlayProvider, useMenuTrigger } from 'react-aria'
 import { useMenuTriggerState } from 'react-stately'
+
 import cn from '../../../../frontend/cn'
 
 interface MenuProps<T extends object> extends AriaMenuProps<T>, MenuTriggerProps {

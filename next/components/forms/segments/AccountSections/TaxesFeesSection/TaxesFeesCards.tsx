@@ -1,5 +1,6 @@
 import React from 'react'
 
+import cn from '../../../../../frontend/cn'
 import { AccountType } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
@@ -8,7 +9,6 @@ import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeesSection } from './useTaxFeesSection'
-import cn from '../../../../../frontend/cn'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()

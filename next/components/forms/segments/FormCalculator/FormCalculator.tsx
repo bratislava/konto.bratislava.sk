@@ -12,9 +12,9 @@ import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
+import cn from '../../../../frontend/cn'
 import ConditionalFormMarkdown from '../../info-components/ConditionalFormMarkdown'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
-import cn from '../../../../frontend/cn'
 
 /**
  * Extracts the path of the RJSF component position, e.g.

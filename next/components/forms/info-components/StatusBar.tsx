@@ -7,11 +7,11 @@ import React, { createContext, forwardRef, ReactNode, useContext, useState } fro
 import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
 
 import { environment } from '../../../environment'
+import cn from '../../../frontend/cn'
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 import Button from '../simple-components/ButtonNew'
-import cn from '../../../frontend/cn'
 
 type StatusBarVariantBase = 'warning' | 'error' | 'info'
 

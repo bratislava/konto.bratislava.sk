@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react'
 
+import cn from '../../../frontend/cn'
 import FieldFooter, { FieldFooterProps } from '../info-components/FieldFooter'
 import FieldHeader, { FieldHeaderProps } from '../info-components/FieldHeader'
 import { FieldSize } from './FieldBase'
-import cn from '../../../frontend/cn'
 
 export type FieldWrapperProps = FieldHeaderProps & FieldFooterProps & { size?: FieldSize }
 

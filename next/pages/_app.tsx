@@ -20,9 +20,9 @@ import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
+import cn from '../frontend/cn'
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
-import cn from '../frontend/cn'
 
 const inter = Inter({
   variable: '--inter-font',

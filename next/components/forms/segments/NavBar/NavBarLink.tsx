@@ -1,4 +1,5 @@
 import NextLink from 'next/link'
+
 import cn from '../../../../frontend/cn'
 
 interface IProps {

@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 // eslint-disable-next-line import/no-cycle
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import HorizontalArrowIcon from './tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from './tooltip-vertical-arrow.svg'
-import cn from '../../../../frontend/cn'
 
 type InnerTooltipProps = Omit<TooltipProps, 'children'> & {
   children: string

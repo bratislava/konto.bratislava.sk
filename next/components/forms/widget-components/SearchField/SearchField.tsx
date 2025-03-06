@@ -3,9 +3,9 @@ import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
+import cn from '../../../../frontend/cn'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
-import cn from '../../../../frontend/cn'
 
 type SearchFieldProps = FieldWrapperProps & {
   value?: string

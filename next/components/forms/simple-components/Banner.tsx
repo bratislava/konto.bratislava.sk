@@ -3,8 +3,8 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
-import Button from './Button'
 import cn from '../../../frontend/cn'
+import Button from './Button'
 
 type BannerBase = {
   title: string

@@ -6,8 +6,8 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
-import { getLanguageKey } from '../../../../frontend/utils/general'
 import cn from '../../../../frontend/cn'
+import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface LoginRegisterNavBarProps {
   className?: string

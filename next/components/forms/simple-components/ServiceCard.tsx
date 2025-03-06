@@ -1,9 +1,9 @@
 import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { ReactNode } from 'react'
 
+import cn from '../../../frontend/cn'
 import ButtonNew from './ButtonNew'
 import { LinkPlausibleProps } from './MLinkNew'
-import cn from '../../../frontend/cn'
 
 type ServiceCardBase = {
   title: string

@@ -1,6 +1,7 @@
 import { CheckIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
 import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import React from 'react'
+
 import cn from '../../../../../frontend/cn'
 
 type TaxPaidStatusProps = { status: TaxPaidStatusEnum; mobileIcon?: boolean }

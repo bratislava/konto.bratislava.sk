@@ -20,11 +20,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 import Button from '../../simple-components/Button'
 import ButtonNew from '../../simple-components/ButtonNew'
 import PrettyBytes from '../../simple-components/PrettyBytes'
 import ProgressBar from '../../simple-components/ProgressBar'
-import cn from '../../../../frontend/cn'
 
 type UploadedFileProps = {
   fileInfo: FileInfo

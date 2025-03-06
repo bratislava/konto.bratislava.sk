@@ -10,8 +10,8 @@ import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useLockedBody } from 'usehooks-ts'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import { useNavMenuContext } from '../NavBar/navMenuContext'
 import cn from '../../../../frontend/cn'
+import { useNavMenuContext } from '../NavBar/navMenuContext'
 
 interface IProps {
   sectionsList?: MenuSectionItemBase[]

@@ -3,6 +3,7 @@ import MenuItem from 'components/forms/simple-components/Menu/MenuItem'
 import React, { useRef } from 'react'
 import { useMenu } from 'react-aria'
 import { useTreeState } from 'react-stately'
+
 import cn from '../../../../frontend/cn'
 
 interface MenuContainerProps<T extends object> extends AriaMenuProps<T> {

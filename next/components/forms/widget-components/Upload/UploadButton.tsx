@@ -3,12 +3,12 @@ import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 import {
   getDisplaySupportedFileExtensions,
   getSupportedFileExtensions,
 } from '../../../../frontend/utils/formFileUpload'
 import PrettyBytes from '../../simple-components/PrettyBytes'
-import cn from '../../../../frontend/cn'
 
 interface UploadButtonProps {
   disabled?: boolean

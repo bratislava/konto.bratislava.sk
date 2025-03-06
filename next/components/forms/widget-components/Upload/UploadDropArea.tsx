@@ -9,6 +9,7 @@ import {
   FileTrigger,
 } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 import {
   getDisplayMaxFileSize,
   getDisplaySupportedFileExtensions,
@@ -16,7 +17,6 @@ import {
 } from '../../../../frontend/utils/formFileUpload'
 import { isDefined } from '../../../../frontend/utils/general'
 import PrettyBytes from '../../simple-components/PrettyBytes'
-import cn from '../../../../frontend/cn'
 
 interface UploadDropAreaProps {
   disabled?: boolean

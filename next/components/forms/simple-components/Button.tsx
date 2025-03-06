@@ -4,9 +4,9 @@ import { LinkButtonProps } from '@react-types/button'
 import { forwardRef, type JSX, ReactNode, Ref, RefObject } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
+import cn from '../../../frontend/cn'
 import MLink from './MLink'
 import Spinner from './Spinner'
-import cn from '../../../frontend/cn'
 
 type ButtonBase = {
   variant?:

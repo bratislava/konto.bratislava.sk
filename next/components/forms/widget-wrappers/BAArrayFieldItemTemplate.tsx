@@ -8,8 +8,8 @@ import {
 import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
-import Button from '../simple-components/ButtonNew'
 import cn from '../../../frontend/cn'
+import Button from '../simple-components/ButtonNew'
 
 export type BAArrayFieldItemTemplateAdditionalProps = {
   parentUiOptions: ArrayFieldUiOptions

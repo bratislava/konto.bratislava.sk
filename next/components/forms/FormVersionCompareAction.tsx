@@ -2,6 +2,7 @@ import { AlertIcon, ErrorIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import cn from 'frontend/cn'
 import { router } from 'next/client'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -11,7 +12,6 @@ import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 import ButtonNew from './simple-components/ButtonNew'
 import { useFormContext } from './useFormContext'
-import cn from 'frontend/cn'
 
 const FormVersionCompareAction = () => {
   const {

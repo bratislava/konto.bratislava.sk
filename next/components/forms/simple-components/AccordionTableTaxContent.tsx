@@ -2,10 +2,10 @@ import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 
+import cn from '../../../frontend/cn'
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import { useHorizontalScrollFade } from '../../../frontend/utils/useHorizontalScrollFade'
 import AccordionV2 from './AccordionV2'
-import cn from '../../../frontend/cn'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,

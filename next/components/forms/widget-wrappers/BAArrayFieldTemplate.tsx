@@ -12,13 +12,13 @@ import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
+import cn from '../../../frontend/cn'
 import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
 import ButtonNew from '../simple-components/ButtonNew'
 import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
-import cn from '../../../frontend/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx

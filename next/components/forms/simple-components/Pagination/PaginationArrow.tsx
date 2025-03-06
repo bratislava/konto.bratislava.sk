@@ -1,4 +1,5 @@
 import { ArrowRightIcon, ChevronRightIcon } from '@assets/ui-icons'
+
 import cn from '../../../../frontend/cn'
 
 type PaginationArrowBase = {

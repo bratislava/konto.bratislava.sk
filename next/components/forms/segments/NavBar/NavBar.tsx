@@ -14,13 +14,13 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, RefObject, useState } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
+import cn from '../../../../frontend/cn'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import { StatusBar } from '../../info-components/StatusBar'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
-import cn from '../../../../frontend/cn'
 
 interface IProps extends LanguageSelectProps {
   className?: string

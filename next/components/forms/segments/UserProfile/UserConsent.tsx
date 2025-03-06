@@ -1,4 +1,5 @@
 import Toggle from 'components/forms/simple-components/Toggle'
+
 import cn from '../../../../frontend/cn'
 
 interface Consent {

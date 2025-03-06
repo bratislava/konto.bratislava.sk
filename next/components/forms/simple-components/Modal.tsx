@@ -10,8 +10,8 @@ import {
   ModalOverlayProps,
 } from 'react-aria-components'
 
-import { useIframeResizerChildContext } from '../IframeResizerChild'
 import cn from '../../../frontend/cn'
+import { useIframeResizerChildContext } from '../IframeResizerChild'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string

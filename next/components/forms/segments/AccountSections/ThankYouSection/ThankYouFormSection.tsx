@@ -6,8 +6,8 @@ import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { useFormContext } from '../../../useFormContext'
 import cn from '../../../../../frontend/cn'
+import { useFormContext } from '../../../useFormContext'
 
 const useThankYouFormSection = () => {
   const {

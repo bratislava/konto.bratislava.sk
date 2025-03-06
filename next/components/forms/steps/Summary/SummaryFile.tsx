@@ -8,8 +8,8 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import React, { useMemo } from 'react'
 
-import Spinner from '../../simple-components/Spinner'
 import cn from '../../../../frontend/cn'
+import Spinner from '../../simple-components/Spinner'
 
 type SummaryFileProps = {
   fileInfo: FileInfoSummary

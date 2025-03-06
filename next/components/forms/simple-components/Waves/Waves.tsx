@@ -1,8 +1,8 @@
+import cn from '../../../../frontend/cn'
 import WaveBottomLarge from './waves/WaveBottomLarge'
 import WaveBottomSmall from './waves/WaveBottomSmall'
 import WaveTopLarge from './waves/WaveTopLarge'
 import WaveTopSmall from './waves/WaveTopSmall'
-import cn from '../../../../frontend/cn'
 
 interface WavesProps {
   wavePosition: 'top' | 'bottom'

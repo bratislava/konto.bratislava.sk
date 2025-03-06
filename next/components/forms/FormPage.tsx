@@ -1,6 +1,7 @@
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import React from 'react'
 
+import cn from '../../frontend/cn'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormContent from './FormContent'
 import FormVersionCompareAction from './FormVersionCompareAction'
@@ -9,7 +10,6 @@ import ThankYouFormSection from './segments/AccountSections/ThankYouSection/Than
 import ConditionalWrap from './simple-components/ConditionalWrap'
 import { FormContextProvider, FormServerContext, useFormContext } from './useFormContext'
 import { FormSentProvider, useFormSent } from './useFormSent'
-import cn from '../../frontend/cn'
 
 const FormStateRouter = () => {
   const { formSent } = useFormSent()

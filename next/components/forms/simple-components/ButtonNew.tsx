@@ -7,8 +7,8 @@ import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, Ref } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 
-import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
 import cn from '../../../frontend/cn'
+import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
 
 type ButtonOrIconButton =
   | {

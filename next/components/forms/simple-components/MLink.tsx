@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ComponentProps, forwardRef, ReactNode } from 'react'
+
 import cn from '../../../frontend/cn'
 
 export type LinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref'> & {

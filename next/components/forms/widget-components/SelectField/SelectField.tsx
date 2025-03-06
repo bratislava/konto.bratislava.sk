@@ -11,9 +11,9 @@ import Select, {
   Props as ReactSelectProps,
 } from 'react-select'
 
+import cn from '../../../../frontend/cn'
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
-import cn from '../../../../frontend/cn'
 
 export type SelectOption = { value: string; label: string; description?: string }
 

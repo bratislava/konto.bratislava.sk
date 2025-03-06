@@ -3,12 +3,12 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
+import cn from '../../../frontend/cn'
 import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 import { useFormSummary } from './Summary/useFormSummary'
-import cn from '../../../frontend/cn'
 
 type StepperModalProps = {
   isOpen: boolean

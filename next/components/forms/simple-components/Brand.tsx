@@ -1,6 +1,7 @@
 import BALogo from '@assets/images/BALogo.svg'
 import Button from 'components/forms/simple-components/ButtonNew'
 import React from 'react'
+
 import cn from '../../../frontend/cn'
 
 export interface BrandProps {

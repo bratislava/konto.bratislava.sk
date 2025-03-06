@@ -1,6 +1,7 @@
 import { useResizeObserver } from '@react-aria/utils'
 import LoginRegisterNavBar from 'components/forms/segments/LoginRegisterNavBar/LoginRegisterNavBar'
 import { ReactNode, useRef, useState } from 'react'
+
 import cn from '../../frontend/cn'
 
 interface LoginRegisterLayoutProps {

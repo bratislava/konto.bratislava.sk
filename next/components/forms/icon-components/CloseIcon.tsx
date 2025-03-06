@@ -1,4 +1,5 @@
 import { MouseEventHandler } from 'react'
+
 import cn from '../../../frontend/cn'
 
 type CloseIconProps = {

@@ -6,10 +6,23 @@ This readme should get you up & running. For more detailed documentation, check 
 
 You need `node` and `npm` installed locally.
 
-To install dependencies run:
+To install dependencies and build required packages:
 
-```
+```bash
+# Build required shared packages
+cd ../forms-shared/
 npm install
+npm run build
+cd ../openapi-clients/
+npm install
+npm run build
+
+# Install dependencies
+cd ../next/
+npm install
+
+# Build the project
+npm run dev
 ```
 
 ### VSCode support

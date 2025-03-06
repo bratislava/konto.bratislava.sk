@@ -16442,6 +16442,63 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "if": {
                 "properties": {
                   "oznamovatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
+                  },
+                },
+                "required": [
+                  "oznamovatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "vztahKNehnutelnosti": {
+                    "baOrder": 4,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "enumMetadata": [
+                          {
+                            "label": "Vlastník",
+                            "value": "vlastnik",
+                          },
+                          {
+                            "label": "Nájomca",
+                            "value": "najomca",
+                          },
+                          {
+                            "label": "Iné",
+                            "value": "ine",
+                          },
+                        ],
+                        "orientations": "column",
+                        "variant": "boxed",
+                      },
+                      "ui:widget": "RadioGroup",
+                    },
+                    "default": "vlastnik",
+                    "enum": [
+                      "vlastnik",
+                      "najomca",
+                      "ine",
+                    ],
+                    "title": "Označte vzťah k nehnuteľnosti",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "vztahKNehnutelnosti",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "oznamovatelTyp": {
                     "const": "fyzickaOsoba",
                   },
                 },
@@ -16467,7 +16524,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "then": {
                       "properties": {
                         "mestoPrechodnyPobyt": {
-                          "baOrder": 16,
+                          "baOrder": 17,
                           "baUiSchema": {
                             "ui:label": false,
                             "ui:options": {
@@ -16480,7 +16537,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                           "type": "string",
                         },
                         "pscPrechodnyPobyt": {
-                          "baOrder": 17,
+                          "baOrder": 18,
                           "baUiSchema": {
                             "ui:label": false,
                             "ui:options": {
@@ -16493,7 +16550,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                           "type": "string",
                         },
                         "statPrechodnyPobyt": {
-                          "baOrder": 18,
+                          "baOrder": 19,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -17773,7 +17830,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                           "type": "string",
                         },
                         "ulicaACisloPrechodnyPobyt": {
-                          "baOrder": 15,
+                          "baOrder": 16,
                           "baUiSchema": {
                             "ui:label": false,
                             "ui:options": {
@@ -17798,7 +17855,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 ],
                 "properties": {
                   "email": {
-                    "baOrder": 8,
+                    "baOrder": 9,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17811,7 +17868,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "maPrechodnyPobyt": {
-                    "baOrder": 14,
+                    "baOrder": 15,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -17838,7 +17895,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "boolean",
                   },
                   "meno": {
-                    "baOrder": 4,
+                    "baOrder": 5,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17851,7 +17908,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "mesto": {
-                    "baOrder": 11,
+                    "baOrder": 12,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17864,7 +17921,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "priezvisko": {
-                    "baOrder": 5,
+                    "baOrder": 6,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17877,7 +17934,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "psc": {
-                    "baOrder": 12,
+                    "baOrder": 13,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17890,7 +17947,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "rodneCislo": {
-                    "baOrder": 7,
+                    "baOrder": 8,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -17904,7 +17961,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "stat": {
-                    "baOrder": 13,
+                    "baOrder": 14,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -19184,7 +19241,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 9,
+                    "baOrder": 10,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19200,7 +19257,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "titul": {
-                    "baOrder": 6,
+                    "baOrder": 7,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19213,7 +19270,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ulicaACislo": {
-                    "baOrder": 10,
+                    "baOrder": 11,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19256,7 +19313,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "email": {
-                    "baOrder": 21,
+                    "baOrder": 22,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19269,7 +19326,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ico": {
-                    "baOrder": 20,
+                    "baOrder": 21,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19283,7 +19340,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "mesto": {
-                    "baOrder": 24,
+                    "baOrder": 25,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19296,7 +19353,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "obchodneMeno": {
-                    "baOrder": 19,
+                    "baOrder": 20,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19308,7 +19365,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "psc": {
-                    "baOrder": 25,
+                    "baOrder": 26,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -19321,7 +19378,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "stat": {
-                    "baOrder": 26,
+                    "baOrder": 27,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -20601,7 +20658,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 22,
+                    "baOrder": 23,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20617,7 +20674,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ulicaACislo": {
-                    "baOrder": 23,
+                    "baOrder": 24,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20658,7 +20715,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "email": {
-                    "baOrder": 33,
+                    "baOrder": 34,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20671,7 +20728,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ico": {
-                    "baOrder": 32,
+                    "baOrder": 33,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20685,7 +20742,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "meno": {
-                    "baOrder": 27,
+                    "baOrder": 28,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20698,7 +20755,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "mesto": {
-                    "baOrder": 36,
+                    "baOrder": 37,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20711,7 +20768,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "obchodneMeno": {
-                    "baOrder": 31,
+                    "baOrder": 32,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20723,7 +20780,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "priezvisko": {
-                    "baOrder": 28,
+                    "baOrder": 29,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20736,7 +20793,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "psc": {
-                    "baOrder": 37,
+                    "baOrder": 38,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20749,7 +20806,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "rodneCislo": {
-                    "baOrder": 30,
+                    "baOrder": 31,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -20763,7 +20820,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "stat": {
-                    "baOrder": 38,
+                    "baOrder": 39,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -22043,7 +22100,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 34,
+                    "baOrder": 35,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22059,7 +22116,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "titul": {
-                    "baOrder": 29,
+                    "baOrder": 30,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22072,7 +22129,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ulicaACislo": {
-                    "baOrder": 35,
+                    "baOrder": 36,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22116,7 +22173,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "email": {
-                    "baOrder": 41,
+                    "baOrder": 42,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22129,7 +22186,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ico": {
-                    "baOrder": 40,
+                    "baOrder": 41,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22143,7 +22200,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "mesto": {
-                    "baOrder": 44,
+                    "baOrder": 45,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22156,7 +22213,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "obchodneMeno": {
-                    "baOrder": 39,
+                    "baOrder": 40,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22168,7 +22225,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "psc": {
-                    "baOrder": 45,
+                    "baOrder": 46,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -22181,7 +22238,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "stat": {
-                    "baOrder": 46,
+                    "baOrder": 47,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -23461,7 +23518,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 42,
+                    "baOrder": 43,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -23477,7 +23534,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ulicaACislo": {
-                    "baOrder": 43,
+                    "baOrder": 44,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -23525,7 +23582,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "opravnenaOsoba": {
-                    "baOrder": 47,
+                    "baOrder": 48,
                     "baUiSchema": {
                       "ui:options": {
                         "objectDisplay": "boxed",
@@ -24986,7 +25043,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "adresaRozhodnutia": {
-                    "baOrder": 49,
+                    "baOrder": 50,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -25063,7 +25120,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "adresaRozhodnutia": {
-                    "baOrder": 50,
+                    "baOrder": 51,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -25119,7 +25176,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "adresaRozhodnutia": {
-                    "baOrder": 51,
+                    "baOrder": 52,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -25171,7 +25228,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
               "then": {
                 "properties": {
                   "mestoInaDorucovaciaAdresa": {
-                    "baOrder": 53,
+                    "baOrder": 54,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -25184,7 +25241,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "pscInaDorucovaciaAdresa": {
-                    "baOrder": 54,
+                    "baOrder": 55,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -25197,7 +25254,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "statInaDorucovaciaAdresa": {
-                    "baOrder": 55,
+                    "baOrder": 56,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
@@ -26477,7 +26534,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "string",
                   },
                   "ulicaACisloInaDorucovaciaAdresa": {
-                    "baOrder": 52,
+                    "baOrder": 53,
                     "baUiSchema": {
                       "ui:label": false,
                       "ui:options": {
@@ -26508,7 +26565,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
           },
           "properties": {
             "maElektronickuSchranku": {
-              "baOrder": 48,
+              "baOrder": 49,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
@@ -39783,6 +39840,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
+            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "baOrder": 1,
@@ -39899,6 +39957,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
+            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "baOrder": 1,
@@ -40015,6 +40074,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
+            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "allOf": [
@@ -40212,6 +40272,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
+            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "allOf": [

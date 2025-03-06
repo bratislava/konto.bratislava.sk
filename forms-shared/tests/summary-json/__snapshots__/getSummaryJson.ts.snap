@@ -4291,6 +4291,18 @@ exports[`getSummaryJson > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExampl
           "displayValues": [
             {
               "type": "String",
+              "value": "Vlastník",
+            },
+          ],
+          "id": "root_oznamovatel_vztahKNehnutelnosti",
+          "label": "Označte vzťah k nehnuteľnosti",
+          "type": "Field",
+          "value": "vlastnik",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
               "value": "Ján",
             },
           ],

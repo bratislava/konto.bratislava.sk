@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 
@@ -6,6 +5,7 @@ import { FormStepIndex, FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewRow from './StepperViewRow'
 import { useFormSummary } from './Summary/useFormSummary'
+import cn from '../../../frontend/cn'
 
 type StepperViewListProps = {
   onSkipToStep: (stepIndex: FormStepIndex) => void
@@ -23,7 +23,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
 
         return (
           <li
-            className={cx({
+            className={cn({
               'relative after:my-2 after:ml-[15px] after:block after:h-4 after:w-0.5 after:bg-gray-300':
                 !isLast,
             })}

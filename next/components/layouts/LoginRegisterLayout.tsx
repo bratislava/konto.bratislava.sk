@@ -1,7 +1,7 @@
 import { useResizeObserver } from '@react-aria/utils'
-import cx from 'classnames'
 import LoginRegisterNavBar from 'components/forms/segments/LoginRegisterNavBar/LoginRegisterNavBar'
 import { ReactNode, useRef, useState } from 'react'
+import cn from '../../frontend/cn'
 
 interface LoginRegisterLayoutProps {
   className?: string
@@ -36,7 +36,7 @@ const LoginRegisterLayout = ({
   useResizeObserver({ ref: mobileNavbarRef, onResize: handleHeaderResize })
 
   return (
-    <div className={cx('flex', 'flex-col', 'min-h-screen', className)}>
+    <div className={cn('flex min-h-screen flex-col', className)}>
       <LoginRegisterNavBar
         backButtonHidden={backButtonHidden}
         desktopNavbarRef={desktopNavbarRef}

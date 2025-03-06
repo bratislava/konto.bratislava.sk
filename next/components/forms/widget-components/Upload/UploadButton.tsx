@@ -1,5 +1,4 @@
 import { UploadIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
@@ -9,6 +8,7 @@ import {
   getSupportedFileExtensions,
 } from '../../../../frontend/utils/formFileUpload'
 import PrettyBytes from '../../simple-components/PrettyBytes'
+import cn from '../../../../frontend/cn'
 
 interface UploadButtonProps {
   disabled?: boolean
@@ -37,7 +37,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
-    const buttonClassNames = cx(
+    const buttonClassNames = cn(
       'flex w-full items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-2 lg:w-fit lg:py-3',
       {
         'cursor-pointer': !disabled,
@@ -53,7 +53,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       },
     )
 
-    const buttonInfoClassNames = cx('text-p3 flex flex-col justify-center', {
+    const buttonInfoClassNames = cn('text-p3 flex flex-col justify-center', {
       'min-w-40': supportedFormats || sizeLimit,
     })
 

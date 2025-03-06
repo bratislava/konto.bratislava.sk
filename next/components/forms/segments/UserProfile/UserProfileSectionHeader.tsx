@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+import cn from '../../../../frontend/cn'
 
 interface UserProfileSectionHeaderProps {
   title: string
@@ -30,7 +30,7 @@ const UserProfileSectionHeader = ({
 
   return (
     <div
-      className={cx(
+      className={cn(
         'flex flex-col gap-6 border-gray-200 p-4',
         'md:flex-row md:flex-wrap md:px-8 md:py-6',
         {
@@ -41,7 +41,7 @@ const UserProfileSectionHeader = ({
       )}
     >
       <div
-        className={cx('flex w-full justify-between', {
+        className={cn('flex w-full justify-between', {
           'flex-col items-start gap-4 md:flex-row md:items-center md:gap-0': childrenToColumn,
           'items-center': !childrenToColumn,
         })}
@@ -55,9 +55,9 @@ const UserProfileSectionHeader = ({
               </span>
             )}
           </div>
-          <p className={cx('text-p2-normal', 'md:block', { hidden: isEditing })}>{text}</p>
+          <p className={cn('text-p2-normal md:block', { hidden: isEditing })}>{text}</p>
         </div>
-        {children && <div className={cx({ 'w-full md:w-fit': childrenToColumn })}>{children}</div>}
+        {children && <div className={cn({ 'w-full md:w-fit': childrenToColumn })}>{children}</div>}
       </div>
     </div>
   )

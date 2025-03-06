@@ -1,11 +1,10 @@
 import { CheckIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
-import baTwMerge from '../../../frontend/baTwMerge'
+import cn from '../../../frontend/cn'
 
 interface StepperViewRowProps {
   step: FormStepperStep
@@ -26,7 +25,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
     return step.stepperTitle ?? step.title
   }
 
-  const iconClassName = cx(
+  const iconClassName = cn(
     'flex h-8 w-8 min-w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
       'border-gray-700 bg-gray-700 text-white': isSubmitted || isCurrent,
@@ -35,7 +34,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
   )
 
   return (
-    <div className={baTwMerge('flex flex-row items-center gap-3', className)}>
+    <div className={cn('flex flex-row items-center gap-3', className)}>
       <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
         {isCurrent || !isSubmitted ? (
           step.displayIndex

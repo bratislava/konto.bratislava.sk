@@ -1,11 +1,11 @@
 import { WidgetProps } from '@rjsf/utils'
-import cx from 'classnames'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
+import cn from '../../../frontend/cn'
 
 interface TextAreaWidgetRJSFProps extends WidgetProps {
   value: string | undefined
@@ -59,7 +59,7 @@ const TextAreaWidgetRJSF = ({
             helptextFooter={helptextFooter}
             helptextFooterMarkdown={helptextFooterMarkdown}
             tooltip={tooltip}
-            className={cx('h-[196px]', className)}
+            className={cn('h-[196px]', className)}
             onChange={wrapperOnChange}
             onBlur={onBlur}
             errorMessage={rawErrors}

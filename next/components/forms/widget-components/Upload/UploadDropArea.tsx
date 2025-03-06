@@ -1,5 +1,4 @@
 import { UploadIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
@@ -17,6 +16,7 @@ import {
 } from '../../../../frontend/utils/formFileUpload'
 import { isDefined } from '../../../../frontend/utils/general'
 import PrettyBytes from '../../simple-components/PrettyBytes'
+import cn from '../../../../frontend/cn'
 
 interface UploadDropAreaProps {
   disabled?: boolean
@@ -45,7 +45,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
 
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
-      cx('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
+      cn('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
         'bg-white': !disabled && !isDropTarget,
         'cursor-not-allowed bg-gray-200 opacity-50': disabled,
         'cursor-pointer': !disabled,

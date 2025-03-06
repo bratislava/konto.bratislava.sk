@@ -1,7 +1,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import cx from 'classnames'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+import cn from '../../../../frontend/cn'
 
 type FormMenuItemBase = {
   title: string
@@ -15,7 +15,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
   return url ? (
     <Link href={url} className="flex items-center gap-3">
       <DropdownMenu.Item
-        className={cx(
+        className={cn(
           'text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden flex cursor-pointer items-center gap-3 px-5 py-3',
           className,
         )}
@@ -27,7 +27,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
   ) : (
     <DropdownMenu.Item
       onClick={onPress}
-      className={cx(
+      className={cn(
         'text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden flex cursor-pointer items-center gap-3 px-5 py-3',
         className,
       )}

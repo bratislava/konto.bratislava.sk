@@ -1,5 +1,4 @@
 import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
@@ -9,6 +8,7 @@ import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 import { useFormSummary } from './Summary/useFormSummary'
+import cn from '../../../frontend/cn'
 
 type StepperModalProps = {
   isOpen: boolean
@@ -76,14 +76,14 @@ const StepperView = () => {
       </nav>
       <div className="lg:hidden">
         <AriaButton
-          className={cx(
+          className={cn(
             'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
           )}
           data-cy="stepper-dropdown"
           onPress={handleOnClickDropdownIcon}
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
-          <ChevronDownIcon className={cx({ 'rotate-180': !isOpen })} />
+          <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
         </AriaButton>
 
         <StepperModal

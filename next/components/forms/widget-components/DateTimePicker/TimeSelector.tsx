@@ -1,9 +1,9 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import padStart from 'lodash/padStart'
 import React, { MouseEvent, useEffect, useRef } from 'react'
 import { useDidMount } from 'rooks'
+import cn from '../../../../frontend/cn'
 
 type TimeSelectorBase = {
   onReset?: () => void
@@ -112,7 +112,7 @@ const TimeSelector = ({
                   onClick={(e) => {
                     clickHandler(e, 'hour', `${item}`)
                   }}
-                  className={cx('focus:outline-hidden cursor-pointer rounded-lg px-10 py-2', {
+                  className={cn('focus:outline-hidden cursor-pointer rounded-lg px-10 py-2', {
                     'bg-gray-100': +timeFormatArray[0] === item,
                     'pointer-events-none opacity-50':
                       (minValueArray && item < minValueArray[0]) ||
@@ -151,7 +151,7 @@ const TimeSelector = ({
                   onClick={(e) => {
                     clickHandler(e, 'minute', `${item}`)
                   }}
-                  className={cx('focus:outline-hidden cursor-pointer rounded-lg px-10 py-2', {
+                  className={cn('focus:outline-hidden cursor-pointer rounded-lg px-10 py-2', {
                     'bg-gray-100': +timeFormatArray[1] === item,
                     'pointer-events-auto cursor-pointer opacity-100':
                       (minValueArray && minValueArray[0] < timeFormatArray[0]) ||

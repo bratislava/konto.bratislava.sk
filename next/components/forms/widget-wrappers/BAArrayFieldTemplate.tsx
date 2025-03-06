@@ -8,7 +8,6 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import cx from 'classnames'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
@@ -19,6 +18,7 @@ import FieldErrorMessage from '../info-components/FieldErrorMessage'
 import ButtonNew from '../simple-components/ButtonNew'
 import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
+import cn from '../../../frontend/cn'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx
@@ -55,7 +55,7 @@ const BAArrayFieldTemplate = <
   ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps>
   const { selfId } = getObjectFieldInfo(idSchema)
 
-  const containerStyle = cx('flex flex-col', {
+  const containerStyle = cn('flex flex-col', {
     'gap-6': variant === 'topLevel',
     'gap-4': variant === 'nested',
   })
@@ -74,7 +74,7 @@ const BAArrayFieldTemplate = <
         <>
           {/* ArrayFieldTitleTemplate is not used */}
           {title && variant === 'topLevel' && (
-            <h3 className={cx('text-h3', { 'mb-2': description, 'mb-6': !description })}>
+            <h3 className={cn('text-h3', { 'mb-2': description, 'mb-6': !description })}>
               {title}
             </h3>
           )}

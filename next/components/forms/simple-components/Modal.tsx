@@ -11,7 +11,7 @@ import {
 } from 'react-aria-components'
 
 import { useIframeResizerChildContext } from '../IframeResizerChild'
-import baTwMerge from '../../../frontend/baTwMerge'
+import cn from '../../../frontend/cn'
 
 export type ModalProps = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
@@ -75,7 +75,7 @@ const Modal = ({
 
   return (
     <ModalOverlay
-      className={baTwMerge(
+      className={cn(
         'fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40 pt-[var(--modal-offset-x)]',
         modalOverlayClassname,
       )}
@@ -85,7 +85,7 @@ const Modal = ({
         <AriaModal
           data-cy={dataCy}
           {...modalProps}
-          className={baTwMerge(
+          className={cn(
             'bg-gray-0 relative overflow-auto px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
             mobileFullScreen
               ? 'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12'

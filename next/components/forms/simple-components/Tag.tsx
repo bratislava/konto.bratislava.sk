@@ -1,6 +1,6 @@
 import { CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { FC, useState } from 'react'
+import cn from '../../../frontend/cn'
 
 interface TagProps {
   text: string
@@ -16,7 +16,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   // STYLES
-  const classStyles = cx(
+  const classStyles = cn(
     'tag align-items-center flex h-5 min-w-14 items-center gap-2.5 px-2 text-center',
     {
       'text-16': size === 'large',
@@ -33,7 +33,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
     },
   )
 
-  const iconClassStyles = cx('tag mx-1 inline-block cursor-pointer self-center', {
+  const iconClassStyles = cn('tag mx-1 inline-block cursor-pointer self-center', {
     'text-16 h-3 w-3': size === 'large',
     'text-p3 h-2.5 w-2.5': size === 'small' || !size,
   })

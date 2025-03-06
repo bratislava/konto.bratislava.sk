@@ -1,5 +1,5 @@
-import cx from 'classnames'
 import NextLink from 'next/link'
+import cn from '../../../../frontend/cn'
 
 interface IProps {
   className?: string
@@ -33,14 +33,14 @@ const Link = ({
   return (
     <NextLink className={className} href={href} target={target}>
       <div
-        className={cx('group flex cursor-pointer items-center', {
+        className={cn('group flex cursor-pointer items-center', {
           'text-category-600 font-medium': variant === 'primary',
         })}
       >
         <span className="group-hover:hidden">{hasIconLeft && icon}</span>
         <span className="hidden group-hover:block">{hasIconLeft && hoverIcon}</span>
         <span
-          className={cx(iconClassName, {
+          className={cn(iconClassName, {
             'pl-6': hasIconLeft,
             'pr-6': hasIconRight,
           })}

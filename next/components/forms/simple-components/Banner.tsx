@@ -1,10 +1,10 @@
 import { PhoneIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
 import Button from './Button'
+import cn from '../../../frontend/cn'
 
 type BannerBase = {
   title: string
@@ -31,7 +31,7 @@ const Banner = ({
   // @ts-ignore
   return (
     <div
-      className={cx(
+      className={cn(
         'max-w-(--breakpoint-lg) m-auto flex h-full w-full flex-col items-center justify-end rounded-none bg-gray-800 py-6 lg:flex-row lg:rounded-3xl lg:py-0',
         className,
       )}

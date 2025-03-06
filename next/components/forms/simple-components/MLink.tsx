@@ -1,6 +1,6 @@
-import cx from 'classnames'
 import Link from 'next/link'
 import { ComponentProps, forwardRef, ReactNode } from 'react'
+import cn from '../../../frontend/cn'
 
 export type LinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref'> & {
   children: ReactNode
@@ -29,7 +29,7 @@ const MLink = forwardRef<HTMLAnchorElement, LinkProps>(
       </a>
     ) : (
       <Link href={href} passHref ref={ref} {...rest} className={className}>
-        <p className={cx({ 'w-full text-center': labelCenter })}>{label}</p>
+        <p className={cn({ 'w-full text-center': labelCenter })}>{label}</p>
         {children}
       </Link>
     )

@@ -1,5 +1,5 @@
-import cx from 'classnames'
 import React, { forwardRef, PropsWithChildren } from 'react'
+import cn from '../../../../frontend/cn'
 
 type AccountContainerProps = {
   className?: string
@@ -13,7 +13,7 @@ export const AccountContainer = forwardRef<
   <div
     ref={ref}
     data-cy={dataCyPrefix ? `${dataCyPrefix}-container` : null}
-    className={cx(
+    className={cn(
       'bg-gray-0 md:shadow-default mx-auto w-full max-w-[696px] px-4 py-6 md:rounded-lg md:px-12 md:py-8',
       className,
     )}

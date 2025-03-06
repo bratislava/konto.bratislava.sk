@@ -2,7 +2,7 @@ import { WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { PropsWithChildren } from 'react'
 
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
-import baTwMerge from '../../../frontend/baTwMerge'
+import cn from '../../../frontend/cn'
 
 type WidgetWrapperProps = PropsWithChildren<{
   id: string
@@ -17,10 +17,7 @@ const WidgetWrapper = ({ id, options, className, children }: WidgetWrapperProps)
   const hasBelowComponents = belowComponents && belowComponents?.length > 0
 
   return (
-    <div
-      id={id ?? undefined}
-      className={baTwMerge('flex flex-col gap-4', className, optionsClassName)}
-    >
+    <div id={id ?? undefined} className={cn('flex flex-col gap-4', className, optionsClassName)}>
       {hasRightComponents ? (
         <div className="sm:grid sm:grid-cols-2 sm:gap-4">
           <div>{children}</div>

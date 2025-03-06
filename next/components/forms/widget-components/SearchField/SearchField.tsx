@@ -1,12 +1,11 @@
 import { RemoveIcon, SearchIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
-import baTwMerge from '../../../../frontend/baTwMerge'
+import cn from '../../../../frontend/cn'
 
 type SearchFieldProps = FieldWrapperProps & {
   value?: string
@@ -55,21 +54,19 @@ const SearchField = ({
     ref,
   )
 
-  const style = baTwMerge(
-    cx(
-      'sm:text-16 text-p3 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent sm:px-[52px] sm:py-2.5',
-      {
-        // hover
-        'hover:border-gray-400': !disabled,
+  const style = cn(
+    'sm:text-16 text-p3 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent sm:px-[52px] sm:py-2.5',
+    {
+      // hover
+      'hover:border-gray-400': !disabled,
 
-        // error
-        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-          errorMessage?.length > 0 && !disabled,
+      // error
+      'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+        errorMessage?.length > 0 && !disabled,
 
-        // disabled
-        'border-gray-300 bg-gray-100': disabled,
-      },
-    ),
+      // disabled
+      'border-gray-300 bg-gray-100': disabled,
+    },
     className,
   )
 
@@ -95,7 +92,7 @@ const SearchField = ({
       >
         <div className="relative">
           <i
-            className={cx(
+            className={cn(
               'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
               {
                 'opacity-50': disabled,

@@ -1,6 +1,5 @@
 import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
@@ -8,7 +7,7 @@ import { useTextField } from 'react-aria'
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
-import baTwMerge from '../../../../frontend/baTwMerge'
+import cn from '../../../../frontend/cn'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock' | 'euro'
 export type InputType = 'text' | 'password' | 'email' | 'tel'
@@ -120,24 +119,22 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       else setValueState('')
     }
 
-    const style = baTwMerge(
-      cx(
-        'text-p3 sm:text-16 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
-        {
-          // conditions
-          'pl-12 sm:pl-[52px]': leftIcon,
-          'pr-12 sm:pr-[52px]': resetIcon,
-          // hover
-          'hover:border-gray-400': !disabled,
+    const style = cn(
+      'text-p3 sm:text-16 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+      {
+        // conditions
+        'pl-12 sm:pl-[52px]': leftIcon,
+        'pr-12 sm:pr-[52px]': resetIcon,
+        // hover
+        'hover:border-gray-400': !disabled,
 
-          // error
-          'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-            errorMessage?.length > 0 && !disabled,
+        // error
+        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+          errorMessage?.length > 0 && !disabled,
 
-          // disabled
-          'border-gray-300 bg-gray-100': disabled,
-        },
-      ),
+        // disabled
+        'border-gray-300 bg-gray-100': disabled,
+      },
       className,
     )
 
@@ -164,7 +161,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
             <span
-              className={cx(
+              className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
                   'opacity-50': disabled,

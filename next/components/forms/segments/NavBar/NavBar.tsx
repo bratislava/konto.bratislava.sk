@@ -1,6 +1,5 @@
 import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
@@ -21,6 +20,7 @@ import { StatusBar } from '../../info-components/StatusBar'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
+import cn from '../../../../frontend/cn'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -105,7 +105,7 @@ export const NavBar = ({
       {/* Desktop */}
       <div
         id="desktop-navbar"
-        className={cx(
+        className={cn(
           className,
           'text-p2 shadow-default sticky left-0 top-0 z-40 hidden w-full items-center bg-white lg:block',
         )}
@@ -185,7 +185,7 @@ export const NavBar = ({
                     <NavigationMenu.Link asChild>
                       <NextLink href={sectionItem.url}>
                         <div
-                          className={cx(
+                          className={cn(
                             'text-p2-semibold hover:border-main-700 hover:text-main-700 flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all',
                             {
                               'border-main-700 text-main-700': isActive(sectionItem),

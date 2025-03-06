@@ -1,7 +1,6 @@
 import { AlertIcon, ErrorIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
-import cx from 'classnames'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { router } from 'next/client'
 import { useTranslation } from 'next-i18next'
@@ -12,6 +11,7 @@ import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 import ButtonNew from './simple-components/ButtonNew'
 import { useFormContext } from './useFormContext'
+import cn from 'frontend/cn'
 
 const FormVersionCompareAction = () => {
   const {
@@ -50,7 +50,7 @@ const FormVersionCompareAction = () => {
       <div className="flex flex-col">
         <div className="bg-gray-0 mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
           <span
-            className={cx(
+            className={cn(
               'flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
               {
                 'bg-warning-100':
@@ -61,7 +61,7 @@ const FormVersionCompareAction = () => {
             )}
           >
             <Icon
-              className={cx('flex size-8 items-center justify-center md:size-10', {
+              className={cn('flex size-8 items-center justify-center md:size-10', {
                 'text-warning-700':
                   versionCompareContinueAction === VersionCompareContinueAction.RequiresBump,
                 'text-negative-700':

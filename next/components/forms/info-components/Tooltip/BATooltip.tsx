@@ -1,5 +1,4 @@
 import { HelpIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
@@ -8,6 +7,7 @@ import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'rea
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import HorizontalArrowIcon from './tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from './tooltip-vertical-arrow.svg'
+import cn from '../../../../frontend/cn'
 
 type InnerTooltipProps = Omit<TooltipProps, 'children'> & {
   children: string
@@ -38,7 +38,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
 
           return (
             <ArrowIcon
-              className={cx({
+              className={cn({
                 'rotate-180': placement === 'top' || placement === 'left',
               })}
             />

@@ -1,5 +1,4 @@
 import BratislavaIcon from '@assets/images/bratislava-footer.svg'
-import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
@@ -8,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useFormContext } from '../../../useFormContext'
+import cn from '../../../../../frontend/cn'
 
 const useThankYouFormSection = () => {
   const {
@@ -65,7 +65,7 @@ const ThankYouFormSection = () => {
 
   return (
     <div
-      className={cx(
+      className={cn(
         'bg-gray-0 flex flex-col justify-between pt-16 md:bg-gray-50 md:pt-28',
         largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
       )}
@@ -107,7 +107,7 @@ const ThankYouFormSection = () => {
       </div>
 
       <div
-        className={cx(
+        className={cn(
           'max-w-(--breakpoint-lg) mx-auto hidden w-full flex-col items-center gap-6 pb-6 lg:flex',
           {
             'mt-10': !displayAccountLinks,

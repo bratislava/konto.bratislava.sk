@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import React from 'react'
 
@@ -10,6 +9,7 @@ import ThankYouFormSection from './segments/AccountSections/ThankYouSection/Than
 import ConditionalWrap from './simple-components/ConditionalWrap'
 import { FormContextProvider, FormServerContext, useFormContext } from './useFormContext'
 import { FormSentProvider, useFormSent } from './useFormSent'
+import cn from '../../frontend/cn'
 
 const FormStateRouter = () => {
   const { formSent } = useFormSent()
@@ -31,7 +31,7 @@ const FormLayoutContainer = () => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
 
-  const accountPageLayoutClassName = cx({
+  const accountPageLayoutClassName = cn({
     'bg-gray-50': formSent,
     'bg-gray-0 md:bg-gray-50':
       !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,

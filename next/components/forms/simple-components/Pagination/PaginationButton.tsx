@@ -1,6 +1,6 @@
 import { useObjectRef } from '@react-aria/utils'
 import { PressEvent } from '@react-types/shared'
-import cx from 'classnames'
+import cn from 'frontend/cn'
 import { forwardRef, ReactNode } from 'react'
 import { useButton } from 'react-aria'
 
@@ -27,7 +27,7 @@ const PaginationButton = forwardRef<HTMLButtonElement, PaginationButtonBase>(
       <button
         type="button"
         ref={ref}
-        className={cx(
+        className={cn(
           'outline-hidden flex h-10 w-10 items-center justify-center rounded-full md:h-12 md:w-12',
           {
             'border-2 text-gray-700 hover:border-gray-700': variant === 'pagination',

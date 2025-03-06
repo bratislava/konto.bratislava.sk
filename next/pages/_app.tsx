@@ -22,7 +22,7 @@ import SnackbarProvider from 'react-simple-snackbar'
 
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
-import cx from 'classnames'
+import cn from '../frontend/cn'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -71,7 +71,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
                   <NavMenuContextProvider>
                     <NuqsAdapter>
                       {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root" className={cx(inter.variable, 'font-sans')}>
+                      <div id="root" className={cn(inter.variable, 'font-sans')}>
                         <Component {...pageProps} />
                       </div>
                       {allowCookies ? <CookieConsent /> : null}

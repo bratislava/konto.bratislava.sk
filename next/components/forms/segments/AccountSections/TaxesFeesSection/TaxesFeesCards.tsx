@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React from 'react'
 
 import { AccountType } from '../../../../../frontend/dtos/accountDto'
@@ -9,6 +8,7 @@ import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeesSection } from './useTaxFeesSection'
+import cn from '../../../../../frontend/cn'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()
@@ -18,7 +18,7 @@ const TaxesFeesCards = () => {
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
   const { showEmailCommunicationBanner, channelChangeEffectiveNextYear } = useTaxChannel()
 
-  const wrapperStyle = cx('flex flex-col gap-4', {
+  const wrapperStyle = cn('flex flex-col gap-4', {
     'lg:flex-row': !showEmailCommunicationBanner,
   })
 

@@ -1,11 +1,11 @@
 import { CheckIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import * as React from 'react'
 import { useRef } from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { CheckboxGroupContext } from './CheckboxGroup'
+import cn from '../../../../frontend/cn'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'
@@ -33,7 +33,7 @@ const CheckboxGroupItem = ({
   const isDisabled = state.isDisabled || rest.isDisabled
   const isSelected = state.isSelected(rest.value)
 
-  const checkboxStyle = cx(
+  const checkboxStyle = cn(
     'flex h-6 w-6 items-center justify-center rounded-sm border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || isIndeterminate) && !error,
@@ -53,7 +53,7 @@ const CheckboxGroupItem = ({
     },
   )
 
-  const containerStyle = cx('group flex flex-row', rest.className, {
+  const containerStyle = cn('group flex flex-row', rest.className, {
     'rounded-lg border-2 border-solid bg-white px-4 py-3': variant === 'boxed',
     'border-gray-300 group-hover:border-gray-500':
       variant === 'boxed' && !isSelected && isIndeterminate && !isDisabled && !error,
@@ -67,7 +67,7 @@ const CheckboxGroupItem = ({
     'cursor-not-allowed opacity-50': isDisabled,
   })
 
-  const labelStyle = cx('text-16 flex text-gray-700', {})
+  const labelStyle = cn('text-16 flex text-gray-700', {})
 
   return (
     <div data-cy={`checkbox-${inputProps.value as string}`}>
@@ -82,14 +82,14 @@ const CheckboxGroupItem = ({
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
                 <CheckIcon
-                  className={cx('text-gray-0 h-5 w-5', {
+                  className={cn('text-gray-0 h-5 w-5', {
                     hidden: !isSelected,
                   })}
                 />
               )}
               {isIndeterminate && (
                 <svg
-                  className={cx('', {
+                  className={cn('', {
                     hidden: !isIndeterminate,
                   })}
                   width="12"

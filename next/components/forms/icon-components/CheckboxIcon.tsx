@@ -1,5 +1,5 @@
 import { CheckIcon } from '@assets/ui-icons'
-import cx from 'classnames'
+import cn from '../../../frontend/cn'
 
 interface SelectCheckboxProps {
   checked?: boolean
@@ -8,7 +8,7 @@ interface SelectCheckboxProps {
 
 const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
   // STYLES
-  const checkboxClassName = cx(
+  const checkboxClassName = cn(
     'flex h-6 w-6 flex-col justify-center rounded-sm',
     {
       'bg-gray-700': checked,
@@ -17,7 +17,7 @@ const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
     className,
   )
 
-  const iconClassName = cx('text-gray-0 m-auto h-5 w-5', {
+  const iconClassName = cn('text-gray-0 m-auto h-5 w-5', {
     dropdown: className && className.split(' ').includes('dropdown'),
   })
 

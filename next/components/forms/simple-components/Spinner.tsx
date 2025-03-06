@@ -1,4 +1,4 @@
-import cx from 'classnames'
+import cn from '../../../frontend/cn'
 
 type SpinnerBase = {
   size?: 'lg' | 'md' | 'sm'
@@ -7,7 +7,7 @@ type SpinnerBase = {
 }
 
 const Spinner = ({ size = 'md', variant = 'black', className }: SpinnerBase) => {
-  const style = cx(
+  const style = cn(
     'animate-spin rounded-[50%] border-solid',
     {
       'border-category-400 border-t-gray-50': variant === 'category',

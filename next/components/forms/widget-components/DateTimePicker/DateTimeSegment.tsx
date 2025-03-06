@@ -1,7 +1,7 @@
-import cx from 'classnames'
 import React, { useRef } from 'react'
 import { useDateSegment } from 'react-aria'
 import { DateFieldState, DateSegment } from 'react-stately'
+import cn from '../../../../frontend/cn'
 
 type DateSegmentBase = {
   segment: DateSegment
@@ -17,10 +17,10 @@ const DateTimeSegment = ({ segment, state }: DateSegmentBase) => {
       {...segmentProps}
       ref={ref}
       data-cy={`date-time-${segment.type}`}
-      className={cx('text-16', { 'focus:outline-hidden focus:bg-gray-100': segment.isEditable })}
+      className={cn('text-16', { 'focus:outline-hidden focus:bg-gray-100': segment.isEditable })}
     >
       <span
-        className={cx('w-full text-center uppercase group-focus:text-white', {
+        className={cn('w-full text-center uppercase group-focus:text-white', {
           'text-gray-500': segment?.isPlaceholder,
         })}
         style={{

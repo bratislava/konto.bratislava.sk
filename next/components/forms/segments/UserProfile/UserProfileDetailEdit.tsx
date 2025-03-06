@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
@@ -7,6 +6,7 @@ import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+import cn from '../../../../frontend/cn'
 
 interface Data {
   email?: string
@@ -196,7 +196,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         )}
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className={cx('w-full grow', 'md:w-fit')}>
+        <div className="w-full grow md:w-fit">
           <Controller
             name="email"
             control={control}
@@ -278,7 +278,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className={cx('w-full', 'md:w-52')}>
+        <div className={cn('w-full', 'md:w-52')}>
           <Controller
             name="postal_code"
             control={control}
@@ -293,7 +293,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
       </div>
-      <div className={cx('py-2', 'md:hidden')}>
+      <div className={cn('py-2', 'md:hidden')}>
         <Button
           variant="black"
           size="sm"

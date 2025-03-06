@@ -1,6 +1,5 @@
 import { ChevronDownSmallIcon } from '@assets/ui-icons'
 import type { AriaMenuProps, MenuTriggerProps } from '@react-types/menu'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import MenuButton from 'components/forms/simple-components/Menu/MenuButton'
 import MenuContainer from 'components/forms/simple-components/Menu/MenuContainer'
@@ -8,6 +7,7 @@ import MenuPopover from 'components/forms/simple-components/Menu/MenuPopover'
 import React from 'react'
 import { OverlayProvider, useMenuTrigger } from 'react-aria'
 import { useMenuTriggerState } from 'react-stately'
+import cn from '../../../../frontend/cn'
 
 interface MenuProps<T extends object> extends AriaMenuProps<T>, MenuTriggerProps {
   label: string
@@ -27,7 +27,7 @@ const Menu = <T extends object>(props: MenuProps<T>) => {
     <div className="relative inline-block">
       {buttonIcon ? (
         <Button
-          className={cx('text-gray-700 hover:text-gray-600 focus:text-gray-800', {
+          className={cn('text-gray-700 hover:text-gray-600 focus:text-gray-800', {
             'border-category-800 hover:border-category-800': state.isOpen,
           })}
           size="sm"

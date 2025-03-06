@@ -1,10 +1,10 @@
 import { CheckIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import React from 'react'
 import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 
 import BATooltip from '../../info-components/Tooltip/BATooltip'
+import cn from '../../../../frontend/cn'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'
@@ -37,7 +37,7 @@ const SingleCheckBox = ({
   const { focusProps } = useFocusRing()
   const isSelected = state.isSelected && !rest.isIndeterminate
 
-  const checkboxStyle = cx(
+  const checkboxStyle = cn(
     'flex h-6 w-6 min-w-[24px] items-center justify-center rounded-sm border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || rest.isIndeterminate) && !error,
@@ -57,7 +57,7 @@ const SingleCheckBox = ({
     },
   )
 
-  const containerStyle = cx(
+  const containerStyle = cn(
     'group flex flex-row items-start justify-center gap-3 p-0',
     rest.className,
     {
@@ -74,7 +74,7 @@ const SingleCheckBox = ({
     },
   )
 
-  const labelStyle = cx('text-16 flex select-none gap-3 text-gray-700', {
+  const labelStyle = cn('text-16 flex select-none gap-3 text-gray-700', {
     'w-full': fullWidth,
   })
 
@@ -89,14 +89,14 @@ const SingleCheckBox = ({
         <div className={checkboxStyle}>
           {isSelected && (
             <CheckIcon
-              className={cx('text-gray-0 h-5 w-5', {
+              className={cn('text-gray-0 h-5 w-5', {
                 hidden: !isSelected,
               })}
             />
           )}
           {rest.isIndeterminate && (
             <svg
-              className={cx({
+              className={cn({
                 hidden: !rest.isIndeterminate,
               })}
               width="12"
@@ -110,7 +110,7 @@ const SingleCheckBox = ({
         </div>
         <div className={labelStyle}>
           <div
-            className={cx('relative', {
+            className={cn('relative', {
               'after:text-16-semibold after:text-main-700 after:absolute after:bottom-0.5 after:ml-0.5 after:content-["*"]':
                 required,
             })}

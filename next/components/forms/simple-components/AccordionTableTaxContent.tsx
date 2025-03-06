@@ -1,11 +1,11 @@
 import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import { useHorizontalScrollFade } from '../../../frontend/utils/useHorizontalScrollFade'
 import AccordionV2 from './AccordionV2'
+import cn from '../../../frontend/cn'
 
 const tableHeaderData = {
   subject: <span>Predmet dane</span>,
@@ -112,7 +112,7 @@ const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsD
 
   return (
     <div className="relative w-full">
-      <div className={cx('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
+      <div className={cn('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
         <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
           <TableHeaderRow dataType={dataType} />
           <TableRow dataType={dataType} data={data} />

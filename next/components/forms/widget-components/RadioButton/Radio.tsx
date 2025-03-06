@@ -1,11 +1,11 @@
 import { AriaRadioProps } from '@react-types/radio'
-import cx from 'classnames'
 import * as React from 'react'
 import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { RadioContext } from './RadioGroup'
+import cn from '../../../../frontend/cn'
 
 type RadioProps = {
   variant?: 'basic' | 'boxed' | 'card'
@@ -32,7 +32,7 @@ const Radio = ({
 
   const isError = state?.validationState === 'invalid'
 
-  const inputStyle = cx(
+  const inputStyle = cn(
     'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
     {
       // "before" pseudo-element is used to display the selected radio button
@@ -50,7 +50,7 @@ const Radio = ({
     },
   )
 
-  const containerStyle = cx('text-16 group relative flex w-full gap-3 rounded-lg', className, {
+  const containerStyle = cn('text-16 group relative flex w-full gap-3 rounded-lg', className, {
     'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
     'flex-row items-center': variant === 'basic' || variant === 'boxed',
     'p-3 lg:px-4 lg:py-3': variant === 'boxed',
@@ -79,7 +79,7 @@ const Radio = ({
           data-cy={`radio-${rest.children?.toString().toLowerCase().replaceAll(' ', '-').replaceAll('.', '')}`}
         />
         <span className="flex grow flex-col gap-1">
-          <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>
+          <span className={cn({ 'font-semibold': description || radioGroupHasDescription })}>
             {rest.children}
           </span>
           {description && <span>{description}</span>}

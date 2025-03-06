@@ -1,5 +1,4 @@
 import { GenericObjectType } from '@rjsf/utils'
-import cx from 'classnames'
 import { useFormData } from 'components/forms/useFormData'
 import {
   calculateFormCalculatorExpression,
@@ -15,6 +14,7 @@ import { useNumberFormatter } from 'react-aria'
 
 import ConditionalFormMarkdown from '../../info-components/ConditionalFormMarkdown'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
+import cn from '../../../../frontend/cn'
 
 /**
  * Extracts the path of the RJSF component position, e.g.
@@ -78,18 +78,18 @@ const Calculator = ({
     return calculateFormCalculatorExpression(expression, dataAtPath, true)
   }, [expression, dataAtPath])
 
-  const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {
+  const wrapperClassName = cn('inline-flex items-center justify-start gap-8 self-stretch py-5', {
     'border-b-2': !isLast,
     'border-gray-200': !isLast && variant === 'white',
     'border-white': !isLast && variant === 'black',
   })
 
-  const labelClassName = cx('text-p2-semibold max-w-[400px] shrink font-semibold', {
+  const labelClassName = cn('text-p2-semibold max-w-[400px] shrink font-semibold', {
     'text-gray-800': variant === 'white',
     'text-white': variant === 'black',
   })
 
-  const valueClassName = cx('text-p2-semibold grow basis-0 text-right', {
+  const valueClassName = cn('text-p2-semibold grow basis-0 text-right', {
     'text-gray-700': variant === 'white',
     'text-white': variant === 'black',
   })
@@ -119,12 +119,12 @@ const FormCalculator = ({
   label,
   calculators = [],
 }: CustomComponentCalculatorProps & { id: string }) => {
-  const labelClassName = cx('text-h5', {
+  const labelClassName = cn('text-h5', {
     'text-white': variant === 'black',
     'text-gray-700': variant === 'white',
   })
 
-  const wrapperClassName = cx(
+  const wrapperClassName = cn(
     'flex flex-col items-start justify-center gap-2 rounded-lg p-6 pb-1',
     {
       'pt-1': !label,

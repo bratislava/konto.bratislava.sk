@@ -2,7 +2,6 @@
  * which shows a red status bar with white text on top of the page
  */
 import { CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, forwardRef, ReactNode, useContext, useState } from 'react'
 import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
@@ -12,6 +11,7 @@ import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 import Button from '../simple-components/ButtonNew'
+import cn from '../../../frontend/cn'
 
 type StatusBarVariantBase = 'warning' | 'error' | 'info'
 
@@ -86,7 +86,7 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
   return (
     <div
       ref={forwardedRef}
-      className={cx('w-full text-white', {
+      className={cn('w-full text-white', {
         'bg-negative-700': statusBarConfiguration.variant === 'error',
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
         'bg-gray-700': statusBarConfiguration.variant === 'info',

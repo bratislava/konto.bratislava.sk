@@ -1,7 +1,7 @@
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
+import cn from '../../../frontend/cn'
 
 type AlertButtonBase = {
   title: string
@@ -16,7 +16,7 @@ type AlertButtonsBase = {
 
 const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
   return buttons && buttons?.length > 0 ? (
-    <div className={cx('flex w-max items-start gap-5', className)}>
+    <div className={cn('flex w-max items-start gap-5', className)}>
       {buttons?.map((button, i) => (
         <React.Fragment key={i}>
           {button.link ? (
@@ -75,7 +75,7 @@ const Alert = ({
     warning: <AlertIcon className="size-6" />,
   }
 
-  const alertContainer = cx(
+  const alertContainer = cn(
     'flex flex-col items-start gap-2 rounded-lg px-3 py-3 lg:px-5 lg:py-4',
     className,
     {
@@ -93,7 +93,7 @@ const Alert = ({
     { 'max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cx('w-full', {
+  const contentStyle = cn('w-full', {
     'text-16-semibold': title,
     'text-16': !title,
     'text-white': solid,
@@ -117,7 +117,7 @@ const Alert = ({
       </div>
       {message && title && (
         <div
-          className={cx('text-p2 w-full pl-9 font-normal', {
+          className={cn('text-p2 w-full pl-9 font-normal', {
             'text-gray-0': solid,
             'text-gray-700': !solid,
           })}

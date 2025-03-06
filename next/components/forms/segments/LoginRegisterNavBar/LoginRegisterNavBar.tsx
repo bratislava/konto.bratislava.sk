@@ -1,5 +1,4 @@
 import { ArrowLeftIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { ROUTES } from 'frontend/api/constants'
@@ -8,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { RefObject } from 'react'
 
 import { getLanguageKey } from '../../../../frontend/utils/general'
+import cn from '../../../../frontend/cn'
 
 interface LoginRegisterNavBarProps {
   className?: string
@@ -48,10 +48,10 @@ export const LoginRegisterNavBar = ({
       </div>
       <div
         id="desktop-navbar"
-        className={cx(
-          className,
+        className={cn(
           'text-p2 items-center',
           'shadow-default sticky left-0 top-0 z-40 w-full bg-white',
+          className,
         )}
         ref={desktopNavbarRef}
       >
@@ -73,7 +73,7 @@ export const LoginRegisterNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
+        className={cn(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileNavbarRef}
       >
         <div className="flex h-16 items-center border-b-2 px-8 py-5">

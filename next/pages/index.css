@@ -3,8 +3,9 @@
 /* When updating the theme don't forget to update the `baTwMerge` implementation in `cn.ts`. */
 @theme inline {
   /* previously defaultTheme.fontFamily.sans in tailwind.config.js */
-  --font-sans: var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    var(--inter-font), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 @theme {

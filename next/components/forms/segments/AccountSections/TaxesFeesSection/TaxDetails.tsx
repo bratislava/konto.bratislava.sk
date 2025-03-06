@@ -48,7 +48,7 @@ const TaxDetails = () => {
         <div className="flex w-full flex-col items-start gap-3 lg:gap-5">
           {Object.keys(groupedTaxDetails).map((key) => (
             <div className="flex w-full flex-row items-start gap-6" key={key}>
-              <div className="text-p2 grow">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
+              <div className="grow text-p2">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
               <div className="text-p2">
                 <FormatCurrencyFromCents value={sums[key]} />
               </div>
@@ -57,25 +57,25 @@ const TaxDetails = () => {
         </div>
         <div className="h-0.5 w-full bg-gray-200" />
         <div className="flex w-full flex-col items-start gap-3">
-          <div className="xs:flex-row flex w-full flex-col gap-1">
-            <div className="text-p2 xs:w-min w-full grow">{t('tax_detail_section.tax_total')}</div>
-            <div className="text-p2 w-max">
+          <div className="flex w-full flex-col gap-1 xs:flex-row">
+            <div className="w-full grow text-p2 xs:w-min">{t('tax_detail_section.tax_total')}</div>
+            <div className="w-max text-p2">
               <FormatCurrencyFromCents value={taxData.amount} />
             </div>
           </div>
-          <div className="xs:flex-row flex w-full flex-col gap-1">
-            <div className="text-p2 xs:w-min w-full grow">
+          <div className="flex w-full flex-col gap-1 xs:flex-row">
+            <div className="w-full grow text-p2 xs:w-min">
               {t('tax_detail_section.tax_already_paid')}
             </div>
-            <div className="text-p2 w-max">
+            <div className="w-max text-p2">
               <FormatCurrencyFromCents value={taxData.paidAmount} />
             </div>
           </div>
         </div>
         <div className="h-0.5 w-full bg-gray-800" />
-        <div className="xs:flex-row flex w-full flex-col gap-2 lg:gap-6">
-          <div className="text-h4 xs:w-min w-full grow">{t('tax_detail_section.tax_to_pay')}</div>
-          <div className="text-h4 w-max">
+        <div className="flex w-full flex-col gap-2 xs:flex-row lg:gap-6">
+          <div className="w-full grow text-h4 xs:w-min">{t('tax_detail_section.tax_to_pay')}</div>
+          <div className="w-max text-h4">
             <FormatCurrencyFromCents value={taxData.amount - taxData.paidAmount} />
           </div>
         </div>

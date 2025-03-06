@@ -51,8 +51,8 @@ const SuccessContent = () => {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="bg-success-100 flex size-[88px] items-center justify-center rounded-full p-4">
-        <CheckIcon className="text-success-700 size-10" />
+      <div className="flex size-[88px] items-center justify-center rounded-full bg-success-100 p-4">
+        <CheckIcon className="size-10 text-success-700" />
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
@@ -64,7 +64,7 @@ const SuccessContent = () => {
             {actions.map((key, index) => (
               <li
                 key={index}
-                className="text-p1 before:text-h-xs flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
+                className="flex text-p1 [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
               >
                 <span>
                   <Trans
@@ -78,7 +78,7 @@ const SuccessContent = () => {
           </ol>
         </div>
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
-          <h3 className="text-h3 text-left">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
+          <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
           <ButtonNew
             variant="black-solid"
             className="w-full"
@@ -106,11 +106,11 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="text-p1 px-6">{t('tax_form_pdf_export_modal.footer_choice')}</span>
+              <span className="px-6 text-p1">{t('tax_form_pdf_export_modal.footer_choice')}</span>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
-              <div className="bg-main-100 rounded-t-lg p-4 md:px-6 md:py-5">
+              <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:py-5">
                 <h4 className="text-h4">{t('tax_form_pdf_export_modal.account_create')}</h4>
                 <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
                   {advantages.map((item, index) => (
@@ -123,9 +123,9 @@ const SuccessContent = () => {
                   ))}
                 </ul>
               </div>
-              <div className="bg-main-100 rounded-b-lg px-4 pb-4 md:px-0 md:pb-0">
+              <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
                 <AriaButton
-                  className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+                  className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}

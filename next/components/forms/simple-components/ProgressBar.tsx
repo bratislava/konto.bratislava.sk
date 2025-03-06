@@ -50,7 +50,7 @@ const ProgressBar = ({
         </div>
 
         {/* "before" creates space for percentage value, so the progressbar doesn't change width */}
-        <div className='text-p2 text-right before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
+        <div className='text-right text-p2 before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
       </div>
     </div>
   )

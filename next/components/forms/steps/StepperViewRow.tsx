@@ -42,7 +42,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
           <CheckIcon fill="white" className="size-6" />
         )}
       </div>
-      <span className="text-p3-medium text-left">
+      <span className="text-left text-p3-medium">
         {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
         {isSubmitted && !isCurrent ? (
           <span className="sr-only">{t('steps.submitted_sr')}</span>

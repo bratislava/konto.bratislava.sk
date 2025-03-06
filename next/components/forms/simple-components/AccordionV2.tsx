@@ -16,7 +16,7 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
     if (noTitleWrapper) {
       return <>{title}</>
     }
-    return <h3 className="text-h4 min-w-0 grow font-semibold">{title}</h3>
+    return <h3 className="min-w-0 grow text-h4 font-semibold">{title}</h3>
   }
 
   return (
@@ -24,7 +24,7 @@ const AccordionV2 = ({ title, noTitleWrapper, children }: AccordionV2Props) => {
       <summary className="flex cursor-pointer items-center gap-4 p-4 text-left group-open:pb-2 lg:px-8 lg:py-6 lg:group-open:pb-4">
         {renderTitle()}
         <span className="shrink-0" aria-hidden>
-          <ChevronDownIcon className="text-category-700 size-6 transition-transform group-open:rotate-180 lg:size-8" />
+          <ChevronDownIcon className="size-6 text-category-700 transition-transform group-open:rotate-180 lg:size-8" />
         </span>
       </summary>
 

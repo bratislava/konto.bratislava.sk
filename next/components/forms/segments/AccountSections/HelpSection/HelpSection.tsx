@@ -22,14 +22,14 @@ const HelpSection = ({ helpPage }: HelpSectionProps) => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />
-      <div className="max-w-(--breakpoint-lg) mx-auto w-full py-6 lg:py-16">
-        <h2 className="text-h2 flex justify-start px-4 lg:px-0">
+      <div className="mx-auto w-full max-w-(--breakpoint-lg) py-6 lg:py-16">
+        <h2 className="flex justify-start px-4 text-h2 lg:px-0">
           {t('account_section_help.faq.title')}
         </h2>
         <div className="flex flex-col gap-2 px-4 md:gap-3 lg:px-0">
           {helpPage.categories.filter(isDefined).map((category) => (
             <div className="flex flex-col gap-2 md:gap-3" key={category.id}>
-              <h3 className="text-h4 mt-6 flex justify-start">{category.title}</h3>
+              <h3 className="mt-6 flex justify-start text-h4">{category.title}</h3>
               {category.items.filter(isDefined).map((item, index) => (
                 <AccordionV2 key={index} title={item.title}>
                   <AccountMarkdown content={item.content} />

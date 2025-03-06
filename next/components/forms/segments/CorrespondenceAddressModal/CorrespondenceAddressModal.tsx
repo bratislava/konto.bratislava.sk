@@ -61,7 +61,7 @@ const CorrespondenceAddressModal = ({ parsedAddress, isOpen, onOpenChange, onSuc
       mobileFullScreen
     >
       {/* TODO: Proper title */}
-      <h2 className="text-h2 mb-2">{t('correspondence_address')}</h2>
+      <h2 className="mb-2 text-h2">{t('correspondence_address')}</h2>
       <CorrespondenceAddressForm
         onSubmit={handleSubmit}
         error={error}

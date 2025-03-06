@@ -74,7 +74,7 @@ const InvalidValueRenderer = () => {
 
   return (
     <span>
-      <div className="text-error flex items-center gap-3">
+      <div className="flex items-center gap-3 text-error">
         <div className="shrink-0">
           <AlertIcon />
         </div>
@@ -87,7 +87,7 @@ const InvalidValueRenderer = () => {
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => {
   return (
     <div className="mt-4">
-      <div className="text-p2-semibold mb-4">{array.title}</div>
+      <div className="mb-4 text-p2-semibold">{array.title}</div>
       {children}
     </div>
   )
@@ -128,7 +128,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 
   return (
     <div className="mb-4">
-      <div className="text-p2-semibold mb-2 inline-block rounded-xl bg-gray-100 px-2">
+      <div className="mb-2 inline-block rounded-xl bg-gray-100 px-2 text-p2-semibold">
         {arrayItem.title}
       </div>
       {children}

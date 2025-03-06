@@ -37,7 +37,7 @@ const GetJwt = ({ accessToken }: GetJwtProps) => {
 
   return (
     <div className="min-h-screen bg-[#E5E5E5]">
-      <div className="max-w-(--breakpoint-lg) mx-auto pb-64 md:px-12 md:pt-12">
+      <div className="mx-auto max-w-(--breakpoint-lg) pb-64 md:px-12 md:pt-12">
         <Wrapper
           direction="column"
           title="Kód nižšie slúži na technické účely a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."

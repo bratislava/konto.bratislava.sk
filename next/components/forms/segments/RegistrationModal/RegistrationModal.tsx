@@ -29,7 +29,7 @@ const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) =
     >
       <div className="flex flex-col gap-2 text-left md:text-center">
         <div className="md:hidden">{text}</div>
-        <div className="text-main-700 inline-flex gap-2 md:text-gray-700">
+        <div className="inline-flex gap-2 text-main-700 md:text-gray-700">
           {subtext}
           <ArrowRightIcon className="block size-6 md:hidden" />
         </div>
@@ -84,7 +84,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
       </div>
       <div className="flex flex-col">
-        <div className="bg-main-100 rounded-t-lg p-4 md:px-6 md:py-5">
+        <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:py-5">
           <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
           <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
@@ -98,11 +98,11 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             ))}
           </ul>
         </div>
-        <div className="bg-main-100 rounded-b-lg px-4 pb-4 md:px-0 md:pb-0">
+        <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => register()}
-            className="text-p1-semibold bg-main-700 text-gray-0 hover:bg-main-600 flex w-full justify-center rounded-lg px-5 py-2 text-center leading-6 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+            className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
             data-cy="registration-modal-button"
           >
             {t('registration_modal.body_action')}
@@ -114,7 +114,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => login()}
-            className="text-p1-underline text-main-700 hover:text-main-600 text-left md:text-center"
+            className="text-left text-p1-underline text-main-700 hover:text-main-600 md:text-center"
           >
             {t('registration_modal.body_login_link')}
           </AriaButton>
@@ -125,7 +125,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="text-p1 px-6">{t('registration_modal.footer_choice')}</span>
+            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">

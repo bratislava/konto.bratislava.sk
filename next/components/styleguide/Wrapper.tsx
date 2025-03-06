@@ -18,7 +18,7 @@ const mySlugify = (text: string) => {
 
 export const Wrapper = ({ title, children, direction = 'row', noBorder }: WrapperProps) => {
   const wrapperClassNames = cn(
-    'border-t-1 mb-10 flex flex-col border border-b-0 border-l-0 border-r-0 border-solid border-gray-800 pt-10',
+    'mb-10 flex flex-col border border-t-1 border-r-0 border-b-0 border-l-0 border-solid border-gray-800 pt-10',
     {
       'border-t-0': noBorder,
     },
@@ -32,7 +32,7 @@ export const Wrapper = ({ title, children, direction = 'row', noBorder }: Wrappe
   return (
     <div className={wrapperClassNames}>
       {title && (
-        <h2 id={mySlugify(title)} className="text-h2 pb-2">
+        <h2 id={mySlugify(title)} className="pb-2 text-h2">
           <MLink href={`#${mySlugify(title)}`} className="group">
             {title}
             <span className="invisible pl-2 group-hover:visible">

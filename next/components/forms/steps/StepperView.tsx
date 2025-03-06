@@ -23,7 +23,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      className="data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0"
+      className="fixed top-0 left-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
       isDismissable
     >
       <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
@@ -31,7 +31,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <Heading slot="title" className="text-h6 grow">
+                <Heading slot="title" className="grow text-h6">
                   {t('all_steps')}
                 </Heading>
                 <AriaButton

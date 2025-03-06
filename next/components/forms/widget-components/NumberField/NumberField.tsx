@@ -115,7 +115,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
     }
 
     const style = cn(
-      'text-p3 sm:text-16 focus:outline-hidden w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
+      'w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,

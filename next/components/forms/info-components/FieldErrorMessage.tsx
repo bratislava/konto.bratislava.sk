@@ -11,7 +11,7 @@ const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
 }) => {
   return errorMessage.length > 0 ? (
     <div
-      className="text-p3 sm:text-16 text-error mt-1"
+      className="mt-1 text-p3 text-error sm:text-16"
       data-cy="error-message"
       {...errorMessageProps}
     >

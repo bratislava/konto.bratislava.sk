@@ -86,9 +86,9 @@ export const CookiesAndTracking = () => {
 
       {shouldShowBanner ? (
         <div className="fixed inset-x-0 bottom-6 z-50 px-6">
-          <div className="shadow-default mx-auto max-w-[1110px] rounded-lg bg-white px-6 py-8 md:px-10">
-            <h6 className="text-20-semibold mb-4"> {t('cookie_consent_modal_content_title')} </h6>
-            <p className="text-p2 mb-8">
+          <div className="mx-auto max-w-[1110px] rounded-lg bg-white px-6 py-8 shadow-default md:px-10">
+            <h6 className="mb-4 text-20-semibold"> {t('cookie_consent_modal_content_title')} </h6>
+            <p className="mb-8 text-p2">
               {' '}
               {t('cookie_consent_body')}{' '}
               <a
@@ -103,13 +103,13 @@ export const CookiesAndTracking = () => {
             </p>
             <div className="flex flex-col gap-2 md:flex-row">
               <Button
-                className="text-16-medium h-12 px-6"
+                className="h-12 px-6 text-16-medium"
                 variant="category"
                 onPress={() => setConsents({ statistics: true })}
                 text={t('cookie_consent_accept')}
               />
               <Button
-                className="text-16-medium h-12 px-6"
+                className="h-12 px-6 text-16-medium"
                 variant="category-outline"
                 onPress={() => setConsents({ statistics: false })}
                 text={t('cookie_consent_reject')}

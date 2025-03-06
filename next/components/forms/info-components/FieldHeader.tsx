@@ -58,13 +58,13 @@ const FieldHeader = ({
   const displayAsterisk = !displayOptionalLabel && required
 
   const labelStyle = cn('relative text-gray-800', {
-    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold sm:after:text-16-semibold':
+    'text-p3-semibold after:text-p3-semibold sm:text-16-semibold sm:after:text-16-semibold':
       labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',
     'text-h5 after:text-h5': labelSize === 'h5',
     'mr-2': showOptionalLabel,
-    'after:text-main-700 after:absolute after:ml-0.5 after:content-["*"]': displayAsterisk,
+    'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
   })
 
   return (

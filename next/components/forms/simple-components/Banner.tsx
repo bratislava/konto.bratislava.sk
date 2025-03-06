@@ -32,7 +32,7 @@ const Banner = ({
   return (
     <div
       className={cn(
-        'max-w-(--breakpoint-lg) m-auto flex h-full w-full flex-col items-center justify-end rounded-none bg-gray-800 py-6 lg:flex-row lg:rounded-3xl lg:py-0',
+        'm-auto flex h-full w-full max-w-(--breakpoint-lg) flex-col items-center justify-end rounded-none bg-gray-800 py-6 lg:flex-row lg:rounded-3xl lg:py-0',
         className,
       )}
     >
@@ -69,7 +69,7 @@ const Banner = ({
             onPress={onPress}
           />
           {mobileNumber && (
-            <div className="text-gray-0 flex items-center gap-2 px-3 py-2">
+            <div className="flex items-center gap-2 px-3 py-2 text-gray-0">
               <PhoneIcon />
               <span className="text-p2-semibold">{mobileNumber}</span>
             </div>

@@ -66,7 +66,7 @@ const ThankYouFormSection = () => {
   return (
     <div
       className={cn(
-        'bg-gray-0 flex flex-col justify-between pt-16 md:bg-gray-50 md:pt-28',
+        'flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28',
         largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
       )}
     >
@@ -82,7 +82,7 @@ const ThankYouFormSection = () => {
         />
         {displayAccountLinks ? (
           <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-            <span className="text-p2 flex">
+            <span className="flex text-p2">
               <AccountMarkdown
                 variant="sm"
                 content={`<span className='text-p2'>${t('thank_you.subtitle_mail_info')}</span>.`}
@@ -108,7 +108,7 @@ const ThankYouFormSection = () => {
 
       <div
         className={cn(
-          'max-w-(--breakpoint-lg) mx-auto hidden w-full flex-col items-center gap-6 pb-6 lg:flex',
+          'mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex',
           {
             'mt-10': !displayAccountLinks,
           },

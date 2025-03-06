@@ -33,9 +33,9 @@ const BAObjectFieldTemplate = ({
           </div>
         ) : (
           <>
-            {options.title && <h3 className="text-h3 mb-3">{options.title}</h3>}
+            {options.title && <h3 className="mb-3 text-h3">{options.title}</h3>}
             {options.description && (
-              <div className="text-p2 mb-3 whitespace-pre-wrap">
+              <div className="mb-3 text-p2 whitespace-pre-wrap">
                 <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
                   {options.description}
                 </ConditionalFormMarkdown>

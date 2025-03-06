@@ -34,8 +34,8 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
   )
 
   const iconClassStyles = cn('tag mx-1 inline-block cursor-pointer self-center', {
-    'text-16 h-3 w-3': size === 'large',
-    'text-p3 h-2.5 w-2.5': size === 'small' || !size,
+    'h-3 w-3 text-16': size === 'large',
+    'h-2.5 w-2.5 text-p3': size === 'small' || !size,
   })
 
   const MAX_TEXT_SIZE = 10

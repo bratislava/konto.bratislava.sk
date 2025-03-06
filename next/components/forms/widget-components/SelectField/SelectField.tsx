@@ -208,7 +208,7 @@ const SelectField = <
                 }),
               multiValue: ({ isDisabled }) =>
                 cn(
-                  'items-center gap-1 rounded-sm pl-2 pr-1.5',
+                  'items-center gap-1 rounded-sm pr-1.5 pl-2',
                   isDisabled ? 'bg-gray-200' : 'bg-gray-100',
                 ),
               multiValueLabel: () => 'text-p3',

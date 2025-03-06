@@ -29,7 +29,7 @@ const ServiceCard = ({
   plausibleProps,
 }: ServiceCardBase) => {
   const style = cn(
-    'bg-gray-0 group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 p-4',
+    'group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
@@ -39,17 +39,17 @@ const ServiceCard = ({
     <div className={style}>
       <div className="flex w-full justify-between">
         <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
-        <span className={cn('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>{tag}</span>
+        <span className={cn('h-min rounded-[4px] px-2 text-p3-medium', tagStyle)}>{tag}</span>
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
         <h3
-          className={cn('text-h5 font-semibold leading-5 lg:leading-7', {
+          className={cn('text-h5 leading-5 font-semibold lg:leading-7', {
             'group-hover:underline': buttonText,
           })}
         >
           {title}
         </h3>
-        <div className="text-p-sm flex items-center font-normal">{description}</div>
+        <div className="flex items-center text-p-sm font-normal">{description}</div>
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">

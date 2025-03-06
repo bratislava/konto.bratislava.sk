@@ -78,7 +78,7 @@ const BAArrayFieldTemplate = <
               {title}
             </h3>
           )}
-          {title && variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+          {title && variant === 'nested' && <h4 className="mb-4 text-h4">{title}</h4>}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}

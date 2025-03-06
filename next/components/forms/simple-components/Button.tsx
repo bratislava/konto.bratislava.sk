@@ -92,15 +92,15 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     const style = cn(
       'inline-flex items-center',
       rest.href
-        ? 'focus-visible:outline-hidden underline underline-offset-4'
-        : 'focus:outline-hidden h-fit justify-center rounded-lg text-center align-middle',
+        ? 'underline underline-offset-4 focus-visible:outline-hidden'
+        : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-hidden',
       {
         'w-full': fullWidth,
         'w-fit': !fullWidth,
       },
       {
         // text for lg button
-        'text-16-semibold px-4 py-2.5':
+        'px-4 py-2.5 text-16-semibold':
           size === 'lg' &&
           !icon &&
           text &&
@@ -110,7 +110,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'category' ||
             variant === 'category-outline'),
         // text for sm button
-        'text-16-semibold px-4 py-1.5':
+        'px-4 py-1.5 text-16-semibold':
           size === 'sm' &&
           !icon &&
           text &&
@@ -156,7 +156,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'plain-negative'),
 
         // text for lg button plain variant
-        'text-16-semibold px-3 py-2':
+        'px-3 py-2 text-16-semibold':
           size === 'lg' &&
           !icon &&
           text &&
@@ -165,7 +165,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'plain-negative'),
 
         // text for sm button plain variant
-        'text-16-semibold px-2 py-1':
+        'px-2 py-1 text-16-semibold':
           size === 'sm' &&
           !icon &&
           text &&
@@ -202,7 +202,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           variant === 'negative',
         'border-category-700 bg-category-700 focus:border-category-800 focus:bg-category-800':
           variant === 'category',
-        'border-category-700 text-category-700 focus:border-category-800 focus:text-category-800 bg-transparent':
+        'border-category-700 bg-transparent text-category-700 focus:border-category-800 focus:text-category-800':
           variant === 'category-outline',
 
         'text-category-700 focus:bg-category-200 focus:text-category-800':

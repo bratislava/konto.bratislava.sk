@@ -179,31 +179,31 @@
 }
 
 @utility text-h1-lg {
-  @apply text-h-xl lg:text-h-3xl font-semibold;
+  @apply text-h-xl font-semibold lg:text-h-3xl;
 }
 
 @utility text-h1 {
-  @apply text-h-lg lg:text-h-2xl font-semibold;
+  @apply text-h-lg font-semibold lg:text-h-2xl;
 }
 
 @utility text-h1-form {
-  @apply text-h-md lg:text-h-2xl font-semibold;
+  @apply text-h-md font-semibold lg:text-h-2xl;
 }
 
 @utility text-h2 {
-  @apply text-h-md lg:text-h-xl font-semibold;
+  @apply text-h-md font-semibold lg:text-h-xl;
 }
 
 @utility text-h3 {
-  @apply text-h-base lg:text-h-lg font-semibold;
+  @apply text-h-base font-semibold lg:text-h-lg;
 }
 
 @utility text-h4 {
-  @apply text-h-sm lg:text-h-md font-semibold;
+  @apply text-h-sm font-semibold lg:text-h-md;
 }
 
 @utility text-h5 {
-  @apply text-h-xs lg:text-h-base font-semibold;
+  @apply text-h-xs font-semibold lg:text-h-base;
 }
 
 @utility text-h6 {
@@ -212,19 +212,19 @@
 
 @utility text-p1 {
   /* paragraphs */
-  @apply text-p-base lg:text-p-md font-normal;
+  @apply text-p-base font-normal lg:text-p-md;
 }
 
 @utility text-p1-medium {
-  @apply text-p-base lg:text-p-md font-medium;
+  @apply text-p-base font-medium lg:text-p-md;
 }
 
 @utility text-p1-semibold {
-  @apply text-p-base lg:text-p-md font-semibold;
+  @apply text-p-base font-semibold lg:text-p-md;
 }
 
 @utility text-p1-underline {
-  @apply text-p-base lg:text-p-md font-medium underline underline-offset-4;
+  @apply text-p-base font-medium underline underline-offset-4 lg:text-p-md;
 }
 
 @utility text-p2 {
@@ -265,115 +265,115 @@
   /* Other variables - all of these to be removed as the redesign progresses - start */
 
   /* heading */
-  @apply text-h-xl lg:text-h-3xl font-light;
+  @apply text-h-xl font-light lg:text-h-3xl;
 }
 
 @utility text-h1-lg-normal {
-  @apply text-h-xl lg:text-h-3xl font-normal;
+  @apply text-h-xl font-normal lg:text-h-3xl;
 }
 
 @utility text-h1-lg-medium {
-  @apply text-h-xl lg:text-h-3xl font-medium;
+  @apply text-h-xl font-medium lg:text-h-3xl;
 }
 
 @utility text-h1-lg-bold {
-  @apply text-h-xl lg:text-h-3xl font-bold;
+  @apply text-h-xl font-bold lg:text-h-3xl;
 }
 
 @utility text-h1-form-light {
-  @apply text-h-md lg:text-h-2xl font-light;
+  @apply text-h-md font-light lg:text-h-2xl;
 }
 
 @utility text-h1-form-normal {
-  @apply text-h-md lg:text-h-2xl font-normal;
+  @apply text-h-md font-normal lg:text-h-2xl;
 }
 
 @utility text-h1-form-medium {
-  @apply text-h-md lg:text-h-2xl font-medium;
+  @apply text-h-md font-medium lg:text-h-2xl;
 }
 
 @utility text-h1-form-bold {
-  @apply text-h-md lg:text-h-2xl font-bold;
+  @apply text-h-md font-bold lg:text-h-2xl;
 }
 
 @utility text-h1-light {
-  @apply text-h-lg lg:text-h-2xl font-light;
+  @apply text-h-lg font-light lg:text-h-2xl;
 }
 
 @utility text-h1-normal {
-  @apply text-h-lg lg:text-h-2xl font-normal;
+  @apply text-h-lg font-normal lg:text-h-2xl;
 }
 
 @utility text-h1-medium {
-  @apply text-h-lg lg:text-h-2xl font-medium;
+  @apply text-h-lg font-medium lg:text-h-2xl;
 }
 
 @utility text-h1-bold {
-  @apply text-h-lg lg:text-h-2xl font-bold;
+  @apply text-h-lg font-bold lg:text-h-2xl;
 }
 
 @utility text-h2-light {
-  @apply text-h-md lg:text-h-xl font-light;
+  @apply text-h-md font-light lg:text-h-xl;
 }
 
 @utility text-h2-normal {
-  @apply text-h-md lg:text-h-xl font-normal;
+  @apply text-h-md font-normal lg:text-h-xl;
 }
 
 @utility text-h2-medium {
-  @apply text-h-md lg:text-h-xl font-medium;
+  @apply text-h-md font-medium lg:text-h-xl;
 }
 
 @utility text-h2-bold {
-  @apply text-h-md lg:text-h-xl font-bold;
+  @apply text-h-md font-bold lg:text-h-xl;
 }
 
 @utility text-h3-light {
-  @apply text-h-base lg:text-h-lg font-light;
+  @apply text-h-base font-light lg:text-h-lg;
 }
 
 @utility text-h3-normal {
-  @apply text-h-base lg:text-h-lg font-normal;
+  @apply text-h-base font-normal lg:text-h-lg;
 }
 
 @utility text-h3-medium {
-  @apply text-h-base lg:text-h-lg font-medium;
+  @apply text-h-base font-medium lg:text-h-lg;
 }
 
 @utility text-h3-bold {
-  @apply text-h-base lg:text-h-lg font-bold;
+  @apply text-h-base font-bold lg:text-h-lg;
 }
 
 @utility text-h4-light {
-  @apply text-h-sm lg:text-h-md font-light;
+  @apply text-h-sm font-light lg:text-h-md;
 }
 
 @utility text-h4-normal {
-  @apply text-h-sm lg:text-h-md font-normal;
+  @apply text-h-sm font-normal lg:text-h-md;
 }
 
 @utility text-h4-medium {
-  @apply text-h-sm lg:text-h-md font-medium;
+  @apply text-h-sm font-medium lg:text-h-md;
 }
 
 @utility text-h4-bold {
-  @apply text-h-sm lg:text-h-md font-bold;
+  @apply text-h-sm font-bold lg:text-h-md;
 }
 
 @utility text-h5-light {
-  @apply text-h-xs lg:text-h-base font-light;
+  @apply text-h-xs font-light lg:text-h-base;
 }
 
 @utility text-h5-normal {
-  @apply text-h-xs lg:text-h-base font-normal;
+  @apply text-h-xs font-normal lg:text-h-base;
 }
 
 @utility text-h5-medium {
-  @apply text-h-xs lg:text-h-base font-medium;
+  @apply text-h-xs font-medium lg:text-h-base;
 }
 
 @utility text-h5-bold {
-  @apply text-h-xs lg:text-h-base font-bold;
+  @apply text-h-xs font-bold lg:text-h-base;
 }
 
 @utility text-h6-light {
@@ -394,11 +394,11 @@
 
 @utility text-p1-light {
   /* paragraphs */
-  @apply text-p-base lg:text-p-md font-light;
+  @apply text-p-base font-light lg:text-p-md;
 }
 
 @utility text-p1-bold {
-  @apply text-p-base lg:text-p-md font-bold;
+  @apply text-p-base font-bold lg:text-p-md;
 }
 
 @utility text-p2-light {
@@ -498,21 +498,21 @@
 @utility scroll-fade-left {
   /* useHorizontalScrollFade */
   &::before {
-    @apply z-1 pointer-events-none absolute top-0 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
   &::before {
-    @apply bg-linear-to-r left-0;
+    @apply left-0 bg-linear-to-r;
   }
 }
 
 @utility scroll-fade-right {
   &::after {
-    @apply z-1 pointer-events-none absolute top-0 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
+    @apply pointer-events-none absolute top-0 z-1 block h-full w-[25px] from-black/5 to-transparent opacity-0 transition-opacity duration-200 ease-in-out content-[''];
   }
 
   &::after {
-    @apply bg-linear-to-l right-0;
+    @apply right-0 bg-linear-to-l;
   }
 }
 

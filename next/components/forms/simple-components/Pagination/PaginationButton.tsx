@@ -28,7 +28,7 @@ const PaginationButton = forwardRef<HTMLButtonElement, PaginationButtonBase>(
         type="button"
         ref={ref}
         className={cn(
-          'outline-hidden flex h-10 w-10 items-center justify-center rounded-full md:h-12 md:w-12',
+          'flex h-10 w-10 items-center justify-center rounded-full outline-hidden md:h-12 md:w-12',
           {
             'border-2 text-gray-700 hover:border-gray-700': variant === 'pagination',
             'border-2 border-gray-700 bg-gray-700 text-white': variant === 'pagination-selected',

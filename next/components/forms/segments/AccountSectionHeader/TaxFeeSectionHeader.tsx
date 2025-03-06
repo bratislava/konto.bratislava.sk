@@ -22,7 +22,7 @@ const TaxFeeSectionHeader = () => {
 
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
-      <div className="max-w-(--breakpoint-lg) m-auto flex flex-col gap-4 py-6">
+      <div className="m-auto flex max-w-(--breakpoint-lg) flex-col gap-4 py-6">
         <div className="flex cursor-pointer items-center gap-0.5">
           <div className="flex size-5 items-center justify-center">
             <ChevronLeftIcon className="size-5" />
@@ -38,7 +38,7 @@ const TaxFeeSectionHeader = () => {
         <div className="flex size-full flex-col items-start gap-2">
           <div className="flex size-full flex-col items-start gap-4">
             <div className="flex w-full flex-row items-center gap-4">
-              <div className="text-h1 grow">
+              <div className="grow text-h1">
                 {t('tax_detail_section.title', { year: taxData?.year })}
               </div>
 
@@ -55,14 +55,14 @@ const TaxFeeSectionHeader = () => {
             </div>
             <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
               <div className="flex gap-2">
-                <div className="lg:text-p2-semibold text-p3-semibold">{t('tax_created')}</div>
-                <div className="lg:text-p2 text-p3">{formatDate(taxData?.createdAt)}</div>
+                <div className="text-p3-semibold lg:text-p2-semibold">{t('tax_created')}</div>
+                <div className="text-p3 lg:text-p2">{formatDate(taxData?.createdAt)}</div>
               </div>
               <div className="hidden size-1.5 rounded-full bg-black md:block" />
-              <div className="lg:text-p2-semibold text-p3">
+              <div className="text-p3 lg:text-p2-semibold">
                 <FormatCurrencyFromCents value={taxData.amount} />
                 {taxData.paidStatus === TaxPaidStatusEnum.PartiallyPaid && (
-                  <span className="lg:text-p2 text-p3">
+                  <span className="text-p3 lg:text-p2">
                     {t('tax_detail_section.tax_remainder_text', {
                       amount: currencyFromCentsFormatter.format(
                         taxData.amount - taxData.paidAmount,

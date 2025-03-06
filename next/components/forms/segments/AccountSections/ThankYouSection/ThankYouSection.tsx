@@ -57,7 +57,7 @@ const ThankYouSection = () => {
   }, [router.query, status])
 
   return (
-    <div className="bg-gray-0 flex h-screen flex-col justify-between pt-16 md:bg-gray-50 md:pt-28">
+    <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
       <div className="flex flex-col">
         {success ? (
           <ThankYouCard
@@ -79,7 +79,7 @@ const ThankYouSection = () => {
           />
         )}
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-          <span className="text-p2 flex">
+          <span className="flex text-p2">
             <AccountMarkdown
               variant="sm"
               content={`<span className='text-p2'>${t(
@@ -104,7 +104,7 @@ const ThankYouSection = () => {
         </div>
       </div>
 
-      <div className="max-w-(--breakpoint-lg) mx-auto hidden w-full flex-col items-center gap-6 pb-6 lg:flex">
+      <div className="mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex">
         <BratislavaIcon />
         <p className="text-p2">{t('thank_you.footer_text')}</p>
       </div>

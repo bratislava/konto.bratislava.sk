@@ -39,7 +39,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b bg-white">
-        <div className="max-w-(--breakpoint-xl) mx-auto flex items-center justify-between p-4 lg:px-8">
+        <div className="mx-auto flex max-w-(--breakpoint-xl) items-center justify-between p-4 lg:px-8">
           <a href="#" className="font-semibold text-black">
             LOGO
           </a>
@@ -59,8 +59,8 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
       </header>
 
       <main className="flex-1">
-        <div className="max-w-(--breakpoint-xl) mx-auto px-4 py-6 lg:px-8">
-          <h1 className="text-h1 mb-6 font-semibold">Formuláre</h1>
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-6 lg:px-8">
+          <h1 className="mb-6 text-h1 font-semibold">Formuláre</h1>
 
           <SelectField
             options={options}
@@ -80,7 +80,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
       </main>
 
       <footer className="bg-gray-900 text-white">
-        <div className="max-w-(--breakpoint-xl) mx-auto px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-8 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
               <div className="mb-4 font-semibold">LOGO</div>

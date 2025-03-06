@@ -53,13 +53,13 @@ export interface MenuSectionItemBase {
 
 const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
-    <div className="bg-main-100 relative flex flex-row items-start gap-2 rounded-full p-2">
-      <div className="text-main-700 flex size-6 items-center justify-center font-semibold">
+    <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
+      <div className="flex size-6 items-center justify-center font-semibold text-main-700">
         <span className="uppercase">
           {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
             userAttributes.given_name[0] + userAttributes.family_name[0]
           ) : (
-            <ProfileIcon className="text-main-700 size-6" />
+            <ProfileIcon className="size-6 text-main-700" />
           )}
         </span>
       </div>
@@ -107,11 +107,11 @@ export const NavBar = ({
         id="desktop-navbar"
         className={cn(
           className,
-          'text-p2 shadow-default sticky left-0 top-0 z-40 hidden w-full items-center bg-white lg:block',
+          'sticky top-0 left-0 z-40 hidden w-full items-center bg-white text-p2 shadow-default lg:block',
         )}
         ref={desktopNavbarRef}
       >
-        <div className="max-w-(--breakpoint-lg) m-auto hidden h-[57px] items-center gap-x-6 lg:flex">
+        <div className="m-auto hidden h-[57px] max-w-(--breakpoint-lg) items-center gap-x-6 lg:flex">
           <Brand
             className="group grow"
             url={ROUTES.HOME}
@@ -123,7 +123,7 @@ export const NavBar = ({
             }
           />
           <IdentityVerificationStatus />
-          <nav className="text-font/75 flex gap-x-8 font-semibold">
+          <nav className="flex gap-x-8 font-semibold text-font/75">
             {isSignedIn ? (
               <MenuDropdown
                 setIsOpen={setIsMenuOpen}
@@ -131,7 +131,7 @@ export const NavBar = ({
                   <ButtonNew
                     variant="unstyled"
                     data-cy="account-button"
-                    className="text-font/75 flex items-center gap-4 font-semibold"
+                    className="flex items-center gap-4 font-semibold text-font/75"
                   >
                     <Avatar userAttributes={userAttributes} />
                     <div className="flex items-center gap-1 font-light lg:font-semibold">
@@ -148,7 +148,7 @@ export const NavBar = ({
                 items={menuItems}
               />
             ) : (
-              <div className="text-font/75 flex items-center gap-x-6 font-semibold">
+              <div className="flex items-center gap-x-6 font-semibold text-font/75">
                 <Button
                   className="whitespace-nowrap lg:flex"
                   size="sm"
@@ -170,7 +170,7 @@ export const NavBar = ({
         </div>
         {/* Header bottom navigation */}
         {sectionsList && !hiddenHeaderNav && (
-          <div className="max-w-(--breakpoint-lg) m-auto hidden h-[57px] w-full items-center justify-between border-t border-gray-200 lg:flex">
+          <div className="m-auto hidden h-[57px] w-full max-w-(--breakpoint-lg) items-center justify-between border-t border-gray-200 lg:flex">
             <NavigationMenu.Root
               value={menuValue}
               onValueChange={setMenuValue}
@@ -186,7 +186,7 @@ export const NavBar = ({
                       <NextLink href={sectionItem.url}>
                         <div
                           className={cn(
-                            'text-p2-semibold hover:border-main-700 hover:text-main-700 flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all',
+                            'flex h-full w-full cursor-pointer items-center justify-center border-b-2 text-p2-semibold transition-all hover:border-main-700 hover:text-main-700',
                             {
                               'border-main-700 text-main-700': isActive(sectionItem),
                               'border-transparent': !isActive(sectionItem),

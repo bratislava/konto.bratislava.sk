@@ -133,7 +133,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
         {
           id: 2,
           title: t('account:menu_logout_link'),
-          icon: <LogoutIcon className="text-negative-700 size-5" />,
+          icon: <LogoutIcon className="size-5 text-negative-700" />,
           onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
         },
@@ -174,7 +174,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
         style={{
           '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
         }}
-        className="**:scroll-mt-(--main-scroll-top-margin) relative z-0"
+        className="relative z-0 **:scroll-mt-(--main-scroll-top-margin)"
       >
         <div className="bg-gray-0">{children}</div>
       </main>

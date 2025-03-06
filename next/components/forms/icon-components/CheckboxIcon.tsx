@@ -17,7 +17,7 @@ const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
     className,
   )
 
-  const iconClassName = cn('text-gray-0 m-auto h-5 w-5', {
+  const iconClassName = cn('m-auto h-5 w-5 text-gray-0', {
     dropdown: className && className.split(' ').includes('dropdown'),
   })
 

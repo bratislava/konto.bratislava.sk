@@ -6,7 +6,7 @@ import cn from '../../../../../frontend/cn'
 type TaxPaidStatusProps = { status: TaxPaidStatusEnum; mobileIcon?: boolean }
 
 const TaxPaidStatus = ({ status, mobileIcon = false }: TaxPaidStatusProps) => {
-  const statusStyle: string = cn('text-p3-semibold lg:text-16-semibold w-max', {
+  const statusStyle: string = cn('w-max text-p3-semibold lg:text-16-semibold', {
     'text-negative-700': status === TaxPaidStatusEnum.NotPaid,
     'text-warning-700':
       status === TaxPaidStatusEnum.PartiallyPaid || status === TaxPaidStatusEnum.OverPaid,
@@ -14,10 +14,10 @@ const TaxPaidStatus = ({ status, mobileIcon = false }: TaxPaidStatusProps) => {
   })
 
   const icon = {
-    [TaxPaidStatusEnum.NotPaid]: <ErrorIcon className="text-negative-700 size-6" />,
-    [TaxPaidStatusEnum.PartiallyPaid]: <ClockIcon className="text-warning-700 size-6" />,
-    [TaxPaidStatusEnum.Paid]: <CheckIcon className="text-success-700 size-6" />,
-    [TaxPaidStatusEnum.OverPaid]: <ClockIcon className="text-warning-700 size-6" />,
+    [TaxPaidStatusEnum.NotPaid]: <ErrorIcon className="size-6 text-negative-700" />,
+    [TaxPaidStatusEnum.PartiallyPaid]: <ClockIcon className="size-6 text-warning-700" />,
+    [TaxPaidStatusEnum.Paid]: <CheckIcon className="size-6 text-success-700" />,
+    [TaxPaidStatusEnum.OverPaid]: <ClockIcon className="size-6 text-warning-700" />,
   }[status]
 
   // TODO: Translations

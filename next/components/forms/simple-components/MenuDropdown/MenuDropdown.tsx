@@ -34,7 +34,7 @@ const MenuDropdown = ({
         <DropdownMenu.Content
           loop
           align="end"
-          className="bg-gray-0 z-50 rounded-lg py-2 shadow-md"
+          className="z-50 rounded-lg bg-gray-0 py-2 shadow-md"
           sideOffset={2}
         >
           {itemVariant === 'form' &&

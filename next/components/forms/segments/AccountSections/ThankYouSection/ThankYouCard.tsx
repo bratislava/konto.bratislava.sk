@@ -26,10 +26,10 @@ const ThankYouCard = ({
   feedbackTitle,
 }: ThankYouCardBase) => {
   return (
-    <div className="bg-gray-0 mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
+    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pt-6 pb-4 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
       <span
         className={cn(
-          'bg-negative-100 flex h-14 w-14 min-w-14 items-center justify-center rounded-full md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
           {
             'bg-negative-100': !success,
             'bg-success-100': success,
@@ -37,13 +37,13 @@ const ThankYouCard = ({
         )}
       >
         {success ? (
-          <CheckIcon className="text-success-700 flex size-8 items-center justify-center md:size-10" />
+          <CheckIcon className="flex size-8 items-center justify-center text-success-700 md:size-10" />
         ) : (
-          <PaymentDeclined className="text-negative-700 flex size-8 items-center justify-center md:size-10" />
+          <PaymentDeclined className="flex size-8 items-center justify-center text-negative-700 md:size-10" />
         )}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-6">
-        <h2 className="text-h2 text-center">{title}</h2>
+        <h2 className="text-center text-h2">{title}</h2>
         <AccountMarkdown variant="sm" content={content} />
       </div>
       <div
@@ -56,7 +56,7 @@ const ThankYouCard = ({
             {firstButtonTitle && feedbackUrl ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
-                  <h3 className="text-h3 text-left">{feedbackTitle}</h3>
+                  <h3 className="text-left text-h3">{feedbackTitle}</h3>
                   <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
                     {firstButtonTitle}
                   </ButtonNew>

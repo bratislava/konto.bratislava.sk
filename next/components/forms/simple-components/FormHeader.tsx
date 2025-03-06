@@ -28,7 +28,7 @@ const FormHeader = () => {
             <h1 className="text-h1-form">{schema.title}</h1>
             {strapiForm?.moreInformationUrl ? (
               <Link
-                className="w-max text-p1-underline"
+                className="w-max text-p1 underline"
                 href={strapiForm.moreInformationUrl}
                 target="_blank"
               >

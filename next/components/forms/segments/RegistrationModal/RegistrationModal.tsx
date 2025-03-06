@@ -114,7 +114,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => login()}
-            className="text-left text-p1-underline text-main-700 hover:text-main-600 md:text-center"
+            className="text-left text-p1 text-main-700 underline hover:text-main-600 md:text-center"
           >
             {t('registration_modal.body_login_link')}
           </AriaButton>

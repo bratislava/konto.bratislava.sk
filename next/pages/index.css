@@ -227,10 +227,6 @@
   @apply text-p-base font-semibold lg:text-p-md;
 }
 
-@utility text-p1-underline {
-  @apply text-p-base font-medium underline underline-offset-4 lg:text-p-md;
-}
-
 @utility text-p2 {
   @apply text-p-base font-normal;
 }
@@ -243,10 +239,6 @@
   @apply text-p-base font-semibold;
 }
 
-@utility text-p2-underline {
-  @apply text-p-base font-normal underline underline-offset-4;
-}
-
 @utility text-p3 {
   @apply text-p-sm font-normal;
 }
@@ -257,10 +249,6 @@
 
 @utility text-p3-semibold {
   @apply text-p-sm font-semibold;
-}
-
-@utility text-p3-underline {
-  @apply text-p-sm font-normal underline underline-offset-4;
 }
 
 @utility text-h1-lg-light {
@@ -280,6 +268,10 @@
   @apply text-h-xl font-medium lg:text-h-3xl;
 }
 
+@utility text-h1-lg-semibold {
+  @apply text-h-xl font-semibold lg:text-h-3xl;
+}
+
 @utility text-h1-lg-bold {
   @apply text-h-xl font-bold lg:text-h-3xl;
 }
@@ -294,6 +286,10 @@
 
 @utility text-h1-form-medium {
   @apply text-h-md font-medium lg:text-h-2xl;
+}
+
+@utility text-h1-form-semibold {
+  @apply text-h-md font-semibold lg:text-h-2xl;
 }
 
 @utility text-h1-form-bold {
@@ -312,6 +308,10 @@
   @apply text-h-lg font-medium lg:text-h-2xl;
 }
 
+@utility text-h1-semibold {
+  @apply text-h-lg font-semibold lg:text-h-2xl;
+}
+
 @utility text-h1-bold {
   @apply text-h-lg font-bold lg:text-h-2xl;
 }
@@ -326,6 +326,10 @@
 
 @utility text-h2-medium {
   @apply text-h-md font-medium lg:text-h-xl;
+}
+
+@utility text-h2-semibold {
+  @apply text-h-md font-semibold lg:text-h-xl;
 }
 
 @utility text-h2-bold {
@@ -344,6 +348,10 @@
   @apply text-h-base font-medium lg:text-h-lg;
 }
 
+@utility text-h3-semibold {
+  @apply text-h-base font-semibold lg:text-h-lg;
+}
+
 @utility text-h3-bold {
   @apply text-h-base font-bold lg:text-h-lg;
 }
@@ -358,6 +366,10 @@
 
 @utility text-h4-medium {
   @apply text-h-sm font-medium lg:text-h-md;
+}
+
+@utility text-h4-semibold {
+  @apply text-h-sm font-semibold lg:text-h-md;
 }
 
 @utility text-h4-bold {
@@ -376,6 +388,10 @@
   @apply text-h-xs font-medium lg:text-h-base;
 }
 
+@utility text-h5-semibold {
+  @apply text-h-xs font-semibold lg:text-h-base;
+}
+
 @utility text-h5-bold {
   @apply text-h-xs font-bold lg:text-h-base;
 }
@@ -390,6 +406,10 @@
 
 @utility text-h6-medium {
   @apply text-h-xs font-medium;
+}
+
+@utility text-h6-semibold {
+  @apply text-h-xs font-semibold;
 }
 
 @utility text-h6-bold {
@@ -409,12 +429,28 @@
   @apply text-p-base font-light;
 }
 
+@utility text-p2-medium {
+  @apply text-p-base font-medium;
+}
+
+@utility text-p2-semibold {
+  @apply text-p-base font-semibold;
+}
+
 @utility text-p2-bold {
   @apply text-p-base font-bold;
 }
 
 @utility text-p3-light {
   @apply text-p-sm font-light;
+}
+
+@utility text-p3-medium {
+  @apply text-p-sm font-medium;
+}
+
+@utility text-p3-semibold {
+  @apply text-p-sm font-semibold;
 }
 
 @utility text-p3-bold {

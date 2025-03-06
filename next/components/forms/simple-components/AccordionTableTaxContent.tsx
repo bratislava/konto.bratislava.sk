@@ -140,7 +140,7 @@ const AccordionTableTaxContent = ({
       <div className="flex size-full flex-col gap-6">
         <Table dataType={dataType} data={data} />
         <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
-          <div className="text-h4-semibold grow">Celkom</div>
+          <div className="grow text-h4-semibold">Celkom</div>
           <div className="text-h4-semibold">{secondTitle}</div>
         </div>
       </div>

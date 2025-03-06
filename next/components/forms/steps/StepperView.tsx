@@ -1,9 +1,9 @@
 import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Button as AriaButton, Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components'
 
+import cn from '../../../frontend/cn'
 import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
@@ -23,7 +23,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
     <ModalOverlay
       isOpen={isOpen}
       onOpenChange={setIsOpen}
-      className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-[entering]:animate-stepperSlide data-[exiting]:animate-stepperSlideReverse"
+      className="fixed top-0 left-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-entering:animate-stepper-slide data-exiting:animate-stepper-slide-reverse"
       isDismissable
     >
       <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
@@ -31,7 +31,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
           {({ close }) => (
             <>
               <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-                <Heading slot="title" className="text-h6 grow">
+                <Heading slot="title" className="grow text-h6">
                   {t('all_steps')}
                 </Heading>
                 <AriaButton
@@ -76,14 +76,14 @@ const StepperView = () => {
       </nav>
       <div className="lg:hidden">
         <AriaButton
-          className={cx(
+          className={cn(
             'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
           )}
           data-cy="stepper-dropdown"
           onPress={handleOnClickDropdownIcon}
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
-          <ChevronDownIcon className={cx({ 'rotate-180': !isOpen })} />
+          <ChevronDownIcon className={cn({ 'rotate-180': !isOpen })} />
         </AriaButton>
 
         <StepperModal

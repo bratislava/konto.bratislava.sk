@@ -27,7 +27,7 @@ const TaxesFeesErrorCard = () => {
   `
 
   return (
-    <div className="m-auto flex w-full max-w-screen-lg flex-col justify-around rounded-lg border-0 border-gray-200 px-4 pt-0 md:px-16 lg:flex-row lg:border-2 lg:py-10">
+    <div className="m-auto flex w-full max-w-(--breakpoint-lg) flex-col justify-around rounded-lg border-0 border-gray-200 px-4 pt-0 md:px-16 lg:flex-row lg:border-2 lg:py-10">
       <span className="flex justify-center">
         <Icon className="h-[140px] w-[145px] sm:h-[296px] sm:w-[308px]" />
       </span>

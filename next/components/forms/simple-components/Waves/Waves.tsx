@@ -1,5 +1,4 @@
-import cx from 'classnames'
-
+import cn from '../../../../frontend/cn'
 import WaveBottomLarge from './waves/WaveBottomLarge'
 import WaveBottomSmall from './waves/WaveBottomSmall'
 import WaveTopLarge from './waves/WaveTopLarge'
@@ -19,7 +18,7 @@ const Waves = ({
   wavePosition,
 }: WavesProps) => {
   return (
-    <div style={{ backgroundColor, color: waveColor }} className={cx('overflow-hidden', className)}>
+    <div style={{ backgroundColor, color: waveColor }} className={cn('overflow-hidden', className)}>
       {wavePosition === 'top' && (
         <>
           <WaveTopLarge className="-mb-px hidden md:block" />

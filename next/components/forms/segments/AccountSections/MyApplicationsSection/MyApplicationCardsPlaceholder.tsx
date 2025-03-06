@@ -7,7 +7,7 @@ const MyApplicationCardsPlaceholder = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="m-auto mt-0 flex w-full max-w-screen-lg flex-col justify-around rounded-lg border-0 border-gray-200 px-8 pt-0 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:py-10">
+      <div className="m-auto mt-0 flex w-full max-w-(--breakpoint-lg) flex-col justify-around rounded-lg border-0 border-gray-200 px-8 pt-0 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:py-10">
         <div className="flex justify-center">
           <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
         </div>

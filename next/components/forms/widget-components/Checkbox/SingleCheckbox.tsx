@@ -1,9 +1,9 @@
 import { CheckIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import React from 'react'
 import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
 
+import cn from '../../../../frontend/cn'
 import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type CheckBoxBase = {
@@ -37,8 +37,8 @@ const SingleCheckBox = ({
   const { focusProps } = useFocusRing()
   const isSelected = state.isSelected && !rest.isIndeterminate
 
-  const checkboxStyle = cx(
-    'flex h-6 w-6 min-w-[24px] items-center justify-center rounded border-2 border-solid border-gray-700',
+  const checkboxStyle = cn(
+    'flex h-6 w-6 min-w-[24px] items-center justify-center rounded-sm border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || rest.isIndeterminate) && !error,
       'group-hover:border-gray-600':
@@ -57,7 +57,7 @@ const SingleCheckBox = ({
     },
   )
 
-  const containerStyle = cx(
+  const containerStyle = cn(
     'group flex flex-row items-start justify-center gap-3 p-0',
     rest.className,
     {
@@ -74,7 +74,7 @@ const SingleCheckBox = ({
     },
   )
 
-  const labelStyle = cx('text-16 flex select-none gap-3 text-gray-700', {
+  const labelStyle = cn('flex gap-3 text-16 text-gray-700 select-none', {
     'w-full': fullWidth,
   })
 
@@ -89,14 +89,14 @@ const SingleCheckBox = ({
         <div className={checkboxStyle}>
           {isSelected && (
             <CheckIcon
-              className={cx('h-5 w-5 text-gray-0', {
+              className={cn('h-5 w-5 text-gray-0', {
                 hidden: !isSelected,
               })}
             />
           )}
           {rest.isIndeterminate && (
             <svg
-              className={cx({
+              className={cn({
                 hidden: !rest.isIndeterminate,
               })}
               width="12"
@@ -110,8 +110,8 @@ const SingleCheckBox = ({
         </div>
         <div className={labelStyle}>
           <div
-            className={cx('relative', {
-              'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
+            className={cn('relative', {
+              'after:absolute after:bottom-0.5 after:ml-0.5 after:text-16-semibold after:text-main-700 after:content-["*"]':
                 required,
             })}
           >

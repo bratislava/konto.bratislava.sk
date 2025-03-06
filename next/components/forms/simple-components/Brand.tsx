@@ -1,7 +1,8 @@
 import BALogo from '@assets/images/BALogo.svg'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/ButtonNew'
 import React from 'react'
+
+import cn from '../../../frontend/cn'
 
 export interface BrandProps {
   className?: string
@@ -11,7 +12,7 @@ export interface BrandProps {
 
 const Brand = ({ className, title, url = '#' }: BrandProps) => {
   return (
-    <div className={cx('flex', className)} aria-label="brand">
+    <div className={cn('flex', className)} aria-label="brand">
       <Button className="flex items-center space-x-3" href={url}>
         <BALogo className="size-8 lg:h-6" />
         {title && <div>{title}</div>}

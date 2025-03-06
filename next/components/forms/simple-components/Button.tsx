@@ -1,10 +1,10 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import { LinkButtonProps } from '@react-types/button'
-import cx from 'classnames'
 import { forwardRef, type JSX, ReactNode, Ref, RefObject } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
+import cn from '../../../frontend/cn'
 import MLink from './MLink'
 import Spinner from './Spinner'
 
@@ -89,19 +89,18 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       ref,
     )
 
-    const style = cx(
+    const style = cn(
       'inline-flex items-center',
       rest.href
-        ? 'underline underline-offset-4 focus-visible:outline-none'
-        : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-none',
-      className,
+        ? 'underline underline-offset-4 focus-visible:outline-hidden'
+        : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-hidden',
       {
         'w-full': fullWidth,
         'w-fit': !fullWidth,
       },
       {
         // text for lg button
-        'text-16-semibold px-4 py-2.5':
+        'px-4 py-2.5 text-16-semibold':
           size === 'lg' &&
           !icon &&
           text &&
@@ -111,7 +110,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'category' ||
             variant === 'category-outline'),
         // text for sm button
-        'text-16-semibold px-4 py-1.5':
+        'px-4 py-1.5 text-16-semibold':
           size === 'sm' &&
           !icon &&
           text &&
@@ -157,7 +156,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'plain-negative'),
 
         // text for lg button plain variant
-        'text-16-semibold px-3 py-2':
+        'px-3 py-2 text-16-semibold':
           size === 'lg' &&
           !icon &&
           text &&
@@ -166,7 +165,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             variant === 'plain-negative'),
 
         // text for sm button plain variant
-        'text-16-semibold px-2 py-1':
+        'px-2 py-1 text-16-semibold':
           size === 'sm' &&
           !icon &&
           text &&
@@ -241,6 +240,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         // opacity lowered only when explicitly disabled, not when loading
         'opacity-50': disabled,
       },
+      className,
     )
 
     if (rest.href) {
@@ -257,7 +257,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         >
           {!hrefIconHidden && (
             <span
-              className={cx('flex items-center justify-center', {
+              className={cn('flex items-center justify-center', {
                 'ml-2 h-6 w-6': size === 'lg',
                 'ml-1 h-5 w-5': size === 'sm',
               })}
@@ -293,7 +293,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       >
         {loading && (
           <div
-            className={cx(
+            className={cn(
               'absolute flex items-center justify-center',
               { 'h-6 w-6': size === 'lg' },
               { 'h-5 w-5': size === 'sm' },
@@ -302,10 +302,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             <Spinner size="sm" variant={spinnerVariant} />
           </div>
         )}
-        <div className={cx('flex items-center justify-center', { invisible: loading })}>
+        <div className={cn('flex items-center justify-center', { invisible: loading })}>
           {startIcon && (
             <span
-              className={cx('flex items-center justify-center', {
+              className={cn('flex items-center justify-center', {
                 'mr-3 h-6 w-6': size === 'lg',
                 'mr-2.5 h-5 w-5': size === 'sm',
               })}
@@ -316,7 +316,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           {text && !icon && text}
           {!text && icon && (
             <span
-              className={cx('flex items-center justify-center', {
+              className={cn('flex items-center justify-center', {
                 'h-6 w-6': size === 'lg',
                 'h-5 w-5': size === 'sm',
               })}
@@ -326,7 +326,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           )}
           {endIcon && (
             <span
-              className={cx('flex items-center justify-center', {
+              className={cn('flex items-center justify-center', {
                 'ml-3 h-6 w-6': size === 'lg',
                 'ml-2.5 h-5 w-5': size === 'sm',
               })}

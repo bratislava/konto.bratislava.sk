@@ -39,19 +39,19 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between p-4 lg:px-8">
-          <a href="#" className="font-bold text-black">
+        <div className="mx-auto flex max-w-(--breakpoint-xl) items-center justify-between p-4 lg:px-8">
+          <a href="#" className="font-semibold text-black">
             LOGO
           </a>
 
           <nav className="hidden gap-6 lg:flex">
-            <a href="#" className="font-bold">
+            <a href="#" className="font-semibold">
               Hlavná stránka
             </a>
-            <a href="#" className="font-bold">
+            <a href="#" className="font-semibold">
               Informácie
             </a>
-            <a href="#" className="font-bold">
+            <a href="#" className="font-semibold">
               Kontakt
             </a>
           </nav>
@@ -59,8 +59,8 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
       </header>
 
       <main className="flex-1">
-        <div className="mx-auto max-w-screen-xl px-4 py-6 lg:px-8">
-          <h1 className="text-h1 mb-6 font-bold">Formuláre</h1>
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-6 lg:px-8">
+          <h1 className="mb-6 text-h1 font-semibold">Formuláre</h1>
 
           <SelectField
             options={options}
@@ -80,10 +80,10 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
       </main>
 
       <footer className="bg-gray-900 text-white">
-        <div className="mx-auto max-w-screen-xl px-4 py-8 lg:px-8">
+        <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-8 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
-              <div className="mb-4 font-bold">LOGO</div>
+              <div className="mb-4 font-semibold">LOGO</div>
               <p>
                 Názov spoločnosti
                 <br />
@@ -96,7 +96,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
             </div>
 
             <div>
-              <h5 className="mb-4 font-bold">Menu</h5>
+              <h5 className="mb-4 font-semibold">Menu</h5>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Prvá položka
@@ -114,7 +114,7 @@ const FormsIframeTestPage = ({ embeddedForms }: FormsIframeTestPageProps) => {
             </div>
 
             <div>
-              <h5 className="mb-4 font-bold">Dokumenty</h5>
+              <h5 className="mb-4 font-semibold">Dokumenty</h5>
               <div className="flex flex-col gap-2">
                 <a href="#" className="hover:underline">
                   Dokument 1

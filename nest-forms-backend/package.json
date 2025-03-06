@@ -27,7 +27,8 @@
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
     "generate-client-slovensko-sk": "ts-node scripts/generateOpenApiClient.ts slovensko-sk",
     "generate-client-city-account": "ts-node scripts/generateOpenApiClient.ts city-account",
-    "generate-clients": "npm run generate-client-slovensko-sk && npm run generate-client-city-account"
+    "generate-clients": "npm run generate-client-slovensko-sk && npm run generate-client-city-account",
+    "update-rjsf": "npm install @rjsf/utils@latest --save-exact"
   },
   "dependencies": {
     "@bratislava/ginis-sdk": "^0.5.0",
@@ -42,7 +43,7 @@
     "@nestjs/schedule": "5.0.1",
     "@nestjs/swagger": "11.0.6",
     "@prisma/client": "6.4.1",
-    "@rjsf/utils": "5.23.1",
+    "@rjsf/utils": "5.24.7",
     "amqplib": "^0.10.5",
     "aws-sdk": "2.1692.0",
     "axios": "1.8.1",

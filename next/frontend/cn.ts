@@ -1,3 +1,5 @@
+// cn helper function inspired by https://ui.shadcn.com/docs/installation/manual
+import { type ClassValue, clsx } from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
 
 const baTwMerge = extendTailwindMerge({
@@ -184,4 +186,8 @@ const baTwMerge = extendTailwindMerge({
   },
 })
 
-export default baTwMerge
+const cn = (...args: ClassValue[]) => {
+  return baTwMerge(clsx(args))
+}
+
+export default cn

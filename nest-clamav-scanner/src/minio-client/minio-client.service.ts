@@ -68,7 +68,7 @@ export class MinioClientService {
       if (error instanceof Error) {
         this.logger.error(error.message);
       } else {
-        this.logger.error('fileExists is throwing non Error');
+        this.logger.error(`fileExists is throwing non Error: ${String(error)}`);
       }
 
       throw error;
@@ -97,7 +97,9 @@ export class MinioClientService {
       );
     } catch (error) {
       const errString =
-        error instanceof Error ? error.message : 'throwing non Error';
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       this.logger.error(
         `Error while moving file ${sourceFileName} from bucket ${sourceBucketName} to bucket ${destinationBucketName} with name ${destinationFileName}. Error: ${errString}`,
       );
@@ -111,7 +113,9 @@ export class MinioClientService {
       );
     } catch (error) {
       const errString =
-        error instanceof Error ? error.message : 'throwing non Error';
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       this.logger.error(
         `Error while removing file ${sourceFileName} from bucket ${sourceBucketName}. Error: ${errString}`,
       );

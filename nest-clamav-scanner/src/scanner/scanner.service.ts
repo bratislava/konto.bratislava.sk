@@ -160,7 +160,9 @@ export class ScannerService {
         result = await this.scanFile(bucketFile);
       } catch (error) {
         if (!(error instanceof Error)) {
-          this.logger.error('scanFiles is throwing non Error');
+          this.logger.error(
+            `scanFiles is throwing non Error: ${String(error)}`,
+          );
           throw error;
         }
         result = {

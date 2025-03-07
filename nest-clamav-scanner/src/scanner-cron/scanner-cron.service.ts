@@ -78,7 +78,9 @@ export class ScannerCronService {
       } catch (error) {
         globalThis.cronRunning = false;
         const errString =
-          error instanceof Error ? error.message : 'throwing non Error';
+          error instanceof Error
+            ? error.message
+            : `throwing non Error: ${String(error)}`;
         throw new PreconditionFailedException(
           `Unable to send statuses of unnotified files. Sleeping. Error: ${errString}`,
         );
@@ -90,7 +92,9 @@ export class ScannerCronService {
     } catch (error) {
       globalThis.cronRunning = false;
       const errString =
-        error instanceof Error ? error.message : 'throwing non Error';
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       throw new PreconditionFailedException(
         `Unable to fix files with multiple unsuccessful scans. Error: ${errString}`,
       );
@@ -102,7 +106,9 @@ export class ScannerCronService {
     } catch (error) {
       globalThis.cronRunning = false;
       const errString =
-        error instanceof Error ? error.message : 'throwing non Error';
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       throw new PreconditionFailedException(
         `Unable to fix stacked files. Error: ${errString}`,
       );
@@ -207,7 +213,9 @@ export class ScannerCronService {
           `${file.fileUid} could not be scanned. Error: ${error}`,
         );
       } else {
-        this.logger.error('scanFileProcess throwing non Error');
+        this.logger.error(
+          `scanFileProcess throwing non Error: ${String(error)}`,
+        );
       }
 
       await this.updateScanStatusWithNotify(file, FileStatus.SCAN_ERROR);
@@ -308,7 +316,9 @@ export class ScannerCronService {
       if (error instanceof Error) {
         this.logger.error(error.message);
       } else {
-        this.logger.error('updateScanStatusBatch throwing non Error');
+        this.logger.error(
+          `updateScanStatusBatch throwing non Error: ${String(error)}`,
+        );
       }
 
       return false;

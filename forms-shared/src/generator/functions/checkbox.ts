@@ -1,6 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, CheckboxUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const checkbox = (
   property: string,
@@ -15,6 +16,7 @@ export const checkbox = (
       default: options.default,
       const: typeof options.constValue === 'boolean' ? options.constValue : undefined,
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.Checkbox,
         'ui:options': uiOptions,
       },

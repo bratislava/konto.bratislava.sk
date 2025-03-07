@@ -2,6 +2,7 @@ import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaAjvInputFormat } from '../../form-utils/ajvFormats'
 import { BaWidgetType, InputUiOptions } from '../uiOptionsTypes'
 import { getInputTypeForAjvFormat, removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const input = (
   property: string,
@@ -40,8 +41,8 @@ export const input = (
       format,
       default: options.default,
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.Input,
-        'ui:label': false,
         'ui:options': { ...uiOptions, inputType },
       },
     }),

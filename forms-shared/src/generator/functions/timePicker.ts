@@ -1,6 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, TimePickerUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const timePicker = (
   property: string,
@@ -15,6 +16,7 @@ export const timePicker = (
       title: options.title,
       default: options.default,
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.TimePicker,
         'ui:options': uiOptions,
       },

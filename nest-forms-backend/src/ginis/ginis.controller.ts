@@ -1,4 +1,8 @@
-import { AxiosError } from '@bratislava/ginis-sdk'
+import {
+  GinDetailReferentaDetailReferenta,
+  GinisError,
+  SslDetailDokumentuWflDokument,
+} from '@bratislava/ginis-sdk'
 import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -24,8 +28,6 @@ import {
   UserInfoResponse,
 } from '../utils/decorators/request.decorator'
 import {
-  DetailDokumentu,
-  DetailReferenta,
   mapGinisHistory,
   MappedDocumentHistory,
 } from '../utils/ginis/ginis-api-helper'
@@ -91,22 +93,25 @@ export default class GinisController {
         `Form with id ${formId} does not have a ginisDocumentId`,
       )
     }
-    let document: DetailDokumentu | null = null
-    let owner: DetailReferenta | null = null
+    let wflDocument: SslDetailDokumentuWflDokument | null = null
+    let ownerDetail: GinDetailReferentaDetailReferenta | null = null
     let documentHistory: MappedDocumentHistory = []
     try {
-      document = await this.ginisAPIService.getDocumentDetail(ginisDocumentId)
-      owner = await this.ginisAPIService.getOwnerDetail(
-        document?.WflDokument[0]?.IdFunkceVlastnika,
+      const document =
+        await this.ginisAPIService.getDocumentDetail(ginisDocumentId)
+      wflDocument = document['Wfl-dokument']
+      const owner = await this.ginisAPIService.getOwnerDetail(
+        wflDocument['Id-funkce-vlastnika'],
       )
+      ownerDetail = owner['Detail-referenta']
       documentHistory = mapGinisHistory(document)
     } catch (error) {
       const errorToThrow =
-        error instanceof AxiosError && error.status === 404
+        error instanceof GinisError && error.axiosError?.status === 404
           ? this.throwerErrorGuard.NotFoundException(
               ErrorsEnum.NOT_FOUND_ERROR,
               `Document or document owner not found in GINIS - document id, if available: ${
-                document?.WflDokument[0]?.IdDokumentu ||
+                wflDocument?.['Id-dokumentu'] ||
                 'unavailable - document not found or invalid'
               }`,
             )
@@ -119,13 +124,11 @@ export default class GinisController {
       throw errorToThrow
     }
     return {
-      id: document?.WflDokument[0]?.IdDokumentu || '',
-      dossierId: document?.WflDokument[0]?.IdSpisu || '',
-      ownerName: `${owner?.DetailReferenta[0]?.Jmeno || ''} ${
-        owner?.DetailReferenta[0]?.Prijmeni || ''
-      }`,
-      ownerEmail: owner?.DetailReferenta[0]?.Mail || '',
-      ownerPhone: owner?.DetailReferenta[0]?.Telefon || '',
+      id: wflDocument['Id-dokumentu'],
+      dossierId: wflDocument['Id-spisu'],
+      ownerName: `${ownerDetail.Jmeno || ''} ${ownerDetail.Prijmeni || ''}`,
+      ownerEmail: ownerDetail.Mail || '',
+      ownerPhone: ownerDetail.Telefon || '',
       documentHistory,
     }
   }

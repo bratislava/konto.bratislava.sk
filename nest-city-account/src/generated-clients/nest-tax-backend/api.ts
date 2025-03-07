@@ -169,125 +169,34 @@ export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnu
 /**
  *
  * @export
- * @interface ResponseCustomCreatePdfErrorDto
+ * @interface ResponseErrorDto
  */
-export interface ResponseCustomCreatePdfErrorDto {
+export interface ResponseErrorDto {
   /**
-   *
+   * statusCode
    * @type {number}
-   * @memberof ResponseCustomCreatePdfErrorDto
+   * @memberof ResponseErrorDto
    */
   statusCode: number
   /**
-   *
+   * status
    * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
+   * @memberof ResponseErrorDto
    */
   status: string
   /**
-   *
+   * Message about error
    * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
+   * @memberof ResponseErrorDto
    */
   message: string
   /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomCreatePdfErrorDto
+   * Name of the error
+   * @type {object}
+   * @memberof ResponseErrorDto
    */
-  errorName: ResponseCustomCreatePdfErrorDtoErrorNameEnum
+  errorName: object
 }
-
-export const ResponseCustomCreatePdfErrorDtoErrorNameEnum = {
-  PdfCreateError: 'PDF_CREATE_ERROR',
-} as const
-
-export type ResponseCustomCreatePdfErrorDtoErrorNameEnum =
-  (typeof ResponseCustomCreatePdfErrorDtoErrorNameEnum)[keyof typeof ResponseCustomCreatePdfErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface ResponseCustomPaymentErrorDto
- */
-export interface ResponseCustomPaymentErrorDto {
-  /**
-   *
-   * @type {number}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  statusCode: number
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  status: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  message: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomPaymentErrorDto
-   */
-  errorName: ResponseCustomPaymentErrorDtoErrorNameEnum
-}
-
-export const ResponseCustomPaymentErrorDtoErrorNameEnum = {
-  TaxNotFound: 'TAX_NOT_FOUND',
-  PaymentAlreadyPayed: 'PAYMENT_ALREADY_PAYED',
-  OldTaxNotPayable: 'OLD_TAX_NOT_PAYABLE',
-  DatabaseError: 'DATABASE_ERROR',
-  CreatePaymentUrl: 'CREATE_PAYMENT_URL',
-  QrCodeNotFound: 'QR_CODE_NOT_FOUND',
-} as const
-
-export type ResponseCustomPaymentErrorDtoErrorNameEnum =
-  (typeof ResponseCustomPaymentErrorDtoErrorNameEnum)[keyof typeof ResponseCustomPaymentErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface ResponseCustomTaxErrorDto
- */
-export interface ResponseCustomTaxErrorDto {
-  /**
-   *
-   * @type {number}
-   * @memberof ResponseCustomTaxErrorDto
-   */
-  statusCode: number
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
-   */
-  status: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
-   */
-  message: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCustomTaxErrorDto
-   */
-  errorName: ResponseCustomTaxErrorDtoErrorNameEnum
-}
-
-export const ResponseCustomTaxErrorDtoErrorNameEnum = {
-  TaxyearOrUserNotFound: 'TAXYEAR_OR_USER_NOT_FOUND',
-} as const
-
-export type ResponseCustomTaxErrorDtoErrorNameEnum =
-  (typeof ResponseCustomTaxErrorDtoErrorNameEnum)[keyof typeof ResponseCustomTaxErrorDtoErrorNameEnum]
-
 /**
  *
  * @export
@@ -344,7 +253,7 @@ export interface ResponseGetTaxesBodyDto {
    */
   paidAmount: number
   /**
-   *
+   * Type of paid status
    * @type {TaxPaidStatusEnum}
    * @memberof ResponseGetTaxesBodyDto
    */
@@ -475,13 +384,13 @@ export interface ResponseTaxDetailsDto {
    */
   taxId: number
   /**
-   *
+   * Type of tax detail - object of tax
    * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
   type: TaxDetailTypeEnum
   /**
-   *
+   * Area type of tax detail - exact type of object of tax
    * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
@@ -555,11 +464,11 @@ export interface ResponseTaxDto {
    */
   amount: number
   /**
-   * Amount which was already payed in cents - integer
+   * Amount which was already paid in cents - integer
    * @type {number}
    * @memberof ResponseTaxDto
    */
-  payedAmount: number
+  paidAmount: number
   /**
    * Variable symbol of payment
    * @type {string}
@@ -615,7 +524,7 @@ export interface ResponseTaxDto {
    */
   qrCodeEmail: string | null
   /**
-   *
+   * Type of paid status
    * @type {TaxPaidStatusEnum}
    * @memberof ResponseTaxDto
    */
@@ -805,7 +714,7 @@ export interface ResponseTaxPayerDto {
   birthNumber: string
 }
 /**
- * Area type of tax detail - exact type of object of tax
+ * Type of tax detail - object of tax
  * @export
  * @enum {string}
  */
@@ -825,7 +734,7 @@ export type TaxDetailTypeEnum = (typeof TaxDetailTypeEnum)[keyof typeof TaxDetai
  */
 
 export const TaxPaidStatusEnum = {
-  NotPayed: 'NOT_PAYED',
+  NotPaid: 'NOT_PAID',
   PartiallyPaid: 'PARTIALLY_PAID',
   Paid: 'PAID',
   OverPaid: 'OVER_PAID',
@@ -1594,7 +1503,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1639,7 +1548,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -1806,7 +1715,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1835,7 +1744,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -1933,7 +1842,7 @@ export const PaymentApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link to logged user for submitted year if there is no payment.
      * @param {string} year
      * @param {*} [options] Override http request option.
@@ -1945,7 +1854,7 @@ export const PaymentApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+     * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
      * @summary Generate payment link and redirect to this link to gpwebpay.
      * @param {string} uuid
      * @param {*} [options] Override http request option.
@@ -2015,7 +1924,7 @@ export class PaymentApi extends BaseAPI {
   }
 
   /**
-   * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+   * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link to logged user for submitted year if there is no payment.
    * @param {string} year
    * @param {*} [options] Override http request option.
@@ -2029,7 +1938,7 @@ export class PaymentApi extends BaseAPI {
   }
 
   /**
-   * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
+   * If there is payment, there will be error, also if there is paid only one installment, user can not pay by paygate
    * @summary Generate payment link and redirect to this link to gpwebpay.
    * @param {string} uuid
    * @param {*} [options] Override http request option.
@@ -2088,7 +1997,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2134,7 +2043,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2172,7 +2081,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2229,7 +2138,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2256,16 +2165,15 @@ export const TaxApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async taxControllerGetArchivedTaxes(
       options?: RawAxiosRequestConfig
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerGetArchivedTaxes(
-        options
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.taxControllerGetArchivedTaxes(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['TaxApi.taxControllerGetArchivedTaxes']?.[localVarOperationServerIndex]
@@ -2280,7 +2188,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2322,7 +2230,7 @@ export const TaxApiFactory = function (
   return {
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2334,7 +2242,7 @@ export const TaxApiFactory = function (
     },
     /**
      *
-     * @summary Get all taxes (payed and not payed)
+     * @summary Get all taxes (paid and not paid)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -2345,7 +2253,7 @@ export const TaxApiFactory = function (
     },
     /**
      *
-     * @summary Get tax by year and how much is payed
+     * @summary Get tax by year and how much is paid
      * @param {number} year
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2368,7 +2276,7 @@ export const TaxApiFactory = function (
 export class TaxApi extends BaseAPI {
   /**
    *
-   * @summary Get tax by year and how much is payed
+   * @summary Get tax by year and how much is paid
    * @param {number} year
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2382,7 +2290,7 @@ export class TaxApi extends BaseAPI {
 
   /**
    *
-   * @summary Get all taxes (payed and not payed)
+   * @summary Get all taxes (paid and not paid)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof TaxApi
@@ -2395,7 +2303,7 @@ export class TaxApi extends BaseAPI {
 
   /**
    *
-   * @summary Get tax by year and how much is payed
+   * @summary Get tax by year and how much is paid
    * @param {number} year
    * @param {*} [options] Override http request option.
    * @deprecated

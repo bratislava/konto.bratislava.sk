@@ -603,7 +603,3 @@ body {
 [class*='Snackbar_snackbar-wrapper'] {
   z-index: 60 !important;
 }
-
-.form-group label.control-label {
-  @apply hidden;
-}

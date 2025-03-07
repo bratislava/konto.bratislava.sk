@@ -2,6 +2,7 @@ import { GeneratorBaseOptions, GeneratorField, GeneratorFieldType } from '../gen
 import { ArrayFieldUiOptions } from '../uiOptionsTypes'
 import { simpleObjectInternal } from '../object'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const arrayField = (
   property: string,
@@ -20,6 +21,7 @@ export const arrayField = (
       minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:options': uiOptions,
       },
     }),

@@ -1,6 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const fileUpload = (
   property: string,
@@ -14,6 +15,7 @@ export const fileUpload = (
     format: 'ba-file-uuid',
     baFile: true,
     baUiSchema: {
+      ...defaultFieldUiSchema,
       'ui:widget': BaWidgetType.FileUpload,
       'ui:options': uiOptions,
     },

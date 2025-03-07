@@ -7,6 +7,7 @@ import {
 } from '../optionItems'
 import { BaWidgetType, CheckboxGroupUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const checkboxGroup = (
   property: string,
@@ -30,6 +31,7 @@ export const checkboxGroup = (
       },
       default: createEnumSchemaDefaultMultiple(options.items),
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.CheckboxGroup,
         'ui:options': {
           ...uiOptions,

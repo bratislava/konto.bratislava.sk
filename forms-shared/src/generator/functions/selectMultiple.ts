@@ -7,6 +7,7 @@ import {
 } from '../optionItems'
 import { BaWidgetType, SelectUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const selectMultiple = (
   property: string,
@@ -31,6 +32,7 @@ export const selectMultiple = (
       uniqueItems: true,
       default: createEnumSchemaDefaultMultiple(options.items),
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.SelectMultiple,
         'ui:options': {
           ...uiOptions,

@@ -1,6 +1,7 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, NumberUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
+import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 /**
  * Creates a number field generator
@@ -39,8 +40,8 @@ export const number = (
       maximum: options.maximum,
       multipleOf: options.step,
       baUiSchema: {
+        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.Number,
-        'ui:label': false,
         'ui:options': { ...uiOptions },
       },
     }),

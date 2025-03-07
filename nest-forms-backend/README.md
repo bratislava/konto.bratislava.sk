@@ -2,7 +2,7 @@
 
 ## Run locally
 
-1. Run from docker-compose:
+1. Run from `docker compose`:
 
    - RabbitMQ
    - PostgreSQL
@@ -29,7 +29,7 @@
    npm install
    ```
 
-4. Copy and adjust `.env` from `.env.example`
+4. Copy and adjust `.env` from `.env.example`, and populate secrets you need
 
 5. If you are using a different database or a different PostgreSQL user, adjust `DATABASE_*` env vars
 
@@ -40,7 +40,27 @@
    npx prisma generate
    ```
 
-7. Start dev server:
+7. Choose virus scan option:
+
+   1. Run local virus scanner:
+
+      - copy and adjust `/nest-clamav-scanner/.env` from `/nest-clamav-scanner/.env.example`, and populate secrets you need (mainly `MINIO_SECRET_KEY`)
+      - in directories `/cvdmirror`, `/clamav` and `/nest-clamav-scanner` (in this order) run:
+
+        ```bash
+        docker compose up
+        ```
+
+        > in case of any problems or errors, follow _Run locally_ section in respective README
+
+      - in `/nest-forms-backend/.env` make sure that `MINIO_SAFE_BUCKET` has a different value than `MINIO_UNSCANNED_BUCKET`
+
+   2. Fake local virus scan:
+      - in `/nest-forms-backend/.env` set `MINIO_SAFE_BUCKET` to the same value as `MINIO_UNSCANNED_BUCKET`
+      - every time you upload a file, go to the database and change its `status` to `SAFE` manually
+
+8. Start dev server:
+
    ```bash
    npm run start:dev
    ```

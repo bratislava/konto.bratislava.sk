@@ -1,15 +1,15 @@
 ARG SHARED_PACKAGE_TAG
 FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
-FROM node:20.10-alpine AS base
+FROM node:22.14-alpine AS base
 
 ENV NODE_ENV=production
 
 FROM base AS app-base
 RUN apk update \
- && apk add tini \
- && rm -rf /var/cache/apk/* \
- && mkdir -p /home/node/app \
- && chown -R node:node /home/node/app
+      && apk add tini \
+      && rm -rf /var/cache/apk/* \
+      && mkdir -p /home/node/app \
+      && chown -R node:node /home/node/app
 USER node
 WORKDIR /home/node/app
 ENTRYPOINT [ "/sbin/tini", "--" ]
@@ -18,7 +18,7 @@ FROM base AS build-base
 WORKDIR /build
 COPY package.json package-lock.json prisma ./
 RUN npm ci --include=dev --frozen-lockfile \
- && npx prisma generate
+      && npx prisma generate
 
 FROM build-base AS build
 WORKDIR /root/openapi-clients
@@ -27,7 +27,7 @@ COPY --from=openapi-clients /app/ ./
 WORKDIR /build
 COPY --chown=node:node . ./
 RUN npm run build \
- && npm prune --production
+      && npm prune --production
 
 FROM app-base AS dev
 ENV NODE_ENV=development
@@ -47,7 +47,7 @@ FROM app-base AS prod
 # causing npm ci to fail with "Missing: X from lock file" or "Invalid: lock file's X does
 # not satisfy Y" errors.
 RUN mkdir -p /home/node/openapi-clients \
-    && chown -R node:node /home/node/openapi-clients
+      && chown -R node:node /home/node/openapi-clients
 COPY --chown=node:node --from=openapi-clients /app/ /home/node/openapi-clients
 
 WORKDIR /home/node/app

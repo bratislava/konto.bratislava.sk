@@ -3,21 +3,17 @@ import { ApiProperty } from '@nestjs/swagger'
 import { GinisDocumentChangeType } from '../../utils/ginis/ginis-api-helper'
 
 class GinisSdkHistorieDokumentuWithAssignedCategory {
-  IdDokumentu: string
+  'Id-dokumentu': string
 
-  Atribut_IdDokumentu_Externi: string
+  'Text-zmeny'?: string
 
-  TextZmeny: string
+  Poznamka?: string
 
-  Poznamka: string
+  'Datum-zmeny': string
 
-  DatumZmeny: string
+  'Id-zmenu-provedl': string
 
-  IdZmenuProvedl: string
-
-  Atribut_IdZmenuProvedl_Externi: string
-
-  IdKtgZmeny: string
+  'Id-ktg-zmeny': string
 
   assignedCategory: GinisDocumentChangeType
 }

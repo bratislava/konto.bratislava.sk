@@ -1,10 +1,11 @@
-import { Ginis } from '@bratislava/ginis-sdk'
+import {
+  GinDetailFunkcnihoMistaResponse,
+  GinDetailReferentaResponse,
+  Ginis,
+  SslDetailDokumentuResponse,
+} from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 
-import {
-  DetailDokumentu,
-  DetailReferenta,
-} from '../../utils/ginis/ginis-api-helper'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
@@ -45,21 +46,26 @@ export default class GinisAPIService {
     })
   }
 
-  async getDocumentDetail(documentId: string): Promise<DetailDokumentu> {
-    return this.ginis.json.ssl.detailDokumentu({ 'Id-dokumentu': documentId })
+  async getDocumentDetail(
+    documentId: string,
+  ): Promise<SslDetailDokumentuResponse> {
+    return this.ginis.ssl.detailDokumentu({ 'Id-dokumentu': documentId })
   }
 
-  async getOwnerDetail(functionId: string): Promise<DetailReferenta> {
-    const functionDetail = await this.ginis.json.gin.detailFunkcnihoMista({
-      'Id-funkce': functionId,
-    })
+  async getOwnerDetail(
+    functionId: string,
+  ): Promise<GinDetailReferentaResponse> {
+    const functionDetail: GinDetailFunkcnihoMistaResponse =
+      await this.ginis.gin.detailFunkcnihoMista({
+        'Id-funkce': functionId,
+      })
     // if the latter call fails because of missing IdReferenta, we'll get a log of previous result to debug
     this.logger.log(
       'Using the following data in getting GINIS owner: ',
       JSON.stringify(functionDetail),
     )
-    return this.ginis.json.gin.detailReferenta({
-      'Id-osoby': functionDetail.DetailFunkcnihoMista[0]?.IdReferenta,
+    return this.ginis.gin.detailReferenta({
+      'Id-osoby': functionDetail['Detail-funkcniho-mista']['Id-referenta'],
     })
   }
 }

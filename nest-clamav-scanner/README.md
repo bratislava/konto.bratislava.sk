@@ -61,7 +61,6 @@ If you want to run an application without installing it locally quickly, you can
    docker compose up
    ```
 
-   > [!NOTE]
    > in case of any problems or errors, follow _Run locally_ section in respective README
 
 2. Copy and adjust `.env` from `.env.example`, and populate secrets you need (mainly `MINIO_SECRET_KEY`)

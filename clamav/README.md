@@ -32,18 +32,17 @@ The service uses custom configuration files located in the `conf/` directory:
    docker compose up
    ```
 
-   > [!IMPORTANT]
-   >
-   > - on an Apple silicon ARM architecture processor `docker compose up` can cause an error - try forcing x86 platform by running
-   >
-   >   ```bash
-   >   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up
-   >   ```
-   >
-   > - if you are getting configuration errors, make sure files `conf/` are using LF line endings on your system
-
-> [!NOTE]
-> If the clamav isn't running properly (it stays in status `starting` or `unhealthy`), try killing it and starting again. 2-3 times should be sufficient.
+> [!IMPORTANT]
+>
+> - on an Apple silicon ARM architecture processor `docker compose up` can cause an error - in that case try forcing x86 platform by running
+>
+>   ```bash
+>   DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up
+>   ```
+>
+> - if you are getting configuration errors, make sure files `conf/` are using LF line endings on your system
+>
+> - if the clamav isn't running properly (it stays in status `starting` or `unhealthy`), try killing it and starting again. 2-3 times should be sufficient
 
 ## Virus Testing
 

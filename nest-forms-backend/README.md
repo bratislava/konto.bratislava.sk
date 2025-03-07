@@ -51,7 +51,6 @@
         docker compose up
         ```
 
-        > [!NOTE]
         > in case of any problems or errors, follow _Run locally_ section in respective README
 
       - in `/nest-forms-backend/.env` make sure that `MINIO_SAFE_BUCKET` has a different value than `MINIO_UNSCANNED_BUCKET`

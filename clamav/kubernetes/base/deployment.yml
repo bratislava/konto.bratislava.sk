@@ -49,14 +49,14 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /bin/bash
+                - /bin/sh
                 - -c
                 - |
                   echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
           readinessProbe:
             exec:
               command:
-                - /bin/bash
+                - /bin/sh
                 - -c
                 - |
                   echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
@@ -65,7 +65,7 @@ spec:
             periodSeconds: 10
             exec:
               command:
-                - /bin/bash
+                - /bin/sh
                 - -c
                 - |
                   echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG

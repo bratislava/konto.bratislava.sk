@@ -1,6 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ClamavVersionDto, ServiceRunningDto } from './status.dto';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import {
+  ClamavVersionDto,
+  ServiceRunningDto,
+  ServicesStatusDto,
+} from './status.dto';
 import { StatusService } from './status.service';
 
 @ApiTags('Statuses')
@@ -8,24 +13,47 @@ import { StatusService } from './status.service';
 export class StatusController {
   constructor(private readonly statusService: StatusService) {}
 
+  private async getServiceStatus(
+    service: () => Promise<ServiceRunningDto>,
+  ): Promise<ServiceRunningDto> {
+    try {
+      return await service();
+    } catch {
+      return { running: false };
+    }
+  }
+
+  private async getClamavVersion(): Promise<ClamavVersionDto> {
+    try {
+      return await this.statusService.clamavVersion();
+    } catch {
+      return { version: 'unknown' };
+    }
+  }
+
   //endpoint to return status of all services
   @ApiOperation({
     summary: 'Check all services status',
     description: 'This endpoint checks all services status',
   })
+  @ApiOkResponse({
+    description: 'All services status retrieved successfully',
+    type: ServicesStatusDto,
+  })
   @Get()
-  async status(): Promise<any> {
-    const prisma = await this.statusService.isPrismaRunning();
-    const minio = await this.statusService.isMinioRunning();
-    const forms = await this.statusService.isFormsRunning();
-    const clamav = await this.statusService.isClamavRunning();
-    const clamavVersion = await this.statusService.clamavVersion();
+  async status(): Promise<ServicesStatusDto> {
     return {
-      prisma: prisma,
-      minio: minio,
-      forms: forms,
-      clamav: clamav,
-      clamavVersion: clamavVersion,
+      prisma: await this.getServiceStatus(
+        async () => await this.statusService.isPrismaRunning(),
+      ),
+      minio: this.statusService.isMinioRunning(),
+      forms: await this.getServiceStatus(
+        async () => await this.statusService.isFormsRunning(),
+      ),
+      clamav: await this.getServiceStatus(
+        async () => await this.statusService.isClamavRunning(),
+      ),
+      clamavVersion: await this.getClamavVersion(),
     };
   }
 
@@ -34,9 +62,15 @@ export class StatusController {
     summary: 'Check prisma status',
     description: 'This endpoint checks if prisma is running',
   })
+  @ApiOkResponse({
+    description: 'Prisma is running',
+    type: ServiceRunningDto,
+  })
   @Get('prisma')
-  isPrismaRunning(): Promise<ServiceRunningDto> {
-    return this.statusService.isPrismaRunning();
+  async isPrismaRunning(): Promise<ServiceRunningDto> {
+    return await this.getServiceStatus(
+      async () => await this.statusService.isPrismaRunning(),
+    );
   }
 
   //endpoint to check if minio is running
@@ -44,8 +78,12 @@ export class StatusController {
     summary: 'Check minio status',
     description: 'This endpoint checks if minio is running',
   })
+  @ApiOkResponse({
+    description: 'Minio is running',
+    type: ServiceRunningDto,
+  })
   @Get('minio')
-  isMinioRunning(): Promise<ServiceRunningDto> {
+  isMinioRunning(): ServiceRunningDto {
     return this.statusService.isMinioRunning();
   }
 
@@ -54,9 +92,15 @@ export class StatusController {
     summary: 'Check forms backend status',
     description: 'This endpoint checks if forms backend is running',
   })
+  @ApiOkResponse({
+    description: 'Forms backend is running',
+    type: ServiceRunningDto,
+  })
   @Get('forms')
-  isFormsRunning(): Promise<ServiceRunningDto> {
-    return this.statusService.isFormsRunning();
+  async isFormsRunning(): Promise<ServiceRunningDto> {
+    return await this.getServiceStatus(
+      async () => await this.statusService.isFormsRunning(),
+    );
   }
 
   //endpoint to check if clamav is running
@@ -64,9 +108,15 @@ export class StatusController {
     summary: 'Check clamav status',
     description: 'This endpoint checks if clamav is running',
   })
+  @ApiOkResponse({
+    description: 'Clamav is running',
+    type: ServiceRunningDto,
+  })
   @Get('clamav')
-  isClamavRunning(): Promise<ServiceRunningDto> {
-    return this.statusService.isClamavRunning();
+  async isClamavRunning(): Promise<ServiceRunningDto> {
+    return await this.getServiceStatus(
+      async () => await this.statusService.isClamavRunning(),
+    );
   }
 
   //endpoint to show clamav version
@@ -74,8 +124,12 @@ export class StatusController {
     summary: 'Show clamav version',
     description: 'This endpoint shows clamav version',
   })
+  @ApiOkResponse({
+    description: 'Clamav version retrieved',
+    type: ClamavVersionDto,
+  })
   @Get('clamav/version')
-  version(): Promise<ClamavVersionDto> {
-    return this.statusService.clamavVersion();
+  async version(): Promise<ClamavVersionDto> {
+    return await this.getClamavVersion();
   }
 }

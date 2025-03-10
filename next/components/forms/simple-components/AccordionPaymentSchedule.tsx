@@ -21,7 +21,7 @@ const PaymentScheduleView = () => {
   ]
 
   return (
-    <div className="no-scrollbar flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
+    <div className="scrollbar-hide flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
       <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
         <div className="flex w-full flex-col gap-4">
           <span className="text-p1">
@@ -34,7 +34,7 @@ const PaymentScheduleView = () => {
           <div id="divider" className="h-0.5 w-full bg-gray-200" />
         </div>
         <div className="flex w-full flex-col gap-4 md:flex-row lg:gap-6">
-          <div className="text-h4 grow font-semibold">{t('tax_determined')}</div>
+          <div className="grow text-h4 font-semibold">{t('tax_determined')}</div>
           {/* <AddToCalendarButton */}
           {/*  name="Splátka dane z nehnuteľností 2023" */}
           {/*  dates={`[ */}
@@ -59,7 +59,7 @@ const PaymentScheduleView = () => {
                 key={index}
                 className="flex w-full flex-col items-start gap-3 lg:flex-row lg:items-center lg:gap-6"
               >
-                <div className="text-p1 grow">
+                <div className="grow text-p1">
                   <Trans
                     ns="account"
                     i18nKey={taxInstallmentsTranslationKeys[index]}

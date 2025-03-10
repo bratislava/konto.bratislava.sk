@@ -1,6 +1,7 @@
 /* eslint-disable pii/no-email */
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import {
@@ -74,6 +75,10 @@ describe('NasesService', () => {
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),
+        },
+        {
+          provide: ConfigService,
+          useValue: createMock<ConfigService>(),
         },
       ],
     }).compile()
@@ -289,7 +294,7 @@ describe('NasesService', () => {
       } as JwtNasesPayloadDto
       const mockCognitoUser = { sub: 'cognito-sub' } as CognitoGetUserData
       const mockFormDefinition: FormDefinition = {
-        jsonVersion: '1.0',
+        jsonVersion: '1.0.0',
         schema: {},
         slug: 'test-slug',
         type: FormDefinitionType.SlovenskoSkTax,
@@ -543,11 +548,12 @@ describe('NasesService', () => {
       )
 
       expect(result).toEqual(mockSummary)
-      expect(getFormSummary).toHaveBeenCalledWith(
-        mockFormDefinition,
-        mockForm.formDataJson,
-        service['formValidatorRegistryService'].getRegistry(),
-      )
+      expect(getFormSummary).toHaveBeenCalledWith({
+        formDefinition: mockFormDefinition,
+        formDataJson: mockForm.formDataJson,
+        validatorRegistry:
+          service['formValidatorRegistryService'].getRegistry(),
+      })
     })
 
     it('should throw InternalServerError when getFormSummary fails', () => {

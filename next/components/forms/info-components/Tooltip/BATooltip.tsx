@@ -1,9 +1,9 @@
 import { HelpIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 // eslint-disable-next-line import/no-cycle
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import HorizontalArrowIcon from './tooltip-horizontal-arrow.svg'
@@ -24,7 +24,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
   return (
     <Tooltip
       {...props}
-      className="text-p3 sm:text-p2 m-0 flex w-fit min-w-[118px] max-w-[230px] flex-row justify-center break-words rounded border-0 bg-gray-700 px-3 py-2 text-white sm:max-w-[280px] sm:px-4 sm:py-3"
+      className="m-0 flex w-fit max-w-[230px] min-w-[118px] flex-row justify-center rounded-sm border-0 bg-gray-700 px-3 py-2 text-p3 break-words text-white sm:max-w-[280px] sm:px-4 sm:py-3 sm:text-p2"
     >
       <OverlayArrow>
         {({ placement }) => {
@@ -38,7 +38,7 @@ const InnerTooltip = ({ children, ...props }: InnerTooltipProps) => {
 
           return (
             <ArrowIcon
-              className={cx({
+              className={cn({
                 'rotate-180': placement === 'top' || placement === 'left',
               })}
             />

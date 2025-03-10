@@ -190,6 +190,7 @@ const innerArray = (kalkulacka: boolean) =>
       number(
         'celkovaVymera',
         {
+          type: 'integer',
           title: 'Celková výmera zastavanej plochy viacúčelovej stavby',
           required: true,
           minimum: 0,

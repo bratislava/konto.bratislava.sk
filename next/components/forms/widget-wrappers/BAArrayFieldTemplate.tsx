@@ -8,11 +8,11 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import cx from 'classnames'
 import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
+import cn from '../../../frontend/cn'
 import Alert from '../info-components/Alert'
 import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
@@ -55,7 +55,7 @@ const BAArrayFieldTemplate = <
   ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps>
   const { selfId } = getObjectFieldInfo(idSchema)
 
-  const containerStyle = cx('flex flex-col', {
+  const containerStyle = cn('flex flex-col', {
     'gap-6': variant === 'topLevel',
     'gap-4': variant === 'nested',
   })
@@ -74,11 +74,11 @@ const BAArrayFieldTemplate = <
         <>
           {/* ArrayFieldTitleTemplate is not used */}
           {title && variant === 'topLevel' && (
-            <h3 className={cx('text-h3', { 'mb-2': description, 'mb-6': !description })}>
+            <h3 className={cn('text-h3', { 'mb-2': description, 'mb-6': !description })}>
               {title}
             </h3>
           )}
-          {title && variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+          {title && variant === 'nested' && <h4 className="mb-4 text-h4">{title}</h4>}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}

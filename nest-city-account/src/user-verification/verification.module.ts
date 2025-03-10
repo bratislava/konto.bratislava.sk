@@ -18,7 +18,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 
 @Module({
   imports: [
-    RabbitMQModule.forRoot(RabbitMQModule, {
+    RabbitMQModule.forRoot({
       uri:
         process.env.NODE_ENV === 'production'
           ? `amqp://${process.env.RABBIT_MQ_USERNAME}:${process.env.RABBIT_MQ_PASSWORD}@${process.env.RABBIT_MQ_HOST}:${process.env.RABBIT_MQ_PORT}`

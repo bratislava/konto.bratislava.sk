@@ -28,9 +28,9 @@ const MyApplicationDetailsHeader = ({
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
-  const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.DatumZmeny
+  const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.['Datum-zmeny']
   const firstGinisChangeDate =
-    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.DatumZmeny
+    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.['Datum-zmeny']
 
   const title = data?.frontendTitle
   const formSlug = data?.formDefinitionSlug
@@ -68,7 +68,7 @@ const MyApplicationDetailsHeader = ({
 
   return (
     <div className="bg-gray-50">
-      <div className="m-auto flex size-full max-w-screen-lg flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
+      <div className="m-auto flex size-full max-w-(--breakpoint-lg) flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
             <ChevronLeftIcon className="size-5" />

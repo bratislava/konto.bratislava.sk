@@ -5,9 +5,9 @@ import {
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
-import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
@@ -24,22 +24,22 @@ export type FormServerContext = {
   formDefinition: SerializableFormDefinition
   formId: string
   initialFormDataJson: GenericObjectType
-  initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
   initialSummaryJson?: SummaryJsonForm | null
-  formSent: boolean
+  initialFormSent: boolean
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
   strapiForm: FormBaseFragment | null
+  versionCompareContinueAction: VersionCompareContinueAction
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
 
-  const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
+  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
 
   // TODO: Revisit this logic
   const requiresVerification =
@@ -74,8 +74,8 @@ const useGetContext = (formServerContext: FormServerContext) => {
     }
   }, [isSSR, setJsonImportExportAllowed])
 
-  const isReadonly = formMigrationRequired || formSent
-  const isDeletable = formMigrationRequired && !formSent
+  const isReadonly = formMigrationRequired
+  const isDeletable = formMigrationRequired && !initialFormSent
 
   const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
 

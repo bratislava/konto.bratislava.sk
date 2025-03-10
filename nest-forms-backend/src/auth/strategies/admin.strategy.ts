@@ -1,36 +1,32 @@
+import { timingSafeEqual } from 'node:crypto'
+
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
-import { HeaderAPIKeyStrategy } from 'passport-headerapikey'
+import Strategy from 'passport-headerapikey'
 
 @Injectable()
 export default class AdminStrategy extends PassportStrategy(
-  HeaderAPIKeyStrategy,
+  Strategy,
   'admin-strategy',
 ) {
   constructor() {
-    super(
-      { header: 'apiKey', prefix: '' },
-      false,
-      (
-        apiKey: string | undefined,
-        done: (a: unknown, b?: unknown) => unknown,
-      ) => {
-        // We are not doing simple apiKey === ADMIN_APP_SECRET because of timing attacks
-        if (!apiKey || apiKey.length !== process.env.ADMIN_APP_SECRET?.length) {
-          return done(false)
-        }
+    super({ header: 'apiKey', prefix: '' }, false)
+  }
 
-        let pass = true
-        for (let i = 0; i < apiKey.length; i += 1) {
-          if (apiKey.charAt(i) !== process.env.ADMIN_APP_SECRET?.charAt(i)) {
-            pass = false
-          }
-        }
-        if (pass) {
-          return done(null, true)
-        }
-        return done(false)
-      },
-    )
+  validate(apiKey: string): boolean {
+    const secretKey = process.env.ADMIN_APP_SECRET as string
+
+    if (apiKey.length !== secretKey.length) {
+      return false
+    }
+
+    try {
+      const apiKeyBuffer = Buffer.from(apiKey)
+      const secretBuffer = Buffer.from(secretKey)
+
+      return timingSafeEqual(apiKeyBuffer, secretBuffer)
+    } catch (error) {
+      return false
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { UploadIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
@@ -10,6 +9,7 @@ import {
   FileTrigger,
 } from 'react-aria-components'
 
+import cn from '../../../../frontend/cn'
 import {
   getDisplayMaxFileSize,
   getDisplaySupportedFileExtensions,
@@ -45,7 +45,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
 
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
-      cx('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
+      cn('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
         'bg-white': !disabled && !isDropTarget,
         'cursor-not-allowed bg-gray-200 opacity-50': disabled,
         'cursor-pointer': !disabled,
@@ -116,7 +116,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
               </div>
 
               {sizeLimit || supportedFormats?.length ? (
-                <dl className="text-p3 flex gap-2">
+                <dl className="flex gap-2 text-p3">
                   {displayMaxFileSize ? (
                     <>
                       <dt className="sr-only">{t('sizeLimit')}</dt>

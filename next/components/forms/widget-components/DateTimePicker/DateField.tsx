@@ -1,11 +1,11 @@
 import { createCalendar } from '@internationalized/date'
 import { useObjectRef } from '@react-aria/utils'
 import { DateValue } from '@react-types/datepicker'
-import cx from 'classnames'
 import React, { forwardRef, ReactNode } from 'react'
 import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
 
+import cn from '../../../../frontend/cn'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 
@@ -56,7 +56,7 @@ const DateField = forwardRef<HTMLDivElement, DateFieldProps>(
       state,
       ref,
     )
-    const dateFieldStyle = cx('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
+    const dateFieldStyle = cn('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
       'bg-white': !disabled,
       'border-gray-200 hover:border-gray-400': !disabled && !isOpen,
       'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,

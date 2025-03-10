@@ -8,12 +8,13 @@ import {
   SummaryJsonStep,
   SummaryJsonType,
 } from '../summary-json/summaryJsonTypes'
-import { ValidatedSummary } from './validateSummary'
 import { FileInfoSummary } from '../form-files/fileStatus'
 import {
   SummaryDisplayValue,
   SummaryDisplayValueType,
 } from '../summary-json/getSummaryDisplayValue'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { checkPathForErrors } from './checkPathForErrors'
 
 type RendererPropsBase = {
   hasError: boolean
@@ -73,7 +74,7 @@ export type SummaryInvalidValueRendererProps = ValueRendererBase
 
 type DisplayValueRendererProps = {
   displayValue: SummaryDisplayValue
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
   renderStringValue: (props: SummaryStringValueRendererProps) => ReactNode
   renderFileValue: (props: SummaryFileValueRendererProps) => ReactNode
   renderNoneValue: (props: SummaryNoneValueRendererProps) => ReactNode
@@ -82,7 +83,11 @@ type DisplayValueRendererProps = {
 
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
+  /**
+   * Required only for summaries that display validation errors (FE app, PDF).
+   */
+  validationData?: ValidationData<GenericObjectType>
   renderForm: (props: SummaryFormRendererProps) => ReactNode
   renderStep: (props: SummaryStepRendererProps) => ReactNode
   renderField: (props: SummaryFieldRendererProps) => ReactNode
@@ -94,8 +99,8 @@ type SummaryRendererProps = {
 >
 
 const DisplayValueRenderer = ({
-  validatedSummary,
   displayValue,
+  fileInfos,
   renderStringValue,
   renderFileValue,
   renderNoneValue,
@@ -114,7 +119,7 @@ const DisplayValueRenderer = ({
     case SummaryDisplayValueType.String:
       return <>{renderStringValue({ value: displayValue.value, ...childPropsBase })}</>
     case SummaryDisplayValueType.File:
-      const fileInfo = validatedSummary?.getFileById(displayValue.id)
+      const fileInfo = fileInfos[displayValue.id]
       if (!fileInfo) {
         return <>{renderInvalidValue(childPropsBase)}</>
       }
@@ -136,7 +141,8 @@ const DisplayValueRenderer = ({
  */
 export const SummaryRenderer = ({
   summaryJson,
-  validatedSummary,
+  fileInfos,
+  validationData,
   renderForm,
   renderStep,
   renderField,
@@ -159,7 +165,7 @@ export const SummaryRenderer = ({
         return <Fragment key={child.id}>{renderElement(child, childIndex, isLastChild)}</Fragment>
       })
     const base = {
-      hasError: validatedSummary?.pathHasError(element.id) ?? false,
+      hasError: validationData ? checkPathForErrors(element.id, validationData.errorSchema) : false,
       index,
       isFirst: index === 0,
       isLast,
@@ -184,7 +190,7 @@ export const SummaryRenderer = ({
           children: element.displayValues.map((displayValue, index) => (
             <DisplayValueRenderer
               key={index}
-              validatedSummary={validatedSummary}
+              fileInfos={fileInfos}
               displayValue={displayValue}
               renderStringValue={renderStringValue}
               renderFileValue={renderFileValue}

@@ -1,101 +1,67 @@
-import cx from 'classnames'
-import MenuList from 'components/forms/steps/MenuList'
-import { defaultUiSchema, getBaFormDefaults } from 'forms-shared/form-utils/formDefaults'
-import { useIsomorphicLayoutEffect } from 'usehooks-ts'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import React from 'react'
 
-import FormControls from './FormControls'
-import FormUploadXmlJson from './FormUploadXmlJson'
-import FormModals from './segments/FormModals/FormModals'
-import FormHeader from './simple-components/FormHeader'
-import StepperView from './steps/StepperView'
-import FormSummary from './steps/Summary/FormSummary'
-import ThemedForm from './ThemedForm'
-import { useFormContext } from './useFormContext'
-import { useFormData } from './useFormData'
-import { useFormErrorTranslations } from './useFormErrorTranslations'
-import { useFormState } from './useFormState'
-import { useFormValidatorRegistry } from './useFormValidatorRegistry'
+import cn from '../../frontend/cn'
+import AccountPageLayout from '../layouts/AccountPageLayout'
+import FormContent from './FormContent'
+import FormVersionCompareAction from './FormVersionCompareAction'
+import IframeResizerChild from './IframeResizerChild'
+import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import ConditionalWrap from './simple-components/ConditionalWrap'
+import { FormContextProvider, FormServerContext, useFormContext } from './useFormContext'
+import { FormSentProvider, useFormSent } from './useFormSent'
 
-const FormPage = () => {
-  const { isReadonly, displayHeaderAndMenu } = useFormContext()
-  const { formData } = useFormData()
-  const {
-    currentStepIndex,
-    currentStepperStep,
-    currentStepSchema,
-    handleFormOnSubmit,
-    handleFormOnChange,
-    popScrollToFieldId,
-  } = useFormState()
-  const validatorRegistry = useFormValidatorRegistry()
+const FormStateRouter = () => {
+  const { formSent } = useFormSent()
+  const { versionCompareContinueAction } = useFormContext()
 
-  const { transformErrors } = useFormErrorTranslations()
+  if (formSent) {
+    return <ThankYouFormSection />
+  }
 
-  useIsomorphicLayoutEffect(() => {
-    const fieldId = popScrollToFieldId()
-    const element = fieldId ? document.querySelector(`#${fieldId}`) : null
+  // It is not possible to display outdated form in any meaningful way, user needs to first make an action (if possible)
+  if (versionCompareContinueAction !== VersionCompareContinueAction.None) {
+    return <FormVersionCompareAction />
+  }
 
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' })
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    // We don't want popScrollToFieldId to trigger the effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStepIndex])
+  return <FormContent />
+}
+
+const FormLayoutContainer = () => {
+  const { isEmbedded, versionCompareContinueAction } = useFormContext()
+  const { formSent } = useFormSent()
+
+  const accountPageLayoutClassName = cn({
+    'bg-gray-50': formSent,
+    'bg-gray-0 md:bg-gray-50':
+      !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,
+  })
 
   return (
-    <>
-      {displayHeaderAndMenu && <FormHeader />}
-      <div
-        className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
-        data-cy="form-container"
+    <IframeResizerChild enabled={isEmbedded}>
+      <ConditionalWrap
+        condition={!isEmbedded}
+        wrap={(children) => (
+          <AccountPageLayout className={accountPageLayoutClassName}>{children}</AccountPageLayout>
+        )}
       >
-        <div>
-          <StepperView />
-          <FormModals />
-        </div>
-        <div className={cx('grow px-4', 'lg:px-0')}>
-          {currentStepperStep.index === 'summary' ? (
-            <FormSummary />
-          ) : (
-            <ThemedForm
-              // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
-              // is needed or not, but ensures 100% safety.
-              key={`form-step-${currentStepperStep.index}`}
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              schema={currentStepSchema!}
-              uiSchema={defaultUiSchema}
-              formData={formData}
-              readonly={isReadonly}
-              onSubmit={(e) => {
-                handleFormOnSubmit(e.formData)
-              }}
-              onChange={(e) => {
-                handleFormOnChange(e.formData)
-              }}
-              transformErrors={transformErrors}
-              showErrorList={false}
-              // This removes the extra conditional data for the current step, for removing the steps themselves see
-              // `handleFormOnChange` implementation.
-              omitExtraData
-              liveOmit
-              // HTML validation doesn't work for our use case, therefore it's turned off.
-              noHtml5Validate
-              {...getBaFormDefaults(currentStepSchema!, validatorRegistry)}
-            >
-              {
-                // returning null would make RJSF render the default submit button
-                // eslint-disable-next-line react/jsx-no-useless-fragment
-                isReadonly ? <></> : <FormControls />
-              }
-            </ThemedForm>
-          )}
-          {displayHeaderAndMenu && <MenuList />}
-        </div>
-      </div>
-      <FormUploadXmlJson />
-    </>
+        <FormStateRouter />
+      </ConditionalWrap>
+    </IframeResizerChild>
+  )
+}
+
+export type FormPageProps = {
+  formServerContext: FormServerContext
+}
+
+const FormPage = ({ formServerContext }: FormPageProps) => {
+  return (
+    <FormContextProvider formServerContext={formServerContext}>
+      <FormSentProvider initialFormSent={formServerContext.initialFormSent}>
+        <FormLayoutContainer />
+      </FormSentProvider>
+    </FormContextProvider>
   )
 }
 

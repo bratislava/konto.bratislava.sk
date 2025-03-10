@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
-import axios, { AxiosResponse } from 'axios'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -11,6 +11,10 @@ import {
   VerifyFormSignatureError,
 } from 'forms-shared/signer/signature'
 import { FormSummary, getFormSummary } from 'forms-shared/summary/summary'
+import {
+  versionCompareBumpDuringSend,
+  versionCompareCanSendForm,
+} from 'forms-shared/versioning/version-compare'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -28,6 +32,9 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
+import { UpvsNaturalPerson } from '../utils/clients/openapi-slovensko-sk'
+import { slovenskoSkApi } from '../utils/clients/slovenskoSkApi'
+import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -45,10 +52,7 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import {
-  CreateFormResponseDto,
-  ResponseGdprDataDto,
-} from './dtos/responses.dto'
+import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
@@ -56,6 +60,8 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 @Injectable()
 export default class NasesService {
   private readonly logger: LineLoggerSubservice
+
+  private readonly versioningEnabled: boolean
 
   constructor(
     private readonly formsService: FormsService,
@@ -67,21 +73,20 @@ export default class NasesService {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
-  async getNasesIdentity(token: string): Promise<JwtNasesPayloadDto | null> {
-    const result = await axios
-      .get(
-        `${process.env.SLOVENSKO_SK_CONTAINER_URI ?? ''}/api/upvs/identity`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      .then((response: AxiosResponse<JwtNasesPayloadDto>) => response.data)
+  async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
+    const result = await slovenskoSkApi
+      .apiUpvsIdentityGet({
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => response.data)
       .catch((error) => {
         console.error(
           this.throwerErrorGuard.InternalServerErrorException(
@@ -287,11 +292,11 @@ export default class NasesService {
     }
 
     try {
-      return getFormSummary(
+      return getFormSummary({
         formDefinition,
-        form.formDataJson,
-        this.formValidatorRegistryService.getRegistry(),
-      )
+        formDataJson: form.formDataJson,
+        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+      })
     } catch (error) {
       this.logger.error(
         `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
@@ -314,7 +319,7 @@ export default class NasesService {
 
   async sendForm(
     id: string,
-    userInfo?: ResponseGdprDataDto,
+    userInfo?: UserInfoResponse,
     user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
@@ -347,6 +352,19 @@ export default class NasesService {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
+    if (
+      this.versioningEnabled &&
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
       )
     }
 
@@ -407,12 +425,20 @@ export default class NasesService {
       )
     }
 
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+
     // set state of form to QUEUED
     await this.formsService.updateForm(form.id, {
       state: FormState.QUEUED,
       formSummary,
-      // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-      jsonVersion: formDefinition.jsonVersion,
+      ...(shouldBumpJsonVersion
+        ? { jsonVersion: formDefinition.jsonVersion }
+        : undefined),
     })
     return {
       id: form.id,
@@ -497,6 +523,19 @@ export default class NasesService {
       }
     }
 
+    if (
+      this.versioningEnabled &&
+      !versionCompareCanSendForm({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.FORM_VERSION_NOT_COMPATIBLE,
+        NasesErrorsResponseEnum.FORM_VERSION_NOT_COMPATIBLE,
+      )
+    }
+
     const validator = this.formValidatorRegistryService
       .getRegistry()
       .getValidator(formDefinition.schema)
@@ -535,12 +574,23 @@ export default class NasesService {
 
     this.checkAttachments(await this.filesService.areFormAttachmentsReady(id))
 
+    const shouldBumpJsonVersion =
+      !this.versioningEnabled ||
+      versionCompareBumpDuringSend({
+        currentVersion: form.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+
     // TODO rework! this is super fragile and QUEUED state was not originally meant for this
     // just before sending to nases, update form state to QUEUED
     // if the operation takes long, this prevents repeated sending
     // sendToNasesAndUpdateState must never throw, and if it does not succeed we update the state back to DRAFT & set NASES_SEND_ERROR
     await this.formsService.updateForm(id, {
       state: FormState.QUEUED,
+      formSummary,
+      ...(shouldBumpJsonVersion
+        ? { jsonVersion: formDefinition.jsonVersion }
+        : undefined),
     })
 
     // Send to nases
@@ -553,11 +603,6 @@ export default class NasesService {
         data,
         formDefinition,
         user.sub,
-        {
-          formSummary,
-          // TODO: Until proper versioning is implemented we only sync jsonVersion from formDefinition on successful send
-          jsonVersion: formDefinition.jsonVersion,
-        },
       )
     } catch (error) {
       this.logger.error(`Error sending form to nases.`, error)

@@ -1,5 +1,6 @@
-import cx from 'classnames'
 import Toggle from 'components/forms/simple-components/Toggle'
+
+import cn from '../../../../frontend/cn'
 
 interface Consent {
   id: string
@@ -18,7 +19,7 @@ interface UserConsentProps {
 const UserConsent = ({ consent, isLast, onChange }: UserConsentProps) => {
   return (
     <div
-      className={cx('flex flex-col gap-4 border-gray-200 py-4', 'sm:flex-row sm:py-6', {
+      className={cn('flex flex-col gap-4 border-gray-200 py-4', 'sm:flex-row sm:py-6', {
         'border-b-2': !isLast,
       })}
       data-cy={`${consent.id.replaceAll('_', '-')}-consent`}

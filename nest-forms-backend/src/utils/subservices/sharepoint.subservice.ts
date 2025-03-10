@@ -19,7 +19,8 @@ import {
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
-import { escape, get as lodashGet } from 'lodash'
+import escape from 'lodash/escape'
+import lodashGet from 'lodash/get'
 
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {

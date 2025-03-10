@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 
 interface UserProfilePhotoProps {
@@ -17,12 +16,7 @@ const UserProfilePhoto = ({ userAttributes }: UserProfilePhotoProps) => {
           : ''
 
   return (
-    <div
-      className={cx(
-        'flex h-24 w-24 min-w-24 flex-col items-center justify-center rounded-full bg-main-100 text-main-700',
-        'md:h-[168px] md:w-[168px] md:min-w-[168px]',
-      )}
-    >
+    <div className="flex h-24 w-24 min-w-24 flex-col items-center justify-center rounded-full bg-main-100 text-main-700 md:h-[168px] md:w-[168px] md:min-w-[168px]">
       <span className="text-p1-semibold md:text-h2">{initialLetters.toUpperCase()}</span>
     </div>
   )

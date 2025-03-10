@@ -117,6 +117,11 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST,
       ) === 'true',
+    versioning:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_VERSIONING',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_VERSIONING,
+      ) === 'true',
   },
   formsMimetypes: assertEnv(
     'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',

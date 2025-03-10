@@ -6,7 +6,7 @@ import { Stream } from 'node:stream'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
@@ -26,17 +26,16 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
+import { cityAccountApi } from '../../utils/clients/cityAccountApi'
+import { UserControllerGetOrCreateUser200Response } from '../../utils/clients/openapi-city-account'
+import { slovenskoSkApi } from '../../utils/clients/slovenskoSkApi'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
-import {
-  NasesIsMessageDeliveredDto,
-  NasesSendResponse,
-  ResponseGdprDataDto,
-} from '../dtos/responses.dto'
+import { NasesSendResponse } from '../dtos/responses.dto'
 import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
@@ -250,18 +249,16 @@ export default class NasesUtilsService {
     )
   }
 
-  async getUserInfo(bearerToken: string): Promise<ResponseGdprDataDto> {
-    return axios
-      .post(
-        `${this.configService.getOrThrow<string>('USER_ACCOUNT_API')}/user/get-or-create`,
-        undefined,
-        {
-          headers: {
-            Authorization: bearerToken,
-          },
+  async getUserInfo(
+    bearerToken: string,
+  ): Promise<UserControllerGetOrCreateUser200Response> {
+    return cityAccountApi
+      .userControllerGetOrCreateUser({
+        headers: {
+          Authorization: bearerToken,
         },
-      )
-      .then((response: AxiosResponse<ResponseGdprDataDto>) => response.data)
+      })
+      .then((response) => response.data)
       .catch((error) => {
         if (error instanceof Error) {
           throw this.throwerErrorGuard.NotFoundException(
@@ -499,9 +496,12 @@ export default class NasesUtilsService {
     return buildSlovenskoSkXml(template, { headless: false, pretty: false })
   }
 
-  private getNasesError(code: number): string {
-    const codeString = `0${code.toString()}`
-    if (!Object.keys(NasesErrorCodesEnum).includes(codeString)) {
+  private getNasesError(code: number | null): string {
+    const codeString = code ? `0${code.toString()}` : null
+    if (
+      codeString == null ||
+      !Object.keys(NasesErrorCodesEnum).includes(codeString)
+    ) {
       return `${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} Code: ${code} (unknown code)`
     }
 
@@ -534,10 +534,7 @@ export default class NasesUtilsService {
       }
     }
     try {
-      const response = await axios.post(
-        `${this.configService.getOrThrow<string>(
-          'SLOVENSKO_SK_CONTAINER_URI',
-        )}/api/sktalk/receive_and_save_to_outbox`,
+      const response = await slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
         {
           message,
         },
@@ -601,21 +598,13 @@ export default class NasesUtilsService {
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
     const jwtToken = this.createTechnicalAccountJwtToken()
-    const result = await axios
-      .get(
-        `${this.configService.getOrThrow<string>(
-          'SLOVENSKO_SK_CONTAINER_URI',
-        )}/api/edesk/messages/search?correlation_id=${formId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
+    const result = await slovenskoSkApi
+      .apiEdeskMessagesSearchGet(formId, undefined, undefined, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
         },
-      )
-      .then(
-        (response: AxiosResponse<NasesIsMessageDeliveredDto[]>) =>
-          response.data.length > 0,
-      )
+      })
+      .then((response) => response.data.length > 0)
       .catch((error) => {
         alertError(
           'Error when checking if message is in eDesk',

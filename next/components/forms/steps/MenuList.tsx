@@ -1,6 +1,6 @@
-import cx from 'classnames'
 import Link from 'next/link'
 
+import cn from '../../../frontend/cn'
 import { useFormMenuItems } from '../useFormMenuItems'
 
 const MenuList = () => {
@@ -12,7 +12,7 @@ const MenuList = () => {
         menuItem.url ? (
           <li className="w-max" key={index}>
             <Link href={menuItem.url}>
-              <div className={cx('flex items-center gap-3', menuItem.className)}>
+              <div className={cn('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>
               </div>
@@ -21,7 +21,7 @@ const MenuList = () => {
         ) : (
           <li className="w-max" key={index}>
             <button type="button" onClick={menuItem.onPress} data-cy={menuItem.dataCy ?? ''}>
-              <div className={cx('flex items-center gap-3', menuItem.className)}>
+              <div className={cn('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>
               </div>

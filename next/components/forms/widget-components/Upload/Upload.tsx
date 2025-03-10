@@ -1,7 +1,7 @@
-import cx from 'classnames'
 import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import React, { forwardRef } from 'react'
 
+import cn from '../../../../frontend/cn'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
@@ -50,7 +50,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
     ref,
   ) => {
     return (
-      <div className={cx('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
+      <div className={cn('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
         <FieldWrapper
           label={label}
           required={required}

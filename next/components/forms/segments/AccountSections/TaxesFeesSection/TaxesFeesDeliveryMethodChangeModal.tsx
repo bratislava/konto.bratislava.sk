@@ -9,7 +9,7 @@ import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
 import logger from '../../../../../frontend/utils/logger'
 import ButtonNew from '../../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../../simple-components/Modal'
 import Radio from '../../../widget-components/RadioButton/Radio'
 import RadioGroup from '../../../widget-components/RadioButton/RadioGroup'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
@@ -171,7 +171,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-type TaxesFeesDeliveryMethodChangeModalProps = ModalV2Props & {
+type TaxesFeesDeliveryMethodChangeModalProps = ModalProps & {
   agreementContent: string
 }
 
@@ -199,14 +199,14 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   }
 
   return (
-    <ModalV2
+    <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       modalOverlayClassname="md:py-4"
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <Heading slot="title" className="text-h3 mb-2">
+      <Heading slot="title" className="mb-2 text-h3">
         {/* TODO: Translation */}
         Spôsob doručovania miestnych daní a poplatkov
       </Heading>
@@ -218,7 +218,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
         onSubmit={handleSubmit}
         agreementContent={agreementContent}
       />
-    </ModalV2>
+    </Modal>
   )
 }
 

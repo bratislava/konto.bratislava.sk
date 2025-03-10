@@ -1,9 +1,12 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   GetFormResponseSimpleDto,
   GetFormsRequestDto,
@@ -39,6 +42,7 @@ export default class FormsService {
     private throwerErrorGuard: ThrowerErrorGuard,
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new LineLoggerSubservice('FormsService')
   }
@@ -400,5 +404,45 @@ export default class FormsService {
     }
 
     return form
+  }
+
+  async bumpJsonVersion(form: Forms): Promise<void> {
+    if (!FormsHelper.isEditable(form)) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      )
+    }
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const requiresBump = versionCompareRequiresBumpToContinue({
+      currentVersion: form.jsonVersion,
+      latestVersion: formDefinition.jsonVersion,
+    })
+    if (!requiresBump) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+        FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+      )
+    }
+
+    await this.prisma.forms.update({
+      where: { id: form.id },
+      data: {
+        jsonVersion: formDefinition.jsonVersion,
+        formDataJson: omitExtraData(
+          formDefinition.schema,
+          form.formDataJson ?? {},
+          this.formValidatorRegistryService.getRegistry(),
+        ),
+      },
+    })
   }
 }

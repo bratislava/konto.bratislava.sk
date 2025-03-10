@@ -1,9 +1,9 @@
-import cx from 'classnames'
 import { LabelSize } from 'forms-shared/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
 
+import cn from '../../../frontend/cn'
 import FieldHelptext from './FieldHelptext'
 import BATooltip from './Tooltip/BATooltip'
 
@@ -46,7 +46,7 @@ const FieldHeader = ({
 
   const useCustomBottomMargin = labelSize === 'default' || !helptext
 
-  const wrapperStyle = cx('flex w-full flex-col', {
+  const wrapperStyle = cn('flex w-full flex-col', {
     'gap-1': labelSize === 'default',
     'gap-3': labelSize === 'h3' || labelSize === 'h4' || labelSize === 'h5',
     [customHeaderBottomMargin]: useCustomBottomMargin,
@@ -57,8 +57,8 @@ const FieldHeader = ({
   const showOptionalLabel = displayOptionalLabel && !required
   const displayAsterisk = !displayOptionalLabel && required
 
-  const labelStyle = cx('relative text-gray-800', {
-    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold after:sm:text-16-semibold':
+  const labelStyle = cn('relative text-gray-800', {
+    'text-p3-semibold after:text-p3-semibold sm:text-16-semibold sm:after:text-16-semibold':
       labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',
@@ -78,7 +78,7 @@ const FieldHeader = ({
         </div>
         {tooltip && (
           <div
-            className={cx('flex-column flex shrink-0 items-center', {
+            className={cn('flex-column flex shrink-0 items-center', {
               'ml-5': showOptionalLabel,
               'ml-2': !showOptionalLabel,
             })}

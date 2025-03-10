@@ -1,7 +1,8 @@
 import { PassThrough, Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
-import { Forms } from '@prisma/client'
+import { ConfigService } from '@nestjs/config'
+import { Forms, FormState } from '@prisma/client'
 import { GenericObjectType } from '@rjsf/utils'
 import { Response } from 'express'
 import {
@@ -12,13 +13,20 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import {
   extractJsonFromSlovenskoSkXml,
   ExtractJsonFromSlovenskoSkXmlError,
 } from 'forms-shared/slovensko-sk/extractJson'
 import { generateSlovenskoSkXmlObject } from 'forms-shared/slovensko-sk/generateXml'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
+import { getFormSummary } from 'forms-shared/summary/summary'
 import { renderSummaryPdf } from 'forms-shared/summary-pdf/renderSummaryPdf'
+import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
+import {
+  versionCompareIsContinuable,
+  versionCompareRequiresConfirmationImportXml,
+} from 'forms-shared/versioning/version-compare'
 import { chromium } from 'playwright'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -52,6 +60,8 @@ import {
 export default class ConvertService {
   private readonly logger: LineLoggerSubservice
 
+  private readonly versioningEnabled: boolean
+
   constructor(
     private readonly taxService: TaxService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
@@ -59,8 +69,12 @@ export default class ConvertService {
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
+    private readonly configService: ConfigService,
   ) {
     this.logger = new LineLoggerSubservice('ConvertService')
+    this.versioningEnabled =
+      this.configService.getOrThrow<string>('FEATURE_TOGGLE_VERSIONING') ===
+      'true'
   }
 
   private async convertJsonToXmlObject(
@@ -78,14 +92,35 @@ export default class ConvertService {
       },
     })) as FormWithFiles
 
-    return generateSlovenskoSkXmlObject(
-      isSlovenskoSkTaxFormDefinition(formDefinition)
-        ? patchConvertServiceTaxFormDefinition(formDefinition)
-        : formDefinition,
-      formDataJson,
-      this.formValidatorRegistryService.getRegistry(),
-      formWithFiles.files,
-    )
+    const formDefinitionPatched = isSlovenskoSkTaxFormDefinition(formDefinition)
+      ? patchConvertServiceTaxFormDefinition(formDefinition)
+      : formDefinition
+
+    // Forms that are not sent have their summary generated on the fly. For sent forms the summary is stored in the database.
+    // Sent forms cannot contain `clientFiles` and don't render errors (it is not possible to send form with errors).
+    const formSummary =
+      form.state === FormState.DRAFT
+        ? getFormSummary({
+            formDefinition: formDefinitionPatched,
+            formDataJson,
+            validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+          })
+        : form.formSummary
+
+    if (formSummary == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+        `convertJsonToXmlObject: ${FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY}`,
+      )
+    }
+
+    return generateSlovenskoSkXmlObject({
+      formDefinition: formDefinitionPatched,
+      formSummary,
+      jsonVersion: form.jsonVersion,
+      formData: formDataJson,
+      serverFiles: formWithFiles.files,
+    })
   }
 
   /**
@@ -166,14 +201,17 @@ export default class ConvertService {
       )
     }
 
+    let extractJsonResult: {
+      formDataJson: GenericObjectType
+      jsonVersion: string
+    }
     try {
-      const jsonForm = await extractJsonFromSlovenskoSkXml(
+      extractJsonResult = await extractJsonFromSlovenskoSkXml(
         isSlovenskoSkTaxFormDefinition(formDefinition)
           ? patchConvertServiceTaxFormDefinition(formDefinition)
           : formDefinition,
         data.xmlForm,
       )
-      return { jsonForm }
     } catch (error) {
       if (error instanceof ExtractJsonFromSlovenskoSkXmlError) {
         const { error: errorEnum, message: errorMessage } =
@@ -197,6 +235,28 @@ export default class ConvertService {
         'Unexpected error during XML to JSON conversion',
         <string>error,
       )
+    }
+
+    if (
+      this.versioningEnabled &&
+      !versionCompareIsContinuable({
+        currentVersion: extractJsonResult.jsonVersion,
+        latestVersion: formDefinition.jsonVersion,
+      })
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ConvertErrorsEnum.INCOMPATIBLE_JSON_VERSION,
+        ConvertErrorsResponseEnum.INCOMPATIBLE_JSON_VERSION,
+      )
+    }
+    return {
+      formDataJson: extractJsonResult.formDataJson,
+      requiresVersionConfirmation: this.versioningEnabled
+        ? versionCompareRequiresConfirmationImportXml({
+            currentVersion: extractJsonResult.jsonVersion,
+            latestVersion: formDefinition.jsonVersion,
+          })
+        : false,
     }
   }
 
@@ -263,14 +323,45 @@ export default class ConvertService {
 
     let pdfBuffer: Buffer
     try {
-      pdfBuffer = await renderSummaryPdf({
-        formDefinition,
-        formData: jsonForm,
-        launchBrowser: () => chromium.launch(),
-        clientFiles,
-        serverFiles: form.files,
-        validatorRegistry: this.formValidatorRegistryService.getRegistry(),
-      })
+      // Forms that are not sent have their summary generated on the fly. For sent forms the summary is stored in the database.
+      // Sent forms cannot contain `clientFiles` and don't render errors (it is not possible to send form with errors).
+      if (form.state === FormState.DRAFT) {
+        const formSummary = getFormSummary({
+          formDefinition,
+          formDataJson: jsonForm,
+          validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+        })
+        const fileInfos = mergeClientAndServerFilesSummary(
+          clientFiles,
+          form.files,
+        )
+        const { validationData } = validateSummary({
+          schema: formDefinition.schema,
+          formData: jsonForm,
+          fileInfos,
+          validatorRegistry: this.formValidatorRegistryService.getRegistry(),
+        })
+        pdfBuffer = await renderSummaryPdf({
+          formSummary,
+          validationData,
+          launchBrowser: () => chromium.launch(),
+          clientFiles,
+          serverFiles: form.files,
+        })
+      } else {
+        if (form.formSummary == null) {
+          throw this.throwerErrorGuard.UnprocessableEntityException(
+            FormsErrorsEnum.EMPTY_FORM_SUMMARY,
+            FormsErrorsResponseEnum.EMPTY_FORM_SUMMARY,
+          )
+        }
+
+        pdfBuffer = await renderSummaryPdf({
+          formSummary: form.formSummary,
+          launchBrowser: () => chromium.launch(),
+          serverFiles: form.files,
+        })
+      }
     } catch (error) {
       // TODO can we delete this log?
       this.logger.error(`Error during generating PDF.`, error)

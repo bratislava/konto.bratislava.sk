@@ -1,9 +1,10 @@
 import type { AriaMenuProps } from '@react-types/menu'
-import cx from 'classnames'
 import MenuItem from 'components/forms/simple-components/Menu/MenuItem'
 import React, { useRef } from 'react'
 import { useMenu } from 'react-aria'
 import { useTreeState } from 'react-stately'
+
+import cn from '../../../../frontend/cn'
 
 interface MenuContainerProps<T extends object> extends AriaMenuProps<T> {
   onClose: () => void
@@ -20,9 +21,9 @@ const MenuContainer = <T extends object>(props: MenuContainerProps<T>) => {
   const { menuProps } = useMenu(props, state, ref)
 
   return (
-    <ul {...menuProps} ref={ref} className="focus:outline-none">
+    <ul {...menuProps} ref={ref} className="focus:outline-hidden">
       {containerHeaderEl}
-      <div className={cx('py-2', className)}>
+      <div className={cn('py-2', className)}>
         {Array.from(state.collection).map((item) => (
           <MenuItem
             key={item.key}

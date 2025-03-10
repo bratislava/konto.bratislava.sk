@@ -29,7 +29,7 @@ const FormRenderer = ({ children }: SummaryFormRendererProps) => (
 const StepRenderer = ({ step, children }: SummaryStepRendererProps) => {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="text-h3-bold">{step.title}</h3>
+      <h3 className="text-h3-semibold">{step.title}</h3>
       <div>{children}</div>
     </div>
   )
@@ -87,7 +87,7 @@ const InvalidValueRenderer = () => {
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => {
   return (
     <div className="mt-4">
-      <div className="text-p2-semibold mb-4">{array.title}</div>
+      <div className="mb-4 text-p2-semibold">{array.title}</div>
       {children}
     </div>
   )
@@ -105,7 +105,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
   if (arrayDepth === 1) {
     return (
       <details
-        className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700"
+        className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 open:hover:border-gray-700"
         open={false}
       >
         <summary className="group flex w-full cursor-pointer p-6">
@@ -128,7 +128,7 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 
   return (
     <div className="mb-4">
-      <div className="text-p2-semibold mb-2 inline-block rounded-xl bg-gray-100 px-2">
+      <div className="mb-2 inline-block rounded-xl bg-gray-100 px-2 text-p2-semibold">
         {arrayItem.title}
       </div>
       {children}
@@ -138,8 +138,8 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 
 const SummaryDetails = () => {
   const { formData } = useFormData()
-  const { getValidatedSummary } = useFormSummary()
-  const validatedSummary = getValidatedSummary()
+  const { getValidatedSummary, fileInfos } = useFormSummary()
+  const { validationData } = getValidatedSummary()
   const {
     formDefinition: { schema },
     initialSummaryJson,
@@ -154,7 +154,7 @@ const SummaryDetails = () => {
       return initialSummaryJson
     }
 
-    return getSummaryJsonBrowser(schema, formData, validatorRegistry)
+    return getSummaryJsonBrowser({ schema, formData, validatorRegistry })
   }, [isSSR, initialSummaryJson, schema, formData, validatorRegistry])
 
   if (!summaryJson) {
@@ -164,7 +164,8 @@ const SummaryDetails = () => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
-      validatedSummary={validatedSummary}
+      fileInfos={fileInfos}
+      validationData={validationData}
       renderForm={FormRenderer}
       renderStep={StepRenderer}
       renderField={FieldRenderer}

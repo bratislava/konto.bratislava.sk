@@ -1,5 +1,5 @@
 import { CheckIcon, CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
+import cn from 'frontend/cn'
 import * as React from 'react'
 import { useId, useRef } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
@@ -29,18 +29,18 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
   )
   const { focusProps } = useFocusRing()
 
-  const toggleContainer = cx('group flex select-none flex-row items-center gap-4 p-0', {
+  const toggleContainer = cn('group flex flex-row items-center gap-4 p-0 select-none', {
     'cursor-not-allowed opacity-50': isDisabled,
     'cursor-pointer': !isDisabled,
   })
-  const labelStyle = cx('text-16 select-none text-gray-700')
+  const labelStyle = cn('text-16 text-gray-700 select-none')
 
-  const togglerContainer = cx('flex h-6 w-12 items-center rounded-full', {
+  const togglerContainer = cn('flex h-6 w-12 items-center rounded-full', {
     'bg-success-700': state.isSelected,
     'bg-gray-400': !state.isSelected,
   })
 
-  const toggleBall = cx('relative h-5 w-5 rounded-full bg-white', {
+  const toggleBall = cn('relative h-5 w-5 rounded-full bg-white', {
     'left-[26px]': state.isSelected,
     'left-0.5': !state.isSelected,
   })
@@ -55,14 +55,14 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
       </VisuallyHidden>
       <div className={togglerContainer}>
         <div
-          className={cx('absolute ml-1.5 flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-1.5 flex h-4 w-4 items-center justify-center', {
             hidden: !state.isSelected,
           })}
         >
           <CheckIcon className="text-gray-0" />
         </div>
         <div
-          className={cx('absolute ml-[26px] flex h-4 w-4 items-center justify-center', {
+          className={cn('absolute ml-[26px] flex h-4 w-4 items-center justify-center', {
             hidden: state.isSelected,
           })}
         >

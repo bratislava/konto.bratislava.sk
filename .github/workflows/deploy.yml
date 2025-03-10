@@ -22,6 +22,19 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
+  build-openapi-clients:
+    name: Build and push specific openapi-clients image
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: openapi-clients/
+      build_image_no_registry: ''
+      tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
+      fetch-depth: 1
+    secrets:
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+      docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+      slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
+
   conditions:
     name: Check for cluster conditions
     uses: bratislava/konto.bratislava.sk/.github/workflows/cluster-deploy-conditions-konto.yml@stable
@@ -33,7 +46,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -52,7 +65,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -84,12 +97,12 @@ jobs:
 
   deploy-dev-nest-forms-backend:
     name: dev nest-forms-backend
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -139,11 +152,12 @@ jobs:
 
   deploy-dev-nest-clamav-scanner:
     name: dev nest-clamav-scanner
-    needs: deploy-dev-clamav
+    needs: [deploy-dev-clamav, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-clamav-scanner/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -157,11 +171,12 @@ jobs:
 
   deploy-dev-nest-tax-backend:
     name: dev nest-tax-backend
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-tax-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-tax-backend/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -174,11 +189,12 @@ jobs:
 
   deploy-dev-nest-city-account:
     name: dev nest-city-account
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.dev-nest-city-account == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -196,7 +212,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -215,7 +231,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -234,6 +250,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -247,12 +264,12 @@ jobs:
 
   deploy-staging-nest-forms-backend:
     name: staging nest-forms-backend
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.staging-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -302,11 +319,12 @@ jobs:
 
   deploy-staging-nest-clamav-scanner:
     name: staging nest-clamav-scanner
-    needs: deploy-staging-clamav
+    needs: [deploy-staging-clamav, build-openapi-clients]
     if: needs.conditions.outputs.staging-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -320,11 +338,12 @@ jobs:
 
   deploy-staging-nest-tax-backend:
     name: staging nest-tax-backend
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.staging-nest-tax-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -337,11 +356,12 @@ jobs:
 
   deploy-staging-nest-city-account:
     name: staging nest-city-account
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.staging-nest-city-account == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -352,6 +372,24 @@ jobs:
       docker-pass: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       slack-token: ${{ secrets.SLACK_BOT_TOKEN}}
 
+  check-openapi-clients:
+    name: Check OpenAPI clients for changes
+    needs:
+      [
+        deploy-staging-nest-forms-backend,
+        deploy-staging-nest-clamav-scanner,
+        deploy-staging-nest-tax-backend,
+        deploy-staging-nest-city-account,
+      ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run OpenAPI client check
+        working-directory: openapi-clients
+        run: docker run --rm $(docker build -q -f Dockerfile.check .)
+        continue-on-error: true
+
   deploy-prod:
     name: after prod Backends deploy Next
     needs: [conditions, deploy-prod-strapi, deploy-prod-nest-forms-backend, deploy-prod-nest-clamav-scanner, deploy-prod-nest-tax-backend, deploy-prod-nest-city-account]
@@ -359,7 +397,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -378,7 +416,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -410,12 +448,12 @@ jobs:
 
   deploy-prod-nest-forms-backend:
     name: prod nest-forms-backend
-    needs: [build-forms-shared, conditions]
+    needs: [build-forms-shared, build-openapi-clients, conditions]
     if: needs.conditions.outputs.prod-nest-forms-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
-      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -465,11 +503,12 @@ jobs:
 
   deploy-prod-nest-clamav-scanner:
     name: prod nest-clamav-scanner
-    needs: deploy-prod-clamav
+    needs: [deploy-prod-clamav, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-clamav-scanner == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-clamav-scanner/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -483,11 +522,12 @@ jobs:
 
   deploy-prod-nest-tax-backend:
     name: prod nest-tax-backend
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-tax-backend == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-tax-backend/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -500,11 +540,12 @@ jobs:
 
   deploy-prod-nest-city-account:
     name: prod nest-city-account
-    needs: conditions
+    needs: [conditions, build-openapi-clients]
     if: needs.conditions.outputs.prod-nest-city-account == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-city-account/
+      build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production

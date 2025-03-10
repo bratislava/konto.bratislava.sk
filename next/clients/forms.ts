@@ -4,6 +4,7 @@ import {
   Configuration,
   ConvertApiFactory,
   FilesApiFactory,
+  FormsApiFactory,
   GinisApiFactory,
   NasesApiFactory,
   SignerApiFactory,
@@ -19,4 +20,5 @@ export const formsApi = {
   ...NasesApiFactory(...args),
   ...GinisApiFactory(...args),
   ...SignerApiFactory(...args),
+  ...FormsApiFactory(...args),
 }

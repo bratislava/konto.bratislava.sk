@@ -1,5 +1,6 @@
-import cx from 'classnames'
 import React from 'react'
+
+import cn from '../../../frontend/cn'
 
 interface UploadFieldHeaderProps {
   label: string
@@ -12,8 +13,8 @@ const UploadFieldHeader = (props: UploadFieldHeaderProps) => {
   const { label, htmlFor, required, helptext = '' } = props
 
   // STYLES
-  const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
-    'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
+  const labelStyle = cn('relative text-p3-semibold text-gray-800 sm:text-16-semibold', {
+    'after:absolute after:bottom-0.5 after:ml-0.5 after:text-16-semibold after:text-main-700 after:content-["*"]':
       required,
   })
 
@@ -30,13 +31,13 @@ const UploadFieldHeader = (props: UploadFieldHeaderProps) => {
           {label}
         </label>
         {!required && (
-          <span className="text-p3 sm:text-16 ml-2 flex items-center leading-5 sm:leading-6">
+          <span className="ml-2 flex items-center text-p3 leading-5 sm:text-16 sm:leading-6">
             (optional)
           </span>
         )}
       </div>
       {helptext && (
-        <div className="text-p3 sm:text-16 flex flex-col text-gray-700">{helptextHandler()}</div>
+        <div className="flex flex-col text-p3 text-gray-700 sm:text-16">{helptextHandler()}</div>
       )}
     </div>
   )

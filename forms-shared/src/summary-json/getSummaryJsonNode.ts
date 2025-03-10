@@ -1,8 +1,6 @@
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import jsdom from 'jsdom'
 
-import { getSummaryJson } from './getSummaryJson'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { getSummaryJson, GetSummaryJsonParams } from './getSummaryJson'
 
 /**
  * Node.js implementation of `getSummaryJson`. Instead of `window.DOMParser` (which is not available
@@ -10,13 +8,13 @@ import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
  * `jsdom` is huge - https://bundlephobia.com/package/jsdom, therefore it must never be included in
  * the client bundle.
  */
-export const getSummaryJsonNode = (
-  schema: RJSFSchema,
-  data: GenericObjectType,
-  validatorRegistry: BaRjsfValidatorRegistry,
-) => {
+export const getSummaryJsonNode = ({
+  schema,
+  formData,
+  validatorRegistry,
+}: GetSummaryJsonParams) => {
   const jsDomInstance = new jsdom.JSDOM()
   const domParserInstance = new jsDomInstance.window.DOMParser()
 
-  return getSummaryJson(schema, data, domParserInstance, validatorRegistry)
+  return getSummaryJson({ schema, formData, domParserInstance, validatorRegistry })
 }

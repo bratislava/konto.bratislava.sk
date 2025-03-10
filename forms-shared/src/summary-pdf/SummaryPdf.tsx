@@ -9,20 +9,17 @@ import {
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
-import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
-import { ValidatedSummary } from '../summary-renderer/validateSummary'
-import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { GenericObjectType } from '@rjsf/utils'
-import { renderFormAdditionalInfo } from '../string-templates/renderTemplate'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 
 type SummaryPdfProps = {
-  formDefinition: FormDefinition
+  formSummary: FormSummary
   cssToInject: string
-  formData: GenericObjectType
-  summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  fileInfos: Record<string, FileInfoSummary>
+  validationData?: ValidationData<GenericObjectType>
 }
 
 const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
@@ -142,12 +139,7 @@ const SummaryMarkdown = ({ className, children }: { className: string; children:
   )
 }
 
-const AdditionalInfo = ({
-  formDefinition,
-  formData,
-}: Pick<SummaryPdfProps, 'formDefinition' | 'formData'>) => {
-  const additionalInfo = renderFormAdditionalInfo(formDefinition, formData)
-
+const AdditionalInfo = ({ additionalInfo }: { additionalInfo: string | null }) => {
   if (!additionalInfo) {
     return null
   }
@@ -160,23 +152,20 @@ const AdditionalInfo = ({
   )
 }
 
-const TermsAndConditions = ({ formDefinition }: Pick<SummaryPdfProps, 'formDefinition'>) => {
+const TermsAndConditions = ({ termsAndConditions }: { termsAndConditions: string }) => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-semibold">Ochrana osobných údajov</h2>
-      <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">
-        {formDefinition.termsAndConditions}
-      </SummaryMarkdown>
+      <SummaryMarkdown className="rounded-xl bg-gray-50 p-6">{termsAndConditions}</SummaryMarkdown>
     </div>
   )
 }
 
 export const SummaryPdf = ({
-  formDefinition,
+  formSummary: { summaryJson, additionalInfo, termsAndConditions },
   cssToInject,
-  summaryJson,
-  validatedSummary,
-  formData,
+  fileInfos,
+  validationData,
 }: SummaryPdfProps) => {
   return (
     <html>
@@ -188,7 +177,8 @@ export const SummaryPdf = ({
         <div className="flex flex-col gap-8">
           <SummaryRenderer
             summaryJson={summaryJson}
-            validatedSummary={validatedSummary}
+            fileInfos={fileInfos}
+            validationData={validationData}
             renderForm={FormRenderer}
             renderStep={StepRenderer}
             renderField={FieldRenderer}
@@ -199,8 +189,8 @@ export const SummaryPdf = ({
             renderNoneValue={NoneValueRenderer}
             renderInvalidValue={InvalidValueRenderer}
           />
-          <AdditionalInfo formDefinition={formDefinition} formData={formData} />
-          <TermsAndConditions formDefinition={formDefinition} />
+          <AdditionalInfo additionalInfo={additionalInfo} />
+          <TermsAndConditions termsAndConditions={termsAndConditions} />
         </div>
       </body>
     </html>

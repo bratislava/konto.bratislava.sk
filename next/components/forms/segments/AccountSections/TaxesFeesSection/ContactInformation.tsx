@@ -7,7 +7,7 @@ import { Address } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { isDefined } from '../../../../../frontend/utils/general'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
-import CorrespondenceAddressModalV2 from '../../CorrespondenceAddressModal/CorrespondenceAddressModalV2'
+import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const formatZip = (zip?: string) => {
@@ -55,7 +55,7 @@ const ContactInformationSection = () => {
   return (
     <>
       {environment.featureToggles.taxReportCorrespondenceAddress && (
-        <CorrespondenceAddressModalV2
+        <CorrespondenceAddressModal
           parsedAddress={parsedAddress}
           isOpen={correspondenceAddressModalShow}
           onOpenChange={setCorrespondenceAddressModalShow}

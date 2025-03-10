@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll } from 'vitest'
+import { beforeAll, describe, expect, test } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { generateSlovenskoSkXmlObject } from '../../src/slovensko-sk/generateXml'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
@@ -16,6 +16,7 @@ import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJso
 import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
+import { getFormSummary } from '../../src/summary/summary'
 
 describe('slovenskoSkForm', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
@@ -49,12 +50,18 @@ describe('slovenskoSkForm', () => {
       describe(`${exampleForm.name}`, () => {
         let xmlString: string
         beforeAll(async () => {
-          const xmlObject = await generateSlovenskoSkXmlObject(
+          const formSummary = getFormSummary({
             formDefinition,
-            exampleForm.formData,
-            testValidatorRegistry,
-            exampleForm.serverFiles,
-          )
+            formDataJson: exampleForm.formData,
+            validatorRegistry: testValidatorRegistry,
+          })
+          const xmlObject = await generateSlovenskoSkXmlObject({
+            formDefinition,
+            formSummary,
+            jsonVersion: formDefinition.jsonVersion,
+            formData: exampleForm.formData,
+            serverFiles: exampleForm.serverFiles,
+          })
           xmlString = buildSlovenskoSkXml(xmlObject, { headless: false, pretty: true })
         })
 
@@ -72,7 +79,10 @@ describe('slovenskoSkForm', () => {
         test('extractJsonFromSlovenskoSkXml should extract the same JSON from XML', async () => {
           const extractedJson = await extractJsonFromSlovenskoSkXml(formDefinition, xmlString)
 
-          expect(extractedJson).toEqual(exampleForm.formData)
+          expect(extractedJson).toEqual({
+            jsonVersion: formDefinition.jsonVersion,
+            formDataJson: exampleForm.formData,
+          })
         })
 
         test(

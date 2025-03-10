@@ -1,7 +1,8 @@
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/ButtonNew'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
+
+import cn from '../../../../../../frontend/cn'
 
 interface BottomSheetMenuRowProps extends MenuItemBase {
   onLinkClick: () => void
@@ -18,8 +19,8 @@ const BottomSheetMenuRow = ({
   return url ? (
     <Link className="flex items-center gap-3" href={url} onClick={() => onLinkClick()}>
       <div
-        className={cx(
-          'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 py-2 font-sans focus:outline-none',
+        className={cn(
+          'flex cursor-pointer items-center gap-3 py-2 font-sans text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden',
           itemClassName,
         )}
       >
@@ -30,8 +31,8 @@ const BottomSheetMenuRow = ({
   ) : (
     <Button
       onPress={onPress}
-      className={cx(
-        'text-p2 hover:text-p2-semibold focus:text-p2-semibold flex cursor-pointer items-center gap-3 py-2 focus:outline-none',
+      className={cn(
+        'flex cursor-pointer items-center gap-3 py-2 text-p2 hover:text-p2-semibold focus:text-p2-semibold focus:outline-hidden',
         itemClassName,
       )}
     >

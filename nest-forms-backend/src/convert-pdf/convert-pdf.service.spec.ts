@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
@@ -11,6 +12,7 @@ import { testJsonData } from '../__tests__/constants'
 import ConvertService from '../convert/convert.service'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
@@ -65,6 +67,10 @@ describe('ConvertPdfService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FormsHelper,
+        {
+          provide: FormValidatorRegistryService,
+          useValue: createMock<FormValidatorRegistryService>(),
+        },
         FormsService,
         FilesService,
         {

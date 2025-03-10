@@ -12,23 +12,26 @@
  * Do not edit the class manually.
  */
 
-import type { AxiosInstance, AxiosPromise, RawAxiosRequestConfig } from 'axios'
-import globalAxios from 'axios'
 import type { Configuration } from './configuration'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
+import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
-import type { RequestArgs } from './base'
 import {
   DUMMY_BASE_URL,
   assertParamExists,
-  createRequestFunction,
   setApiKeyToObject,
+  setBasicAuthToObject,
   setBearerAuthToObject,
+  setOAuthToObject,
   setSearchParams,
-  toPathString
+  serializeDataIfNeeded,
+  toPathString,
+  createRequestFunction,
 } from './common'
+import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -6963,6 +6966,93 @@ export const RPORegisterPrvnickchOsbApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonBase_1: async (
+      ico: string,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'ico' is not null or undefined
+      assertParamExists('rpoControllerGetLegalPersonBase_1', 'ico', ico)
+      const localVarPath = `/rpo/base/ico/{ico}`.replace(
+        `{${'ico'}}`,
+        encodeURIComponent(String(ico))
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPerson_2: async (
+      ico: string,
+      options: RawAxiosRequestConfig = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'ico' is not null or undefined
+      assertParamExists('rpoControllerGetLegalPerson_2', 'ico', ico)
+      const localVarPath = `/rpo/ico/{ico}`.replace(`{${'ico'}}`, encodeURIComponent(String(ico)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -7033,6 +7123,66 @@ export const RPORegisterPrvnickchOsbApiFp = function (configuration?: Configurat
           configuration
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rpoControllerGetLegalPersonBase_1(
+      ico: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPersonBase_1(
+        ico,
+        options
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPersonBase_1']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async rpoControllerGetLegalPerson_2(
+      ico: string,
+      options?: RawAxiosRequestConfig
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseRpoLegalPersonDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.rpoControllerGetLegalPerson_2(
+        ico,
+        options
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['RPORegisterPrvnickchOsbApi.rpoControllerGetLegalPerson_2']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -7077,6 +7227,36 @@ export const RPORegisterPrvnickchOsbApiFactory = function (
         .rpoControllerGetLegalPersonBase(ico, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPersonBase_1(
+      ico: string,
+      options?: any
+    ): AxiosPromise<ResponseRpoLegalPersonDto> {
+      return localVarFp
+        .rpoControllerGetLegalPersonBase_1(ico, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Information about a legal person
+     * @param {string} ico
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    rpoControllerGetLegalPerson_2(
+      ico: string,
+      options?: any
+    ): AxiosPromise<ResponseRpoLegalPersonDto> {
+      return localVarFp
+        .rpoControllerGetLegalPerson_2(ico, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -7112,6 +7292,34 @@ export class RPORegisterPrvnickchOsbApi extends BaseAPI {
   public rpoControllerGetLegalPersonBase(ico: string, options?: RawAxiosRequestConfig) {
     return RPORegisterPrvnickchOsbApiFp(this.configuration)
       .rpoControllerGetLegalPersonBase(ico, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Information about a legal person
+   * @param {string} ico
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RPORegisterPrvnickchOsbApi
+   */
+  public rpoControllerGetLegalPersonBase_1(ico: string, options?: RawAxiosRequestConfig) {
+    return RPORegisterPrvnickchOsbApiFp(this.configuration)
+      .rpoControllerGetLegalPersonBase_1(ico, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Information about a legal person
+   * @param {string} ico
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RPORegisterPrvnickchOsbApi
+   */
+  public rpoControllerGetLegalPerson_2(ico: string, options?: RawAxiosRequestConfig) {
+    return RPORegisterPrvnickchOsbApiFp(this.configuration)
+      .rpoControllerGetLegalPerson_2(ico, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

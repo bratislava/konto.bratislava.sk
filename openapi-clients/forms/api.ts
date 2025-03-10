@@ -2633,49 +2633,37 @@ export interface GinisSdkHistorieDokumentuWithAssignedCategory {
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  IdDokumentu: string
+  'Id-dokumentu': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  Atribut_IdDokumentu_Externi: string
+  'Text-zmeny'?: string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  TextZmeny: string
+  Poznamka?: string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  Poznamka: string
+  'Datum-zmeny': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  DatumZmeny: string
+  'Id-zmenu-provedl': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  IdZmenuProvedl: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
-  Atribut_IdZmenuProvedl_Externi: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
-  IdKtgZmeny: string
+  'Id-ktg-zmeny': string
   /**
    *
    * @type {string}

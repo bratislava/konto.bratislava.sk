@@ -1,7 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, FileUploadUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const fileUploadMultiple = (
   property: string,
@@ -20,7 +19,6 @@ export const fileUploadMultiple = (
     minItems: options.required ? 1 : undefined,
     default: [],
     baUiSchema: {
-      ...defaultFieldUiSchema,
       'ui:widget': BaWidgetType.FileUploadMultiple,
       'ui:options': uiOptions,
     },

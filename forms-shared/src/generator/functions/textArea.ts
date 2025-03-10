@@ -1,7 +1,6 @@
 import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, TextAreaUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const textArea = (
   property: string,
@@ -14,7 +13,6 @@ export const textArea = (
       type: 'string',
       title: options.title,
       baUiSchema: {
-        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.TextArea,
         'ui:options': uiOptions,
       },

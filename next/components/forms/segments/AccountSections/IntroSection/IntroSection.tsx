@@ -22,7 +22,7 @@ const IntroSection = () => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [44, 9, 34, 35]
+  const foMunicipalServicesSection = [1, 44, 9, 34]
   const poMunicipalServicesSection = [34, 35, 43, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection

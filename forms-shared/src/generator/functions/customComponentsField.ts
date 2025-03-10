@@ -1,7 +1,6 @@
 import { BaFieldType, CustomComponentFieldUiOptions, CustomComponentType } from '../uiOptionsTypes'
 import { GeneratorField } from '../generatorTypes'
 import { removeUndefinedValues } from '../helpers'
-import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 /**
  * This is a special field that represents no data in the schema. It is a "hacky way", but the easiest how to display
@@ -17,7 +16,6 @@ export const customComponentsField = (
   schema: removeUndefinedValues({
     anyOf: [{}],
     baUiSchema: {
-      ...defaultFieldUiSchema,
       'ui:field': BaFieldType.CustomComponents,
       'ui:options': {
         ...uiOptions,

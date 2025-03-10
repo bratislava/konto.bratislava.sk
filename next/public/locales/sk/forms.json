@@ -126,7 +126,7 @@
     "export_pdf": "Stiahnuť ako PDF"
   },
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
-  "modals_back_button_title": "Späť",
+  "modals_close_button_title": "Zavrieť",
   "migration_required_modal": {
     "title": "Pokračovať vo vypĺňaní?",
     "content": "Túto žiadosť ste začali vypĺňať ešte ako neprihlásený používateľ/ka. Na to, aby ste mohli pokračovať v jej vypĺňaní, kliknite na Pokračovať vo vypĺňaní. V opačnom prípade budú údaje, ktoré ste doteraz vyplnili stratené.",

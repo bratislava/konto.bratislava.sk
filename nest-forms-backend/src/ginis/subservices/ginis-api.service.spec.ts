@@ -92,7 +92,7 @@ describe('GinisAPIService', () => {
         'Id-osoby': '1',
       })
 
-      expect(result).toEqual({ 'Detail-referenta': [{ 'Id-osoby': 'id1' }] })
+      expect(result).toEqual({ 'Detail-referenta': { 'Id-osoby': 'id1' } })
     })
   })
 })

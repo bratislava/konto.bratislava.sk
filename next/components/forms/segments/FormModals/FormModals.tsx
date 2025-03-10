@@ -141,6 +141,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesUploadingModal,
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
+      buttons: [
+        <Button variant="black-plain" onPress={() => setSendFilesUploadingModal(false)}>
+          {t('modals_close_button_title')}
+        </Button>,
+      ],
       children: t('send_files_uploading_modal.content'),
     },
     {
@@ -149,6 +154,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesScanningModal,
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
+      buttons: [
+        <Button variant="black-plain" onPress={() => setSendFilesScanningModal(false)}>
+          {t('modals_close_button_title')}
+        </Button>,
+      ],
       children: t('send_files_scanning_modal.content'),
     },
     {

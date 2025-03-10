@@ -1,3 +1,4 @@
+import { SslDetailDokumentuResponse } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Forms, FormState } from '@prisma/client'
@@ -37,7 +38,7 @@ export default class GinisTasksSubservice {
   private async updateSubmissionState(submission: Forms): Promise<void> {
     if (submission.ginisDocumentId === null) return
 
-    let docDetail
+    let docDetail: SslDetailDokumentuResponse
     try {
       docDetail = await this.ginisApiService.getDocumentDetail(
         submission.ginisDocumentId,
@@ -51,7 +52,7 @@ export default class GinisTasksSubservice {
       return
     }
 
-    const docState = docDetail.WflDokument[0].StavDokumentu
+    const docState = docDetail['Wfl-dokument']['Stav-dokumentu']
 
     if (GINIS_ACCEPTED_DOCUMENT_STATES.has(docState)) {
       await this.prisma.forms.update({

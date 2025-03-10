@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/dot-notation */
+import { GinisError } from '@bratislava/ginis-sdk'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import { AxiosError } from 'axios'
@@ -82,20 +83,21 @@ describe('GinisController', () => {
 
       const axiosError = new AxiosError('Error')
       axiosError.status = 404
+      const ginisError = new GinisError('Error', axiosError)
 
       controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
-        .mockRejectedValue(axiosError)
+        .mockRejectedValue(ginisError)
       await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
       expect(notFoundSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getDocumentDetail = jest.fn()
       controller['ginisAPIService'].getOwnerDetail = jest
         .fn()
-        .mockRejectedValue(new Error('Error'))
+        .mockRejectedValue(new GinisError('Error'))
       await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
       expect(internalServerErrorSpy).toHaveBeenCalled()
 

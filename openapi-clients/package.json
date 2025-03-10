@@ -31,7 +31,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.13.9",
     "app-root-dir": "^1.0.2",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "camelcase": "^8.0.0",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
@@ -44,7 +44,7 @@
     "typescript": "5.8.2"
   },
   "peerDependencies": {
-    "axios": "^1.8.1"
+    "axios": "^1.8.2"
   },
   "engines": {
     "node": ">=20.9.x",

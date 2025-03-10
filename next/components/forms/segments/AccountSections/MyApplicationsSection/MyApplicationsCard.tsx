@@ -328,7 +328,7 @@ const MyApplicationsCard = ({
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_back_button_title')}
+            {ft('modals_close_button_title')}
           </Button>,
           <Button
             variant="negative-solid"

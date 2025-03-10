@@ -5,14 +5,13 @@ import GinisAPIService from './ginis-api.service'
 
 jest.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
-    json = {
-      ssl: {
-        detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
-      },
-      gin: {
-        detailFunkcnihoMista: jest.fn(async (bodyObj: object) => bodyObj),
-        detailReferenta: jest.fn(async (bodyObj: object) => bodyObj),
-      },
+    ssl = {
+      detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
+    }
+
+    gin = {
+      detailFunkcnihoMista: jest.fn(async (bodyObj: object) => bodyObj),
+      detailReferenta: jest.fn(async (bodyObj: object) => bodyObj),
     }
   },
 }))
@@ -93,7 +92,7 @@ describe('GinisAPIService', () => {
         'Id-osoby': '1',
       })
 
-      expect(result).toEqual({ DetailReferenta: [{ IdOsoby: 'id1' }] })
+      expect(result).toEqual({ 'Detail-referenta': [{ 'Id-osoby': 'id1' }] })
     })
   })
 })

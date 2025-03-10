@@ -119,15 +119,22 @@ describe('GinisController', () => {
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockResolvedValue(mockGinisDocumentData)
-      controller['ginisAPIService'].getOwnerDetail = jest.fn()
+      controller['ginisAPIService'].getOwnerDetail = jest
+        .fn()
+        .mockResolvedValue({
+          'Detail-referenta': {
+            Jmeno: 'name1',
+            Prijmeni: 'surname1',
+          },
+        })
       jest.mock('../utils/ginis/ginis-api-helper', () => ({
         mapGinisHistory: jest.fn(),
       }))
 
       const result = await controller.getGinisDocumentByFormId('123')
       expect(result.id).toBe('MAG0X03RZDEB')
-      expect(result.ownerName).toBe(' ') // getOwnerDetail returns nothing
-      expect(result.ownerEmail).toBe('')
+      expect(result.ownerName).toBe('name1 surname1')
+      expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
     })
   })
 })

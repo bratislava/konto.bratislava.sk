@@ -2,6 +2,12 @@
 
 This package contains auto-generated TypeScript clients for various Bratislava city services.
 
+## Limitations
+
+It's not possible to generate OpenAPI specifications for NestJS backends without running them easily (see [this StackOverflow discussion](https://stackoverflow.com/questions/72852736/generating-swagger-json-file-without-running-nest-js-server)). Therefore, the automatic check for client updates only runs after all backend services are deployed to the staging environment on the master branch.
+
+Running this on each commit would require spinning up all the backend services, which is resource-intensive and impractical.
+
 ## Available Clients
 
 - `city-account` - City Account service client

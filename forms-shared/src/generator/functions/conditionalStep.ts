@@ -9,6 +9,7 @@ export const conditionalStep = (
   options: {
     title: string
     description?: string
+    descriptionMarkdown?: boolean
     stepperTitle?: string
     customHash?: string
   },

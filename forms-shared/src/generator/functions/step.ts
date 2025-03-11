@@ -9,6 +9,7 @@ export const step = (
   options: {
     title: string
     description?: string
+    descriptionMarkdown?: boolean
     stepperTitle?: string
     customHash?: string
   },
@@ -32,12 +33,13 @@ export const step = (
       properties: {
         [property]: {
           title: options.title,
-          description: options.description,
           ...schema,
           baUiSchema: {
             'ui:options': {
               stepperTitle: options.stepperTitle,
               stepQueryParam: getHash(),
+              description: options.description,
+              descriptionMarkdown: options.descriptionMarkdown,
             } satisfies StepUiOptions,
           },
           baOrder: 1,

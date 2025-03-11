@@ -8,17 +8,13 @@ export const step = (
   property: string,
   options: {
     title: string
-    description?: string
-    descriptionMarkdown?: boolean
-    stepperTitle?: string
-    customHash?: string
-  },
+  } & StepUiOptions,
   fields: (GeneratorFieldType | null)[],
 ) => {
   const { schema } = object(property, { required: true }, {}, fields)
   const getHash = () => {
-    if (options.customHash) {
-      return options.customHash
+    if (options.stepQueryParam) {
+      return options.stepQueryParam
     }
     if (options.stepperTitle) {
       return kebabCase(options.stepperTitle)

@@ -2,17 +2,14 @@ import type { RJSFSchema } from '@rjsf/utils'
 import { GeneratorFieldType } from '../generatorTypes'
 import { step } from './step'
 import { removeUndefinedValues } from '../helpers'
+import { StepUiOptions } from '../uiOptionsTypes'
 
 export const conditionalStep = (
   property: string,
   condition: RJSFSchema,
   options: {
     title: string
-    description?: string
-    descriptionMarkdown?: boolean
-    stepperTitle?: string
-    customHash?: string
-  },
+  } & StepUiOptions,
   fields: (GeneratorFieldType | null)[],
 ) => {
   const { schema } = step(property, options, fields)

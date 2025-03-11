@@ -40035,7 +40035,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby stanovený. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -40252,7 +40252,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby stanovený. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",

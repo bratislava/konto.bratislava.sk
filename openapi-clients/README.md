@@ -20,8 +20,7 @@ Running this on each commit would require spinning up all the backend services, 
 
 ### Prerequisites
 
-- Node.js >=20.9.x
-- npm >=10.7.x
+- Java JDK 11+ (OpenAPI Generator requires Java to run)
 
 ### Scripts
 

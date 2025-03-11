@@ -116,13 +116,9 @@ export class TasksSubservice {
     })
   }
 
-  // @Cron('*/5 * 2-30 4 *') // Every 5 minutes in April, starting from 2nd. TODO put back after testing
-  @Cron('*/5 * 2-31 3-4 *')
+  @Cron('*/5 * 2-30 4 *') // Every 5 minutes in April, starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
-    if (process.env.UPDATE_DELIVERY_METHODS_IN_NORIS !== 'true') {
-      return
-    }
     const currentYear = new Date().getFullYear()
     const taxDeadlineDate = getTaxDeadlineDate()
 

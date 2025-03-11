@@ -1349,22 +1349,28 @@ export default schema(
               {
                 objectDisplay: 'boxed',
                 title: 'Nádoba',
-                description: match([typOdpadu, oznamovatelTyp])
+                description: match({ typOdpadu, oznamovatelTyp })
                   .with(
-                    [
-                      'biologickyRozlozitelnyOdpadZoZahrad',
-                      P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
-                    ],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZoZahrad',
+                      oznamovatelTyp: P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
+                    },
                     () =>
                       'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
-                    ['biologickyRozlozitelnyOdpadZKuchyne', 'fyzickaOsoba'],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZKuchyne',
+                      oznamovatelTyp: 'fyzickaOsoba',
+                    },
                     () =>
-                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
+                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby stanovený. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
-                    ['biologickyRozlozitelnyOdpadZKuchyne', 'spravcaSpolocenstvoVlastnikov'],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZKuchyne',
+                      oznamovatelTyp: 'spravcaSpolocenstvoVlastnikov',
+                    },
                     () =>
                       'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )

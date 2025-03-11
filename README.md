@@ -32,6 +32,8 @@ Each sub-project contains a README which should get you up and running. More doc
 
 👀 `/tests/cypress` Automated cypress tests
 
+📦 `/openapi-clients` Auto-generated OpenAPI TypeScript clients
+
 ## Deployment
 
 ### Full Project Deployment

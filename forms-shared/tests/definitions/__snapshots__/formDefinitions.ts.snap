@@ -586,10 +586,10 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "Odporúčame vám výber jedného z predschválených mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
               "stepQueryParam": "pozemok",
             },
           },
-          "description": "Odporúčame vám výber jedného z predschválených mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
           "properties": {
             "typPozemku": {
               "baOrder": 1,
@@ -13227,7 +13227,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "value": "vznik",
                     },
                     {
-                      "description": "Použite túto možnosť, ak potrebujete upraviť parametre ako typ a počet nádob, frekvenciu odvozu odpadu alebo počet osôb.",
+                      "description": "Použite túto možnosť, ak potrebujete upraviť parametre zapojenia do zberného systému, ako sú typ a počet nádob, frekvencia odvozu odpadu alebo počet osôb.",
                       "label": "Zmena poplatkovej povinnosti",
                       "value": "zmena",
                     },
@@ -26672,7 +26672,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -26851,7 +26851,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Poplatková povinnosť vzniká dňom nadobudnutia práva užívať nehnuteľnosť (napr. kúpa alebo nájom nehnuteľnosti).",
+                    "helptext": "Poplatková povinnosť vzniká dňom nadobudnutia platnosti zmluvy o výkone správy a dátume vzniku spoločenstva.",
                     "size": "medium",
                   },
                   "ui:widget": "DatePicker",
@@ -27040,7 +27040,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -27435,7 +27435,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -27817,7 +27817,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -28207,7 +28207,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -28575,7 +28575,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -28981,7 +28981,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -29375,7 +29375,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -29753,7 +29753,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -30107,7 +30107,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -30499,7 +30499,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -30892,7 +30892,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 9,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.",
+                    "helptext": "Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.",
                     "inputType": "text",
                   },
                   "ui:widget": "Input",
@@ -30994,11 +30994,11 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
+                "description": "Pre správne vyrubenie poplatku za komunálny odpad uveďte všetky osoby žijúce v danej nehnuteľnosti (s prechodným či trvalým pobytom) alebo osoby oprávnené ju užívať, vrátane maloletých detí.",
                 "stepQueryParam": "udaje-o-poplatnikoch",
                 "stepperTitle": "Údaje o poplatníkoch",
               },
             },
-            "description": "Pre správne vyrubenie poplatku za komunálny odpad uveďte všetky osoby žijúce v danej nehnuteľnosti (s prechodným či trvalým pobytom) alebo osoby oprávnené ju užívať, vrátane maloletých detí.",
             "properties": {
               "poplatnici": {
                 "baOrder": 1,
@@ -34167,7 +34167,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "baUiSchema": {
                         "ui:options": {
                           "addButtonLabel": "Pridať ďalšiu nádobu",
-                          "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
+                          "description": "Pri znížení počtu odvozov/počtu zberných nádob bude zmena posúdená oddelením životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
                           "variant": "topLevel",
@@ -34858,7 +34858,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre svojich nádob?",
+                "title": "Chcete zmeniť parametre existujúcich nádob?",
                 "type": "boolean",
               },
             },
@@ -35211,7 +35211,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "baUiSchema": {
                         "ui:options": {
                           "addButtonLabel": "Pridať ďalšiu nádobu",
-                          "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
+                          "description": "Pri znížení počtu odvozov/počtu zberných nádob bude zmena posúdená oddelením životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
                           "variant": "topLevel",
@@ -36088,7 +36088,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre svojich nádob?",
+                "title": "Chcete zmeniť parametre existujúcich nádob?",
                 "type": "boolean",
               },
             },
@@ -36527,7 +36527,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "baUiSchema": {
                         "ui:options": {
                           "addButtonLabel": "Pridať ďalšiu nádobu",
-                          "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
+                          "description": "Pri znížení počtu odvozov/počtu zberných nádob bude zmena posúdená oddelením životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
                           "variant": "topLevel",
@@ -37662,7 +37662,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre svojich nádob?",
+                "title": "Chcete zmeniť parametre existujúcich nádob?",
                 "type": "boolean",
               },
             },
@@ -38127,7 +38127,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                       "baUiSchema": {
                         "ui:options": {
                           "addButtonLabel": "Pridať ďalšiu nádobu",
-                          "description": "Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
+                          "description": "Pri znížení počtu odvozov/počtu zberných nádob bude zmena posúdená oddelením životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).",
                           "descriptionMarkdown": true,
                           "itemTitle": "Nádoba na zmenu č. {index}",
                           "variant": "topLevel",
@@ -39340,7 +39340,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                   true,
                   false,
                 ],
-                "title": "Chcete zmeniť parametre svojich nádob?",
+                "title": "Chcete zmeniť parametre existujúcich nádob?",
                 "type": "boolean",
               },
             },
@@ -39397,16 +39397,17 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
+                "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
+                "descriptionMarkdown": true,
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
-            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -39513,16 +39514,17 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
+                "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
+                "descriptionMarkdown": true,
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
-            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -39629,10 +39631,11 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
+                "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
+                "descriptionMarkdown": true,
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
-            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "allOf": [
@@ -39722,7 +39725,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -39826,10 +39829,11 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
+                "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
+                "descriptionMarkdown": true,
                 "stepQueryParam": "biologicky-rozlozitelny-odpad-zo-zahrad",
               },
             },
-            "description": "Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).",
             "properties": {
               "nadoba": {
                 "allOf": [
@@ -39919,7 +39923,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -40138,7 +40142,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -40429,7 +40433,7 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "description": "Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
+                    "description": "Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).",
                     "descriptionMarkdown": true,
                     "objectDisplay": "boxed",
                     "title": "Nádoba",
@@ -40789,7 +40793,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
                     "helptext": "Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - zmluva o výkone správy
-- zmluva o spoločenstve
+- zmluva o spoločenstve, registrácia spoločenstva
 - iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.",
@@ -50923,11 +50927,11 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.",
               "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-jeden-ucel",
               "stepperTitle": "Daň zo stavieb (stavba slúžiaca na jeden účel)",
             },
           },
-          "description": "napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.",
           "properties": {
             "vyplnitObject": {
               "baOrder": 1,
@@ -52545,11 +52549,11 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe",
               "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-viacere-ucely",
               "stepperTitle": "Daň zo stavieb (stavba slúžiaca na viaceré účely)",
             },
           },
-          "description": "napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe",
           "properties": {
             "vyplnitObject": {
               "baOrder": 1,
@@ -65733,11 +65737,11 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.",
               "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-jeden-ucel",
               "stepperTitle": "Daň zo stavieb (stavba slúžiaca na jeden účel)",
             },
           },
-          "description": "napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.",
           "properties": {
             "vyplnitObject": {
               "baOrder": 1,
@@ -67355,11 +67359,11 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe",
               "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-viacere-ucely",
               "stepperTitle": "Daň zo stavieb (stavba slúžiaca na viaceré účely)",
             },
           },
-          "description": "napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe",
           "properties": {
             "vyplnitObject": {
               "baOrder": 1,
@@ -83669,11 +83673,11 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
+              "description": "Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10-ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.",
               "stepQueryParam": "nezaopatrene-dieta-deti",
               "stepperTitle": "Nezaopatrené dieťa/deti",
             },
           },
-          "description": "Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10-ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.",
           "properties": {
             "detiSucastouDomacnosti": {
               "baOrder": 1,

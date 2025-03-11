@@ -53,10 +53,6 @@ describe('TasksSubservice', () => {
   })
 
   describe('updateDeliveryMethodsInNoris', () => {
-    beforeAll(() => {
-      process.env.UPDATE_DELIVERY_METHODS_IN_NORIS = 'true'
-    })
-
     it('should call the endpoint with the correct data', async () => {
       const adminApiUpdateSpy = jest.spyOn(service['taxSubservice'], 'updateDeliveryMethodsInNoris')
       const internalErrorSpy = jest.spyOn(throwerErrorGuard, 'InternalServerErrorException')

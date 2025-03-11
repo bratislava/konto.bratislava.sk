@@ -29,7 +29,13 @@ const BAObjectFieldTemplate = ({
         {isStepObject ? (
           <div className="mb-8 flex flex-col gap-4">
             <h2 className="text-h2">{schema.title}</h2>
-            {schema.description && <p className="text-p2">{schema.description}</p>}
+            {options.description && (
+              <span className="text-p2">
+                <ConditionalFormMarkdown isMarkdown={options.descriptionMarkdown}>
+                  {options.description}
+                </ConditionalFormMarkdown>
+              </span>
+            )}
           </div>
         ) : (
           <>

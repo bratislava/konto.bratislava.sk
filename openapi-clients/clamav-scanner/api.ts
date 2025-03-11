@@ -190,12 +190,49 @@ export interface ServiceRunningDto {
    */
   running: boolean
 }
+/**
+ *
+ * @export
+ * @interface ServicesStatusDto
+ */
+export interface ServicesStatusDto {
+  /**
+   *
+   * @type {ServiceRunningDto}
+   * @memberof ServicesStatusDto
+   */
+  prisma: ServiceRunningDto
+  /**
+   *
+   * @type {ServiceRunningDto}
+   * @memberof ServicesStatusDto
+   */
+  minio: ServiceRunningDto
+  /**
+   *
+   * @type {ServiceRunningDto}
+   * @memberof ServicesStatusDto
+   */
+  forms: ServiceRunningDto
+  /**
+   *
+   * @type {ServiceRunningDto}
+   * @memberof ServicesStatusDto
+   */
+  clamav: ServiceRunningDto
+  /**
+   *
+   * @type {ClamavVersionDto}
+   * @memberof ServicesStatusDto
+   */
+  clamavVersion: ClamavVersionDto
+}
 
 /**
- * DefaultApi - axios parameter creator
+ * HealthApi - axios parameter creator
  * @export
  */
-export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
+export const HealthApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      * See if nest is working!
@@ -267,11 +304,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
 }
 
 /**
- * DefaultApi - functional programming interface
+ * HealthApi - functional programming interface
  * @export
  */
-export const DefaultApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+export const HealthApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = HealthApiAxiosParamCreator(configuration)
   return {
     /**
      * See if nest is working!
@@ -285,7 +322,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerGetHello(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['DefaultApi.appControllerGetHello']?.[localVarOperationServerIndex]?.url
+        operationServerMap['HealthApi.appControllerGetHello']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -307,9 +344,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.appControllerIsStatusRunning(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['DefaultApi.appControllerIsStatusRunning']?.[
-          localVarOperationServerIndex
-        ]?.url
+        operationServerMap['HealthApi.appControllerIsStatusRunning']?.[localVarOperationServerIndex]
+          ?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -322,15 +358,15 @@ export const DefaultApiFp = function (configuration?: Configuration) {
 }
 
 /**
- * DefaultApi - factory interface
+ * HealthApi - factory interface
  * @export
  */
-export const DefaultApiFactory = function (
+export const HealthApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
   axios?: AxiosInstance,
 ) {
-  const localVarFp = DefaultApiFp(configuration)
+  const localVarFp = HealthApiFp(configuration)
   return {
     /**
      * See if nest is working!
@@ -356,21 +392,21 @@ export const DefaultApiFactory = function (
 }
 
 /**
- * DefaultApi - object-oriented interface
+ * HealthApi - object-oriented interface
  * @export
- * @class DefaultApi
+ * @class HealthApi
  * @extends {BaseAPI}
  */
-export class DefaultApi extends BaseAPI {
+export class HealthApi extends BaseAPI {
   /**
    * See if nest is working!
    * @summary Hello world!
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
+   * @memberof HealthApi
    */
   public appControllerGetHello(options?: RawAxiosRequestConfig) {
-    return DefaultApiFp(this.configuration)
+    return HealthApiFp(this.configuration)
       .appControllerGetHello(options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -380,10 +416,10 @@ export class DefaultApi extends BaseAPI {
    * @summary Check status of this service
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof DefaultApi
+   * @memberof HealthApi
    */
   public appControllerIsStatusRunning(options?: RawAxiosRequestConfig) {
-    return DefaultApiFp(this.configuration)
+    return HealthApiFp(this.configuration)
       .appControllerIsStatusRunning(options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -1266,7 +1302,7 @@ export const StatusesApiFp = function (configuration?: Configuration) {
      */
     async statusControllerStatus(
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServicesStatusDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerStatus(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -1374,7 +1410,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerStatus(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+    statusControllerStatus(options?: RawAxiosRequestConfig): AxiosPromise<ServicesStatusDto> {
       return localVarFp.statusControllerStatus(options).then((request) => request(axios, basePath))
     },
     /**

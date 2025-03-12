@@ -181,5 +181,38 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
+  TSB_NEW_SUBMISSION: {
+    template: 'olo-form-send', // TODO change to TSB template
+    subject: 'TSB: Nové podanie',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      htmlData: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{htmlData}}',
+      },
+    },
+  },
+  TSB_SENT_SUCCESS: {
+    template: '2024-olo-form-success', // TODO change to TSB template
+    subject: 'TSB: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value:
+          'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+    },
+  },
 }
 /* eslint-enable no-secrets/no-secrets */

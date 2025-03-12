@@ -404,7 +404,6 @@ export const formDefinitions: FormDefinition[] = [
     embedded: 'olo',
     allowSendingUnauthenticatedUsers: true,
   },
-  // TODO extract email and name
   {
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-zakresu-sieti',
@@ -421,8 +420,8 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: objednavkaZakresuSietiExtractEmail,
       extractName: objednavkaZakresuSietiExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-      newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
   },
@@ -442,8 +441,8 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: objednavkaVytycenieExtractEmail,
       extractName: objednavkaZakresuSietiExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-      newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
   },
@@ -463,8 +462,8 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: ziadostOStanoviskoPDExtractEmail,
       extractName: ziadostOStanoviskoPDExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-      newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
   },
@@ -484,8 +483,8 @@ export const formDefinitions: FormDefinition[] = [
       extractEmail: umiestnenieZariadeniaExtractEmail,
       extractName: umiestnenieZariadeniaExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-      newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM, // TODO
+      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
     },
   },

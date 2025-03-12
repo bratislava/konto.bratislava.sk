@@ -3,13 +3,11 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { PrismaService } from '../../prisma/prisma.service'
-import { LineLoggerSubservice } from './line-logger.subservice'
-import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
-import nodemailer from 'nodemailer'
+import EmailSubservice from './email.subservice'
+import SftpFileSubservice from './sftp-file.subservice'
 
 import { parse } from 'csv-parse/sync'
 import { ConfigService } from '@nestjs/config'
-import path from 'node:path'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 
@@ -44,77 +42,15 @@ export type OutputFile = {
 
 @Injectable()
 export default class CardPaymentReportingSubservice {
-  private readonly logger = new LineLoggerSubservice(
-    CardPaymentReportingSubservice.name,
-  )
-
-  private transporter: nodemailer.Transporter
-
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-  ) {
-    this.transporter = nodemailer.createTransport({
-      host: `email-smtp.${process.env.COGNITO_REGION}.amazonaws.com`,
-      port: 465,
-      secure: true,
-      auth: {
-        user: this.configService.getOrThrow<string>('SMTP_USERNAME'),
-        pass: this.configService.getOrThrow<string>('SMTP_PASSWORD'),
-      },
-    })
-  }
+    private readonly mailSubservice: EmailSubservice,
+    private readonly sftpFileSubservice: SftpFileSubservice,
+  ) {}
 
-  /**
-   * Send an email with or without attachments.
-   *
-   * @param to List of email recipients
-   * @param subject Email subject
-   * @param message Email body/text content
-   * @param attachments Optional list of attachments as base64-encoded strings
-   */
-  async sendEmailWithAttachments(
-    to: string[],
-    subject: string,
-    message: string,
-    attachments?: { filename: string; content: string; contentType: string }[],
-  ): Promise<void> {
-    try {
-      const emailOptions = {
-        from: this.configService.getOrThrow<string>('SENDER_EMAIL'),
-        to: to.join(', '),
-        subject,
-        text: message,
-        attachments,
-      }
-      // console.log(JSON.stringify(emailOptions, undefined, 2))
-
-      const info = await this.transporter.sendMail(emailOptions)
-
-      this.logger.log(
-        `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
-      )
-    } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to send daily payment email report.',
-          undefined,
-          undefined,
-          error,
-        )
-      }
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Failed to send daily payment email report.',
-        undefined,
-        <string>error,
-      )
-    }
-  }
-
-  generatePrice = (price: number, fill: number): string => {
+  private generatePrice = (price: number, fill: number): string => {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
     const paddedPrice = Math.abs(price)
       .toFixed(2)
@@ -123,7 +59,7 @@ export default class CardPaymentReportingSubservice {
     return price >= 0 ? paddedPrice : '-'.concat(paddedPrice)
   }
 
-  async getVsByOrderId(
+  private async getVsByOrderId(
     orderIds: string[],
   ): Promise<{ variableSymbol: string; orderIds: (string | null)[] }[]> {
     const result = await this.prisma.tax.findMany({
@@ -153,88 +89,13 @@ export default class CardPaymentReportingSubservice {
     }))
   }
 
-  async getFilesFromSftp() {
-    const sftp = new SFTPClient()
-
-    let newFileContents: { name: string; content: string }[] = []
-
-    try {
-      await sftp.connect({
-        host: this.configService.getOrThrow<string>('REPORTING_SFTP_HOST'),
-        port: this.configService.getOrThrow<number>('REPORTING_SFTP_PORT'),
-        username: this.configService.getOrThrow<string>('REPORTING_SFTP_USER'),
-        // privateKey: fs.readFileSync(sftpKeyPath),
-        password: this.configService.getOrThrow<string>(
-          'REPORTING_SFTP_PASSWORD',
-        ),
-      })
-
-      const sftpFiles: FileInfo[] = await sftp.list(
-        this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
-      )
-
-      const newFiles = await this.filterAlreadyReportedFiles(sftpFiles)
-
-      // Get contents of all new files
-
-      for (const fileName of newFiles) {
-        const filePath = path.join(
-          this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
-          fileName,
-        )
-
-        const fileContent = await sftp.get(filePath)
-        newFileContents.push({
-          name: fileName,
-          content: fileContent.toString('utf8'), // Assuming you want the content as a string
-        })
-      }
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Error during retrieval of files form SFTP server',
-        undefined,
-        undefined,
-        error instanceof Error ? error : undefined,
-      )
-    } finally {
-      await sftp.end()
-    }
-    return newFileContents
-  }
-
-  async filterAlreadyReportedFiles(files: FileInfo[]) {
-    const prisma = new PrismaService()
-    const alreadyReportedFiles = await prisma.csvFile.findMany({
-      select: { name: true },
-    })
-
-    const newFiles = files
-      .map((file) => file.name)
-      // .filter((name) => {
-      //   name.startsWith('AH_DATA_') && name.endsWith('.csv')
-      // })
-      .filter(
-        (fileName) => !alreadyReportedFiles.find((f) => f.name === fileName),
-      )
-
-    // Write updated CSV names
-    await this.prisma.csvFile.createMany({
-      data: newFiles.map((name) => ({
-        name,
-      })),
-    })
-
-    return newFiles
-  }
-
-  extractFileDate(fileName: string): string | null {
+  private extractFileDate(fileName: string): string | null {
     const fileDateMatches = fileName.split('_').pop()?.slice(0, 6)
     if (!fileDateMatches || isNaN(Number(fileDateMatches))) return null
     return `20${fileDateMatches}` // Add century
   }
 
-  getDateInfo(fileDate: string) {
+  private getDateInfo(fileDate: string) {
     const today = dayjs(fileDate).tz('Europe/Bratislava')
     const yesterday = today.subtract(1, 'day')
     return {
@@ -244,7 +105,7 @@ export default class CardPaymentReportingSubservice {
     }
   }
 
-  enrichDataWithVariableSymbols(
+  private enrichDataWithVariableSymbols(
     csvData: CsvRecord[],
     variableSymbols: { variableSymbol: string; orderIds: (string | null)[] }[],
   ): CsvColumnsWithVariableSymbol[] {
@@ -258,7 +119,7 @@ export default class CardPaymentReportingSubservice {
       })
   }
 
-  processCsvData(csvContent: string): CsvRecord[] {
+  private processCsvData(csvContent: string): CsvRecord[] {
     const rows = parse(csvContent, {
       delimiter: ';',
       fromLine: 2, // Skip first line
@@ -436,7 +297,7 @@ export default class CardPaymentReportingSubservice {
   }
 
   async generateAndSendPaymentReport() {
-    const sftpFiles = await this.getFilesFromSftp()
+    const sftpFiles = await this.sftpFileSubservice.getNewFiles()
 
     dayjs.extend(utc)
     dayjs.extend(timezone)
@@ -483,7 +344,7 @@ export default class CardPaymentReportingSubservice {
         ? 'Dnes nie je čo reportovať'
         : 'Chceme niečo ako text sem?' // TODO better message
 
-    await this.sendEmailWithAttachments(
+    await this.mailSubservice.send(
       [this.configService.getOrThrow<string>('RECIPIENT_EMAIL')],
       'Report platieb kartou',
       message,

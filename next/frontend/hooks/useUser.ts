@@ -4,7 +4,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
-  ResponseUserDataDto,
+  UserControllerGetOrCreateUser200Response,
 } from 'openapi-clients/city-account'
 
 const userQueryKey = ['user']
@@ -58,7 +58,7 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
 
   const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
-    AxiosResponse<ResponseUserDataDto>,
+    AxiosResponse<UserControllerGetOrCreateUser200Response>,
     AxiosError,
     boolean
   >({

@@ -172,7 +172,7 @@ if (require.main === module) {
       .name('generateClient')
       .description('Generate OpenAPI client for specified type')
       .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
-      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)', 'localhost:3000')
+      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
       .action((type: string, options) => {
         if (!isValidType(type)) {
           console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)

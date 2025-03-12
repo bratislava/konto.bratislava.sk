@@ -1,10 +1,10 @@
 import { formsClient } from '@clients/forms'
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'

@@ -1,9 +1,9 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
 import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'

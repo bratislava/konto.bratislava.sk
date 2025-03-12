@@ -1,5 +1,4 @@
 import { formsClient } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { ROUTES } from 'frontend/api/constants'
@@ -7,6 +6,7 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { usePlausible } from 'next-plausible'
+import { GetFormResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'

@@ -1,10 +1,10 @@
 import { formsClient } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from '@clients/openapi-forms'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
+import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 

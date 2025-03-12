@@ -1,5 +1,5 @@
 import { Castle48PxIcon } from '@assets/ui-icons'
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 import ButtonNew from '../../../simple-components/ButtonNew'

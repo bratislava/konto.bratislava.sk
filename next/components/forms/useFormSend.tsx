@@ -1,9 +1,9 @@
 import { formsClient } from '@clients/forms'
-import { SendFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { SendFormResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 

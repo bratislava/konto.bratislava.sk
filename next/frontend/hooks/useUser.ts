@@ -1,11 +1,11 @@
 import { cityAccountClient } from '@clients/city-account'
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
   ResponseUserDataDto,
-} from '@clients/openapi-city-account'
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
+} from 'openapi-clients/city-account'
 
 const userQueryKey = ['user']
 

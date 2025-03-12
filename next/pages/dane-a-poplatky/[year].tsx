@@ -4,11 +4,11 @@ import {
 } from '@backend/utils/tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'

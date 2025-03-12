@@ -1,5 +1,4 @@
 import { formsClient } from '@clients/forms'
-import { SignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
@@ -10,6 +9,7 @@ import {
   verifyFormSignature,
 } from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
+import { SignerDataResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 

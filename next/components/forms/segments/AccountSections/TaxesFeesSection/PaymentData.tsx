@@ -1,7 +1,7 @@
 import { DownloadIcon } from '@assets/ui-icons'
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { Trans, useTranslation } from 'next-i18next'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import Alert from '../../../info-components/Alert'

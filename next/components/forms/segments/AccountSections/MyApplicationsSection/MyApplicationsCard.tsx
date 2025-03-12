@@ -8,7 +8,6 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { formsClient } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -21,6 +20,7 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 

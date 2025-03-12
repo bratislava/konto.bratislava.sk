@@ -1,6 +1,5 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
 import { formsClient } from '@clients/forms'
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/Button'
 import FormatDate from 'components/forms/simple-components/FormatDate'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
@@ -9,6 +8,7 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 type MyApplicationDetailsHeaderBase = {
   formDefinitionTitle: string

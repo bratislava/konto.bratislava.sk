@@ -1,13 +1,13 @@
 import { formsClient } from '@clients/forms'
 import { strapiClient } from '@clients/graphql-strapi'
 import { FormBaseFragment } from '@clients/graphql-strapi/api'
-import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
   VersionCompareContinueAction,
   versionCompareContinueAction,
 } from 'forms-shared/versioning/version-compare'
+import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
 import FormPage, { FormPageProps } from '../../../components/forms/FormPage'
 import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'

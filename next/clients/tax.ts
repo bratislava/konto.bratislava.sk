@@ -1,9 +1,9 @@
-import { createTaxClient } from 'openapi-clients/tax'
+import { createTaxClient, TaxClient } from 'openapi-clients/tax'
 
 import { environment } from '../environment'
-import { axiosInstance } from './axios-instance'
+import { axiosInstance, ClientWithCustomConfig } from './axios-instance'
 
 export const taxClient = createTaxClient({
   basePath: environment.taxesUrl,
   axios: axiosInstance,
-})
+}) as ClientWithCustomConfig<TaxClient>

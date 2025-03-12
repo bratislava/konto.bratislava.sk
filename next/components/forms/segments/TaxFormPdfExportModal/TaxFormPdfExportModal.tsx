@@ -7,14 +7,14 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
 import Spinner from '../../simple-components/Spinner'
 import { useFormRedirects } from '../../useFormRedirects'
 import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
-} & ModalV2Props
+} & ModalProps
 
 const LoadingContent = () => {
   const { t } = useTranslation('forms')
@@ -64,7 +64,7 @@ const SuccessContent = () => {
             {actions.map((key, index) => (
               <li
                 key={index}
-                className="text-p1 flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] before:lg:mr-4 before:lg:size-8"
+                className="flex text-p1 [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] lg:before:mr-4 lg:before:size-8"
               >
                 <span>
                   <Trans
@@ -78,7 +78,7 @@ const SuccessContent = () => {
           </ol>
         </div>
         <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
-          <h3 className="text-h3 text-left">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
+          <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
           <ButtonNew
             variant="black-solid"
             className="w-full"
@@ -106,7 +106,7 @@ const SuccessContent = () => {
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">
               <span className="h-0.5 w-full bg-gray-200" />
-              <span className="text-p1 px-6">{t('tax_form_pdf_export_modal.footer_choice')}</span>
+              <span className="px-6 text-p1">{t('tax_form_pdf_export_modal.footer_choice')}</span>
               <span className="h-0.5 w-full bg-gray-200" />
             </div>
             <div>
@@ -125,7 +125,7 @@ const SuccessContent = () => {
               </div>
               <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
                 <AriaButton
-                  className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+                  className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
                   onPress={() => register()}
                 >
                   {t('tax_form_pdf_export_modal.account_create_button')}
@@ -144,7 +144,7 @@ const SuccessContent = () => {
  * in the future.
  */
 const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) => (
-  <ModalV2
+  <Modal
     modalOverlayClassname="md:py-4"
     modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
     mobileFullScreen
@@ -154,11 +154,11 @@ const TaxFormPdfExportModal = ({ state, ...props }: TaxFormPdfExportModalProps) 
           state.onClose()
         }
       },
-    } as ModalV2Props)}
+    } as ModalProps)}
   >
     {state?.type === 'loading' && <LoadingContent />}
     {state?.type === 'success' && <SuccessContent />}
-  </ModalV2>
+  </Modal>
 )
 
 export default TaxFormPdfExportModal

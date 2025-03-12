@@ -1,5 +1,4 @@
 import BratislavaIcon from '@assets/images/bratislava-footer.svg'
-import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
@@ -7,6 +6,7 @@ import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import cn from '../../../../../frontend/cn'
 import { useFormContext } from '../../../useFormContext'
 
 const useThankYouFormSection = () => {
@@ -65,7 +65,7 @@ const ThankYouFormSection = () => {
 
   return (
     <div
-      className={cx(
+      className={cn(
         'flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28',
         largePadding ? 'pt-16 md:pt-28' : 'pt-6 md:pt-16',
       )}
@@ -82,7 +82,7 @@ const ThankYouFormSection = () => {
         />
         {displayAccountLinks ? (
           <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-            <span className="text-p2 flex">
+            <span className="flex text-p2">
               <AccountMarkdown
                 variant="sm"
                 content={`<span className='text-p2'>${t('thank_you.subtitle_mail_info')}</span>.`}
@@ -107,8 +107,8 @@ const ThankYouFormSection = () => {
       </div>
 
       <div
-        className={cx(
-          'mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex',
+        className={cn(
+          'mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex',
           {
             'mt-10': !displayAccountLinks,
           },

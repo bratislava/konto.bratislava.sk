@@ -300,13 +300,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
+              <h3 className="pb-3 text-20-semibold">
                 {isLoading ? <Skeleton width="75%" /> : title}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center ">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
@@ -328,7 +328,7 @@ const MyApplicationsCard = ({
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_back_button_title')}
+            {ft('modals_close_button_title')}
           </Button>,
           <Button
             variant="negative-solid"

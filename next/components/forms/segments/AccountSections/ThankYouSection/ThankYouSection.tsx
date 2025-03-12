@@ -79,7 +79,7 @@ const ThankYouSection = () => {
           />
         )}
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-          <span className="text-p2 flex">
+          <span className="flex text-p2">
             <AccountMarkdown
               variant="sm"
               content={`<span className='text-p2'>${t(
@@ -104,7 +104,7 @@ const ThankYouSection = () => {
         </div>
       </div>
 
-      <div className="mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex">
+      <div className="mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex">
         <BratislavaIcon />
         <p className="text-p2">{t('thank_you.footer_text')}</p>
       </div>

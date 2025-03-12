@@ -1,5 +1,4 @@
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useId } from 'react'
 import Select, {
@@ -11,8 +10,8 @@ import Select, {
   OptionProps,
   Props as ReactSelectProps,
 } from 'react-select'
-import { twMerge } from 'tailwind-merge'
 
+import cn from '../../../../frontend/cn'
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
@@ -28,10 +27,11 @@ const DropdownIndicator = <
   const { menuIsOpen, isDisabled } = props.selectProps
 
   return (
+    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.DropdownIndicator {...props}>
       <ChevronDownIcon
         data-cy="dropdown-close"
-        className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
+        className={cn({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
       />
     </components.DropdownIndicator>
   )
@@ -45,6 +45,7 @@ const ClearIndicator = <
   props: ClearIndicatorProps<Option, IsMulti, Group>,
 ) => {
   return (
+    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.ClearIndicator {...props}>
       <CrossIcon />
     </components.ClearIndicator>
@@ -53,6 +54,7 @@ const ClearIndicator = <
 
 const MultiValueRemove = (props: MultiValueRemoveProps) => {
   return (
+    // @ts-expect-error: TypeScript expects a different type than provided by react-select
     <components.MultiValueRemove {...props}>
       <CrossIcon />
     </components.MultiValueRemove>
@@ -73,6 +75,7 @@ const CustomOption = <
 
   return (
     <>
+      {/* @ts-expect-error: TypeScript expects a different type than provided by react-select */}
       <components.Option {...props}>
         {selectHasDescriptions ? (
           <div>
@@ -163,7 +166,7 @@ const SelectField = <
   const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)
 
   return (
-    <div className={twMerge('w-full', className)}>
+    <div className={cn('w-full', className)}>
       <FieldWrapper
         label={label}
         helptext={helptext}
@@ -191,7 +194,7 @@ const SelectField = <
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>
-                cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
+                cn('rounded-lg border-2 bg-white hover:cursor-pointer', {
                   'border-negative-700': isError,
                   'border-gray-300': isDisabled && !isError,
                   'border-gray-900': isFocused && !isDisabled,
@@ -199,28 +202,28 @@ const SelectField = <
                 }),
               placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
               valueContainer: ({ isDisabled }) =>
-                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
+                cn('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
                   // if rounded is not applied, the background overflows to the "control"
                   'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
                 }),
               multiValue: ({ isDisabled }) =>
-                cx(
-                  'items-center gap-1 rounded pl-2 pr-1.5',
+                cn(
+                  'items-center gap-1 rounded-sm pr-1.5 pl-2',
                   isDisabled ? 'bg-gray-200' : 'bg-gray-100',
                 ),
               multiValueLabel: () => 'text-p3',
               multiValueRemove: () =>
-                'hover:bg-negative-100 hover:text-red-800 rounded h-5 [&>svg]:w-4 [&>svg]:h-4',
+                'hover:bg-negative-100 hover:text-red-800 rounded-sm h-5 [&>svg]:w-4 [&>svg]:h-4',
               indicatorsContainer: ({ isDisabled }) =>
                 // if rounded is not applied, the background overflows to the "control"
-                cx('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
+                cn('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
               clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
               indicatorSeparator: () => 'hidden',
               dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
               menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
               groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
               option: ({ isFocused }) =>
-                cx('!flex items-center justify-between px-5 py-3 hover:cursor-pointer', {
+                cn('flex! items-center justify-between px-5 py-3 hover:cursor-pointer', {
                   'bg-gray-100 active:bg-gray-200': isFocused,
                 }),
               noOptionsMessage: () => 'px-4 py-3',

@@ -152,7 +152,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkTax,
     title: 'Priznanie k dani z nehnuteľností',
     slug: 'priznanie-k-dani-z-nehnutelnosti-test',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: priznanieKDaniZNehnutelnosti,
     pospID: 'hmba.eforms.bratislava.obec_024',
     pospVersion: '201501.3',

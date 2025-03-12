@@ -12,13 +12,14 @@ import {
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
+import { UserErrorsEnum, UserErrorsResponseEnum } from './user.error.enum'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import {
   ResponseLegalPersonDataDto,
   ResponseLegalPersonDataSimpleDto,
 } from './dtos/gdpr.legalperson.dto'
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 
 @Injectable()
 export class UserService {
@@ -30,19 +31,11 @@ export class UserService {
   ) {}
 
   private verificationDeadline(verificationDate: Date | null): boolean {
-    try {
-      if (verificationDate === null) {
-        return false
-      }
-      // This date is variable every year, maybe do it by config?
-      const year = new Date().getFullYear()
-      if (verificationDate < new Date(`${year}-04-24`)) {
-        return true
-      }
-      return false
-    } catch (error) {
+    const verificationDeadlineDate = getTaxDeadlineDate()
+    if (verificationDate === null) {
       return false
     }
+    return verificationDate < verificationDeadlineDate
   }
 
   async getOrCreateUserData(id: string, email: string): Promise<ResponseUserDataDto> {

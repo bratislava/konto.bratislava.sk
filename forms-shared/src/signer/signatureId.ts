@@ -12,10 +12,3 @@ export const createFormSignatureId = (formData: GenericObjectType) => {
 
   return `form_data_${formDataHash}_${generateDate()}`
 }
-
-export const parseFormDataHashFromFormSignatureId = (formSignature: string) => {
-  const signatureRegex = /^(?:form_data_|object_)([\da-f]{40})_\d{14}$/
-  const match = formSignature.match(signatureRegex)
-
-  return match?.[1] ?? null
-}

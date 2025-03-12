@@ -1,7 +1,7 @@
-import { BasicStrategy as Strategy } from 'passport-http';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { BasicStrategy as Strategy } from 'passport-http';
 
 @Injectable()
 export class BasicStrategy extends PassportStrategy(Strategy, 'auth-basic') {
@@ -11,7 +11,11 @@ export class BasicStrategy extends PassportStrategy(Strategy, 'auth-basic') {
     });
   }
 
-  public validate = async (req, username, password): Promise<boolean> => {
+  public validate = (
+    req: unknown,
+    username: string,
+    password: string,
+  ): boolean => {
     if (
       this.configService.get<string>('NEST_CLAMAV_SCANNER_USERNAME') ===
         username &&

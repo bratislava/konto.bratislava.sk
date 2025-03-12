@@ -76,6 +76,7 @@ const PhoneNumberModal = () => {
       isOpen={isOpen}
       onOpenChange={handleOpenChange}
       mobileFullScreen
+      dataCy="add-phone-number"
       // TODO: Move button from inside the form here.
     >
       <PhoneNumberForm

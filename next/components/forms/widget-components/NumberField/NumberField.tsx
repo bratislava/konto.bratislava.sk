@@ -2,13 +2,13 @@ import { EuroIcon, LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/
 import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
 import type { NumberFieldProps as ReactAriaNumberFieldProps } from '@react-types/numberfield'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode } from 'react'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
+import cn from '../../../../frontend/cn'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
@@ -114,9 +114,8 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
       setValueControlled(null)
     }
 
-    const style = cx(
-      'text-p3 sm:text-16 w-full rounded-lg border-2 border-gray-200 px-3 py-2 caret-gray-700 focus:border-gray-700 focus:outline-none focus:placeholder:opacity-0 sm:px-4 sm:py-2.5',
-      className,
+    const style = cn(
+      'w-full rounded-lg border-2 border-gray-200 bg-white px-3 py-2 text-p3 caret-gray-700 focus:border-gray-700 focus:outline-hidden focus:placeholder:opacity-0 sm:px-4 sm:py-2.5 sm:text-16',
       {
         // conditions
         'pl-12 sm:pl-[52px]': leftIcon,
@@ -131,6 +130,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         // disabled
         'border-gray-300 bg-gray-100': disabled,
       },
+      className,
     )
 
     return (
@@ -156,7 +156,7 @@ const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
         <div className="relative" data-cy={`required-${name}`}>
           {leftIcon && (
             <span
-              className={cx(
+              className={cn(
                 'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
                   'opacity-50': disabled,

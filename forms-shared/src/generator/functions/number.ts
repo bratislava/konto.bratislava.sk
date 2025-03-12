@@ -40,7 +40,6 @@ export const number = (
       multipleOf: options.step,
       baUiSchema: {
         'ui:widget': BaWidgetType.Number,
-        'ui:label': false,
         'ui:options': { ...uiOptions },
       },
     }),

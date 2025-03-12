@@ -3,21 +3,22 @@ import {
   Logger,
   PreconditionFailedException,
 } from '@nestjs/common';
-import { ScannerService } from '../scanner/scanner.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { Cron } from '@nestjs/schedule';
+import { Files, FileStatus } from '@prisma/client';
+import { Readable as ReadableStream } from 'stream';
+
+import { ClamavClientService } from '../clamav-client/clamav-client.service';
 import {
   chunkArray,
   isValidScanStatus,
   listOfStatuses,
   timeout,
 } from '../common/utils/helpers';
-import { ClamavClientService } from '../clamav-client/clamav-client.service';
-import { MinioClientService } from '../minio-client/minio-client.service';
-import { ConfigService } from '@nestjs/config';
-import { Files, FileStatus } from '@prisma/client';
-import { Readable as ReadableStream } from 'stream';
-import { Cron } from '@nestjs/schedule';
 import { FormsClientService } from '../forms-client/forms-client.service';
+import { MinioClientService } from '../minio-client/minio-client.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { ScannerService } from '../scanner/scanner.service';
 import { UpdateScanStatusDto } from './scanner-cron.dto';
 
 @Injectable()
@@ -38,21 +39,22 @@ export class ScannerCronService {
     name: 'cronStart',
     timeZone: 'Europe/Berlin',
   })
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async cronStart(): Promise<void> {
     //check if cron is already running
     this.logger.log('CronScan waking up...');
-    if (global.CronRunning) {
+    if (globalThis.cronRunning) {
       this.logger.log(
         'CronScan another process is already running. Sleeping...',
       );
       return;
     }
-    global.CronRunning = true;
+    globalThis.cronRunning = true;
 
     //check if clamav is running
     const clamavRunning = await this.clamavClientService.isRunning();
     if (!clamavRunning) {
-      global.CronRunning = false;
+      globalThis.cronRunning = false;
       throw new PreconditionFailedException(
         'Clamav is not running! Sleeping...',
       );
@@ -62,32 +64,39 @@ export class ScannerCronService {
     //check if forms is running
     const formsRunning = await this.formsClientService.isRunning();
     if (!formsRunning) {
-      global.formsRunning = false;
+      globalThis.formsRunning = false;
       this.logger.error('Forms are not running!');
     } else {
-      global.formsRunning = true;
+      globalThis.formsRunning = true;
       this.logger.log('Forms are running...');
     }
 
     //check if we have some files which where not notified to forms client. If yes, try to notify them.
-    if (global.formsRunning) {
+    if (globalThis.formsRunning) {
       try {
         await this.fixUnnotifiedFiles();
       } catch (error) {
-        global.CronRunning = false;
+        globalThis.cronRunning = false;
+        const errString =
+          error instanceof Error
+            ? error.message
+            : `throwing non Error: ${String(error)}`;
         throw new PreconditionFailedException(
-          'Unable to send statuses of unnotified files. Sleeping. Error: ' +
-            error,
+          `Unable to send statuses of unnotified files. Sleeping. Error: ${errString}`,
         );
       }
     }
 
     try {
-      await this.fixUnsucessfullScanFiles();
+      await this.fixUnsuccessfulScanFiles();
     } catch (error) {
-      global.CronRunning = false;
+      globalThis.cronRunning = false;
+      const errString =
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       throw new PreconditionFailedException(
-        'Unable to fix files with multiple unscesfull scans. Error: ' + error,
+        `Unable to fix files with multiple unsuccessful scans. Error: ${errString}`,
       );
     }
 
@@ -95,20 +104,23 @@ export class ScannerCronService {
     try {
       await this.fixStackedFiles();
     } catch (error) {
-      global.CronRunning = false;
+      globalThis.cronRunning = false;
+      const errString =
+        error instanceof Error
+          ? error.message
+          : `throwing non Error: ${String(error)}`;
       throw new PreconditionFailedException(
-        'Unable to fix stacked files. Error: ' + error,
+        `Unable to fix stacked files. Error: ${errString}`,
       );
     }
 
     await this.mainScanBatchProcess();
     this.logger.log('CronScan sleeping...');
     this.logger.log('----------------------------------------');
-    global.CronRunning = false;
-    return;
+    globalThis.cronRunning = false;
   }
 
-  async mainScanBatchProcess(): Promise<any> {
+  async mainScanBatchProcess() {
     //get all files which are in state ACCEPTED
     const files = await this.prismaService.files.findMany({
       where: {
@@ -128,7 +140,10 @@ export class ScannerCronService {
     this.logger.log(`Found ${files.length} files to scan.`);
 
     //update status of array files to QUEUED
-    const updateStatus = this.updateScanStatusBatch(files, FileStatus.QUEUED);
+    const updateStatus = await this.updateScanStatusBatch(
+      files,
+      FileStatus.QUEUED,
+    );
     if (!updateStatus) {
       throw new PreconditionFailedException(
         'Could not update status QUEUED of files.',
@@ -140,18 +155,18 @@ export class ScannerCronService {
 
     //scan batch of files
     let j = 1;
-    for (const files of filesBatches) {
-      this.logger.debug(`Scanning ${j}. batch of ${files.length} files.`);
+    for (const fileBatch of filesBatches) {
+      this.logger.debug(`Scanning ${j}. batch of ${fileBatch.length} files.`);
 
-      global.formsRunning = await this.formsClientService.isRunning();
+      globalThis.formsRunning = await this.formsClientService.isRunning();
 
       const promiseQueue = [];
-      for (const file of files) {
+      for (const file of fileBatch) {
         promiseQueue.push(this.scanFileProcess(file));
       }
 
       //wait for all promises to be resolved
-      let results: any[];
+      let results: FileStatus[];
       try {
         results = await Promise.all(promiseQueue);
         this.logger.log(
@@ -168,8 +183,8 @@ export class ScannerCronService {
   async scanFileProcess(file: Files): Promise<FileStatus> {
     try {
       await this.updateScanStatusWithNotify(file, FileStatus.SCANNING);
-    } catch (error) {
-      return Promise.reject(
+    } catch {
+      throw new Error(
         `${file.fileUid} could not be updated to SCANNING status.`,
       );
     }
@@ -180,7 +195,7 @@ export class ScannerCronService {
         file.bucketUid,
         file.fileUid,
       );
-    } catch (error) {
+    } catch {
       await this.updateScanStatusWithNotify(file, FileStatus.NOT_FOUND);
 
       this.logger.error(`${file.fileUid} not found in minio bucket.`);
@@ -193,17 +208,25 @@ export class ScannerCronService {
     try {
       scanStatus = await this.scanFileInClamav(file, fileStream);
     } catch (error) {
-      this.logger.error(
-        `${file.fileUid} could not be scanned. Error: ${error}`,
-      );
+      if (error instanceof Error) {
+        this.logger.error(
+          `${file.fileUid} could not be scanned. Error: ${error}`,
+        );
+      } else {
+        this.logger.error(
+          `scanFileProcess throwing non Error: ${String(error)}`,
+        );
+      }
+
       await this.updateScanStatusWithNotify(file, FileStatus.SCAN_ERROR);
       return FileStatus.SCAN_ERROR;
     }
 
     //move file to safe or infected bucket if scan status is SAFE or INFECTED
     if (scanStatus === FileStatus.SAFE || scanStatus === FileStatus.INFECTED) {
-      const destinationBucket = this.configService.get(
+      const destinationBucket: string = this.configService.get(
         `CLAMAV_${scanStatus}_BUCKET`,
+        '',
       );
       const moveStatus = await this.minioClientService.moveFileBetweenBuckets(
         file.bucketUid,
@@ -212,17 +235,15 @@ export class ScannerCronService {
         file.fileUid,
       );
       if (!moveStatus) {
-        let moveErrorStatus: FileStatus;
-        if (scanStatus === FileStatus.SAFE) {
-          moveErrorStatus = FileStatus.MOVE_ERROR_SAFE;
-        }
+        let moveErrorStatus: FileStatus = FileStatus.MOVE_ERROR_SAFE;
+
         if (scanStatus === FileStatus.INFECTED) {
           moveErrorStatus = FileStatus.MOVE_ERROR_INFECTED;
         }
 
         await this.updateScanStatusWithNotify(file, moveErrorStatus);
 
-        return Promise.reject(
+        throw new Error(
           `${file.fileUid} could not be moved to ${scanStatus} bucket.`,
         );
       }
@@ -231,8 +252,8 @@ export class ScannerCronService {
     //update scan status of file
     try {
       await this.updateScanStatusWithNotify(file, scanStatus);
-    } catch (error) {
-      Promise.reject(
+    } catch {
+      throw new Error(
         `${file.fileUid} could not be updated to ${scanStatus} status.`,
       );
     }
@@ -246,17 +267,15 @@ export class ScannerCronService {
   ): Promise<FileStatus> {
     const startTime = Date.now();
     this.logger.debug(`${file.fileUid} scanning started`);
-    let response = 'EMPTY';
+    let response: string;
     try {
       response = await Promise.race([
-        timeout(this.configService.get('MAX_FILE_SCAN_RUNS_TIMEOUT')),
+        timeout(this.configService.get('MAX_FILE_SCAN_RUNS_TIMEOUT', 0)),
         this.clamavClientService.scanStream(fileStream),
       ]);
       this.logger.debug(
         `${file.fileUid} scanning response from clamav: ${response}`,
       );
-    } catch (error) {
-      this.logger.error(`${file.fileUid} there was a scanning error: ${error}`);
     } finally {
       //stream is destroyed in all situations to prevent any resource leaks.
       fileStream.destroy();
@@ -276,8 +295,7 @@ export class ScannerCronService {
     //check if from and to status are valid
     if (!isValidScanStatus(to)) {
       throw new Error(
-        'Please provide a valid scan status. Available options are:' +
-          listOfStatuses(),
+        `Please provide a valid scan status. Available options are:${listOfStatuses()}`,
       );
     }
 
@@ -295,19 +313,22 @@ export class ScannerCronService {
       });
       return true;
     } catch (error) {
-      this.logger.error(error);
+      if (error instanceof Error) {
+        this.logger.error(error.message);
+      } else {
+        this.logger.error(
+          `updateScanStatusBatch throwing non Error: ${String(error)}`,
+        );
+      }
+
       return false;
     }
   }
 
-  async updateScanStatusWithNotify(
-    file: Files,
-    status: FileStatus,
-  ): Promise<any> {
+  async updateScanStatusWithNotify(file: Files, status: FileStatus) {
     if (!isValidScanStatus(status)) {
       throw new Error(
-        'Please provide a valid scan status. Available options are:' +
-          listOfStatuses(),
+        `Please provide a valid scan status. Available options are:${listOfStatuses()}`,
       );
     }
 
@@ -316,7 +337,7 @@ export class ScannerCronService {
 
     //if state is SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE or NOT FOUND, update the status of the file in forms
     if (
-      global.formsRunning &&
+      globalThis.formsRunning &&
       (status === FileStatus.SAFE ||
         status === FileStatus.INFECTED ||
         status === FileStatus.NOT_FOUND ||
@@ -324,20 +345,23 @@ export class ScannerCronService {
         status === FileStatus.MOVE_ERROR_INFECTED ||
         status === FileStatus.SCAN_NOT_SUCCESSFUL)
     ) {
+      notifiedStatus = true;
+      let responseStatus = 404;
       this.logger.debug(`Notifying forms about file id: ${file.id}`);
-      const response = await this.formsClientService.updateFileStatus(
-        file.id,
-        status,
-      );
-      this.logger.debug(
-        `Forms response for file id: ${file.id} is: ${response}`,
-      );
-
-      if (response === false) {
+      try {
+        const response = await this.formsClientService.updateFileStatus(
+          file.id,
+          status,
+        );
+        this.logger.debug(
+          `Forms response for file id: ${file.id} is: ${response.data}`,
+        );
+        responseStatus = response.status;
+      } catch {
         notifiedStatus = false;
       }
 
-      if (response.status === 404) {
+      if (responseStatus === 404) {
         await this.prismaService.files.update({
           data: {
             status: FileStatus.FORM_ID_NOT_FOUND,
@@ -350,27 +374,21 @@ export class ScannerCronService {
           `File id: ${file.id} not existing in forms, setting up state to FILE ID NOT EXISTING IN FORMS. Please check the file in forms.`,
         );
         notifiedStatus = false;
-      } else {
-        notifiedStatus = true;
       }
     }
 
-    let updateScanStatusDto: UpdateScanStatusDto = {
-      status: status,
+    const updateScanStatusDto: UpdateScanStatusDto = {
+      status,
       notified: notifiedStatus,
     };
 
     //if state is SCANNING, increase the number of runs
-    let numberOfRuns = file.runs;
+
     if (status === FileStatus.SCANNING) {
-      numberOfRuns = file.runs + 1;
       //add the number of runs to the data object
-      updateScanStatusDto = {
-        ...updateScanStatusDto,
-        runs: numberOfRuns,
-      };
+      updateScanStatusDto.runs = file.runs + 1;
       this.logger.debug(
-        `Number of runs for ${file.fileUid} is ${file.runs} increasing to ${numberOfRuns}`,
+        `Number of runs for ${file.fileUid} is increasing to ${file.runs + 1}`,
       );
     }
 
@@ -386,7 +404,7 @@ export class ScannerCronService {
   }
 
   //function which search for files which have 3 or more runs and are in state SCAN TIMEOUT or SCAN ERROR and changes their state to SCAN NOT SUCCESSFUL
-  async fixUnsucessfullScanFiles(): Promise<void> {
+  async fixUnsuccessfulScanFiles(): Promise<void> {
     //get all files which are in state SCAN TIMEOUT or SCAN ERROR
     const scanNotSuccessfulFiles = await this.prismaService.files.findMany({
       where: {
@@ -399,7 +417,7 @@ export class ScannerCronService {
           },
         ],
         runs: {
-          gte: parseInt(this.configService.get('MAX_FILE_SCAN_RUNS')),
+          gte: parseInt(this.configService.get('MAX_FILE_SCAN_RUNS', '1')),
         },
       },
       take: 200,
@@ -453,14 +471,13 @@ export class ScannerCronService {
     if (stackedFiles.length === 0) {
       this.logger.log('No stacked files found.');
       return;
-    } else {
-      this.logger.debug(
-        `Found ${stackedFiles.length} stacked files from unfinished runs. Changing state status to ACCEPTED.`,
-      );
     }
+    this.logger.debug(
+      `Found ${stackedFiles.length} stacked files from unfinished runs. Changing state status to ACCEPTED.`,
+    );
 
     //update status of array files to ACCEPTED
-    const updateStatus = this.updateScanStatusBatch(
+    const updateStatus = await this.updateScanStatusBatch(
       stackedFiles,
       FileStatus.ACCEPTED,
     );
@@ -469,7 +486,6 @@ export class ScannerCronService {
         'Could not update status ACCEPTED of stacked files.',
       );
     }
-    return;
   }
 
   //fix unnotified files  which are in state SAFE, INFECTED, MOVE ERROR INFECTED, MOVE ERROR SAFE, NOT FOUND or SCAN NOT SUCCESSFUL and are not notified
@@ -519,7 +535,7 @@ export class ScannerCronService {
     for (const file of unnotifiedFiles) {
       try {
         await this.updateScanStatusWithNotify(file, file.status);
-      } catch (error) {
+      } catch {
         this.logger.error(
           `Could not notify forms backend about file ${file.fileUid} with status ${file.status}.`,
         );

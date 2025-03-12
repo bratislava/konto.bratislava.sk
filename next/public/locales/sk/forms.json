@@ -7,6 +7,7 @@
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
+    "xml_import_incompatible_version": "Import XML súboru nie je možný. Formulár prešiel výraznými zmenami a táto verzia už nie je podporovaná.",
     "json_import": "JSON sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť.",
     "concept_save": "Koncept sa nepodarilo uložiť.",
@@ -114,7 +115,6 @@
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
     "additional_info": "Doplňujúce informácie",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
-    "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
     "uploading_files": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania. Nahrávané súbory: {{files}}",
     "button_back": "Späť",
     "button_send": "Odoslať žiadosť",
@@ -125,7 +125,7 @@
     "export_pdf": "Stiahnuť ako PDF"
   },
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
-  "modals_back_button_title": "Späť",
+  "modals_close_button_title": "Zavrieť",
   "migration_required_modal": {
     "title": "Pokračovať vo vypĺňaní?",
     "content": "Túto žiadosť ste začali vypĺňať ešte ako neprihlásený používateľ/ka. Na to, aby ste mohli pokračovať v jej vypĺňaní, kliknite na Pokračovať vo vypĺňaní. V opačnom prípade budú údaje, ktoré ste doteraz vyplnili stratené.",
@@ -221,5 +221,21 @@
   "signer_deploying_modal": {
     "title": "Spúšťa sa podpisovacia aplikácia",
     "content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>."
+  },
+  "xml_import_version_confirmation_modal": {
+    "title": "Upozornenie na zmenu formulára",
+    "content": "Od vytvorenia tohto XML súboru prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Chcete pokračovať s importom?",
+    "button_title": "Importovať",
+    "button_cancel": "Zrušiť"
+  },
+  "form_version_compare_action": {
+    "title_requires_bump": "Formulár bol aktualizovaný",
+    "title_cannot_continue": "Formulár prešiel výraznými zmenami",
+    "content_requires_bump": "Od vašej poslednej návštevy prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Prajete si pokračovať?",
+    "content_cannot_continue": "Formulár prešiel zásadnými zmenami a nie je možné pokračovať v rozpracovanej verzii. Pre podanie žiadosti je potrebné vytvoriť novú žiadosť s aktuálnou verziou formulára.",
+    "button_back": "Späť na Moje žiadosti",
+    "button_confirm": "Pokračovať v úpravách",
+    "button_create_new": "Vytvoriť novú žiadosť",
+    "error_version_update": "Nie je možné pokračovať. Skúste to prosím znova."
   }
 }

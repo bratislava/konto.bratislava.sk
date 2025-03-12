@@ -5,14 +5,13 @@ import GinisAPIService from './ginis-api.service'
 
 jest.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
-    json = {
-      ssl: {
-        detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
-      },
-      gin: {
-        detailFunkcnihoMista: jest.fn(async (bodyObj: object) => bodyObj),
-        detailReferenta: jest.fn(async (bodyObj: object) => bodyObj),
-      },
+    ssl = {
+      detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
+    }
+
+    gin = {
+      detailFunkcnihoMista: jest.fn(async (bodyObj: object) => bodyObj),
+      detailReferenta: jest.fn(async (bodyObj: object) => bodyObj),
     }
   },
 }))
@@ -61,7 +60,7 @@ describe('GinisAPIService', () => {
 
   describe('getDocumentDetail', () => {
     it('should just call with documentId', async () => {
-      const detailSpy = jest.spyOn(service['ginis'].json.ssl, 'detailDokumentu')
+      const detailSpy = jest.spyOn(service['ginis'].ssl, 'detailDokumentu')
       await service.getDocumentDetail('docId')
       expect(detailSpy).toHaveBeenCalledWith({
         'Id-dokumentu': 'docId',
@@ -71,19 +70,18 @@ describe('GinisAPIService', () => {
 
   describe('getOwnerDetail', () => {
     it('should call both functions', async () => {
-      const { detailFunkcnihoMista, detailReferenta } =
-        service['ginis'].json.gin
+      const { detailFunkcnihoMista, detailReferenta } = service['ginis'].gin
 
       const detailFunkcnihoMistaSpy = jest
-        .spyOn(service['ginis'].json.gin, 'detailFunkcnihoMista')
+        .spyOn(service['ginis'].gin, 'detailFunkcnihoMista')
         .mockResolvedValue({
-          DetailFunkcnihoMista: [{ IdReferenta: '1' }, { IdReferenta: '2' }],
+          'Detail-funkcniho-mista': { 'Id-referenta': '1' },
         } as Awaited<ReturnType<typeof detailFunkcnihoMista>>)
       const detailReferentaSpy = jest
-        .spyOn(service['ginis'].json.gin, 'detailReferenta')
-        .mockResolvedValue({ DetailReferenta: [{ IdOsoby: 'id1' }] } as Awaited<
-          ReturnType<typeof detailReferenta>
-        >)
+        .spyOn(service['ginis'].gin, 'detailReferenta')
+        .mockResolvedValue({
+          'Detail-referenta': { 'Id-osoby': 'id1' },
+        } as Awaited<ReturnType<typeof detailReferenta>>)
 
       const result = await service.getOwnerDetail('fun123')
 
@@ -94,28 +92,7 @@ describe('GinisAPIService', () => {
         'Id-osoby': '1',
       })
 
-      expect(result).toEqual({ DetailReferenta: [{ IdOsoby: 'id1' }] })
-    })
-
-    it('should use undefined as parameter if first function returns no detail', async () => {
-      const { detailFunkcnihoMista, detailReferenta } =
-        service['ginis'].json.gin
-
-      service['ginis'].json.gin.detailFunkcnihoMista = jest
-        .fn()
-        .mockResolvedValue({
-          DetailFunkcnihoMista: [],
-        } as Awaited<ReturnType<typeof detailFunkcnihoMista>>)
-      const detailReferentaSpy = jest
-        .spyOn(service['ginis'].json.gin, 'detailReferenta')
-        .mockResolvedValue({ DetailReferenta: [{ IdOsoby: 'id1' }] } as Awaited<
-          ReturnType<typeof detailReferenta>
-        >)
-
-      await service.getOwnerDetail('fun123')
-      expect(detailReferentaSpy).toHaveBeenCalledWith({
-        'Id-osoby': undefined,
-      })
+      expect(result).toEqual({ 'Detail-referenta': { 'Id-osoby': 'id1' } })
     })
   })
 })

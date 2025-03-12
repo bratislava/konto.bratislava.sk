@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Query,
@@ -17,8 +16,8 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotAcceptableResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
   ApiUnprocessableEntityResponse,
@@ -50,6 +49,7 @@ import {
   BearerToken,
   User,
   UserInfo,
+  UserInfoResponse,
 } from '../utils/decorators/request.decorator'
 import {
   DatabaseErrorDto,
@@ -76,12 +76,12 @@ import {
   CanSendResponseDto,
   CreateFormResponseDto,
   MigrateFormResponseDto,
-  ResponseGdprDataDto,
 } from './dtos/responses.dto'
 import {
   ForbiddenFormSendDto,
   FormAssignedToOtherUserErrorDto,
   FormSummaryGenerationErrorDto,
+  FormVersionNotCompatibleErrorDto,
   SignatureFormDataHashMismatchErrorDto,
   SignatureFormDefinitionMismatchErrorDto,
   SignatureMissingErrorDto,
@@ -112,14 +112,12 @@ export default class NasesController {
     summary: '',
     description: 'Return form by ID and by logged user',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return form',
     type: GetFormResponseDto,
   })
   @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -133,7 +131,6 @@ export default class NasesController {
     },
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: 'This form is owned by other user.',
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
@@ -142,7 +139,7 @@ export default class NasesController {
   async getForm(
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<GetFormResponseDto> {
     const data = await this.nasesService.getForm(
       id,
@@ -156,19 +153,16 @@ export default class NasesController {
     summary: 'Get paginated forms',
     description: 'Get paginated forms',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return forms',
     type: GetFormsResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form definition not found',
     type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -182,7 +176,7 @@ export default class NasesController {
   @Get('forms')
   async getForms(
     @User() user: CognitoGetUserData,
-    @UserInfo() userInfo: ResponseGdprDataDto,
+    @UserInfo() userInfo: UserInfoResponse,
     @Query() query: GetFormsRequestDto,
   ): Promise<GetFormsResponseDto> {
     const data = await this.nasesService.getForms(
@@ -197,12 +191,10 @@ export default class NasesController {
     summary: '',
     description: 'Archive form (hide from user but keep in database)',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form successfully deleted',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Bad request error.',
     schema: {
       anyOf: [
@@ -213,12 +205,10 @@ export default class NasesController {
     },
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: "This form is some else's",
     type: FormIsOwnedBySomeoneElseErrorDto,
   })
@@ -227,7 +217,7 @@ export default class NasesController {
   async deleteForm(
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<FormDeleteResponseDto> {
     await this.formsService.archiveForm(
       id,
@@ -245,19 +235,16 @@ export default class NasesController {
     description:
       'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Create form in db',
     type: GetFormResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form definition not found',
     type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -272,7 +259,7 @@ export default class NasesController {
   async createForm(
     @Body() data: CreateFormRequestDto,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<CreateFormResponseDto> {
     const returnData = await this.nasesService.createForm(
       data,
@@ -286,8 +273,7 @@ export default class NasesController {
     summary: '',
     description: 'Update form',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description:
       'Return charging details - price and used free minutes / hours.',
     type: GetFormResponseDto,
@@ -296,8 +282,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
   @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: 'Bad request.',
     schema: {
       anyOf: [
@@ -307,8 +292,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -319,7 +303,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -338,7 +321,7 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<Forms> {
     const returnData = await this.nasesService.updateForm(
       id,
@@ -355,8 +338,7 @@ export default class NasesController {
     description:
       'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Create form in db',
     type: GetFormResponseDto,
   })
@@ -364,8 +346,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
   @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiBadRequestResponse({
     description: 'Bad request.',
     schema: {
       anyOf: [
@@ -375,8 +356,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -387,7 +367,6 @@ export default class NasesController {
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error, usually database connected.',
     schema: {
       anyOf: [
@@ -421,18 +400,15 @@ export default class NasesController {
     description:
       'Check if given form can be sent to Nases (all files are scanned etc.)',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: '',
     type: CanSendResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Form was not found.',
     type: FormNotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: 403,
     description: 'It is forbidden to access this form.',
     type: ForbiddenFormSendDto,
   })
@@ -466,8 +442,7 @@ export default class NasesController {
     description:
       'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -479,8 +454,8 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -493,8 +468,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -510,11 +484,13 @@ export default class NasesController {
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -528,7 +504,6 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
@@ -536,7 +511,7 @@ export default class NasesController {
   @Post('send-form/:id')
   async sendForm(
     @Param('id') id: string,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const data = await this.nasesService.sendForm(id, userInfo, user)
@@ -548,8 +523,7 @@ export default class NasesController {
     description:
       'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -563,8 +537,8 @@ export default class NasesController {
   @ApiExtraModels(SignatureMissingErrorDto)
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -577,8 +551,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -603,11 +576,13 @@ export default class NasesController {
         {
           $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
         },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -621,12 +596,10 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
     type: FormDefinitionNotSupportedTypeErrorDto,
   })
@@ -662,8 +635,7 @@ export default class NasesController {
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -676,8 +648,8 @@ export default class NasesController {
   @ApiExtraModels(SignatureMissingErrorDto)
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
-  @ApiResponse({
-    status: 400,
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiBadRequestResponse({
     description: 'Bad request error.',
     schema: {
       anyOf: [
@@ -687,8 +659,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 404,
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -701,8 +672,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -712,11 +682,13 @@ export default class NasesController {
         {
           $ref: getSchemaPath(EmptyFormDataErrorDto),
         },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -730,7 +702,6 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
@@ -740,7 +711,7 @@ export default class NasesController {
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<SendFormResponseDto> {
     await this.nasesService.updateForm(id, data, userInfo?.ico ?? null, user)
 
@@ -753,8 +724,7 @@ export default class NasesController {
     description:
       'This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
@@ -765,8 +735,11 @@ export default class NasesController {
   @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiResponse({
-    status: 404,
+  @ApiExtraModels(SignatureMissingErrorDto)
+  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
+  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
+  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
       anyOf: [
@@ -779,8 +752,7 @@ export default class NasesController {
       ],
     },
   })
-  @ApiResponse({
-    status: 422,
+  @ApiUnprocessableEntityResponse({
     description: 'Unprocessable entity error.',
     schema: {
       anyOf: [
@@ -805,11 +777,13 @@ export default class NasesController {
         {
           $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
         },
+        {
+          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
       ],
     },
   })
   @ApiInternalServerErrorResponse({
-    status: 500,
     description: 'Internal server error.',
     schema: {
       anyOf: [
@@ -823,12 +797,10 @@ export default class NasesController {
     },
   })
   @ApiNotAcceptableResponse({
-    status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
   @ApiUnprocessableEntityResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
     type: FormDefinitionNotSupportedTypeErrorDto,
   })
@@ -838,7 +810,7 @@ export default class NasesController {
     @Body() data: EidUpdateSendFormRequestDto,
     @Param('id') id: string,
     @User() cognitoUser?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @UserInfo() userInfo?: UserInfoResponse,
     @BearerToken() bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
@@ -887,17 +859,14 @@ export default class NasesController {
     summary: '',
     description: 'Assign form with no assigned user to the authenticated user',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     type: MigrateFormResponseDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'No such form found.',
     type: NotFoundErrorDto,
   })
   @ApiForbiddenResponse({
-    status: HttpStatus.FORBIDDEN,
     description: 'The form is already assigned to someone',
     type: FormAssignedToOtherUserErrorDto,
   })
@@ -906,7 +875,7 @@ export default class NasesController {
   async migrateForm(
     @User() user: CognitoGetUserData,
     @Param('id') id: string,
-    @UserInfo() userInfo: ResponseGdprDataDto,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<MigrateFormResponseDto> {
     await this.nasesService.migrateForm(id, user, userInfo.ico ?? null)
     return {

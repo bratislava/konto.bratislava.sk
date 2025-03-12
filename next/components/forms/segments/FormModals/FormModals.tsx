@@ -55,6 +55,8 @@ const FormModals = () => {
     setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
+    xmlImportVersionConfirmationModal,
+    setXmlImportVersionConfirmationModal,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
@@ -99,7 +101,7 @@ const FormModals = () => {
       title: t('concept_save_error_modal.title'),
       buttons: [
         <Button variant="black-plain" onPress={() => setConceptSaveErrorModal(false)}>
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="category-solid"
@@ -125,7 +127,7 @@ const FormModals = () => {
           onPress={() => setSendIdentityMissingModal(false)}
           fullWidthMobile
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
@@ -139,6 +141,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesUploadingModal,
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
+      buttons: [
+        <Button variant="black-plain" onPress={() => setSendFilesUploadingModal(false)}>
+          {t('modals_close_button_title')}
+        </Button>,
+      ],
       children: t('send_files_uploading_modal.content'),
     },
     {
@@ -147,6 +154,11 @@ const FormModals = () => {
       onOpenChange: setSendFilesScanningModal,
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
+      buttons: [
+        <Button variant="black-plain" onPress={() => setSendFilesScanningModal(false)}>
+          {t('modals_close_button_title')}
+        </Button>,
+      ],
       children: t('send_files_scanning_modal.content'),
     },
     {
@@ -166,12 +178,12 @@ const FormModals = () => {
           fullWidthMobile
           isDisabled={sendPending}
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           size="small"
-          onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
+          onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.confirmCallback()}
           fullWidthMobile
           isLoading={sendPending}
           isLoadingText={t('send_confirmation_modal.button_title_loading')}
@@ -200,12 +212,14 @@ const FormModals = () => {
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           size="small"
-          onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
+          onPress={() =>
+            sendConfirmationEidModal.isOpen && sendConfirmationEidModal.confirmCallback()
+          }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
@@ -239,13 +253,13 @@ const FormModals = () => {
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           size="small"
           onPress={() =>
-            sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
+            sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.confirmCallback()
           }
           isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
@@ -275,14 +289,14 @@ const FormModals = () => {
           fullWidthMobile
           isDisabled={eidSendConfirmationModalIsPending}
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
-            sendConfirmationNonAuthenticatedEidModal.sendCallback()
+            sendConfirmationNonAuthenticatedEidModal.confirmCallback()
           }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
@@ -326,7 +340,7 @@ const FormModals = () => {
           isDisabled={sendEidPending}
           fullWidthMobile
         >
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
       ],
       isDismissable: !sendEidPending,
@@ -345,12 +359,12 @@ const FormModals = () => {
       type: 'error',
       buttons: [
         <Button variant="black-plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
-          {t('modals_back_button_title')}
+          {t('modals_close_button_title')}
         </Button>,
         <Button
           variant="negative-solid"
           size="small"
-          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.sendCallback()}
+          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.confirmCallback()}
         >
           {t('concept_delete_modal.button_title')}
         </Button>,
@@ -369,6 +383,38 @@ const FormModals = () => {
         // TODO Replace statusBar variant
         <AccountMarkdown variant="statusBar" content={t('signer_deploying_modal.content')} />
       ),
+    },
+    {
+      key: 'xmlImportVersionConfirmationModal',
+      isOpen: xmlImportVersionConfirmationModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setXmlImportVersionConfirmationModal({ isOpen: false })
+        }
+      },
+      title: t('xml_import_version_confirmation_modal.title'),
+      type: 'warning',
+      buttons: [
+        <Button
+          variant="black-plain"
+          onPress={() => setXmlImportVersionConfirmationModal({ isOpen: false })}
+          fullWidthMobile
+        >
+          {t('xml_import_version_confirmation_modal.button_cancel')}
+        </Button>,
+        <Button
+          variant="black-solid"
+          size="small"
+          onPress={() =>
+            xmlImportVersionConfirmationModal.isOpen &&
+            xmlImportVersionConfirmationModal.confirmCallback()
+          }
+          fullWidthMobile
+        >
+          {t('xml_import_version_confirmation_modal.button_title')}
+        </Button>,
+      ],
+      children: t('xml_import_version_confirmation_modal.content'),
     },
   ]
 

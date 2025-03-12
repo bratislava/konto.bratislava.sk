@@ -1,7 +1,6 @@
 module.exports = {
   extends: [
     'auto',
-    'plugin:tailwindcss/recommended',
     'plugin:@next/next/recommended',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',

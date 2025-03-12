@@ -7,7 +7,7 @@ import {
   EyeIcon,
   PdfIcon,
 } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
@@ -98,7 +98,7 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
           formId,
         },
@@ -122,7 +122,7 @@ const MyApplicationsCard = ({
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
-      const response = await formsApi.convertControllerConvertToPdf(
+      const response = await formsClient.convertControllerConvertToPdf(
         {
           formId,
         },
@@ -142,7 +142,7 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
-      await formsApi.nasesControllerDeleteForm(formId, {
+      await formsClient.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       closeSnackbarInfo()

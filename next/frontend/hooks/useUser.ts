@@ -1,4 +1,4 @@
-import { cityAccountApi } from '@clients/city-account'
+import { cityAccountClient } from '@clients/city-account'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
@@ -18,7 +18,7 @@ export const prefetchUserQuery = async (
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
+      cityAccountClient
         .userControllerGetOrCreateUser({ accessToken: 'always', accessTokenSsrGetFn })
         .then((response) => response.data),
   })
@@ -29,7 +29,7 @@ export const useUser = () => {
   const { data: userData } = useQuery({
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
+      cityAccountClient
         .userControllerGetOrCreateUser({ accessToken: 'always' })
         .then((response) => response.data),
     staleTime: Infinity,
@@ -64,8 +64,8 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   >({
     mutationFn: (subscribe) => {
       const endpoint = subscribe
-        ? cityAccountApi.userControllerSubscribeLoggedUser
-        : cityAccountApi.userControllerUnsubscribeLoggedUser
+        ? cityAccountClient.userControllerSubscribeLoggedUser
+        : cityAccountClient.userControllerUnsubscribeLoggedUser
 
       return endpoint(
         {

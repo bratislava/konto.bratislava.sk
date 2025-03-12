@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { strapiClient } from '@clients/graphql-strapi'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
@@ -61,7 +61,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
 
     // If Strapi form does not have a landing page, create a new form instance and redirect to it directly.
     try {
-      const { data: form } = await formsApi.nasesControllerCreateForm(
+      const { data: form } = await formsClient.nasesControllerCreateForm(
         {
           formDefinitionSlug: slug,
         },

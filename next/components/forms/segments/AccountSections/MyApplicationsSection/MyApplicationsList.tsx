@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from '@clients/openapi-forms'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -30,7 +30,7 @@ export const getDraftApplications = async (
     SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
-  const response = await formsApi.nasesControllerGetForms(
+  const response = await formsClient.nasesControllerGetForms(
     page?.toString(),
     PAGE_SIZE,
     variantToStates,

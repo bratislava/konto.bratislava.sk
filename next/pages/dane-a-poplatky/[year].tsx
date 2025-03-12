@@ -5,7 +5,7 @@ import {
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
@@ -48,7 +48,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
     try {
       const [{ data: taxData }, strapiTax, taxAdministrator, user] = await Promise.all([
-        taxApi.taxControllerGetActualTaxes(yearNumber, {
+        taxClient.taxControllerGetActualTaxes(yearNumber, {
           accessToken: 'always',
           accessTokenSsrGetFn: getAccessToken,
         }),

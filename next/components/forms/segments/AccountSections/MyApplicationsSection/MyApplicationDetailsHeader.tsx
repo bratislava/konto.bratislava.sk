@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/Button'
 import FormatDate from 'components/forms/simple-components/FormatDate'
@@ -50,7 +50,7 @@ const MyApplicationDetailsHeader = ({
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No form id.`,
         )
-      const response = await formsApi.convertControllerConvertToPdf(
+      const response = await formsClient.convertControllerConvertToPdf(
         {
           formId,
         },

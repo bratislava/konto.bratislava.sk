@@ -1,7 +1,7 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
@@ -26,7 +26,7 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
 
   const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
     mutationFn: () =>
-      taxApi.paymentControllerPayment(String(taxData.year), {
+      taxClient.paymentControllerPayment(String(taxData.year), {
         accessToken: 'always',
       }),
     networkMode: 'always',
@@ -52,7 +52,7 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
   }
 
   const downloadPdf = async () => {
-    const { data } = await taxApi.taxControllerGetTaxByYearPdf(taxData.year, {
+    const { data } = await taxClient.taxControllerGetTaxByYearPdf(taxData.year, {
       accessToken: 'always',
       responseType: 'blob',
     })

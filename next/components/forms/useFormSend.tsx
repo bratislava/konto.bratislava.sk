@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { SendFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
@@ -90,7 +90,7 @@ const useGetContext = () => {
 
   const { mutate: sendFormMutate, isPending: sendFormIsPending } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerSendAndUpdateForm(
+      formsClient.nasesControllerSendAndUpdateForm(
         formId,
         {
           formDataJson: formData,
@@ -117,7 +117,7 @@ const useGetContext = () => {
   const { mutate: saveConceptAndSendEidMutate, isPending: saveConceptAndSendEidIsPending } =
     useMutation({
       mutationFn: () =>
-        formsApi.nasesControllerUpdateForm(
+        formsClient.nasesControllerUpdateForm(
           formId,
           {
             formDataJson: formData,
@@ -146,7 +146,7 @@ const useGetContext = () => {
     { fromRepeatModal?: boolean }
   >({
     mutationFn: () =>
-      formsApi.nasesControllerSendAndUpdateFormEid(
+      formsClient.nasesControllerSendAndUpdateFormEid(
         formId,
         {
           formDataJson: formData,

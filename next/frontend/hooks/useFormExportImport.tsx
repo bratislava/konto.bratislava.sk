@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
@@ -57,7 +57,7 @@ export const useGetContext = () => {
     { fromModal?: boolean }
   >({
     mutationFn: () =>
-      formsApi.nasesControllerUpdateForm(
+      formsClient.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
@@ -86,7 +86,7 @@ export const useGetContext = () => {
 
   const { mutate: migrateFormMutate, isPending: migrateFormIsPending } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
+      formsClient.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
     networkMode: 'always',
     onSuccess: () => {
       turnOffLeaveProtection()
@@ -111,7 +111,7 @@ export const useGetContext = () => {
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
           formId,
           jsonData: formData,
@@ -151,7 +151,7 @@ export const useGetContext = () => {
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
       const xmlForm = await file.text()
-      const { data } = await formsApi.convertControllerConvertXmlToJson(
+      const { data } = await formsClient.convertControllerConvertXmlToJson(
         {
           formId,
           xmlForm,
@@ -204,7 +204,7 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdf(
+    const response = await formsClient.convertControllerConvertToPdf(
       {
         formId,
         jsonData: formData,
@@ -272,7 +272,7 @@ export const useGetContext = () => {
   const deleteConcept = async () => {
     openSnackbarInfo(t('info_messages.concept_delete'))
     try {
-      await formsApi.nasesControllerDeleteForm(formId, {
+      await formsClient.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       closeSnackbarInfo()

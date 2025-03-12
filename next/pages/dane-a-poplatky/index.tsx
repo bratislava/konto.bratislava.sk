@@ -5,7 +5,7 @@ import {
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseGetTaxesDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
@@ -31,7 +31,7 @@ type AccountTaxesFeesPageProps = {
  */
 const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
   try {
-    const { data } = await taxApi.taxControllerGetArchivedTaxes({
+    const { data } = await taxClient.taxControllerGetArchivedTaxes({
       accessToken: 'always',
       accessTokenSsrGetFn: getAccessToken,
     })

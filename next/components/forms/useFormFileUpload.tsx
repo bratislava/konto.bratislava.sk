@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -80,7 +80,7 @@ export const useGetContext = () => {
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
-      const response = await formsApi.filesControllerGetFilesStatusByForm(formId, {
+      const response = await formsClient.filesControllerGetFilesStatusByForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       return response.data
@@ -229,7 +229,7 @@ export const useGetContext = () => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const downloadFile = async (id: string) => {
     try {
-      const response = await formsApi.filesControllerDownloadToken(id, {
+      const response = await formsClient.filesControllerDownloadToken(id, {
         accessToken: 'onlyAuthenticated',
       })
       const { jwt } = response.data

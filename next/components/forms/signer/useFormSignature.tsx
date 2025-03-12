@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { SignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
@@ -74,7 +74,7 @@ const useGetContext = () => {
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
-      formsApi.signerControllerGetSignerData(
+      formsClient.signerControllerGetSignerData(
         {
           formId,
           formDataJson: formDataRequest,

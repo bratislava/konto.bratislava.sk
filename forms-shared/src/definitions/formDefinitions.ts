@@ -192,7 +192,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'zakazka@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail,
       extractName: mimoriadnyOdvozAZhodnotenieOdpaduExtractName,
       mailer: 'olo',
@@ -212,7 +212,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: energetickeZhodnotenieOdpaduVZevo,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'obchod@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
       mailer: 'olo',
@@ -232,7 +232,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'obchod@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: zevoExtractEmail,
       extractName: zevoExtractName,
       mailer: 'olo',
@@ -252,7 +252,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: docisteniStanovistaZbernychNadob,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'zakazka@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: docisteniStanovistaZbernychNadobExtractEmail,
       extractName: docisteniStanovistaZbernychNadobExtractName,
       mailer: 'olo',
@@ -272,7 +272,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'obchod@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail,
       extractName: odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName,
       mailer: 'olo',
@@ -292,7 +292,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: koloTaxi,
     email: {
       address: { prod: 'kolo@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'kolo@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'kolo@olo.sk', test: 'kolo@olo.sk' },
       extractEmail: koloTaxiExtractEmail,
       extractName: koloTaxiExtractName,
       mailer: 'olo',
@@ -312,7 +312,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: oloTaxi,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'zakazka@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: oloTaxiExtractEmail,
       extractName: oloTaxiExtractName,
       mailer: 'olo',
@@ -332,7 +332,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: podnetyAPochvalyObcanov,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'zakazka@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: podnetyAPochvalyObcanovExtractEmail,
       extractName: podnetyAPochvalyObcanovExtractName,
       mailer: 'olo',
@@ -352,7 +352,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: odvozObjemnehoOdpaduValnikom,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'obchod@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: odvozObjemnehoOdpaduValnikomExtractEmail,
       extractName: odvozObjemnehoOdpaduValnikomExtractName,
       mailer: 'olo',
@@ -372,7 +372,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'obchod@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName,
       mailer: 'olo',
@@ -392,7 +392,7 @@ export const formDefinitions: FormDefinition[] = [
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'zakazka@olo.sk', test: 'konto@bratislava.sk' },
+      fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
       extractEmail: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail,
       extractName: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
       mailer: 'olo',

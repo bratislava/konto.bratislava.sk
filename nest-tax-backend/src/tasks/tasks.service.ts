@@ -117,7 +117,7 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_8AM)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   @HandleErrors('Cron Error')
   async reportCardPayments (){
     await this.cardPaymentReportingSubservice.generateAndSendPaymentReport()

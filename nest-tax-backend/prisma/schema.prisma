@@ -16,8 +16,8 @@ model TaxPayer {
   uuid                        String   @default(uuid()) @db.Uuid
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @default(now()) @updatedAt
-  active                      Boolean //if it is active tax payer or is only past tax pay
-  birthNumber                 String //with slash
+  active                      Boolean // if it is active tax payer or is only past tax pay
+  birthNumber                 String // with slash
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
@@ -120,7 +120,7 @@ model CsvFile {
   name      String   @unique
 }
 
-model SystemSettings {
+model Config {
   id        Int      @id @default(autoincrement())
   key       String   @unique
   value     String

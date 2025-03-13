@@ -143,7 +143,7 @@ export default class CardPaymentReportingSubservice {
     ]
     let constants: Record<string, string>
     try {
-      const result = await this.prisma.systemSettings.findMany({
+      const result = await this.prisma.config.findMany({
         where: {
           key: {
             in: requiredKeys,

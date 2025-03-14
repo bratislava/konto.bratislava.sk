@@ -1,8 +1,8 @@
-import { GetFormsResponseDto } from '@clients/openapi-forms'
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { GetFormsResponseDto } from 'openapi-clients/forms'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'

@@ -1,5 +1,5 @@
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
 import { Trans, useTranslation } from 'next-i18next'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'

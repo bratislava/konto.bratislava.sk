@@ -1,10 +1,10 @@
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -25,13 +25,13 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
     let myApplicationDetailsData: GetFormResponseDto | null = null
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
     try {
-      const response = await formsApi.nasesControllerGetForm(id, {
+      const response = await formsClient.nasesControllerGetForm(id, {
         accessToken: 'always',
         accessTokenSsrGetFn: getAccessToken,
       })
       myApplicationDetailsData = response?.data // getApplicationDetailsData(ctx.query.ziadost) || null
       if (myApplicationDetailsData.ginisDocumentId) {
-        const ginisRequest = await formsApi.ginisControllerGetGinisDocumentByFormId(id, {
+        const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {
           accessToken: 'always',
           accessTokenSsrGetFn: getAccessToken,
         })

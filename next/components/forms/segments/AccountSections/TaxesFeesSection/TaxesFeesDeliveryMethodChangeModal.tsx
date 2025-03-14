@@ -1,4 +1,4 @@
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'

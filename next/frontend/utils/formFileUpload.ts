@@ -1,9 +1,4 @@
-import { formsApi } from '@clients/forms'
-import {
-  GetFileResponseDtoStatusEnum,
-  GetFileResponseReducedDto,
-  PostFileResponseDto,
-} from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
 import {
   ClientFileInfo,
@@ -13,6 +8,11 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
+import {
+  GetFileResponseDtoStatusEnum,
+  GetFileResponseReducedDto,
+  PostFileResponseDto,
+} from 'openapi-clients/forms'
 import { v4 as createUuid } from 'uuid'
 
 import { environment } from '../../environment'
@@ -39,7 +39,7 @@ export const uploadFile = async ({
   ) => void
 }) => {
   try {
-    const response = await formsApi.filesControllerUploadFile(formId, file, file.name, id, {
+    const response = await formsClient.filesControllerUploadFile(formId, file, file.name, id, {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         if (progressEvent.total == null) {
           return

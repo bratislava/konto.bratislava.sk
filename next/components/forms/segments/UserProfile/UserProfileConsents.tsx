@@ -1,5 +1,5 @@
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
 import { useTranslation } from 'next-i18next'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../frontend/hooks/useUser'

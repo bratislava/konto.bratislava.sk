@@ -1,13 +1,13 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { strapiClient } from '@clients/graphql-strapi'
 import { FormBaseFragment } from '@clients/graphql-strapi/api'
-import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
   VersionCompareContinueAction,
   versionCompareContinueAction,
 } from 'forms-shared/versioning/version-compare'
+import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
 import FormPage, { FormPageProps } from '../../../components/forms/FormPage'
 import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
@@ -47,7 +47,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
 
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
-      const { data: form } = await formsApi.nasesControllerGetForm(formId, {
+      const { data: form } = await formsClient.nasesControllerGetForm(formId, {
         accessToken: 'onlyAuthenticated',
         accessTokenSsrGetFn: getAccessToken,
       })
@@ -60,7 +60,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
       }
 
       const [{ data: files }, strapiForm] = await Promise.all([
-        formsApi.filesControllerGetFilesStatusByForm(formId, {
+        formsClient.filesControllerGetFilesStatusByForm(formId, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrGetFn: getAccessToken,
         }),

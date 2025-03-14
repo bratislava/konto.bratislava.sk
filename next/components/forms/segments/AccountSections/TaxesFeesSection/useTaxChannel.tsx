@@ -1,15 +1,23 @@
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 
 import { useUser } from '../../../../../frontend/hooks/useUser'
 
 export const useTaxChannel = () => {
+  const { userData } = useUser()
+
+  if (
+    !('officialCorrespondenceChannel' in userData) ||
+    !('showEmailCommunicationBanner' in userData) ||
+    !('wasVerifiedBeforeTaxDeadline' in userData)
+  ) {
+    throw new Error('This hook must be only used when the user is a physical person.')
+  }
+
   const {
-    userData: {
-      officialCorrespondenceChannel,
-      showEmailCommunicationBanner,
-      wasVerifiedBeforeTaxDeadline,
-    },
-  } = useUser()
+    officialCorrespondenceChannel,
+    showEmailCommunicationBanner,
+    wasVerifiedBeforeTaxDeadline,
+  } = userData
 
   const channelChangeEffectiveNextYear =
     !wasVerifiedBeforeTaxDeadline &&

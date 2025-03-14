@@ -1,10 +1,10 @@
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
+import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
@@ -30,7 +30,7 @@ export const getDraftApplications = async (
     SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
-  const response = await formsApi.nasesControllerGetForms(
+  const response = await formsClient.nasesControllerGetForms(
     page?.toString(),
     PAGE_SIZE,
     variantToStates,

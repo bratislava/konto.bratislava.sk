@@ -170,18 +170,24 @@ export interface DeactivateAccountResponseDto {
    * @type {string}
    * @memberof DeactivateAccountResponseDto
    */
-  bloomreachRemovedStatus: DeactivateAccountResponseDtoBloomreachRemovedStatusEnum
+  bloomreachRemoved: DeactivateAccountResponseDtoBloomreachRemovedEnum
+  /**
+   * Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.
+   * @type {boolean}
+   * @memberof DeactivateAccountResponseDto
+   */
+  taxDeliveryMethodsRemoved: boolean
 }
 
-export const DeactivateAccountResponseDtoBloomreachRemovedStatusEnum = {
+export const DeactivateAccountResponseDtoBloomreachRemovedEnum = {
   NotFound: 'NOT_FOUND',
   NotActive: 'NOT_ACTIVE',
   Error: 'ERROR',
   Success: 'SUCCESS',
 } as const
 
-export type DeactivateAccountResponseDtoBloomreachRemovedStatusEnum =
-  (typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum]
+export type DeactivateAccountResponseDtoBloomreachRemovedEnum =
+  (typeof DeactivateAccountResponseDtoBloomreachRemovedEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedEnum]
 
 /**
  *

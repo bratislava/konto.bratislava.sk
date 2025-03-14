@@ -1,6 +1,6 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
 import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseGetTaxesDto } from '@clients/openapi-tax'
+import { ResponseGetTaxesDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 type TaxFeesSectionProviderProps = {

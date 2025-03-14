@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 import { getAccessToken, getAccessTokenOrLogout } from '../frontend/utils/amplifyClient'
 
@@ -21,6 +21,35 @@ declare module 'axios' {
     accessTokenSsrGetFn?: () => Promise<string | null>
   }
 }
+
+/**
+ * This type is needed to work around TypeScript module augmentation limitations when dealing with locally installed packages.
+ *
+ * Problem:
+ * The openapi-clients package has its own axios dependency (as a peer dependency) with its own type definitions.
+ * When TypeScript resolves types for the openapi-clients methods, it uses the axios types from
+ * openapi-clients/node_modules/axios/index.d.ts rather than our augmented types above.
+ *
+ * This happens because TypeScript module augmentations don't propagate across package boundaries,
+ * especially with locally installed packages that have their own node_modules.
+ *
+ * Solution:
+ * We create this helper type to explicitly map the API client methods to use our extended AxiosRequestConfig.
+ * By casting the client to this type, we tell TypeScript to use our augmented type for all methods
+ * that accept an options parameter.
+ *
+ * Usage:
+ * import { createApiClient, ApiClient } from 'openapi-clients/some-api';
+ * export const apiClient = createApiClient({...}) as ClientWithCustomConfig<ApiClient>;
+ */
+export type ClientWithCustomConfig<T> = {
+  [K in keyof T]: T[K] extends (...args: infer Args) => infer R
+    ? Args extends [...infer Params, options?: AxiosRequestConfig]
+      ? (...args: [...Params, options?: AxiosRequestConfig]) => R
+      : T[K]
+    : T[K]
+}
+
 axiosInstance.interceptors.request.use(async (config) => {
   if (config.accessToken !== 'always' && config.accessToken !== 'onlyAuthenticated') {
     return config

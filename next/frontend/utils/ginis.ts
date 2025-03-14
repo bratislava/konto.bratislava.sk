@@ -1,4 +1,4 @@
-import { GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 // TODO the whole detail page needs rethinking, currently we barely show anything relevant
 // any filtering or changes to GINIS data that happen before we "reveal" them to browser

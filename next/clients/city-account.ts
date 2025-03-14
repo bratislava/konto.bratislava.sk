@@ -1,20 +1,9 @@
+import { CityAccountClient, createCityAccountClient } from 'openapi-clients/city-account'
+
 import { environment } from '../environment'
-import { axiosInstance } from './axios-instance'
-import {
-  ADMINApiFactory,
-  AuthApiFactory,
-  Configuration,
-  DefaultApiFactory,
-  UsersManipulationApiFactory,
-  UserVerificationsApiFactory,
-} from './openapi-city-account'
+import { axiosInstance, ClientWithCustomConfig } from './axios-instance'
 
-const args = [{} as Configuration, environment.cityAccountUrl, axiosInstance] as const
-
-export const cityAccountApi = {
-  ...DefaultApiFactory(...args),
-  ...ADMINApiFactory(...args),
-  ...AuthApiFactory(...args),
-  ...UsersManipulationApiFactory(...args),
-  ...UserVerificationsApiFactory(...args),
-}
+export const cityAccountClient = createCityAccountClient({
+  basePath: environment.cityAccountUrl,
+  axios: axiosInstance,
+}) as ClientWithCustomConfig<CityAccountClient>

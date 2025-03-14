@@ -1,5 +1,4 @@
 import { FormBaseFragment } from '@clients/graphql-strapi/api'
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import {
   isSlovenskoSkFormDefinition,
@@ -8,6 +7,7 @@ import {
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 

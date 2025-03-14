@@ -1,5 +1,4 @@
 import { createCondition, createStringItems } from '../../generator/helpers'
-import { sharedAddressField } from '../shared/fields'
 import { select } from '../../generator/functions/select'
 import { selectMultiple } from '../../generator/functions/selectMultiple'
 import { input } from '../../generator/functions/input'
@@ -10,158 +9,32 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
   {
-    title: 'TEST - Objednávka vytýčenia',
+    title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
   },
   {},
   [
-    step('objednavatel', { title: 'Objednávateľ' }, [
-      radioGroup(
-        'objednavatelTyp',
-        {
-          type: 'string',
-          title: 'Objednávate ako',
-          required: true,
-          items: createStringItems([
-            'Fyzická osoba',
-            'Fyzická osoba - podnikateľ',
-            'Právnická osoba',
-          ]),
-        },
-        { variant: 'boxed', orientations: 'column' },
-      ),
-      conditionalFields(
-        createCondition([
-          [
-            ['objednavatelTyp'],
-            {
-              enum: ['Fyzická osoba', 'Fyzická osoba - podnikateľ'],
-            },
-          ],
-        ]),
-        [
-          object('menoPriezvisko', { required: true }, {}, [
-            input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
-            input(
-              'priezvisko',
-              { title: 'Priezvisko', required: true, type: 'text' },
-              { selfColumn: '2/4' },
-            ),
-          ]),
-        ],
-      ),
-      conditionalFields(
-        createCondition([
-          [
-            ['objednavatelTyp'],
-            {
-              enum: ['Fyzická osoba - podnikateľ', 'Právnická osoba'],
-            },
-          ],
-        ]),
-        [
-          input('obchodneMeno', { title: 'Obchodné meno', required: true, type: 'text' }, {}),
-          input('ico', { title: 'IČO', required: true, type: 'text' }, {}),
-          input('dic', { title: 'DIČ', required: true, type: 'text' }, {}),
-          input('icDph', { title: 'IČ DPH', required: true, type: 'text' }, {}),
-        ],
-      ),
-      conditionalFields(
-        createCondition([
-          [
-            ['objednavatelTyp'],
-            {
-              const: 'Fyzická osoba',
-            },
-          ],
-        ]),
-        [
-          input(
-            'adresaTrvalehoPobytu',
-            { title: 'Adresa trvalého pobytu', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-        ],
-      ),
-      conditionalFields(
-        createCondition([
-          [
-            ['objednavatelTyp'],
-            {
-              const: 'Fyzická osoba - podnikateľ',
-            },
-          ],
-        ]),
-        [
-          input(
-            'adresaPodnikania',
-            { title: 'Miesto podnikania', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-        ],
-      ),
-      conditionalFields(
-        createCondition([
-          [
-            ['objednavatelTyp'],
-            {
-              const: 'Právnická osoba',
-            },
-          ],
-        ]),
-        [
-          input(
-            'adresaSidla',
-            { title: 'Adresa sídla', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-        ],
-      ),
-      object('mestoPsc', { required: true }, {}, [
-        input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
-        input(
-          'psc',
-          { type: 'ba-slovak-zip', title: 'PSČ', required: true },
-          { selfColumn: '1/4' },
-        ),
-      ]),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      input(
-        'telefonneCislo',
-        { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-        { helptext: 'Vyplňte vo formáte +421' },
-      ),
-      conditionalFields(createCondition([[['objednavatelTyp'], { const: 'Právnická osoba' }]]), [
-        object(
-          'kontaktnaOsoba',
-          { required: true },
-          { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
-          [
-            input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
-            input(
-              'priezvisko',
-              { title: 'Priezvisko', required: true, type: 'text' },
-              { helptext: 'Priezvisko' },
-            ),
-            input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-            input(
-              'telefonneCislo',
-              { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-              { helptext: 'Vyplňte vo formáte +421' },
-            ),
-          ],
-        ),
-      ]),
-    ]),
+    getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [
       object(
         'fakturacneUdaje',
         { required: true },
         { objectDisplay: 'boxed', title: 'Fakturačné údaje' },
         [
-          sharedAddressField('adresaSidla', 'Adresa sídla', true),
+          input(
+            'adresaSidla',
+            { title: 'Adresa sídla', required: true, type: 'text' },
+            { helptext: 'Vyplňte vo formáte ulica a číslo' },
+          ),
+          input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+          input(
+            'psc',
+            { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+            { selfColumn: '1/4' },
+          ),
           input(
             'email',
             { title: 'E-mail', required: true, type: 'email' },

@@ -149,7 +149,7 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
-  OLO_SEND_FORM: {
+  OLO_NEW_SUBMISSION: {
     template: 'olo-form-send',
     subject: 'OLO: Nové podanie',
     variables: {
@@ -163,7 +163,7 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
-  OLO_DELIVERED_SUCCESS: {
+  OLO_SENT_SUCCESS: {
     template: '2024-olo-form-success',
     subject: 'OLO: Vaša žiadosť bola odoslaná',
     variables: {

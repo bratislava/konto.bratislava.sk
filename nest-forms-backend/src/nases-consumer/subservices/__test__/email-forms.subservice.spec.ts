@@ -88,7 +88,7 @@ const mockFormDefinitionWithSendEmail = {
     mailer: 'mailgun',
     extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
     extractName: jest.fn().mockReturnValue('Extracted Name'),
-    newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+    newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
     sendJsonDataAttachmentInTechnicalMail: true,
   },
@@ -106,7 +106,7 @@ const mockFormDefinitionWithSendOloEmail = {
   messageSubjectDefault: 'Test Subject',
   email: {
     mailer: 'olo',
-    newSubmissionTemplate: MailgunTemplateEnum.OLO_SEND_FORM,
+    newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
     extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
     extractName: jest.fn().mockReturnValue('Extracted OLO Name'),

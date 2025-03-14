@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FormError, FormState } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import {
   FormDefinitionEmail,
   FormDefinitionType,
@@ -139,7 +140,7 @@ export default class EmailFormsSubservice {
    */
   private createJsonAttachment(
     formDefinition: FormDefinitionEmail,
-    formDataJson: any,
+    formDataJson: GenericObjectType,
   ): { filename: string; content: Buffer }[] {
     return [
       {
@@ -163,7 +164,7 @@ export default class EmailFormsSubservice {
   private resolveUserName(
     userFirstName: string | null,
     formDefinition: FormDefinitionEmail,
-    formDataJson: any,
+    formDataJson: GenericObjectType,
   ): string | null {
     if (userFirstName) {
       return userFirstName
@@ -181,7 +182,7 @@ export default class EmailFormsSubservice {
    */
   private async sendUserConfirmationEmail(
     userEmail: string,
-    form: any,
+    form: EmailFormChecked,
     formDefinition: FormDefinitionEmail,
     formTitle: string,
     userName: string | null,
@@ -229,7 +230,7 @@ export default class EmailFormsSubservice {
   /**
    * Updates the form state to FINISHED
    */
-  private async updateFormState(form: any): Promise<void> {
+  private async updateFormState(form: EmailFormChecked): Promise<void> {
     await this.prismaService.forms
       .update({
         where: {

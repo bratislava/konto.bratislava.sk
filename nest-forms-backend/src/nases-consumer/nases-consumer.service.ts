@@ -3,6 +3,7 @@ import { setTimeout } from 'node:timers/promises'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
@@ -20,8 +21,7 @@ import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ } from '../utils/constants'
-import { MailgunTemplateEnum } from '../utils/global-services/mailgun/mailgun.constants'
-import MailgunService from '../utils/global-services/mailgun/mailgun.service'
+import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import {
   getFrontendFormTitleFromForm,

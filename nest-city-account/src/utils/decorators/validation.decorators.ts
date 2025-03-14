@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator'
 import { isValidBirthNumber } from '../birthNumbers'
 
@@ -65,3 +67,5 @@ export function IsIco(validationOptions?: ValidationOptions) {
     })
   }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
+/* eslint-enable @typescript-eslint/no-explicit-any */

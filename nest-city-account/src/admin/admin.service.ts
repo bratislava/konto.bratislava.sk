@@ -452,7 +452,7 @@ export class AdminService {
             UserErrorsResponseEnum.NO_EXTERNAL_ID
           )
         }
-        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch((e) => undefined)
+        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch(() => undefined)
       })
     )
     const usersMappedToTheirPhysicalEntities = users.map(

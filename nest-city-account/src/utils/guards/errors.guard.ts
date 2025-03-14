@@ -8,6 +8,7 @@ import {
   VerificationErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
+import { AxiosError } from 'axios'
 
 export default class ThrowerErrorGuard {
   private logger: LineLoggerSubservice = new LineLoggerSubservice('Error Guard')
@@ -204,8 +205,8 @@ export class ErrorMessengerGuard {
     }
   }
 
-  rfoNotResponding(error: any) {
-    this.logger.warn(error.response.data)
+  rfoNotResponding(error: AxiosError) {
+    this.logger.warn(error.response?.data)
     return {
       statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       status: 'CustomError',
@@ -214,8 +215,8 @@ export class ErrorMessengerGuard {
     }
   }
 
-  rpoNotResponding(error: any) {
-    this.logger.warn(error.response.data)
+  rpoNotResponding(error: AxiosError) {
+    this.logger.warn(error.response?.data)
     return {
       statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       status: 'CustomError',

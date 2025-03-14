@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import { PrismaService } from '../../prisma/prisma.service'
-import EmailSubservice from './email.subservice'
-import SftpFileSubservice from './sftp-file.subservice'
-
-import { parse } from 'csv-parse/sync'
 import { ConfigService } from '@nestjs/config'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
+import { parse } from 'csv-parse/sync'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+import { PrismaService } from '../prisma/prisma.service'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import EmailSubservice from '../utils/subservices/email.subservice'
+import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
 
 const csvColumnNames = [
   'transactionType',
@@ -41,7 +41,7 @@ export type OutputFile = {
 }
 
 @Injectable()
-export default class CardPaymentReportingSubservice {
+export class CardPaymentReportingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
@@ -50,7 +50,7 @@ export default class CardPaymentReportingSubservice {
     private readonly sftpFileSubservice: SftpFileSubservice,
   ) {}
 
-  private generatePrice = (price: number, fill: number): string => {
+  private readonly generatePrice = (price: number, fill: number): string => {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
     const paddedPrice = Math.abs(price)
       .toFixed(2)
@@ -91,7 +91,7 @@ export default class CardPaymentReportingSubservice {
 
   private extractFileDate(fileName: string): string | null {
     const fileDateMatches = fileName.split('_').pop()?.slice(0, 6)
-    if (!fileDateMatches || isNaN(Number(fileDateMatches))) return null
+    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) return null
     return `20${fileDateMatches}` // Add century
   }
 
@@ -134,12 +134,13 @@ export default class CardPaymentReportingSubservice {
     })
   }
 
-  private async getConstantsFromDatabase() {
+  private async getConfigFromDatabase() {
     const requiredKeys = [
       'VARIABLE_SYMBOL',
       'SPECIFIC_SYMBOL',
       'CONSTANT_SYMBOL',
       'USER_CONSTAT_SYMBOL',
+      'REPORTING_SEND_EMAIL',
     ]
     let constants: Record<string, string>
     try {
@@ -158,11 +159,6 @@ export default class CardPaymentReportingSubservice {
       constants = Object.fromEntries(
         result.map((item) => [item.key, item.value]),
       )
-
-      requiredKeys.forEach((key) => {
-        if (!constants[key]) {
-        }
-      })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
@@ -188,7 +184,7 @@ export default class CardPaymentReportingSubservice {
   }
 
   async generateHeader(dateInfo: { today_DDMMYYYY: string }): Promise<string> {
-    const constants = await this.getConstantsFromDatabase()
+    const constants = await this.getConfigFromDatabase()
     return [
       '4',
       dateInfo.today_DDMMYYYY,
@@ -215,15 +211,12 @@ export default class CardPaymentReportingSubservice {
     finalData: CsvColumnsWithVariableSymbol[],
     yesterday_DDMMYYYY: string,
   ) {
-    let kredit = 0
-    let debet = 0
     let body = ''
 
-    const constants = await this.getConstantsFromDatabase()
+    const constants = await this.getConfigFromDatabase()
 
     finalData.forEach((row) => {
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
-      const provision = parseFloat(row.provision.replace(',', '.'))
       const generatedRow = [
         '2390080180',
         Number(row.transactionId),
@@ -241,8 +234,6 @@ export default class CardPaymentReportingSubservice {
       ].join('')
 
       body += generatedRow
-      kredit += totalPrice
-      debet += provision
     })
 
     return body
@@ -299,48 +290,59 @@ export default class CardPaymentReportingSubservice {
   async generateAndSendPaymentReport() {
     const sftpFiles = await this.sftpFileSubservice.getNewFiles()
 
+    const configs = await this.getConfigFromDatabase()
+
+    if (configs.REPORTING_SEND_EMAIL !== 'true') {
+      return
+    }
+
     dayjs.extend(utc)
     dayjs.extend(timezone)
 
-    const outputFiles: OutputFile[] = []
-
     // Processing new files
-    for (const file of sftpFiles) {
-      const fileDate = this.extractFileDate(file.name)
-      if (!fileDate) continue
+    const outputFiles: (OutputFile | null)[] = await Promise.all(
+      sftpFiles.map(async (file) => {
+        const fileDate = this.extractFileDate(file.name)
+        if (!fileDate) return null
 
-      const dateInfo = this.getDateInfo(fileDate)
+        const dateInfo = this.getDateInfo(fileDate)
 
-      // Parse csv and add columns
-      const csvData = this.processCsvData(file.content)
+        // Parse CSV and add columns
+        const csvData = this.processCsvData(file.content)
 
-      // Extract variable symbols with all orderIds belonging to each VS
-      const variableSymbols = await this.getVsByOrderId(
-        csvData.map((row) => row.orderId),
-      )
+        // Extract variable symbols with all orderIds belonging to each VS
+        const variableSymbols = await this.getVsByOrderId(
+          csvData.map((row) => row.orderId),
+        )
 
-      // Find a matching a variable symbol to each row
-      const finalData: CsvColumnsWithVariableSymbol[] =
-        this.enrichDataWithVariableSymbols(csvData, variableSymbols)
+        // Find a matching variable symbol for each row
+        const finalData: CsvColumnsWithVariableSymbol[] =
+          this.enrichDataWithVariableSymbols(csvData, variableSymbols)
 
-      // Generate file content
-      const processedFileResult = await this.generateResult(finalData, dateInfo)
+        // Generate file content
+        const processedFileResult = await this.generateResult(
+          finalData,
+          dateInfo,
+        )
 
-      // Generate file name
-      const processedFileFileName = this.createFileName(dateInfo.today_YYMMDD)
+        // Generate file name
+        const processedFileFileName = this.createFileName(dateInfo.today_YYMMDD)
 
-      outputFiles.push({
-        filename: processedFileFileName,
-        content: processedFileResult,
-      })
-    }
+        return {
+          filename: processedFileFileName,
+          content: processedFileResult,
+        }
+      }),
+    )
+    // Filter out any `null` values caused by skipping files without a valid date
+    const validOutputFiles = outputFiles.filter((file) => file !== null)
 
-    const attachments = outputFiles.map((item) => {
+    const attachments = validOutputFiles.map((item) => {
       return { ...item, contentType: 'text/plain' }
     })
 
     const message =
-      attachments.length == 0
+      attachments.length === 0
         ? 'Dnes nie je čo reportovať'
         : 'Chceme niečo ako text sem?' // TODO better message
 

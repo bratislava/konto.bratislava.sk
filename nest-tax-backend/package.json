@@ -36,6 +36,7 @@
     "@nestjs/swagger": "^11.0.6",
     "@prisma/client": "^6.4.1",
     "@types/mssql": "^9.1.7",
+    "@types/ssh2-sftp-client": "^9.0.4",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.7.7",
     "bysquare": "^2.1.0",
@@ -52,7 +53,8 @@
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "qrcode": "^1.5.4",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "ssh2-sftp-client": "^11.0.0"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.0.30",
@@ -67,7 +69,6 @@
     "@types/node": "^20.12.7",
     "@types/nodemailer": "^6.4.17",
     "@types/qrcode": "^1.5.5",
-    "@types/ssh2-sftp-client": "^9.0.4",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -107,7 +108,6 @@
     "prettier": "^3.5.2",
     "prisma": "^6.4.1",
     "source-map-support": "^0.5.21",
-    "ssh2-sftp-client": "^11.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",

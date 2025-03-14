@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import nodemailer from 'nodemailer'
 import { ConfigService } from '@nestjs/config'
-import ThrowerErrorGuard from '../guards/errors.guard'
+import nodemailer from 'nodemailer'
+
 import { ErrorsEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
 
 @Injectable()
 export default class EmailSubservice {
   private readonly logger = new LineLoggerSubservice(EmailSubservice.name)
 
-  private transporter: nodemailer.Transporter
+  private readonly transporter: nodemailer.Transporter
 
   constructor(
     private readonly configService: ConfigService,

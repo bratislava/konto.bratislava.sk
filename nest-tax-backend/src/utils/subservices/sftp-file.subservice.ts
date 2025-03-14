@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../prisma/prisma.service'
-import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
-import { ConfigService } from '@nestjs/config'
 import path from 'node:path'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { ErrorsEnum } from '../guards/dtos/error.dto'
 
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
+
+import { PrismaService } from '../../prisma/prisma.service'
+import { ErrorsEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export default class SftpFileSubservice {
@@ -18,17 +19,14 @@ export default class SftpFileSubservice {
   async getNewFiles() {
     const sftp = new SFTPClient()
 
-    let newFileContents: { name: string; content: string }[] = []
+    const newFileContents: { name: string; content: string }[] = []
 
     try {
       await sftp.connect({
         host: this.configService.getOrThrow<string>('REPORTING_SFTP_HOST'),
         port: this.configService.getOrThrow<number>('REPORTING_SFTP_PORT'),
         username: this.configService.getOrThrow<string>('REPORTING_SFTP_USER'),
-        // privateKey: fs.readFileSync(sftpKeyPath),
-        password: this.configService.getOrThrow<string>(
-          'REPORTING_SFTP_PASSWORD',
-        ),
+        privateKey: this.configService.getOrThrow<string>('REPORTING_SFTP_KEY'),
       })
 
       const sftpFiles: FileInfo[] = await sftp.list(
@@ -38,13 +36,14 @@ export default class SftpFileSubservice {
       const newFiles = await this.filterAlreadyReportedFiles(sftpFiles)
 
       // Get contents of all new files
-
+      // eslint-disable-next-line no-restricted-syntax
       for (const fileName of newFiles) {
         const filePath = path.join(
           this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
           fileName,
         )
 
+        // eslint-disable-next-line no-await-in-loop
         const fileContent = await sftp.get(filePath)
         newFileContents.push({
           name: fileName,
@@ -77,7 +76,7 @@ export default class SftpFileSubservice {
       //   name.startsWith('AH_DATA_') && name.endsWith('.csv')
       // })
       .filter(
-        (fileName) => !alreadyReportedFiles.find((f) => f.name === fileName),
+        (fileName) => !alreadyReportedFiles.some((f) => f.name === fileName),
       )
 
     // Write updated CSV names

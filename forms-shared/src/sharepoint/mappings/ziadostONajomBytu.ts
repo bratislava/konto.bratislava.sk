@@ -60,6 +60,10 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ineOkolnosti.maximalnaVyskaNajomneho',
   },
+  KontaktovanyEmailom: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom',
+  },
 }
 
 const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> = {

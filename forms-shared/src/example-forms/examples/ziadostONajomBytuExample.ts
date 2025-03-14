@@ -159,6 +159,7 @@ const ziadostONajomBytuExample: ExampleForm = {
       PreferovanaVelkost: 'PreferovanaVelkost',
       PreferovanaLokalita: 'PreferovanaLokalita',
       MaximalnaVyskaNajomneho: 'MaximalnaVyskaNajomneho',
+      KontaktovanyEmailom: 'KontaktovanyEmailom',
     },
     oneToMany: {
       fieldMaps: {

@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config'
 import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
-import nodemailer from 'nodemailer'
 
 import {
   SendEmailInputDto,
@@ -93,7 +92,7 @@ export default class MailgunService implements Mailer {
   async sendEmail(
     data: SendEmailInputDto,
     emailFrom?: string,
-    attachments?: nodemailer.SendMailOptions['attachments'],
+    attachments?: { filename: string; content: Buffer }[],
   ): Promise<void> {
     const mailgunAttachments = attachments?.map((attachment) => ({
       data: attachment.content,

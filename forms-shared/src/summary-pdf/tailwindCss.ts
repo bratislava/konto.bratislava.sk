@@ -1,28 +1,18 @@
 import postcss from 'postcss'
-import tailwindcss from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
-import * as path from 'node:path'
-import type { Config } from 'tailwindcss/types/config'
+import tailwindPostcss from '@tailwindcss/postcss'
+import path from 'path'
+import fs from 'node:fs'
 
-const tailwindConfig: Config = {
-  content: [path.join(__dirname, './SummaryPdf.tsx')],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-      },
-    },
-  },
-}
-
-const tailwindCss = `@tailwind base;
-@tailwind components;
-@tailwind utilities;`
+const baseCssPath = path.join(__dirname, './base.css')
+const baseCss = fs.readFileSync(baseCssPath, 'utf8')
 
 export const getTailwindCss = async () => {
-  const postCssResult = await postcss([tailwindcss(tailwindConfig), autoprefixer]).process(
-    tailwindCss,
-    { from: undefined } /* Required to avoid a warning */,
-  )
-  return postCssResult.css
+  const result = await postcss([
+    tailwindPostcss({
+      base: baseCssPath,
+      optimize: false,
+    }),
+  ]).process(baseCss, { from: baseCssPath })
+
+  return result.css
 }

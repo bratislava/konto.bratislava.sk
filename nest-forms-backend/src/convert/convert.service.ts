@@ -1,4 +1,4 @@
-import { PassThrough, Readable } from 'node:stream'
+import { Readable } from 'node:stream'
 
 import { Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -41,7 +41,6 @@ import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import { patchConvertServiceTaxFormDefinition } from './convert.helper'
 import {
@@ -67,7 +66,6 @@ export default class ConvertService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
-    private readonly minioClientSubservice: MinioClientSubservice,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
   ) {
@@ -363,12 +361,6 @@ export default class ConvertService {
     res: Response,
     user?: CognitoGetUserData,
   ): Promise<StreamableFile> {
-    // for eligible tax forms (those of signed-in users) store json before transform and the transformed pdf itself for debug purposes
-    let taxDebugBucket = ''
-    let directoryName = ''
-    let stringifiedData = ''
-    let shouldStoreDebugPdfData = false
-
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
       user?.sub ?? null,
@@ -392,37 +384,6 @@ export default class ConvertService {
       )
     }
 
-    // common init for both json and pdf debug storage
-    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
-      try {
-        taxDebugBucket = process.env.TAX_PDF_DEBUG_BUCKET || 'forms-tax-debug'
-        directoryName = this.getTaxDebugBucketDirectoryName(formJsonData)
-        stringifiedData = JSON.stringify(data, null, 2)
-        shouldStoreDebugPdfData = true
-      } catch (error) {
-        console.error(
-          `Error "statusCode":500 - failed to init debugDataStorage, will skip creating files in mino`,
-        )
-        console.error(error)
-      }
-    }
-
-    // store json before transform
-    if (shouldStoreDebugPdfData) {
-      this.minioClientSubservice
-        .putObject(
-          taxDebugBucket,
-          `${directoryName}/json.json`,
-          stringifiedData,
-        )
-        .catch((error) => {
-          console.error(
-            `Error "statusCode":500 - failed to create a copy of pdf form, serialized form data: ${stringifiedData}`,
-          )
-          console.error(error)
-        })
-    }
-
     const file = await this.generatePdf(
       formJsonData,
       data.formId,
@@ -430,54 +391,12 @@ export default class ConvertService {
       data.clientFiles as ClientFileInfo[],
     )
 
-    // we need two separate streams to read from - reading just from the file stream above would empty it and no data would be left for response
-    // reference: https://stackoverflow.com/a/51143558
-    const minioStream = new PassThrough()
-    const responseStream = new PassThrough()
-    file.pipe(minioStream)
-    file.pipe(responseStream)
-
-    // store pdf after transform
-    if (shouldStoreDebugPdfData) {
-      this.minioClientSubservice
-        .putObject(taxDebugBucket, `${directoryName}/pdf.pdf`, file)
-        .catch((error) => {
-          console.error(
-            `Error 500 - failed to create a copy of pdf form, serialized form data: ${stringifiedData}`,
-          )
-          console.error(error)
-        })
-    }
-
     res.set({
       'Content-Type': 'application/pdf',
       'Access-Control-Expose-Headers': 'Content-Disposition',
       'Content-Disposition': `attachment; filename="${formDefinition.slug}.pdf"`,
     })
 
-    return new StreamableFile(responseStream)
-  }
-
-  getTaxDebugBucketDirectoryName(jsonData: PrismaJson.FormDataJson): string {
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions */
-    const udajeODanovnikovi = (jsonData as any)?.udajeODanovnikovi
-    const directoryName = [
-      udajeODanovnikovi?.priznanieAko === 'fyzickaOsobaPodnikatel'
-        ? 'SZCO'
-        : udajeODanovnikovi?.priznanieAko === 'pravnickaOsoba'
-          ? 'PO'
-          : 'FO',
-      udajeODanovnikovi?.priezvisko ??
-        udajeODanovnikovi?.obchodneMenoAleboNazov,
-      udajeODanovnikovi?.menoTitul?.meno,
-      new Date().toISOString(),
-    ]
-      .filter((s: any) => typeof s === 'string')
-      .map((s: string, index, array) =>
-        index === array.length - 1 ? s : encodeURIComponent(s),
-      )
-      .join('-')
-    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions */
-    return directoryName
+    return new StreamableFile(file)
   }
 }

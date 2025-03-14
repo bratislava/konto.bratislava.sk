@@ -7,7 +7,6 @@ import {
 } from '../optionItems'
 import { BaWidgetType, SelectUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 export const select = (
   property: string,
@@ -27,7 +26,6 @@ export const select = (
       enum: createEnumSchemaEnum(options.items),
       default: createEnumSchemaDefault(options.items),
       baUiSchema: {
-        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.Select,
         'ui:options': {
           ...uiOptions,

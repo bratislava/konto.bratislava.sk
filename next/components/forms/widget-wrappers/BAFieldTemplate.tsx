@@ -48,7 +48,14 @@ const BAFieldTemplate = ({ classNames, ...rest }: FieldTemplateProps) => {
     .filter(isDefined)
     .join(' ')
 
-  return <FieldTemplate {...rest} classNames={newClassNames} />
+  return (
+    <FieldTemplate
+      {...rest}
+      classNames={newClassNames}
+      // Labels are displayed in our own way in `FieldHeader`.
+      displayLabel={false}
+    />
+  )
 }
 
 export default BAFieldTemplate

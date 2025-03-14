@@ -7,6 +7,7 @@ import { get as getAppRootDir } from 'app-root-dir'
 
 interface GenerateClientOptions {
   rootDir?: string
+  localUrl?: string
 }
 
 export const validTypes = [
@@ -24,6 +25,13 @@ export const endpoints: Record<ValidType, string> = {
   'city-account': 'https://nest-city-account.staging.bratislava.sk/api-json',
   'clamav-scanner': 'https://nest-clamav-scanner.staging.bratislava.sk/api-json',
   'slovensko-sk': 'https://fix.slovensko-sk-api.bratislava.sk/openapi.yaml',
+}
+
+export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
+  if (type === 'slovensko-sk') {
+    return `http://${localUrl}/openapi.yaml`
+  }
+  return `http://${localUrl}/api-json`
 }
 
 const appRootDir = getAppRootDir()
@@ -135,7 +143,7 @@ const generateOpenApiClient = (type: ValidType, url: string, outputDir: string) 
 
 export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
   const outputDir = path.join(options.rootDir ?? appRootDir, type)
-  const url = endpoints[type]
+  const url = options.localUrl ? getLocalEndpoint(type, options.localUrl) : endpoints[type]
 
   try {
     cleanupExistingClient(type, outputDir)
@@ -164,13 +172,16 @@ if (require.main === module) {
       .name('generateClient')
       .description('Generate OpenAPI client for specified type')
       .argument('<type>', `Type of client to generate (${validTypes.join(', ')})`)
-      .action((type: string) => {
+      .option('--local-url <url>', 'Local URL to use (e.g., localhost:3000)')
+      .action((type: string, options) => {
         if (!isValidType(type)) {
           console.error(`Invalid type: ${type}. Valid types are: ${validTypes.join(', ')}.`)
           process.exit(1)
         }
 
-        generateClient(type).catch(() => process.exit(1))
+        generateClient(type, {
+          localUrl: options.localUrl ? options.localUrl : undefined,
+        }).catch(() => process.exit(1))
       })
 
     program.parse()

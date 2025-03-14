@@ -75,17 +75,17 @@ const statField = select(
   {},
 )
 
-const emailField = (required = true) =>
+const emailField = () =>
   input(
     'email',
-    { title: 'E-mail', type: 'email', required },
+    { title: 'E-mail', type: 'email', required: false },
     { helptextFooter: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   )
 
-const telefonField = (required = true) =>
+const telefonField = () =>
   sharedPhoneNumberField(
     'telefon',
-    required,
+    false,
     'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
   )
 
@@ -364,6 +364,6 @@ export const bezpodieloveSpoluvlastnictvoManzelov = [
     obecPscField,
     statField,
   ]),
-  emailField(false),
-  telefonField(false),
+  emailField(),
+  telefonField(),
 ]

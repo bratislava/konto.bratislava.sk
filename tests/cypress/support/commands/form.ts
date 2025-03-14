@@ -205,8 +205,7 @@ Cypress.Commands.add('selectState', (form, esbsNationalityCiselnik, state) => {
       return stateFromCiselnik.Code == state
     })
 
-    cy.wrap(Cypress.$('[data-cy=select-štát]', form)).click()
-    cy.wrap(Cypress.$('[data-cy=select-štát]', form)).type(foundState.Name + '{enter}{enter}')
+    cy.selectFromDropdown(form, 'select-štát', foundState.Name)
   }
 })
 
@@ -256,10 +255,7 @@ Cypress.Commands.add(
   (form, index, streetHouseNumber, referenceNumber, landRegistry, parcelNumber) => {
     cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', form)).type(streetHouseNumber)
     cy.wrap(Cypress.$('[data-cy=number-supisneCislo]', form)).type(referenceNumber)
-    cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).click()
-    cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).type(
-      landRegistry + '{enter}{enter}',
-    )
+    cy.selectFromDropdown(form, 'select-názov-katastrálneho-územia', landRegistry)
     cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', form)).type(parcelNumber)
   },
 )
@@ -309,8 +305,11 @@ Cypress.Commands.add('clickNoAndContinue', (form, device) => {
 })
 
 Cypress.Commands.add('selectFromDropdown', (form, select, data) => {
-  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).click()
-  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).type(data + '{enter}{enter}')
+  cy.wrap(form).find(`[data-cy=${select}]`).as('selectElement')
+  cy.get('@selectElement').click()
+  cy.get('@selectElement').type(data)
+
+  cy.get('@selectElement').find('div[role=option]').contains(data).should('be.visible').click()
 })
 
 Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfInputs, inputs) => {

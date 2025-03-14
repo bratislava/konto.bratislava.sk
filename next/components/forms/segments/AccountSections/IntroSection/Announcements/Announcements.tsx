@@ -1,4 +1,4 @@
-import BannerTaxes from '@assets/images/banner-dane-new.png'
+import BannerTaxes from '@assets/images/banner-dane.png'
 import BannerRental from '@assets/images/banner-najomne-byvanie.png'
 import BannerGardens from '@assets/images/banner-zahrady.png'
 import { ArrowRightIcon } from '@assets/ui-icons'
@@ -27,7 +27,7 @@ const Announcements = () => {
   const buttonsFirst: AnchorProps[] = [
     {
       children: t('account_section_intro.announcement_card_button_first'),
-      href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
+      href: ROUTES.TAXES_AND_FEES,
       variant: 'category-solid',
       endIcon: <ArrowRightIcon className="size-6" />,
     },

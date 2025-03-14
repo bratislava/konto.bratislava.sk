@@ -253,7 +253,7 @@ export interface ResponseGetTaxesBodyDto {
    */
   paidAmount: number
   /**
-   *
+   * Type of paid status
    * @type {TaxPaidStatusEnum}
    * @memberof ResponseGetTaxesBodyDto
    */
@@ -384,13 +384,13 @@ export interface ResponseTaxDetailsDto {
    */
   taxId: number
   /**
-   *
+   * Type of tax detail - object of tax
    * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
   type: TaxDetailTypeEnum
   /**
-   *
+   * Area type of tax detail - exact type of object of tax
    * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
@@ -524,7 +524,7 @@ export interface ResponseTaxDto {
    */
   qrCodeEmail: string | null
   /**
-   *
+   * Type of paid status
    * @type {TaxPaidStatusEnum}
    * @memberof ResponseTaxDto
    */
@@ -714,7 +714,7 @@ export interface ResponseTaxPayerDto {
   birthNumber: string
 }
 /**
- * Area type of tax detail - exact type of object of tax
+ * Type of tax detail - object of tax
  * @export
  * @enum {string}
  */

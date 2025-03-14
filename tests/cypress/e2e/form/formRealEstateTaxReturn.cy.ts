@@ -66,7 +66,7 @@ describe('F05 -', { testIsolation: false }, () => {
             it('4. Checking "Taxpayer data" step validation.', () => {
               cy.checkActiveStep(2)
               cy.dataCy('form-container').then((form) => {
-                cy.checkFormValidation(device, form, 13, this.inputData.taxpayerBorderFields)
+                cy.checkFormValidation(device, form, 11, this.inputData.taxpayerBorderFields)
               })
             })
 

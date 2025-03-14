@@ -7,7 +7,6 @@ import {
 } from '../optionItems'
 import { BaWidgetType, RadioGroupUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
-import { defaultFieldUiSchema } from '../../form-utils/formDefaults'
 
 type StringToType<T> = T extends 'string' ? string : T extends 'boolean' ? boolean : never
 
@@ -27,7 +26,6 @@ export const radioGroup = <ValueType extends 'string' | 'boolean'>(
       enum: createEnumSchemaEnum(options.items),
       default: createEnumSchemaDefault(options.items),
       baUiSchema: {
-        ...defaultFieldUiSchema,
         'ui:widget': BaWidgetType.RadioGroup,
         'ui:options': {
           ...uiOptions,

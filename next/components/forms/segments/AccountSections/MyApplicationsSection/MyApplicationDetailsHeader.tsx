@@ -28,9 +28,9 @@ const MyApplicationDetailsHeader = ({
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
-  const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.DatumZmeny
+  const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.['Datum-zmeny']
   const firstGinisChangeDate =
-    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.DatumZmeny
+    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.['Datum-zmeny']
 
   const title = data?.frontendTitle
   const formSlug = data?.formDefinitionSlug

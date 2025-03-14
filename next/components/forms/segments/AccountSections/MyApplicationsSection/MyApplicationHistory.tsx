@@ -26,7 +26,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                 <span className="text-p2">
                   <FormatDate>
                     {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-                    {data?.DatumZmeny}
+                    {data?.['Datum-zmeny']}
                   </FormatDate>
                 </span>
               </div>
@@ -63,7 +63,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                 <span className="min-w-[240px] text-p2">
                   <FormatDate>
                     {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
-                    {data?.DatumZmeny}
+                    {data?.['Datum-zmeny']}
                   </FormatDate>
                 </span>
                 <span className="w-full text-p2">

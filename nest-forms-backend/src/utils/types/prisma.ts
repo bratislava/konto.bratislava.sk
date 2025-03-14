@@ -24,5 +24,5 @@ export type EmailFormChecked = FormWithFiles & {
 }
 
 export function isEmailFormChecked(form: Forms): form is EmailFormChecked {
-  return form.formDataJson !== null && form.formSummary !== null
+  return form.formDataJson != null && form.formSummary != null
 }

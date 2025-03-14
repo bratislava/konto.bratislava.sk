@@ -65,9 +65,19 @@ export default class EmailFormsSubservice {
   }
 
   private getMailer(formDefinition: FormDefinitionEmail): Mailer {
-    return formDefinition.email.mailer === 'olo'
-      ? this.oloMailerService
-      : this.mailgunService
+    switch (formDefinition.email.mailer) {
+      case 'olo':
+        return this.oloMailerService
+
+      case 'mailgun':
+        return this.mailgunService
+
+      default:
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Unsupported mailer: ${formDefinition.email.mailer}`,
+        )
+    }
   }
 
   /**
@@ -202,8 +212,8 @@ export default class EmailFormsSubservice {
         },
       ]
 
-      await this.getMailer(formDefinition).sendEmail(
-        {
+      await this.getMailer(formDefinition).sendEmail({
+        data: {
           to: userEmail,
           template: formDefinition.email.userResponseTemplate,
           data: {
@@ -213,11 +223,11 @@ export default class EmailFormsSubservice {
             slug: formDefinition.slug,
           },
         },
-        this.resolveAddress(
+        emailFrom: this.resolveAddress(
           formDefinition.email.fromAddress ?? formDefinition.email.address,
         ),
         attachments,
-      )
+      })
     } catch (error) {
       alertError(
         `Sending confirmation email to ${userEmail} for form ${form.id} failed.`,
@@ -270,8 +280,8 @@ export default class EmailFormsSubservice {
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
     // Send email to the department/office
-    await this.getMailer(formDefinition).sendEmail(
-      {
+    await this.getMailer(formDefinition).sendEmail({
+      data: {
         to: this.resolveAddress(formDefinition.email.address),
         template: formDefinition.email.newSubmissionTemplate,
         data: {
@@ -287,13 +297,13 @@ export default class EmailFormsSubservice {
           }),
         },
       },
-      this.resolveAddress(
+      emailFrom: this.resolveAddress(
         formDefinition.email.fromAddress ?? formDefinition.email.address,
       ),
-      formDefinition.email.sendJsonDataAttachmentInTechnicalMail
+      attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(formDefinition, form.formDataJson)
         : undefined,
-    )
+    })
 
     // Determine user email address for confirmation
     const userConfirmationEmail =

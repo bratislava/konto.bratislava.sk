@@ -4,17 +4,10 @@ import FormData from 'form-data'
 import Mailgun from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
 
-import {
-  SendEmailInputDto,
-  SendEmailVariablesDto,
-} from '../../global-dtos/mailgun.dto'
 import { LineLoggerSubservice } from '../../subservices/line-logger.subservice'
-import { Mailer } from './mailer.interface'
-import {
-  MAILGUN_CONFIG,
-  MAILGUN_CONFIG_FEEDBACK_URLS,
-  MailgunConfigVariableType,
-} from './mailgun.constants'
+import { Mailer, MailerSendEmailParams } from './mailer.interface'
+import { MAILGUN_CONFIG } from './mailgun.constants'
+import MailgunHelper from './utils/mailgun.helper'
 
 @Injectable()
 export default class MailgunService implements Mailer {
@@ -22,7 +15,10 @@ export default class MailgunService implements Mailer {
 
   logger: LineLoggerSubservice
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly mailgunHelper: MailgunHelper,
+  ) {
     if (
       !process.env.MAILGUN_API_KEY ||
       !process.env.MAILGUN_HOST ||
@@ -42,58 +38,8 @@ export default class MailgunService implements Mailer {
     })
   }
 
-  private createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
-    const response: SendEmailVariablesDto = {}
-    Object.entries(MAILGUN_CONFIG[data.template].variables).forEach(
-      ([key, val]) => {
-        switch (val.type) {
-          case MailgunConfigVariableType.PARAMETER:
-            Object.entries(data.data).forEach(([k, v]) => {
-              if (v) {
-                response[key as keyof SendEmailVariablesDto] = (
-                  response[key as keyof SendEmailVariablesDto] || val.value
-                )
-                  .toString()
-                  .replace(`{{${k}}}`, v)
-              }
-            })
-
-            break
-
-          case MailgunConfigVariableType.SELECT:
-            if (
-              typeof val.value === 'object' &&
-              Object.prototype.hasOwnProperty.call(val.value, data.data.slug)
-            ) {
-              response[key as keyof SendEmailVariablesDto] =
-                val.value[
-                  data.data.slug as keyof typeof MAILGUN_CONFIG_FEEDBACK_URLS
-                ]
-            }
-
-            break
-
-          case MailgunConfigVariableType.STRING:
-            response[key as keyof SendEmailVariablesDto] = val.value
-              ? val.value.toString()
-              : ''
-
-            break
-
-          default:
-            response[key as keyof SendEmailVariablesDto] = undefined
-          // No default
-        }
-      },
-    )
-    return response
-  }
-
-  async sendEmail(
-    data: SendEmailInputDto,
-    emailFrom?: string,
-    attachments?: { filename: string; content: Buffer }[],
-  ): Promise<void> {
+  async sendEmail(params: MailerSendEmailParams): Promise<void> {
+    const { data, emailFrom, attachments } = params
     const mailgunAttachments = attachments?.map((attachment) => ({
       data: attachment.content,
       filename: attachment.filename,
@@ -107,7 +53,7 @@ export default class MailgunService implements Mailer {
           template: MAILGUN_CONFIG[data.template].template,
           subject: MAILGUN_CONFIG[data.template].subject,
           'h:X-Mailgun-Variables': JSON.stringify(
-            this.createEmailVariables(data),
+            this.mailgunHelper.createEmailVariables(data),
           ),
           attachment: mailgunAttachments,
         },

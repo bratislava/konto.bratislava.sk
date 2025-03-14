@@ -1,11 +1,13 @@
-import { SendMailOptions } from 'nodemailer'
+import { Readable } from 'node:stream'
 
 import { SendEmailInputDto } from '../../global-dtos/mailgun.dto'
 
+export type MailerSendEmailParams = {
+  data: SendEmailInputDto
+  emailFrom?: string
+  attachments?: { filename: string; content: Buffer | Readable }[]
+}
+
 export interface Mailer {
-  sendEmail(
-    data: SendEmailInputDto,
-    emailFrom?: string,
-    attachments?: SendMailOptions['attachments'],
-  ): Promise<void>
+  sendEmail(args: MailerSendEmailParams): Promise<void>
 }

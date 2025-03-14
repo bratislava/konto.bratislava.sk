@@ -24,7 +24,6 @@ describe('LineLoggerService', () => {
   ])('should print %s message with severity %s', (method, severity) => {
     service[method]('test message')
 
-    // eslint-disable-next-line security/detect-non-literal-regexp
     const regex = new RegExp(
       `process="\\[Nest\\]" processPID="\\d+" datetime="\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2}:\\d{2}" severity="${severity}" context="LineLogger TEST" message="test message"`,
     )

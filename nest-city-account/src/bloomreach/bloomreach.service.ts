@@ -10,7 +10,8 @@ import {
   BloomreachEventNameEnum,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
-import { LineLoggerSubservice } from "../utils/subservices/line-logger.subservice";
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -58,6 +59,68 @@ export class BloomreachService {
       result.category = BloomreachConsentCategoryEnum.TAX_COMMUNICATION
     }
     return result
+  }
+
+  async trackCustomer(
+    email: string,
+    cognitoId: string,
+    userAttributes: CognitoGetUserData
+  ): Promise<boolean | undefined> {
+    const {
+      given_name: firstName,
+      family_name: lastName,
+      name,
+      UserCreateDate: registrationDate,
+    } = userAttributes
+    const accountType = userAttributes['custom:account_type']
+
+    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+      return undefined
+    }
+    if (!cognitoId) {
+      this.logger.warn(`Bloomreach user modification error: missing property cognitoId`)
+
+      return false
+    }
+
+    try {
+      const data = {
+        customer_ids: {
+          city_account_id: cognitoId,
+        },
+        properties: {
+          ...(firstName && { first_name: firstName }),
+          ...(lastName && { last_name: lastName }),
+          ...(name && { name: name }),
+          ...(accountType && { person_type: accountType }),
+          ...(registrationDate && { registration_date: registrationDate }),
+          ...(email && { email: email }),
+        },
+      }
+      const eventResponse = await axios
+        .post(
+          `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers`,
+          JSON.stringify(data),
+          {
+            headers: {
+              Authorization: `Basic ${this.bloomreachCredentials}`,
+            },
+          }
+        )
+        .catch((error) => {
+          this.logger.warn(error)
+          throw error
+        })
+      if (eventResponse.status != 200) {
+        this.logger.warn(`Customer create/edit in bloomreach error for user: ${cognitoId}`)
+        this.logger.warn(`: ${cognitoId}`)
+        return false
+      }
+    } catch (error) {
+      return false
+    }
+
+    return true
   }
 
   private async trackEvent(

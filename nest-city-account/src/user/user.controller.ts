@@ -30,6 +30,7 @@ import {
   ResponseUserDataDto,
 } from './dtos/gdpr.user.dto'
 import { UserService } from './user.service'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 
 @ApiExtraModels(
@@ -44,6 +45,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly bloomreachService: BloomreachService,
     private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
@@ -290,14 +292,11 @@ export class UserController {
     @User() user: CognitoGetUserData,
     @Body() body: ChangeEmailRequestDto
   ): Promise<ResponseUserDataBasicDto | ResponseLegalPersonDataSimpleDto> {
+    let result: ResponseUserDataBasicDto | ResponseLegalPersonDataSimpleDto | null = null
     if (
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
-      const result: ResponseUserDataBasicDto = await this.userService.changeUserEmail(
-        user.sub,
-        body.newEmail
-      )
-      return result
+      result = await this.userService.changeUserEmail(user.sub, body.newEmail)
     }
 
     if (
@@ -305,8 +304,15 @@ export class UserController {
       user[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
         CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
     ) {
-      const result: ResponseLegalPersonDataSimpleDto =
-        await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
+      result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
+    }
+    if (result) {
+      const resultBloomreach = await this.bloomreachService.trackCustomer(
+        body.newEmail,
+        user.idUser,
+        user
+      )
+      console.log('resultBloomreach', resultBloomreach)
       return result
     }
 

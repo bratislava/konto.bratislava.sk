@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
+import { ConfigModule } from '@nestjs/config'
+
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'
@@ -11,7 +13,6 @@ import { AdminController } from './admin.controller'
 import { AdminService } from './admin.service'
 import { AdminCronSubservice } from './subservices/admin-cron.subservice'
 import { TaxSubservice } from '../utils/subservices/tax.subservice'
-import { ConfigModule } from '@nestjs/config'
 
 @Module({
   imports: [

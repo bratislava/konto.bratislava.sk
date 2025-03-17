@@ -146,6 +146,7 @@ const EmailChangePage = () => {
       })
       // In E2E tests, confirmation with code is disabled, so the attribute is updated immediately
       if (result.email?.nextStep.updateAttributeStep === 'DONE') {
+        await changeEmailApi({ newEmail: lastEmail })
         logger.info(
           `[AUTH] Successfully changed email to ${newEmail} for email ${userAttributes?.email}`,
         )

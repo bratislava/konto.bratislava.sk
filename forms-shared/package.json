@@ -93,7 +93,7 @@
     "pdf-to-img": "^4.4.0",
     "playwright": "1.50.1",
     "postcss": "8.5.3",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.3",
     "prompts": "^2.4.2",
     "rimraf": "^6.0.1",
     "tailwindcss": "4.0.12",

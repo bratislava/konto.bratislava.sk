@@ -236,9 +236,8 @@ describe('EmailFormsSubservice', () => {
 
       // Should send email to department
       expect(mailgunService.sendEmail).toHaveBeenCalledTimes(2)
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.objectContaining({
           to: mockFormDefinitionWithSendEmail.email.address.prod,
           template: mockFormDefinitionWithSendEmail.email.newSubmissionTemplate,
           data: expect.objectContaining({
@@ -246,19 +245,18 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.address.prod,
-        expect.arrayContaining([
+        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'submission.json',
             content: expect.any(Buffer),
           }),
         ]),
-      )
+      })
 
       // Should send confirmation email to user
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           to: userEmail,
           template: mockFormDefinitionWithSendEmail.email.userResponseTemplate,
           data: expect.objectContaining({
@@ -267,13 +265,13 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.address.prod,
-        expect.arrayContaining([
+        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
           }),
         ]),
-      )
+      })
 
       // Should update the form state to FINISHED
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
@@ -315,9 +313,8 @@ describe('EmailFormsSubservice', () => {
 
       // Should send email to department using sendOloEmail
       expect(oloMailerService.sendEmail).toHaveBeenCalledTimes(2)
-      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.objectContaining({
           to: mockFormDefinitionWithSendOloEmail.email.address.prod,
           template:
             mockFormDefinitionWithSendOloEmail.email.newSubmissionTemplate,
@@ -326,15 +323,13 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        undefined,
-      )
+        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
+        attachments: undefined,
+      })
 
       // Should send confirmation email to user using sendOloEmail
-      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           to: userEmail,
           template:
             mockFormDefinitionWithSendOloEmail.email.userResponseTemplate,
@@ -344,13 +339,13 @@ describe('EmailFormsSubservice', () => {
             slug: mockFormDefinitionWithSendOloEmail.slug,
           }),
         }),
-        mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
-        expect.arrayContaining([
+        emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
+        attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'potvrdenie.pdf',
           }),
         ]),
-      )
+      })
 
       // Should update the form state to FINISHED
       expect(prismaMock.forms.update).toHaveBeenCalledWith({
@@ -433,14 +428,13 @@ describe('EmailFormsSubservice', () => {
       expect(
         mockFormDefinitionWithSendEmail.email.extractEmail,
       ).toHaveBeenCalledWith(mockForm.formDataJson)
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           to: 'extracted@example.com',
         }),
-        mockFormDefinitionWithSendEmail.email.address.prod,
-        expect.any(Array),
-      )
+        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        attachments: expect.any(Array),
+      })
     })
 
     it('should extract name from form data when userFirstName is null', async () => {
@@ -449,32 +443,30 @@ describe('EmailFormsSubservice', () => {
       expect(
         mockFormDefinitionWithSendEmail.email.extractName,
       ).toHaveBeenCalledWith(mockForm.formDataJson)
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           data: expect.objectContaining({
             firstName: 'Extracted Name',
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.address.prod,
-        expect.any(Array),
-      )
+        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        attachments: expect.any(Array),
+      })
     })
 
     it('should use null for firstName when both userFirstName and extractName are not available', async () => {
       mockFormDefinitionWithSendEmail.email.extractName = undefined
       await service.sendEmailForm(formId, userEmail, null)
 
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           data: expect.objectContaining({
             firstName: null,
           }),
         }),
-        mockFormDefinitionWithSendEmail.email.address.prod,
-        expect.any(Array),
-      )
+        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
+        attachments: expect.any(Array),
+      })
     })
 
     it('should log error but continue when sending confirmation email fails with sendEmail', async () => {
@@ -554,17 +546,16 @@ describe('EmailFormsSubservice', () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       // First call (department email) should include JSON attachment
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.anything(),
-        expect.arrayContaining([
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: expect.arrayContaining([
           expect.objectContaining({
             filename: 'submission.json',
             content: expect.any(Buffer),
           }),
         ]),
-      )
+      })
     })
 
     it('should not send JSON data as attachment when sendJsonDataAttachmentInTechnicalMail is undefined', async () => {
@@ -578,13 +569,11 @@ describe('EmailFormsSubservice', () => {
       )
 
       // First call (department email) should not include JSON attachment as sendJsonDataAttachmentInTechnicalMail is undefined
-      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.anything(),
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        undefined,
-      )
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: undefined,
+      })
     })
 
     it('should not send JSON data as attachment when sendJsonDataAttachmentInTechnicalMail is false', async () => {
@@ -598,13 +587,11 @@ describe('EmailFormsSubservice', () => {
       await service.sendEmailForm(formId, userEmail, userFirstName)
 
       // First call (department email) should not include JSON attachment
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.anything(),
-        expect.anything(),
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        undefined,
-      )
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: undefined,
+      })
 
       // Restore original value
       mockFormDefinitionWithSendEmail.email.sendJsonDataAttachmentInTechnicalMail =
@@ -625,13 +612,13 @@ describe('EmailFormsSubservice', () => {
 
       await service.sendEmailForm(formId, null, null)
 
-      expect(mailgunService.sendEmail).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.objectContaining({
           to: 'department@bratislava.sk',
         }),
-        'department@bratislava.sk',
-        expect.any(Array),
-      )
+        emailFrom: 'department@bratislava.sk',
+        attachments: expect.any(Array),
+      })
     })
 
     it('should take email based on CLUSTER_ENV and different emailFrom', async () => {
@@ -640,13 +627,13 @@ describe('EmailFormsSubservice', () => {
 
       await service.sendEmailForm(mockFormWithOloDefinition.id, null, null)
 
-      expect(oloMailerService.sendEmail).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(oloMailerService.sendEmail).toHaveBeenCalledWith({
+        data: expect.objectContaining({
           to: 'olo-test@bratislava.sk',
         }),
-        'from-olo-test@bratislava.sk',
-        undefined,
-      )
+        emailFrom: 'from-olo-test@bratislava.sk',
+        attachments: undefined,
+      })
     })
 
     it('should send both emails with parsed emailFrom', async () => {
@@ -659,23 +646,20 @@ describe('EmailFormsSubservice', () => {
         'Name',
       )
 
-      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.objectContaining({
           to: 'olo@bratislava.sk',
         }),
-        'from-olo@bratislava.sk',
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        undefined,
-      )
-      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(
-        2,
-        expect.objectContaining({
+        emailFrom: 'from-olo@bratislava.sk',
+        attachments: undefined,
+      })
+      expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(2, {
+        data: expect.objectContaining({
           to: 'some@mail.com',
         }),
-        'from-olo@bratislava.sk',
-        expect.any(Array),
-      )
+        emailFrom: 'from-olo@bratislava.sk',
+        attachments: expect.any(Array),
+      })
     })
   })
 

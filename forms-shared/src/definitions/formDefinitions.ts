@@ -48,10 +48,22 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
-import objednavkaInformativnehoZakresuSieti from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
-import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
-import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
-import ziadostOStanoviskoKProjektovejDokumentacii from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
+import objednavkaInformativnehoZakresuSieti, {
+  objednavkaInformativnehoZakresuSietiExtractEmail,
+  objednavkaInformativnehoZakresuSietiExtractName,
+} from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
+import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia, {
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
+  objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
+} from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
+import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia, {
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
+  ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
+} from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
+import ziadostOStanoviskoKProjektovejDokumentacii, {
+  ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
+  ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
+} from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
 
@@ -417,8 +429,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: objednavkaZakresuSietiExtractEmail,
-      extractName: objednavkaZakresuSietiExtractName,
+      extractEmail: objednavkaInformativnehoZakresuSietiExtractEmail,
+      extractName: objednavkaInformativnehoZakresuSietiExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
@@ -438,8 +450,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: objednavkaVytycenieExtractEmail,
-      extractName: objednavkaZakresuSietiExtractName,
+      extractEmail: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
+      extractName: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
@@ -459,8 +471,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: ziadostOStanoviskoPDExtractEmail,
-      extractName: ziadostOStanoviskoPDExtractName,
+      extractEmail: ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
+      extractName: ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
@@ -480,8 +492,8 @@ export const formDefinitions: FormDefinition[] = [
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
-      extractEmail: umiestnenieZariadeniaExtractEmail,
-      extractName: umiestnenieZariadeniaExtractName,
+      extractEmail: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
+      extractName: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,

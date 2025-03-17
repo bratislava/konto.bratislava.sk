@@ -181,23 +181,22 @@ export default schema(
   ],
 )
 
-export const objednavkaVytycenieExtractEmail = (
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail = (
   formData: GenericObjectType,
 ) => {
   return safeString(formData.objednavatel?.email)
 }
 
-export const objednavkaVytycenieExtractName = (
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName = (
   formData: GenericObjectType,
 ) => {
   if (
-    formData.objednavatel?.objednavatelTyp === 'Fyzická osoba' ||
-    formData.objednavatel?.objednavatelTyp === 'Fyzická osoba - podnikateľ'
+    formData.objednavatel?.objednavatelTyp === 'fyzickaOsoba' ||
+    formData.objednavatel?.objednavatelTyp === 'fyzickaOsobaPodnikatel'
   ) {
-    return safeString(formData.objednavatel?.menoPriezvisko?.meno)
+    return safeString(formData.objednavatel?.meno)
   }
-  if (formData.objednavatel?.objednavatelTyp === 'Právnická osoba') {
+  if (formData.objednavatel?.objednavatelTyp === 'pravnickaOsoba') {
     return safeString(formData.objednavatel?.obchodneMeno)
   }
 }
-

@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import FormData from 'form-data'
 import Handlebars from 'handlebars'
-import Mailgun from 'mailgun.js'
-import { YesNo } from 'mailgun.js/Enums'
+import Mailgun, { TemplateQuery } from 'mailgun.js'
 import { IMailgunClient } from 'mailgun.js/Interfaces'
 
 import {
@@ -15,11 +14,7 @@ import {
   MailgunErrorsResponseEnum,
 } from '../../../global-enums/mailgun.errors.enum'
 import ThrowerErrorGuard from '../../../guards/thrower-error.guard'
-import {
-  MAILGUN_CONFIG,
-  MAILGUN_CONFIG_FEEDBACK_URLS,
-  MailgunConfigVariableType,
-} from '../mailgun.constants'
+import { MAILGUN_CONFIG, MailgunConfigVariableType } from '../mailgun.constants'
 
 @Injectable()
 export default class MailgunHelper {
@@ -48,7 +43,7 @@ export default class MailgunHelper {
     })
   }
 
-  createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
+  static createEmailVariables(data: SendEmailInputDto): SendEmailVariablesDto {
     const response: SendEmailVariablesDto = {}
     Object.entries(MAILGUN_CONFIG[data.template].variables).forEach(
       ([key, val]) => {
@@ -72,9 +67,7 @@ export default class MailgunHelper {
               Object.prototype.hasOwnProperty.call(val.value, data.data.slug)
             ) {
               response[key as keyof SendEmailVariablesDto] =
-                val.value[
-                  data.data.slug as keyof typeof MAILGUN_CONFIG_FEEDBACK_URLS
-                ]
+                val.value[data.data.slug as keyof typeof val.value]
             }
 
             break
@@ -111,7 +104,7 @@ export default class MailgunHelper {
     const response = await this.mailgunClient.domains.domainTemplates.get(
       this.configService.getOrThrow('MAILGUN_DOMAIN'),
       templateName,
-      { active: YesNo.YES },
+      { active: 'yes' } as TemplateQuery, // There is an error when importing mailgun.js/Enums, thus this is needed
     )
 
     if (!response || !response.version?.template) {

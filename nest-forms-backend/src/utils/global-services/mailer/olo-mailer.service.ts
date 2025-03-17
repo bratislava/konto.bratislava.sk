@@ -50,7 +50,7 @@ export default class OloMailerService implements Mailer {
     try {
       const mailBody = await this.mailgunHelper.getFilledTemplate(
         MAILGUN_CONFIG[data.template].template,
-        this.mailgunHelper.createEmailVariables(data),
+        MailgunHelper.createEmailVariables(data),
       )
       await this.oloTransporter.sendMail({
         from: `OLO <${emailFrom}>`,

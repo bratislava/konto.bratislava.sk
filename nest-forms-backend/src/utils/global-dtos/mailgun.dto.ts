@@ -16,7 +16,8 @@ export interface SendEmailVariablesDto {
   applicationName?: string
   firstName?: string
   feHost?: string
-  feedbackLinks?: string
+  feedbackLink?: string
   formId?: string
   htmlData?: string
+  slug?: string
 }

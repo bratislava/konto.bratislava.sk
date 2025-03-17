@@ -15,10 +15,7 @@ export default class MailgunService implements Mailer {
 
   logger: LineLoggerSubservice
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly mailgunHelper: MailgunHelper,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     if (
       !process.env.MAILGUN_API_KEY ||
       !process.env.MAILGUN_HOST ||
@@ -53,7 +50,7 @@ export default class MailgunService implements Mailer {
           template: MAILGUN_CONFIG[data.template].template,
           subject: MAILGUN_CONFIG[data.template].subject,
           'h:X-Mailgun-Variables': JSON.stringify(
-            this.mailgunHelper.createEmailVariables(data),
+            MailgunHelper.createEmailVariables(data),
           ),
           attachment: mailgunAttachments,
         },

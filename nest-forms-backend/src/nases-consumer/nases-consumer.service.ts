@@ -143,13 +143,15 @@ export default class NasesConsumerService {
       const toEmail = data.userData.email || form.email
       if (toEmail) {
         await this.mailgunService.sendEmail({
-          to: toEmail,
-          template: MailgunTemplateEnum.NASES_SENT,
           data: {
-            formId: form.id,
-            messageSubject: formTitle,
-            firstName: data.userData.firstName,
-            slug: form.formDefinitionSlug,
+            to: toEmail,
+            template: MailgunTemplateEnum.NASES_SENT,
+            data: {
+              formId: form.id,
+              messageSubject: formTitle,
+              firstName: data.userData.firstName,
+              slug: form.formDefinitionSlug,
+            },
           },
         })
       }
@@ -159,13 +161,15 @@ export default class NasesConsumerService {
       const toEmail = data.userData.email || form.email
       if (data.tries === 1 && toEmail) {
         await this.mailgunService.sendEmail({
-          to: toEmail,
-          template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
           data: {
-            formId: form.id,
-            messageSubject: formTitle,
-            firstName: data.userData.firstName,
-            slug: form.formDefinitionSlug,
+            to: toEmail,
+            template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
+            data: {
+              formId: form.id,
+              messageSubject: formTitle,
+              firstName: data.userData.firstName,
+              slug: form.formDefinitionSlug,
+            },
           },
         })
       }

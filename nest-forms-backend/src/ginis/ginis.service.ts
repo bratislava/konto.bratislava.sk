@@ -572,14 +572,16 @@ export default class GinisService {
           getFrontendFormTitleFromForm(form, formDefinition) ||
           getSubjectTextFromForm(form, formDefinition)
         await this.mailgunService.sendEmail({
-          template: MailgunTemplateEnum.GINIS_DELIVERED,
           data: {
-            formId: form.id,
-            firstName: data.userData.firstName,
-            messageSubject: formTitle,
-            slug: form.formDefinitionSlug,
+            template: MailgunTemplateEnum.GINIS_DELIVERED,
+            data: {
+              formId: form.id,
+              firstName: data.userData.firstName,
+              messageSubject: formTitle,
+              slug: form.formDefinitionSlug,
+            },
+            to: data.userData.email,
           },
-          to: data.userData.email,
         })
       }
 

@@ -113,7 +113,7 @@ export class VerificationService {
     exchange: RABBIT_MQ.EXCHANGE,
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
-    errorHandler: async (channel: Channel, message: ConsumeMessage, error: Error) => {
+    errorHandler: async (channel: Channel, message: ConsumeMessage) => {
       channel.reject(message, false)
       try {
         const data = JSON.parse(message.content.toString()) as RabbitMessageDto

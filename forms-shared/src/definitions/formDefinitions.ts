@@ -48,10 +48,10 @@ import triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti, {
   triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName,
 } from '../schemas/olo/triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti'
 import { zevoExtractEmail, zevoExtractName } from '../schemas/olo/shared/zevoShared'
-import objednavkaZakresuSieti, { objednavkaZakresuSietiExtractEmail, objednavkaZakresuSietiExtractName } from '../schemas/tsb/objednavkaZakresuSieti'
-import objednavkaVytycenia, { objednavkaVytycenieExtractEmail, objednavkaVytycenieExtractName } from '../schemas/tsb/objednavkaVytycenie'
-import umiestnenieZariadenia, { umiestnenieZariadeniaExtractEmail, umiestnenieZariadeniaExtractName } from '../schemas/tsb/umiestnenieZariadenia'
-import ziadostOStanoviskoPD, { ziadostOStanoviskoPDExtractEmail, ziadostOStanoviskoPDExtractName } from '../schemas/tsb/ziadostOStanoviskoPD'
+import objednavkaInformativnehoZakresuSieti from '../schemas/tsb/objednavkaInformativnehoZakresuSieti'
+import objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia from '../schemas/tsb/objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia'
+import ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia from '../schemas/tsb/ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia'
+import ziadostOStanoviskoKProjektovejDokumentacii from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
 
@@ -406,10 +406,10 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'tsb-objednavka-zakresu-sieti',
-    title: 'TEST - Objednávka zákresu sietí',
+    slug: 'tsb-objednavka-informativneho-zakresu-sieti',
+    title: 'Objednávka informatívneho zákresu sietí',
     jsonVersion: '1.0.0',
-    schema: objednavkaZakresuSieti,
+    schema: objednavkaInformativnehoZakresuSieti,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
@@ -427,10 +427,10 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'tsb-objednavka-vytycenia',
-    title: 'TEST - Objednávka vytýčenia',
+    slug: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
+    title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     jsonVersion: '1.0.0',
-    schema: objednavkaVytycenia,
+    schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
@@ -448,10 +448,10 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'tsb-ziadost-o-stanovisko-pd',
-    title: 'TEST - Žiadosť o stanovisko k projektovej dokumentácii',
+    slug: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
+    title: 'Žiadosť o stanovisko k projektovej dokumentácii',
     jsonVersion: '1.0.0',
-    schema: ziadostOStanoviskoPD,
+    schema: ziadostOStanoviskoKProjektovejDokumentacii,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,
@@ -469,10 +469,10 @@ export const formDefinitions: FormDefinition[] = [
   },
   {
     type: FormDefinitionType.Email,
-    slug: 'tsb-umiestnenie-zariadenia',
-    title: 'TEST - Umiestnenie zariadenia',
+    slug: 'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
+    title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     jsonVersion: '1.0.0',
-    schema: umiestnenieZariadenia,
+    schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
     allowSendingUnauthenticatedUsers: true,

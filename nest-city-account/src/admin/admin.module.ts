@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
-import { ConfigModule } from '@nestjs/config'
 
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
@@ -21,7 +20,6 @@ import { TaxSubservice } from '../utils/subservices/tax.subservice'
     UpvsIdentityByUriModule,
     PhysicalEntityModule,
     BloomreachModule,
-    ConfigModule,
   ],
   providers: [
     AdminService,

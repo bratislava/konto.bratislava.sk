@@ -19,6 +19,7 @@ Adjust the values as you need. (all secret variables)
 ### Run locally
 
 1. Build required shared package:
+
 ```bash
 # Build openapi-clients
 cd ../openapi-clients/
@@ -28,10 +29,12 @@ cd ../nest-city-account/
 ```
 
 2. Run from docker-compose:
+
    - RabbitMQ
    - Postgresql
 
 3. Install dependencies:
+
 ```bash
 npm install
 ```
@@ -44,7 +47,7 @@ Migrate database and generate prisma files
 
 ```
 npx prisma migrate dev
-prisma generate
+npx prisma generate
 ```
 
 Run the app:

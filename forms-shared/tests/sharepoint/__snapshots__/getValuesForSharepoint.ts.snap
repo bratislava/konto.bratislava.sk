@@ -5,6 +5,7 @@ exports[`getValuesForFields > should match snapshots 1`] = `
   "DatumNarodenia": "1985-03-15",
   "Email": "jana.novakova@email.com",
   "GinisID": "MAG123",
+  "KontaktovanyEmailom": true,
   "MaximalnaVyskaNajomneho": 700,
   "MenoZiadatela": "Jana",
   "PreferovanaLokalita": "ruzinov, noveMesto",

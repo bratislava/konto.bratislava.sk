@@ -5,7 +5,7 @@ import { BasicStrategy as Strategy } from 'passport-http';
 
 @Injectable()
 export class BasicStrategy extends PassportStrategy(Strategy, 'auth-basic') {
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService<EnvironmentVariables, true>) {
     super({
       passReqToCallback: true,
     });

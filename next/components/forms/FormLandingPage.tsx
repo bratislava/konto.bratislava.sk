@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -35,7 +35,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerCreateForm(
+      formsClient.nasesControllerCreateForm(
         {
           formDefinitionSlug: formDefinition.slug,
         },

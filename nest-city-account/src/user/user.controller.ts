@@ -97,6 +97,41 @@ export class UserController {
     )
   }
 
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Update or create bloomreach customer for logged user',
+    description:
+      'This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return subscribed value for logged user',
+    type: ResponseUserDataDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
+  @UseGuards(CognitoGuard)
+  @Post('update-or-create-bloomreach-customer')
+  async updateOrCreateBloomreachCustomer(
+    @User() user: CognitoGetUserData
+  ): Promise<boolean | undefined> {
+    //there is no way to track user attributes change in cognito, so for now this solution is needed https://github.com/aws-amplify/amplify-js/issues/9391
+    // this.bloomreachService.trackCustomer(user.email, user.idUser, user)
+
+    const result = await this.bloomreachService.trackCustomer(user.email, user.idUser, user)
+    if (result) {
+      return result
+    }
+
+    throw this.throwerErrorGuard.UnprocessableEntityException(
+      UserErrorsEnum.COGNITO_TYPE_ERROR,
+      UserErrorsResponseEnum.COGNITO_TYPE_ERROR
+    )
+  }
+
   @UseGuards(CognitoGuard)
   @Post('remove-birthnumber')
   async removeBirthNumber(@User() user: CognitoGetUserData): Promise<ResponseUserDataDto> {

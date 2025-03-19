@@ -46,7 +46,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "crypto": "^1.0.1",
-    "express": "^4.19.2",
+    "express": "^5.0.1",
     "form-data": "^4.0.0",
     "jwks-rsa": "^3.1.0",
     "lodash": "^4.17.21",

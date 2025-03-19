@@ -1,5 +1,5 @@
 import { CheckIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import cn from '../../../../../frontend/cn'

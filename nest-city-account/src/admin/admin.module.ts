@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { PassportModule } from '@nestjs/passport'
+
 import { AdminStrategy } from '../auth/strategies/admin.strategy'
 import { BloomreachModule } from '../bloomreach/bloomreach.module'
 import { PhysicalEntityModule } from '../physical-entity/physical-entity.module'

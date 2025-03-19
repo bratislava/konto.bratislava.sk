@@ -1,9 +1,9 @@
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 type MyApplicationsDetailsBase = {
   formDefinitionTitle: string

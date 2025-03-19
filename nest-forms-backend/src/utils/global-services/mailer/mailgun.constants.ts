@@ -1,15 +1,4 @@
 /* eslint-disable no-secrets/no-secrets */
-export enum MailgunTemplateEnum {
-  NASES_SENT = 'NASES_SENT',
-  GINIS_DELIVERED = 'GINIS_DELIVERED',
-  NASES_GINIS_IN_PROGRESS = 'NASES_GINIS_IN_PROGRESS',
-  GINIS_SUCCESS = 'GINIS_SUCCESS',
-  GINIS_DENIED = 'GINIS_DENIED',
-  ATTACHMENT_VIRUS = 'ATTACHMENT_VIRUS',
-  OLO_SEND_FORM = 'OLO_SEND_FORM',
-  OLO_DELIVERED_SUCCESS = 'OLO_DELIVERED_SUCCESS',
-}
-
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
   SELECT = 'SELECT',
@@ -160,7 +149,7 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
-  OLO_SEND_FORM: {
+  OLO_NEW_SUBMISSION: {
     template: 'olo-form-send',
     subject: 'OLO: Nové podanie',
     variables: {
@@ -174,7 +163,7 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
-  OLO_DELIVERED_SUCCESS: {
+  OLO_SENT_SUCCESS: {
     template: '2024-olo-form-success',
     subject: 'OLO: Vaša žiadosť bola odoslaná',
     variables: {
@@ -185,6 +174,39 @@ export const MAILGUN_CONFIG = {
       feHost: {
         type: MailgunConfigVariableType.STRING,
         value: process.env.OLO_FRONTEND_URL || 'https://olo.sk',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+    },
+  },
+  TSB_NEW_SUBMISSION: {
+    template: 'olo-form-send', // TODO change to TSB template
+    subject: 'TSB: Nové podanie',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      htmlData: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{htmlData}}',
+      },
+    },
+  },
+  TSB_SENT_SUCCESS: {
+    template: '2024-olo-form-success', // TODO change to TSB template
+    subject: 'TSB: Vaša žiadosť bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      feHost: {
+        type: MailgunConfigVariableType.STRING,
+        value:
+          'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava',
       },
       firstName: {
         type: MailgunConfigVariableType.PARAMETER,

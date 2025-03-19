@@ -1,5 +1,5 @@
 import { AlertIcon, ErrorIcon } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import cn from 'frontend/cn'
@@ -25,7 +25,7 @@ const FormVersionCompareAction = () => {
 
   const { mutate: bumpVersionMutate, isPending: bumpVersionIsPending } = useMutation({
     mutationFn: () =>
-      formsApi.formsControllerBumpJsonVersion(formId, { accessToken: 'onlyAuthenticated' }),
+      formsClient.formsControllerBumpJsonVersion(formId, { accessToken: 'onlyAuthenticated' }),
     networkMode: 'always',
     onSuccess: () => {
       router.reload()

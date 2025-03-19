@@ -9,6 +9,8 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 
 export default schema(
@@ -178,3 +180,23 @@ export default schema(
     ]),
   ],
 )
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail = (
+  formData: GenericObjectType,
+) => {
+  return safeString(formData.objednavatel?.email)
+}
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName = (
+  formData: GenericObjectType,
+) => {
+  if (
+    formData.objednavatel?.objednavatelTyp === 'fyzickaOsoba' ||
+    formData.objednavatel?.objednavatelTyp === 'fyzickaOsobaPodnikatel'
+  ) {
+    return safeString(formData.objednavatel?.meno)
+  }
+  if (formData.objednavatel?.objednavatelTyp === 'pravnickaOsoba') {
+    return safeString(formData.objednavatel?.obchodneMeno)
+  }
+}

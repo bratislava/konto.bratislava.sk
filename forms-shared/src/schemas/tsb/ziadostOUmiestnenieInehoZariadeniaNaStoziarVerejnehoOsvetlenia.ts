@@ -8,6 +8,8 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },
@@ -135,3 +137,23 @@ export default schema(
     ]),
   ],
 )
+
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail = (
+  formData: GenericObjectType,
+) => {
+  return safeString(formData.ziadatel?.email)
+}
+
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName = (
+  formData: GenericObjectType,
+) => {
+  if (
+    formData.ziadatel?.ziadatelTyp === 'fyzickaOsoba' ||
+    formData.ziadatel?.ziadatelTyp === 'fyzickaOsobaPodnikatel'
+  ) {
+    return safeString(formData.ziadatel?.meno)
+  }
+  if (formData.ziadatel?.ziadatelTyp === 'pravnickaOsoba') {
+    return safeString(formData.ziadatel?.obchodneMeno)
+  }
+}

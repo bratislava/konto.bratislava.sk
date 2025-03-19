@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
-import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
+import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'

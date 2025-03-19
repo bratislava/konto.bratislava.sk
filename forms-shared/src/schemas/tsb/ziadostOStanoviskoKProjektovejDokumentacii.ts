@@ -7,6 +7,8 @@ import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { GenericObjectType } from '@rjsf/utils'
+import { safeString } from '../../form-utils/safeData'
 
 export default schema(
   {
@@ -127,3 +129,23 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
     ]),
   ],
 )
+
+export const ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail = (
+  formData: GenericObjectType,
+) => {
+  return safeString(formData.ziadatel?.email)
+}
+
+export const ziadostOStanoviskoKProjektovejDokumentaciiExtractName = (
+  formData: GenericObjectType,
+) => {
+  if (
+    formData.ziadatel?.ziadatelTyp === 'fyzickaOsoba' ||
+    formData.ziadatel?.ziadatelTyp === 'fyzickaOsobaPodnikatel'
+  ) {
+    return safeString(formData.ziadatel?.meno)
+  }
+  if (formData.ziadatel?.ziadatelTyp === 'pravnickaOsoba') {
+    return safeString(formData.ziadatel?.obchodneMeno)
+  }
+}

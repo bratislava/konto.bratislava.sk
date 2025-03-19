@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 
 import FormsHelper from '../forms/forms.helper'
 // eslint-disable-next-line import/no-cycle
@@ -14,7 +13,7 @@ import FilesHelper from './files.helper'
 import FilesService from './files.service'
 
 @Module({
-  imports: [PrismaModule, ConfigModule, FormsModule, ScannerClientModule],
+  imports: [PrismaModule, FormsModule, ScannerClientModule],
   providers: [
     FilesService,
     FilesHelper,

@@ -30,6 +30,7 @@
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^5.7.0",
     "@nestjs/common": "^10.4.0",
+    "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^10.4.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.0",
@@ -61,7 +62,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^3.18.0",
+    "@darraghor/eslint-plugin-nestjs-typed": "^5.2.1",
     "@golevelup/ts-jest": "^0.5.0",
     "@nestjs/cli": "^10.4.4",
     "@nestjs/testing": "^10.4.0",
@@ -74,9 +75,11 @@
     "@types/request": "^2.48.12",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.33.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
@@ -90,10 +93,10 @@
     "prisma": "^5.19.1",
     "rimraf": "^6.0.1",
     "supertest": "^6.3.3",
-    "ts-jest": "^29.0.5",
+    "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "ts-unused-exports": "^9.0.3",
-    "typescript": "^4.9.5"
+    "typescript": "^5.4.5"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -45,7 +45,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "mime-types": "^2.1.35",
-    "minio": "^8.0.4",
+    "minio": "^8.0.5",
     "nestjs-minio-client": "^2.2.0",
     "openapi-clients": "file:../openapi-clients",
     "passport-http": "^0.3.0",

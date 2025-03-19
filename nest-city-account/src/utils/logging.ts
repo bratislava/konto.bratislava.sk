@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpException } from '@nestjs/common'
 
 import { RequiredError } from '../generated-clients/new-magproxy/base'

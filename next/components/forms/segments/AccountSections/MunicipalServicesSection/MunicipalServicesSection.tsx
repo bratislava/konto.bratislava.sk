@@ -60,6 +60,7 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
+  1,
   environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
   44,
   9,
@@ -67,7 +68,6 @@ const foMunicipalServicesSection = [
   34,
   35,
   43,
-  1,
   2,
   3,
   4,
@@ -96,6 +96,7 @@ const foMunicipalServicesSection = [
   18,
 ].filter(isDefined)
 const poMunicipalServicesSection = [
+  1,
   environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
   34,
   35,
@@ -104,7 +105,6 @@ const poMunicipalServicesSection = [
   4,
   6,
   43,
-  1,
   42,
   8,
   10,

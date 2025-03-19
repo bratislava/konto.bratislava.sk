@@ -25,7 +25,7 @@ export class TurnstileSubservice {
     }
   }
 
-  async validateToken(token: string): Promise<any> {
+  async validateToken(token: string): Promise<void> {
     let result: TurnstileResponse | undefined
     try {
       result = await this.turnstile(token)

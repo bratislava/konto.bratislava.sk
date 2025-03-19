@@ -10,16 +10,21 @@ import {
 } from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { PrismaService } from '../prisma/prisma.service'
+import {
+  VerificationErrorsEnum,
+  VerificationErrorsResponseEnum,
+} from '../user-verification/verification.errors.enum'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
 import { decryptData } from '../utils/crypto'
 import {
   CognitoUserAccountTypesEnum,
   CognitoUserAttributesEnum,
 } from '../utils/global-dtos/cognito.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { UserErrorsEnum, UserErrorsResponseEnum } from '../user/user.error.enum'
-import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
@@ -32,10 +37,6 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
-import {
-  VerificationErrorsEnum,
-  VerificationErrorsResponseEnum,
-} from '../user-verification/verification.errors.enum'
 
 @Injectable()
 export class AdminService {
@@ -45,7 +46,8 @@ export class AdminService {
     private prismaService: PrismaService,
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
-    private readonly bloomreachService: BloomreachService
+    private readonly bloomreachService: BloomreachService,
+    private readonly taxSubservice: TaxSubservice,
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -221,11 +223,12 @@ export class AdminService {
       cognitoUser['custom:account_type']
     )
 
+    let removedUser: User | null = null
     if (
       cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
       CognitoUserAccountTypesEnum.PHYSICAL_ENTITY
     ) {
-      await removeUserDataFromDatabase(this.prismaService, externalId)
+      removedUser = await removeUserDataFromDatabase(this.prismaService, externalId)
     } else if (
       cognitoUser[CognitoUserAttributesEnum.ACCOUNT_TYPE] ===
         CognitoUserAccountTypesEnum.LEGAL_ENTITY ||
@@ -240,9 +243,11 @@ export class AdminService {
       )
     }
 
-    const bloomreachRemovedStatus = await this.bloomreachService.anonymizeCustomer(externalId)
+    const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(externalId)
 
-    return { success: true, bloomreachRemovedStatus }
+    const taxDeliveryMethodsRemoved = removedUser && removedUser.birthNumber ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber) : true
+
+    return { success: true, bloomreachRemoved, taxDeliveryMethodsRemoved }
   }
 
   async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {
@@ -447,7 +452,7 @@ export class AdminService {
             UserErrorsResponseEnum.NO_EXTERNAL_ID
           )
         }
-        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch((e) => undefined)
+        return this.cognitoSubservice.getDataFromCognito(user.externalId).catch(() => undefined)
       })
     )
     const usersMappedToTheirPhysicalEntities = users.map(

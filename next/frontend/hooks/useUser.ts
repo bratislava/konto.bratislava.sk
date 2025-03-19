@@ -1,11 +1,11 @@
-import { cityAccountApi } from '@clients/city-account'
+import { cityAccountClient } from '@clients/city-account'
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
-  ResponseUserDataDto,
-} from '@clients/openapi-city-account'
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
+  UserControllerGetOrCreateUser200Response,
+} from 'openapi-clients/city-account'
 
 const userQueryKey = ['user']
 
@@ -18,7 +18,7 @@ export const prefetchUserQuery = async (
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
+      cityAccountClient
         .userControllerGetOrCreateUser({ accessToken: 'always', accessTokenSsrGetFn })
         .then((response) => response.data),
   })
@@ -29,7 +29,7 @@ export const useUser = () => {
   const { data: userData } = useQuery({
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
+      cityAccountClient
         .userControllerGetOrCreateUser({ accessToken: 'always' })
         .then((response) => response.data),
     staleTime: Infinity,
@@ -58,14 +58,14 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
 
   const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
-    AxiosResponse<ResponseUserDataDto>,
+    AxiosResponse<UserControllerGetOrCreateUser200Response>,
     AxiosError,
     boolean
   >({
     mutationFn: (subscribe) => {
       const endpoint = subscribe
-        ? cityAccountApi.userControllerSubscribeLoggedUser
-        : cityAccountApi.userControllerUnsubscribeLoggedUser
+        ? cityAccountClient.userControllerSubscribeLoggedUser
+        : cityAccountClient.userControllerUnsubscribeLoggedUser
 
       return endpoint(
         {

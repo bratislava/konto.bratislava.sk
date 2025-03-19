@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { PassportModule } from '@nestjs/passport'
 
 import NasesModule from '../nases/nases.module'
@@ -20,7 +19,6 @@ import NasesStrategy from './strategies/nases.strategy'
     AuthService,
     NasesStrategy,
     BasicStrategy,
-    ConfigService,
     ThrowerErrorGuard,
     BasicGuard,
     NasesAuthGuard,

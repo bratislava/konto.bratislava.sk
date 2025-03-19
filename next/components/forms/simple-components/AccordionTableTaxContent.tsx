@@ -1,5 +1,5 @@
-import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
+import { ResponseTaxDetailsDto } from 'openapi-clients/tax'
 import React, { useRef } from 'react'
 
 import cn from '../../../frontend/cn'

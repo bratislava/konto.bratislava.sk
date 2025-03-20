@@ -5,6 +5,9 @@ fragment Tax on Tax {
   displayCurrentYearTaxInPreparation
   channelChangeEffectiveNextYearText
   channelChangeEffectiveNextYearTitle
+  paymentSuccessFeedbackLink
+  paymentSuccessPrivacyPolicyLink
+  paymentSuccessFaqLink
 }
 
 query Tax {

@@ -6,6 +6,7 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
   VerifyFormSignatureError,
@@ -56,6 +57,7 @@ import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
 export default class NasesService {
@@ -322,29 +324,29 @@ export default class NasesService {
       )
     }
 
-    if (
-      !formDefinition.allowSendingUnauthenticatedUsers &&
-      !this.isUserVerified(user)
-    ) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.SEND_UNVERIFIED,
-        NasesErrorsResponseEnum.SEND_UNVERIFIED,
-      )
-    }
-
-    if (
-      !this.formsHelper.userCanSendForm(
-        form,
-        formDefinition.allowSendingUnauthenticatedUsers ?? false,
-        userInfo,
-        user?.sub,
-      )
-    }
-
     if (!this.formsHelper.userCanSendForm(form, userInfo, user?.sub)) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
+    const evaluatedSendPolicy = evaluateFormSendPolicy(
+      formDefinition.sendPolicy,
+      userToSendPolicyAccountType(user),
+    )
+
+    if (!evaluatedSendPolicy.send.possible) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      )
+    }
+
+    if (!evaluatedSendPolicy.send.allowedForUser) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     }
 
@@ -453,12 +455,23 @@ export default class NasesService {
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
-
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const evaluatedSendPolicy = evaluateFormSendPolicy(
+      formDefinition.sendPolicy,
+      userToSendPolicyAccountType(cognitoUser),
+    )
+
+    if (!evaluatedSendPolicy.eidSend.possible) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     }
 

@@ -120,6 +120,34 @@ export class FormVersionNotCompatibleErrorDto extends UnprocessableEntityErrorDt
   declare message: string
 }
 
+export class SendPolicyNotPossibleErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+    default: NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+    default: NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+  })
+  declare message: string
+}
+
+export class SendPolicyNotAllowedForUserErrorDto extends ForbiddenErrorDto {
+  @ApiProperty({
+    example: NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+    default: NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+    default: NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+  })
+  declare message: string
+}
+
 export const verifyFormSignatureErrorMapping: Record<
   VerifyFormSignatureErrorType,
   { error: NasesErrorsEnum; message: NasesErrorsResponseEnum }

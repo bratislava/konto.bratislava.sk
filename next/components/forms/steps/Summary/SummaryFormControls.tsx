@@ -14,7 +14,7 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isTaxForm, isSigned, isReadonly, sendWithEidAllowed } = useFormContext()
+  const { isSigned, isReadonly, sendWithEidAllowed } = useFormContext()
   const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { getValidatedSummary } = useFormSummary()
@@ -44,8 +44,8 @@ const SummaryFormControls = () => {
         </div>
 
         <div className="flex flex-row flex-wrap gap-5">
-          {/* Temporary logic for tax form, will be cleaned up. */}
-          {isTaxForm ? (
+          {/* Temporary logic for signed forms, will be cleaned up. */}
+          {isSigned ? (
             <>
               <ButtonNew
                 variant={isSigned ? 'black-outline' : 'black-solid'}
@@ -54,7 +54,7 @@ const SummaryFormControls = () => {
               >
                 {t('summary.export_pdf')}
               </ButtonNew>
-              {isSigned && sendWithEidAllowed ? (
+              {sendWithEidAllowed ? (
                 <ButtonNew
                   isDisabled={submitDisabled}
                   type="submit"
@@ -92,17 +92,17 @@ const SummaryFormControls = () => {
 
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 md:hidden">
-        {isTaxForm ? (
+        {isSigned ? (
           <>
             <ButtonNew
-              variant={isSigned ? 'black-outline' : 'black-solid'}
+              variant="black-outline"
               onPress={exportPdf}
               fullWidth
               data-cy="download-pdf-button-mobile"
             >
               {t('summary.export_pdf')}
             </ButtonNew>
-            {isSigned && sendWithEidAllowed ? (
+            {sendWithEidAllowed ? (
               <ButtonNew
                 isDisabled={submitDisabled}
                 size="small"

@@ -67,7 +67,7 @@ export default class SftpFileSubservice {
   private async filterAlreadyReportedFiles(files: FileInfo[]) {
     const alreadyReportedFiles = await this.prisma.csvFile.findMany({
       select: { name: true },
-      where: {name: { in: files.map((file) => file.name) }},
+      where: { name: { in: files.map((file) => file.name) } },
     })
 
     return files

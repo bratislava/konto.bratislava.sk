@@ -82,6 +82,8 @@ import {
   FormAssignedToOtherUserErrorDto,
   FormSummaryGenerationErrorDto,
   FormVersionNotCompatibleErrorDto,
+  SendPolicyNotAllowedForUserErrorDto,
+  SendPolicyNotPossibleErrorDto,
   SignatureFormDataHashMismatchErrorDto,
   SignatureFormDefinitionMismatchErrorDto,
   SignatureMissingErrorDto,
@@ -455,6 +457,8 @@ export default class NasesController {
   @ApiExtraModels(FormSummaryGenerationErrorDto)
   @ApiExtraModels(EmptyFormDataErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
+  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
   @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
@@ -464,6 +468,19 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
+      ],
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden error.',
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(ForbiddenFormSendDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
         },
       ],
     },
@@ -486,6 +503,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
         },
       ],
     },
@@ -538,6 +558,7 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
   @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {
@@ -547,6 +568,19 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
+      ],
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden error.',
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(ForbiddenFormSendDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
         },
       ],
     },
@@ -578,6 +612,9 @@ export default class NasesController {
         },
         {
           $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
         },
       ],
     },
@@ -649,12 +686,27 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
+  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
   @ApiBadRequestResponse({
     description: 'Bad request error.',
     schema: {
       anyOf: [
         {
-          $ref: getSchemaPath(FormNotEditableErrorDto),
+          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
+        },
+      ],
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden error.',
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(ForbiddenFormSendDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
         },
       ],
     },
@@ -739,6 +791,31 @@ export default class NasesController {
   @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
   @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
   @ApiExtraModels(FormVersionNotCompatibleErrorDto)
+  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
+  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
+  @ApiBadRequestResponse({
+    description: 'Bad request error.',
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
+        },
+      ],
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden error.',
+    schema: {
+      anyOf: [
+        {
+          $ref: getSchemaPath(ForbiddenFormSendDto),
+        },
+        {
+          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
+        },
+      ],
+    },
+  })
   @ApiNotFoundResponse({
     description: 'Not found error.',
     schema: {

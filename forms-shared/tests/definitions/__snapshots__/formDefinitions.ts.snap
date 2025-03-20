@@ -73100,7 +73100,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
   "udaje": {
     "fakturacneUdaje": {},
     "udajeObjednavky": {
-      "viacKatastralneUzemia": false,
+      "katastralneUzemie": [],
     },
   },
 }
@@ -73606,289 +73606,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "type": "object",
             },
             "udajeObjednavky": {
-              "allOf": [
-                {
-                  "if": {
-                    "properties": {
-                      "viacKatastralneUzemia": {
-                        "const": true,
-                      },
-                    },
-                    "required": [
-                      "viacKatastralneUzemia",
-                    ],
-                    "type": "object",
-                  },
-                  "then": {
-                    "properties": {
-                      "katastralneUzemia": {
-                        "baOrder": 4,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "enumMetadata": [
-                              {
-                                "label": "Čunovo",
-                                "value": "Čunovo",
-                              },
-                              {
-                                "label": "Devín",
-                                "value": "Devín",
-                              },
-                              {
-                                "label": "Devínska Nová Ves",
-                                "value": "Devínska Nová Ves",
-                              },
-                              {
-                                "label": "Dúbravka",
-                                "value": "Dúbravka",
-                              },
-                              {
-                                "label": "Jarovce",
-                                "value": "Jarovce",
-                              },
-                              {
-                                "label": "Karlova Ves",
-                                "value": "Karlova Ves",
-                              },
-                              {
-                                "label": "Lamač",
-                                "value": "Lamač",
-                              },
-                              {
-                                "label": "Nové Mesto",
-                                "value": "Nové Mesto",
-                              },
-                              {
-                                "label": "Vinohrady",
-                                "value": "Vinohrady",
-                              },
-                              {
-                                "label": "Petržalka",
-                                "value": "Petržalka",
-                              },
-                              {
-                                "label": "Podunajské Biskupice",
-                                "value": "Podunajské Biskupice",
-                              },
-                              {
-                                "label": "Rača",
-                                "value": "Rača",
-                              },
-                              {
-                                "label": "Rusovce",
-                                "value": "Rusovce",
-                              },
-                              {
-                                "label": "Ružinov",
-                                "value": "Ružinov",
-                              },
-                              {
-                                "label": "Trnávka",
-                                "value": "Trnávka",
-                              },
-                              {
-                                "label": "Nivy",
-                                "value": "Nivy",
-                              },
-                              {
-                                "label": "Staré Mesto",
-                                "value": "Staré Mesto",
-                              },
-                              {
-                                "label": "Vajnory",
-                                "value": "Vajnory",
-                              },
-                              {
-                                "label": "Vrakuňa",
-                                "value": "Vrakuňa",
-                              },
-                              {
-                                "label": "Záhorská Bystrica",
-                                "value": "Záhorská Bystrica",
-                              },
-                            ],
-                            "helptext": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
-                          },
-                          "ui:widget": "SelectMultiple",
-                        },
-                        "default": [
-                          "Čunovo",
-                        ],
-                        "items": {
-                          "enum": [
-                            "Čunovo",
-                            "Devín",
-                            "Devínska Nová Ves",
-                            "Dúbravka",
-                            "Jarovce",
-                            "Karlova Ves",
-                            "Lamač",
-                            "Nové Mesto",
-                            "Vinohrady",
-                            "Petržalka",
-                            "Podunajské Biskupice",
-                            "Rača",
-                            "Rusovce",
-                            "Ružinov",
-                            "Trnávka",
-                            "Nivy",
-                            "Staré Mesto",
-                            "Vajnory",
-                            "Vrakuňa",
-                            "Záhorská Bystrica",
-                          ],
-                          "type": "string",
-                        },
-                        "minItems": 1,
-                        "title": "Katastrálne územia",
-                        "type": "array",
-                        "uniqueItems": true,
-                      },
-                    },
-                    "required": [
-                      "katastralneUzemia",
-                    ],
-                    "type": "object",
-                  },
-                },
-                {
-                  "if": {
-                    "properties": {
-                      "viacKatastralneUzemia": {
-                        "const": false,
-                      },
-                    },
-                    "required": [
-                      "viacKatastralneUzemia",
-                    ],
-                    "type": "object",
-                  },
-                  "then": {
-                    "properties": {
-                      "katastralneUzemie": {
-                        "baOrder": 5,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "enumMetadata": [
-                              {
-                                "label": "Čunovo",
-                                "value": "Čunovo",
-                              },
-                              {
-                                "label": "Devín",
-                                "value": "Devín",
-                              },
-                              {
-                                "label": "Devínska Nová Ves",
-                                "value": "Devínska Nová Ves",
-                              },
-                              {
-                                "label": "Dúbravka",
-                                "value": "Dúbravka",
-                              },
-                              {
-                                "label": "Jarovce",
-                                "value": "Jarovce",
-                              },
-                              {
-                                "label": "Karlova Ves",
-                                "value": "Karlova Ves",
-                              },
-                              {
-                                "label": "Lamač",
-                                "value": "Lamač",
-                              },
-                              {
-                                "label": "Nové Mesto",
-                                "value": "Nové Mesto",
-                              },
-                              {
-                                "label": "Vinohrady",
-                                "value": "Vinohrady",
-                              },
-                              {
-                                "label": "Petržalka",
-                                "value": "Petržalka",
-                              },
-                              {
-                                "label": "Podunajské Biskupice",
-                                "value": "Podunajské Biskupice",
-                              },
-                              {
-                                "label": "Rača",
-                                "value": "Rača",
-                              },
-                              {
-                                "label": "Rusovce",
-                                "value": "Rusovce",
-                              },
-                              {
-                                "label": "Ružinov",
-                                "value": "Ružinov",
-                              },
-                              {
-                                "label": "Trnávka",
-                                "value": "Trnávka",
-                              },
-                              {
-                                "label": "Nivy",
-                                "value": "Nivy",
-                              },
-                              {
-                                "label": "Staré Mesto",
-                                "value": "Staré Mesto",
-                              },
-                              {
-                                "label": "Vajnory",
-                                "value": "Vajnory",
-                              },
-                              {
-                                "label": "Vrakuňa",
-                                "value": "Vrakuňa",
-                              },
-                              {
-                                "label": "Záhorská Bystrica",
-                                "value": "Záhorská Bystrica",
-                              },
-                            ],
-                            "helptext": "Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.",
-                          },
-                          "ui:widget": "Select",
-                        },
-                        "default": "Čunovo",
-                        "enum": [
-                          "Čunovo",
-                          "Devín",
-                          "Devínska Nová Ves",
-                          "Dúbravka",
-                          "Jarovce",
-                          "Karlova Ves",
-                          "Lamač",
-                          "Nové Mesto",
-                          "Vinohrady",
-                          "Petržalka",
-                          "Podunajské Biskupice",
-                          "Rača",
-                          "Rusovce",
-                          "Ružinov",
-                          "Trnávka",
-                          "Nivy",
-                          "Staré Mesto",
-                          "Vajnory",
-                          "Vrakuňa",
-                          "Záhorská Bystrica",
-                        ],
-                        "title": "Katastrálne územie",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "katastralneUzemie",
-                    ],
-                    "type": "object",
-                  },
-                },
-              ],
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
@@ -73910,7 +73627,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   "type": "string",
                 },
                 "druhStavby": {
-                  "baOrder": 6,
+                  "baOrder": 4,
                   "baUiSchema": {
                     "ui:options": {
                       "helptext": "Napríklad: telekomunikačná líniová stavba",
@@ -73920,6 +73637,127 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   },
                   "title": "Druh stavby",
                   "type": "string",
+                },
+                "katastralneUzemie": {
+                  "baOrder": 3,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "enumMetadata": [
+                        {
+                          "label": "Čunovo",
+                          "value": "809985",
+                        },
+                        {
+                          "label": "Devín",
+                          "value": "805301",
+                        },
+                        {
+                          "label": "Devínska Nová Ves",
+                          "value": "810649",
+                        },
+                        {
+                          "label": "Dúbravka",
+                          "value": "806099",
+                        },
+                        {
+                          "label": "Jarovce",
+                          "value": "822256",
+                        },
+                        {
+                          "label": "Karlova Ves",
+                          "value": "805211",
+                        },
+                        {
+                          "label": "Lamač",
+                          "value": "806005",
+                        },
+                        {
+                          "label": "Nivy",
+                          "value": "804274",
+                        },
+                        {
+                          "label": "Nové Mesto",
+                          "value": "804690",
+                        },
+                        {
+                          "label": "Petržalka",
+                          "value": "804959",
+                        },
+                        {
+                          "label": "Podunajské Biskupice",
+                          "value": "847755",
+                        },
+                        {
+                          "label": "Rača",
+                          "value": "805866",
+                        },
+                        {
+                          "label": "Rusovce",
+                          "value": "853771",
+                        },
+                        {
+                          "label": "Ružinov",
+                          "value": "805556",
+                        },
+                        {
+                          "label": "Staré Mesto",
+                          "value": "804096",
+                        },
+                        {
+                          "label": "Trnávka",
+                          "value": "805343",
+                        },
+                        {
+                          "label": "Vajnory",
+                          "value": "805700",
+                        },
+                        {
+                          "label": "Vinohrady",
+                          "value": "804380",
+                        },
+                        {
+                          "label": "Vrakuňa",
+                          "value": "870293",
+                        },
+                        {
+                          "label": "Záhorská Bystrica",
+                          "value": "871796",
+                        },
+                      ],
+                      "helptext": "Vyberte jedno alebo viacero katastrálnych území zo zoznamu.",
+                    },
+                    "ui:widget": "SelectMultiple",
+                  },
+                  "default": [],
+                  "items": {
+                    "enum": [
+                      "809985",
+                      "805301",
+                      "810649",
+                      "806099",
+                      "822256",
+                      "805211",
+                      "806005",
+                      "804274",
+                      "804690",
+                      "804959",
+                      "847755",
+                      "805866",
+                      "853771",
+                      "805556",
+                      "804096",
+                      "805343",
+                      "805700",
+                      "804380",
+                      "870293",
+                      "871796",
+                    ],
+                    "type": "string",
+                  },
+                  "minItems": 1,
+                  "title": "Katastrálne územie",
+                  "type": "array",
+                  "uniqueItems": true,
                 },
                 "pozadovaneMiestoPlnenia": {
                   "baOrder": 2,
@@ -73934,7 +73772,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   "type": "string",
                 },
                 "pozadovanyTerminPlnenia": {
-                  "baOrder": 7,
+                  "baOrder": 5,
                   "baUiSchema": {
                     "ui:options": {
                       "helptext": "Štandardný termín na vybavenie objednávky je 30 dní",
@@ -73945,38 +73783,11 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                   "title": "Požadovaný termín plnenia",
                   "type": "string",
                 },
-                "viacKatastralneUzemia": {
-                  "baOrder": 3,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "enumMetadata": [
-                        {
-                          "label": "Áno",
-                          "value": true,
-                        },
-                        {
-                          "label": "Nie",
-                          "value": false,
-                        },
-                      ],
-                      "orientations": "row",
-                      "variant": "boxed",
-                    },
-                    "ui:widget": "RadioGroup",
-                  },
-                  "default": false,
-                  "enum": [
-                    true,
-                    false,
-                  ],
-                  "title": "Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?",
-                  "type": "boolean",
-                },
               },
               "required": [
                 "dovodVytycenia",
                 "pozadovaneMiestoPlnenia",
-                "viacKatastralneUzemia",
+                "katastralneUzemie",
                 "pozadovanyTerminPlnenia",
               ],
               "type": "object",
@@ -74010,7 +73821,8 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "baUiSchema": {
                 "ui:options": {
                   "accept": ".pdf,.jpg,.jpeg,.png",
-                  "helptext": "Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby Objednávka informatívneho zákresu sietí",
+                  "helptext": "Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby [Objednávka informatívneho zákresu sietí](https://konto.bratislava.sk/mestske-sluzby/tsb-objednavka-informativneho-zakresu-sieti)",
+                  "helptextMarkdown": true,
                   "type": "dragAndDrop",
                 },
                 "ui:widget": "FileUploadMultiple",

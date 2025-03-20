@@ -19,7 +19,6 @@ type FormDefinitionBase = {
   messageSubjectFormat?: string
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
-  allowSendingUnauthenticatedUsers?: boolean // Default should be false, so undefined must be handled as false
   exampleFormNotRequired?: boolean
 }
 

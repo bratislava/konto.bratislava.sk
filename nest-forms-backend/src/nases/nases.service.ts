@@ -339,7 +339,9 @@ export default class NasesService {
         userInfo,
         user?.sub,
       )
-    ) {
+    }
+
+    if (!this.formsHelper.userCanSendForm(form, userInfo, user?.sub)) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,

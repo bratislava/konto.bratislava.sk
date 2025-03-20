@@ -400,14 +400,6 @@ describe('NasesService', () => {
       )
     })
 
-    it('should throw an error if user is not verified for a form that requires verification', async () => {
-      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
-
-      await expect(
-        service.sendForm('1', undefined, {} as CognitoGetUserData),
-      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_UNVERIFIED)
-    })
-
     it('should throw an error if user cannot send the form', async () => {
       jest
         .spyOn(service['formsHelper'], 'userCanSendForm')
@@ -429,33 +421,6 @@ describe('NasesService', () => {
     })
 
     it('should queue the form', async () => {
-      const result = await service.sendForm('1')
-
-      expect(result).toEqual({
-        id: '1',
-        message: 'Form was successfully queued to rabbitmq.',
-        state: FormState.QUEUED,
-      })
-    })
-
-    it('should fail if the email form is only for verified users and the user is not verified', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        ...mockFormDefinitionEmail,
-      })
-      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
-
-      await expect(service.sendForm('1')).rejects.toThrow(
-        NasesErrorsResponseEnum.SEND_UNVERIFIED,
-      )
-    })
-
-    it('should queue the email form even if the user is not authenticated and the form is not only for authenticated users', async () => {
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        ...mockFormDefinitionEmail,
-        allowSendingUnauthenticatedUsers: true,
-      })
-      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(false)
-
       const result = await service.sendForm('1')
 
       expect(result).toEqual({

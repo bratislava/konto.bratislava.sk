@@ -217,7 +217,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Mimoriadny odvoz a zhodnotenie odpadu',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -237,7 +236,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Energetické zhodnotenie odpadu v ZEVO',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -257,7 +255,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Uzatvorenie zmluvy o nakladaní s odpadom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -277,7 +274,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Dočistenie stanovišťa zberných nádob',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -297,7 +293,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -317,7 +312,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloKoloTaxiTermsAndConditions,
     messageSubjectDefault: 'KOLO Taxi',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -337,7 +331,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'OLO Taxi',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -357,7 +350,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Podnety a pochvaly občanov',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -377,7 +369,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Odvoz objemného odpadu valníkom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -397,7 +388,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre právnické osoby',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -417,7 +407,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -427,7 +416,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: objednavkaInformativnehoZakresuSieti,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
@@ -448,7 +436,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
@@ -469,7 +456,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
@@ -490,7 +476,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: '',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },

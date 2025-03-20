@@ -12,6 +12,8 @@ export const MAILGUN_CONFIG_FEEDBACK_URLS = {
     'https://bravo.staffino.com/bratislava/id=WW1hkstR',
   'priznanie-k-dani-z-nehnutelnosti':
     'https://bravo.staffino.com/bratislava/id=WW14qo6q',
+  'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady':
+    'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
 }
 
 export const MAILGUN_CONFIG = {

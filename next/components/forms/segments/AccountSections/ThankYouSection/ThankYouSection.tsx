@@ -74,7 +74,7 @@ const ThankYouSection = () => {
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
             feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
-            feedbackUrl={paymentSuccessFeedbackLink ?? undefined}
+            feedbackLink={paymentSuccessFeedbackLink ?? undefined}
           />
         ) : (
           <ThankYouCard

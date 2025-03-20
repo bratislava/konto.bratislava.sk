@@ -18,10 +18,13 @@ import {
   SendToQueueErrorsEnum,
   SendToQueueErrorsResponseEnum,
 } from '../../user-verification/verification.errors.enum'
+import { BloomreachService } from 'src/bloomreach/bloomreach.service'
 
 @Injectable()
 export class CognitoSubservice {
   private readonly cognitoIdentity: AWS.CognitoIdentityServiceProvider
+
+  private readonly bloomreachService: BloomreachService
 
   private readonly config
 
@@ -29,6 +32,8 @@ export class CognitoSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly prisma: PrismaService
   ) {
+    //is this place to create bloomreachService?
+    this.bloomreachService = new BloomreachService()
     if (
       !process.env.AWS_COGNITO_ACCESS ||
       !process.env.AWS_COGNITO_SECRET ||
@@ -119,7 +124,7 @@ export class CognitoSubservice {
     }
   }
 
-  async changeCognitoTierAndInDatabase(
+  async changeTier(
     userId: string,
     newTier: CognitoUserAttributesTierEnum,
     accountType: CognitoUserAccountTypesEnum
@@ -130,6 +135,16 @@ export class CognitoSubservice {
         Value: newTier,
       },
     ])
+
+    // i don't think this (cognito.subservice) is the right place for
+    // calling bloomreach service as well as database update
+    const isIdentityVerified =
+      newTier === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
+      newTier === CognitoUserAttributesTierEnum.EID
+
+    await this.bloomreachService.trackCustomer(userId, {
+      isIdentityVerified,
+    })
 
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
       const user = await this.prisma.user.findUnique({

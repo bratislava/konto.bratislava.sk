@@ -74,7 +74,7 @@ export class VerificationService {
       }
     } else {
       try {
-        await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+        await this.cognitoSubservice.changeTier(
           user.idUser,
           CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
           user['custom:account_type']
@@ -120,7 +120,7 @@ export class VerificationService {
         const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
         const prismaService = new PrismaService()
         const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, prismaService)
-        await cognitoSubservice.changeCognitoTierAndInDatabase(
+        await cognitoSubservice.changeTier(
           data.msg.user.idUser,
           CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
           data.msg.type
@@ -164,7 +164,7 @@ export class VerificationService {
     }
 
     if (verification.statusCode === 200) {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      await this.cognitoSubservice.changeTier(
         data.msg.user.idUser,
         CognitoUserAttributesTierEnum.IDENTITY_CARD,
         data.msg.type
@@ -230,7 +230,7 @@ export class VerificationService {
       })
       return new Nack()
     } else {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      await this.cognitoSubservice.changeTier(
         data.msg.user.idUser,
         CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
         data.msg.type
@@ -335,7 +335,7 @@ export class VerificationService {
       }
     }
 
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+    await this.cognitoSubservice.changeTier(
       user.idUser,
       CognitoUserAttributesTierEnum.EID,
       user['custom:account_type']

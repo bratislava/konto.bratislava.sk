@@ -47,7 +47,7 @@ export class AdminService {
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
-    private readonly taxSubservice: TaxSubservice,
+    private readonly taxSubservice: TaxSubservice
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -217,7 +217,7 @@ export class AdminService {
     await this.cognitoSubservice.deactivateCognitoMail(externalId, cognitoUser.email)
 
     // We also need to change the account to unverified, since we delete birthNumber from database
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+    await this.cognitoSubservice.changeTier(
       externalId,
       CognitoUserAttributesTierEnum.NEW,
       cognitoUser['custom:account_type']
@@ -245,7 +245,10 @@ export class AdminService {
 
     const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(externalId)
 
-    const taxDeliveryMethodsRemoved = removedUser && removedUser.birthNumber ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber) : true
+    const taxDeliveryMethodsRemoved =
+      removedUser && removedUser.birthNumber
+        ? await this.taxSubservice.removeDeliveryMethodFromNoris(removedUser.birthNumber)
+        : true
 
     return { success: true, bloomreachRemoved, taxDeliveryMethodsRemoved }
   }
@@ -394,7 +397,7 @@ export class AdminService {
 
     // Update cognito
     const cognitoUser = await this.cognitoSubservice.getDataFromCognito(user.externalId)
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+    await this.cognitoSubservice.changeTier(
       user.externalId,
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       cognitoUser['custom:account_type']

@@ -2,7 +2,6 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
-import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -12,11 +11,10 @@ import { useFormContext } from '../../../useFormContext'
 const useThankYouFormSection = () => {
   const {
     isTaxForm,
-    formDefinition: { slug },
+    formDefinition: { feedbackLink },
     isEmbedded,
   } = useFormContext()
   const { t } = useTranslation('account')
-  const feedbackUrl = formsFeedbackLinks[slug]
 
   if (isTaxForm) {
     return {
@@ -24,7 +22,7 @@ const useThankYouFormSection = () => {
       firstButtonTitle: t('thank_you.button_to_formular_text_2'),
       secondButtonTitle: t('thank_you.button_to_profil_text'),
       content: t('thank_you.form_submit_tax.content'),
-      feedbackUrl,
+      feedbackLink,
       feedbackTitle: t('thank_you.form_submit_tax.feedbackTitle'),
       largePadding: true,
       displayAccountLinks: true,
@@ -44,7 +42,7 @@ const useThankYouFormSection = () => {
     firstButtonTitle: t('thank_you.button_to_formular_text_2'),
     secondButtonTitle: t('thank_you.button_to_profil_text'),
     content: t('thank_you.form_submit.content'),
-    feedbackUrl,
+    feedbackLink,
     largePadding: true,
     displayAccountLinks: true,
   }
@@ -56,7 +54,7 @@ const ThankYouFormSection = () => {
     firstButtonTitle,
     secondButtonTitle,
     content,
-    feedbackUrl,
+    feedbackLink,
     feedbackTitle,
     largePadding,
     displayAccountLinks,
@@ -77,7 +75,7 @@ const ThankYouFormSection = () => {
           firstButtonTitle={firstButtonTitle}
           secondButtonTitle={secondButtonTitle}
           content={content}
-          feedbackUrl={feedbackUrl}
+          feedbackUrl={feedbackLink}
           feedbackTitle={feedbackTitle}
         />
         {displayAccountLinks ? (

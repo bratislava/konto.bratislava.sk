@@ -1,5 +1,4 @@
 import { CheckIcon } from '@assets/ui-icons'
-import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
@@ -9,6 +8,7 @@ import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
 import Modal, { ModalProps } from '../../simple-components/Modal'
 import Spinner from '../../simple-components/Spinner'
+import { useFormContext } from '../../useFormContext'
 import { useFormRedirects } from '../../useFormRedirects'
 import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
 
@@ -33,6 +33,9 @@ const LoadingContent = () => {
 const SuccessContent = () => {
   const { t } = useTranslation('forms')
   const { register } = useFormRedirects()
+  const {
+    formDefinition: { feedbackLink },
+  } = useFormContext()
   const { isSignedIn } = useSsrAuth()
 
   const actions = [
@@ -77,17 +80,14 @@ const SuccessContent = () => {
             ))}
           </ol>
         </div>
-        <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
-          <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
-          <ButtonNew
-            variant="black-solid"
-            className="w-full"
-            href={formsFeedbackLinks['priznanie-k-dani-z-nehnutelnosti']}
-            target="_blank"
-          >
-            {t('tax_form_pdf_export_modal.feedback_button')}
-          </ButtonNew>
-        </div>
+        {feedbackLink ? (
+          <div className="flex w-full flex-col items-center gap-6 rounded-lg bg-gray-100 p-8">
+            <h3 className="text-left text-h3">{t('tax_form_pdf_export_modal.feedback_heading')}</h3>
+            <ButtonNew variant="black-solid" className="w-full" href={feedbackLink} target="_blank">
+              {t('tax_form_pdf_export_modal.feedback_button')}
+            </ButtonNew>
+          </div>
+        ) : null}
         <div className="h-0.5 w-full bg-gray-200" />
         <h3 className="text-h3">{t('tax_form_pdf_export_modal.how_to_pay_tax')}</h3>
         <p className="text-p1">

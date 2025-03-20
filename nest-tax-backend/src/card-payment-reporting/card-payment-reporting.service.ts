@@ -54,7 +54,7 @@ export class CardPaymentReportingService {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
     const paddedPrice = Math.abs(price)
       .toFixed(2)
-      .padStart(adjustedFill + 3, '0')
+      .padStart(adjustedFill, '0')
       .replace('.', '')
     return price >= 0 ? paddedPrice : '-'.concat(paddedPrice)
   }
@@ -102,6 +102,7 @@ export class CardPaymentReportingService {
       today_DDMMYYYY: today.format('DDMMYYYY'),
       today_YYMMDD: today.format('YYMMDD'),
       yesterday_DDMMYYYY: yesterday.format('DDMMYYYY'),
+      humanReadable: today.format('DD.MM.YYYY'),
     }
   }
 
@@ -164,7 +165,7 @@ export class CardPaymentReportingService {
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
         undefined,
-        "Error while getting 'VARIABLE_SYMBOL', 'SPECIFIC_SYMBOL', 'CONSTANT_SYMBOL', 'USER_CONSTAT_SYMBOL'.",
+        "Error while getting 'VARIABLE_SYMBOL', 'SPECIFIC_SYMBOL', 'CONSTANT_SYMBOL', 'USER_CONSTAT_SYMBOL' from Config.",
         error instanceof Error ? error : undefined,
       )
     }
@@ -218,12 +219,12 @@ export class CardPaymentReportingService {
     finalData.forEach((row) => {
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
       const generatedRow = [
-        '2390080180',
+        '2390080180', // padding?
         Number(row.transactionId),
         ' ',
         yesterday_DDMMYYYY,
         this.generatePrice(totalPrice, 10),
-        '000017S000000S',
+        '000017S000000S', // padding?
         this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
         this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
         constants.USER_CONSTAT_SYMBOL,
@@ -299,6 +300,8 @@ export class CardPaymentReportingService {
     dayjs.extend(utc)
     dayjs.extend(timezone)
 
+    const dates: string[] = []
+
     // Processing new files
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
@@ -306,6 +309,7 @@ export class CardPaymentReportingService {
         if (!fileDate) return null
 
         const dateInfo = this.getDateInfo(fileDate)
+        dates.push(dateInfo.humanReadable)
 
         // Parse CSV and add columns
         const csvData = this.processCsvData(file.content)
@@ -343,8 +347,8 @@ export class CardPaymentReportingService {
 
     const message =
       attachments.length === 0
-        ? 'Dnes nie je čo reportovať'
-        : 'Chceme niečo ako text sem?' // TODO better message
+        ? 'Dnes nie je čo reportovať.'
+        : `Report z dní:\n${dates.join(', ')}`
 
     await this.mailSubservice.send(
       [this.configService.getOrThrow<string>('RECIPIENT_EMAIL')],
@@ -352,5 +356,12 @@ export class CardPaymentReportingService {
       message,
       attachments,
     )
+
+    // Write updated CSV names
+    await this.prisma.csvFile.createMany({
+      data: sftpFiles.map((file) => ({
+        name: file.name,
+      })),
+    })
   }
 }

@@ -17,7 +17,7 @@ export default class EmailSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
     this.transporter = nodemailer.createTransport({
-      host: `email-smtp.${process.env.COGNITO_REGION}.amazonaws.com`,
+      host: `email-smtp.${this.configService.getOrThrow<string>('COGNITO_REGION')}.amazonaws.com`,
       port: 465,
       secure: true,
       auth: {
@@ -49,7 +49,6 @@ export default class EmailSubservice {
         text: message,
         attachments,
       }
-      // console.log(JSON.stringify(emailOptions, undefined, 2))
 
       const info = await this.transporter.sendMail(emailOptions)
 

@@ -519,5 +519,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OMDP',
     },
     isSigned: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
   },
 ]

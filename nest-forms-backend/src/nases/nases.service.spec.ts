@@ -11,6 +11,11 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  evaluateFormSendPolicy,
+  FormSendPolicy,
+  SendAllowedForUserResult,
+} from 'forms-shared/send-policy/sendPolicy'
 import { getFormSummary } from 'forms-shared/summary/summary'
 
 import prismaMock from '../../test/singleton'
@@ -23,7 +28,6 @@ import FormsService from '../forms/forms.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { Tier } from '../utils/global-enums/city-account.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { JwtNasesPayloadDto, UpdateFormRequestDto } from './dtos/requests.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
@@ -33,6 +37,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/form-utils/validators')
 jest.mock('forms-shared/summary/summary')
+jest.mock('forms-shared/send-policy/sendPolicy')
 
 describe('NasesService', () => {
   let service: NasesService
@@ -306,6 +311,7 @@ describe('NasesService', () => {
         publisher: 'Test Publisher',
         gestor: 'Test Gestor',
         isSigned: false,
+        sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
       }
 
       // Setup mocks
@@ -324,6 +330,11 @@ describe('NasesService', () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
         mockFormDefinition,
       )
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSend: {
+          possible: true,
+        },
+      })
 
       // this is the important mock we're testing against
       service['nasesConsumerService'].sendToNasesAndUpdateState = jest
@@ -341,6 +352,44 @@ describe('NasesService', () => {
         error: FormError.NASES_SEND_ERROR,
       })
     })
+
+    it('should throw an error if eID send is not possible', async () => {
+      // Mock dependencies
+      const mockForm = {
+        id: '1',
+        formDefinitionSlug: 'test-slug',
+        formDataJson: {},
+      } as Forms
+      const mockUser = {
+        sub: 'user-sub',
+        actor: { sub: 'actor-sub' },
+      } as JwtNasesPayloadDto
+      const mockFormDefinition = {
+        slug: 'test-slug',
+        sendPolicy: FormSendPolicy.AuthenticatedVerified,
+      } as FormDefinition
+
+      // Setup mocks
+      service['formsService'].checkFormBeforeSending = jest
+        .fn()
+        .mockResolvedValue(mockForm)
+      service['formsHelper'].userCanSendFormEid = jest
+        .fn()
+        .mockReturnValue(true)
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(
+        mockFormDefinition,
+      )
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        eidSend: {
+          possible: false,
+        },
+      })
+
+      // Execute and assert
+      await expect(
+        service.sendFormEid('1', 'mock-obo-token', mockUser),
+      ).rejects.toThrow(NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE)
+    })
   })
 
   describe('sendForm', () => {
@@ -353,6 +402,7 @@ describe('NasesService', () => {
     const mockFormDefinition = {
       schema: {},
       type: FormDefinitionType.SlovenskoSkGeneric,
+      sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     } as FormDefinitionSlovenskoSkGeneric
 
     const mockFormDefinitionEmail = {
@@ -373,7 +423,13 @@ describe('NasesService', () => {
       jest
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
-      jest.spyOn(service as any, 'isUserVerified').mockReturnValue(true)
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        send: {
+          possible: true,
+          allowedForUser: true,
+          allowedForUserResult: SendAllowedForUserResult.Allowed,
+        },
+      })
     })
 
     it('should throw an error if form definition is not found', async () => {
@@ -410,6 +466,35 @@ describe('NasesService', () => {
       )
     })
 
+    it('should throw an error if sending is not possible according to policy', async () => {
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        send: {
+          possible: false,
+          allowedForUser: false,
+        },
+      })
+
+      await expect(service.sendForm('1')).rejects.toThrow(
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      )
+    })
+
+    it('should throw an error if sending is not allowed for the user according to policy', async () => {
+      ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
+        send: {
+          possible: true,
+          allowedForUser: false,
+        },
+        eidSend: {
+          possible: false,
+        },
+      })
+
+      await expect(service.sendForm('1')).rejects.toThrow(
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+      )
+    })
+
     it('should throw an error if publishing to RabbitMQ fails', async () => {
       jest
         .spyOn(service['rabbitmqClientService'], 'publishDelay')
@@ -433,7 +518,6 @@ describe('NasesService', () => {
     it('should queue the email form when the user is authenticated and needs to be authenticated', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         ...mockFormDefinitionEmail,
-        allowSendingUnauthenticatedUsers: false,
       })
 
       const result = await service.sendForm('1')
@@ -467,28 +551,6 @@ describe('NasesService', () => {
         })
 
       await expect(service.sendForm('1')).rejects.toThrow()
-    })
-  })
-
-  describe('isUserVerified', () => {
-    it('should return true if the user is verified', () => {
-      expect(
-        service['isUserVerified']({
-          'custom:tier': Tier.IDENTITY_CARD,
-        } as CognitoGetUserData),
-      ).toBeTruthy()
-    })
-
-    it('should return false if the user is not verified', () => {
-      expect(
-        service['isUserVerified']({
-          'custom:tier': Tier.NOT_VERIFIED_IDENTITY_CARD,
-        } as CognitoGetUserData),
-      ).toBeFalsy()
-    })
-
-    it('should return false if the user is not provided', () => {
-      expect(service['isUserVerified']()).toBeFalsy()
     })
   })
 

@@ -62,17 +62,24 @@ export class BloomreachService {
   }
 
   async trackCustomer(
-    email: string,
     cognitoId: string,
-    userAttributes: CognitoGetUserData
+    {
+      email,
+      isIdentityVerified,
+      ...rest
+    }: {
+      email?: string
+      isIdentityVerified?: boolean
+      'custom:account_type'?: string
+    } & Omit<CognitoGetUserData, 'email' | 'sub' | 'idUser' | 'Enabled' | 'custom:account_type'>
   ): Promise<boolean | undefined> {
     const {
       given_name: firstName,
       family_name: lastName,
       name,
       UserCreateDate: registrationDate,
-    } = userAttributes
-    const accountType = userAttributes['custom:account_type']
+      'custom:account_type': accountType,
+    } = rest
 
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
@@ -95,6 +102,7 @@ export class BloomreachService {
           ...(accountType && { person_type: accountType }),
           ...(registrationDate && { registration_date: registrationDate }),
           ...(email && { email: email }),
+          ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
         },
       }
       const eventResponse = await axios

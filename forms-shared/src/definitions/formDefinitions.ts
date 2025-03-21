@@ -438,6 +438,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-objednavka-informativneho-zakresu-sieti',
     },
   },
   {
@@ -459,6 +460,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     },
   },
   {
@@ -480,6 +482,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     },
   },
   {
@@ -501,6 +504,8 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject:
+        'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     },
   },
   {

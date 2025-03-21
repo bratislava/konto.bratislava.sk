@@ -303,6 +303,7 @@ export default class EmailFormsSubservice {
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
         ? this.createJsonAttachment(formDefinition, form.formDataJson)
         : undefined,
+      subject: formDefinition.email.technicalEmailSubject,
     })
 
     // Determine user email address for confirmation

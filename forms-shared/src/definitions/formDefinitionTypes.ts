@@ -68,6 +68,10 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     sendJsonDataAttachmentInTechnicalMail?: boolean
     extractEmail: (formData: GenericObjectType) => string | undefined
     extractName?: (formData: GenericObjectType) => string | undefined
+    /**
+     * If undefined, the default value from the email template is used.
+     */
+    technicalEmailSubject?: string
   }
 }
 

@@ -252,6 +252,7 @@ describe('EmailFormsSubservice', () => {
             content: expect.any(Buffer),
           }),
         ]),
+        subject: undefined,
       })
 
       // Should send confirmation email to user
@@ -325,6 +326,7 @@ describe('EmailFormsSubservice', () => {
         }),
         emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
         attachments: undefined,
+        subject: undefined,
       })
 
       // Should send confirmation email to user using sendOloEmail
@@ -555,6 +557,7 @@ describe('EmailFormsSubservice', () => {
             content: expect.any(Buffer),
           }),
         ]),
+        subject: undefined,
       })
     })
 
@@ -573,6 +576,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.anything(),
         emailFrom: expect.anything(),
         attachments: undefined,
+        subject: undefined,
       })
     })
 
@@ -591,6 +595,7 @@ describe('EmailFormsSubservice', () => {
         data: expect.anything(),
         emailFrom: expect.anything(),
         attachments: undefined,
+        subject: undefined,
       })
 
       // Restore original value
@@ -618,6 +623,7 @@ describe('EmailFormsSubservice', () => {
         }),
         emailFrom: 'department@bratislava.sk',
         attachments: expect.any(Array),
+        subject: undefined,
       })
     })
 
@@ -652,6 +658,7 @@ describe('EmailFormsSubservice', () => {
         }),
         emailFrom: 'from-olo@bratislava.sk',
         attachments: undefined,
+        subject: undefined,
       })
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(2, {
         data: expect.objectContaining({
@@ -659,6 +666,27 @@ describe('EmailFormsSubservice', () => {
         }),
         emailFrom: 'from-olo@bratislava.sk',
         attachments: expect.any(Array),
+      })
+    })
+
+    it('should use subject from the form definition if there is one', async () => {
+      const formDefinitionWithSubject = {
+        ...mockFormDefinitionWithSendEmail,
+        email: {
+          ...mockFormDefinitionWithSendEmail.email,
+          technicalEmailSubject: 'Test technical Subject',
+        },
+      }
+      jest
+        .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
+        .mockReturnValue(formDefinitionWithSubject)
+      await service.sendEmailForm(formId, userEmail, userFirstName)
+
+      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
+        data: expect.anything(),
+        emailFrom: expect.anything(),
+        attachments: expect.anything(),
+        subject: 'Test technical Subject',
       })
     })
   })

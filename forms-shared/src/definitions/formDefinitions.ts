@@ -87,6 +87,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -107,6 +108,7 @@ export const formDefinitions: FormDefinition[] = [
       ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -159,6 +161,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: taxTermsAndConditions,
     messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
   },
   // testing integration of new posID against GINIS&NORIS, will be removed afterwards
   {
@@ -516,5 +519,6 @@ export const formDefinitions: FormDefinition[] = [
       ginisOrganizationName: 'OMDP',
     },
     isSigned: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
   },
 ]

@@ -2,12 +2,12 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
-import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
 
 import logger from '../../../../../frontend/utils/logger'
+import { useTaxFeeSection } from '../TaxesFeesSection/useTaxFeeSection'
 
 export const PaymentStatusOptions = {
   FAILED_TO_VERIFY: 'failed-to-verify',
@@ -40,6 +40,13 @@ const statusToTranslationPath = {
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
+  const {
+    strapiTax: {
+      paymentSuccessFeedbackLink,
+      paymentSuccessPrivacyPolicyLink,
+      paymentSuccessFaqLink,
+    },
+  } = useTaxFeeSection()
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
@@ -67,7 +74,7 @@ const ThankYouSection = () => {
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
             feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
-            feedbackUrl={formsFeedbackLinks['platba-dane-z-nehnutelnosti']}
+            feedbackLink={paymentSuccessFeedbackLink ?? undefined}
           />
         ) : (
           <ThankYouCard
@@ -87,20 +94,26 @@ const ThankYouSection = () => {
               )}</span>.`}
             />
           </span>
-          <div className="mt-4 flex flex-col gap-3 md:mt-6">
-            <Button
-              label={t('thank_you.button_faq_text')}
-              href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
-              variant="link-black"
-              size="sm"
-            />
-            <Button
-              label={t('thank_you.button_privacy_text')}
-              href="https://bratislava.sk/ochrana-osobnych-udajov"
-              variant="link-black"
-              size="sm"
-            />
-          </div>
+          {paymentSuccessFaqLink || paymentSuccessPrivacyPolicyLink ? (
+            <div className="mt-4 flex flex-col gap-3 md:mt-6">
+              {paymentSuccessFaqLink ? (
+                <Button
+                  label={t('thank_you.button_faq_text')}
+                  href={paymentSuccessFaqLink}
+                  variant="link-black"
+                  size="sm"
+                />
+              ) : null}
+              {paymentSuccessPrivacyPolicyLink ? (
+                <Button
+                  label={t('thank_you.button_privacy_text')}
+                  href="https://bratislava.sk/ochrana-osobnych-udajov"
+                  variant="link-black"
+                  size="sm"
+                />
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 

@@ -1,3 +1,5 @@
+import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+
 /* eslint-disable no-secrets/no-secrets */
 export enum MailgunConfigVariableType {
   PARAMETER = 'PARAMETER',
@@ -5,16 +7,14 @@ export enum MailgunConfigVariableType {
   STRING = 'STRING',
 }
 
-export const MAILGUN_CONFIG_FEEDBACK_URLS = {
-  'zavazne-stanovisko-k-investicnej-cinnosti':
-    'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
-  'stanovisko-k-investicnemu-zameru':
-    'https://bravo.staffino.com/bratislava/id=WW1hkstR',
-  'priznanie-k-dani-z-nehnutelnosti':
-    'https://bravo.staffino.com/bratislava/id=WW14qo6q',
-  'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady':
-    'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
-}
+export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
+  formDefinitions
+    .filter((formDefinition) => formDefinition.feedbackLink)
+    .map((formDefinition) => [
+      formDefinition.slug,
+      formDefinition.feedbackLink,
+    ]),
+)
 
 export const MAILGUN_CONFIG = {
   NASES_SENT: {

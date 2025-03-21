@@ -777,6 +777,9 @@ type Tax {
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
   displayCurrentYearTaxInPreparation: Boolean!
+  paymentSuccessFaqLink: String
+  paymentSuccessFeedbackLink: String
+  paymentSuccessPrivacyPolicyLink: String
   updatedAt: DateTime
 }
 
@@ -805,6 +808,9 @@ input TaxFiltersInput {
   displayCurrentYearTaxInPreparation: BooleanFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
+  paymentSuccessFaqLink: StringFilterInput
+  paymentSuccessFeedbackLink: StringFilterInput
+  paymentSuccessPrivacyPolicyLink: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
@@ -815,6 +821,9 @@ input TaxInput {
   currentYearTaxInPreparationText: String
   currentYearTaxInPreparationTitle: String
   displayCurrentYearTaxInPreparation: Boolean
+  paymentSuccessFaqLink: String
+  paymentSuccessFeedbackLink: String
+  paymentSuccessPrivacyPolicyLink: String
 }
 
 type TaxRelationResponseCollection {

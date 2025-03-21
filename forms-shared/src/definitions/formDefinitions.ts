@@ -426,7 +426,7 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaInformativnehoZakresuSieti,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Objednávka informatívneho zákresu sietí',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
@@ -448,7 +448,7 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
@@ -470,7 +470,7 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Žiadosť o stanovisko k projektovej dokumentácii',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
@@ -492,7 +492,7 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {

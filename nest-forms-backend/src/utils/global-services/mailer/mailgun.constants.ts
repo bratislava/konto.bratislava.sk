@@ -7,8 +7,6 @@ export enum MailgunConfigVariableType {
   STRING = 'STRING',
 }
 
-// TODO: Dynamically created from `formDefinitions` for compatibility reasons, use `feedbackLink` directly from form
-// definition.
 export const MAILGUN_CONFIG_FEEDBACK_URLS = Object.fromEntries(
   formDefinitions
     .filter((formDefinition) => formDefinition.feedbackLink)

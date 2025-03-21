@@ -6,7 +6,8 @@ import { SummaryEmail } from './SummaryEmail'
 import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
 import { FormSummary } from '../summary/summary'
 
-export type FileIdInfoMap = Record<string, { url: string; fileName: string }>
+export type FileInfoJson = { url: string; fileName: string }
+export type FileIdInfoMap = Record<string, FileInfoJson>
 
 export type RenderSummaryEmailPayload = {
   formSummary: FormSummary

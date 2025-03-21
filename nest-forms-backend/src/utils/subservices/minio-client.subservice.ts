@@ -1,7 +1,7 @@
 import { Readable, Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { BucketItemStat, UploadedObjectInfo } from 'minio'
+import { BucketItemStat } from 'minio'
 import { MinioClient, MinioService } from 'nestjs-minio-client'
 
 import { BufferedFileDto } from '../../files/files.dto'
@@ -11,6 +11,11 @@ import {
 } from '../../files/files.errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
 import alertError, { LineLoggerSubservice } from './line-logger.subservice'
+
+interface UploadedObjectInfo {
+  etag: string
+  versionId: string | null
+}
 
 @Injectable()
 export default class MinioClientSubservice {

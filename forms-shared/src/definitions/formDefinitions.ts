@@ -430,7 +430,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: objednavkaInformativnehoZakresuSietiExtractEmail,
       extractName: objednavkaInformativnehoZakresuSietiExtractName,
@@ -452,7 +452,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
       extractName: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
@@ -474,7 +474,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
       extractName: ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
@@ -496,7 +496,7 @@ export const formDefinitions: FormDefinition[] = [
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
       extractName: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,

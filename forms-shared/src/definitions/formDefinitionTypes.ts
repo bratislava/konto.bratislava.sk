@@ -1,6 +1,7 @@
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
 import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
+import { FormSendPolicy } from '../send-policy/sendPolicy'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -14,12 +15,12 @@ type FormDefinitionBase = {
   title: string
   schema: RJSFSchema
   jsonVersion: string
+  sendPolicy: FormSendPolicy
   termsAndConditions: string
   messageSubjectDefault: string
   messageSubjectFormat?: string
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
-  allowSendingUnauthenticatedUsers?: boolean // Default should be false, so undefined must be handled as false
   exampleFormNotRequired?: boolean
   feedbackLink?: string
 }

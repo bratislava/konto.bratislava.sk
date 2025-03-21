@@ -1,10 +1,18 @@
 import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { SendFormResponseDto } from 'openapi-clients/forms'
-import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../../environment'
@@ -60,9 +68,7 @@ const useGetContext = () => {
   const {
     formId,
     formDefinition: { slug },
-    signInMissing,
-    verificationMissing,
-    sendWithEidAllowed,
+    evaluatedSendPolicy,
   } = useFormContext()
   const { formData } = useFormData()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
@@ -230,22 +236,34 @@ const useGetContext = () => {
     }
   })
 
-  const handleSendButtonPress = async () => {
-    const validatedSummary = getValidatedSummary()
-    const submitDisabled = isFormSubmitDisabled(validatedSummary, isValidSignature())
+  const submitDisabled = useCallback(
+    () => isFormSubmitDisabled(getValidatedSummary(), isValidSignature()),
+    [getValidatedSummary, isValidSignature],
+  )
 
-    if (submitDisabled || sendFormIsPending) {
+  const sendPossible = evaluatedSendPolicy.send.possible
+
+  const handleSendButtonPress = () => {
+    if (submitDisabled() || sendFormIsPending || !sendPossible) {
       return
     }
 
-    if (signInMissing) {
+    const { allowedForUserResult } = evaluatedSendPolicy.send
+    if (
+      allowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+      allowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+    ) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
 
-    if (verificationMissing) {
+    if (allowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
       setSendIdentityMissingModal(true)
       return
+    }
+
+    if (allowedForUserResult !== SendAllowedForUserResult.Allowed) {
+      throw new Error(`Unhandled case: ${allowedForUserResult}`)
     }
 
     if (getUploadFiles().length > 0) {
@@ -264,15 +282,10 @@ const useGetContext = () => {
     })
   }
 
+  const sendEidPossible = evaluatedSendPolicy.eidSend.possible
+
   const handleSendEidButtonPress = () => {
-    if (!sendWithEidAllowed) {
-      return
-    }
-
-    const validatedSummary = getValidatedSummary()
-    const submitDisabled = isFormSubmitDisabled(validatedSummary, isValidSignature())
-
-    if (submitDisabled || sendFormEidIsPending) {
+    if (submitDisabled() || sendFormEidIsPending || !sendEidPossible) {
       return
     }
 
@@ -312,8 +325,11 @@ const useGetContext = () => {
   }
 
   return {
+    sendPossible,
     handleSendButtonPress,
+    sendEidPossible,
     handleSendEidButtonPress,
+    submitDisabled,
   }
 }
 

@@ -426,11 +426,11 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaInformativnehoZakresuSieti,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Objednávka informatívneho zákresu sietí',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: objednavkaInformativnehoZakresuSietiExtractEmail,
       extractName: objednavkaInformativnehoZakresuSietiExtractName,
@@ -438,6 +438,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-objednavka-informativneho-zakresu-sieti',
     },
   },
   {
@@ -447,11 +448,11 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
       extractName: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
@@ -459,6 +460,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     },
   },
   {
@@ -468,11 +470,11 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Žiadosť o stanovisko k projektovej dokumentácii',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
       extractName: ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
@@ -480,6 +482,7 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     },
   },
   {
@@ -489,11 +492,11 @@ export const formDefinitions: FormDefinition[] = [
     jsonVersion: '1.0.0',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: '',
+    messageSubjectDefault: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     email: {
-      address: { prod: 'wf@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
       extractEmail: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
       extractName: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
@@ -501,6 +504,8 @@ export const formDefinitions: FormDefinition[] = [
       userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
+      technicalEmailSubject:
+        'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     },
   },
   {

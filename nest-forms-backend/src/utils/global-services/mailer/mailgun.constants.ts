@@ -187,9 +187,9 @@ export const MAILGUN_CONFIG = {
     template: 'tsb-form-send',
     subject: 'TSB: Nové podanie',
     variables: {
-      applicationName: {
+      slug: {
         type: MailgunConfigVariableType.PARAMETER,
-        value: '{{messageSubject}}',
+        value: '{{slug}}',
       },
       htmlData: {
         type: MailgunConfigVariableType.PARAMETER,
@@ -204,11 +204,6 @@ export const MAILGUN_CONFIG = {
       applicationName: {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{messageSubject}}',
-      },
-      feHost: {
-        type: MailgunConfigVariableType.STRING,
-        value:
-          'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava',
       },
       firstName: {
         type: MailgunConfigVariableType.PARAMETER,

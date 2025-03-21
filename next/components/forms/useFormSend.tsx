@@ -241,10 +241,8 @@ const useGetContext = () => {
     [getValidatedSummary, isValidSignature],
   )
 
-  const sendPossible = evaluatedSendPolicy.send.possible
-
   const handleSendButtonPress = () => {
-    if (submitDisabled() || sendFormIsPending || !sendPossible) {
+    if (submitDisabled() || sendFormIsPending || !evaluatedSendPolicy.send.possible) {
       return
     }
 
@@ -282,10 +280,8 @@ const useGetContext = () => {
     })
   }
 
-  const sendEidPossible = evaluatedSendPolicy.eidSend.possible
-
   const handleSendEidButtonPress = () => {
-    if (submitDisabled() || sendFormEidIsPending || !sendEidPossible) {
+    if (submitDisabled() || sendFormEidIsPending || !evaluatedSendPolicy.eidSend.possible) {
       return
     }
 
@@ -325,9 +321,7 @@ const useGetContext = () => {
   }
 
   return {
-    sendPossible,
     handleSendButtonPress,
-    sendEidPossible,
     handleSendEidButtonPress,
     submitDisabled,
   }

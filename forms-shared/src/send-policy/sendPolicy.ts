@@ -118,13 +118,9 @@ export const evaluateFormSendPolicy = (
   const sendAllowedForUserResult = isSendAllowedForUser(sendPolicy, accountType)
 
   return {
-    send: {
-      possible: isSendPossible(sendPolicy),
-      allowedForUser: sendAllowedForUserResult === SendAllowedForUserResult.Allowed,
-      allowedForUserResult: sendAllowedForUserResult,
-    },
-    eidSend: {
-      possible: isEidSendPossible(sendPolicy),
-    },
+    sendPossible: isSendPossible(sendPolicy),
+    sendAllowedForUser: sendAllowedForUserResult === SendAllowedForUserResult.Allowed,
+    sendAllowedForUserResult: sendAllowedForUserResult,
+    eidSendPossible: isEidSendPossible(sendPolicy),
   }
 }

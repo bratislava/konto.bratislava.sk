@@ -11,7 +11,11 @@ import { useFormState } from '../../useFormState'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isTaxForm, isReadonly, evaluatedSendPolicy } = useFormContext()
+  const {
+    isTaxForm,
+    isReadonly,
+    evaluatedSendPolicy: { sendPossible, eidSendPossible },
+  } = useFormContext()
   const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { submitDisabled, handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
@@ -30,16 +34,16 @@ const SummaryFormControls = () => {
           'data-cy': 'download-pdf-button',
         }
       : null,
-    evaluatedSendPolicy.eidSend.possible
+    eidSendPossible
       ? {
           isDisabled: submitDisabled(),
-          variant: evaluatedSendPolicy.send.possible ? 'black-outline' : 'black-solid',
+          variant: sendPossible ? 'black-outline' : 'black-solid',
           onPress: () => handleSendEidButtonPress(),
           type: 'submit',
           children: t('summary.button_send_eid'),
         }
       : null,
-    evaluatedSendPolicy.eidSend.possible
+    sendPossible
       ? {
           isDisabled: submitDisabled(),
           variant: 'black-solid',

@@ -49,14 +49,16 @@ type RegistrationModalBase = {
 
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
-  const { evaluatedSendPolicy } = useFormContext()
+  const {
+    evaluatedSendPolicy: { sendAllowedForUserResult, eidSendPossible },
+  } = useFormContext()
 
   const getTitleKey = () => {
     if (
       type === RegistrationModalType.Initial ||
       type === RegistrationModalType.NotAuthenticatedSubmitForm
     ) {
-      if (evaluatedSendPolicy.eidSend.possible) {
+      if (eidSendPossible) {
         return 'registration_modal.header_initial_title_with_eid'
       }
 
@@ -71,7 +73,6 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   const getSubtitleKey = () => {
-    const sendAllowedForUserResult = evaluatedSendPolicy.send.allowedForUserResult
     const verificationMissingType =
       sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing ||
       sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
@@ -79,7 +80,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
       sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing
 
     if (type === RegistrationModalType.Initial) {
-      if (evaluatedSendPolicy.eidSend.possible) {
+      if (eidSendPossible) {
         if (verificationMissingType) {
           return 'registration_modal.header_initial_subtitle_with_eid_verified'
         }
@@ -97,7 +98,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
     }
 
     if (type === RegistrationModalType.NotAuthenticatedSubmitForm) {
-      if (evaluatedSendPolicy.eidSend.possible) {
+      if (eidSendPossible) {
         if (verificationMissingType) {
           return 'registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified'
         }
@@ -194,7 +195,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
             {type === RegistrationModalType.Initial && (
               <>
-                {evaluatedSendPolicy.eidSend.possible ? (
+                {eidSendPossible ? (
                   <ButtonWithSubtext
                     text={t('registration_modal.buttons_initial_continue_eid_title')}
                     subtext={t('registration_modal.buttons_initial_continue_eid')}

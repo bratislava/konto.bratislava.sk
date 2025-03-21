@@ -336,14 +336,14 @@ export default class NasesService {
       userToSendPolicyAccountType(user),
     )
 
-    if (!evaluatedSendPolicy.send.possible) {
+    if (!evaluatedSendPolicy.sendPossible) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
         NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     }
 
-    if (!evaluatedSendPolicy.send.allowedForUser) {
+    if (!evaluatedSendPolicy.sendAllowedForUser) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
         NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
@@ -468,7 +468,7 @@ export default class NasesService {
       userToSendPolicyAccountType(cognitoUser),
     )
 
-    if (!evaluatedSendPolicy.eidSend.possible) {
+    if (!evaluatedSendPolicy.eidSendPossible) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
         NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,

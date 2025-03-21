@@ -68,7 +68,7 @@ const useGetContext = () => {
   const {
     formId,
     formDefinition: { slug },
-    evaluatedSendPolicy,
+    evaluatedSendPolicy: { sendPossible, sendAllowedForUserResult, eidSendPossible },
   } = useFormContext()
   const { formData } = useFormData()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
@@ -242,26 +242,25 @@ const useGetContext = () => {
   )
 
   const handleSendButtonPress = () => {
-    if (submitDisabled() || sendFormIsPending || !evaluatedSendPolicy.send.possible) {
+    if (submitDisabled() || sendFormIsPending || !sendPossible) {
       return
     }
 
-    const { allowedForUserResult } = evaluatedSendPolicy.send
     if (
-      allowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
-      allowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
     ) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
 
-    if (allowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
+    if (sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
       setSendIdentityMissingModal(true)
       return
     }
 
-    if (allowedForUserResult !== SendAllowedForUserResult.Allowed) {
-      throw new Error(`Unhandled case: ${allowedForUserResult}`)
+    if (sendAllowedForUserResult !== SendAllowedForUserResult.Allowed) {
+      throw new Error(`Unhandled case: ${sendAllowedForUserResult}`)
     }
 
     if (getUploadFiles().length > 0) {
@@ -281,7 +280,7 @@ const useGetContext = () => {
   }
 
   const handleSendEidButtonPress = () => {
-    if (submitDisabled() || sendFormEidIsPending || !evaluatedSendPolicy.eidSend.possible) {
+    if (submitDisabled() || sendFormEidIsPending || !eidSendPossible) {
       return
     }
 
@@ -321,7 +320,9 @@ const useGetContext = () => {
   }
 
   return {
+    sendPossible,
     handleSendButtonPress,
+    eidSendPossible,
     handleSendEidButtonPress,
     submitDisabled,
   }

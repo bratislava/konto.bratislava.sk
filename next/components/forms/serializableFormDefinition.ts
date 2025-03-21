@@ -9,6 +9,8 @@ export type SerializableFormDefinition = RemoveFunctions<FormDefinition>
 export const makeSerializableFormDefinition = (
   formDefinition: FormDefinition,
 ): SerializableFormDefinition => {
+  // @ts-ignore
+  delete formDefinition.email
   const entries = Object.entries(formDefinition)
   const filteredEntries = entries.filter(([, value]) => typeof value !== 'function')
 

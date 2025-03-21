@@ -1,3 +1,4 @@
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
@@ -22,7 +23,7 @@ enum InitialModal {
 }
 
 const useInitialModal = () => {
-  const { formMigrationRequired, signInMissing, verificationMissing } = useFormContext()
+  const { formMigrationRequired, evaluatedSendPolicy } = useFormContext()
   const router = useRouter()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
@@ -35,11 +36,15 @@ const useInitialModal = () => {
     return InitialModal.MigrationRequired
   }
 
-  if (signInMissing) {
+  const { allowedForUserResult } = evaluatedSendPolicy.send
+  if (
+    allowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+    allowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+  ) {
     return InitialModal.Registration
   }
 
-  if (verificationMissing) {
+  if (allowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
     return InitialModal.IdentityVerification
   }
 

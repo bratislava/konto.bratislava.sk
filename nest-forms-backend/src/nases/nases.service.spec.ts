@@ -14,7 +14,6 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import {
   evaluateFormSendPolicy,
   FormSendPolicy,
-  SendAllowedForUserResult,
 } from 'forms-shared/send-policy/sendPolicy'
 import { getFormSummary } from 'forms-shared/summary/summary'
 
@@ -331,9 +330,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
-        eidSend: {
-          possible: true,
-        },
+        eidSendPossible: true,
       })
 
       // this is the important mock we're testing against
@@ -380,9 +377,7 @@ describe('NasesService', () => {
         mockFormDefinition,
       )
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
-        eidSend: {
-          possible: false,
-        },
+        eidSendPossible: false,
       })
 
       // Execute and assert
@@ -424,11 +419,8 @@ describe('NasesService', () => {
         .spyOn(service['formsService'], 'updateForm')
         .mockResolvedValue(mockForm)
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
       })
     })
 
@@ -468,10 +460,8 @@ describe('NasesService', () => {
 
     it('should throw an error if sending is not possible according to policy', async () => {
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
-        send: {
-          possible: false,
-          allowedForUser: false,
-        },
+        sendPossible: false,
+        sendAllowedForUser: false,
       })
 
       await expect(service.sendForm('1')).rejects.toThrow(
@@ -481,13 +471,8 @@ describe('NasesService', () => {
 
     it('should throw an error if sending is not allowed for the user according to policy', async () => {
       ;(evaluateFormSendPolicy as jest.Mock).mockReturnValue({
-        send: {
-          possible: true,
-          allowedForUser: false,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
       })
 
       await expect(service.sendForm('1')).rejects.toThrow(

@@ -12,294 +12,210 @@ describe('SendPolicy', () => {
       policy: FormSendPolicy.NotAuthenticated,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.NotAuthenticated,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.NotAuthenticated,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedNotVerified,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.AuthenticationMissing,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.AuthenticationMissing,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedNotVerified,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedNotVerified,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedVerified,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.AuthenticationAndVerificationMissing,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.AuthenticationAndVerificationMissing,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedVerified,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.VerificationMissing,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.VerificationMissing,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.AuthenticatedVerified,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: false,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: false,
       },
     },
     {
       policy: FormSendPolicy.EidOrNotAuthenticated,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrNotAuthenticated,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrNotAuthenticated,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedNotVerified,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.AuthenticationMissing,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.AuthenticationMissing,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedNotVerified,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedNotVerified,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedVerified,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.AuthenticationAndVerificationMissing,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.AuthenticationAndVerificationMissing,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedVerified,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.VerificationMissing,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.VerificationMissing,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidOrAuthenticatedVerified,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: true,
-          allowedForUser: true,
-          allowedForUserResult: SendAllowedForUserResult.Allowed,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: true,
+        sendAllowedForUser: true,
+        sendAllowedForUserResult: SendAllowedForUserResult.Allowed,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidSigned,
       accountType: SendPolicyAccountType.NotAuthenticated,
       expectedResult: {
-        send: {
-          possible: false,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.NotPossible,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: false,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.NotPossible,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidSigned,
       accountType: SendPolicyAccountType.AuthenticatedNotVerified,
       expectedResult: {
-        send: {
-          possible: false,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.NotPossible,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: false,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.NotPossible,
+        eidSendPossible: true,
       },
     },
     {
       policy: FormSendPolicy.EidSigned,
       accountType: SendPolicyAccountType.AuthenticatedVerified,
       expectedResult: {
-        send: {
-          possible: false,
-          allowedForUser: false,
-          allowedForUserResult: SendAllowedForUserResult.NotPossible,
-        },
-        eidSend: {
-          possible: true,
-        },
+        sendPossible: false,
+        sendAllowedForUser: false,
+        sendAllowedForUserResult: SendAllowedForUserResult.NotPossible,
+        eidSendPossible: true,
       },
     },
   ]

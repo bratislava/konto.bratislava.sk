@@ -184,7 +184,7 @@ export const MAILGUN_CONFIG = {
     },
   },
   TSB_NEW_SUBMISSION: {
-    template: 'olo-form-send', // TODO change to TSB template
+    template: 'tsb-form-send',
     subject: 'TSB: Nové podanie',
     variables: {
       applicationName: {
@@ -198,7 +198,7 @@ export const MAILGUN_CONFIG = {
     },
   },
   TSB_SENT_SUCCESS: {
-    template: '2024-olo-form-success', // TODO change to TSB template
+    template: '2025-tsb-form-success',
     subject: 'TSB: Vaša žiadosť bola odoslaná',
     variables: {
       applicationName: {

@@ -197,6 +197,14 @@ export class UserService {
         showEmailCommunicationBanner,
       }
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.NotFoundException(
+          UserErrorsEnum.USER_NOT_FOUND,
+          UserErrorsResponseEnum.USER_NOT_FOUND,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
         UserErrorsResponseEnum.USER_NOT_FOUND
@@ -220,6 +228,14 @@ export class UserService {
 
       return user
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.NotFoundException(
+          UserErrorsEnum.USER_NOT_FOUND,
+          UserErrorsResponseEnum.USER_NOT_FOUND,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.NotFoundException(
         UserErrorsEnum.USER_NOT_FOUND,
         UserErrorsResponseEnum.USER_NOT_FOUND

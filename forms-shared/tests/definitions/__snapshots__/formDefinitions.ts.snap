@@ -71066,15 +71066,15 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
 
 exports[`Form definitions > stanovisko-k-investicnemu-zameru > default form state should match snapshot 1`] = `
 {
-  "investor": {
-    "investorZiadatelom": true,
-  },
   "prilohy": {
     "architektonickaStudia": [],
   },
   "stavba": {
     "druhStavby": "Bytový dom",
     "kataster": [],
+  },
+  "stavebnik": {
+    "stavebnikZiadatelom": true,
   },
   "ziadatel": {
     "typ": "Fyzická osoba",
@@ -71496,17 +71496,17 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
     },
     {
       "properties": {
-        "investor": {
+        "stavebnik": {
           "allOf": [
             {
               "if": {
                 "properties": {
-                  "investorZiadatelom": {
+                  "stavebnikZiadatelom": {
                     "const": false,
                   },
                 },
                 "required": [
-                  "investorZiadatelom",
+                  "stavebnikZiadatelom",
                 ],
                 "type": "object",
               },
@@ -71855,7 +71855,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
-                        "helptext": "nahrajte splnomocnenie od investora",
+                        "helptext": "nahrajte splnomocnenie od stavebníka",
                         "type": "button",
                       },
                       "ui:widget": "FileUpload",
@@ -71923,11 +71923,11 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
-              "stepQueryParam": "investor",
+              "stepQueryParam": "stavebnik",
             },
           },
           "properties": {
-            "investorZiadatelom": {
+            "stavebnikZiadatelom": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
@@ -71951,19 +71951,19 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 true,
                 false,
               ],
-              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "title": "Je stavebník rovnaká osoba ako žiadateľ?",
               "type": "boolean",
             },
           },
           "required": [
-            "investorZiadatelom",
+            "stavebnikZiadatelom",
           ],
-          "title": "Investor",
+          "title": "Stavebník",
           "type": "object",
         },
       },
       "required": [
-        "investor",
+        "stavebnik",
       ],
       "type": "object",
     },
@@ -71981,7 +71981,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.",
+                  "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.",
                   "inputType": "text",
                   "size": "medium",
                 },

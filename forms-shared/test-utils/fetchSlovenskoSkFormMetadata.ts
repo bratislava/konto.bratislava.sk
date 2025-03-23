@@ -1,4 +1,5 @@
 import { FormDefinitionSlovenskoSk } from '../src/definitions/formDefinitionTypes'
+import fs from 'fs/promises'
 
 export interface SlovenskoSkMetadataJson {
   XSDtargetNamespace: string
@@ -21,6 +22,15 @@ export interface SlovenskoSkMetadataJson {
 }
 
 export async function fetchSlovenskoSkMetadata() {
+  const metadataPath = process.env.SLOVENSKO_SK_METADATA_PATH
+
+  // The file download is too slow (the file is large) and makes the test run long, the metadata file is prefetched
+  // in Dockerfile on CI.
+  if (metadataPath) {
+    const fileContent = await fs.readFile(metadataPath, 'utf-8')
+    return JSON.parse(fileContent) as SlovenskoSkMetadataJson[]
+  }
+
   const url = 'https://www.slovensko.sk/static/eForm/datasetexport/json/mef.json'
   const response = await fetch(url)
   if (!response.ok) {

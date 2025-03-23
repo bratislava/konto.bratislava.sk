@@ -28,7 +28,7 @@ describe('slovenskoSkForm', () => {
 
   beforeAll(async () => {
     slovenskoSkMetadata = await fetchSlovenskoSkMetadata()
-  }, /* The JSON file is too large to download in the default timeout. */ 30000)
+  })
 
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     describe(`${formDefinition.slug}`, () => {

@@ -16,8 +16,8 @@ const exampleForm: ExampleForm = {
         },
       },
     },
-    investor: {
-      investorZiadatelom: false,
+    stavebnik: {
+      stavebnikZiadatelom: false,
       splnomocnenie: 'c6bd9718-97ea-4601-b79f-c70e7064943d',
       typ: 'Fyzická osoba',
       email: 'marta.novakova@priklad.sk',

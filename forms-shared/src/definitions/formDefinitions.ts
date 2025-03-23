@@ -72,7 +72,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'stanovisko-k-investicnemu-zameru',
     title: 'Žiadosť o stanovisko k investičnému zámeru',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.1.0',
     schema: stanoviskoKInvesticnemuZameru,
     pospID: '00603481.stanoviskoKInvesticnemuZameru',
     pospVersion: '0.9',

@@ -431,7 +431,10 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: objednavkaInformativnehoZakresuSietiExtractEmail,
       extractName: objednavkaInformativnehoZakresuSietiExtractName,
       mailer: 'mailgun',
@@ -453,7 +456,10 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
       extractName: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',
@@ -475,7 +481,10 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
       extractName: ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
       mailer: 'mailgun',
@@ -497,7 +506,10 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
       extractName: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',

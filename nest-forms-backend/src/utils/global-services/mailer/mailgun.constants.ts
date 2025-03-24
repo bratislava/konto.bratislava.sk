@@ -197,7 +197,21 @@ export const MAILGUN_CONFIG = {
       },
     },
   },
-  TSB_SENT_SUCCESS: {
+  TSB_ORDER_SENT_SUCCESS: {
+    template: '2025-tsb-form-success',
+    subject: 'TSB: Vaša objednávka bola odoslaná',
+    variables: {
+      applicationName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{messageSubject}}',
+      },
+      firstName: {
+        type: MailgunConfigVariableType.PARAMETER,
+        value: '{{firstName}}',
+      },
+    },
+  },
+  TSB_REQUEST_SENT_SUCCESS: {
     template: '2025-tsb-form-success',
     subject: 'TSB: Vaša žiadosť bola odoslaná',
     variables: {

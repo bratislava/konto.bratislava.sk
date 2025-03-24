@@ -431,11 +431,14 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: objednavkaInformativnehoZakresuSietiExtractEmail,
       extractName: objednavkaInformativnehoZakresuSietiExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
       technicalEmailSubject: 'tsb-objednavka-informativneho-zakresu-sieti',
@@ -453,11 +456,14 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail,
       extractName: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.TSB_ORDER_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
       technicalEmailSubject: 'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
@@ -475,11 +481,14 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail,
       extractName: ziadostOStanoviskoKProjektovejDokumentaciiExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
       technicalEmailSubject: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
@@ -497,11 +506,14 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     email: {
       address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
-      fromAddress: { prod: 'konto@bratislava.sk', test: 'konto@bratislava.sk' },
+      fromAddress: {
+        prod: 'Mesto Bratislava <konto@bratislava.sk>',
+        test: 'Mesto Bratislava <konto@bratislava.sk>',
+      },
       extractEmail: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail,
       extractName: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName,
       mailer: 'mailgun',
-      userResponseTemplate: MailgunTemplateEnum.TSB_SENT_SUCCESS,
+      userResponseTemplate: MailgunTemplateEnum.TSB_REQUEST_SENT_SUCCESS,
       newSubmissionTemplate: MailgunTemplateEnum.TSB_NEW_SUBMISSION,
       sendJsonDataAttachmentInTechnicalMail: true,
       technicalEmailSubject:

@@ -10,7 +10,7 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 
-const ziadatelInvestorFields = [
+const ziadatelStavebnikInvestorFields = [
   radioGroup(
     'typ',
     {
@@ -55,13 +55,15 @@ export const getSurSchema = (zavazne: boolean) =>
       titleFallback: 'Názov stavby/projektu',
     },
     [
-      step('ziadatel', { title: 'Žiadateľ' }, ziadatelInvestorFields),
-      step('investor', { title: 'Investor' }, [
+      step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikInvestorFields),
+      step(zavazne ? 'investor' : 'stavebnik', { title: zavazne ? 'Investor' : 'Stavebník' }, [
         radioGroup(
-          'investorZiadatelom',
+          zavazne ? 'investorZiadatelom' : 'stavebnikZiadatelom',
           {
             type: 'boolean',
-            title: 'Je investor rovnaká osoba ako žiadateľ?',
+            title: zavazne
+              ? 'Je investor rovnaká osoba ako žiadateľ?'
+              : 'Je stavebník rovnaká osoba ako žiadateľ?',
             required: true,
             items: [
               { value: true, label: 'Áno', isDefault: true },
@@ -73,17 +75,27 @@ export const getSurSchema = (zavazne: boolean) =>
             orientations: 'row',
           },
         ),
-        conditionalFields(createCondition([[['investorZiadatelom'], { const: false }]]), [
-          fileUpload(
-            'splnomocnenie',
-            { title: 'Splnomocnenie na zastupovanie', required: true },
-            {
-              type: 'button',
-              helptext: 'nahrajte splnomocnenie od investora',
-            },
-          ),
-          ...ziadatelInvestorFields,
-        ]),
+        conditionalFields(
+          createCondition([
+            [[zavazne ? 'investorZiadatelom' : 'stavebnikZiadatelom'], { const: false }],
+          ]),
+          [
+            fileUpload(
+              'splnomocnenie',
+              {
+                title: 'Splnomocnenie na zastupovanie',
+                required: true,
+              },
+              {
+                type: 'button',
+                helptext: zavazne
+                  ? 'nahrajte splnomocnenie od investora'
+                  : 'nahrajte splnomocnenie od stavebníka',
+              },
+            ),
+            ...ziadatelStavebnikInvestorFields,
+          ],
+        ),
       ]),
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
         input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
@@ -93,8 +105,9 @@ export const getSurSchema = (zavazne: boolean) =>
           'autorizacneOsvedcenie',
           { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
           {
-            helptext:
-              'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.',
+            helptext: zavazne
+              ? 'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.'
+              : 'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.',
             size: 'medium',
           },
         ),

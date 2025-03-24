@@ -14,6 +14,10 @@ const TaxesFeesDeliveryMethodCard = ({
 }: TaxesFeesDeliveryMethodCardProps) => {
   const { channel, canChangeChannel } = useTaxChannel()
 
+  if (!channel) {
+    return null
+  }
+
   // TODO: Translations
   const type = {
     [UserOfficialCorrespondenceChannelEnum.Email]: 'Oznámenie cez Bratislavské konto',

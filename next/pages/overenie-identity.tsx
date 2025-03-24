@@ -1,3 +1,4 @@
+import { cityAccountClient } from '@clients/city-account'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
@@ -5,7 +6,6 @@ import IdentityVerificationForm, {
   VerificationFormData,
 } from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -64,17 +64,23 @@ const IdentityVerificationPage = () => {
     }
     try {
       await (isLegalEntity && data.ico
-        ? verifyLegalEntityIdentityApi({
-            ico: data.ico || '',
-            birthNumber: data.rc.replace('/', ''),
-            identityCard: data.idCard.toUpperCase(),
-            turnstileToken: data.turnstileToken,
-          })
-        : verifyIdentityApi({
-            birthNumber: data.rc.replace('/', ''),
-            identityCard: data.idCard.toUpperCase(),
-            turnstileToken: data.turnstileToken,
-          }))
+        ? cityAccountClient.verificationControllerVerifyIcoBirthNumberAndIdentityCard(
+            {
+              ico: data.ico || '',
+              birthNumber: data.rc.replace('/', ''),
+              identityCard: data.idCard.toUpperCase(),
+              turnstileToken: data.turnstileToken,
+            },
+            { accessToken: 'always' },
+          )
+        : cityAccountClient.verificationControllerVerifyBirthNumberAndIdentityCard(
+            {
+              birthNumber: data.rc.replace('/', ''),
+              identityCard: data.idCard.toUpperCase(),
+              turnstileToken: data.turnstileToken,
+            },
+            { accessToken: 'always' },
+          ))
       // give the queue a few seconds to process the verification
       await new Promise((resolve) => {
         setTimeout(resolve, 8000)

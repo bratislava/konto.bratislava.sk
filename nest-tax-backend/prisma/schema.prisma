@@ -56,6 +56,7 @@ model Tax {
   taxDetails          TaxDetail[]
   taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
   lastCheckedPayments DateTime         @default(now())
+  deliveryMethod      DeliveryMethod?
 
   @@unique([taxPayerId, year])
   @@unique([uuid])
@@ -148,4 +149,10 @@ enum PaymentStatus {
   NEW
   FAIL
   SUCCESS
+}
+
+enum DeliveryMethod {
+  E // Edesk
+  P // Postal
+  O // City account notification
 }

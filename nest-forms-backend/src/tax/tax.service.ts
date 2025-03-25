@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,sonarjs/cognitive-complexity,eslint-comments/disable-enable-pair */
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Job, JobId, Queue } from 'bull'
 import { GenerateTaxPdfPayload } from 'forms-shared/tax-form/generateTaxPdf'
 import { TaxFormData } from 'forms-shared/tax-form/types'
 
+import BaConfigService from '../config/ba-config.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
@@ -13,7 +13,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 export default class TaxService {
   constructor(
     @InjectQueue('tax') private readonly taxQueue: Queue,
-    private readonly configService: ConfigService,
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
@@ -85,10 +85,7 @@ export default class TaxService {
       {
         removeOnComplete: true,
         removeOnFail: true,
-        timeout: parseInt(
-          <string>this.configService.get('TAX_PDF_JOB_TIMEOUT') ?? '30000',
-          10,
-        ),
+        timeout: this.baConfigService.redis.taxJob.timeout,
       },
     )) as Job<GenerateTaxPdfPayload>
 

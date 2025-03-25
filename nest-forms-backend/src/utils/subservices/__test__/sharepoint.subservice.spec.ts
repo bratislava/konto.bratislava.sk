@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { HttpException, HttpStatus } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios from 'axios'
@@ -16,7 +15,9 @@ import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import * as getValuesForSharepoint from 'forms-shared/sharepoint/getValuesForSharepoint'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 
+import createBaConfigMock from '../../../../test/baConfigMock'
 import prismaMock from '../../../../test/singleton'
+import BaConfigService from '../../../config/ba-config.service'
 import FormValidatorRegistryService from '../../../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
@@ -30,16 +31,23 @@ describe('SharepointSubservice', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
 
-    const configServiceMock = {
-      get: jest.fn().mockReturnValue('value'),
-    }
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SharepointSubservice,
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
-        { provide: ConfigService, useValue: configServiceMock },
+        {
+          provide: BaConfigService,
+          useValue: createBaConfigMock({
+            sharepoint: {
+              tenantId: '',
+              clientId: '',
+              clientSecret: '',
+              domain: '',
+              url: '',
+            },
+          }),
+        },
         {
           provide: FormValidatorRegistryService,
           useValue: createMock<FormValidatorRegistryService>(),

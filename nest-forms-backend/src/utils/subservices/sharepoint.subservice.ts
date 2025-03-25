@@ -1,6 +1,5 @@
 import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
@@ -22,6 +21,7 @@ import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint
 import escape from 'lodash/escape'
 import lodashGet from 'lodash/get'
 
+import BaConfigService from '../../config/ba-config.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -47,22 +47,10 @@ export default class SharepointSubservice {
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
     private prismaService: PrismaService,
-    private configService: ConfigService,
+    private baConfigService: BaConfigService,
     private formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new LineLoggerSubservice('SharepointSubservice')
-
-    if (
-      !this.configService.get<string>('SHAREPOINT_TENANT_ID') ||
-      !this.configService.get<string>('SHAREPOINT_CLIENT_ID') ||
-      !this.configService.get<string>('SHAREPOINT_CLIENT_SECRET') ||
-      !this.configService.get<string>('SHAREPOINT_DOMAIN') ||
-      !this.configService.get<string>('SHAREPOINT_URL')
-    ) {
-      throw new Error(
-        'Missing Sharepoint .env values, one of: SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL',
-      )
-    }
   }
 
   @Process()
@@ -279,7 +267,7 @@ export default class SharepointSubservice {
     dbName: string,
   ): Promise<Record<string, string>> {
     const result: Record<string, string> = {}
-    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/fields`
+    const url = `${escape(this.baConfigService.sharepoint.url)}/lists/getbytitle('${dbName}')/fields`
 
     const fields = await axios
       .get(url, {
@@ -385,7 +373,7 @@ export default class SharepointSubservice {
     accessToken: string,
     fieldValues: Record<string, string>,
   ): Promise<{ id: number }> {
-    const url = `${escape(this.configService.get<string>('SHAREPOINT_URL'))}/lists/getbytitle('${dbName}')/items`
+    const url = `${escape(this.baConfigService.sharepoint.url)}/lists/getbytitle('${dbName}')/items`
 
     const result = await axios
       .post(url, fieldValues, {
@@ -411,22 +399,20 @@ export default class SharepointSubservice {
 
   private async getAccessToken(): Promise<string> {
     const url = `https://accounts.accesscontrol.windows.net/${escape(
-      this.configService.get<string>('SHAREPOINT_TENANT_ID'),
+      this.baConfigService.sharepoint.tenantId,
     )}/tokens/OAuth/2`
     const result = await axios
       .post(
         url,
         {
           grant_type: 'client_credentials',
-          client_id: `${escape(this.configService.get<string>('SHAREPOINT_CLIENT_ID'))}@${escape(
-            this.configService.get<string>('SHAREPOINT_TENANT_ID'),
+          client_id: `${escape(this.baConfigService.sharepoint.clientId)}@${escape(
+            this.baConfigService.sharepoint.tenantId,
           )}`,
-          client_secret: this.configService.get<string>(
-            'SHAREPOINT_CLIENT_SECRET',
-          ),
+          client_secret: this.baConfigService.sharepoint.clientSecret,
           resource: `00000003-0000-0ff1-ce00-000000000000/${
-            this.configService.get<string>('SHAREPOINT_DOMAIN') ?? ''
-          }@${this.configService.get<string>('SHAREPOINT_TENANT_ID') ?? ''}`,
+            this.baConfigService.sharepoint.domain
+          }@${this.baConfigService.sharepoint.tenantId}`,
         },
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       )

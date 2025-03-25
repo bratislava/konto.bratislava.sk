@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { TaxDetailareaType, TaxDetailType } from '@prisma/client'
+import {
+  DeliveryMethod,
+  TaxDetailareaType,
+  TaxDetailType,
+} from '@prisma/client'
 
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',
@@ -469,6 +473,8 @@ export class ResponseTaxDto {
     default: '2023-04-13T14:39:49.004Z',
   })
   lastCheckedPayments: Date
+
+  deliveryMethod: DeliveryMethod | null
 }
 
 export class ResponseGetTaxesBodyDto {

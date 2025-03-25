@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { TaxPaymentSource } from '@prisma/client'
+import { IsDefined, IsEnum, IsNumber } from 'class-validator'
+
+import { DeliveryMethod } from '../noris/noris.types'
 
 export enum BloomreachEventNameEnum {
   TAX = 'tax',
@@ -31,11 +34,23 @@ export class TaxBloomreachDataDto {
     description: 'year',
     example: 2024,
   })
+  @IsDefined()
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'amount',
     example: 13.2,
   })
+  @IsDefined()
+  @IsNumber()
   amount: number
+
+  @ApiProperty({
+    description: 'delivery_method',
+    example: DeliveryMethod.POSTAL,
+    enumName: 'DeliveryMethod',
+  })
+  @IsEnum(DeliveryMethod)
+  deliveryMethod: DeliveryMethod
 }

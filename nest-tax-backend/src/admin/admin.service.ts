@@ -138,6 +138,7 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          deliveryMethod: dataFromNoris.delivery_method,
         },
       })
       const taxInstallments =
@@ -223,6 +224,8 @@ export class AdminService {
                   amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
                     .intValue,
                   year: +data.year,
+                  deliveryMethod:
+                    dataFromNoris.delivery_method ?? DeliveryMethod.POSTAL,
                 },
                 userFromCityAccount.externalId ?? undefined,
               )

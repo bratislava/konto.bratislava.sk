@@ -16,6 +16,7 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
+import { transformDeliveryMethodToDatabaseType } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
@@ -121,6 +122,7 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
         },
         create: {
           amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
@@ -138,7 +140,9 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
-          deliveryMethod: dataFromNoris.delivery_method,
+          deliveryMethod: transformDeliveryMethodToDatabaseType(
+            dataFromNoris.delivery_method,
+          ),
         },
       })
       const taxInstallments =

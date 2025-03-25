@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import {
-  DeliveryMethod,
+  DeliveryMethodNamed,
   TaxDetailareaType,
   TaxDetailType,
 } from '@prisma/client'
@@ -532,12 +532,12 @@ export class ResponseTaxDto {
 
   @ApiProperty({
     description: 'delivery_method',
-    example: DeliveryMethod.P,
+    example: DeliveryMethodNamed.CITY_ACCOUNT,
     enumName: 'DeliveryMethod',
   })
-  @IsEnum(DeliveryMethod)
+  @IsEnum(DeliveryMethodNamed)
   @IsOptional()
-  deliveryMethod: DeliveryMethod | null
+  deliveryMethod: DeliveryMethodNamed | null
 }
 
 export class ResponseGetTaxesBodyDto {

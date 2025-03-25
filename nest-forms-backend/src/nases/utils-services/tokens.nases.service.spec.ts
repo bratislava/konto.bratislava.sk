@@ -3,14 +3,15 @@
 import { Readable } from 'node:stream'
 
 import { getQueueToken } from '@nestjs/bull'
-import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
 import { v1, v4 } from 'uuid'
 import { Builder, Parser } from 'xml2js'
 
+import createBaConfigMock from '../../../test/baConfigMock'
 import prismaMock from '../../../test/singleton'
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import BaConfigService from '../../config/ba-config.service'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
@@ -43,13 +44,6 @@ describe('NasesUtilsService', () => {
   beforeEach(async () => {
     jest.resetAllMocks()
     const app: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forFeature(async () => ({
-          NASES_SENDER_URI: 'example_sender',
-          NASES_RECIPIENT_URI: 'example_recipient',
-          MINIO_SAFE_BUCKET: '',
-        })),
-      ],
       providers: [
         NasesUtilsService,
         ConvertService,
@@ -60,6 +54,27 @@ describe('NasesUtilsService', () => {
         {
           provide: getQueueToken('tax'),
           useValue: {},
+        },
+        {
+          provide: BaConfigService,
+          useValue: createBaConfigMock({
+            slovenskoSk: {
+              url: '',
+              apiKey: '',
+              apiTokenPrivate: '',
+              oboTokenPublic: '',
+              subNasesTechnicalAccount: '',
+              nasesSenderUri: 'example_sender',
+              nasesRecipientUri: 'example_recipient',
+            },
+            minio: {
+              buckets: {
+                safe: '',
+                unscanned: '',
+                infected: '',
+              },
+            },
+          }),
         },
       ],
     }).compile()

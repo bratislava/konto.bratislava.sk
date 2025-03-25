@@ -4,7 +4,6 @@ import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
 import { AxiosError } from 'axios'
 import {
@@ -19,6 +18,7 @@ import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import BaConfigService from '../../config/ba-config.service'
 import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
@@ -54,7 +54,7 @@ export default class NasesUtilsService {
     private prismaService: PrismaService,
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
-    private configService: ConfigService,
+    private baConfigService: BaConfigService,
   ) {
     this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
@@ -68,13 +68,12 @@ export default class NasesUtilsService {
           [Symbol.toPrimitive](hint: 'string'): string
         },
   ): boolean {
-    const publicKey = this.configService.getOrThrow<string>('OBO_TOKEN_PUBLIC')
     const verifyObject = crypto.createVerify('RSA-SHA256')
     verifyObject.write(`${rawHead}.${rawBody}`)
     verifyObject.end()
     const base64Signature = Buffer.from(signature, 'base64').toString('base64')
     const signatureIsValid = verifyObject.verify(
-      publicKey,
+      this.baConfigService.slovenskoSk.oboTokenPublic,
       base64Signature,
       'base64',
     )
@@ -116,7 +115,7 @@ export default class NasesUtilsService {
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
       const fileStream = await this.minioClientSubservice.loadFileStream(
-        this.configService.getOrThrow<string>('MINIO_SAFE_BUCKET'),
+        this.baConfigService.minio.buckets.safe,
         `${file.pospId}/${form.id}/${file.minioFileName}`,
       )
       // eslint-disable-next-line no-restricted-syntax
@@ -208,14 +207,14 @@ export default class NasesUtilsService {
 
     return jwt.sign(
       payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
       options,
     )
   }
 
   createTechnicalAccountJwtToken(): string {
     const payload = {
-      sub: this.configService.getOrThrow<string>('SUB_NASES_TECHNICAL_ACCOUNT'),
+      sub: this.baConfigService.slovenskoSk.subNasesTechnicalAccount,
       jti: uuidv1(),
       obo: null,
     }
@@ -227,7 +226,7 @@ export default class NasesUtilsService {
 
     return jwt.sign(
       payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
       options,
     )
   }
@@ -244,7 +243,7 @@ export default class NasesUtilsService {
 
     return jwt.sign(
       payload,
-      this.configService.getOrThrow<string>('API_TOKEN_PRIVATE'),
+      this.baConfigService.slovenskoSk.apiTokenPrivate,
       options,
     )
   }
@@ -297,9 +296,7 @@ export default class NasesUtilsService {
     // TODO And put back this
     /* const result = await axios
       .post(
-        `${
-          this.configService.getOrThrow<string>('SLOVENSKO_SK_CONTAINER_URI')
-        }/api/iam/identities/search`,
+        `${this.baConfigService.slovenskoSk.url}/api/iam/identities/search`,
         {
           uris: [
             `rc://sk/${birthNumber}_${userData.family_name.toLowerCase()}_${userData.given_name.toLowerCase()}`,
@@ -404,7 +401,7 @@ export default class NasesUtilsService {
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
     const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+      senderUri ?? this.baConfigService.slovenskoSk.nasesSenderUri
     const correlationId = uuidv4()
     let subject: string = form.id
     const mimeType = isSigned
@@ -466,9 +463,7 @@ export default class NasesUtilsService {
             },
             MessageId: form.id,
             SenderId: senderId,
-            RecipientId: this.configService.getOrThrow<string>(
-              'NASES_RECIPIENT_URI',
-            ),
+            RecipientId: this.baConfigService.slovenskoSk.nasesRecipientUri,
             MessageType: pospID,
             MessageSubject: subject,
             Object: attachments,

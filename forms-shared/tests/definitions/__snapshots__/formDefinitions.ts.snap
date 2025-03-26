@@ -85067,3 +85067,718 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
   "title": "Žiadosť o nájom bytu",
 }
 `;
+
+exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > default form state should match snapshot 1`] = `
+{
+  "pozadovaneInformacie": {
+    "prilohyZiadosti": [],
+  },
+  "sposobSpristupnenia": {},
+  "ziadatel": {
+    "typZiadatela": "fyzickaOsoba",
+  },
+}
+`;
+
+exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema matches snapshot 1`] = `
+{
+  "allOf": [
+    {
+      "properties": {
+        "ziadatel": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "meno": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "mesto": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "priezvisko": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 6,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 4,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa pobytu",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "ico": {
+                    "baOrder": 8,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-ico",
+                    "title": "IČO",
+                    "type": "string",
+                  },
+                  "obchodneMeno": {
+                    "baOrder": 7,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Obchodné meno",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "obchodneMeno",
+                  "ico",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsobaPodnikatel",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 10,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 11,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 9,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Miesto podnikania",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "pravnickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaCislo": {
+                    "baOrder": 12,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa sídla",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaCislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktneUdaje": {
+                    "baOrder": 15,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "description": "Uvedenie telefónneho čísla a emailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
+                        "objectDisplay": "boxed",
+                        "title": "Kontaktné údaje",
+                      },
+                    },
+                    "properties": {
+                      "email": {
+                        "baOrder": 1,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "email",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string",
+                      },
+                      "telefon": {
+                        "baOrder": 2,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Vyplňte vo formáte +421",
+                            "inputType": "tel",
+                            "size": "medium",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "ba-phone-number",
+                        "title": "Telefónne číslo",
+                        "type": "string",
+                      },
+                    },
+                    "required": [],
+                    "type": "object",
+                  },
+                },
+                "required": [],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "pravnickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "kontaktneUdaje": {
+                    "baOrder": 16,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "description": "Uvedenie telefónneho čísla a emailu je nepovinné. Ak ich poskytnete, môžeme vás v prípade potreby kontaktovať na doplnenie informácií. Žiadosť je možné odoslať aj bez vyplnenia týchto údajov.",
+                        "objectDisplay": "boxed",
+                        "title": "Kontaktné údaje",
+                      },
+                    },
+                    "properties": {
+                      "email": {
+                        "baOrder": 3,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "email",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "email",
+                        "title": "Email",
+                        "type": "string",
+                      },
+                      "meno": {
+                        "baOrder": 1,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "text",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Meno",
+                        "type": "string",
+                      },
+                      "priezvisko": {
+                        "baOrder": 2,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "inputType": "text",
+                            "selfColumn": "2/4",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "title": "Priezvisko",
+                        "type": "string",
+                      },
+                      "telefon": {
+                        "baOrder": 4,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Vyplňte vo formáte +421",
+                            "inputType": "tel",
+                            "size": "medium",
+                          },
+                          "ui:widget": "Input",
+                        },
+                        "format": "ba-phone-number",
+                        "title": "Telefónne číslo",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "meno",
+                      "priezvisko",
+                    ],
+                    "type": "object",
+                  },
+                },
+                "required": [],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "ziadatel",
+            },
+          },
+          "properties": {
+            "typZiadatela": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "Fyzická osoba",
+                      "value": "fyzickaOsoba",
+                    },
+                    {
+                      "label": "Fyzická osoba – podnikateľ",
+                      "value": "fyzickaOsobaPodnikatel",
+                    },
+                    {
+                      "label": "Právnická osoba",
+                      "value": "pravnickaOsoba",
+                    },
+                  ],
+                  "variant": "boxed",
+                },
+                "ui:widget": "RadioGroup",
+              },
+              "default": "fyzickaOsoba",
+              "enum": [
+                "fyzickaOsoba",
+                "fyzickaOsobaPodnikatel",
+                "pravnickaOsoba",
+              ],
+              "title": "Žiadate ako",
+              "type": "string",
+            },
+          },
+          "required": [
+            "typZiadatela",
+          ],
+          "title": "Žiadateľ",
+          "type": "object",
+        },
+      },
+      "required": [
+        "ziadatel",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "pozadovaneInformacie": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "pozadovane-informacie",
+            },
+          },
+          "properties": {
+            "obsahZiadosti": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Uveďte požadované informácie",
+                },
+                "ui:widget": "TextArea",
+              },
+              "title": "Obsah žiadosti",
+              "type": "string",
+            },
+            "predmetZiadosti": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Predmet žiadosti",
+              "type": "string",
+            },
+            "prilohyZiadosti": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "type": "dragAndDrop",
+                },
+                "ui:widget": "FileUploadMultiple",
+              },
+              "default": [],
+              "items": {
+                "baFile": true,
+                "format": "ba-file-uuid",
+                "type": "string",
+              },
+              "title": "Prílohy k žiadosti",
+              "type": "array",
+            },
+          },
+          "required": [
+            "predmetZiadosti",
+            "obsahZiadosti",
+          ],
+          "title": "Požadované informácie",
+          "type": "object",
+        },
+      },
+      "required": [
+        "pozadovaneInformacie",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "sposobSpristupnenia": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "sposobSpristupnenia": {
+                    "const": "email",
+                  },
+                },
+                "required": [
+                  "sposobSpristupnenia",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "emailSpristupnenia": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "Email",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "emailSpristupnenia",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "sposobSpristupnenia": {
+                    "const": "telefon",
+                  },
+                },
+                "required": [
+                  "sposobSpristupnenia",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "telefon": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                        "size": "medium",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "telefon",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "sposobSpristupnenia": {
+                    "const": "fax",
+                  },
+                },
+                "required": [
+                  "sposobSpristupnenia",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "faxCislo": {
+                    "baOrder": 4,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Fax číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "faxCislo",
+                ],
+                "type": "object",
+              },
+            },
+          ],
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "sposob-spristupnenia-informacii",
+            },
+          },
+          "properties": {
+            "sposobSpristupnenia": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "enumMetadata": [
+                    {
+                      "label": "do elektronickej schránky",
+                      "value": "elektronickaSchranka",
+                    },
+                    {
+                      "label": "na emailovú adresu",
+                      "value": "email",
+                    },
+                    {
+                      "label": "listinne poštou",
+                      "value": "postou",
+                    },
+                    {
+                      "label": "telefonicky",
+                      "value": "telefon",
+                    },
+                    {
+                      "label": "faxom",
+                      "value": "fax",
+                    },
+                    {
+                      "label": "nahliadnutie do spisu (osobne)",
+                      "value": "nahliadnutieDoSpisu",
+                    },
+                  ],
+                },
+                "ui:widget": "Select",
+              },
+              "enum": [
+                "elektronickaSchranka",
+                "email",
+                "postou",
+                "telefon",
+                "fax",
+                "nahliadnutieDoSpisu",
+              ],
+              "title": "Akým spôsobom chcete sprístupniť požadované informácie",
+              "type": "string",
+            },
+          },
+          "required": [
+            "sposobSpristupnenia",
+          ],
+          "title": "Spôsob sprístupnenia informácií",
+          "type": "object",
+        },
+      },
+      "required": [
+        "sposobSpristupnenia",
+      ],
+      "type": "object",
+    },
+  ],
+  "baUiSchema": {
+    "ui:options": {},
+  },
+  "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+}
+`;

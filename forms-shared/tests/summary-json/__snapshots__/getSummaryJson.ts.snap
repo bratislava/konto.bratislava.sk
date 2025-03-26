@@ -11239,3 +11239,192 @@ exports[`getSummaryJson > ziadostONajomBytuExample summary JSON should match sna
   "type": "Form",
 }
 `;
+
+exports[`getSummaryJson > ziadostOSlobodnyPristupKInformaciamExample summary JSON should match snapshot 1`] = `
+{
+  "id": "root",
+  "steps": [
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Fyzická osoba",
+            },
+          ],
+          "id": "root_ziadatel_typZiadatela",
+          "label": "Žiadate ako",
+          "type": "Field",
+          "value": "fyzickaOsoba",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Martin",
+            },
+          ],
+          "id": "root_ziadatel_meno",
+          "label": "Meno",
+          "type": "Field",
+          "value": "Martin",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Kováč",
+            },
+          ],
+          "id": "root_ziadatel_priezvisko",
+          "label": "Priezvisko",
+          "type": "Field",
+          "value": "Kováč",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bajkalská 28",
+            },
+          ],
+          "id": "root_ziadatel_ulicaCislo",
+          "label": "Adresa pobytu",
+          "type": "Field",
+          "value": "Bajkalská 28",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Bratislava",
+            },
+          ],
+          "id": "root_ziadatel_mesto",
+          "label": "Mesto",
+          "type": "Field",
+          "value": "Bratislava",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "82109",
+            },
+          ],
+          "id": "root_ziadatel_psc",
+          "label": "PSČ",
+          "type": "Field",
+          "value": "82109",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "martin.kovac@example.com",
+            },
+          ],
+          "id": "root_ziadatel_kontaktneUdaje_email",
+          "label": "Email",
+          "type": "Field",
+          "value": "martin.kovac@example.com",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "+421908123456",
+            },
+          ],
+          "id": "root_ziadatel_kontaktneUdaje_telefon",
+          "label": "Telefónne číslo",
+          "type": "Field",
+          "value": "+421908123456",
+        },
+      ],
+      "id": "root_ziadatel",
+      "title": "Žiadateľ",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Rozpočet mestskej časti na rok 2024",
+            },
+          ],
+          "id": "root_pozadovaneInformacie_predmetZiadosti",
+          "label": "Predmet žiadosti",
+          "type": "Field",
+          "value": "Rozpočet mestskej časti na rok 2024",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.",
+            },
+          ],
+          "id": "root_pozadovaneInformacie_obsahZiadosti",
+          "label": "Obsah žiadosti",
+          "type": "Field",
+          "value": "Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.",
+        },
+        {
+          "displayValues": [
+            {
+              "id": "b9050ef5-0d98-41c4-aba1-b0fc5a65a443",
+              "type": "File",
+            },
+          ],
+          "id": "root_pozadovaneInformacie_prilohyZiadosti",
+          "label": "Prílohy k žiadosti",
+          "type": "Field",
+          "value": [
+            "b9050ef5-0d98-41c4-aba1-b0fc5a65a443",
+          ],
+        },
+      ],
+      "id": "root_pozadovaneInformacie",
+      "title": "Požadované informácie",
+      "type": "Step",
+    },
+    {
+      "children": [
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "na emailovú adresu",
+            },
+          ],
+          "id": "root_sposobSpristupnenia_sposobSpristupnenia",
+          "label": "Akým spôsobom chcete sprístupniť požadované informácie",
+          "type": "Field",
+          "value": "email",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "martin.kovac@example.com",
+            },
+          ],
+          "id": "root_sposobSpristupnenia_emailSpristupnenia",
+          "label": "Email",
+          "type": "Field",
+          "value": "martin.kovac@example.com",
+        },
+      ],
+      "id": "root_sposobSpristupnenia",
+      "title": "Spôsob sprístupnenia informácií",
+      "type": "Step",
+    },
+  ],
+  "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+  "type": "Form",
+}
+`;

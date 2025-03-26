@@ -222,6 +222,7 @@ export class AdminService {
       CognitoUserAttributesTierEnum.NEW,
       cognitoUser['custom:account_type']
     )
+    await this.bloomreachService.trackCustomer(externalId)
 
     let removedUser: User | null = null
     if (
@@ -402,6 +403,7 @@ export class AdminService {
       CognitoUserAttributesTierEnum.IDENTITY_CARD,
       cognitoUser['custom:account_type']
     )
+    await this.bloomreachService.trackCustomer(user.externalId)
 
     return { success: true }
   }

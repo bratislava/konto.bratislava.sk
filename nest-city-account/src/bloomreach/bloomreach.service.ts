@@ -11,7 +11,9 @@ import {
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { CognitoGetUserData } from '../utils/global-dtos/cognito.dto'
+import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
 
 @Injectable()
 export class BloomreachService {
@@ -22,7 +24,7 @@ export class BloomreachService {
     'binary'
   ).toString('base64')
 
-  constructor() {
+  constructor(private readonly cognitoSubservice: CognitoSubservice) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
@@ -61,34 +63,23 @@ export class BloomreachService {
     return result
   }
 
-  async trackCustomer(
-    cognitoId: string,
-    {
-      email,
-      isIdentityVerified,
-      ...rest
-    }: {
-      email?: string
-      isIdentityVerified?: boolean
-      'custom:account_type'?: string
-    } & Omit<CognitoGetUserData, 'email' | 'sub' | 'idUser' | 'Enabled' | 'custom:account_type'>
-  ): Promise<boolean | undefined> {
-    const {
-      given_name: firstName,
-      family_name: lastName,
-      name,
-      UserCreateDate: registrationDate,
-      'custom:account_type': accountType,
-    } = rest
-
+  async trackCustomer(cognitoId: string): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
     }
-    if (!cognitoId) {
-      this.logger.warn(`Bloomreach user modification error: missing property cognitoId`)
+    console.log(this.cognitoSubservice)
+    const user = await this.cognitoSubservice.getDataFromCognito(cognitoId)
+    console.log('user', user)
+    const firstName = user.given_name
+    const lastName = user.family_name
+    const name = user.name
+    const registrationDate = user.UserCreateDate
+    const accountType = user['custom:account_type']
+    const email = user.email
 
-      return false
-    }
+    const isIdentityVerified =
+      user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
+      user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
 
     try {
       const data = {
@@ -105,30 +96,21 @@ export class BloomreachService {
           ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
         },
       }
-      const eventResponse = await axios
-        .post(
-          `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers`,
-          JSON.stringify(data),
-          {
-            headers: {
-              Authorization: `Basic ${this.bloomreachCredentials}`,
-            },
-          }
-        )
-        .catch((error) => {
-          this.logger.warn(error)
-          throw error
-        })
-      if (eventResponse.status != 200) {
-        this.logger.warn(`Customer create/edit in bloomreach error for user: ${cognitoId}`)
-        this.logger.warn(`: ${cognitoId}`)
-        return false
-      }
+      await axios.post(
+        `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers`,
+        JSON.stringify(data),
+        {
+          headers: {
+            Authorization: `Basic ${this.bloomreachCredentials}`,
+          },
+        }
+      )
+      return true
     } catch (error) {
+      this.logger.warn(`Customer create/edit in bloomreach error for user: ${cognitoId}`)
+      this.logger.warn(`Error: ${JSON.stringify(error)}`)
       return false
     }
-
-    return true
   }
 
   private async trackEvent(

@@ -119,9 +119,7 @@ export class UserController {
     @User() user: CognitoGetUserData
   ): Promise<boolean | undefined> {
     //there is no way to track user attributes change in cognito, so for now, this solution is needed https://github.com/aws-amplify/amplify-js/issues/9391
-    const result = await this.bloomreachService.trackCustomer(user.idUser, {
-      ...user,
-    })
+    const result = await this.bloomreachService.trackCustomer(user.idUser)
     if (result) {
       return result
     }
@@ -342,10 +340,7 @@ export class UserController {
       result = await this.userService.changeLegalPersonEmail(user.sub, body.newEmail)
     }
     if (result) {
-      await this.bloomreachService.trackCustomer(user.idUser, {
-        ...user,
-        email: body.newEmail,
-      })
+      await this.bloomreachService.trackCustomer(user.idUser)
       return result
     }
 

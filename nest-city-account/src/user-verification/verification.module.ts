@@ -14,6 +14,7 @@ import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { VerificationController } from './verification.controller'
 import { VerificationService } from './verification.service'
+import { BloomreachModule } from '../bloomreach/bloomreach.module'
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { VerificationService } from './verification.service'
       uri:
         process.env.NODE_ENV === 'production'
           ? `amqp://${process.env.RABBIT_MQ_USERNAME}:${process.env.RABBIT_MQ_PASSWORD}@${process.env.RABBIT_MQ_HOST}:${process.env.RABBIT_MQ_PORT}`
-          : process.env.RABBIT_MQ_URI ?? '',
+          : (process.env.RABBIT_MQ_URI ?? ''),
       exchanges: [
         {
           name: RABBIT_MQ.EXCHANGE,
@@ -37,6 +38,7 @@ import { VerificationService } from './verification.service'
     NasesModule,
     MagproxyModule,
     PhysicalEntityModule,
+    BloomreachModule,
   ],
   providers: [
     VerificationService,

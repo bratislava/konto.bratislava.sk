@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUrl,
   Max,
@@ -107,17 +108,7 @@ export default class EnvironmentVariables {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  TURNSTILE_SECRET: string
-
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
   MAILGUN_API_KEY: string
-
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
-  DEFAULT_MAILGUN_DOMAIN: string
 
   @Expose()
   @IsString()
@@ -172,20 +163,10 @@ export default class EnvironmentVariables {
   @Expose()
   @IsUrl()
   @IsNotEmpty()
-  TAX_BACKEND_URL: string
-
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
-  TAX_BACKEND_API_KEY: string
-
-  @Expose()
-  @IsUrl()
-  @IsNotEmpty()
   USER_ACCOUNT_API: string
 
   @Expose()
-  @IsUrl()
+  @IsString()
   @IsNotEmpty()
   NEST_CLAMAV_SCANNER: string
 
@@ -199,30 +180,31 @@ export default class EnvironmentVariables {
   @IsNotEmpty()
   NEST_CLAMAV_SCANNER_PASSWORD: string
 
+  // TODO: Uncomment IsNotEmpty and remove ? when Bloomreach env variables are provided
   @Expose()
   @IsEnum(BloomreachIntegrationState)
-  @IsNotEmpty()
-  BLOOMREACH_INTEGRATION_STATE: BloomreachIntegrationState
+  @IsOptional() // replace with @IsNotEmpty()
+  BLOOMREACH_INTEGRATION_STATE?: BloomreachIntegrationState
 
   @Expose()
   @IsString()
-  @IsNotEmpty()
-  BLOOMREACH_PROJECT_TOKEN: string
+  @IsOptional() // replace with @IsNotEmpty()
+  BLOOMREACH_PROJECT_TOKEN?: string
 
   @Expose()
   @IsString()
-  @IsNotEmpty()
-  BLOOMREACH_API_KEY: string
+  @IsOptional() // replace with @IsNotEmpty()
+  BLOOMREACH_API_KEY?: string
 
   @Expose()
   @IsString()
-  @IsNotEmpty()
-  BLOOMREACH_API_SECRET: string
+  @IsOptional() // replace with @IsNotEmpty()
+  BLOOMREACH_API_SECRET?: string
 
   @Expose()
   @IsUrl()
-  @IsNotEmpty()
-  BLOOMREACH_API_URL: string
+  @IsOptional() // replace with @IsNotEmpty()
+  BLOOMREACH_API_URL?: string
 
   @Expose()
   @IsString()

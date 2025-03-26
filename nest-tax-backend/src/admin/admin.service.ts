@@ -206,19 +206,19 @@ export class AdminService {
       )
 
     await Promise.all(
-      norisData.map(async (elem) => {
-        birthNumbersResult.push(elem.ICO_RC)
+      norisData.map(async (norisItem) => {
+        birthNumbersResult.push(norisItem.ICO_RC)
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
             year: +data.year,
             taxPayer: {
-              birthNumber: elem.ICO_RC,
+              birthNumber: norisItem.ICO_RC,
             },
           },
         })
         if (!taxExists) {
           const userData = await this.insertTaxPayerDataToDatabase(
-            elem,
+            norisItem,
             data.year,
           )
           const userFromCityAccount =
@@ -227,10 +227,11 @@ export class AdminService {
             const bloomreachTracker =
               await this.bloomreachService.trackEventTax(
                 {
-                  amount: currency(elem.dan_spolu.replace(',', '.')).intValue,
+                  amount: currency(norisItem.dan_spolu.replace(',', '.'))
+                    .intValue,
                   year: +data.year,
                   deliveryMethod: transformDeliveryMethodToDatabaseType(
-                    elem.delivery_method,
+                    norisItem.delivery_method,
                   ),
                 },
                 userFromCityAccount.externalId ?? undefined,
@@ -258,12 +259,12 @@ export class AdminService {
     const norisData = await this.norisService.getDataFromNoris(data)
     let count = 0
     await Promise.all(
-      norisData.map(async (elem) => {
+      norisData.map(async (norisItem) => {
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
             year: +data.year,
             taxPayer: {
-              birthNumber: elem.ICO_RC,
+              birthNumber: norisItem.ICO_RC,
             },
           },
         })
@@ -279,7 +280,7 @@ export class AdminService {
             },
           })
           const userData = await this.insertTaxPayerDataToDatabase(
-            elem,
+            norisItem,
             data.year,
           )
           if (userData) {

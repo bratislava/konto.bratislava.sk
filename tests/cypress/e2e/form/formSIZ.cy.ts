@@ -53,7 +53,9 @@ describe('F01 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
-            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(
+              `${this.fileData.first_name} ${this.fileData.last_name}`,
+            )
 
             cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 
@@ -112,7 +114,9 @@ describe('F01 -', { testIsolation: false }, () => {
 
         it('6. Filling out the "Responsible designer" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(
+              `${this.fileData.first_name} ${this.fileData.last_name}`,
+            )
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 

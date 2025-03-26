@@ -1,3 +1,198 @@
-import { getSurSchema } from './sekcia-uzemneho-rozvoja/surSchemas'
+import { createCondition, createStringItems } from '../generator/helpers'
+import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
+import { selectMultiple } from '../generator/functions/selectMultiple'
+import { input } from '../generator/functions/input'
+import { radioGroup } from '../generator/functions/radioGroup'
+import { fileUpload } from '../generator/functions/fileUpload'
+import { datePicker } from '../generator/functions/datePicker'
+import { step } from '../generator/functions/step'
+import { conditionalFields } from '../generator/functions/conditionalFields'
+import { schema } from '../generator/functions/schema'
+import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 
-export default getSurSchema(false)
+const ziadatelStavebnikFields = [
+  radioGroup(
+    'typ',
+    {
+      type: 'string',
+      title: 'Žiadate ako',
+      required: true,
+      items: createStringItems(['Fyzická osoba', 'Fyzická osoba – podnikateľ', 'Právnická osoba']),
+    },
+    { variant: 'boxed' },
+  ),
+  conditionalFields(
+    createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
+    [
+      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
+      sharedAddressField('adresa', 'Korešpondenčná adresa', true),
+    ],
+    [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
+  ),
+  conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
+    sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
+  ]),
+  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+    sharedAddressField('adresaSidla', 'Adresa sídla', true),
+  ]),
+  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
+  ]),
+  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+  sharedPhoneNumberField('telefon', true),
+]
+
+export default schema(
+  {
+    title: 'Žiadosť o stanovisko k investičnému zámeru',
+  },
+  {
+    titlePath: 'stavba.nazov',
+    titleFallback: 'Názov stavby/projektu',
+  },
+  [
+    step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikFields),
+    step('stavebnik', { title: 'Stavebník' }, [
+      radioGroup(
+        'stavebnikZiadatelom',
+        {
+          type: 'boolean',
+          title: 'Je stavebník rovnaká osoba ako žiadateľ?',
+          required: true,
+          items: [
+            { value: true, label: 'Áno', isDefault: true },
+            { value: false, label: 'Nie' },
+          ],
+        },
+        {
+          variant: 'boxed',
+          orientations: 'row',
+        },
+      ),
+      conditionalFields(createCondition([[['stavebnikZiadatelom'], { const: false }]]), [
+        fileUpload(
+          'splnomocnenie',
+          {
+            title: 'Splnomocnenie na zastupovanie',
+            required: true,
+          },
+          {
+            type: 'button',
+            helptext: 'nahrajte splnomocnenie od stavebníka',
+          },
+        ),
+        ...ziadatelStavebnikFields,
+      ]),
+    ]),
+    step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
+      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
+      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+      sharedPhoneNumberField('projektantTelefon', true),
+      input(
+        'autorizacneOsvedcenie',
+        { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
+        {
+          helptext:
+            'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.',
+          size: 'medium',
+        },
+      ),
+      datePicker(
+        'datumSpracovania',
+        { title: 'Dátum spracovania projektovej dokumentácie', required: true },
+        { size: 'medium' },
+      ),
+    ]),
+    step('stavba', { title: 'Informácie o stavbe' }, [
+      input('nazov', { type: 'text', title: 'Názov stavby/projektu', required: true }, {}),
+      radioGroup(
+        'druhStavby',
+        {
+          type: 'string',
+          title: 'Druh stavby',
+          items: createStringItems([
+            'Bytový dom',
+            'Rodinný dom',
+            'Iná budova na bývanie',
+            'Nebytová budova',
+            'Inžinierska stavba',
+            'Iné',
+          ]),
+          required: true,
+        },
+        { variant: 'boxed' },
+      ),
+      input('ulica', { type: 'text', title: 'Ulica', required: true }, { size: 'medium' }),
+      input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, { size: 'medium' }),
+      input(
+        'parcelneCislo',
+        { type: 'text', title: 'Parcelné číslo', required: true },
+        { size: 'medium' },
+      ),
+      selectMultiple(
+        'kataster',
+        {
+          title: 'Katastrálne územie',
+          required: true,
+          items: createStringItems(
+            [
+              'Čunovo',
+              'Devín',
+              'Devínska Nová Ves',
+              'Dúbravka',
+              'Jarovce',
+              'Karlova Ves',
+              'Lamač',
+              'Nivy',
+              'Nové Mesto',
+              'Petržalka',
+              'Podunajské Biskupice',
+              'Rača',
+              'Rusovce',
+              'Ružinov',
+              'Staré Mesto',
+              'Trnávka',
+              'Vajnory',
+              'Vinohrady',
+              'Vrakuňa',
+              'Záhorská Bystrica',
+            ],
+            false,
+          ),
+        },
+        {
+          helptext:
+            'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
+          size: 'medium',
+        },
+      ),
+    ]),
+    step('prilohy', { title: 'Prílohy' }, [
+      fileUploadMultiple(
+        'architektonickaStudia',
+        {
+          title: 'Architektonická štúdia',
+          required: true,
+        },
+        {
+          type: 'dragAndDrop',
+          helptext: 'Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.',
+          belowComponents: [
+            {
+              type: 'additionalLinks',
+              props: {
+                links: [
+                  {
+                    href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
+                    title: 'Čo všetko má obsahovať architektonická štúdia',
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ),
+    ]),
+  ],
+)

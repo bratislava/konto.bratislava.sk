@@ -228,8 +228,9 @@ export class AdminService {
                   amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
                     .intValue,
                   year: +data.year,
-                  deliveryMethod:
-                    dataFromNoris.delivery_method ?? DeliveryMethod.POSTAL,
+                  deliveryMethod: transformDeliveryMethodToDatabaseType(
+                    dataFromNoris.delivery_method,
+                  ),
                 },
                 userFromCityAccount.externalId ?? undefined,
               )

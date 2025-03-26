@@ -11,6 +11,7 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
+import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import { FormSummary } from 'forms-shared/summary/summary'
 import * as renderSummaryEmail from 'forms-shared/summary-email/renderSummaryEmail'
 
@@ -73,10 +74,9 @@ const mockFormDefinitionWithSendEmail = {
   slug: 'test-form-email',
   type: FormDefinitionType.Email,
   title: 'Test Form Email',
-  schema: {
-    uiOptions: {},
-  },
+  schema: {},
   jsonVersion: '1.0',
+  sendPolicy: FormSendPolicy.NotAuthenticated,
   termsAndConditions: 'test-terms',
   messageSubjectDefault: 'Test Subject',
   email: {
@@ -98,10 +98,9 @@ const mockFormDefinitionWithSendOloEmail = {
   slug: 'test-form-olo',
   type: FormDefinitionType.Email,
   title: 'Test Form Email',
-  schema: {
-    uiOptions: {},
-  },
+  schema: {},
   jsonVersion: '1.0',
+  sendPolicy: FormSendPolicy.NotAuthenticated,
   termsAndConditions: 'test-terms',
   messageSubjectDefault: 'Test Subject',
   email: {

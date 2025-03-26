@@ -66,6 +66,7 @@ import ziadostOStanoviskoKProjektovejDokumentacii, {
 } from '../schemas/tsb/ziadostOStanoviskoKProjektovejDokumentacii'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
+import { FormSendPolicy } from '../send-policy/sendPolicy'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -74,6 +75,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o stanovisko k investičnému zámeru',
     jsonVersion: '1.1.0',
     schema: stanoviskoKInvesticnemuZameru,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.stanoviskoKInvesticnemuZameru',
     pospVersion: '0.9',
     publisher: 'ico://sk/00603481',
@@ -95,6 +97,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
     jsonVersion: '1.0.0',
     schema: zavazneStanoviskoKInvesticnejCinnosti,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
     pospVersion: '0.8',
     publisher: 'ico://sk/00603481',
@@ -116,6 +119,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Predzáhradky',
     jsonVersion: '1.0.0',
     schema: predzahradky,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.predzahradky',
     pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
@@ -135,6 +139,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Komunitné záhrady',
     jsonVersion: '1.0.0',
     schema: komunitneZahrady,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.komunitneZahrady',
     pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
@@ -154,6 +159,7 @@ export const formDefinitions: FormDefinition[] = [
     slug: 'priznanie-k-dani-z-nehnutelnosti',
     jsonVersion: '1.0.0',
     schema: priznanieKDaniZNehnutelnosti,
+    sendPolicy: FormSendPolicy.EidSigned,
     pospID: 'esmao.eforms.bratislava.obec_024',
     pospVersion: '201501.2',
     publisher: 'ico://sk/00603481',
@@ -170,6 +176,7 @@ export const formDefinitions: FormDefinition[] = [
     slug: 'priznanie-k-dani-z-nehnutelnosti-test',
     jsonVersion: '1.0.1',
     schema: priznanieKDaniZNehnutelnosti,
+    sendPolicy: FormSendPolicy.EidSigned,
     pospID: 'hmba.eforms.bratislava.obec_024',
     pospVersion: '201501.3',
     publisher: 'ico://sk/00603481',
@@ -185,6 +192,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o nájom bytu',
     jsonVersion: '1.0.0',
     schema: ziadostONajomBytu,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     // pospID contains different wording because the original form was created with a different name
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.2',
@@ -205,6 +213,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Mimoriadny odvoz a zhodnotenie odpadu',
     jsonVersion: '1.0.0',
     schema: mimoriadnyOdvozAZhodnotenieOdpadu,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
@@ -217,7 +226,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Mimoriadny odvoz a zhodnotenie odpadu',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -225,6 +233,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Energetické zhodnotenie odpadu v ZEVO',
     jsonVersion: '1.1.0',
     schema: energetickeZhodnotenieOdpaduVZevo,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
@@ -237,7 +246,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Energetické zhodnotenie odpadu v ZEVO',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -245,6 +253,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Uzatvorenie zmluvy o nakladaní s odpadom',
     jsonVersion: '1.1.0',
     schema: uzatvorenieZmluvyONakladaniSOdpadom,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
@@ -257,7 +266,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Uzatvorenie zmluvy o nakladaní s odpadom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -265,6 +273,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Dočistenie stanovišťa zberných nádob',
     jsonVersion: '1.0.0',
     schema: docisteniStanovistaZbernychNadob,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
@@ -277,7 +286,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Dočistenie stanovišťa zberných nádob',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -285,6 +293,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     jsonVersion: '1.0.0',
     schema: odvozOdpaduVelkokapacitnymAleboLisovacimKontajnerom,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
@@ -297,7 +306,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -305,6 +313,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'KOLO Taxi',
     jsonVersion: '1.0.0',
     schema: koloTaxi,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'kolo@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'kolo@olo.sk', test: 'kolo@olo.sk' },
@@ -317,7 +326,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloKoloTaxiTermsAndConditions,
     messageSubjectDefault: 'KOLO Taxi',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -325,6 +333,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'OLO Taxi',
     jsonVersion: '1.0.0',
     schema: oloTaxi,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
@@ -337,7 +346,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'OLO Taxi',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -345,6 +353,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Podnety a pochvaly občanov',
     jsonVersion: '1.0.0',
     schema: podnetyAPochvalyObcanov,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
@@ -357,7 +366,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Podnety a pochvaly občanov',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -365,6 +373,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Odvoz objemného odpadu valníkom',
     jsonVersion: '1.0.0',
     schema: odvozObjemnehoOdpaduValnikom,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
@@ -377,7 +386,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Odvoz objemného odpadu valníkom',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -385,6 +393,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Triedený zber papiera, plastov a skla pre právnické osoby',
     jsonVersion: '1.1.0',
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'obchod@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'obchod@olo.sk', test: 'obchod@olo.sk' },
@@ -397,7 +406,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre právnické osoby',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -405,6 +413,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     jsonVersion: '1.0.0',
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
       address: { prod: 'zakazka@olo.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: { prod: 'zakazka@olo.sk', test: 'zakazka@olo.sk' },
@@ -417,7 +426,6 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: oloTermsAndConditions,
     messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',
-    allowSendingUnauthenticatedUsers: true,
   },
   {
     type: FormDefinitionType.Email,
@@ -425,9 +433,9 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Objednávka informatívneho zákresu sietí',
     jsonVersion: '1.0.0',
     schema: objednavkaInformativnehoZakresuSieti,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Objednávka informatívneho zákresu sietí',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
@@ -451,9 +459,9 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     jsonVersion: '1.0.0',
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
@@ -477,9 +485,9 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o stanovisko k projektovej dokumentácii',
     jsonVersion: '1.0.0',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o stanovisko k projektovej dokumentácii',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
@@ -503,9 +511,9 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     jsonVersion: '1.0.0',
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
+    sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
-    allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
@@ -530,6 +538,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
     jsonVersion: '1.0.0',
     schema: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady,
+    sendPolicy: FormSendPolicy.EidSigned,
     pospID: '00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady',
     pospVersion: '1.0',
     publisher: 'ico://sk/00603481',

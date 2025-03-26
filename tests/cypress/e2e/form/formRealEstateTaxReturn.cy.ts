@@ -838,7 +838,7 @@ describe('F05 -', { testIsolation: false }, () => {
                   'not.have.class',
                   'border-red-500',
                 )
-                cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form))
+                cy.wrap(Cypress.$(`[data-cy=download-pdf-button]`, form))
               })
             })
 

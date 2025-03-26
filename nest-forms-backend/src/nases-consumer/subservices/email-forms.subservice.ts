@@ -8,7 +8,10 @@ import {
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
-import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
+import {
+  FileIdInfoMap,
+  renderSummaryEmail,
+} from 'forms-shared/summary-email/renderSummaryEmail'
 
 import ConvertService from '../../convert/convert.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
@@ -149,21 +152,26 @@ export default class EmailFormsSubservice {
    * Creates JSON data attachment for the email if sendJsonData is enabled
    */
   private createJsonAttachment(
+    formId: string,
     formDefinition: FormDefinitionEmail,
     formDataJson: GenericObjectType,
+    fileIdUrlMap: FileIdInfoMap,
   ): { filename: string; content: Buffer }[] {
+    const attachment = {
+      formId,
+      slug: formDefinition.slug,
+      jsonVersion: formDefinition.jsonVersion,
+      json: omitExtraData(
+        formDefinition.schema,
+        formDataJson,
+        this.formValidatorRegistryService.getRegistry(),
+      ),
+      fileIdUrlMap,
+    }
     return [
       {
         filename: 'submission.json',
-        content: Buffer.from(
-          JSON.stringify(
-            omitExtraData(
-              formDefinition.schema,
-              formDataJson,
-              this.formValidatorRegistryService.getRegistry(),
-            ),
-          ),
-        ),
+        content: Buffer.from(JSON.stringify(attachment)),
       },
     ]
   }
@@ -279,6 +287,8 @@ export default class EmailFormsSubservice {
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
+    const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
+
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
       data: {
@@ -292,7 +302,7 @@ export default class EmailFormsSubservice {
           htmlData: await renderSummaryEmail({
             formSummary: form.formSummary,
             serverFiles: form.files,
-            fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
+            fileIdInfoMap,
             validatorRegistry: this.formValidatorRegistryService.getRegistry(),
           }),
         },
@@ -301,7 +311,12 @@ export default class EmailFormsSubservice {
         formDefinition.email.fromAddress ?? formDefinition.email.address,
       ),
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
-        ? this.createJsonAttachment(formDefinition, form.formDataJson)
+        ? this.createJsonAttachment(
+            formId,
+            formDefinition,
+            form.formDataJson,
+            fileIdInfoMap,
+          )
         : undefined,
       subject: formDefinition.email.technicalEmailSubject,
     })

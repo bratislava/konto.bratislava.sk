@@ -186,7 +186,7 @@ export class AdminService {
       return taxPayer
     })
 
-    return { userData, dataFromNoris }
+    return userData
   }
 
   async loadDataFromNoris(
@@ -217,19 +217,20 @@ export class AdminService {
           },
         })
         if (!taxExists) {
-          const { userData, dataFromNoris } =
-            await this.insertTaxPayerDataToDatabase(elem, data.year)
+          const userData = await this.insertTaxPayerDataToDatabase(
+            elem,
+            data.year,
+          )
           const userFromCityAccount =
             userDataFromCityAccount[userData.birthNumber] || null
           if (userFromCityAccount !== null) {
             const bloomreachTracker =
               await this.bloomreachService.trackEventTax(
                 {
-                  amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
-                    .intValue,
+                  amount: currency(elem.dan_spolu.replace(',', '.')).intValue,
                   year: +data.year,
                   deliveryMethod: transformDeliveryMethodToDatabaseType(
-                    dataFromNoris.delivery_method,
+                    elem.delivery_method,
                   ),
                 },
                 userFromCityAccount.externalId ?? undefined,

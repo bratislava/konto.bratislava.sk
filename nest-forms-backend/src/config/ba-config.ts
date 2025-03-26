@@ -49,16 +49,9 @@ export default class BaConfig {
     }
   }
 
-  get turnstile() {
-    return {
-      secret: this.validatedConfig.TURNSTILE_SECRET,
-    }
-  }
-
   get mailgun() {
     return {
       apiKey: this.validatedConfig.MAILGUN_API_KEY,
-      defaultDomain: this.validatedConfig.DEFAULT_MAILGUN_DOMAIN,
       domain: this.validatedConfig.MAILGUN_DOMAIN,
       host: this.validatedConfig.MAILGUN_HOST,
       emailFrom: this.validatedConfig.MAILGUN_EMAIL_FROM,
@@ -81,13 +74,6 @@ export default class BaConfig {
   get frontend() {
     return {
       url: this.validatedConfig.FRONTEND_URL,
-    }
-  }
-
-  get taxBackend() {
-    return {
-      url: this.validatedConfig.TAX_BACKEND_URL,
-      apiKey: this.validatedConfig.TAX_BACKEND_API_KEY,
     }
   }
 

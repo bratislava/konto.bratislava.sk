@@ -1,5 +1,4 @@
-import { createCondition, createStringItems } from '../generator/helpers'
-import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
+import { createCondition } from '../generator/helpers'
 import { selectMultiple } from '../generator/functions/selectMultiple'
 import { input } from '../generator/functions/input'
 import { radioGroup } from '../generator/functions/radioGroup'
@@ -10,16 +9,28 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import { textArea } from '../generator/functions/textArea'
+import { object } from '../generator/object'
+
+const addressFields = (title: string) => [
+  input(
+    'ulicaACislo',
+    { title, required: true, type: 'text' },
+    { helptext: 'Vyplňte ulicu a číslo' },
+  ),
+  input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+  input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+]
 
 const ziadatelStavebnikInvestorFields = [
   radioGroup(
-    'typ',
+    'typZiadatela',
     {
       type: 'string',
       title: 'Žiadate ako',
       required: true,
       items: [
-        { value: 'fyzickaOsoba', label: 'Fyzická osoba' },
+        { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
         { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
         { value: 'pravnickaOsoba', label: 'Právnická osoba' },
       ],
@@ -27,25 +38,36 @@ const ziadatelStavebnikInvestorFields = [
     { variant: 'boxed' },
   ),
   conditionalFields(
-    createCondition([[['typ'], { const: 'fyzickaOsoba' }]]),
+    createCondition([[['typZiadatela'], { const: 'fyzickaOsoba' }]]),
     [
-      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-      sharedAddressField('adresa', 'Korešpondenčná adresa', true),
+      input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+      input(
+        'priezvisko',
+        { title: 'Priezvisko', required: true, type: 'text' },
+        { selfColumn: '2/4' },
+      ),
+      ...addressFields('Korešpondenčná adresa'),
     ],
     [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
-  conditionalFields(createCondition([[['typ'], { const: 'fyzickaOsobaPodnikatel' }]]), [
-    sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
-  ]),
-  conditionalFields(createCondition([[['typ'], { const: 'pravnickaOsoba' }]]), [
+  conditionalFields(createCondition([[['typZiadatela'], { const: 'fyzickaOsobaPodnikatel' }]]), [
     input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-    sharedAddressField('adresaSidla', 'Adresa sídla', true),
+    ...addressFields('Miesto podnikania'),
   ]),
-  conditionalFields(createCondition([[['typ'], { const: 'pravnickaOsoba' }]]), [
-    input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
+  conditionalFields(createCondition([[['typZiadatela'], { const: 'pravnickaOsoba' }]]), [
+    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+    ...addressFields('Adresa sídla'),
   ]),
-  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-  sharedPhoneNumberField('telefon', true),
+  conditionalFields(createCondition([[['typZiadatela'], { const: 'pravnickaOsoba' }]]), [
+    input('opravnenaOsoba', { type: 'text', title: 'Oprávnená osoba', required: true }, {}),
+    input('typOpravnenia', { type: 'text', title: 'Typ oprávnenia', required: true }, {}),
+  ]),
+  input('email', { title: 'Email', required: true, type: 'email' }, {}),
+  input(
+    'telefon',
+    { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+    { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
+  ),
 ]
 
 export default schema(
@@ -91,9 +113,18 @@ export default schema(
       ]),
     ]),
     step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      sharedPhoneNumberField('projektantTelefon', true),
+      input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+      input(
+        'priezvisko',
+        { title: 'Priezvisko', required: true, type: 'text' },
+        { selfColumn: '2/4' },
+      ),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
+      input(
+        'telefon',
+        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
+      ),
       input(
         'autorizacneOsvedcenie',
         { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
@@ -111,32 +142,18 @@ export default schema(
     ]),
     step('stavba', { title: 'Informácie o stavbe' }, [
       input('nazov', { type: 'text', title: 'Názov stavby/projektu', required: true }, {}),
-      radioGroup(
-        'druhStavby',
-        {
-          type: 'string',
-          title: 'Druh stavby',
-          items: [
-            { value: 'bytowyDom', label: 'Bytový dom' },
-            { value: 'rodinnyDom', label: 'Rodinný dom' },
-            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
-            { value: 'nebytovaBudova', label: 'Nebytová budova' },
-            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
-            { value: 'ine', label: 'Iné' },
-          ],
-          required: true,
-        },
-        { variant: 'boxed' },
-      ),
-      input('ulica', { type: 'text', title: 'Ulica', required: true }, { size: 'medium' }),
-      input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, { size: 'medium' }),
       input(
-        'parcelneCislo',
-        { type: 'text', title: 'Parcelné číslo', required: true },
-        { size: 'medium' },
+        'idStavby',
+        { type: 'text', title: 'ID stavby' },
+        {
+          helptext: 'ID stavby/súboru stavieb, ak bolo pridelené informačným systémom.',
+        },
       ),
+      input('ulica', { type: 'text', title: 'Ulica', required: true }, {}),
+      input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, {}),
+      input('parcelneCislo', { type: 'text', title: 'Parcelné číslo', required: true }, {}),
       selectMultiple(
-        'kataster',
+        'katastralneUzemia',
         {
           title: 'Katastrálne územie',
           required: true,
@@ -148,79 +165,95 @@ export default schema(
         {
           helptext:
             'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
-          size: 'medium',
         },
       ),
-    ]),
-    step('konanieTyp', { title: 'Typ konania na stavebnom úrade' }, [
+      object('clenenieStavby', { required: true }, { title: 'Členenie stavby' }, [
+        input(
+          'hlavnaStavba',
+          { type: 'text', title: 'Hlavná stavba', required: true },
+          {
+            helptext: 'Napríklad: Stavba 01 - Názov hlavnej stavby.',
+          },
+        ),
+        input('clenenieHlavnejStavby', { type: 'text', title: 'Členenie hlavnej stavby' }, {}),
+        input(
+          'hlavnaStavbaPodlaUcelu',
+          { type: 'text', title: 'Hlavná stavba podľa účelu', required: true },
+          {
+            helptext:
+              'Kód hlavnej stavby podľa vyhlášky Úradu pre územné plánovanie a výstavbu Slovenskej republiky o členení stavieb. Napríklad: 1120 - VIACBYTOVÉ BUDOVY.',
+          },
+        ),
+        textArea(
+          'ostatneStavby',
+          { title: 'Ostatné stavby' },
+          {
+            helptext:
+              'Čísla a názvy všetkých ostatných stavieb (ak sa jedná o súbor stavieb) vo formáte stavba 02 - Názov stavby - stavebné objekty',
+          },
+        ),
+      ]),
       radioGroup(
-        'typ',
+        'druhStavby',
         {
           type: 'string',
-          title: 'Typ konania',
+          title: 'Druh stavby',
           items: [
-            { value: 'uzemneKonanie', label: 'Územné konanie' },
-            {
-              value: 'uzemneKonanieSoStavebnymKonanim',
-              label: 'Územné konanie spojené so stavebným konaním',
-            },
-            { value: 'zmenaStavbyPredDokoncenim', label: 'Zmena stavby pred dokončením' },
-            { value: 'zmenaVUzivaniStavby', label: 'Zmena v užívaní stavby' },
-            {
-              value: 'konanieODodatocnomPovoleniStavby',
-              label: 'Konanie o dodatočnom povolení stavby',
-            },
+            { value: 'bytovyDom', label: 'Bytový dom' },
+            { value: 'rodinnyDom', label: 'Rodinný dom' },
+            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
+            { value: 'nebytovaBudova', label: 'Nebytová budova' },
+            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
+            { value: 'ine', label: 'Iné' },
           ],
           required: true,
         },
         { variant: 'boxed' },
       ),
-      conditionalFields(
-        createCondition([[['typ'], { const: 'konanieODodatocnomPovoleniStavby' }]]),
-        [
-          radioGroup(
-            'ziadostOdovodnenie',
+    ]),
+    step('typZiadosti', { title: 'Typ žiadosti' }, [
+      radioGroup(
+        'typ',
+        {
+          type: 'string',
+          title: 'Typ žiadosti',
+          items: [
             {
-              type: 'string',
-              title: 'Upresnenie konania',
-              items: [
-                {
-                  value: 'realizaciaBezPovolenia',
-                  label: 'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
-                },
-                {
-                  value: 'dodatocnePovolenie',
-                  label: 'Dodatočné povolenie zmeny stavby pred dokončením',
-                },
-              ],
-              required: true,
-            },
-            { variant: 'boxed' },
-          ),
-        ],
-      ),
-      conditionalFields(
-        createCondition([[['ziadostOdovodnenie'], { const: 'dodatocnePovolenie' }]]),
-        [
-          fileUploadMultiple(
-            'stavbaPisomnosti',
-            {
-              title: 'Relevantné písomnosti súvisiace so stavbou',
-              required: true,
+              value: 'stavebnyZamerNavrhovanaStavba',
+              label: 'o záväzné stanovisko k stavebnému zámeru - navrhovaná stavba',
             },
             {
-              type: 'button',
-              helptext: 'napr. vydané stavebné povolenie, stanoviská hlavného mesta',
+              value: 'stavebnyZamerZmenyExistujucejStavby',
+              label: 'o záväzné stanovisko k stavebnému zámeru - zmeny existujúcej stavby',
             },
-          ),
-          fileUploadMultiple(
-            'stavbaFotodokumentacia',
-            { title: 'Fotodokumentácia stavby', required: true },
             {
-              type: 'button',
+              value: 'stavebnyZamerOdstranenieStavby',
+              label: 'o záväzné stanovisko k stavebnému zámeru - odstránenia stavby',
             },
-          ),
-        ],
+            {
+              value: 'zmenaVUzivaniStavby',
+              label: 'o záväzné stanovisko o zmene v užívaní stavby',
+            },
+            {
+              value: 'preskumanieSposobilostiStavbyNaUzivanie',
+              label: 'o záväzné stanovisko o preskúmaní spôsobilosti stavby na užívanie',
+            },
+            {
+              value: 'dodatocnePovolenieStavby',
+              label: 'o záväzné stanovisko ku konaniu o dodatočnom povolení stavby',
+            },
+            {
+              value: 'ohlasenieStavbyAUprav',
+              label: 'o záväzné stanovisko k ohláseniu stavby a k ohláseniu stavebných úprav',
+            },
+            {
+              value: 'dolozkaSuladuKProjektuStavby',
+              label: 'o doložku súladu k projektu stavby',
+            },
+          ],
+          required: true,
+        },
+        { variant: 'boxed' },
       ),
     ]),
     step('prilohy', { title: 'Prílohy' }, [

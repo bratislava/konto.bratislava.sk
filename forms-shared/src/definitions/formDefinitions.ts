@@ -67,6 +67,7 @@ import ziadostOStanoviskoKProjektovejDokumentacii, {
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady from '../schemas/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady'
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
+import ziadostOSlobodnyPristupKInformaciam from '../schemas/ziadostOSlobodnyPristupKInformaciam'
 
 export const formDefinitions: FormDefinition[] = [
   {
@@ -542,5 +543,22 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
+  },
+  {
+    type: FormDefinitionType.SlovenskoSkGeneric,
+    slug: 'ziadost-o-slobodny-pristup-k-informaciam',
+    title: 'Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.',
+    jsonVersion: '1.0.0',
+    schema: ziadostOSlobodnyPristupKInformaciam,
+    sendPolicy: FormSendPolicy.EidOrNotAuthenticated,
+    pospID: '00603481.ziadostOSlobodnyPristupKInformaciam',
+    pospVersion: '1.0',
+    publisher: 'ico://sk/00603481',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: 'Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.',
+    ginisAssignment: {
+      ginisOrganizationName: 'OVPP',
+    },
+    isSigned: false,
   },
 ]

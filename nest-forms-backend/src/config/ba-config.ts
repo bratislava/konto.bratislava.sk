@@ -91,18 +91,6 @@ export default class BaConfig {
     }
   }
 
-  get bloomreach() {
-    return {
-      integrationState: this.validatedConfig.BLOOMREACH_INTEGRATION_STATE,
-      projectToken: this.validatedConfig.BLOOMREACH_PROJECT_TOKEN,
-      api: {
-        url: this.validatedConfig.BLOOMREACH_API_URL,
-        key: this.validatedConfig.BLOOMREACH_API_KEY,
-        secret: this.validatedConfig.BLOOMREACH_API_SECRET,
-      },
-    }
-  }
-
   get ginisApi() {
     return {
       username: this.validatedConfig.GINIS_USERNAME,

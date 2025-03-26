@@ -4,7 +4,6 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsUrl,
   Max,
@@ -20,11 +19,6 @@ export enum ClusterEnv {
   Dev = 'dev',
   Staging = 'staging',
   Production = 'production',
-}
-
-export enum BloomreachIntegrationState {
-  Active = 'ACTIVE',
-  Inactive = 'INACTIVE',
 }
 
 export default class EnvironmentVariables {
@@ -179,32 +173,6 @@ export default class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   NEST_CLAMAV_SCANNER_PASSWORD: string
-
-  // TODO: Uncomment IsNotEmpty and remove ? when Bloomreach env variables are provided
-  @Expose()
-  @IsEnum(BloomreachIntegrationState)
-  @IsOptional() // replace with @IsNotEmpty()
-  BLOOMREACH_INTEGRATION_STATE?: BloomreachIntegrationState
-
-  @Expose()
-  @IsString()
-  @IsOptional() // replace with @IsNotEmpty()
-  BLOOMREACH_PROJECT_TOKEN?: string
-
-  @Expose()
-  @IsString()
-  @IsOptional() // replace with @IsNotEmpty()
-  BLOOMREACH_API_KEY?: string
-
-  @Expose()
-  @IsString()
-  @IsOptional() // replace with @IsNotEmpty()
-  BLOOMREACH_API_SECRET?: string
-
-  @Expose()
-  @IsUrl()
-  @IsOptional() // replace with @IsNotEmpty()
-  BLOOMREACH_API_URL?: string
 
   @Expose()
   @IsString()

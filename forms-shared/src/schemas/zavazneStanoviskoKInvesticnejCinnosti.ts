@@ -9,6 +9,7 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 
 const ziadatelStavebnikInvestorFields = [
   radioGroup(
@@ -17,26 +18,30 @@ const ziadatelStavebnikInvestorFields = [
       type: 'string',
       title: 'Žiadate ako',
       required: true,
-      items: createStringItems(['Fyzická osoba', 'Fyzická osoba – podnikateľ', 'Právnická osoba']),
+      items: [
+        { value: 'fyzickaOsoba', label: 'Fyzická osoba' },
+        { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
+        { value: 'pravnickaOsoba', label: 'Právnická osoba' },
+      ],
     },
     { variant: 'boxed' },
   ),
   conditionalFields(
-    createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
+    createCondition([[['typ'], { const: 'fyzickaOsoba' }]]),
     [
       input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
       sharedAddressField('adresa', 'Korešpondenčná adresa', true),
     ],
     [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
-  conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
+  conditionalFields(createCondition([[['typ'], { const: 'fyzickaOsobaPodnikatel' }]]), [
     sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
   ]),
-  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+  conditionalFields(createCondition([[['typ'], { const: 'pravnickaOsoba' }]]), [
     input('ico', { type: 'text', title: 'IČO', required: true }, {}),
     sharedAddressField('adresaSidla', 'Adresa sídla', true),
   ]),
-  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+  conditionalFields(createCondition([[['typ'], { const: 'pravnickaOsoba' }]]), [
     input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
@@ -111,14 +116,14 @@ export default schema(
         {
           type: 'string',
           title: 'Druh stavby',
-          items: createStringItems([
-            'Bytový dom',
-            'Rodinný dom',
-            'Iná budova na bývanie',
-            'Nebytová budova',
-            'Inžinierska stavba',
-            'Iné',
-          ]),
+          items: [
+            { value: 'bytowyDom', label: 'Bytový dom' },
+            { value: 'rodinnyDom', label: 'Rodinný dom' },
+            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
+            { value: 'nebytovaBudova', label: 'Nebytová budova' },
+            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
+            { value: 'ine', label: 'Iné' },
+          ],
           required: true,
         },
         { variant: 'boxed' },
@@ -135,31 +140,10 @@ export default schema(
         {
           title: 'Katastrálne územie',
           required: true,
-          items: createStringItems(
-            [
-              'Čunovo',
-              'Devín',
-              'Devínska Nová Ves',
-              'Dúbravka',
-              'Jarovce',
-              'Karlova Ves',
-              'Lamač',
-              'Nivy',
-              'Nové Mesto',
-              'Petržalka',
-              'Podunajské Biskupice',
-              'Rača',
-              'Rusovce',
-              'Ružinov',
-              'Staré Mesto',
-              'Trnávka',
-              'Vajnory',
-              'Vinohrady',
-              'Vrakuňa',
-              'Záhorská Bystrica',
-            ],
-            false,
-          ),
+          items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+            value: Code,
+            label: Name,
+          })),
         },
         {
           helptext:
@@ -174,29 +158,41 @@ export default schema(
         {
           type: 'string',
           title: 'Typ konania',
-          items: createStringItems([
-            'Územné konanie',
-            'Územné konanie spojené so stavebným konaním',
-            'Zmena stavby pred dokončením',
-            'Zmena v užívaní stavby',
-            'Konanie o dodatočnom povolení stavby',
-          ]),
+          items: [
+            { value: 'uzemneKonanie', label: 'Územné konanie' },
+            {
+              value: 'uzemneKonanieSoStavebnymKonanim',
+              label: 'Územné konanie spojené so stavebným konaním',
+            },
+            { value: 'zmenaStavbyPredDokoncenim', label: 'Zmena stavby pred dokončením' },
+            { value: 'zmenaVUzivaniStavby', label: 'Zmena v užívaní stavby' },
+            {
+              value: 'konanieODodatocnomPovoleniStavby',
+              label: 'Konanie o dodatočnom povolení stavby',
+            },
+          ],
           required: true,
         },
         { variant: 'boxed' },
       ),
       conditionalFields(
-        createCondition([[['typ'], { const: 'Konanie o dodatočnom povolení stavby' }]]),
+        createCondition([[['typ'], { const: 'konanieODodatocnomPovoleniStavby' }]]),
         [
           radioGroup(
             'ziadostOdovodnenie',
             {
               type: 'string',
               title: 'Upresnenie konania',
-              items: createStringItems([
-                'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
-                'Dodatočné povolenie zmeny stavby pred dokončením',
-              ]),
+              items: [
+                {
+                  value: 'realizaciaBezPovolenia',
+                  label: 'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
+                },
+                {
+                  value: 'dodatocnePovolenie',
+                  label: 'Dodatočné povolenie zmeny stavby pred dokončením',
+                },
+              ],
               required: true,
             },
             { variant: 'boxed' },
@@ -204,9 +200,7 @@ export default schema(
         ],
       ),
       conditionalFields(
-        createCondition([
-          [['ziadostOdovodnenie'], { const: 'Dodatočné povolenie zmeny stavby pred dokončením' }],
-        ]),
+        createCondition([[['ziadostOdovodnenie'], { const: 'dodatocnePovolenie' }]]),
         [
           fileUploadMultiple(
             'stavbaPisomnosti',

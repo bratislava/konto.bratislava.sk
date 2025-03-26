@@ -57,6 +57,7 @@ const UserProfileView = () => {
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
       // at time of coding cognito is not providing user attributes change event, this is next best thing i come up with
+      // this doesn't affect FE, therfore we don't need to wait for result
       updateBloomreachData()
       await refreshData()
       setIsEditing(false)

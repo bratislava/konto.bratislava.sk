@@ -63,25 +63,26 @@ export class BloomreachService {
     return result
   }
 
+  // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
   async trackCustomer(cognitoId: string): Promise<boolean | undefined> {
     if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
       return undefined
     }
-    console.log(this.cognitoSubservice)
-    const user = await this.cognitoSubservice.getDataFromCognito(cognitoId)
-    console.log('user', user)
-    const firstName = user.given_name
-    const lastName = user.family_name
-    const name = user.name
-    const registrationDate = user.UserCreateDate
-    const accountType = user['custom:account_type']
-    const email = user.email
-
-    const isIdentityVerified =
-      user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
-      user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
-
     try {
+      const user = await this.cognitoSubservice.getDataFromCognito(cognitoId)
+      const {
+        given_name: firstName,
+        family_name: lastName,
+        name,
+        UserCreateDate: registrationDate,
+        'custom:account_type': accountType,
+        email,
+      } = user
+
+      const isIdentityVerified =
+        user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
+        user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
+
       const data = {
         customer_ids: {
           city_account_id: cognitoId,

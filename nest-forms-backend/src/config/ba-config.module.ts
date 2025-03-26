@@ -1,14 +1,14 @@
 import { Global, Module } from '@nestjs/common'
 
+import getBaConfigInstance from './ba-config.instance'
 import BaConfigService from './ba-config.service'
-import BaConfigSingleton from './ba-config.singleton'
 
 @Global()
 @Module({
   providers: [
     {
       provide: BaConfigService,
-      useValue: BaConfigSingleton.getInstance(),
+      useValue: getBaConfigInstance(),
     },
   ],
   exports: [BaConfigService],

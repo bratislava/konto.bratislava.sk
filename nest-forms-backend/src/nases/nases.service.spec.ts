@@ -301,7 +301,7 @@ describe('NasesService', () => {
         jsonVersion: '1.0.0',
         schema: {},
         slug: 'test-slug',
-        type: FormDefinitionType.SlovenskoSkTax,
+        type: FormDefinitionType.SlovenskoSkGeneric,
         title: 'Test Form',
         termsAndConditions: 'Test Terms and Conditions',
         messageSubjectDefault: 'Test Subject',
@@ -311,6 +311,9 @@ describe('NasesService', () => {
         gestor: 'Test Gestor',
         isSigned: false,
         sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+        ginisAssignment: {
+          ginisOrganizationName: '',
+        },
       }
 
       // Setup mocks

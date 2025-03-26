@@ -103,7 +103,8 @@ const isSendAllowedForUser = (sendPolicy: FormSendPolicy, accountType: SendPolic
  * Returns evaluated send policy for a specific user.
  *
  * The difference between possible and allowed:
- *  - possible: the form can be sent via the specified method, but the user might or might not be to use it at the moment
+ *  - possible: whether the form can be sent via the specified method (but the user might or might not be able to send
+ *    it at the moment based on his account type)
  *  - allowed for user: whether the user can send the form using the specified method based on his account type
  *
  *  The purpose of this function is to have a centralized policy evaluation that is used both by:

@@ -95,7 +95,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'zavazne-stanovisko-k-investicnej-cinnosti',
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
-    jsonVersion: '1.0.0',
+    jsonVersion: '2.0.0',
     schema: zavazneStanoviskoKInvesticnejCinnosti,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
     pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',

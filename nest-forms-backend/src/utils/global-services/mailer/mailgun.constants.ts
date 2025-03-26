@@ -209,6 +209,11 @@ export const MAILGUN_CONFIG = {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{firstName}}',
       },
+      feedbackLink: {
+        type: MailgunConfigVariableType.SELECT,
+        value: MAILGUN_CONFIG_FEEDBACK_URLS,
+        selectorVariable: 'slug',
+      },
     },
   },
   TSB_REQUEST_SENT_SUCCESS: {
@@ -222,6 +227,11 @@ export const MAILGUN_CONFIG = {
       firstName: {
         type: MailgunConfigVariableType.PARAMETER,
         value: '{{firstName}}',
+      },
+      feedbackLink: {
+        type: MailgunConfigVariableType.SELECT,
+        value: MAILGUN_CONFIG_FEEDBACK_URLS,
+        selectorVariable: 'slug',
       },
     },
   },

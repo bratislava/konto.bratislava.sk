@@ -429,6 +429,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Objednávka informatívneho zákresu sietí',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
       address: { prod: 'wf-izs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: {
@@ -454,6 +455,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
       address: { prod: 'wf-vs@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: {
@@ -479,6 +481,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Žiadosť o stanovisko k projektovej dokumentácii',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
       address: { prod: 'wf-oskpd@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: {
@@ -504,6 +507,7 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     allowSendingUnauthenticatedUsers: true,
     exampleFormNotRequired: true,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
       address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: {

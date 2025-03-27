@@ -4,38 +4,28 @@ const exampleForm: ExampleForm = {
   name: 'komunitneZahradyExample',
   formData: {
     ziadatel: {
-      menoPriezvisko: {
-        meno: 'Ján',
-        priezvisko: 'Kováč',
-      },
-      adresa: {
-        ulicaACislo: 'Mierová 12',
-        mestoPsc: {
-          mesto: 'Bratislava',
-          psc: '82108',
-        },
-      },
+      meno: 'Ján',
+      priezvisko: 'Kováč',
+      ulicaACislo: 'Mierová 12',
+      mesto: 'Bratislava',
+      psc: '82108',
       email: 'jan.kovac@priklad.sk',
       telefon: '+421905987654',
     },
     obcianskeZdruzenie: {
       nazovObcianskehoZdruzenia: 'Zelená Bratislava',
       ico: '12345678',
-      adresaSidla: {
-        ulicaACislo: 'Šancová 56',
-        mestoPsc: {
-          mesto: 'Bratislava',
-          psc: '83104',
-        },
-      },
+      ulicaACislo: 'Šancová 56',
+      mesto: 'Bratislava',
+      psc: '83104',
       statutar: {
-        menoStatutara: 'Marta',
-        priezviskoStatutara: 'Nováková',
+        meno: 'Marta',
+        priezvisko: 'Nováková',
       },
     },
     pozemok: {
-      typPozemku: 'predschvalenyPozemok',
-      predschvalenyPozemokVyber: 'Azalková',
+      typPozemku: 'odporucanyPozemok',
+      odporucanyPozemokVyber: 'Azalková',
     },
     zahrada: {
       dovodyZalozenia:
@@ -51,7 +41,7 @@ const exampleForm: ExampleForm = {
       financovanie:
         'Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje.',
     },
-    prilohyPredschvalenyPozemok: {
+    prilohy: {
       umiestnenie: 'ace1a8c2-f96e-4583-bdf9-64233b582572',
       dizajn: '27766841-1f8f-4daa-b6e9-df826b294ae0',
       fotografie: '7510f8c5-c777-4426-8166-90f253eb0738',

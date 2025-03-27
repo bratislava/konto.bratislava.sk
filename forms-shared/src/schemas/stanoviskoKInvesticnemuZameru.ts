@@ -1,5 +1,4 @@
-import { createCondition, createStringItems } from '../generator/helpers'
-import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
+import { createCondition } from '../generator/helpers'
 import { selectMultiple } from '../generator/functions/selectMultiple'
 import { input } from '../generator/functions/input'
 import { radioGroup } from '../generator/functions/radioGroup'
@@ -9,38 +8,61 @@ import { step } from '../generator/functions/step'
 import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
+import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+
+const addressFields = (title: string) => [
+  input(
+    'ulicaACislo',
+    { title, required: true, type: 'text' },
+    { helptext: 'Vyplňte ulicu a číslo' },
+  ),
+  input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+  input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
+]
 
 const ziadatelStavebnikFields = [
   radioGroup(
-    'typ',
+    'ziadatelTyp',
     {
       type: 'string',
       title: 'Žiadate ako',
       required: true,
-      items: createStringItems(['Fyzická osoba', 'Fyzická osoba – podnikateľ', 'Právnická osoba']),
+      items: [
+        { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
+        { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
+        { value: 'pravnickaOsoba', label: 'Právnická osoba' },
+      ],
     },
     { variant: 'boxed' },
   ),
+  conditionalFields(createCondition([[['ziadatelTyp'], { const: 'fyzickaOsoba' }]]), [
+    input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+    input(
+      'priezvisko',
+      { title: 'Priezvisko', required: true, type: 'text' },
+      { selfColumn: '2/4' },
+    ),
+    ...addressFields('Korešpondenčná adresa'),
+  ]),
   conditionalFields(
-    createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
-    [
-      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-      sharedAddressField('adresa', 'Korešpondenčná adresa', true),
-    ],
+    createCondition([[['ziadatelTyp'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }]]),
     [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
-  conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
-    sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
-  ]),
-  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+  conditionalFields(
+    createCondition([[['ziadatelTyp'], { const: 'fyzickaOsobaPodnikatel' }]]),
+    addressFields('Miesto podnikania'),
+  ),
+  conditionalFields(createCondition([[['ziadatelTyp'], { const: 'pravnickaOsoba' }]]), [
     input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-    sharedAddressField('adresaSidla', 'Adresa sídla', true),
-  ]),
-  conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
+    ...addressFields('Adresa sídla'),
     input('kontaktnaOsoba', { type: 'text', title: 'Kontaktná osoba', required: true }, {}),
   ]),
-  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-  sharedPhoneNumberField('telefon', true),
+  input('email', { title: 'Email', required: true, type: 'email' }, {}),
+  input(
+    'telefon',
+    { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+    { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
+  ),
 ]
 
 export default schema(
@@ -86,9 +108,18 @@ export default schema(
       ]),
     ]),
     step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-      input('menoPriezvisko', { type: 'text', title: 'Meno a priezvisko', required: true }, {}),
-      input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      sharedPhoneNumberField('projektantTelefon', true),
+      input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+      input(
+        'priezvisko',
+        { title: 'Priezvisko', required: true, type: 'text' },
+        { selfColumn: '2/4' },
+      ),
+      input('email', { title: 'Email', required: true, type: 'email' }, {}),
+      input(
+        'telefon',
+        { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+        { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
+      ),
       input(
         'autorizacneOsvedcenie',
         { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
@@ -111,14 +142,14 @@ export default schema(
         {
           type: 'string',
           title: 'Druh stavby',
-          items: createStringItems([
-            'Bytový dom',
-            'Rodinný dom',
-            'Iná budova na bývanie',
-            'Nebytová budova',
-            'Inžinierska stavba',
-            'Iné',
-          ]),
+          items: [
+            { value: 'bytovyDom', label: 'Bytový dom' },
+            { value: 'rodinnyDom', label: 'Rodinný dom' },
+            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
+            { value: 'nebytovaBudova', label: 'Nebytová budova' },
+            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
+            { value: 'ine', label: 'Iné' },
+          ],
           required: true,
         },
         { variant: 'boxed' },
@@ -131,40 +162,18 @@ export default schema(
         { size: 'medium' },
       ),
       selectMultiple(
-        'kataster',
+        'katastralneUzemia',
         {
           title: 'Katastrálne územie',
           required: true,
-          items: createStringItems(
-            [
-              'Čunovo',
-              'Devín',
-              'Devínska Nová Ves',
-              'Dúbravka',
-              'Jarovce',
-              'Karlova Ves',
-              'Lamač',
-              'Nivy',
-              'Nové Mesto',
-              'Petržalka',
-              'Podunajské Biskupice',
-              'Rača',
-              'Rusovce',
-              'Ružinov',
-              'Staré Mesto',
-              'Trnávka',
-              'Vajnory',
-              'Vinohrady',
-              'Vrakuňa',
-              'Záhorská Bystrica',
-            ],
-            false,
-          ),
+          items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+            value: Code,
+            label: Name,
+          })),
         },
         {
           helptext:
             'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
-          size: 'medium',
         },
       ),
     ]),

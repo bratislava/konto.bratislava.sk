@@ -4,7 +4,7 @@ const exampleForm: ExampleForm = {
   name: 'zavazneStanoviskoKInvesticnejCinnostiExample',
   formData: {
     ziadatel: {
-      typZiadatela: 'fyzickaOsoba',
+      ziadatelTyp: 'fyzickaOsoba',
       email: 'jan.kovac@priklad.sk',
       telefon: '+421905987654',
       meno: 'Ján',
@@ -16,7 +16,7 @@ const exampleForm: ExampleForm = {
     investor: {
       investorZiadatelom: false,
       splnomocnenie: 'b9050ef5-0d98-41c4-aba1-b0fc5a65a442',
-      typZiadatela: 'fyzickaOsoba',
+      ziadatelTyp: 'fyzickaOsoba',
       email: 'marta.novakova@priklad.sk',
       telefon: '+421902123456',
       meno: 'Marta',

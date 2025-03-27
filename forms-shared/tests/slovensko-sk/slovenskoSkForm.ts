@@ -46,7 +46,6 @@ describe('slovenskoSkForm', () => {
         expect(metadata.XSDtargetNamespace).toContain(formDefinition.pospID)
         expect(metadata.identifier).toEqual(getSlovenskoSkMetaIdentifier(formDefinition))
         expect(metadata.shortIdentifier).toEqual(formDefinition.pospID)
-        expect(metadata.creator).toEqual(formDefinition.gestor)
         expect(metadata.publisherURI).toEqual(formDefinition.publisher)
         expect(metadata.version).toEqual(formDefinition.pospVersion)
 

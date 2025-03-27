@@ -2107,27 +2107,30 @@ exports[`slovenskoSkForm > zavazne-stanovisko-k-investicnej-cinnosti > schema XS
 exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <JsonVersion>1.0.0</JsonVersion>
-  <Json>{"ziadatel":{"typ":"Fyzická osoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","menoPriezvisko":"Ján Kováč","adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}}},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","typ":"Fyzická osoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","menoPriezvisko":"Marta Nováková","adresa":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}}},"zodpovednyProjektant":{"menoPriezvisko":"Peter Horváth","email":"peter.horvath@priklad.sk","projektantTelefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"Bytový dom","ulica":"Dunajská","supisneCislo":"1234","parcelneCislo":"56789","kataster":["Karlova Ves","Dúbravka"]},"konanieTyp":{"typ":"Konanie o dodatočnom povolení stavby","ziadostOdovodnenie":"Dodatočné povolenie zmeny stavby pred dokončením","stavbaPisomnosti":["4110b6da-0dd7-4007-8c13-896134f1eaa0"],"stavbaFotodokumentacia":["8bfd16c6-49d5-45d2-987e-cba0ff0ebdd9"]},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
+  <JsonVersion>2.0.0</JsonVersion>
+  <Json>{"ziadatel":{"typZiadatela":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","typZiadatela":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCislo":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03"},"druhStavby":"bytovyDom"},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
   <Summary>
     <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
       <Step id="root_ziadatel" title="Žiadateľ">
-        <Field id="root_ziadatel_typ" label="Žiadate ako">
+        <Field id="root_ziadatel_typZiadatela" label="Žiadate ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
-        <Field id="root_ziadatel_menoPriezvisko" label="Meno a priezvisko">
-          <StringValue>Ján Kováč</StringValue>
+        <Field id="root_ziadatel_meno" label="Meno">
+          <StringValue>Ján</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+        <Field id="root_ziadatel_priezvisko" label="Priezvisko">
+          <StringValue>Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_ulicaACislo" label="Korešpondenčná adresa">
           <StringValue>Mierová 12</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+        <Field id="root_ziadatel_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+        <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -2141,22 +2144,25 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_investor_splnomocnenie" label="Splnomocnenie na zastupovanie">
           <FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a442">splnomocnenie.pdf</FileValue>
         </Field>
-        <Field id="root_investor_typ" label="Žiadate ako">
+        <Field id="root_investor_typZiadatela" label="Žiadate ako">
           <StringValue>Fyzická osoba</StringValue>
         </Field>
-        <Field id="root_investor_menoPriezvisko" label="Meno a priezvisko">
-          <StringValue>Marta Nováková</StringValue>
+        <Field id="root_investor_meno" label="Meno">
+          <StringValue>Marta</StringValue>
         </Field>
-        <Field id="root_investor_adresa_ulicaACislo" label="Ulica a číslo">
+        <Field id="root_investor_priezvisko" label="Priezvisko">
+          <StringValue>Nováková</StringValue>
+        </Field>
+        <Field id="root_investor_ulicaACislo" label="Korešpondenčná adresa">
           <StringValue>Šancová 56</StringValue>
         </Field>
-        <Field id="root_investor_adresa_mestoPsc_mesto" label="Mesto">
+        <Field id="root_investor_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_investor_adresa_mestoPsc_psc" label="PSČ">
+        <Field id="root_investor_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_investor_email" label="E-mail">
+        <Field id="root_investor_email" label="Email">
           <StringValue>marta.novakova@priklad.sk</StringValue>
         </Field>
         <Field id="root_investor_telefon" label="Telefónne číslo">
@@ -2164,13 +2170,16 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         </Field>
       </Step>
       <Step id="root_zodpovednyProjektant" title="Zodpovedný projektant">
-        <Field id="root_zodpovednyProjektant_menoPriezvisko" label="Meno a priezvisko">
-          <StringValue>Peter Horváth</StringValue>
+        <Field id="root_zodpovednyProjektant_meno" label="Meno">
+          <StringValue>Peter</StringValue>
         </Field>
-        <Field id="root_zodpovednyProjektant_email" label="E-mail">
+        <Field id="root_zodpovednyProjektant_priezvisko" label="Priezvisko">
+          <StringValue>Horváth</StringValue>
+        </Field>
+        <Field id="root_zodpovednyProjektant_email" label="Email">
           <StringValue>peter.horvath@priklad.sk</StringValue>
         </Field>
-        <Field id="root_zodpovednyProjektant_projektantTelefon" label="Telefónne číslo">
+        <Field id="root_zodpovednyProjektant_telefon" label="Telefónne číslo">
           <StringValue>+421911654321</StringValue>
         </Field>
         <Field id="root_zodpovednyProjektant_autorizacneOsvedcenie" label="Číslo autorizačného osvedčenia">
@@ -2184,8 +2193,8 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_stavba_nazov" label="Názov stavby/projektu">
           <StringValue>Nový Bytový Dom</StringValue>
         </Field>
-        <Field id="root_stavba_druhStavby" label="Druh stavby">
-          <StringValue>Bytový dom</StringValue>
+        <Field id="root_stavba_idStavby" label="ID stavby">
+          <StringValue>BYT-2024-001</StringValue>
         </Field>
         <Field id="root_stavba_ulica" label="Ulica">
           <StringValue>Dunajská</StringValue>
@@ -2196,23 +2205,30 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_stavba_parcelneCislo" label="Parcelné číslo">
           <StringValue>56789</StringValue>
         </Field>
-        <Field id="root_stavba_kataster" label="Katastrálne územie">
+        <Field id="root_stavba_katastralneUzemia" label="Katastrálne územie">
           <StringValue>Karlova Ves</StringValue>
           <StringValue>Dúbravka</StringValue>
         </Field>
+        <Field id="root_stavba_clenenieStavby_hlavnaStavba" label="Hlavná stavba">
+          <StringValue>Stavba 01 - Bytový dom Luna</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_clenenieHlavnejStavby" label="Členenie hlavnej stavby">
+          <StringValue>SO 01 Hlavná budova, SO 02 Podzemné garáže</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_hlavnaStavbaPodlaUcelu" label="Hlavná stavba podľa účelu">
+          <StringValue>1120 - VIACBYTOVÉ BUDOVY</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_ostatneStavby" label="Ostatné stavby">
+          <StringValue>Stavba 02 - Oplotenie - SO 01
+Stavba 03 - Prípojky - SO 01, SO 02, SO 03</StringValue>
+        </Field>
+        <Field id="root_stavba_druhStavby" label="Druh stavby">
+          <StringValue>Bytový dom</StringValue>
+        </Field>
       </Step>
-      <Step id="root_konanieTyp" title="Typ konania na stavebnom úrade">
-        <Field id="root_konanieTyp_typ" label="Typ konania">
-          <StringValue>Konanie o dodatočnom povolení stavby</StringValue>
-        </Field>
-        <Field id="root_konanieTyp_ziadostOdovodnenie" label="Upresnenie konania">
-          <StringValue>Dodatočné povolenie zmeny stavby pred dokončením</StringValue>
-        </Field>
-        <Field id="root_konanieTyp_stavbaPisomnosti" label="Relevantné písomnosti súvisiace so stavbou">
-          <FileValue id="4110b6da-0dd7-4007-8c13-896134f1eaa0">stavba-pisomnosti.pdf</FileValue>
-        </Field>
-        <Field id="root_konanieTyp_stavbaFotodokumentacia" label="Fotodokumentácia stavby">
-          <FileValue id="8bfd16c6-49d5-45d2-987e-cba0ff0ebdd9">stavba-fotodokumentacia.jpg</FileValue>
+      <Step id="root_typZiadosti" title="Typ žiadosti">
+        <Field id="root_typZiadosti_typ" label="Typ žiadosti">
+          <StringValue>o záväzné stanovisko k stavebnému zámeru - navrhovaná stavba</StringValue>
         </Field>
       </Step>
       <Step id="root_prilohy" title="Prílohy">

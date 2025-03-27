@@ -308,7 +308,6 @@ describe('NasesService', () => {
         pospID: 'test-posp-id',
         pospVersion: '1.0',
         publisher: 'Test Publisher',
-        gestor: 'Test Gestor',
         isSigned: false,
         sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
         ginisAssignment: {

@@ -14,7 +14,6 @@ export const devFormDefinitions: FormDefinition[] = [
     pospID: '',
     pospVersion: '',
     publisher: '',
-    gestor: '',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Showcase',
     ginisAssignment: {

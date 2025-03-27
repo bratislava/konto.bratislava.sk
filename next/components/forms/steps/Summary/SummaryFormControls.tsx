@@ -75,7 +75,12 @@ const SummaryFormControls = () => {
           return <ButtonNew key={index} {...button} fullWidthMobile />
         })}
 
-        <ButtonNew className="md:hidden" variant="black-outline" onPress={goToPreviousStep}>
+        <ButtonNew
+          className="md:hidden"
+          variant="black-outline"
+          onPress={goToPreviousStep}
+          fullWidthMobile
+        >
           {t('buttons.previous')}
         </ButtonNew>
       </div>

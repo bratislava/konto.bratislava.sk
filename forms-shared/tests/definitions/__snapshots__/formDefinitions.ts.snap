@@ -72644,7 +72644,6 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Meno",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -72656,7 +72655,6 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Priezvisko",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -72735,7 +72733,7 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
                       "value": "fyzickaOsoba",
                     },
                     {
-                      "label": "Fyzická osoba - podnikateľ",
+                      "label": "Fyzická osoba – podnikateľ",
                       "value": "fyzickaOsobaPodnikatel",
                     },
                     {
@@ -73371,7 +73369,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Meno",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -73383,7 +73380,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Priezvisko",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -73462,7 +73458,7 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
                       "value": "fyzickaOsoba",
                     },
                     {
-                      "label": "Fyzická osoba - podnikateľ",
+                      "label": "Fyzická osoba – podnikateľ",
                       "value": "fyzickaOsobaPodnikatel",
                     },
                     {
@@ -74005,12 +74001,12 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "fyzickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74038,12 +74034,12 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "fyzickaOsobaPodnikatel",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74071,12 +74067,12 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74104,12 +74100,12 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74140,7 +74136,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Meno",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -74152,7 +74147,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Priezvisko",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -74257,7 +74251,7 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
                       "value": "fyzickaOsoba",
                     },
                     {
-                      "label": "Fyzická osoba - podnikateľ",
+                      "label": "Fyzická osoba – podnikateľ",
                       "value": "fyzickaOsobaPodnikatel",
                     },
                     {
@@ -74782,12 +74776,12 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "fyzickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74815,12 +74809,12 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "fyzickaOsobaPodnikatel",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74848,12 +74842,12 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74881,12 +74875,12 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             {
               "if": {
                 "properties": {
-                  "objednavatelTyp": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "objednavatelTyp",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -74917,7 +74911,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                         "baOrder": 1,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Meno",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -74929,7 +74922,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                         "baOrder": 2,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Priezvisko",
                             "inputType": "text",
                           },
                           "ui:widget": "Input",
@@ -75034,7 +75026,7 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
                       "value": "fyzickaOsoba",
                     },
                     {
-                      "label": "Fyzická osoba - podnikateľ",
+                      "label": "Fyzická osoba – podnikateľ",
                       "value": "fyzickaOsobaPodnikatel",
                     },
                     {

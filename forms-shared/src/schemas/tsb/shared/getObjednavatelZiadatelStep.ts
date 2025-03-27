@@ -32,7 +32,7 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
           required: true,
           items: [
             { value: 'fyzickaOsoba', label: 'Fyzická osoba', isDefault: true },
-            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba - podnikateľ' },
+            { value: 'fyzickaOsobaPodnikatel', label: 'Fyzická osoba – podnikateľ' },
             { value: 'pravnickaOsoba', label: 'Právnická osoba' },
           ],
         },
@@ -73,22 +73,25 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         ],
       ),
       ...(['fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'] as const).map(
-        (objednavatelTyp) =>
-          conditionalFields(createCondition([[['objednavatelTyp'], { const: objednavatelTyp }]]), [
-            input(
-              'adresa',
-              {
-                title: match(objednavatelTyp)
-                  .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')
-                  .with('fyzickaOsobaPodnikatel', () => 'Miesto podnikania')
-                  .with('pravnickaOsoba', () => 'Adresa sídla')
-                  .exhaustive(),
-                required: true,
-                type: 'text',
-              },
-              { helptext: 'Vyplňte vo formáte ulica a číslo' },
-            ),
-          ]),
+        (objednavatelZiadatelTyp) =>
+          conditionalFields(
+            createCondition([[[fieldProperty], { const: objednavatelZiadatelTyp }]]),
+            [
+              input(
+                'adresa',
+                {
+                  title: match(objednavatelZiadatelTyp)
+                    .with('fyzickaOsoba', () => 'Adresa trvalého pobytu')
+                    .with('fyzickaOsobaPodnikatel', () => 'Miesto podnikania')
+                    .with('pravnickaOsoba', () => 'Adresa sídla')
+                    .exhaustive(),
+                  required: true,
+                  type: 'text',
+                },
+                { helptext: 'Vyplňte vo formáte ulica a číslo' },
+              ),
+            ],
+          ),
       ),
       input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
       input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
@@ -98,18 +101,14 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
         { helptext: 'Vyplňte vo formáte +421' },
       ),
-      conditionalFields(createCondition([[['objednavatelTyp'], { const: 'pravnickaOsoba' }]]), [
+      conditionalFields(createCondition([[[fieldProperty], { const: 'pravnickaOsoba' }]]), [
         object(
           'kontaktnaOsoba',
           { required: true },
           { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
           [
-            input('meno', { title: 'Meno', required: true, type: 'text' }, { helptext: 'Meno' }),
-            input(
-              'priezvisko',
-              { title: 'Priezvisko', required: true, type: 'text' },
-              { helptext: 'Priezvisko' },
-            ),
+            input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
+            input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
             input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
             input(
               'telefonneCislo',

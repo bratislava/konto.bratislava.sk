@@ -267,6 +267,11 @@ export const esbsPravnaFormaCiselnik: CiselnikType = [
 // https://eformesluzby.bratislava.sk/esmao/api/enums/enumValues?defAtr=2024-01-10T17:31:37.377Z&enumName=BratislavaMestskaCast
 export const esbsBratislavaMestskaCastCiselnik: CiselnikType = [
   {
+    Code: 'SK0105529435',
+    Name: 'Bratislava - mestská časť Čunovo',
+    WsEnumCode: '0025',
+  },
+  {
     Code: 'SK0104529401',
     Name: 'Bratislava - mestská časť Devín',
     WsEnumCode: '0025',
@@ -346,9 +351,92 @@ export const esbsBratislavaMestskaCastCiselnik: CiselnikType = [
     Name: 'Bratislava - mestská časť Záhorská Bystrica',
     WsEnumCode: '0025',
   },
+]
+
+export const esbsBratislavaMestskaCastNoPrefixCiselnik: CiselnikType = [
   {
     Code: 'SK0105529435',
-    Name: 'Bratislava - mestská časť Čunovo',
+    Name: 'Čunovo',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529401',
+    Name: 'Devín',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529371',
+    Name: 'Devínska Nová Ves',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529389',
+    Name: 'Dúbravka',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0105529443',
+    Name: 'Jarovce',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529397',
+    Name: 'Karlova Ves',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529419',
+    Name: 'Lamač',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0103529346',
+    Name: 'Nové Mesto',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0105529460',
+    Name: 'Petržalka',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0102529311',
+    Name: 'Podunajské Biskupice',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0103529354',
+    Name: 'Rača',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0105529494',
+    Name: 'Rusovce',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0102529320',
+    Name: 'Ružinov',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0101528595',
+    Name: 'Staré Mesto',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0103529362',
+    Name: 'Vajnory',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0102529338',
+    Name: 'Vrakuňa',
+    WsEnumCode: '0025',
+  },
+  {
+    Code: 'SK0104529427',
+    Name: 'Záhorská Bystrica',
     WsEnumCode: '0025',
   },
 ]

@@ -13,6 +13,22 @@
 - Renamed "Investor" to "Stavebník"
 - Changed helptext for "Číslo autorizačného osvedčenia" field in "Zodpovedný projektant" step
 
+## Žiadosť o záväzné stanovisko k investičnej činnosti (zavazne-stanovisko-k-investicnej-cinnosti)
+
+### 2.0.0 (26-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2526)
+
+- Added "IČO" field for "Fyzická osoba - podnikateľ" in "Žiadateľ" and "Investor" steps
+- Renamed "Kontaktná osoba" to "Oprávnená osoba" for "Právnická osoba" in "Žiadateľ" and "Investor" steps
+- Added "Typ oprávnenia" field under "Oprávnená osoba" in "Žiadateľ" and "Investor" steps
+- Restructured "Informácie o stavbe" step:
+  - Added "ID stavby" field (optional) with helptext
+  - Added "Súpisné číslo" field (optional)
+  - Added new "Členenie stavby" section with fields: "Hlavná stavba", "Členenie hlavnej stavby", "Hlavná stavba podľa účelu", and "Ostatné stavby"
+- Changed step name from "Typ konania na stavenom úrade" to "Typ žiadosti"
+- Updated field name from "Typ konania" to "Typ žiadosti"
+- Updated options for "Typ žiadosti"
+- Changed enum values to use camel case
+
 ## Komunitné záhrady (komunitne-zahrady)
 
 ### 2.0.0 (27-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2532)

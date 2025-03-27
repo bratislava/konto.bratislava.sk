@@ -4,27 +4,21 @@ const exampleForm: ExampleForm = {
   name: 'predzahradkyExample',
   formData: {
     ziadatel: {
-      menoPriezvisko: {
-        meno: 'Ján',
-        priezvisko: 'Kováč',
-      },
-      adresa: {
-        ulicaACislo: 'Mierová 12',
-        mestoPsc: {
-          mesto: 'Bratislava',
-          psc: '82108',
-        },
-      },
+      meno: 'Ján',
+      priezvisko: 'Kováč',
+      ulicaACislo: 'Mierová 12',
+      mesto: 'Bratislava',
+      psc: '82108',
       email: 'jan.kovac@priklad.sk',
       telefon: '+421905987654',
     },
     predzahradka: {
       typRegistracie: 'nova',
       adresa: 'Dunajská 34',
-      mestskaCast: 'Devín',
+      mestskaCast: 'SK0101528595',
       parcelneCislo: '46549/435413',
       ine: 'Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.',
-      rozlozenieNova:
+      rozlozenie:
         'Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede.',
     },
     prilohy: {

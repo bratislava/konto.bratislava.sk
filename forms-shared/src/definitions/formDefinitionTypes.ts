@@ -29,7 +29,6 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   pospID: string
   pospVersion: string
   publisher: string
-  gestor: string
   isSigned: boolean
 }
 

@@ -9038,3 +9038,290 @@ ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvani
   "xslXSLTLanguage": "sk",
 }
 `;
+
+exports[`signerData > ziadostOSlobodnyPristupKInformaciamExample > should generate correct signer data 1`] = `
+{
+  "objectDescription": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+  "objectFormatIdentifier": "http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0",
+  "objectId": "Ziadost_o_spristupnenie_informacii_podla_zakona_c._211/2000_Z.z..xml",
+  "signatureId": "form_data_3ebd63efb6b31208d33669be40e9b4736a75b0d0_20240101000000",
+  "xdcIdentifier": "http://data.gov.sk/doc/eform/00603481.ziadostOSlobodnyPristupKInformaciam/1.0",
+  "xdcIncludeRefs": true,
+  "xdcNamespaceURI": "http://data.gov.sk/def/container/xmldatacontainer+xml/1.0",
+  "xdcUsedXSD": "<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>",
+  "xdcUsedXSLT": "<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:e="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0"
+>
+  <xsl:output
+    method="xml"
+    indent="yes"
+    encoding="UTF-8"
+    omit-xml-declaration="yes"
+  />
+  <xsl:template match="/">
+    <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;
+</xsl:text>
+    <html lang="sk">
+      <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title><xsl:value-of select="//e:eform/e:Summary/e:Form/@title"/></title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            color: #333;
+          }
+          .container {
+            margin-bottom: 32px;
+          }
+          .container:last-child {
+            margin-bottom: 0;
+          }
+          h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 32px;
+          }
+          h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+          }
+          .box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+          }
+          .box-text {
+            margin: 0;
+            white-space: pre-wrap;
+          }
+          .field {
+            border-bottom: 2px solid #e5e5e5;
+            padding: 10px 0;
+            overflow: hidden;
+          }
+          .field-label {
+            font-weight: bold;
+            float: left;
+            width: 50%;
+            padding-right: 4px;
+            box-sizing: border-box;
+          }
+          .field-value {
+            float: right;
+            width: 50%;
+          }
+          .field-value-item {
+            margin-bottom: 8px;
+            margin-left: 4px;
+          }
+          .field-value-item:last-child {
+            margin-bottom: 0;
+          }
+          .field-value-string {
+            white-space: pre-wrap;
+          }
+          .array {
+            margin-top: 16px;
+          }
+          .array-title {
+            font-weight: bold;
+            margin-bottom: 16px;
+          }
+          .array-item {
+            border-left: 4px solid #e5e5e5;
+            padding: 0 0 0 12px;
+            margin-bottom: 16px;
+          }
+          .array-item:last-child {
+            margin-bottom: 0;
+          }
+          .array-item-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+          }
+
+          @media (max-width: 767px) {
+            .field-label,
+            .field-value {
+              float: none;
+              width: 100%;
+            }
+            .field-label {
+              margin-bottom: 8px;
+              padding-right: 0;
+            }
+            .field-value-item {
+              margin-left: 0;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1><xsl:value-of select="//e:eform/e:Summary/e:Form/@title" /></h1>
+          <xsl:apply-templates select="//e:eform/e:Summary/e:Form/*" />
+        </div>
+        <div class="container">
+          <h2>Ochrana osobných údajov</h2>
+          <div class="box">
+            <p class="box-text"><xsl:value-of select="//e:eform/e:TermsAndConditions" /></p>
+          </div>
+        </div>
+      </body>
+    </html>
+  </xsl:template>
+
+  <xsl:template match="e:Step">
+    <div class="container">
+      <h2><xsl:value-of select="@title" /></h2>
+      <div>
+        <xsl:apply-templates />
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:Field">
+    <div class="field">
+      <div class="field-label"><xsl:value-of select="@label" /></div>
+      <div class="field-value">
+        <xsl:apply-templates />
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:StringValue">
+    <div class="field-value-item">
+      <span class="field-value-string"><xsl:value-of select="." /></span>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:FileValue">
+    <div class="field-value-item">
+      <span><xsl:value-of select="." /></span>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:NoneValue">
+    <div class="field-value-item">
+      <span>-</span>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:InvalidValue">
+    <div class="field-value-item">
+      <span class="field-value-error">Neznáma hodnota</span>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:Array">
+    <div class="array">
+      <div class="array-title"><xsl:value-of select="@title" /></div>
+      <xsl:apply-templates />
+    </div>
+  </xsl:template>
+
+  <xsl:template match="e:ArrayItem">
+    <div class="array-item">
+      <div class="array-item-title"><xsl:value-of select="@title" /></div>
+      <div>
+        <xsl:apply-templates />
+      </div>
+    </div>
+  </xsl:template>
+</xsl:stylesheet>
+",
+  "xdcVersion": "1.0",
+  "xdcXMLData": "<?xml version="1.0" encoding="UTF-8"?><eform xmlns="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><JsonVersion>1.0.0</JsonVersion><Json>{"ziadatel":{"typZiadatela":"fyzickaOsoba","meno":"Martin","priezvisko":"Kováč","ulicaCislo":"Bajkalská 28","mesto":"Bratislava","psc":"82109","kontaktneUdaje":{"email":"martin.kovac@example.com","telefon":"+421908123456"}},"pozadovaneInformacie":{"predmetZiadosti":"Rozpočet mestskej časti na rok 2024","obsahZiadosti":"Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.","prilohyZiadosti":["b9050ef5-0d98-41c4-aba1-b0fc5a65a443"]},"sposobSpristupnenia":{"sposobSpristupnenia":"email","emailSpristupnenia":"martin.kovac@example.com"}}</Json><Summary><Form title="Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."><Step id="root_ziadatel" title="Žiadateľ"><Field id="root_ziadatel_typZiadatela" label="Žiadate ako"><StringValue>Fyzická osoba</StringValue></Field><Field id="root_ziadatel_meno" label="Meno"><StringValue>Martin</StringValue></Field><Field id="root_ziadatel_priezvisko" label="Priezvisko"><StringValue>Kováč</StringValue></Field><Field id="root_ziadatel_ulicaCislo" label="Adresa pobytu"><StringValue>Bajkalská 28</StringValue></Field><Field id="root_ziadatel_mesto" label="Mesto"><StringValue>Bratislava</StringValue></Field><Field id="root_ziadatel_psc" label="PSČ"><StringValue>82109</StringValue></Field><Field id="root_ziadatel_kontaktneUdaje_email" label="Email"><StringValue>martin.kovac@example.com</StringValue></Field><Field id="root_ziadatel_kontaktneUdaje_telefon" label="Telefónne číslo"><StringValue>+421908123456</StringValue></Field></Step><Step id="root_pozadovaneInformacie" title="Požadované informácie"><Field id="root_pozadovaneInformacie_predmetZiadosti" label="Predmet žiadosti"><StringValue>Rozpočet mestskej časti na rok 2024</StringValue></Field><Field id="root_pozadovaneInformacie_obsahZiadosti" label="Obsah žiadosti"><StringValue>Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.</StringValue></Field><Field id="root_pozadovaneInformacie_prilohyZiadosti" label="Prílohy k žiadosti"><FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a443">ziadost_o_rozpocet.pdf</FileValue></Field></Step><Step id="root_sposobSpristupnenia" title="Spôsob sprístupnenia informácií"><Field id="root_sposobSpristupnenia_sposobSpristupnenia" label="Akým spôsobom chcete sprístupniť požadované informácie"><StringValue>na emailovú adresu</StringValue></Field><Field id="root_sposobSpristupnenia_emailSpristupnenia" label="Email"><StringValue>martin.kovac@example.com</StringValue></Field></Step></Form></Summary><TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions></eform>",
+  "xsdReferenceURI": "http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0",
+  "xslMediaDestinationTypeDescription": "HTML",
+  "xslReferenceURI": "http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0/form.xslt",
+  "xslTargetEnvironment": "",
+  "xslXSLTLanguage": "sk",
+}
+`;

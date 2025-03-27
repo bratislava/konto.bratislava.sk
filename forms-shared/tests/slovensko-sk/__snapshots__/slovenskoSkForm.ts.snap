@@ -2311,6 +2311,90 @@ exports[`slovenskoSkForm > ziadost-o-najom-bytu > schema XSD should match snapsh
 </xs:schema>"
 `;
 
+exports[`slovenskoSkForm > ziadost-o-slobodny-pristup-k-informaciam > schema XSD should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0" 
+           elementFormDefault="qualified" 
+           attributeFormDefault="unqualified">
+
+  <xs:element name="eform">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="JsonVersion" type="xs:string"/>
+        <xs:element name="Json" type="xs:string"/>
+        <xs:element name="Summary" type="SummaryType"/>
+        <xs:element name="TermsAndConditions" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="SummaryType">
+    <xs:sequence>
+      <xs:element name="Form" type="FormType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormType">
+    <xs:sequence>
+      <xs:element name="Step" type="StepType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayType">
+    <xs:sequence>
+      <xs:element name="ArrayItem" type="ArrayItemType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ArrayItemType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="Field" type="FieldType"/>
+      <xs:element name="Array" type="ArrayType"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FieldType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="StringValue" type="xs:string"/>
+      <xs:element name="FileValue" type="FileValueType"/>
+      <xs:element name="NoneValue">
+        <xs:complexType/>
+      </xs:element>
+      <xs:element name="InvalidValue">
+        <xs:complexType/>
+      </xs:element>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="label" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="FileValueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="id" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>"
+`;
+
 exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -2662,5 +2746,63 @@ podmienkami ochrany súkromia pre politiku nájomných bytov
 podmienkami ochrany súkromia v rámci Bratislavského konta a podmienkami spracúvania osobných údajov Hlavného mesta
 
 ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na vyhodnotenie splnenia podmienok pre pridelenie nájomného bytu.</TermsAndConditions>
+</eform>"
+`;
+
+exports[`slovenskoSkForm > ziadostOSlobodnyPristupKInformaciamExample > XML should match snapshot 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<eform xmlns="http://schemas.gov.sk/form/00603481.ziadostOSlobodnyPristupKInformaciam/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <JsonVersion>1.0.0</JsonVersion>
+  <Json>{"ziadatel":{"typZiadatela":"fyzickaOsoba","meno":"Martin","priezvisko":"Kováč","ulicaCislo":"Bajkalská 28","mesto":"Bratislava","psc":"82109","kontaktneUdaje":{"email":"martin.kovac@example.com","telefon":"+421908123456"}},"pozadovaneInformacie":{"predmetZiadosti":"Rozpočet mestskej časti na rok 2024","obsahZiadosti":"Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.","prilohyZiadosti":["b9050ef5-0d98-41c4-aba1-b0fc5a65a443"]},"sposobSpristupnenia":{"sposobSpristupnenia":"email","emailSpristupnenia":"martin.kovac@example.com"}}</Json>
+  <Summary>
+    <Form title="Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.">
+      <Step id="root_ziadatel" title="Žiadateľ">
+        <Field id="root_ziadatel_typZiadatela" label="Žiadate ako">
+          <StringValue>Fyzická osoba</StringValue>
+        </Field>
+        <Field id="root_ziadatel_meno" label="Meno">
+          <StringValue>Martin</StringValue>
+        </Field>
+        <Field id="root_ziadatel_priezvisko" label="Priezvisko">
+          <StringValue>Kováč</StringValue>
+        </Field>
+        <Field id="root_ziadatel_ulicaCislo" label="Adresa pobytu">
+          <StringValue>Bajkalská 28</StringValue>
+        </Field>
+        <Field id="root_ziadatel_mesto" label="Mesto">
+          <StringValue>Bratislava</StringValue>
+        </Field>
+        <Field id="root_ziadatel_psc" label="PSČ">
+          <StringValue>82109</StringValue>
+        </Field>
+        <Field id="root_ziadatel_kontaktneUdaje_email" label="Email">
+          <StringValue>martin.kovac@example.com</StringValue>
+        </Field>
+        <Field id="root_ziadatel_kontaktneUdaje_telefon" label="Telefónne číslo">
+          <StringValue>+421908123456</StringValue>
+        </Field>
+      </Step>
+      <Step id="root_pozadovaneInformacie" title="Požadované informácie">
+        <Field id="root_pozadovaneInformacie_predmetZiadosti" label="Predmet žiadosti">
+          <StringValue>Rozpočet mestskej časti na rok 2024</StringValue>
+        </Field>
+        <Field id="root_pozadovaneInformacie_obsahZiadosti" label="Obsah žiadosti">
+          <StringValue>Žiadam o sprístupnenie dokumentácie týkajúcej sa schváleného rozpočtu mestskej časti Bratislava-Ružinov na rok 2024 vrátane všetkých plánovaných investícií do verejnej infraštruktúry.</StringValue>
+        </Field>
+        <Field id="root_pozadovaneInformacie_prilohyZiadosti" label="Prílohy k žiadosti">
+          <FileValue id="b9050ef5-0d98-41c4-aba1-b0fc5a65a443">ziadost_o_rozpocet.pdf</FileValue>
+        </Field>
+      </Step>
+      <Step id="root_sposobSpristupnenia" title="Spôsob sprístupnenia informácií">
+        <Field id="root_sposobSpristupnenia_sposobSpristupnenia" label="Akým spôsobom chcete sprístupniť požadované informácie">
+          <StringValue>na emailovú adresu</StringValue>
+        </Field>
+        <Field id="root_sposobSpristupnenia_emailSpristupnenia" label="Email">
+          <StringValue>martin.kovac@example.com</StringValue>
+        </Field>
+      </Step>
+    </Form>
+  </Summary>
+  <TermsAndConditions>Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s podmienkami spracúvania osobných údajov Hlavného mesta ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.</TermsAndConditions>
 </eform>"
 `;

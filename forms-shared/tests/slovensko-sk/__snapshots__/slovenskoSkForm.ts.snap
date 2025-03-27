@@ -87,27 +87,27 @@ exports[`slovenskoSkForm > komunitne-zahrady > schema XSD should match snapshot 
 exports[`slovenskoSkForm > komunitneZahradyExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.komunitneZahrady/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <JsonVersion>1.0.0</JsonVersion>
-  <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"obcianskeZdruzenie":{"nazovObcianskehoZdruzenia":"Zelená Bratislava","ico":"12345678","adresaSidla":{"ulicaACislo":"Šancová 56","mestoPsc":{"mesto":"Bratislava","psc":"83104"}},"statutar":{"menoStatutara":"Marta","priezviskoStatutara":"Nováková"}},"pozemok":{"typPozemku":"predschvalenyPozemok","predschvalenyPozemokVyber":"Azalková"},"zahrada":{"dovodyZalozenia":"Priestor je v súčasnosti nevyužívaný a zanedbaný. Komunitná záhrada by poskytla miesto pre miestnych obyvateľov na pestovanie rastlín a stretávanie sa.","suhlasKomunity":"Získali sme podporu od miestnych obyvateľov prostredníctvom petície a verejných stretnutí.","organizacnyTim":"Tím bude pozostávať z miestnych dobrovoľníkov, ktorí sa budú starať o záhradu a organizovať komunitné aktivity.","prevadzka":"Údržbu zelene budú zabezpečovať dobrovoľníci. Odpad bude separovaný a recyklovaný, pričom sa budeme snažiť o zero-waste režim.","inkluzivnost":"Projekt bude otvorený pre všetkých miestnych obyvateľov. Záujemcovia o záhradkárčenie budú vybraní na základe transparentného procesu.","financovanie":"Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje."},"prilohyPredschvalenyPozemok":{"umiestnenie":"ace1a8c2-f96e-4583-bdf9-64233b582572","dizajn":"27766841-1f8f-4daa-b6e9-df826b294ae0","fotografie":"7510f8c5-c777-4426-8166-90f253eb0738","ine":"1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0"}}</Json>
+  <JsonVersion>2.0.0</JsonVersion>
+  <Json>{"ziadatel":{"meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108","email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"obcianskeZdruzenie":{"nazovObcianskehoZdruzenia":"Zelená Bratislava","ico":"12345678","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104","statutar":{"meno":"Marta","priezvisko":"Nováková"}},"pozemok":{"typPozemku":"odporucanyPozemok","odporucanyPozemokVyber":"Azalková"},"zahrada":{"dovodyZalozenia":"Priestor je v súčasnosti nevyužívaný a zanedbaný. Komunitná záhrada by poskytla miesto pre miestnych obyvateľov na pestovanie rastlín a stretávanie sa.","suhlasKomunity":"Získali sme podporu od miestnych obyvateľov prostredníctvom petície a verejných stretnutí.","organizacnyTim":"Tím bude pozostávať z miestnych dobrovoľníkov, ktorí sa budú starať o záhradu a organizovať komunitné aktivity.","prevadzka":"Údržbu zelene budú zabezpečovať dobrovoľníci. Odpad bude separovaný a recyklovaný, pričom sa budeme snažiť o zero-waste režim.","inkluzivnost":"Projekt bude otvorený pre všetkých miestnych obyvateľov. Záujemcovia o záhradkárčenie budú vybraní na základe transparentného procesu.","financovanie":"Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje."},"prilohy":{"umiestnenie":"ace1a8c2-f96e-4583-bdf9-64233b582572","dizajn":"27766841-1f8f-4daa-b6e9-df826b294ae0","fotografie":"7510f8c5-c777-4426-8166-90f253eb0738","ine":"1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0"}}</Json>
   <Summary>
     <Form title="Komunitné záhrady">
       <Step id="root_ziadatel" title="Žiadateľ">
-        <Field id="root_ziadatel_menoPriezvisko_meno" label="Meno">
+        <Field id="root_ziadatel_meno" label="Meno">
           <StringValue>Ján</StringValue>
         </Field>
-        <Field id="root_ziadatel_menoPriezvisko_priezvisko" label="Priezvisko">
+        <Field id="root_ziadatel_priezvisko" label="Priezvisko">
           <StringValue>Kováč</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+        <Field id="root_ziadatel_ulicaACislo" label="Adresa trvalého pobytu">
           <StringValue>Mierová 12</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+        <Field id="root_ziadatel_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+        <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -121,27 +121,27 @@ exports[`slovenskoSkForm > komunitneZahradyExample > XML should match snapshot 1
         <Field id="root_obcianskeZdruzenie_ico" label="IČO">
           <StringValue>12345678</StringValue>
         </Field>
-        <Field id="root_obcianskeZdruzenie_adresaSidla_ulicaACislo" label="Ulica a číslo">
+        <Field id="root_obcianskeZdruzenie_ulicaACislo" label="Adresa sídla">
           <StringValue>Šancová 56</StringValue>
         </Field>
-        <Field id="root_obcianskeZdruzenie_adresaSidla_mestoPsc_mesto" label="Mesto">
+        <Field id="root_obcianskeZdruzenie_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_obcianskeZdruzenie_adresaSidla_mestoPsc_psc" label="PSČ">
+        <Field id="root_obcianskeZdruzenie_psc" label="PSČ">
           <StringValue>83104</StringValue>
         </Field>
-        <Field id="root_obcianskeZdruzenie_statutar_menoStatutara" label="Meno">
+        <Field id="root_obcianskeZdruzenie_statutar_meno" label="Meno">
           <StringValue>Marta</StringValue>
         </Field>
-        <Field id="root_obcianskeZdruzenie_statutar_priezviskoStatutara" label="Priezvisko">
+        <Field id="root_obcianskeZdruzenie_statutar_priezvisko" label="Priezvisko">
           <StringValue>Nováková</StringValue>
         </Field>
       </Step>
       <Step id="root_pozemok" title="Pozemok">
         <Field id="root_pozemok_typPozemku" label="O aký pozemok máte záujem?">
-          <StringValue>Predschválený mestský pozemok</StringValue>
+          <StringValue>Odporúčaný mestský pozemok</StringValue>
         </Field>
-        <Field id="root_pozemok_predschvalenyPozemokVyber" label="Ponuka predschválených mestských pozemkov">
+        <Field id="root_pozemok_odporucanyPozemokVyber" label="Ponuka odporúčaných mestských pozemkov">
           <StringValue>Azalková</StringValue>
         </Field>
       </Step>
@@ -165,17 +165,17 @@ exports[`slovenskoSkForm > komunitneZahradyExample > XML should match snapshot 1
           <StringValue>Plánujeme využiť granty a členské poplatky. Predbežný rozpočet už máme a plánujeme ho doplniť o ďalšie zdroje.</StringValue>
         </Field>
       </Step>
-      <Step id="root_prilohyPredschvalenyPozemok" title="Prílohy">
-        <Field id="root_prilohyPredschvalenyPozemok_umiestnenie" label="Presné umiestnenie záhrady na pozemku">
+      <Step id="root_prilohy" title="Prílohy">
+        <Field id="root_prilohy_umiestnenie" label="Presné umiestnenie záhrady na pozemku">
           <FileValue id="ace1a8c2-f96e-4583-bdf9-64233b582572">umiestnenie.jpg</FileValue>
         </Field>
-        <Field id="root_prilohyPredschvalenyPozemok_dizajn" label="Dizajn/projekt záhrady">
+        <Field id="root_prilohy_dizajn" label="Dizajn/projekt záhrady">
           <FileValue id="27766841-1f8f-4daa-b6e9-df826b294ae0">dizajn.jpg</FileValue>
         </Field>
-        <Field id="root_prilohyPredschvalenyPozemok_fotografie" label="Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu">
+        <Field id="root_prilohy_fotografie" label="Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu">
           <FileValue id="7510f8c5-c777-4426-8166-90f253eb0738">fotografie.jpg</FileValue>
         </Field>
-        <Field id="root_prilohyPredschvalenyPozemok_ine" label="Iné">
+        <Field id="root_prilohy_ine" label="Iné">
           <FileValue id="1f174bf8-328c-4d1e-8dbb-2afe98e1a0f0">ine.pdf</FileValue>
         </Field>
       </Step>
@@ -535,27 +535,27 @@ exports[`slovenskoSkForm > predzahradky > schema XSD should match snapshot 1`] =
 exports[`slovenskoSkForm > predzahradkyExample > XML should match snapshot 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.predzahradky/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <JsonVersion>1.0.0</JsonVersion>
-  <Json>{"ziadatel":{"menoPriezvisko":{"meno":"Ján","priezvisko":"Kováč"},"adresa":{"ulicaACislo":"Mierová 12","mestoPsc":{"mesto":"Bratislava","psc":"82108"}},"email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"predzahradka":{"typRegistracie":"nova","adresa":"Dunajská 34","mestskaCast":"Devín","parcelneCislo":"46549/435413","ine":"Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.","rozlozenieNova":"Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede."},"prilohy":{"mapa":"4f01b72e-f5d6-429e-a4b4-ecb6432f05f7","fotografie":"6f306cec-29c4-45dd-97b8-f9bedcb7d72d","projekt":"88b55eff-ebb4-4d17-bc5a-cdbe6d8eb923","inePrilohy":"7f3e5eeb-215d-4e55-ac78-44f7d60a699c"}}</Json>
+  <JsonVersion>2.0.0</JsonVersion>
+  <Json>{"ziadatel":{"meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108","email":"jan.kovac@priklad.sk","telefon":"+421905987654"},"predzahradka":{"typRegistracie":"nova","adresa":"Dunajská 34","mestskaCast":"SK0101528595","parcelneCislo":"46549/435413","ine":"Predzáhradka bude obsahovať rôzne druhy kvetov a kríkov, ktoré budú starostlivo vybrané tak, aby kvitli počas celého roka. Plánujeme tiež inštalovať malé fontány a lavičky pre oddych.","rozlozenie":"Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede."},"prilohy":{"mapa":"4f01b72e-f5d6-429e-a4b4-ecb6432f05f7","fotografie":"6f306cec-29c4-45dd-97b8-f9bedcb7d72d","projekt":"88b55eff-ebb4-4d17-bc5a-cdbe6d8eb923","inePrilohy":"7f3e5eeb-215d-4e55-ac78-44f7d60a699c"}}</Json>
   <Summary>
     <Form title="Predzáhradky">
       <Step id="root_ziadatel" title="Žiadateľ">
-        <Field id="root_ziadatel_menoPriezvisko_meno" label="Meno">
+        <Field id="root_ziadatel_meno" label="Meno">
           <StringValue>Ján</StringValue>
         </Field>
-        <Field id="root_ziadatel_menoPriezvisko_priezvisko" label="Priezvisko">
+        <Field id="root_ziadatel_priezvisko" label="Priezvisko">
           <StringValue>Kováč</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_ulicaACislo" label="Ulica a číslo">
+        <Field id="root_ziadatel_ulicaACislo" label="Adresa trvalého pobytu">
           <StringValue>Mierová 12</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_mesto" label="Mesto">
+        <Field id="root_ziadatel_mesto" label="Mesto">
           <StringValue>Bratislava</StringValue>
         </Field>
-        <Field id="root_ziadatel_adresa_mestoPsc_psc" label="PSČ">
+        <Field id="root_ziadatel_psc" label="PSČ">
           <StringValue>82108</StringValue>
         </Field>
-        <Field id="root_ziadatel_email" label="E-mail">
+        <Field id="root_ziadatel_email" label="Email">
           <StringValue>jan.kovac@priklad.sk</StringValue>
         </Field>
         <Field id="root_ziadatel_telefon" label="Telefónne číslo">
@@ -566,16 +566,16 @@ exports[`slovenskoSkForm > predzahradkyExample > XML should match snapshot 1`] =
         <Field id="root_predzahradka_typRegistracie" label="Mám záujem o">
           <StringValue>Vytvorenie novej predzáhradky</StringValue>
         </Field>
-        <Field id="root_predzahradka_adresa" label="Adresa predzáhradky (ulica, číslo)">
+        <Field id="root_predzahradka_adresa" label="Adresa predzáhradky">
           <StringValue>Dunajská 34</StringValue>
         </Field>
         <Field id="root_predzahradka_mestskaCast" label="Mestská časť, v ktorej sa pozemok nachádza">
-          <StringValue>Devín</StringValue>
+          <StringValue>Staré Mesto</StringValue>
         </Field>
         <Field id="root_predzahradka_parcelneCislo" label="Číslo parcely">
           <StringValue>46549/435413</StringValue>
         </Field>
-        <Field id="root_predzahradka_rozlozenieNova" label="Plánované rozloženie predzáhradky">
+        <Field id="root_predzahradka_rozlozenie" label="Plánované rozloženie predzáhradky">
           <StringValue>Predzáhradka bude rozdelená na tri sekcie: kvetinovú, kríkovú a relaxačnú zónu s lavičkami. Kvetinová sekcia bude umiestnená pri vstupe, kríková pozdĺž plotu a relaxačná zóna v strede.</StringValue>
         </Field>
         <Field id="root_predzahradka_ine" label="Iné">

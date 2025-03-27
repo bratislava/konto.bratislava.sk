@@ -3,22 +3,13 @@
 exports[`Form definitions > komunitne-zahrady > default form state should match snapshot 1`] = `
 {
   "obcianskeZdruzenie": {
-    "adresaSidla": {
-      "mestoPsc": {},
-    },
     "statutar": {},
   },
   "pozemok": {
-    "typPozemku": "predschvalenyPozemok",
+    "typPozemku": "odporucanyPozemok",
   },
-  "prilohyPredschvalenyPozemok": {},
   "zahrada": {},
-  "ziadatel": {
-    "adresa": {
-      "mestoPsc": {},
-    },
-    "menoPriezvisko": {},
-  },
+  "ziadatel": {},
 }
 `;
 
@@ -35,70 +26,8 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
             },
           },
           "properties": {
-            "adresa": {
-              "baOrder": 2,
-              "baUiSchema": {
-                "ui:options": {
-                  "objectDisplay": "boxed",
-                  "title": "Adresa trvalého pobytu",
-                },
-              },
-              "properties": {
-                "mestoPsc": {
-                  "baOrder": 2,
-                  "properties": {
-                    "mesto": {
-                      "baOrder": 1,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "3/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Mesto",
-                      "type": "string",
-                    },
-                    "psc": {
-                      "baOrder": 2,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "1/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "format": "ba-slovak-zip",
-                      "title": "PSČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "mesto",
-                    "psc",
-                  ],
-                  "type": "object",
-                },
-                "ulicaACislo": {
-                  "baOrder": 1,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Ulica a číslo",
-                  "type": "string",
-                },
-              },
-              "required": [
-                "ulicaACislo",
-                "mestoPsc",
-              ],
-              "type": "object",
-            },
             "email": {
-              "baOrder": 3,
+              "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -106,11 +35,168 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
-            "menoPriezvisko": {
+            "meno": {
               "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "2/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Meno",
+              "type": "string",
+            },
+            "mesto": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "3/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Mesto",
+              "type": "string",
+            },
+            "priezvisko": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "2/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Priezvisko",
+              "type": "string",
+            },
+            "psc": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "1/4",
+                },
+                "ui:widget": "Input",
+              },
+              "format": "ba-slovak-zip",
+              "title": "PSČ",
+              "type": "string",
+            },
+            "telefon": {
+              "baOrder": 7,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
+                  "inputType": "tel",
+                  "size": "medium",
+                },
+                "ui:widget": "Input",
+              },
+              "format": "ba-phone-number",
+              "title": "Telefónne číslo",
+              "type": "string",
+            },
+            "ulicaACislo": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Vyplňte ulicu a číslo",
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Adresa trvalého pobytu",
+              "type": "string",
+            },
+          },
+          "required": [
+            "meno",
+            "priezvisko",
+            "ulicaACislo",
+            "mesto",
+            "psc",
+            "email",
+            "telefon",
+          ],
+          "title": "Žiadateľ",
+          "type": "object",
+        },
+      },
+      "required": [
+        "ziadatel",
+      ],
+      "type": "object",
+    },
+    {
+      "properties": {
+        "obcianskeZdruzenie": {
+          "baOrder": 1,
+          "baUiSchema": {
+            "ui:options": {
+              "stepQueryParam": "obcianske-zdruzenie",
+            },
+          },
+          "properties": {
+            "ico": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "size": "medium",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "IČO",
+              "type": "string",
+            },
+            "mesto": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "3/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Mesto",
+              "type": "string",
+            },
+            "nazovObcianskehoZdruzenia": {
+              "baOrder": 1,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Názov občianskeho združenia",
+              "type": "string",
+            },
+            "psc": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "1/4",
+                },
+                "ui:widget": "Input",
+              },
+              "format": "ba-slovak-zip",
+              "title": "PSČ",
+              "type": "string",
+            },
+            "statutar": {
+              "baOrder": 6,
+              "baUiSchema": {
+                "ui:options": {
+                  "title": "Štatutár",
+                },
+              },
               "properties": {
                 "meno": {
                   "baOrder": 1,
@@ -143,175 +229,25 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               ],
               "type": "object",
             },
-            "telefon": {
-              "baOrder": 4,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "tel",
-                  "placeholder": "+421",
-                  "size": "medium",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
-              "type": "string",
-            },
-          },
-          "required": [
-            "menoPriezvisko",
-            "adresa",
-            "email",
-            "telefon",
-          ],
-          "title": "Žiadateľ",
-          "type": "object",
-        },
-      },
-      "required": [
-        "ziadatel",
-      ],
-      "type": "object",
-    },
-    {
-      "properties": {
-        "obcianskeZdruzenie": {
-          "baOrder": 1,
-          "baUiSchema": {
-            "ui:options": {
-              "stepQueryParam": "obcianske-zdruzenie",
-            },
-          },
-          "properties": {
-            "adresaSidla": {
+            "ulicaACislo": {
               "baOrder": 3,
               "baUiSchema": {
                 "ui:options": {
-                  "objectDisplay": "boxed",
-                  "title": "Adresa sídla",
-                },
-              },
-              "properties": {
-                "mestoPsc": {
-                  "baOrder": 2,
-                  "properties": {
-                    "mesto": {
-                      "baOrder": 1,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "3/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Mesto",
-                      "type": "string",
-                    },
-                    "psc": {
-                      "baOrder": 2,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "1/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "format": "ba-slovak-zip",
-                      "title": "PSČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "mesto",
-                    "psc",
-                  ],
-                  "type": "object",
-                },
-                "ulicaACislo": {
-                  "baOrder": 1,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Ulica a číslo",
-                  "type": "string",
-                },
-              },
-              "required": [
-                "ulicaACislo",
-                "mestoPsc",
-              ],
-              "type": "object",
-            },
-            "ico": {
-              "baOrder": 2,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "text",
-                  "size": "medium",
-                },
-                "ui:widget": "Input",
-              },
-              "title": "IČO",
-              "type": "string",
-            },
-            "nazovObcianskehoZdruzenia": {
-              "baOrder": 1,
-              "baUiSchema": {
-                "ui:options": {
+                  "helptext": "Vyplňte ulicu a číslo",
                   "inputType": "text",
                 },
                 "ui:widget": "Input",
               },
-              "title": "Názov občianskeho združenia",
+              "title": "Adresa sídla",
               "type": "string",
-            },
-            "statutar": {
-              "baOrder": 4,
-              "baUiSchema": {
-                "ui:options": {
-                  "title": "Štatutár",
-                },
-              },
-              "properties": {
-                "menoStatutara": {
-                  "baOrder": 1,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                      "selfColumn": "2/4",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Meno",
-                  "type": "string",
-                },
-                "priezviskoStatutara": {
-                  "baOrder": 2,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                      "selfColumn": "2/4",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Priezvisko",
-                  "type": "string",
-                },
-              },
-              "required": [
-                "menoStatutara",
-                "priezviskoStatutara",
-              ],
-              "type": "object",
             },
           },
           "required": [
             "nazovObcianskehoZdruzenia",
             "ico",
-            "adresaSidla",
+            "ulicaACislo",
+            "mesto",
+            "psc",
             "statutar",
           ],
           "title": "Občianske združenie",
@@ -331,7 +267,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               "if": {
                 "properties": {
                   "typPozemku": {
-                    "const": "predschvalenyPozemok",
+                    "const": "odporucanyPozemok",
                   },
                 },
                 "required": [
@@ -341,7 +277,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               },
               "then": {
                 "properties": {
-                  "predschvalenyPozemokVyber": {
+                  "odporucanyPozemokVyber": {
                     "baOrder": 2,
                     "baUiSchema": {
                       "ui:options": {
@@ -403,7 +339,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                             "value": "Vyšehradská",
                           },
                         ],
-                        "helptext": "Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.",
+                        "helptext": "Mapu odporúčaných mestských pozemkov a podmienky pre zaistenie kvalitného verejného priestoru na niektorých mestských pozemkoch [nájdete tu](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady).",
                         "helptextMarkdown": true,
                       },
                       "ui:widget": "Select",
@@ -424,12 +360,12 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                       "Tokajícka",
                       "Vyšehradská",
                     ],
-                    "title": "Ponuka predschválených mestských pozemkov",
+                    "title": "Ponuka odporúčaných mestských pozemkov",
                     "type": "string",
                   },
                 },
                 "required": [
-                  "predschvalenyPozemokVyber",
+                  "odporucanyPozemokVyber",
                 ],
                 "type": "object",
               },
@@ -452,11 +388,12 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                     "baOrder": 3,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
                         "inputType": "text",
                       },
                       "ui:widget": "Input",
                     },
-                    "title": "Adresa komunitnej záhrady (ulica, číslo)",
+                    "title": "Adresa komunitnej záhrady",
                     "type": "string",
                   },
                   "mestskaCast": {
@@ -466,95 +403,94 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                         "enumMetadata": [
                           {
                             "label": "Čunovo",
-                            "value": "Čunovo",
+                            "value": "SK0105529435",
                           },
                           {
                             "label": "Devín",
-                            "value": "Devín",
+                            "value": "SK0104529401",
                           },
                           {
                             "label": "Devínska Nová Ves",
-                            "value": "Devínska Nová Ves",
+                            "value": "SK0104529371",
                           },
                           {
                             "label": "Dúbravka",
-                            "value": "Dúbravka",
+                            "value": "SK0104529389",
                           },
                           {
                             "label": "Jarovce",
-                            "value": "Jarovce",
+                            "value": "SK0105529443",
                           },
                           {
                             "label": "Karlova Ves",
-                            "value": "Karlova Ves",
+                            "value": "SK0104529397",
                           },
                           {
                             "label": "Lamač",
-                            "value": "Lamač",
+                            "value": "SK0104529419",
                           },
                           {
                             "label": "Nové Mesto",
-                            "value": "Nové Mesto",
+                            "value": "SK0103529346",
                           },
                           {
                             "label": "Petržalka",
-                            "value": "Petržalka",
+                            "value": "SK0105529460",
                           },
                           {
                             "label": "Podunajské Biskupice",
-                            "value": "Podunajské Biskupice",
+                            "value": "SK0102529311",
                           },
                           {
                             "label": "Rača",
-                            "value": "Rača",
+                            "value": "SK0103529354",
                           },
                           {
                             "label": "Rusovce",
-                            "value": "Rusovce",
+                            "value": "SK0105529494",
                           },
                           {
                             "label": "Ružinov",
-                            "value": "Ružinov",
+                            "value": "SK0102529320",
                           },
                           {
                             "label": "Staré Mesto",
-                            "value": "Staré Mesto",
+                            "value": "SK0101528595",
                           },
                           {
                             "label": "Vajnory",
-                            "value": "Vajnory",
+                            "value": "SK0103529362",
                           },
                           {
                             "label": "Vrakuňa",
-                            "value": "Vrakuňa",
+                            "value": "SK0102529338",
                           },
                           {
                             "label": "Záhorská Bystrica",
-                            "value": "Záhorská Bystrica",
+                            "value": "SK0104529427",
                           },
                         ],
-                        "placeholder": "Vyberte",
                       },
                       "ui:widget": "Select",
                     },
                     "enum": [
-                      "Čunovo",
-                      "Devín",
-                      "Devínska Nová Ves",
-                      "Dúbravka",
-                      "Jarovce",
-                      "Karlova Ves",
-                      "Lamač",
-                      "Nové Mesto",
-                      "Petržalka",
-                      "Podunajské Biskupice",
-                      "Rača",
-                      "Rusovce",
-                      "Ružinov",
-                      "Staré Mesto",
-                      "Vajnory",
-                      "Vrakuňa",
-                      "Záhorská Bystrica",
+                      "SK0105529435",
+                      "SK0104529401",
+                      "SK0104529371",
+                      "SK0104529389",
+                      "SK0105529443",
+                      "SK0104529397",
+                      "SK0104529419",
+                      "SK0103529346",
+                      "SK0105529460",
+                      "SK0102529311",
+                      "SK0103529354",
+                      "SK0105529494",
+                      "SK0102529320",
+                      "SK0101528595",
+                      "SK0103529362",
+                      "SK0102529338",
+                      "SK0104529427",
                     ],
                     "title": "Mestská časť, v ktorej sa pozemok nachádza",
                     "type": "string",
@@ -586,7 +522,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
-              "description": "Odporúčame vám výber jedného z predschválených mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
+              "description": "Odporúčame vám výber jedného z odporúčaných mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
               "stepQueryParam": "pozemok",
             },
           },
@@ -597,8 +533,8 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "ui:options": {
                   "enumMetadata": [
                     {
-                      "label": "Predschválený mestský pozemok",
-                      "value": "predschvalenyPozemok",
+                      "label": "Odporúčaný mestský pozemok",
+                      "value": "odporucanyPozemok",
                     },
                     {
                       "label": "Iný mestský pozemok",
@@ -610,9 +546,9 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 },
                 "ui:widget": "RadioGroup",
               },
-              "default": "predschvalenyPozemok",
+              "default": "odporucanyPozemok",
               "enum": [
-                "predschvalenyPozemok",
+                "odporucanyPozemok",
                 "inyPozemok",
               ],
               "title": "O aký pozemok máte záujem?",
@@ -647,7 +583,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "ui:options": {
                   "helptext": "Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.",
                   "helptextMarkdown": true,
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -659,7 +594,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Aké budete mať členské poplatky? Využijete na tvorbu záhrady granty? Aké zdroje už máte a aké plánujete získať? V prípade, že už máte (predbežný) rozpočet, nahrajte ho do poľa nižšie.",
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -671,7 +605,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Ako zabezpečíte otvorenosť projektu, kto bude mať priamy či nepriamy úžitok z projektu, ako vyberiete, kto bude záhradkár? Ako sa vysporiadate so situáciou, ak budete mať väčší záujem o záhradkárčenie, než budete mať kapacitu nasýtiť?",
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -681,9 +614,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
             "organizacnyTim": {
               "baOrder": 3,
               "baUiSchema": {
-                "ui:options": {
-                  "placeholder": "Popíšte",
-                },
+                "ui:options": {},
                 "ui:widget": "TextArea",
               },
               "title": "Organizačný tím záhrady",
@@ -694,7 +625,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Kto a akým spôsobom bude zabezpečovať prevádzku záhrady z hľadiska údržby zelene (napríklad kosenie) a starostlivosti o poriadok? Ako bude zabezpečený odpad? Ideálne je, napríklad, zaviazať sa ku zero-waste režimu a každý, kto vytvorí odpad bude zodpovedný za jeho likvidáciu.",
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -706,7 +636,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Dôležitý aspekt legitimity je zapojenie okolitej komunity – organizačný tím by mal získať súhlas miestnych obyvateľov a obyvateliek, ktorí priestor v súčasnosti využívajú.",
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -737,25 +666,27 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           "pozemok": {
             "properties": {
               "typPozemku": {
-                "not": {
-                  "const": "inyPozemok",
-                },
+                "const": "odporucanyPozemok",
               },
             },
-            "required": [],
+            "required": [
+              "typPozemku",
+            ],
             "type": "object",
           },
         },
-        "required": [],
+        "required": [
+          "pozemok",
+        ],
         "type": "object",
       },
       "then": {
         "properties": {
-          "prilohyPredschvalenyPozemok": {
+          "prilohy": {
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
-                "stepQueryParam": "prilohy-predschvaleny-pozemok",
+                "stepQueryParam": "prilohy",
               },
             },
             "properties": {
@@ -827,7 +758,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           },
         },
         "required": [
-          "prilohyPredschvalenyPozemok",
+          "prilohy",
         ],
         "type": "object",
       },
@@ -838,9 +769,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           "pozemok": {
             "properties": {
               "typPozemku": {
-                "not": {
-                  "const": "predschvalenyPozemok",
-                },
+                "const": "inyPozemok",
               },
             },
             "required": [
@@ -856,11 +785,11 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
       },
       "then": {
         "properties": {
-          "prilohyInyPozemok": {
+          "prilohy": {
             "baOrder": 1,
             "baUiSchema": {
               "ui:options": {
-                "stepQueryParam": "prilohy-iny-pozemok",
+                "stepQueryParam": "prilohy",
               },
             },
             "properties": {
@@ -886,7 +815,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
                 "baOrder": 1,
                 "baUiSchema": {
                   "ui:options": {
-                    "helptext": "Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
                     "type": "dragAndDrop",
                   },
                   "ui:widget": "FileUpload",
@@ -934,7 +862,7 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
           },
         },
         "required": [
-          "prilohyInyPozemok",
+          "prilohy",
         ],
         "type": "object",
       },
@@ -40929,12 +40857,7 @@ exports[`Form definitions > predzahradky > default form state should match snaps
     "typRegistracie": "nova",
   },
   "prilohy": {},
-  "ziadatel": {
-    "adresa": {
-      "mestoPsc": {},
-    },
-    "menoPriezvisko": {},
-  },
+  "ziadatel": {},
 }
 `;
 
@@ -40951,70 +40874,8 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
             },
           },
           "properties": {
-            "adresa": {
-              "baOrder": 2,
-              "baUiSchema": {
-                "ui:options": {
-                  "objectDisplay": "boxed",
-                  "title": "Adresa trvalého pobytu",
-                },
-              },
-              "properties": {
-                "mestoPsc": {
-                  "baOrder": 2,
-                  "properties": {
-                    "mesto": {
-                      "baOrder": 1,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "3/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Mesto",
-                      "type": "string",
-                    },
-                    "psc": {
-                      "baOrder": 2,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "1/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "format": "ba-slovak-zip",
-                      "title": "PSČ",
-                      "type": "string",
-                    },
-                  },
-                  "required": [
-                    "mesto",
-                    "psc",
-                  ],
-                  "type": "object",
-                },
-                "ulicaACislo": {
-                  "baOrder": 1,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Ulica a číslo",
-                  "type": "string",
-                },
-              },
-              "required": [
-                "ulicaACislo",
-                "mestoPsc",
-              ],
-              "type": "object",
-            },
             "email": {
-              "baOrder": 3,
+              "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -41022,49 +40883,64 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
-            "menoPriezvisko": {
+            "meno": {
               "baOrder": 1,
-              "properties": {
-                "meno": {
-                  "baOrder": 1,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                      "selfColumn": "2/4",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Meno",
-                  "type": "string",
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "2/4",
                 },
-                "priezvisko": {
-                  "baOrder": 2,
-                  "baUiSchema": {
-                    "ui:options": {
-                      "inputType": "text",
-                      "selfColumn": "2/4",
-                    },
-                    "ui:widget": "Input",
-                  },
-                  "title": "Priezvisko",
-                  "type": "string",
-                },
+                "ui:widget": "Input",
               },
-              "required": [
-                "meno",
-                "priezvisko",
-              ],
-              "type": "object",
+              "title": "Meno",
+              "type": "string",
             },
-            "telefon": {
+            "mesto": {
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "3/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Mesto",
+              "type": "string",
+            },
+            "priezvisko": {
+              "baOrder": 2,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "2/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Priezvisko",
+              "type": "string",
+            },
+            "psc": {
+              "baOrder": 5,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "1/4",
+                },
+                "ui:widget": "Input",
+              },
+              "format": "ba-slovak-zip",
+              "title": "PSČ",
+              "type": "string",
+            },
+            "telefon": {
+              "baOrder": 7,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -41073,10 +40949,25 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "title": "Telefónne číslo",
               "type": "string",
             },
+            "ulicaACislo": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Vyplňte ulicu a číslo",
+                  "inputType": "text",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Adresa trvalého pobytu",
+              "type": "string",
+            },
           },
           "required": [
-            "menoPriezvisko",
-            "adresa",
+            "meno",
+            "priezvisko",
+            "ulicaACislo",
+            "mesto",
+            "psc",
             "email",
             "telefon",
           ],
@@ -41107,11 +40998,11 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               },
               "then": {
                 "properties": {
-                  "rozlozenieNova": {
+                  "rozlozenie": {
                     "baOrder": 5,
                     "baUiSchema": {
                       "ui:options": {
-                        "placeholder": "Popíšte",
+                        "helptext": "Popíšte rozloženie jednotlivých prvkov predzáhradky.",
                       },
                       "ui:widget": "TextArea",
                     },
@@ -41120,7 +41011,39 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
                   },
                 },
                 "required": [
-                  "rozlozenieNova",
+                  "rozlozenie",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typRegistracie": {
+                    "const": "existujuca",
+                  },
+                },
+                "required": [
+                  "typRegistracie",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "rozlozenie": {
+                    "baOrder": 6,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Popíšte rozloženie jednotlivých prvkov predzáhradky.",
+                      },
+                      "ui:widget": "TextArea",
+                    },
+                    "title": "Rozloženie predzáhradky",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "rozlozenie",
                 ],
                 "type": "object",
               },
@@ -41150,21 +41073,8 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
                     "title": "Ako dlho sa o predzáhradku staráte?",
                     "type": "string",
                   },
-                  "rozlozenieExistujuca": {
-                    "baOrder": 6,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "helptext": "Popíšte rozloženie jednotlivých prvkov predzáhradky.",
-                        "placeholder": "Popíšte",
-                      },
-                      "ui:widget": "TextArea",
-                    },
-                    "title": "Rozloženie predzáhradky",
-                    "type": "string",
-                  },
                 },
                 "required": [
-                  "rozlozenieExistujuca",
                   "dobaStarostlivosti",
                 ],
                 "type": "object",
@@ -41182,11 +41092,12 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte ulicu a číslo",
                   "inputType": "text",
                 },
                 "ui:widget": "Input",
               },
-              "title": "Adresa predzáhradky (ulica, číslo)",
+              "title": "Adresa predzáhradky",
               "type": "string",
             },
             "ine": {
@@ -41194,7 +41105,6 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Ak by ste nám chceli ešte niečo v súvislosti s predzáhradkou napísať, tu je na to priestor.",
-                  "placeholder": "Popíšte",
                 },
                 "ui:widget": "TextArea",
               },
@@ -41208,95 +41118,94 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
                   "enumMetadata": [
                     {
                       "label": "Čunovo",
-                      "value": "Čunovo",
+                      "value": "SK0105529435",
                     },
                     {
                       "label": "Devín",
-                      "value": "Devín",
+                      "value": "SK0104529401",
                     },
                     {
                       "label": "Devínska Nová Ves",
-                      "value": "Devínska Nová Ves",
+                      "value": "SK0104529371",
                     },
                     {
                       "label": "Dúbravka",
-                      "value": "Dúbravka",
+                      "value": "SK0104529389",
                     },
                     {
                       "label": "Jarovce",
-                      "value": "Jarovce",
+                      "value": "SK0105529443",
                     },
                     {
                       "label": "Karlova Ves",
-                      "value": "Karlova Ves",
+                      "value": "SK0104529397",
                     },
                     {
                       "label": "Lamač",
-                      "value": "Lamač",
+                      "value": "SK0104529419",
                     },
                     {
                       "label": "Nové Mesto",
-                      "value": "Nové Mesto",
+                      "value": "SK0103529346",
                     },
                     {
                       "label": "Petržalka",
-                      "value": "Petržalka",
+                      "value": "SK0105529460",
                     },
                     {
                       "label": "Podunajské Biskupice",
-                      "value": "Podunajské Biskupice",
+                      "value": "SK0102529311",
                     },
                     {
                       "label": "Rača",
-                      "value": "Rača",
+                      "value": "SK0103529354",
                     },
                     {
                       "label": "Rusovce",
-                      "value": "Rusovce",
+                      "value": "SK0105529494",
                     },
                     {
                       "label": "Ružinov",
-                      "value": "Ružinov",
+                      "value": "SK0102529320",
                     },
                     {
                       "label": "Staré Mesto",
-                      "value": "Staré Mesto",
+                      "value": "SK0101528595",
                     },
                     {
                       "label": "Vajnory",
-                      "value": "Vajnory",
+                      "value": "SK0103529362",
                     },
                     {
                       "label": "Vrakuňa",
-                      "value": "Vrakuňa",
+                      "value": "SK0102529338",
                     },
                     {
                       "label": "Záhorská Bystrica",
-                      "value": "Záhorská Bystrica",
+                      "value": "SK0104529427",
                     },
                   ],
-                  "placeholder": "Vyberte",
                 },
                 "ui:widget": "Select",
               },
               "enum": [
-                "Čunovo",
-                "Devín",
-                "Devínska Nová Ves",
-                "Dúbravka",
-                "Jarovce",
-                "Karlova Ves",
-                "Lamač",
-                "Nové Mesto",
-                "Petržalka",
-                "Podunajské Biskupice",
-                "Rača",
-                "Rusovce",
-                "Ružinov",
-                "Staré Mesto",
-                "Vajnory",
-                "Vrakuňa",
-                "Záhorská Bystrica",
+                "SK0105529435",
+                "SK0104529401",
+                "SK0104529371",
+                "SK0104529389",
+                "SK0105529443",
+                "SK0104529397",
+                "SK0104529419",
+                "SK0103529346",
+                "SK0105529460",
+                "SK0102529311",
+                "SK0103529354",
+                "SK0105529494",
+                "SK0102529320",
+                "SK0101528595",
+                "SK0103529362",
+                "SK0102529338",
+                "SK0104529427",
               ],
               "title": "Mestská časť, v ktorej sa pozemok nachádza",
               "type": "string",
@@ -41348,7 +41257,6 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
             "adresa",
             "mestskaCast",
             "parcelneCislo",
-            "ine",
           ],
           "title": "Predzáhradka",
           "type": "object",

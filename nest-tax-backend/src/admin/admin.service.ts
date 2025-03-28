@@ -230,7 +230,7 @@ export class AdminService {
                   amount: currency(norisItem.dan_spolu.replace(',', '.'))
                     .intValue,
                   year: +data.year,
-                  deliveryMethod: transformDeliveryMethodToDatabaseType(
+                  delivery_method: transformDeliveryMethodToDatabaseType(
                     norisItem.delivery_method,
                   ),
                 },

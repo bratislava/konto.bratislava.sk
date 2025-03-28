@@ -52,3 +52,9 @@
 - Removed placeholder texts
 - Updated form structure and validation rules
 - Updated help texts and descriptions
+
+## Oznámenie o poplatkovej povinnosti za komunálne odpady (oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady)
+
+### 1.0.1 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2561)
+
+- Made "Prílohy" field optional

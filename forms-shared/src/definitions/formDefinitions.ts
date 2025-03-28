@@ -530,7 +530,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
     title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady,
     sendPolicy: FormSendPolicy.EidSigned,
     pospID: '00603481.oznamenieOPoplatkovejPovinnostiZaKomunalneOdpady',

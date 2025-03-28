@@ -8251,7 +8251,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                           },
                           {
                             "label": "Plasty/Kovové obaly a nápojové kartóny",
-                            "value": "plastyKovoveObalyANapojeveKartony",
+                            "value": "plastyKovoveObalyANapojoveKartony",
                           },
                           {
                             "label": "Sklo",
@@ -8271,7 +8271,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                         "biologickyRozlozitelnyOdpad",
                         "jedleOlejeATuky",
                         "papier",
-                        "plastyKovoveObalyANapojeveKartony",
+                        "plastyKovoveObalyANapojoveKartony",
                         "sklo",
                       ],
                     },

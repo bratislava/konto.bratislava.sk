@@ -1,4 +1,4 @@
-import { createCondition, createStringItems } from '../../generator/helpers'
+import { createCondition } from '../../generator/helpers'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 import { input } from '../../generator/functions/input'
@@ -57,7 +57,7 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
             { value: 'jedleOlejeATuky', label: 'Jedlé oleje a tuky' },
             { value: 'papier', label: 'Papier' },
             {
-              value: 'plastyKovoveObalyANapojeveKartony',
+              value: 'plastyKovoveObalyANapojoveKartony',
               label: 'Plasty/Kovové obaly a nápojové kartóny',
             },
             { value: 'sklo', label: 'Sklo' },

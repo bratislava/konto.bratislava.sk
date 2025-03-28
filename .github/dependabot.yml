@@ -9,6 +9,7 @@ updates:
     directory: '/forms-shared'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
     # These packages must be updated synchronously across all packages
     ignore:
@@ -24,16 +25,19 @@ updates:
     directory: '/openapi-clients'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
   - package-ecosystem: 'npm'
     directory: '/next'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     # Open only security updates https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#open-pull-requests-limit
     open-pull-requests-limit: 0
   - package-ecosystem: 'npm'
     directory: '/nest-forms-backend'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
     # These packages must be updated synchronously across all packages
     ignore:
@@ -53,6 +57,7 @@ updates:
     directory: '/nest-clamav-scanner'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     groups:
       nestjs-dependencies:
         patterns:
@@ -66,6 +71,7 @@ updates:
     directory: '/nest-tax-backend'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     groups:
       nestjs-dependencies:
         patterns:
@@ -80,6 +86,7 @@ updates:
     directory: '/nest-city-account'
     schedule:
       interval: 'weekly'
+      day: 'sunday'
     groups:
       nestjs-dependencies:
         patterns:

@@ -18,11 +18,17 @@ import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservi
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import { transformDeliveryMethodToDatabaseType } from '../utils/types/types.prisma'
 import {
+  AddTestingPaymentToTestingTaxDto,
+  CreateTestingTaxPayerRequestDto,
+  CreateTestingTaxRequestDto,
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
+import {
+  CreateBirthNumbersResponseDto,
+  CreateTestingTaxResponseDto,
+} from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
 
 @Injectable()
@@ -569,5 +575,101 @@ export class AdminService {
         date: null,
       },
     ])
+  }
+
+  async addTestingPaymentToTax(
+    request: AddTestingPaymentToTestingTaxDto,
+  ): Promise<void> {
+    const { taxId, amount, source, status } = request
+    const tax = await this.prismaService.tax.findUnique({
+      where: {
+        id: taxId,
+        isTesting: true,
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax with taxId ${request.taxId} not found or is not for testing.`,
+      )
+    }
+
+    await this.prismaService.taxPayment.create({
+      data: {
+        amount,
+        source,
+        taxId,
+        status,
+      },
+    })
+  }
+
+  async removePaymentsFromTax(taxId: number): Promise<void> {
+    const tax = await this.prismaService.tax.findUnique({
+      where: {
+        id: taxId,
+        isTesting: true,
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax with taxId ${taxId} not found or is not for testing.`,
+      )
+    }
+    await this.prismaService.taxPayment.deleteMany({
+      where: {
+        taxId,
+      },
+    })
+  }
+
+  async createTestingTaxPayer(
+    request: CreateTestingTaxPayerRequestDto,
+  ): Promise<void> {
+    await this.prismaService.taxPayer.create({
+      data: {
+        ...request,
+        isTesting: true,
+        active: true,
+      },
+    })
+  }
+
+  async createTestingTax(
+    request: CreateTestingTaxRequestDto,
+  ): Promise<CreateTestingTaxResponseDto> {
+    const taxPayer = await this.prismaService.taxPayer.findUnique({
+      where: {
+        id: request.taxPayerId,
+        isTesting: true,
+      },
+    })
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `TaxPayer with id ${request.taxPayerId} not found or is not for testing.`,
+      )
+    }
+
+    const taxEmployee = await this.prismaService.taxEmployee.findFirst({})
+    if (!taxEmployee) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `No TaxEmployee found in database.`,
+      )
+    }
+
+    const tax = await this.prismaService.tax.create({
+      data: {
+        ...request,
+        isTesting: true,
+        variableSymbol: Math.random().toString(36).slice(2, 10),
+        taxPayerId: request.taxPayerId,
+        taxEmployeeId: taxEmployee?.id,
+      },
+    })
+
+    return tax
   }
 }

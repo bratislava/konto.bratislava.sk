@@ -15,6 +15,11 @@ updates:
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
+    groups:
+      react-email-dependencies:
+        patterns:
+          - 'react-email'
+          - '@react-email/*'
   - package-ecosystem: 'npm'
     directory: '/openapi-clients'
     schedule:

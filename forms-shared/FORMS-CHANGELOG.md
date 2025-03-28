@@ -66,3 +66,31 @@
 ### 1.0.1 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2561)
 
 - Made "Prílohy" field optional
+
+## OLO Taxi (olo-olo-taxi)
+
+### 1.0.1 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2563)
+
+- Updated available time slots
+
+## Podnety a pochvaly občanov (olo-podnety-a-pochvaly-obcanov)
+
+### 1.1.0 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2563)
+
+- Added address field to all request types with context-specific labels
+
+## Triedený zber papiera, plastov a skla pre právnické osoby (olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby)
+
+### 1.2.0 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2563)
+
+- Changed confirmation email:
+  - Added option to use same email as provided in applicant details
+  - Added option to provide multiple emails for confirmation
+
+## Triedený zber papiera, plastov a skla pre správcovské spoločnosti (olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti)
+
+### 1.1.0 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2563)
+
+- Changed confirmation email:
+  - Added option to use same email as provided in applicant details
+  - Added option to provide multiple emails for confirmation

@@ -2759,7 +2759,7 @@ exports[`getSummaryJson > oloPodnetyAPochvalyObcanovExample summary JSON should 
           "id": "root_podnet_kategoriaPodnetu",
           "label": "Kategória podnetu",
           "type": "Field",
-          "value": "Pracovníci OLO",
+          "value": "pracovniciOLO",
         },
         {
           "displayValues": [
@@ -2772,6 +2772,18 @@ exports[`getSummaryJson > oloPodnetyAPochvalyObcanovExample summary JSON should 
           "label": "Dátum a orientačný čas vzniknutej udalosti",
           "type": "Field",
           "value": "2023-10-07",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Kvetná 13",
+            },
+          ],
+          "id": "root_podnet_adresa",
+          "label": "Adresa, kde sa pracovníci nachádzali",
+          "type": "Field",
+          "value": "Kvetná 13",
         },
         {
           "displayValues": [
@@ -3154,7 +3166,7 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExa
                 },
               ],
               "id": "root_sluzba_infoOOdpade_0",
-              "title": "Odpad 1",
+              "title": "Odpad č. 1",
               "type": "ArrayItem",
             },
             {
@@ -3221,7 +3233,7 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExa
                 },
               ],
               "id": "root_sluzba_infoOOdpade_1",
-              "title": "Odpad 2",
+              "title": "Odpad č. 2",
               "type": "ArrayItem",
             },
           ],
@@ -3232,13 +3244,13 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExa
           "displayValues": [
             {
               "type": "String",
-              "value": "milan@odpad.sk",
+              "value": "Nie",
             },
           ],
-          "id": "root_sluzba_emailPotvrdenie",
-          "label": "E-mail (potvrdenie o prevzatí odpadov/obalov)",
+          "id": "root_sluzba_emailPotvrdeniePouzitIny",
+          "label": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
           "type": "Field",
-          "value": "milan@odpad.sk",
+          "value": false,
         },
       ],
       "id": "root_sluzba",
@@ -3517,7 +3529,7 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpoloc
                 },
               ],
               "id": "root_sluzba_infoOOdpade_0",
-              "title": "Odpad 1",
+              "title": "Odpad č. 1",
               "type": "ArrayItem",
             },
           ],
@@ -3528,13 +3540,13 @@ exports[`getSummaryJson > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpoloc
           "displayValues": [
             {
               "type": "String",
-              "value": "test@test.test",
+              "value": "Nie",
             },
           ],
-          "id": "root_sluzba_emailPotvrdenie",
-          "label": "E-mail (potvrdenie o prevzatí odpadov/obalov)",
+          "id": "root_sluzba_emailPotvrdeniePouzitIny",
+          "label": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
           "type": "Field",
-          "value": "test@test.test",
+          "value": false,
         },
       ],
       "id": "root_sluzba",

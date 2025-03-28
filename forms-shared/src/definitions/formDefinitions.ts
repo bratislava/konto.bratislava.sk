@@ -325,7 +325,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-olo-taxi',
     title: 'OLO Taxi',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: oloTaxi,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -345,7 +345,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-podnety-a-pochvaly-obcanov',
     title: 'Podnety a pochvaly občanov',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.1.0',
     schema: podnetyAPochvalyObcanov,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -385,7 +385,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby',
     title: 'Triedený zber papiera, plastov a skla pre právnické osoby',
-    jsonVersion: '1.1.0',
+    jsonVersion: '1.2.0',
     schema: triedenyZberPapieraPlastovASklaPrePravnickeOsoby,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {
@@ -405,7 +405,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti',
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.1.0',
     schema: triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnosti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     email: {

@@ -4,7 +4,8 @@ const exampleForm: ExampleForm = {
   name: 'oloPodnetyAPochvalyObcanovExample',
   formData: {
     podnet: {
-      kategoriaPodnetu: 'Pracovníci OLO',
+      kategoriaPodnetu: 'pracovniciOLO',
+      adresa: 'Kvetná 13',
       meno: 'Ján',
       priezvisko: 'Mrkva',
       telefon: '+421911555444',

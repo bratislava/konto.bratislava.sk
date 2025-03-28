@@ -75,8 +75,8 @@ export default schema(
             [
               '07:00 (pondelok - sobota)',
               '09:00 (pondelok - sobota)',
-              '11:00 (pondelok - sobota)',
-              '13:00 (pondelok - piatok)',
+              '10:30 (pondelok - sobota)',
+              '12:30 (pondelok - piatok)',
             ],
             false,
           ),

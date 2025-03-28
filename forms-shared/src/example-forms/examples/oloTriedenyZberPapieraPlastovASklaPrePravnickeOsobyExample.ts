@@ -46,7 +46,7 @@ const exampleForm: ExampleForm = {
           frekvenciaOdvozov: '1 x do týždňa',
         },
       ],
-      emailPotvrdenie: 'milan@odpad.sk',
+      emailPotvrdeniePouzitIny: false,
     },
     suhlasy: {
       suhlasSVop: true,

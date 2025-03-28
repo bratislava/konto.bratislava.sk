@@ -1,5 +1,4 @@
 import { createCondition, createStringItems } from '../../generator/helpers'
-import { sharedPhoneNumberField } from '../shared/fields'
 import { GenericObjectType } from '@rjsf/utils'
 import { safeString } from '../../form-utils/safeData'
 import { input } from '../../generator/functions/input'
@@ -11,6 +10,7 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { match } from 'ts-pattern'
 
 export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   step('podnet', { title: 'Podať podnet' }, [
@@ -20,17 +20,20 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         type: 'string',
         title: 'Kategória podnetu',
         required: true,
-        items: createStringItems(
-          ['Nevykonaný odvoz', 'Pracovníci OLO', 'Poškodená nádoba', 'Pochvala', 'Iné'],
-          false,
-        ),
+        items: [
+          { value: 'nevykonanyOdvoz', label: 'Nevykonaný odvoz' },
+          { value: 'pracovniciOLO', label: 'Pracovníci OLO' },
+          { value: 'poskodenaNadoba', label: 'Poškodená nádoba' },
+          { value: 'pochvala', label: 'Pochvala' },
+          { value: 'ine', label: 'Iné' },
+        ],
       },
       {
         variant: 'boxed',
         orientations: 'column',
       },
     ),
-    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'Nevykonaný odvoz' }]]), [
+    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'nevykonanyOdvoz' }]]), [
       datePicker(
         'terminNevykonaniaOdvozuOdpadu',
         {
@@ -44,37 +47,29 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         {
           title: 'Vyberte druh odpadu',
           required: true,
-          items: createStringItems(
-            [
-              'Zmesový komunálny odpad',
-              'Kuchynský biologicky rozložiteľný odpad',
-              'Biologicky rozložiteľný odpad',
-              'Jedlé oleje a tuky',
-              'Papier',
-              'Plasty/Kovové obaly a nápojové kartóny',
-              'Sklo',
-            ],
-            false,
-          ),
+          items: [
+            { value: 'zmesovyKomunalnyOdpad', label: 'Zmesový komunálny odpad' },
+            {
+              value: 'kuchynskyBiologickyRozlozitelnyOdpad',
+              label: 'Kuchynský biologicky rozložiteľný odpad',
+            },
+            { value: 'biologickyRozlozitelnyOdpad', label: 'Biologicky rozložiteľný odpad' },
+            { value: 'jedleOlejeATuky', label: 'Jedlé oleje a tuky' },
+            { value: 'papier', label: 'Papier' },
+            {
+              value: 'plastyKovoveObalyANapojeveKartony',
+              label: 'Plasty/Kovové obaly a nápojové kartóny',
+            },
+            { value: 'sklo', label: 'Sklo' },
+          ],
         },
         {
           variant: 'boxed',
           helptext: 'Vyberte aspoň jednu možnosť',
         },
       ),
-      input(
-        'adresaMiestaOdvozu',
-        {
-          type: 'text',
-          title: 'Presná adresa miesta odvozu',
-          required: true,
-        },
-        {
-          helptext: 'Vyplňte vo formáte ulica a číslo',
-        },
-      ),
     ]),
-    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'Pracovníci OLO' }]]), [
+    conditionalFields(createCondition([[['kategoriaPodnetu'], { const: 'pracovniciOLO' }]]), [
       datePicker(
         'datumCasUdalosti',
         {
@@ -84,9 +79,38 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
         {},
       ),
     ]),
-    input('meno', { type: 'text', title: 'Meno', required: true }, {}),
-    input('priezvisko', { type: 'text', title: 'Priezvisko', required: true }, {}),
-    sharedPhoneNumberField('telefon', true),
+    ...(['pracovniciOLO', 'poskodenaNadoba', 'pochvala', 'nevykonanyOdvoz'] as const).map(
+      (kategoriaPodnetu) =>
+        conditionalFields(createCondition([[['kategoriaPodnetu'], { const: kategoriaPodnetu }]]), [
+          input(
+            'adresa',
+            {
+              type: 'text',
+              title: match(kategoriaPodnetu)
+                .with('pracovniciOLO', () => 'Adresa, kde sa pracovníci nachádzali')
+                .with('poskodenaNadoba', () => 'Presná adresa miesta poškodenej nádoby')
+                .with('pochvala', () => 'Adresa')
+                .with('nevykonanyOdvoz', () => 'Presná adresa miesta odvozu')
+                .exhaustive(),
+              required: true,
+            },
+            {
+              helptext: 'Vyplňte vo formáte ulica a číslo',
+            },
+          ),
+        ]),
+    ),
+    input('meno', { type: 'text', title: 'Meno', required: true }, { selfColumn: '2/4' }),
+    input(
+      'priezvisko',
+      { type: 'text', title: 'Priezvisko', required: true },
+      { selfColumn: '2/4' },
+    ),
+    input(
+      'telefon',
+      { type: 'ba-phone-number', title: 'Telefónne číslo', required: true },
+      { size: 'medium', helptext: 'Vyplňte vo formáte +421' },
+    ),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
     textArea('sprava', { title: 'Správa', required: true }, { helptext: 'Napíšte svoje podnety' }),
     fileUploadMultiple(

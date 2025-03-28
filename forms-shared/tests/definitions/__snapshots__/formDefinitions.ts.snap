@@ -84915,7 +84915,10 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
               "if": {
                 "properties": {
                   "typZiadatela": {
-                    "const": "fyzickaOsoba",
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
                   },
                 },
                 "required": [
@@ -84937,18 +84940,6 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                     "title": "Meno",
                     "type": "string",
                   },
-                  "mesto": {
-                    "baOrder": 5,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "inputType": "text",
-                        "selfColumn": "3/4",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Mesto",
-                    "type": "string",
-                  },
                   "priezvisko": {
                     "baOrder": 3,
                     "baUiSchema": {
@@ -84959,6 +84950,40 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                       "ui:widget": "Input",
                     },
                     "title": "Priezvisko",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "typZiadatela": {
+                    "const": "fyzickaOsoba",
+                  },
+                },
+                "required": [
+                  "typZiadatela",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "mesto": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
                     "type": "string",
                   },
                   "psc": {
@@ -84988,8 +85013,6 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                   },
                 },
                 "required": [
-                  "meno",
-                  "priezvisko",
                   "ulicaCislo",
                   "mesto",
                   "psc",

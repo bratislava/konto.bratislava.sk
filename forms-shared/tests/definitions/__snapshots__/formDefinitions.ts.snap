@@ -8064,12 +8064,12 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
                       "value": "09:00 (pondelok - sobota)",
                     },
                     {
-                      "label": "11:00 (pondelok - sobota)",
-                      "value": "11:00 (pondelok - sobota)",
+                      "label": "10:30 (pondelok - sobota)",
+                      "value": "10:30 (pondelok - sobota)",
                     },
                     {
-                      "label": "13:00 (pondelok - piatok)",
-                      "value": "13:00 (pondelok - piatok)",
+                      "label": "12:30 (pondelok - piatok)",
+                      "value": "12:30 (pondelok - piatok)",
                     },
                   ],
                 },
@@ -8078,8 +8078,8 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
               "enum": [
                 "07:00 (pondelok - sobota)",
                 "09:00 (pondelok - sobota)",
-                "11:00 (pondelok - sobota)",
-                "13:00 (pondelok - piatok)",
+                "10:30 (pondelok - sobota)",
+                "12:30 (pondelok - piatok)",
               ],
               "title": "Preferovaný čas odvozu",
               "type": "string",
@@ -8214,7 +8214,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "if": {
                 "properties": {
                   "kategoriaPodnetu": {
-                    "const": "Nevykonaný odvoz",
+                    "const": "nevykonanyOdvoz",
                   },
                 },
                 "required": [
@@ -8224,18 +8224,6 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               },
               "then": {
                 "properties": {
-                  "adresaMiestaOdvozu": {
-                    "baOrder": 4,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "helptext": "Vyplňte vo formáte ulica a číslo",
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Presná adresa miesta odvozu",
-                    "type": "string",
-                  },
                   "druhOdpadu": {
                     "baOrder": 3,
                     "baUiSchema": {
@@ -8243,31 +8231,31 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                         "enumMetadata": [
                           {
                             "label": "Zmesový komunálny odpad",
-                            "value": "Zmesový komunálny odpad",
+                            "value": "zmesovyKomunalnyOdpad",
                           },
                           {
                             "label": "Kuchynský biologicky rozložiteľný odpad",
-                            "value": "Kuchynský biologicky rozložiteľný odpad",
+                            "value": "kuchynskyBiologickyRozlozitelnyOdpad",
                           },
                           {
                             "label": "Biologicky rozložiteľný odpad",
-                            "value": "Biologicky rozložiteľný odpad",
+                            "value": "biologickyRozlozitelnyOdpad",
                           },
                           {
                             "label": "Jedlé oleje a tuky",
-                            "value": "Jedlé oleje a tuky",
+                            "value": "jedleOlejeATuky",
                           },
                           {
                             "label": "Papier",
-                            "value": "Papier",
+                            "value": "papier",
                           },
                           {
                             "label": "Plasty/Kovové obaly a nápojové kartóny",
-                            "value": "Plasty/Kovové obaly a nápojové kartóny",
+                            "value": "plastyKovoveObalyANapojeveKartony",
                           },
                           {
                             "label": "Sklo",
-                            "value": "Sklo",
+                            "value": "sklo",
                           },
                         ],
                         "helptext": "Vyberte aspoň jednu možnosť",
@@ -8278,13 +8266,13 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                     "default": [],
                     "items": {
                       "enum": [
-                        "Zmesový komunálny odpad",
-                        "Kuchynský biologicky rozložiteľný odpad",
-                        "Biologicky rozložiteľný odpad",
-                        "Jedlé oleje a tuky",
-                        "Papier",
-                        "Plasty/Kovové obaly a nápojové kartóny",
-                        "Sklo",
+                        "zmesovyKomunalnyOdpad",
+                        "kuchynskyBiologickyRozlozitelnyOdpad",
+                        "biologickyRozlozitelnyOdpad",
+                        "jedleOlejeATuky",
+                        "papier",
+                        "plastyKovoveObalyANapojeveKartony",
+                        "sklo",
                       ],
                     },
                     "minItems": 1,
@@ -8306,7 +8294,6 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                 "required": [
                   "terminNevykonaniaOdvozuOdpadu",
                   "druhOdpadu",
-                  "adresaMiestaOdvozu",
                 ],
                 "type": "object",
               },
@@ -8315,7 +8302,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "if": {
                 "properties": {
                   "kategoriaPodnetu": {
-                    "const": "Pracovníci OLO",
+                    "const": "pracovniciOLO",
                   },
                 },
                 "required": [
@@ -8326,7 +8313,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "then": {
                 "properties": {
                   "datumCasUdalosti": {
-                    "baOrder": 5,
+                    "baOrder": 4,
                     "baUiSchema": {
                       "ui:options": {},
                       "ui:widget": "DatePicker",
@@ -8342,6 +8329,138 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                 "type": "object",
               },
             },
+            {
+              "if": {
+                "properties": {
+                  "kategoriaPodnetu": {
+                    "const": "pracovniciOLO",
+                  },
+                },
+                "required": [
+                  "kategoriaPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "adresa": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa, kde sa pracovníci nachádzali",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "adresa",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "kategoriaPodnetu": {
+                    "const": "poskodenaNadoba",
+                  },
+                },
+                "required": [
+                  "kategoriaPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "adresa": {
+                    "baOrder": 6,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Presná adresa miesta poškodenej nádoby",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "adresa",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "kategoriaPodnetu": {
+                    "const": "pochvala",
+                  },
+                },
+                "required": [
+                  "kategoriaPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "adresa": {
+                    "baOrder": 7,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "adresa",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "kategoriaPodnetu": {
+                    "const": "nevykonanyOdvoz",
+                  },
+                },
+                "required": [
+                  "kategoriaPodnetu",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "adresa": {
+                    "baOrder": 8,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte ulica a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Presná adresa miesta odvozu",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "adresa",
+                ],
+                "type": "object",
+              },
+            },
           ],
           "baOrder": 1,
           "baUiSchema": {
@@ -8351,7 +8470,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
           },
           "properties": {
             "email": {
-              "baOrder": 9,
+              "baOrder": 12,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -8369,23 +8488,23 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                   "enumMetadata": [
                     {
                       "label": "Nevykonaný odvoz",
-                      "value": "Nevykonaný odvoz",
+                      "value": "nevykonanyOdvoz",
                     },
                     {
                       "label": "Pracovníci OLO",
-                      "value": "Pracovníci OLO",
+                      "value": "pracovniciOLO",
                     },
                     {
                       "label": "Poškodená nádoba",
-                      "value": "Poškodená nádoba",
+                      "value": "poskodenaNadoba",
                     },
                     {
                       "label": "Pochvala",
-                      "value": "Pochvala",
+                      "value": "pochvala",
                     },
                     {
                       "label": "Iné",
-                      "value": "Iné",
+                      "value": "ine",
                     },
                   ],
                   "orientations": "column",
@@ -8394,20 +8513,21 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
                 "ui:widget": "RadioGroup",
               },
               "enum": [
-                "Nevykonaný odvoz",
-                "Pracovníci OLO",
-                "Poškodená nádoba",
-                "Pochvala",
-                "Iné",
+                "nevykonanyOdvoz",
+                "pracovniciOLO",
+                "poskodenaNadoba",
+                "pochvala",
+                "ine",
               ],
               "title": "Kategória podnetu",
               "type": "string",
             },
             "meno": {
-              "baOrder": 6,
+              "baOrder": 9,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "text",
+                  "selfColumn": "2/4",
                 },
                 "ui:widget": "Input",
               },
@@ -8415,10 +8535,11 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "type": "string",
             },
             "priezvisko": {
-              "baOrder": 7,
+              "baOrder": 10,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "text",
+                  "selfColumn": "2/4",
                 },
                 "ui:widget": "Input",
               },
@@ -8426,7 +8547,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "type": "string",
             },
             "prilohy": {
-              "baOrder": 11,
+              "baOrder": 14,
               "baUiSchema": {
                 "ui:options": {
                   "type": "dragAndDrop",
@@ -8443,7 +8564,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "type": "array",
             },
             "sprava": {
-              "baOrder": 10,
+              "baOrder": 13,
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Napíšte svoje podnety",
@@ -8454,11 +8575,11 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
               "type": "string",
             },
             "telefon": {
-              "baOrder": 8,
+              "baOrder": 11,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -8496,6 +8617,7 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
 exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnicke-osoby > default form state should match snapshot 1`] = `
 {
   "sluzba": {
+    "emailPotvrdeniePouzitIny": false,
     "infoOOdpade": [
       {
         "druhOdpadu": "Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)",
@@ -9186,6 +9308,41 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
     {
       "properties": {
         "sluzba": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "emailPotvrdeniePouzitIny": {
+                    "const": true,
+                  },
+                },
+                "required": [
+                  "emailPotvrdeniePouzitIny",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "emailPotvrdenie": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "V prípade viacerých emailov ich oddeľte čiarkou",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Email",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "emailPotvrdenie",
+                ],
+                "type": "object",
+              },
+            },
+          ],
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
@@ -9193,24 +9350,39 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
             },
           },
           "properties": {
-            "emailPotvrdenie": {
+            "emailPotvrdeniePouzitIny": {
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
-                  "inputType": "email",
+                  "enumMetadata": [
+                    {
+                      "label": "Áno",
+                      "value": true,
+                    },
+                    {
+                      "label": "Nie",
+                      "value": false,
+                    },
+                  ],
+                  "orientations": "row",
+                  "variant": "boxed",
                 },
-                "ui:widget": "Input",
+                "ui:widget": "RadioGroup",
               },
-              "format": "email",
-              "title": "E-mail (potvrdenie o prevzatí odpadov/obalov)",
-              "type": "string",
+              "default": false,
+              "enum": [
+                true,
+                false,
+              ],
+              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
+              "type": "boolean",
             },
             "infoOOdpade": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
                   "addButtonLabel": "Pridať ďalší odpad",
-                  "itemTitle": "Odpad {index}",
+                  "itemTitle": "Odpad č. {index}",
                   "variant": "topLevel",
                 },
               },
@@ -9705,7 +9877,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
           },
           "required": [
             "infoOOdpade",
-            "emailPotvrdenie",
+            "emailPotvrdeniePouzitIny",
           ],
           "title": "Služba",
           "type": "object",
@@ -9788,6 +9960,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
 exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravcovske-spolocnosti > default form state should match snapshot 1`] = `
 {
   "sluzba": {
+    "emailPotvrdeniePouzitIny": false,
     "infoOOdpade": [
       {
         "druhOdpadu": "Papier (Pravidelný odvoz vytriedených zložiek komunálneho odpadu kat. číslo 20)",
@@ -10584,6 +10757,41 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
     {
       "properties": {
         "sluzba": {
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "emailPotvrdeniePouzitIny": {
+                    "const": true,
+                  },
+                },
+                "required": [
+                  "emailPotvrdeniePouzitIny",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "emailPotvrdenie": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "V prípade viacerých emailov ich oddeľte čiarkou",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Email",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "emailPotvrdenie",
+                ],
+                "type": "object",
+              },
+            },
+          ],
           "baOrder": 1,
           "baUiSchema": {
             "ui:options": {
@@ -10591,24 +10799,39 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
             },
           },
           "properties": {
-            "emailPotvrdenie": {
+            "emailPotvrdeniePouzitIny": {
               "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
-                  "inputType": "email",
+                  "enumMetadata": [
+                    {
+                      "label": "Áno",
+                      "value": true,
+                    },
+                    {
+                      "label": "Nie",
+                      "value": false,
+                    },
+                  ],
+                  "orientations": "row",
+                  "variant": "boxed",
                 },
-                "ui:widget": "Input",
+                "ui:widget": "RadioGroup",
               },
-              "format": "email",
-              "title": "E-mail (potvrdenie o prevzatí odpadov/obalov)",
-              "type": "string",
+              "default": false,
+              "enum": [
+                true,
+                false,
+              ],
+              "title": "Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?",
+              "type": "boolean",
             },
             "infoOOdpade": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
                   "addButtonLabel": "Pridať ďalší odpad",
-                  "itemTitle": "Odpad {index}",
+                  "itemTitle": "Odpad č. {index}",
                   "variant": "topLevel",
                 },
               },
@@ -10919,7 +11142,7 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
           },
           "required": [
             "infoOOdpade",
-            "emailPotvrdenie",
+            "emailPotvrdeniePouzitIny",
           ],
           "title": "Služba",
           "type": "object",

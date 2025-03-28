@@ -1,5 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { TaxDetailareaType, TaxDetailType } from '@prisma/client'
+import {
+  DeliveryMethodNamed,
+  TaxDetailareaType,
+  TaxDetailType,
+} from '@prisma/client'
+import { Type } from 'class-transformer'
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator'
 
 export enum TaxDetailTypeEnum {
   APARTMENT = 'APARTMENT',
@@ -272,90 +289,112 @@ export class ResponseTaxDto {
     description: 'Numeric id of tax',
     default: 1,
   })
+  @IsNumber()
   id: number
 
   @ApiProperty({
     description: 'Uuid of tax',
     default: '15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27',
   })
+  @IsUUID()
   uuid: string
 
   @ApiProperty({
     description: 'Created at timestamp',
     default: '2023-04-13T14:39:49.004Z',
   })
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date
 
   @ApiProperty({
     description: 'Updated at timestamp',
     default: '2023-04-13T14:39:49.004Z',
   })
+  @IsDate()
+  @Type(() => Date)
   updatedAt: Date
 
   @ApiProperty({
     description: 'Year of tax',
     default: 2022,
   })
+  @IsNumber()
   year: number
 
   @ApiProperty({
     description: 'Numeric id of taxpayer',
     default: 1,
   })
+  @IsNumber()
   taxPayerId: number
 
   @ApiProperty({
     description: 'Amount to pay in cents - integer',
     default: 1000,
   })
+  @IsNumber()
   amount: number
 
   @ApiProperty({
     description: 'Amount which was already paid in cents - integer',
     default: 1000,
   })
+  @IsNumber()
   paidAmount: number
 
   @ApiProperty({
     description: 'Variable symbol of payment',
     default: 12_345_678,
   })
+  @IsString()
   variableSymbol: string
 
   @ApiProperty({
     description: 'Id of tax employee - id is from Noris',
     default: 5_172_727,
   })
+  @IsNumber()
   taxEmployeeId: number
 
   @ApiProperty({
     description: 'Tax Id from order of exact year',
     default: '1234',
   })
+  @IsOptional()
+  @IsString()
   taxId: string | null
 
   @ApiProperty({
     description: 'Date of tax order.',
     default: '2022-01-01',
   })
+  @IsOptional()
+  @IsString()
   dateCreateTax: string | null
 
   @ApiProperty({
     description: 'Part of tax amount for lands in cents in Eur.',
     default: 1000,
   })
+  @IsNumber()
+  @IsOptional()
   taxLand: number | null
 
   @ApiProperty({
     description: 'Part of tax amount for constructions in cents in Eur.',
     default: 1000,
   })
+  @IsNumber()
+  @IsOptional()
   taxConstructions: number | null
 
   @ApiProperty({
     description: 'Part of tax amount for flats in cents in Eur.',
     default: 1000,
   })
+  @IsNumber()
+  @IsOptional()
   taxFlat: number | null
 
   @ApiProperty({
@@ -363,6 +402,8 @@ export class ResponseTaxDto {
       'Qr code use for pay in web in Base64 representing image of paybysquare QRcode',
     default: 'somebase64string',
   })
+  @IsString()
+  @IsOptional()
   qrCodeWeb: string | null
 
   @ApiProperty({
@@ -370,6 +411,8 @@ export class ResponseTaxDto {
       'Qr code use for pay in email in Base64 representing image of paybysquare QRcode',
     default: 'somebase64string',
   })
+  @IsString()
+  @IsOptional()
   qrCodeEmail: string | null
 
   @ApiProperty({
@@ -378,6 +421,7 @@ export class ResponseTaxDto {
     enumName: 'TaxPaidStatusEnum',
     enum: TaxPaidStatusEnum,
   })
+  @IsEnum(TaxPaidStatusEnum)
   paidStatus: TaxPaidStatusEnum
 
   @ApiProperty({
@@ -385,6 +429,7 @@ export class ResponseTaxDto {
       'Is tax payable (is tax from this year), and frontend can show payment data?',
     example: true,
   })
+  @IsBoolean()
   isPayable: boolean
 
   @ApiProperty({
@@ -392,6 +437,7 @@ export class ResponseTaxDto {
       'Whether PDF export is available, since 2024 we stopped generating PDFs',
     default: false,
   })
+  @IsBoolean()
   pdfExport: boolean
 
   @ApiProperty({
@@ -412,6 +458,9 @@ export class ResponseTaxDto {
       permanentResidenceCity: 'BRatislava',
     },
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxPayerDto)
   taxPayer: ResponseTaxPayerDto
 
   @ApiProperty({
@@ -429,6 +478,9 @@ export class ResponseTaxDto {
       },
     ],
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseTaxDetailInstallmentsDto)
   taxInstallments: ResponseTaxDetailInstallmentsDto[]
 
   @ApiProperty({
@@ -447,6 +499,9 @@ export class ResponseTaxDto {
       },
     ],
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseTaxDetailsDto)
   taxDetails: ResponseTaxDetailsDto[]
 
   @ApiProperty({
@@ -461,6 +516,9 @@ export class ResponseTaxDto {
       email: 'zamestnanec.bratislavsky@bratislava.sk',
     },
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxEmployeesDto)
   taxEmployees: ResponseTaxEmployeesDto
 
   @ApiProperty({
@@ -468,7 +526,18 @@ export class ResponseTaxDto {
       'When were last checked payments for this tax with automatic task.',
     default: '2023-04-13T14:39:49.004Z',
   })
+  @IsDate()
+  @Type(() => Date)
   lastCheckedPayments: Date
+
+  @ApiProperty({
+    description: 'delivery_method',
+    example: DeliveryMethodNamed.CITY_ACCOUNT,
+    enumName: 'DeliveryMethod',
+  })
+  @IsEnum(DeliveryMethodNamed)
+  @IsOptional()
+  deliveryMethod: DeliveryMethodNamed | null
 }
 
 export class ResponseGetTaxesBodyDto {

@@ -161,6 +161,12 @@ export class CreateTestingTaxPayerRequestDto {
   birthNumber: string
 }
 
+export class DeleteTestingTaxRequestDto {
+  birthNumber: string
+
+  year: number
+}
+
 export type NorisRequestGeneral =
   | {
       type: 'fromToDate'

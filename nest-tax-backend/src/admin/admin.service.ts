@@ -21,6 +21,7 @@ import {
   AddTestingPaymentToTestingTaxDto,
   CreateTestingTaxPayerRequestDto,
   CreateTestingTaxRequestDto,
+  DeleteTestingTaxRequestDto,
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -649,7 +650,83 @@ export class AdminService {
   async createTestingTax(
     request: CreateTestingTaxRequestDto,
   ): Promise<CreateBirthNumbersResponseDto> {
+    const taxPayer = await this.prismaService.taxPayer.findUnique({
+      where: {
+        birthNumber: request.data.ICO_RC,
+        isTesting: true,
+      },
+    })
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax payer with birthNumber ${request.data.ICO_RC} not found or is not for testing.`,
+      )
+    }
+
+    const taxExists = await this.prismaService.tax.findFirst({
+      where: {
+        year: request.year,
+        taxPayerId: taxPayer.id,
+      },
+    })
+    if (taxExists) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax with year ${request.year} and taxPayerId ${taxPayer.id} already exists.`,
+      )
+    }
+
     const result = await this.processNorisTaxData([request.data], request.year)
     return { birthNumbers: result }
+  }
+
+  async deleteTestingTax(request: DeleteTestingTaxRequestDto): Promise<void> {
+    const taxPayer = await this.prismaService.taxPayer.findUnique({
+      where: {
+        birthNumber: request.birthNumber,
+        isTesting: true,
+      },
+    })
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax payer with birthNumber ${request.birthNumber} not found or is not for testing.`,
+      )
+    }
+
+    const tax = await this.prismaService.tax.findFirst({
+      where: {
+        year: request.year,
+        taxPayerId: taxPayer.id,
+        isTesting: true,
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        `Tax with year ${request.year} and taxPayerId ${taxPayer.id} not found or is not for testing.`,
+      )
+    }
+
+    await this.prismaService.taxPayment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxDetail.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxInstallment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.tax.delete({
+      where: {
+        id: tax.id,
+      },
+    })
   }
 }

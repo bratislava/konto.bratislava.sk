@@ -41,15 +41,21 @@ export default schema(
         },
         { variant: 'boxed' },
       ),
-      conditionalFields(createCondition([[['typZiadatela'], { const: 'fyzickaOsoba' }]]), [
-        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
-        input(
-          'priezvisko',
-          { title: 'Priezvisko', required: true, type: 'text' },
-          { selfColumn: '2/4' },
-        ),
-        ...addressFields('Adresa pobytu'),
-      ]),
+      conditionalFields(
+        createCondition([[['typZiadatela'], { enum: ['fyzickaOsoba', 'fyzickaOsobaPodnikatel'] }]]),
+        [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+          input(
+            'priezvisko',
+            { title: 'Priezvisko', required: true, type: 'text' },
+            { selfColumn: '2/4' },
+          ),
+        ],
+      ),
+      conditionalFields(
+        createCondition([[['typZiadatela'], { const: 'fyzickaOsoba' }]]),
+        addressFields('Adresa pobytu'),
+      ),
       conditionalFields(
         createCondition([
           [['typZiadatela'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }],

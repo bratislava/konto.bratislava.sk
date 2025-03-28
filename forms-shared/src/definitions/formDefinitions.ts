@@ -187,7 +187,7 @@ export const formDefinitions: FormDefinition[] = [
     title: 'Žiadosť o nájom bytu',
     jsonVersion: '1.0.0',
     schema: ziadostONajomBytu,
-    sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
+    sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     // pospID contains different wording because the original form was created with a different name
     pospID: '00603481.ziadostONajomnyByt',
     pospVersion: '1.2',

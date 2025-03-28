@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {
-  DeliveryMethodNamed,
-  PaymentStatus,
-  TaxPaymentSource,
-} from '@prisma/client'
-import { IsObject, ValidateNested } from 'class-validator'
+import { PaymentStatus, TaxPaymentSource } from '@prisma/client'
+import { Type } from 'class-transformer'
+import { IsNotEmpty, IsNumber, IsObject, ValidateNested } from 'class-validator'
 
+import { NorisTaxPayersDto } from '../../noris/noris.dto'
 import { DeliveryMethod } from '../../noris/noris.types'
 
 export class RequestPostNorisLoadDataDto {
@@ -143,15 +141,20 @@ export class AddTestingPaymentToTestingTaxDto {
 export class CreateTestingTaxRequestDto {
   @ApiProperty({
     description: 'Year of tax',
-    default: 2022,
+    default: 2025,
   })
+  @IsNotEmpty()
+  @IsNumber()
   year: number
 
-  amount: number
-
-  taxPayerId: number
-
-  deliveryMethod?: DeliveryMethodNamed
+  @ApiProperty({
+    description: 'Tax payer data',
+    type: () => NorisTaxPayersDto,
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => NorisTaxPayersDto)
+  data: NorisTaxPayersDto
 }
 
 export class CreateTestingTaxPayerRequestDto {

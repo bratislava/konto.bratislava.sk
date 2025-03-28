@@ -25,10 +25,7 @@ import {
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
-import {
-  CreateBirthNumbersResponseDto,
-  CreateTestingTaxResponseDto,
-} from './dtos/responses.dto'
+import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
 
 @Injectable()
@@ -195,16 +192,13 @@ export class AdminService {
     return userData
   }
 
-  async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
-  ): Promise<CreateBirthNumbersResponseDto> {
-    this.logger.log('Start Loading data from noris')
-    const norisData = (await this.norisService.getDataFromNoris(
-      data,
-    )) as NorisTaxPayersDto[]
-    const birthNumbersResult: string[] = []
-
+  async processNorisTaxData(
+    norisData: NorisTaxPayersDto[],
+    year: number,
+  ): Promise<string[]> {
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
+
+    const birthNumbersResult: string[] = []
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
@@ -216,7 +210,7 @@ export class AdminService {
         birthNumbersResult.push(norisItem.ICO_RC)
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
-            year: +data.year,
+            year,
             taxPayer: {
               birthNumber: norisItem.ICO_RC,
             },
@@ -225,7 +219,7 @@ export class AdminService {
         if (!taxExists) {
           const userData = await this.insertTaxPayerDataToDatabase(
             norisItem,
-            data.year,
+            year,
           )
           const userFromCityAccount =
             userDataFromCityAccount[userData.birthNumber] || null
@@ -235,7 +229,7 @@ export class AdminService {
                 {
                   amount: currency(norisItem.dan_spolu.replace(',', '.'))
                     .intValue,
-                  year: +data.year,
+                  year,
                   delivery_method: transformDeliveryMethodToDatabaseType(
                     norisItem.delivery_method,
                   ),
@@ -246,7 +240,7 @@ export class AdminService {
               this.logger.error(
                 this.throwerErrorGuard.InternalServerErrorException(
                   ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
                 ),
               )
             }
@@ -257,6 +251,22 @@ export class AdminService {
 
     // Add the payments for these added taxes to database
     await this.updatePaymentsFromNorisWithData(norisData)
+
+    return birthNumbersResult
+  }
+
+  async loadDataFromNoris(
+    data: RequestPostNorisLoadDataDto,
+  ): Promise<CreateBirthNumbersResponseDto> {
+    this.logger.log('Start Loading data from noris')
+    const norisData = (await this.norisService.getDataFromNoris(
+      data,
+    )) as NorisTaxPayersDto[]
+
+    const birthNumbersResult = await this.processNorisTaxData(
+      norisData,
+      data.year,
+    )
 
     return { birthNumbers: birthNumbersResult }
   }
@@ -638,38 +648,8 @@ export class AdminService {
 
   async createTestingTax(
     request: CreateTestingTaxRequestDto,
-  ): Promise<CreateTestingTaxResponseDto> {
-    const taxPayer = await this.prismaService.taxPayer.findUnique({
-      where: {
-        id: request.taxPayerId,
-        isTesting: true,
-      },
-    })
-    if (!taxPayer) {
-      throw this.throwerErrorGuard.BadRequestException(
-        ErrorsEnum.BAD_REQUEST_ERROR,
-        `TaxPayer with id ${request.taxPayerId} not found or is not for testing.`,
-      )
-    }
-
-    const taxEmployee = await this.prismaService.taxEmployee.findFirst({})
-    if (!taxEmployee) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `No TaxEmployee found in database.`,
-      )
-    }
-
-    const tax = await this.prismaService.tax.create({
-      data: {
-        ...request,
-        isTesting: true,
-        variableSymbol: Math.random().toString(36).slice(2, 10),
-        taxPayerId: request.taxPayerId,
-        taxEmployeeId: taxEmployee?.id,
-      },
-    })
-
-    return tax
+  ): Promise<CreateBirthNumbersResponseDto> {
+    const result = await this.processNorisTaxData([request.data], request.year)
+    return { birthNumbers: result }
   }
 }

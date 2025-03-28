@@ -40,6 +40,7 @@ export class TasksService {
           SELECT t."variableSymbol", t."id", t."year"
           FROM "Tax" t
           LEFT JOIN "TaxPayment" tp ON t."id" = tp."taxId" AND tp.status = 'SUCCESS'
+          WHERE t."isTesting" = false
           GROUP BY t."id", t."variableSymbol", t."lastCheckedPayments"
           HAVING COALESCE(SUM(tp."amount"), 0) < t."amount"
           ORDER BY t."lastCheckedPayments" ASC

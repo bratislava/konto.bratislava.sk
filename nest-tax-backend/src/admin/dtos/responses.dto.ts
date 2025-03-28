@@ -9,5 +9,3 @@ export class CreateBirthNumbersResponseDto {
   })
   birthNumbers: string[]
 }
-
-export class CreateTestingTaxResponseDto {}

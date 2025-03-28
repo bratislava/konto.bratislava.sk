@@ -51,5 +51,5 @@ export class TaxBloomreachDataDto {
   })
   @IsEnum(DeliveryMethodNamed)
   @IsOptional()
-  deliveryMethod: DeliveryMethodNamed | null
+  delivery_method: DeliveryMethodNamed | null
 }

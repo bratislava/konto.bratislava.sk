@@ -13,9 +13,16 @@
 - Renamed "Investor" to "Stavebník"
 - Changed helptext for "Číslo autorizačného osvedčenia" field in "Zodpovedný projektant" step
 
+### 2.0.0 (28-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2537)
+
+- Split "Meno a priezvisko" into separate "Meno" and "Priezvisko" fields
+- Changed "E-mail" to "Email" for consistency
+- Replaced hardcoded list of katastrálne územia with reference to a centralized enumeration (`esbsKatastralneUzemiaCiselnik`)
+- Changed enum values to use camel case
+
 ## Žiadosť o záväzné stanovisko k investičnej činnosti (zavazne-stanovisko-k-investicnej-cinnosti)
 
-### 2.0.0 (26-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2526)
+### 2.0.0 (26-03-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2526, https://github.com/bratislava/konto.bratislava.sk/pull/2537)
 
 - Added "IČO" field for "Fyzická osoba - podnikateľ" in "Žiadateľ" and "Investor" steps
 - Renamed "Kontaktná osoba" to "Oprávnená osoba" for "Právnická osoba" in "Žiadateľ" and "Investor" steps
@@ -28,6 +35,7 @@
 - Updated field name from "Typ konania" to "Typ žiadosti"
 - Updated options for "Typ žiadosti"
 - Changed enum values to use camel case
+- Replaced hardcoded list of katastrálne územia with reference to a centralized enumeration (`esbsKatastralneUzemiaCiselnik`)
 
 ## Komunitné záhrady (komunitne-zahrady)
 

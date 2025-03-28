@@ -70969,14 +70969,13 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > default form stat
     "architektonickaStudia": [],
   },
   "stavba": {
-    "druhStavby": "Bytový dom",
-    "kataster": [],
+    "katastralneUzemia": [],
   },
   "stavebnik": {
     "stavebnikZiadatelom": true,
   },
   "ziadatel": {
-    "typ": "Fyzická osoba",
+    "ziadatelTyp": "fyzickaOsoba",
   },
   "zodpovednyProjektant": {},
 }
@@ -70990,10 +70989,110 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
         "ziadatel": {
           "allOf": [
             {
-              "else": {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "const": "fyzickaOsoba",
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "meno": {
+                    "baOrder": 2,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "mesto": {
+                    "baOrder": 5,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "priezvisko": {
+                    "baOrder": 3,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "2/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 6,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaACislo": {
+                    "baOrder": 4,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte ulicu a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Korešpondenčná adresa",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
                 "properties": {
                   "obchodneMeno": {
-                    "baOrder": 4,
+                    "baOrder": 7,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -71009,96 +71108,63 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 ],
                 "type": "object",
               },
+            },
+            {
               "if": {
                 "properties": {
-                  "typ": {
-                    "const": "Fyzická osoba",
+                  "ziadatelTyp": {
+                    "const": "fyzickaOsobaPodnikatel",
                   },
                 },
                 "required": [
-                  "typ",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
               "then": {
                 "properties": {
-                  "adresa": {
-                    "baOrder": 3,
+                  "mesto": {
+                    "baOrder": 9,
                     "baUiSchema": {
                       "ui:options": {
-                        "objectDisplay": "boxed",
-                        "title": "Korešpondenčná adresa",
+                        "inputType": "text",
+                        "selfColumn": "3/4",
                       },
+                      "ui:widget": "Input",
                     },
-                    "properties": {
-                      "mestoPsc": {
-                        "baOrder": 2,
-                        "properties": {
-                          "mesto": {
-                            "baOrder": 1,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "3/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "title": "Mesto",
-                            "type": "string",
-                          },
-                          "psc": {
-                            "baOrder": 2,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "1/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "format": "ba-slovak-zip",
-                            "title": "PSČ",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "mesto",
-                          "psc",
-                        ],
-                        "type": "object",
-                      },
-                      "ulicaACislo": {
-                        "baOrder": 1,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "inputType": "text",
-                          },
-                          "ui:widget": "Input",
-                        },
-                        "title": "Ulica a číslo",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "ulicaACislo",
-                      "mestoPsc",
-                    ],
-                    "type": "object",
+                    "title": "Mesto",
+                    "type": "string",
                   },
-                  "menoPriezvisko": {
-                    "baOrder": 2,
+                  "psc": {
+                    "baOrder": 10,
                     "baUiSchema": {
                       "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaACislo": {
+                    "baOrder": 8,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte ulicu a číslo",
                         "inputType": "text",
                       },
                       "ui:widget": "Input",
                     },
-                    "title": "Meno a priezvisko",
+                    "title": "Miesto podnikania",
                     "type": "string",
                   },
                 },
                 "required": [
-                  "menoPriezvisko",
-                  "adresa",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
                 ],
                 "type": "object",
               },
@@ -71106,164 +71172,19 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
             {
               "if": {
                 "properties": {
-                  "typ": {
-                    "const": "Fyzická osoba – podnikateľ",
+                  "ziadatelTyp": {
+                    "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "typ",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
               "then": {
                 "properties": {
-                  "miestoPodnikania": {
-                    "baOrder": 5,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "objectDisplay": "boxed",
-                        "title": "Miesto podnikania",
-                      },
-                    },
-                    "properties": {
-                      "mestoPsc": {
-                        "baOrder": 2,
-                        "properties": {
-                          "mesto": {
-                            "baOrder": 1,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "3/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "title": "Mesto",
-                            "type": "string",
-                          },
-                          "psc": {
-                            "baOrder": 2,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "1/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "format": "ba-slovak-zip",
-                            "title": "PSČ",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "mesto",
-                          "psc",
-                        ],
-                        "type": "object",
-                      },
-                      "ulicaACislo": {
-                        "baOrder": 1,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "inputType": "text",
-                          },
-                          "ui:widget": "Input",
-                        },
-                        "title": "Ulica a číslo",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "ulicaACislo",
-                      "mestoPsc",
-                    ],
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "miestoPodnikania",
-                ],
-                "type": "object",
-              },
-            },
-            {
-              "if": {
-                "properties": {
-                  "typ": {
-                    "const": "Právnická osoba",
-                  },
-                },
-                "required": [
-                  "typ",
-                ],
-                "type": "object",
-              },
-              "then": {
-                "properties": {
-                  "adresaSidla": {
-                    "baOrder": 7,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "objectDisplay": "boxed",
-                        "title": "Adresa sídla",
-                      },
-                    },
-                    "properties": {
-                      "mestoPsc": {
-                        "baOrder": 2,
-                        "properties": {
-                          "mesto": {
-                            "baOrder": 1,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "3/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "title": "Mesto",
-                            "type": "string",
-                          },
-                          "psc": {
-                            "baOrder": 2,
-                            "baUiSchema": {
-                              "ui:options": {
-                                "inputType": "text",
-                                "selfColumn": "1/4",
-                              },
-                              "ui:widget": "Input",
-                            },
-                            "format": "ba-slovak-zip",
-                            "title": "PSČ",
-                            "type": "string",
-                          },
-                        },
-                        "required": [
-                          "mesto",
-                          "psc",
-                        ],
-                        "type": "object",
-                      },
-                      "ulicaACislo": {
-                        "baOrder": 1,
-                        "baUiSchema": {
-                          "ui:options": {
-                            "inputType": "text",
-                          },
-                          "ui:widget": "Input",
-                        },
-                        "title": "Ulica a číslo",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "ulicaACislo",
-                      "mestoPsc",
-                    ],
-                    "type": "object",
-                  },
                   "ico": {
-                    "baOrder": 6,
+                    "baOrder": 11,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -71273,30 +71194,8 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "title": "IČO",
                     "type": "string",
                   },
-                },
-                "required": [
-                  "ico",
-                  "adresaSidla",
-                ],
-                "type": "object",
-              },
-            },
-            {
-              "if": {
-                "properties": {
-                  "typ": {
-                    "const": "Právnická osoba",
-                  },
-                },
-                "required": [
-                  "typ",
-                ],
-                "type": "object",
-              },
-              "then": {
-                "properties": {
                   "kontaktnaOsoba": {
-                    "baOrder": 8,
+                    "baOrder": 15,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -71306,8 +71205,49 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "title": "Kontaktná osoba",
                     "type": "string",
                   },
+                  "mesto": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "3/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Mesto",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                        "selfColumn": "1/4",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-slovak-zip",
+                    "title": "PSČ",
+                    "type": "string",
+                  },
+                  "ulicaACislo": {
+                    "baOrder": 12,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte ulicu a číslo",
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Adresa sídla",
+                    "type": "string",
+                  },
                 },
                 "required": [
+                  "ico",
+                  "ulicaACislo",
+                  "mesto",
+                  "psc",
                   "kontaktnaOsoba",
                 ],
                 "type": "object",
@@ -71322,7 +71262,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
           },
           "properties": {
             "email": {
-              "baOrder": 9,
+              "baOrder": 16,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -71330,15 +71270,15 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
             "telefon": {
-              "baOrder": 10,
+              "baOrder": 17,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -71347,40 +71287,40 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "title": "Telefónne číslo",
               "type": "string",
             },
-            "typ": {
+            "ziadatelTyp": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
                     {
                       "label": "Fyzická osoba",
-                      "value": "Fyzická osoba",
+                      "value": "fyzickaOsoba",
                     },
                     {
                       "label": "Fyzická osoba – podnikateľ",
-                      "value": "Fyzická osoba – podnikateľ",
+                      "value": "fyzickaOsobaPodnikatel",
                     },
                     {
                       "label": "Právnická osoba",
-                      "value": "Právnická osoba",
+                      "value": "pravnickaOsoba",
                     },
                   ],
                   "variant": "boxed",
                 },
                 "ui:widget": "RadioGroup",
               },
-              "default": "Fyzická osoba",
+              "default": "fyzickaOsoba",
               "enum": [
-                "Fyzická osoba",
-                "Fyzická osoba – podnikateľ",
-                "Právnická osoba",
+                "fyzickaOsoba",
+                "fyzickaOsobaPodnikatel",
+                "pravnickaOsoba",
               ],
               "title": "Žiadate ako",
               "type": "string",
             },
           },
           "required": [
-            "typ",
+            "ziadatelTyp",
             "email",
             "telefon",
           ],
@@ -71412,10 +71352,110 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "then": {
                 "allOf": [
                   {
-                    "else": {
+                    "if": {
+                      "properties": {
+                        "ziadatelTyp": {
+                          "const": "fyzickaOsoba",
+                        },
+                      },
+                      "required": [
+                        "ziadatelTyp",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
+                        "meno": {
+                          "baOrder": 4,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "mesto": {
+                          "baOrder": 7,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "3/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Mesto",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "baOrder": 5,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Priezvisko",
+                          "type": "string",
+                        },
+                        "psc": {
+                          "baOrder": 8,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "1/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "format": "ba-slovak-zip",
+                          "title": "PSČ",
+                          "type": "string",
+                        },
+                        "ulicaACislo": {
+                          "baOrder": 6,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "helptext": "Vyplňte ulicu a číslo",
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Korešpondenčná adresa",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "meno",
+                        "priezvisko",
+                        "ulicaACislo",
+                        "mesto",
+                        "psc",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadatelTyp": {
+                          "enum": [
+                            "fyzickaOsobaPodnikatel",
+                            "pravnickaOsoba",
+                          ],
+                        },
+                      },
+                      "required": [
+                        "ziadatelTyp",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
                       "properties": {
                         "obchodneMeno": {
-                          "baOrder": 6,
+                          "baOrder": 9,
                           "baUiSchema": {
                             "ui:options": {
                               "inputType": "text",
@@ -71431,96 +71471,63 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                       ],
                       "type": "object",
                     },
+                  },
+                  {
                     "if": {
                       "properties": {
-                        "typ": {
-                          "const": "Fyzická osoba",
+                        "ziadatelTyp": {
+                          "const": "fyzickaOsobaPodnikatel",
                         },
                       },
                       "required": [
-                        "typ",
+                        "ziadatelTyp",
                       ],
                       "type": "object",
                     },
                     "then": {
                       "properties": {
-                        "adresa": {
-                          "baOrder": 5,
+                        "mesto": {
+                          "baOrder": 11,
                           "baUiSchema": {
                             "ui:options": {
-                              "objectDisplay": "boxed",
-                              "title": "Korešpondenčná adresa",
+                              "inputType": "text",
+                              "selfColumn": "3/4",
                             },
+                            "ui:widget": "Input",
                           },
-                          "properties": {
-                            "mestoPsc": {
-                              "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
-                                },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
-                              },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
-                            },
-                            "ulicaACislo": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Ulica a číslo",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "ulicaACislo",
-                            "mestoPsc",
-                          ],
-                          "type": "object",
+                          "title": "Mesto",
+                          "type": "string",
                         },
-                        "menoPriezvisko": {
-                          "baOrder": 4,
+                        "psc": {
+                          "baOrder": 12,
                           "baUiSchema": {
                             "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "1/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "format": "ba-slovak-zip",
+                          "title": "PSČ",
+                          "type": "string",
+                        },
+                        "ulicaACislo": {
+                          "baOrder": 10,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "helptext": "Vyplňte ulicu a číslo",
                               "inputType": "text",
                             },
                             "ui:widget": "Input",
                           },
-                          "title": "Meno a priezvisko",
+                          "title": "Miesto podnikania",
                           "type": "string",
                         },
                       },
                       "required": [
-                        "menoPriezvisko",
-                        "adresa",
+                        "ulicaACislo",
+                        "mesto",
+                        "psc",
                       ],
                       "type": "object",
                     },
@@ -71528,164 +71535,19 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                   {
                     "if": {
                       "properties": {
-                        "typ": {
-                          "const": "Fyzická osoba – podnikateľ",
+                        "ziadatelTyp": {
+                          "const": "pravnickaOsoba",
                         },
                       },
                       "required": [
-                        "typ",
+                        "ziadatelTyp",
                       ],
                       "type": "object",
                     },
                     "then": {
                       "properties": {
-                        "miestoPodnikania": {
-                          "baOrder": 7,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "objectDisplay": "boxed",
-                              "title": "Miesto podnikania",
-                            },
-                          },
-                          "properties": {
-                            "mestoPsc": {
-                              "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
-                                },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
-                              },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
-                            },
-                            "ulicaACislo": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Ulica a číslo",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "ulicaACislo",
-                            "mestoPsc",
-                          ],
-                          "type": "object",
-                        },
-                      },
-                      "required": [
-                        "miestoPodnikania",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "typ": {
-                          "const": "Právnická osoba",
-                        },
-                      },
-                      "required": [
-                        "typ",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "adresaSidla": {
-                          "baOrder": 9,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "objectDisplay": "boxed",
-                              "title": "Adresa sídla",
-                            },
-                          },
-                          "properties": {
-                            "mestoPsc": {
-                              "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
-                                },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
-                              },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
-                            },
-                            "ulicaACislo": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Ulica a číslo",
-                              "type": "string",
-                            },
-                          },
-                          "required": [
-                            "ulicaACislo",
-                            "mestoPsc",
-                          ],
-                          "type": "object",
-                        },
                         "ico": {
-                          "baOrder": 8,
+                          "baOrder": 13,
                           "baUiSchema": {
                             "ui:options": {
                               "inputType": "text",
@@ -71695,30 +71557,8 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                           "title": "IČO",
                           "type": "string",
                         },
-                      },
-                      "required": [
-                        "ico",
-                        "adresaSidla",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "typ": {
-                          "const": "Právnická osoba",
-                        },
-                      },
-                      "required": [
-                        "typ",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
                         "kontaktnaOsoba": {
-                          "baOrder": 10,
+                          "baOrder": 17,
                           "baUiSchema": {
                             "ui:options": {
                               "inputType": "text",
@@ -71728,8 +71568,49 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                           "title": "Kontaktná osoba",
                           "type": "string",
                         },
+                        "mesto": {
+                          "baOrder": 15,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "3/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Mesto",
+                          "type": "string",
+                        },
+                        "psc": {
+                          "baOrder": 16,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "1/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "format": "ba-slovak-zip",
+                          "title": "PSČ",
+                          "type": "string",
+                        },
+                        "ulicaACislo": {
+                          "baOrder": 14,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "helptext": "Vyplňte ulicu a číslo",
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Adresa sídla",
+                          "type": "string",
+                        },
                       },
                       "required": [
+                        "ico",
+                        "ulicaACislo",
+                        "mesto",
+                        "psc",
                         "kontaktnaOsoba",
                       ],
                       "type": "object",
@@ -71738,7 +71619,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 ],
                 "properties": {
                   "email": {
-                    "baOrder": 11,
+                    "baOrder": 18,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "email",
@@ -71746,7 +71627,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                       "ui:widget": "Input",
                     },
                     "format": "email",
-                    "title": "E-mail",
+                    "title": "Email",
                     "type": "string",
                   },
                   "splnomocnenie": {
@@ -71764,11 +71645,11 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 12,
+                    "baOrder": 19,
                     "baUiSchema": {
                       "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
                         "inputType": "tel",
-                        "placeholder": "+421",
                         "size": "medium",
                       },
                       "ui:widget": "Input",
@@ -71777,33 +71658,33 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                     "title": "Telefónne číslo",
                     "type": "string",
                   },
-                  "typ": {
+                  "ziadatelTyp": {
                     "baOrder": 3,
                     "baUiSchema": {
                       "ui:options": {
                         "enumMetadata": [
                           {
                             "label": "Fyzická osoba",
-                            "value": "Fyzická osoba",
+                            "value": "fyzickaOsoba",
                           },
                           {
                             "label": "Fyzická osoba – podnikateľ",
-                            "value": "Fyzická osoba – podnikateľ",
+                            "value": "fyzickaOsobaPodnikatel",
                           },
                           {
                             "label": "Právnická osoba",
-                            "value": "Právnická osoba",
+                            "value": "pravnickaOsoba",
                           },
                         ],
                         "variant": "boxed",
                       },
                       "ui:widget": "RadioGroup",
                     },
-                    "default": "Fyzická osoba",
+                    "default": "fyzickaOsoba",
                     "enum": [
-                      "Fyzická osoba",
-                      "Fyzická osoba – podnikateľ",
-                      "Právnická osoba",
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
                     ],
                     "title": "Žiadate ako",
                     "type": "string",
@@ -71811,7 +71692,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 },
                 "required": [
                   "splnomocnenie",
-                  "typ",
+                  "ziadatelTyp",
                   "email",
                   "telefon",
                 ],
@@ -71877,7 +71758,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
           },
           "properties": {
             "autorizacneOsvedcenie": {
-              "baOrder": 4,
+              "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.",
@@ -71890,7 +71771,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "type": "string",
             },
             "datumSpracovania": {
-              "baOrder": 5,
+              "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
                   "size": "medium",
@@ -71902,7 +71783,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "type": "string",
             },
             "email": {
-              "baOrder": 2,
+              "baOrder": 3,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -71910,26 +71791,39 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                 "ui:widget": "Input",
               },
               "format": "email",
-              "title": "E-mail",
+              "title": "Email",
               "type": "string",
             },
-            "menoPriezvisko": {
+            "meno": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "text",
+                  "selfColumn": "2/4",
                 },
                 "ui:widget": "Input",
               },
-              "title": "Meno a priezvisko",
+              "title": "Meno",
               "type": "string",
             },
-            "projektantTelefon": {
-              "baOrder": 3,
+            "priezvisko": {
+              "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
+                  "inputType": "text",
+                  "selfColumn": "2/4",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Priezvisko",
+              "type": "string",
+            },
+            "telefon": {
+              "baOrder": 4,
+              "baUiSchema": {
+                "ui:options": {
+                  "helptext": "Vyplňte vo formáte +421",
                   "inputType": "tel",
-                  "placeholder": "+421",
                   "size": "medium",
                 },
                 "ui:widget": "Input",
@@ -71940,9 +71834,10 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
             },
           },
           "required": [
-            "menoPriezvisko",
+            "meno",
+            "priezvisko",
             "email",
-            "projektantTelefon",
+            "telefon",
             "autorizacneOsvedcenie",
             "datumSpracovania",
           ],
@@ -71972,159 +71867,157 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
                   "enumMetadata": [
                     {
                       "label": "Bytový dom",
-                      "value": "Bytový dom",
+                      "value": "bytovyDom",
                     },
                     {
                       "label": "Rodinný dom",
-                      "value": "Rodinný dom",
+                      "value": "rodinnyDom",
                     },
                     {
                       "label": "Iná budova na bývanie",
-                      "value": "Iná budova na bývanie",
+                      "value": "inaBudovaNaByvanie",
                     },
                     {
                       "label": "Nebytová budova",
-                      "value": "Nebytová budova",
+                      "value": "nebytovaBudova",
                     },
                     {
                       "label": "Inžinierska stavba",
-                      "value": "Inžinierska stavba",
+                      "value": "inzinierskaStavba",
                     },
                     {
                       "label": "Iné",
-                      "value": "Iné",
+                      "value": "ine",
                     },
                   ],
                   "variant": "boxed",
                 },
                 "ui:widget": "RadioGroup",
               },
-              "default": "Bytový dom",
               "enum": [
-                "Bytový dom",
-                "Rodinný dom",
-                "Iná budova na bývanie",
-                "Nebytová budova",
-                "Inžinierska stavba",
-                "Iné",
+                "bytovyDom",
+                "rodinnyDom",
+                "inaBudovaNaByvanie",
+                "nebytovaBudova",
+                "inzinierskaStavba",
+                "ine",
               ],
               "title": "Druh stavby",
               "type": "string",
             },
-            "kataster": {
+            "katastralneUzemia": {
               "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
                     {
                       "label": "Čunovo",
-                      "value": "Čunovo",
+                      "value": "809985",
                     },
                     {
                       "label": "Devín",
-                      "value": "Devín",
+                      "value": "805301",
                     },
                     {
                       "label": "Devínska Nová Ves",
-                      "value": "Devínska Nová Ves",
+                      "value": "810649",
                     },
                     {
                       "label": "Dúbravka",
-                      "value": "Dúbravka",
+                      "value": "806099",
                     },
                     {
                       "label": "Jarovce",
-                      "value": "Jarovce",
+                      "value": "822256",
                     },
                     {
                       "label": "Karlova Ves",
-                      "value": "Karlova Ves",
+                      "value": "805211",
                     },
                     {
                       "label": "Lamač",
-                      "value": "Lamač",
+                      "value": "806005",
                     },
                     {
                       "label": "Nivy",
-                      "value": "Nivy",
+                      "value": "804274",
                     },
                     {
                       "label": "Nové Mesto",
-                      "value": "Nové Mesto",
+                      "value": "804690",
                     },
                     {
                       "label": "Petržalka",
-                      "value": "Petržalka",
+                      "value": "804959",
                     },
                     {
                       "label": "Podunajské Biskupice",
-                      "value": "Podunajské Biskupice",
+                      "value": "847755",
                     },
                     {
                       "label": "Rača",
-                      "value": "Rača",
+                      "value": "805866",
                     },
                     {
                       "label": "Rusovce",
-                      "value": "Rusovce",
+                      "value": "853771",
                     },
                     {
                       "label": "Ružinov",
-                      "value": "Ružinov",
+                      "value": "805556",
                     },
                     {
                       "label": "Staré Mesto",
-                      "value": "Staré Mesto",
+                      "value": "804096",
                     },
                     {
                       "label": "Trnávka",
-                      "value": "Trnávka",
+                      "value": "805343",
                     },
                     {
                       "label": "Vajnory",
-                      "value": "Vajnory",
+                      "value": "805700",
                     },
                     {
                       "label": "Vinohrady",
-                      "value": "Vinohrady",
+                      "value": "804380",
                     },
                     {
                       "label": "Vrakuňa",
-                      "value": "Vrakuňa",
+                      "value": "870293",
                     },
                     {
                       "label": "Záhorská Bystrica",
-                      "value": "Záhorská Bystrica",
+                      "value": "871796",
                     },
                   ],
                   "helptext": "Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.",
-                  "size": "medium",
                 },
                 "ui:widget": "SelectMultiple",
               },
               "default": [],
               "items": {
                 "enum": [
-                  "Čunovo",
-                  "Devín",
-                  "Devínska Nová Ves",
-                  "Dúbravka",
-                  "Jarovce",
-                  "Karlova Ves",
-                  "Lamač",
-                  "Nivy",
-                  "Nové Mesto",
-                  "Petržalka",
-                  "Podunajské Biskupice",
-                  "Rača",
-                  "Rusovce",
-                  "Ružinov",
-                  "Staré Mesto",
-                  "Trnávka",
-                  "Vajnory",
-                  "Vinohrady",
-                  "Vrakuňa",
-                  "Záhorská Bystrica",
+                  "809985",
+                  "805301",
+                  "810649",
+                  "806099",
+                  "822256",
+                  "805211",
+                  "806005",
+                  "804274",
+                  "804690",
+                  "804959",
+                  "847755",
+                  "805866",
+                  "853771",
+                  "805556",
+                  "804096",
+                  "805343",
+                  "805700",
+                  "804380",
+                  "870293",
+                  "871796",
                 ],
                 "type": "string",
               },
@@ -72186,7 +72079,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
             "druhStavby",
             "ulica",
             "parcelneCislo",
-            "kataster",
+            "katastralneUzemia",
           ],
           "title": "Informácie o stavbe",
           "type": "object",
@@ -75291,7 +75184,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default 
   },
   "typZiadosti": {},
   "ziadatel": {
-    "typZiadatela": "fyzickaOsoba",
+    "ziadatelTyp": "fyzickaOsoba",
   },
   "zodpovednyProjektant": {},
 }
@@ -75305,33 +75198,14 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
         "ziadatel": {
           "allOf": [
             {
-              "else": {
-                "properties": {
-                  "obchodneMeno": {
-                    "baOrder": 7,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Obchodné meno",
-                    "type": "string",
-                  },
-                },
-                "required": [
-                  "obchodneMeno",
-                ],
-                "type": "object",
-              },
               "if": {
                 "properties": {
-                  "typZiadatela": {
+                  "ziadatelTyp": {
                     "const": "fyzickaOsoba",
                   },
                 },
                 "required": [
-                  "typZiadatela",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -75412,12 +75286,15 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
             {
               "if": {
                 "properties": {
-                  "typZiadatela": {
-                    "const": "fyzickaOsobaPodnikatel",
+                  "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsobaPodnikatel",
+                      "pravnickaOsoba",
+                    ],
                   },
                 },
                 "required": [
-                  "typZiadatela",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
@@ -75434,6 +75311,39 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "title": "IČO",
                     "type": "string",
                   },
+                  "obchodneMeno": {
+                    "baOrder": 7,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Obchodné meno",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "obchodneMeno",
+                  "ico",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
+                    "const": "fyzickaOsobaPodnikatel",
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
                   "mesto": {
                     "baOrder": 10,
                     "baUiSchema": {
@@ -75473,7 +75383,6 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                   },
                 },
                 "required": [
-                  "ico",
                   "ulicaACislo",
                   "mesto",
                   "psc",
@@ -75484,30 +75393,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
             {
               "if": {
                 "properties": {
-                  "typZiadatela": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
                 "required": [
-                  "typZiadatela",
+                  "ziadatelTyp",
                 ],
                 "type": "object",
               },
               "then": {
                 "properties": {
-                  "ico": {
-                    "baOrder": 12,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "IČO",
-                    "type": "string",
-                  },
                   "mesto": {
-                    "baOrder": 14,
+                    "baOrder": 13,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -75518,8 +75416,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "title": "Mesto",
                     "type": "string",
                   },
-                  "psc": {
+                  "opravnenaOsoba": {
                     "baOrder": 15,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Oprávnená osoba",
+                    "type": "string",
+                  },
+                  "psc": {
+                    "baOrder": 14,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "text",
@@ -75531,8 +75440,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "title": "PSČ",
                     "type": "string",
                   },
+                  "typOpravnenia": {
+                    "baOrder": 16,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "text",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "title": "Typ oprávnenia",
+                    "type": "string",
+                  },
                   "ulicaACislo": {
-                    "baOrder": 13,
+                    "baOrder": 12,
                     "baUiSchema": {
                       "ui:options": {
                         "helptext": "Vyplňte ulicu a číslo",
@@ -75545,52 +75465,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                   },
                 },
                 "required": [
-                  "ico",
                   "ulicaACislo",
                   "mesto",
                   "psc",
-                ],
-                "type": "object",
-              },
-            },
-            {
-              "if": {
-                "properties": {
-                  "typZiadatela": {
-                    "const": "pravnickaOsoba",
-                  },
-                },
-                "required": [
-                  "typZiadatela",
-                ],
-                "type": "object",
-              },
-              "then": {
-                "properties": {
-                  "opravnenaOsoba": {
-                    "baOrder": 16,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Oprávnená osoba",
-                    "type": "string",
-                  },
-                  "typOpravnenia": {
-                    "baOrder": 17,
-                    "baUiSchema": {
-                      "ui:options": {
-                        "inputType": "text",
-                      },
-                      "ui:widget": "Input",
-                    },
-                    "title": "Typ oprávnenia",
-                    "type": "string",
-                  },
-                },
-                "required": [
                   "opravnenaOsoba",
                   "typOpravnenia",
                 ],
@@ -75606,7 +75483,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
           },
           "properties": {
             "email": {
-              "baOrder": 18,
+              "baOrder": 17,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "email",
@@ -75618,7 +75495,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "type": "string",
             },
             "telefon": {
-              "baOrder": 19,
+              "baOrder": 18,
               "baUiSchema": {
                 "ui:options": {
                   "helptext": "Vyplňte vo formáte +421",
@@ -75631,7 +75508,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "title": "Telefónne číslo",
               "type": "string",
             },
-            "typZiadatela": {
+            "ziadatelTyp": {
               "baOrder": 1,
               "baUiSchema": {
                 "ui:options": {
@@ -75664,7 +75541,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
             },
           },
           "required": [
-            "typZiadatela",
+            "ziadatelTyp",
             "email",
             "telefon",
           ],
@@ -75696,33 +75573,14 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "then": {
                 "allOf": [
                   {
-                    "else": {
-                      "properties": {
-                        "obchodneMeno": {
-                          "baOrder": 9,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "title": "Obchodné meno",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "obchodneMeno",
-                      ],
-                      "type": "object",
-                    },
                     "if": {
                       "properties": {
-                        "typZiadatela": {
+                        "ziadatelTyp": {
                           "const": "fyzickaOsoba",
                         },
                       },
                       "required": [
-                        "typZiadatela",
+                        "ziadatelTyp",
                       ],
                       "type": "object",
                     },
@@ -75803,12 +75661,15 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                   {
                     "if": {
                       "properties": {
-                        "typZiadatela": {
-                          "const": "fyzickaOsobaPodnikatel",
+                        "ziadatelTyp": {
+                          "enum": [
+                            "fyzickaOsobaPodnikatel",
+                            "pravnickaOsoba",
+                          ],
                         },
                       },
                       "required": [
-                        "typZiadatela",
+                        "ziadatelTyp",
                       ],
                       "type": "object",
                     },
@@ -75825,6 +75686,39 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                           "title": "IČO",
                           "type": "string",
                         },
+                        "obchodneMeno": {
+                          "baOrder": 9,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Obchodné meno",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "obchodneMeno",
+                        "ico",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadatelTyp": {
+                          "const": "fyzickaOsobaPodnikatel",
+                        },
+                      },
+                      "required": [
+                        "ziadatelTyp",
+                      ],
+                      "type": "object",
+                    },
+                    "then": {
+                      "properties": {
                         "mesto": {
                           "baOrder": 12,
                           "baUiSchema": {
@@ -75864,7 +75758,6 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         },
                       },
                       "required": [
-                        "ico",
                         "ulicaACislo",
                         "mesto",
                         "psc",
@@ -75875,30 +75768,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                   {
                     "if": {
                       "properties": {
-                        "typZiadatela": {
+                        "ziadatelTyp": {
                           "const": "pravnickaOsoba",
                         },
                       },
                       "required": [
-                        "typZiadatela",
+                        "ziadatelTyp",
                       ],
                       "type": "object",
                     },
                     "then": {
                       "properties": {
-                        "ico": {
-                          "baOrder": 14,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "title": "IČO",
-                          "type": "string",
-                        },
                         "mesto": {
-                          "baOrder": 16,
+                          "baOrder": 15,
                           "baUiSchema": {
                             "ui:options": {
                               "inputType": "text",
@@ -75909,8 +75791,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                           "title": "Mesto",
                           "type": "string",
                         },
-                        "psc": {
+                        "opravnenaOsoba": {
                           "baOrder": 17,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Oprávnená osoba",
+                          "type": "string",
+                        },
+                        "psc": {
+                          "baOrder": 16,
                           "baUiSchema": {
                             "ui:options": {
                               "inputType": "text",
@@ -75922,8 +75815,19 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                           "title": "PSČ",
                           "type": "string",
                         },
+                        "typOpravnenia": {
+                          "baOrder": 18,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Typ oprávnenia",
+                          "type": "string",
+                        },
                         "ulicaACislo": {
-                          "baOrder": 15,
+                          "baOrder": 14,
                           "baUiSchema": {
                             "ui:options": {
                               "helptext": "Vyplňte ulicu a číslo",
@@ -75936,52 +75840,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         },
                       },
                       "required": [
-                        "ico",
                         "ulicaACislo",
                         "mesto",
                         "psc",
-                      ],
-                      "type": "object",
-                    },
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "typZiadatela": {
-                          "const": "pravnickaOsoba",
-                        },
-                      },
-                      "required": [
-                        "typZiadatela",
-                      ],
-                      "type": "object",
-                    },
-                    "then": {
-                      "properties": {
-                        "opravnenaOsoba": {
-                          "baOrder": 18,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "title": "Oprávnená osoba",
-                          "type": "string",
-                        },
-                        "typOpravnenia": {
-                          "baOrder": 19,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "title": "Typ oprávnenia",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
                         "opravnenaOsoba",
                         "typOpravnenia",
                       ],
@@ -75991,7 +75852,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                 ],
                 "properties": {
                   "email": {
-                    "baOrder": 20,
+                    "baOrder": 19,
                     "baUiSchema": {
                       "ui:options": {
                         "inputType": "email",
@@ -76017,7 +75878,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "type": "string",
                   },
                   "telefon": {
-                    "baOrder": 21,
+                    "baOrder": 20,
                     "baUiSchema": {
                       "ui:options": {
                         "helptext": "Vyplňte vo formáte +421",
@@ -76030,7 +75891,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                     "title": "Telefónne číslo",
                     "type": "string",
                   },
-                  "typZiadatela": {
+                  "ziadatelTyp": {
                     "baOrder": 3,
                     "baUiSchema": {
                       "ui:options": {
@@ -76064,7 +75925,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                 },
                 "required": [
                   "splnomocnenie",
-                  "typZiadatela",
+                  "ziadatelTyp",
                   "email",
                   "telefon",
                 ],

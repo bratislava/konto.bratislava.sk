@@ -24,7 +24,7 @@ const addressFields = (title: string) => [
 
 const ziadatelStavebnikInvestorFields = [
   radioGroup(
-    'typZiadatela',
+    'ziadatelTyp',
     {
       type: 'string',
       title: 'Žiadate ako',
@@ -37,28 +37,28 @@ const ziadatelStavebnikInvestorFields = [
     },
     { variant: 'boxed' },
   ),
+  conditionalFields(createCondition([[['ziadatelTyp'], { const: 'fyzickaOsoba' }]]), [
+    input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+    input(
+      'priezvisko',
+      { title: 'Priezvisko', required: true, type: 'text' },
+      { selfColumn: '2/4' },
+    ),
+    ...addressFields('Korešpondenčná adresa'),
+  ]),
   conditionalFields(
-    createCondition([[['typZiadatela'], { const: 'fyzickaOsoba' }]]),
+    createCondition([[['ziadatelTyp'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }]]),
     [
-      input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
-      input(
-        'priezvisko',
-        { title: 'Priezvisko', required: true, type: 'text' },
-        { selfColumn: '2/4' },
-      ),
-      ...addressFields('Korešpondenčná adresa'),
+      input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {}),
+      input('ico', { type: 'text', title: 'IČO', required: true }, {}),
     ],
-    [input('obchodneMeno', { type: 'text', title: 'Obchodné meno', required: true }, {})],
   ),
-  conditionalFields(createCondition([[['typZiadatela'], { const: 'fyzickaOsobaPodnikatel' }]]), [
-    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
-    ...addressFields('Miesto podnikania'),
-  ]),
-  conditionalFields(createCondition([[['typZiadatela'], { const: 'pravnickaOsoba' }]]), [
-    input('ico', { type: 'text', title: 'IČO', required: true }, {}),
+  conditionalFields(
+    createCondition([[['ziadatelTyp'], { const: 'fyzickaOsobaPodnikatel' }]]),
+    addressFields('Miesto podnikania'),
+  ),
+  conditionalFields(createCondition([[['ziadatelTyp'], { const: 'pravnickaOsoba' }]]), [
     ...addressFields('Adresa sídla'),
-  ]),
-  conditionalFields(createCondition([[['typZiadatela'], { const: 'pravnickaOsoba' }]]), [
     input('opravnenaOsoba', { type: 'text', title: 'Oprávnená osoba', required: true }, {}),
     input('typOpravnenia', { type: 'text', title: 'Typ oprávnenia', required: true }, {}),
   ]),

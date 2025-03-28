@@ -615,7 +615,7 @@ export class AdminService {
     })
   }
 
-  async removePaymentsFromTax(taxId: number): Promise<void> {
+  async removePaymentsFromTestingTax(taxId: number): Promise<void> {
     const tax = await this.prismaService.tax.findUnique({
       where: {
         id: taxId,

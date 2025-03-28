@@ -16,6 +16,10 @@ import { AdminGuard } from 'src/auth/guards/admin.guard'
 
 import { AdminService } from './admin.service'
 import {
+  AddTestingPaymentToTestingTaxDto,
+  CreateTestingTaxPayerRequestDto,
+  CreateTestingTaxRequestDto,
+  DeleteTestingTaxRequestDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -113,5 +117,93 @@ export class AdminController {
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
     return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Add testing payment to testing tax.',
+    description:
+      'Add testing payment to testing tax for testing purposes. The provided tax must be marked as testing.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Testing payment added to testing tax',
+  })
+  @UseGuards(AdminGuard)
+  @Post('add-testing-payment-to-tax')
+  async addTestingPaymentToTax(
+    @Body() data: AddTestingPaymentToTestingTaxDto,
+  ): Promise<void> {
+    return this.adminService.addTestingPaymentToTax(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Remove testing payments from testing tax.',
+    description:
+      'Remove testing payments from testing tax for testing purposes. The provided tax must be marked as testing.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Testing payments removed from testing tax',
+  })
+  @UseGuards(AdminGuard)
+  @Post('remove-testing-payments-from-tax/:taxId')
+  async removePaymentsFromTestingTax(
+    @Param('taxId') taxId: number,
+  ): Promise<void> {
+    return this.adminService.removePaymentsFromTestingTax(taxId)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Create testing tax.',
+    description: 'Create testing tax for testing purposes.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Testing tax created',
+  })
+  @UseGuards(AdminGuard)
+  @Post('create-testing-tax')
+  async createTestingTax(
+    @Body() data: CreateTestingTaxRequestDto,
+  ): Promise<CreateBirthNumbersResponseDto> {
+    const result = await this.adminService.createTestingTax(data)
+    return result
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Remove testing tax.',
+    description: 'Remove testing tax for testing purposes.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Testing tax removed',
+  })
+  @UseGuards(AdminGuard)
+  @Post('delete-testing-tax')
+  async deleteTestingTax(
+    @Body() data: DeleteTestingTaxRequestDto,
+  ): Promise<void> {
+    await this.adminService.deleteTestingTax(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Create testing tax payers.',
+    description: 'Create testing tax payers for testing purposes.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Testing tax payers created',
+  })
+  @UseGuards(AdminGuard)
+  @Post('create-testing-tax-payers')
+  async createTestingTaxPayers(
+    @Body() data: CreateTestingTaxPayerRequestDto,
+  ): Promise<void> {
+    await this.adminService.createTestingTaxPayer(data)
   }
 }

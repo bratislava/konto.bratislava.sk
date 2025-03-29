@@ -95,7 +95,7 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
-    "ts-unused-exports": "^9.0.3",
+    "ts-unused-exports": "^11.0.1",
     "typescript": "^5.4.5"
   },
   "jest": {

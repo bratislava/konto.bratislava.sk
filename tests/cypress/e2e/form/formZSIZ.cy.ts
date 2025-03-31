@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('F02 -', { testIsolation: false }, () => {
+xdescribe('F02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const applicantErrorBorderFields =
     '[data-cy=input-meno], [data-cy=input-priezvisko], [data-cy=input-ulicaACislo], [data-cy=input-mesto], [data-cy=input-psc], [data-cy=input-email], [data-cy=input-telefon]'

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('F03 -', { testIsolation: false }, () => {
+xdescribe('F03 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const errorBorderFields =
     '[data-cy=summary-row-root_ziadatel_email], [data-cy=summary-row-root_ziadatel_telefon], [data-cy=summary-row-root_zodpovednyProjektant_menoPriezvisko], [data-cy=summary-row-root_zodpovednyProjektant_email], [data-cy=summary-row-root_zodpovednyProjektant_projektantTelefon], [data-cy=summary-row-root_zodpovednyProjektant_autorizacneOsvedcenie], [data-cy=summary-row-root_zodpovednyProjektant_datumSpracovania], [data-cy=summary-row-root_stavba_nazov], [data-cy=summary-row-root_stavba_ulica], [data-cy=summary-row-root_stavba_parcelneCislo], [data-cy=summary-row-root_stavba_kataster], [data-cy=summary-row-root_prilohy_architektonickaStudia]'

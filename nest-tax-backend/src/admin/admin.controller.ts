@@ -7,6 +7,8 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import {
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiSecurity,
@@ -16,6 +18,8 @@ import { AdminGuard } from 'src/auth/guards/admin.guard'
 
 import { AdminService } from './admin.service'
 import {
+  RequestAdminCreateTestingTaxDto,
+  RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadDto,
   RequestUpdateNorisDeliveryMethodsDto,
@@ -113,5 +117,44 @@ export class AdminController {
     @Param('birthNumber') birthNumber: string,
   ): Promise<void> {
     return this.adminService.removeDeliveryMethodsFromNoris(birthNumber)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Create a testing tax record',
+    description:
+      'Creates a testing tax record with specified details for development and testing purposes',
+  })
+  @ApiOkResponse({
+    description: 'Testing tax record created successfully',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
+  @UseGuards(AdminGuard)
+  @Post('create-testing-tax')
+  async createTestingTax(
+    @Body() request: RequestAdminCreateTestingTaxDto,
+  ): Promise<void> {
+    await this.adminService.createTestingTax(request)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Delete a tax record',
+    description: 'Deletes a tax record for a specific birth number and year',
+  })
+  @ApiOkResponse({
+    description: 'Tax record deleted successfully',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error or tax payer not found',
+  })
+  @UseGuards(AdminGuard)
+  @Post('delete-testing-tax')
+  async deleteTestingTax(
+    @Body() request: RequestAdminDeleteTaxDto,
+  ): Promise<void> {
+    await this.adminService.deleteTestingTax(request)
   }
 }

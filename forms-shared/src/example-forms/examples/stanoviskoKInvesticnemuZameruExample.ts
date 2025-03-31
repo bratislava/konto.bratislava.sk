@@ -35,11 +35,16 @@ const exampleForm: ExampleForm = {
     },
     stavba: {
       nazov: 'Nový Bytový Dom',
-      druhStavby: 'bytovyDom',
       ulica: 'Dunajská',
-      supisneCislo: '464',
-      parcelneCislo: '56789',
+      supisneCislo: '1234',
+      parcelneCisla: '56789',
       katastralneUzemia: ['805211', '806099'],
+      clenenieStavby: {
+        hlavnaStavba: 'Stavba 01 - Bytový dom Luna',
+        clenenieHlavnejStavby: 'SO 01 Hlavná budova, SO 02 Podzemné garáže',
+        hlavnaStavbaPodlaUcelu: '1120 - VIACBYTOVÉ BUDOVY',
+        ostatneStavby: 'Stavba 02 - Oplotenie - SO 01\nStavba 03 - Prípojky - SO 01, SO 02, SO 03',
+      },
     },
     prilohy: {
       architektonickaStudia: ['cb1e3a95-f9d2-4e55-b482-8e7919f2b43f'],

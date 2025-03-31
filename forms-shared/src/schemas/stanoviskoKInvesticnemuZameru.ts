@@ -9,6 +9,8 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
+import { object } from '../generator/object'
+import { textArea } from '../generator/functions/textArea'
 
 const addressFields = (title: string) => [
   input(
@@ -137,29 +139,12 @@ export default schema(
     ]),
     step('stavba', { title: 'Informácie o stavbe' }, [
       input('nazov', { type: 'text', title: 'Názov stavby/projektu', required: true }, {}),
-      radioGroup(
-        'druhStavby',
-        {
-          type: 'string',
-          title: 'Druh stavby',
-          items: [
-            { value: 'bytovyDom', label: 'Bytový dom' },
-            { value: 'rodinnyDom', label: 'Rodinný dom' },
-            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
-            { value: 'nebytovaBudova', label: 'Nebytová budova' },
-            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
-            { value: 'ine', label: 'Iné' },
-          ],
-          required: true,
-        },
-        { variant: 'boxed' },
-      ),
-      input('ulica', { type: 'text', title: 'Ulica', required: true }, { size: 'medium' }),
-      input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, { size: 'medium' }),
+      input('ulica', { type: 'text', title: 'Ulica', required: true }, {}),
+      input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, {}),
       input(
-        'parcelneCislo',
-        { type: 'text', title: 'Parcelné číslo', required: true },
-        { size: 'medium' },
+        'parcelneCisla',
+        { type: 'text', title: 'Parcelné čísla', required: true },
+        { helptext: 'Jedno alebo viacero parcelných čísel' },
       ),
       selectMultiple(
         'katastralneUzemia',
@@ -176,6 +161,32 @@ export default schema(
             'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
         },
       ),
+      object('clenenieStavby', { required: true }, { title: 'Členenie stavby' }, [
+        input(
+          'hlavnaStavba',
+          { type: 'text', title: 'Hlavná stavba', required: true },
+          {
+            helptext: 'Napríklad: Stavba 01 - Názov hlavnej stavby.',
+          },
+        ),
+        input('clenenieHlavnejStavby', { type: 'text', title: 'Členenie hlavnej stavby' }, {}),
+        input(
+          'hlavnaStavbaPodlaUcelu',
+          { type: 'text', title: 'Hlavná stavba podľa účelu', required: true },
+          {
+            helptext:
+              'Kód hlavnej stavby podľa vyhlášky Úradu pre územné plánovanie a výstavbu Slovenskej republiky o členení stavieb. Napríklad: 1120 - VIACBYTOVÉ BUDOVY.',
+          },
+        ),
+        textArea(
+          'ostatneStavby',
+          { title: 'Ostatné stavby' },
+          {
+            helptext:
+              'Čísla a názvy všetkých ostatných stavieb (ak sa jedná o súbor stavieb) vo formáte stavba 02 - Názov stavby - stavebné objekty',
+          },
+        ),
+      ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
       fileUploadMultiple(

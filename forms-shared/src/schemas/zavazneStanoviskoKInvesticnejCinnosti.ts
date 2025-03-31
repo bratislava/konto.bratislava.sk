@@ -11,6 +11,7 @@ import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { textArea } from '../generator/functions/textArea'
 import { object } from '../generator/object'
+import { number } from '../generator/functions/number'
 
 const addressFields = (title: string) => [
   input(
@@ -130,7 +131,7 @@ export default schema(
         { type: 'text', title: 'Číslo autorizačného osvedčenia', required: true },
         {
           helptext:
-            'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.',
+            'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.',
           size: 'medium',
         },
       ),
@@ -151,7 +152,11 @@ export default schema(
       ),
       input('ulica', { type: 'text', title: 'Ulica', required: true }, {}),
       input('supisneCislo', { type: 'text', title: 'Súpisné číslo' }, {}),
-      input('parcelneCislo', { type: 'text', title: 'Parcelné číslo', required: true }, {}),
+      input(
+        'parcelneCisla',
+        { type: 'text', title: 'Parcelné čísla', required: true },
+        { helptext: 'Jedno alebo viacero parcelných čísel' },
+      ),
       selectMultiple(
         'katastralneUzemia',
         {
@@ -192,24 +197,100 @@ export default schema(
               'Čísla a názvy všetkých ostatných stavieb (ak sa jedná o súbor stavieb) vo formáte stavba 02 - Názov stavby - stavebné objekty',
           },
         ),
+        radioGroup(
+          'obsahujeByty',
+          {
+            type: 'boolean',
+            title: 'Nachádzajú sa v navrhovanej stavbe byty?',
+            required: true,
+            items: [
+              { value: true, label: 'Áno' },
+              { value: false, label: 'Nie', isDefault: true },
+            ],
+          },
+          {
+            variant: 'boxed',
+            orientations: 'row',
+          },
+        ),
+        conditionalFields(createCondition([[['obsahujeByty'], { const: true }]]), [
+          number(
+            'pocetBytovCelkovo',
+            {
+              type: 'integer',
+              title: 'Počet bytov celkovo',
+              required: true,
+              minimum: 1,
+            },
+            {},
+          ),
+          number(
+            'pocet1IzbovychBytov',
+            {
+              type: 'integer',
+              title: 'Počet 1-izbových bytov',
+              required: true,
+              minimum: 0,
+            },
+            {
+              helptext:
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+            },
+          ),
+          number(
+            'pocet2IzbovychBytov',
+            {
+              type: 'integer',
+              title: 'Počet 2-izbových bytov',
+              required: true,
+              minimum: 0,
+            },
+            {
+              helptext:
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+            },
+          ),
+          number(
+            'pocet3IzbovychBytov',
+            {
+              type: 'integer',
+              title: 'Počet 3-izbových bytov',
+              required: true,
+              minimum: 0,
+            },
+            {
+              helptext:
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+            },
+          ),
+          number(
+            'pocet4IzbovychBytov',
+            {
+              type: 'integer',
+              title: 'Počet 4-izbových bytov',
+              required: true,
+              minimum: 0,
+            },
+            {
+              helptext:
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+            },
+          ),
+          number(
+            'pocetViacAko4IzbovychBytov',
+            {
+              type: 'integer',
+              title: 'Počet viac ako 4-izbových bytov',
+              required: true,
+              minimum: 0,
+            },
+            {
+              helptext:
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+            },
+          ),
+        ]),
       ]),
-      radioGroup(
-        'druhStavby',
-        {
-          type: 'string',
-          title: 'Druh stavby',
-          items: [
-            { value: 'bytovyDom', label: 'Bytový dom' },
-            { value: 'rodinnyDom', label: 'Rodinný dom' },
-            { value: 'inaBudovaNaByvanie', label: 'Iná budova na bývanie' },
-            { value: 'nebytovaBudova', label: 'Nebytová budova' },
-            { value: 'inzinierskaStavba', label: 'Inžinierska stavba' },
-            { value: 'ine', label: 'Iné' },
-          ],
-          required: true,
-        },
-        { variant: 'boxed' },
-      ),
     ]),
     step('typZiadosti', { title: 'Typ žiadosti' }, [
       radioGroup(

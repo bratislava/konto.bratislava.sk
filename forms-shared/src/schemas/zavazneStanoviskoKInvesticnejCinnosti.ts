@@ -234,7 +234,7 @@ export default schema(
             },
             {
               helptext:
-                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.',
             },
           ),
           number(
@@ -247,7 +247,7 @@ export default schema(
             },
             {
               helptext:
-                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.',
             },
           ),
           number(
@@ -260,7 +260,7 @@ export default schema(
             },
             {
               helptext:
-                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.',
             },
           ),
           number(
@@ -273,7 +273,7 @@ export default schema(
             },
             {
               helptext:
-                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.',
             },
           ),
           number(
@@ -286,7 +286,7 @@ export default schema(
             },
             {
               helptext:
-                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".',
+                'Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.',
             },
           ),
         ]),

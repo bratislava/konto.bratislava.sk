@@ -76353,7 +76353,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         "baOrder": 7,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.",
                           },
                           "ui:widget": "Number",
                         },
@@ -76365,7 +76365,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         "baOrder": 8,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.",
                           },
                           "ui:widget": "Number",
                         },
@@ -76377,7 +76377,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         "baOrder": 9,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.",
                           },
                           "ui:widget": "Number",
                         },
@@ -76389,7 +76389,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         "baOrder": 10,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.",
                           },
                           "ui:widget": "Number",
                         },
@@ -76411,7 +76411,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                         "baOrder": 11,
                         "baUiSchema": {
                           "ui:options": {
-                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0“.",
                           },
                           "ui:widget": "Number",
                         },

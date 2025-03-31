@@ -133,7 +133,7 @@
     "path": "^0.12.7",
     "prettier": "^3.5.2",
     "prisma": "6.5.0",
-    "prisma-json-types-generator": "3.2.2",
+    "prisma-json-types-generator": "3.2.3",
     "ts-jest": "29.3.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",

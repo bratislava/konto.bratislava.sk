@@ -9388,18 +9388,6 @@ exports[`getSummaryJson > stanoviskoKInvesticnemuZameruExample summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "Bytový dom",
-            },
-          ],
-          "id": "root_stavba_druhStavby",
-          "label": "Druh stavby",
-          "type": "Field",
-          "value": "bytovyDom",
-        },
-        {
-          "displayValues": [
-            {
-              "type": "String",
               "value": "Dunajská",
             },
           ],
@@ -9412,13 +9400,13 @@ exports[`getSummaryJson > stanoviskoKInvesticnemuZameruExample summary JSON shou
           "displayValues": [
             {
               "type": "String",
-              "value": "464",
+              "value": "1234",
             },
           ],
           "id": "root_stavba_supisneCislo",
           "label": "Súpisné číslo",
           "type": "Field",
-          "value": "464",
+          "value": "1234",
         },
         {
           "displayValues": [
@@ -9427,8 +9415,8 @@ exports[`getSummaryJson > stanoviskoKInvesticnemuZameruExample summary JSON shou
               "value": "56789",
             },
           ],
-          "id": "root_stavba_parcelneCislo",
-          "label": "Parcelné číslo",
+          "id": "root_stavba_parcelneCisla",
+          "label": "Parcelné čísla",
           "type": "Field",
           "value": "56789",
         },
@@ -9450,6 +9438,56 @@ exports[`getSummaryJson > stanoviskoKInvesticnemuZameruExample summary JSON shou
             "805211",
             "806099",
           ],
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Stavba 01 - Bytový dom Luna",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_hlavnaStavba",
+          "label": "Hlavná stavba",
+          "type": "Field",
+          "value": "Stavba 01 - Bytový dom Luna",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "SO 01 Hlavná budova, SO 02 Podzemné garáže",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_clenenieHlavnejStavby",
+          "label": "Členenie hlavnej stavby",
+          "type": "Field",
+          "value": "SO 01 Hlavná budova, SO 02 Podzemné garáže",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "1120 - VIACBYTOVÉ BUDOVY",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_hlavnaStavbaPodlaUcelu",
+          "label": "Hlavná stavba podľa účelu",
+          "type": "Field",
+          "value": "1120 - VIACBYTOVÉ BUDOVY",
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "Stavba 02 - Oplotenie - SO 01
+Stavba 03 - Prípojky - SO 01, SO 02, SO 03",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_ostatneStavby",
+          "label": "Ostatné stavby",
+          "type": "Field",
+          "value": "Stavba 02 - Oplotenie - SO 01
+Stavba 03 - Prípojky - SO 01, SO 02, SO 03",
         },
       ],
       "id": "root_stavba",
@@ -9853,8 +9891,8 @@ exports[`getSummaryJson > zavazneStanoviskoKInvesticnejCinnostiExample summary J
               "value": "56789",
             },
           ],
-          "id": "root_stavba_parcelneCislo",
-          "label": "Parcelné číslo",
+          "id": "root_stavba_parcelneCisla",
+          "label": "Parcelné čísla",
           "type": "Field",
           "value": "56789",
         },
@@ -9931,13 +9969,85 @@ Stavba 03 - Prípojky - SO 01, SO 02, SO 03",
           "displayValues": [
             {
               "type": "String",
-              "value": "Bytový dom",
+              "value": "Áno",
             },
           ],
-          "id": "root_stavba_druhStavby",
-          "label": "Druh stavby",
+          "id": "root_stavba_clenenieStavby_obsahujeByty",
+          "label": "Nachádzajú sa v navrhovanej stavbe byty?",
           "type": "Field",
-          "value": "bytovyDom",
+          "value": true,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "24",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocetBytovCelkovo",
+          "label": "Počet bytov celkovo",
+          "type": "Field",
+          "value": 24,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "6",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocet1IzbovychBytov",
+          "label": "Počet 1-izbových bytov",
+          "type": "Field",
+          "value": 6,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "12",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocet2IzbovychBytov",
+          "label": "Počet 2-izbových bytov",
+          "type": "Field",
+          "value": 12,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "4",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocet3IzbovychBytov",
+          "label": "Počet 3-izbových bytov",
+          "type": "Field",
+          "value": 4,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "2",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocet4IzbovychBytov",
+          "label": "Počet 4-izbových bytov",
+          "type": "Field",
+          "value": 2,
+        },
+        {
+          "displayValues": [
+            {
+              "type": "String",
+              "value": "0",
+            },
+          ],
+          "id": "root_stavba_clenenieStavby_pocetViacAko4IzbovychBytov",
+          "label": "Počet viac ako 4-izbových bytov",
+          "type": "Field",
+          "value": 0,
         },
       ],
       "id": "root_stavba",

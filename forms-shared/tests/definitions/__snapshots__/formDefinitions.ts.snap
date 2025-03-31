@@ -71192,6 +71192,7 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > default form stat
     "architektonickaStudia": [],
   },
   "stavba": {
+    "clenenieStavby": {},
     "katastralneUzemia": [],
   },
   "stavebnik": {
@@ -72083,53 +72084,69 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
             },
           },
           "properties": {
-            "druhStavby": {
-              "baOrder": 2,
+            "clenenieStavby": {
+              "baOrder": 6,
               "baUiSchema": {
                 "ui:options": {
-                  "enumMetadata": [
-                    {
-                      "label": "Bytový dom",
-                      "value": "bytovyDom",
-                    },
-                    {
-                      "label": "Rodinný dom",
-                      "value": "rodinnyDom",
-                    },
-                    {
-                      "label": "Iná budova na bývanie",
-                      "value": "inaBudovaNaByvanie",
-                    },
-                    {
-                      "label": "Nebytová budova",
-                      "value": "nebytovaBudova",
-                    },
-                    {
-                      "label": "Inžinierska stavba",
-                      "value": "inzinierskaStavba",
-                    },
-                    {
-                      "label": "Iné",
-                      "value": "ine",
-                    },
-                  ],
-                  "variant": "boxed",
+                  "title": "Členenie stavby",
                 },
-                "ui:widget": "RadioGroup",
               },
-              "enum": [
-                "bytovyDom",
-                "rodinnyDom",
-                "inaBudovaNaByvanie",
-                "nebytovaBudova",
-                "inzinierskaStavba",
-                "ine",
+              "properties": {
+                "clenenieHlavnejStavby": {
+                  "baOrder": 2,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "inputType": "text",
+                    },
+                    "ui:widget": "Input",
+                  },
+                  "title": "Členenie hlavnej stavby",
+                  "type": "string",
+                },
+                "hlavnaStavba": {
+                  "baOrder": 1,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "helptext": "Napríklad: Stavba 01 - Názov hlavnej stavby.",
+                      "inputType": "text",
+                    },
+                    "ui:widget": "Input",
+                  },
+                  "title": "Hlavná stavba",
+                  "type": "string",
+                },
+                "hlavnaStavbaPodlaUcelu": {
+                  "baOrder": 3,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "helptext": "Kód hlavnej stavby podľa vyhlášky Úradu pre územné plánovanie a výstavbu Slovenskej republiky o členení stavieb. Napríklad: 1120 - VIACBYTOVÉ BUDOVY.",
+                      "inputType": "text",
+                    },
+                    "ui:widget": "Input",
+                  },
+                  "title": "Hlavná stavba podľa účelu",
+                  "type": "string",
+                },
+                "ostatneStavby": {
+                  "baOrder": 4,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "helptext": "Čísla a názvy všetkých ostatných stavieb (ak sa jedná o súbor stavieb) vo formáte stavba 02 - Názov stavby - stavebné objekty",
+                    },
+                    "ui:widget": "TextArea",
+                  },
+                  "title": "Ostatné stavby",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "hlavnaStavba",
+                "hlavnaStavbaPodlaUcelu",
               ],
-              "title": "Druh stavby",
-              "type": "string",
+              "type": "object",
             },
             "katastralneUzemia": {
-              "baOrder": 6,
+              "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
                   "enumMetadata": [
@@ -72260,24 +72277,23 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "title": "Názov stavby/projektu",
               "type": "string",
             },
-            "parcelneCislo": {
-              "baOrder": 5,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "text",
-                  "size": "medium",
-                },
-                "ui:widget": "Input",
-              },
-              "title": "Parcelné číslo",
-              "type": "string",
-            },
-            "supisneCislo": {
+            "parcelneCisla": {
               "baOrder": 4,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Jedno alebo viacero parcelných čísel",
                   "inputType": "text",
-                  "size": "medium",
+                },
+                "ui:widget": "Input",
+              },
+              "title": "Parcelné čísla",
+              "type": "string",
+            },
+            "supisneCislo": {
+              "baOrder": 3,
+              "baUiSchema": {
+                "ui:options": {
+                  "inputType": "text",
                 },
                 "ui:widget": "Input",
               },
@@ -72285,11 +72301,10 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
               "type": "string",
             },
             "ulica": {
-              "baOrder": 3,
+              "baOrder": 2,
               "baUiSchema": {
                 "ui:options": {
                   "inputType": "text",
-                  "size": "medium",
                 },
                 "ui:widget": "Input",
               },
@@ -72299,10 +72314,10 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
           },
           "required": [
             "nazov",
-            "druhStavby",
             "ulica",
-            "parcelneCislo",
+            "parcelneCisla",
             "katastralneUzemia",
+            "clenenieStavby",
           ],
           "title": "Informácie o stavbe",
           "type": "object",
@@ -75402,7 +75417,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > default 
     "projektovaDokumentacia": [],
   },
   "stavba": {
-    "clenenieStavby": {},
+    "clenenieStavby": {
+      "obsahujeByty": false,
+    },
     "katastralneUzemia": [],
   },
   "typZiadosti": {},
@@ -76217,7 +76234,7 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
-                  "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.",
+                  "helptext": "Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon vybraných činností vo výstavbe v zmysle stavebného zákona.",
                   "inputType": "text",
                   "size": "medium",
                 },
@@ -76317,6 +76334,104 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
           },
           "properties": {
             "clenenieStavby": {
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "obsahujeByty": {
+                        "const": true,
+                      },
+                    },
+                    "required": [
+                      "obsahujeByty",
+                    ],
+                    "type": "object",
+                  },
+                  "then": {
+                    "properties": {
+                      "pocet1IzbovychBytov": {
+                        "baOrder": 7,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                          },
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 0,
+                        "title": "Počet 1-izbových bytov",
+                        "type": "integer",
+                      },
+                      "pocet2IzbovychBytov": {
+                        "baOrder": 8,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                          },
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 0,
+                        "title": "Počet 2-izbových bytov",
+                        "type": "integer",
+                      },
+                      "pocet3IzbovychBytov": {
+                        "baOrder": 9,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                          },
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 0,
+                        "title": "Počet 3-izbových bytov",
+                        "type": "integer",
+                      },
+                      "pocet4IzbovychBytov": {
+                        "baOrder": 10,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                          },
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 0,
+                        "title": "Počet 4-izbových bytov",
+                        "type": "integer",
+                      },
+                      "pocetBytovCelkovo": {
+                        "baOrder": 6,
+                        "baUiSchema": {
+                          "ui:options": {},
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 1,
+                        "title": "Počet bytov celkovo",
+                        "type": "integer",
+                      },
+                      "pocetViacAko4IzbovychBytov": {
+                        "baOrder": 11,
+                        "baUiSchema": {
+                          "ui:options": {
+                            "helptext": "Ak sa v navrhovanej stavbe nenachádzajú byty daného typu, uveďte v kolónke „0".",
+                          },
+                          "ui:widget": "Number",
+                        },
+                        "minimum": 0,
+                        "title": "Počet viac ako 4-izbových bytov",
+                        "type": "integer",
+                      },
+                    },
+                    "required": [
+                      "pocetBytovCelkovo",
+                      "pocet1IzbovychBytov",
+                      "pocet2IzbovychBytov",
+                      "pocet3IzbovychBytov",
+                      "pocet4IzbovychBytov",
+                      "pocetViacAko4IzbovychBytov",
+                    ],
+                    "type": "object",
+                  },
+                },
+              ],
               "baOrder": 7,
               "baUiSchema": {
                 "ui:options": {
@@ -76359,6 +76474,33 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
                   "title": "Hlavná stavba podľa účelu",
                   "type": "string",
                 },
+                "obsahujeByty": {
+                  "baOrder": 5,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "enumMetadata": [
+                        {
+                          "label": "Áno",
+                          "value": true,
+                        },
+                        {
+                          "label": "Nie",
+                          "value": false,
+                        },
+                      ],
+                      "orientations": "row",
+                      "variant": "boxed",
+                    },
+                    "ui:widget": "RadioGroup",
+                  },
+                  "default": false,
+                  "enum": [
+                    true,
+                    false,
+                  ],
+                  "title": "Nachádzajú sa v navrhovanej stavbe byty?",
+                  "type": "boolean",
+                },
                 "ostatneStavby": {
                   "baOrder": 4,
                   "baUiSchema": {
@@ -76374,53 +76516,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "required": [
                 "hlavnaStavba",
                 "hlavnaStavbaPodlaUcelu",
+                "obsahujeByty",
               ],
               "type": "object",
-            },
-            "druhStavby": {
-              "baOrder": 8,
-              "baUiSchema": {
-                "ui:options": {
-                  "enumMetadata": [
-                    {
-                      "label": "Bytový dom",
-                      "value": "bytovyDom",
-                    },
-                    {
-                      "label": "Rodinný dom",
-                      "value": "rodinnyDom",
-                    },
-                    {
-                      "label": "Iná budova na bývanie",
-                      "value": "inaBudovaNaByvanie",
-                    },
-                    {
-                      "label": "Nebytová budova",
-                      "value": "nebytovaBudova",
-                    },
-                    {
-                      "label": "Inžinierska stavba",
-                      "value": "inzinierskaStavba",
-                    },
-                    {
-                      "label": "Iné",
-                      "value": "ine",
-                    },
-                  ],
-                  "variant": "boxed",
-                },
-                "ui:widget": "RadioGroup",
-              },
-              "enum": [
-                "bytovyDom",
-                "rodinnyDom",
-                "inaBudovaNaByvanie",
-                "nebytovaBudova",
-                "inzinierskaStavba",
-                "ine",
-              ],
-              "title": "Druh stavby",
-              "type": "string",
             },
             "idStavby": {
               "baOrder": 2,
@@ -76566,15 +76664,16 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
               "title": "Názov stavby/projektu",
               "type": "string",
             },
-            "parcelneCislo": {
+            "parcelneCisla": {
               "baOrder": 5,
               "baUiSchema": {
                 "ui:options": {
+                  "helptext": "Jedno alebo viacero parcelných čísel",
                   "inputType": "text",
                 },
                 "ui:widget": "Input",
               },
-              "title": "Parcelné číslo",
+              "title": "Parcelné čísla",
               "type": "string",
             },
             "supisneCislo": {
@@ -76603,10 +76702,9 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
           "required": [
             "nazov",
             "ulica",
-            "parcelneCislo",
+            "parcelneCisla",
             "katastralneUzemia",
             "clenenieStavby",
-            "druhStavby",
           ],
           "title": "Informácie o stavbe",
           "type": "object",

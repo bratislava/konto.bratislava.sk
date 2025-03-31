@@ -1916,7 +1916,7 @@ exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should mat
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.stanoviskoKInvesticnemuZameru/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>2.0.0</JsonVersion>
-  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"stavebnik":{"stavebnikZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","druhStavby":"bytovyDom","ulica":"Dunajská","supisneCislo":"464","parcelneCislo":"56789","katastralneUzemia":["805211","806099"]},"prilohy":{"architektonickaStudia":["cb1e3a95-f9d2-4e55-b482-8e7919f2b43f"]}}</Json>
+  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"stavebnik":{"stavebnikZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03"}},"prilohy":{"architektonickaStudia":["cb1e3a95-f9d2-4e55-b482-8e7919f2b43f"]}}</Json>
   <Summary>
     <Form title="Žiadosť o stanovisko k investičnému zámeru">
       <Step id="root_ziadatel" title="Žiadateľ">
@@ -2001,21 +2001,31 @@ exports[`slovenskoSkForm > stanoviskoKInvesticnemuZameruExample > XML should mat
         <Field id="root_stavba_nazov" label="Názov stavby/projektu">
           <StringValue>Nový Bytový Dom</StringValue>
         </Field>
-        <Field id="root_stavba_druhStavby" label="Druh stavby">
-          <StringValue>Bytový dom</StringValue>
-        </Field>
         <Field id="root_stavba_ulica" label="Ulica">
           <StringValue>Dunajská</StringValue>
         </Field>
         <Field id="root_stavba_supisneCislo" label="Súpisné číslo">
-          <StringValue>464</StringValue>
+          <StringValue>1234</StringValue>
         </Field>
-        <Field id="root_stavba_parcelneCislo" label="Parcelné číslo">
+        <Field id="root_stavba_parcelneCisla" label="Parcelné čísla">
           <StringValue>56789</StringValue>
         </Field>
         <Field id="root_stavba_katastralneUzemia" label="Katastrálne územie">
           <StringValue>Karlova Ves</StringValue>
           <StringValue>Dúbravka</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_hlavnaStavba" label="Hlavná stavba">
+          <StringValue>Stavba 01 - Bytový dom Luna</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_clenenieHlavnejStavby" label="Členenie hlavnej stavby">
+          <StringValue>SO 01 Hlavná budova, SO 02 Podzemné garáže</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_hlavnaStavbaPodlaUcelu" label="Hlavná stavba podľa účelu">
+          <StringValue>1120 - VIACBYTOVÉ BUDOVY</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_ostatneStavby" label="Ostatné stavby">
+          <StringValue>Stavba 02 - Oplotenie - SO 01
+Stavba 03 - Prípojky - SO 01, SO 02, SO 03</StringValue>
         </Field>
       </Step>
       <Step id="root_prilohy" title="Prílohy">
@@ -2117,7 +2127,7 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.zavazneStanoviskoKInvesticnejCinnosti/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>2.0.0</JsonVersion>
-  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCislo":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03"},"druhStavby":"bytovyDom"},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
+  <Json>{"ziadatel":{"ziadatelTyp":"fyzickaOsoba","email":"jan.kovac@priklad.sk","telefon":"+421905987654","meno":"Ján","priezvisko":"Kováč","ulicaACislo":"Mierová 12","mesto":"Bratislava","psc":"82108"},"investor":{"investorZiadatelom":false,"splnomocnenie":"b9050ef5-0d98-41c4-aba1-b0fc5a65a442","ziadatelTyp":"fyzickaOsoba","email":"marta.novakova@priklad.sk","telefon":"+421902123456","meno":"Marta","priezvisko":"Nováková","ulicaACislo":"Šancová 56","mesto":"Bratislava","psc":"83104"},"zodpovednyProjektant":{"meno":"Peter","priezvisko":"Horváth","email":"peter.horvath@priklad.sk","telefon":"+421911654321","autorizacneOsvedcenie":"123456789","datumSpracovania":"2024-07-04"},"stavba":{"nazov":"Nový Bytový Dom","idStavby":"BYT-2024-001","ulica":"Dunajská","supisneCislo":"1234","parcelneCisla":"56789","katastralneUzemia":["805211","806099"],"clenenieStavby":{"hlavnaStavba":"Stavba 01 - Bytový dom Luna","clenenieHlavnejStavby":"SO 01 Hlavná budova, SO 02 Podzemné garáže","hlavnaStavbaPodlaUcelu":"1120 - VIACBYTOVÉ BUDOVY","ostatneStavby":"Stavba 02 - Oplotenie - SO 01\\nStavba 03 - Prípojky - SO 01, SO 02, SO 03","obsahujeByty":true,"pocetBytovCelkovo":24,"pocet1IzbovychBytov":6,"pocet2IzbovychBytov":12,"pocet3IzbovychBytov":4,"pocet4IzbovychBytov":2,"pocetViacAko4IzbovychBytov":0}},"typZiadosti":{"typ":"stavebnyZamerNavrhovanaStavba"},"prilohy":{"projektovaDokumentacia":["1cdcb500-7f11-45d1-a31b-0ab614482e27","01d3bd64-270e-4a04-83da-f72cdd8717c4"]}}</Json>
   <Summary>
     <Form title="Žiadosť o záväzné stanovisko k investičnej činnosti">
       <Step id="root_ziadatel" title="Žiadateľ">
@@ -2211,7 +2221,7 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
         <Field id="root_stavba_supisneCislo" label="Súpisné číslo">
           <StringValue>1234</StringValue>
         </Field>
-        <Field id="root_stavba_parcelneCislo" label="Parcelné číslo">
+        <Field id="root_stavba_parcelneCisla" label="Parcelné čísla">
           <StringValue>56789</StringValue>
         </Field>
         <Field id="root_stavba_katastralneUzemia" label="Katastrálne územie">
@@ -2231,8 +2241,26 @@ exports[`slovenskoSkForm > zavazneStanoviskoKInvesticnejCinnostiExample > XML sh
           <StringValue>Stavba 02 - Oplotenie - SO 01
 Stavba 03 - Prípojky - SO 01, SO 02, SO 03</StringValue>
         </Field>
-        <Field id="root_stavba_druhStavby" label="Druh stavby">
-          <StringValue>Bytový dom</StringValue>
+        <Field id="root_stavba_clenenieStavby_obsahujeByty" label="Nachádzajú sa v navrhovanej stavbe byty?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocetBytovCelkovo" label="Počet bytov celkovo">
+          <StringValue>24</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocet1IzbovychBytov" label="Počet 1-izbových bytov">
+          <StringValue>6</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocet2IzbovychBytov" label="Počet 2-izbových bytov">
+          <StringValue>12</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocet3IzbovychBytov" label="Počet 3-izbových bytov">
+          <StringValue>4</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocet4IzbovychBytov" label="Počet 4-izbových bytov">
+          <StringValue>2</StringValue>
+        </Field>
+        <Field id="root_stavba_clenenieStavby_pocetViacAko4IzbovychBytov" label="Počet viac ako 4-izbových bytov">
+          <StringValue>0</StringValue>
         </Field>
       </Step>
       <Step id="root_typZiadosti" title="Typ žiadosti">

@@ -619,6 +619,10 @@ export class AdminService {
     )
   }
   
+  /**
+   * Creates a testing tax record with specified details for development and testing purposes.
+   * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
+   */
   async createTestingTax({
     year,
     norisData,
@@ -689,7 +693,7 @@ export class AdminService {
             .toFixed(2)
             .replace('.', ','),
 
-          // tax detail fields
+          // tax detail fields - mock only
           det_zaklad_dane_byt: '100,50',
           det_dan_byty_byt: '10,50',
           det_zaklad_dane_nebyt: '200,75',
@@ -789,6 +793,37 @@ export class AdminService {
         'Tax payer not found',
       )
     }
+
+    const tax = await this.prismaService.tax.findUnique({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
+        },
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax not found',
+      )
+    }
+
+    await this.prismaService.taxPayment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxInstallment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxDetail.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
     await this.prismaService.tax.delete({
       where: {
         taxPayerId_year: {

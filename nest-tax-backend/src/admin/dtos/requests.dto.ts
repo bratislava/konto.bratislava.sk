@@ -150,13 +150,6 @@ export class RequestAdminCreateTestingTaxNorisData {
   fakeBirthNumber: string
 
   @ApiProperty({
-    description: 'Variable symbol for the tax payment',
-    example: '1234567890',
-  })
-  @IsString()
-  variabilnySymbol: string
-
-  @ApiProperty({
     description: 'Full name and surname of the tax payer',
     example: 'John Doe',
   })

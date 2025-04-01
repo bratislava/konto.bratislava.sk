@@ -83,7 +83,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
     messageSubjectFormat:
-      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCisla} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
@@ -104,7 +104,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
     messageSubjectFormat:
-      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCisla} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',

@@ -571,6 +571,12 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   lastCheckedPayments: string
+  /**
+   * delivery_method
+   * @type {object}
+   * @memberof ResponseTaxDto
+   */
+  deliveryMethod: object | null
 }
 
 /**

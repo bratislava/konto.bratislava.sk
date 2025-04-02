@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { Forms, FormState } from '@prisma/client'
+import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 
 import PrismaService from '../../prisma/prisma.service'
 import HandleErrors from '../../utils/decorators/errorHandler.decorators'
@@ -20,8 +22,6 @@ const GINIS_REJECTED_DOCUMENT_STATES = new Set([
   'ztracen',
   'zastaven',
 ])
-
-const FORM_SLUGS_NOT_PROCESSED_IN_GINIS = new Set(['ziadost-o-najom-bytu'])
 
 @Injectable()
 export default class GinisTasksSubservice {
@@ -120,13 +120,19 @@ export default class GinisTasksSubservice {
       return
     }
 
+    const slugsToProcess = formDefinitions
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      .filter(isSlovenskoSkFormDefinition)
+      .filter((formDefinition) => !formDefinition.skipGinisStateUpdate)
+      .map(({ slug }) => slug)
+
     const submissions = await this.prisma.forms.findMany({
       where: {
         OR: prefixes.map((prefix) => ({ id: { startsWith: prefix } })),
         state: FormState.PROCESSING,
         ginisDocumentId: { not: null },
         archived: false,
-        formDefinitionSlug: { notIn: [...FORM_SLUGS_NOT_PROCESSED_IN_GINIS] },
+        formDefinitionSlug: { in: slugsToProcess },
       },
       orderBy: {
         createdAt: 'asc',

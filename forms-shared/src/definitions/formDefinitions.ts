@@ -195,6 +195,7 @@ export const formDefinitions: FormDefinition[] = [
     termsAndConditions: ziadostONajomBytuTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o nájom bytu',
     sharepointData: ziadostONajomBytuSharepointData,
+    skipGinisStateUpdate: true,
     ginisAssignment: {
       ginisOrganizationName: 'SNB',
     },

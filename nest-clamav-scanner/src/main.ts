@@ -1,13 +1,13 @@
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
-import { AppModule } from './app.module';
+import { AppModule } from './app.module'
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 3000;
-  globalThis.cronRunning = false;
+  const PORT = process.env.PORT || 3000
+  globalThis.cronRunning = false
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
   const config = new DocumentBuilder()
     .setTitle('Nest clamav scanner')
     .setDescription(
@@ -27,16 +27,16 @@ async function bootstrap() {
       type: 'http',
       description: 'Basic auth for communication with scanner backend',
     })
-    .build();
+    .build()
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api', app, document)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  app.getHttpAdapter().get('/spec-json', (req, res) => res.json(document));
+  app.getHttpAdapter().get('/spec-json', (req, res) => res.json(document))
 
-  await app.listen(PORT);
+  await app.listen(PORT)
   // eslint-disable-next-line no-console
-  console.log(`Nest is running on port: ${PORT}`);
+  console.log(`Nest is running on port: ${PORT}`)
 }
 
-void bootstrap();
+void bootstrap()

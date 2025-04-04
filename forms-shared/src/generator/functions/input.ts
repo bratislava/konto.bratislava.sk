@@ -41,7 +41,6 @@ export const input = (
       default: options.default,
       baUiSchema: {
         'ui:widget': BaWidgetType.Input,
-        'ui:label': false,
         'ui:options': { ...uiOptions, inputType },
       },
     }),

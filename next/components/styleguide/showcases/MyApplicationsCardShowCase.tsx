@@ -1,9 +1,5 @@
-import {
-  FormState,
-  GetFormResponseDto,
-  GetFormResponseDtoErrorEnum,
-} from '@clients/openapi-forms/api'
 import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
+import { FormState, GetFormResponseDto, GetFormResponseDtoErrorEnum } from 'openapi-clients/forms'
 import React from 'react'
 
 import { Stack } from '../Stack'

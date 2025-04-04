@@ -2633,49 +2633,37 @@ export interface GinisSdkHistorieDokumentuWithAssignedCategory {
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  IdDokumentu: string
+  'Id-dokumentu': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  Atribut_IdDokumentu_Externi: string
+  'Text-zmeny'?: string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  TextZmeny: string
+  Poznamka?: string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  Poznamka: string
+  'Datum-zmeny': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  DatumZmeny: string
+  'Id-zmenu-provedl': string
   /**
    *
    * @type {string}
    * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
    */
-  IdZmenuProvedl: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
-  Atribut_IdZmenuProvedl_Externi: string
-  /**
-   *
-   * @type {string}
-   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
-   */
-  IdKtgZmeny: string
+  'Id-ktg-zmeny': string
   /**
    *
    * @type {string}
@@ -3078,6 +3066,106 @@ export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendAndUpdateFormEid422Response
+ */
+export interface NasesControllerSendAndUpdateFormEid422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  errorName: NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum =
+  (typeof NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendForm403Response
+ */
+export interface NasesControllerSendForm403Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendForm403Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  errorName: NasesControllerSendForm403ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendForm403Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendForm403ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendForm403ResponseErrorNameEnum =
+  (typeof NasesControllerSendForm403ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm403ResponseErrorNameEnum]
 
 /**
  *
@@ -3709,6 +3797,106 @@ export interface SendFormResponseDto {
    */
   state: object
 }
+/**
+ *
+ * @export
+ * @interface SendPolicyNotAllowedForUserErrorDto
+ */
+export interface SendPolicyNotAllowedForUserErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  errorName: SendPolicyNotAllowedForUserErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  object?: object
+}
+
+export const SendPolicyNotAllowedForUserErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SendPolicyNotAllowedForUserErrorDtoErrorNameEnum =
+  (typeof SendPolicyNotAllowedForUserErrorDtoErrorNameEnum)[keyof typeof SendPolicyNotAllowedForUserErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface SendPolicyNotPossibleErrorDto
+ */
+export interface SendPolicyNotPossibleErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  errorName: SendPolicyNotPossibleErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  object?: object
+}
+
+export const SendPolicyNotPossibleErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SendPolicyNotPossibleErrorDtoErrorNameEnum =
+  (typeof SendPolicyNotPossibleErrorDtoErrorNameEnum)[keyof typeof SendPolicyNotPossibleErrorDtoErrorNameEnum]
+
 /**
  *
  * @export

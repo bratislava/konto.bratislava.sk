@@ -1,7 +1,7 @@
 import {
   ADMINApiFactory,
+  AppApiFactory,
   AuthApiFactory,
-  DefaultApiFactory,
   UserVerificationsApiFactory,
   UsersManipulationApiFactory,
 } from './api'
@@ -26,8 +26,8 @@ export const createCityAccountClient = ({
 
   return {
     ...ADMINApiFactory(...args),
+    ...AppApiFactory(...args),
     ...AuthApiFactory(...args),
-    ...DefaultApiFactory(...args),
     ...UserVerificationsApiFactory(...args),
     ...UsersManipulationApiFactory(...args),
   }

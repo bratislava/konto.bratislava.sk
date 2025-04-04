@@ -1,10 +1,10 @@
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
+import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
@@ -30,7 +30,7 @@ export const getDraftApplications = async (
     SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
-  const response = await formsApi.nasesControllerGetForms(
+  const response = await formsClient.nasesControllerGetForms(
     page?.toString(),
     PAGE_SIZE,
     variantToStates,
@@ -66,7 +66,7 @@ const MyApplicationsList = ({
   const totalPagesCount = applications?.countPages ?? 0
 
   return (
-    <div className="m-auto w-full max-w-screen-lg">
+    <div className="m-auto w-full max-w-(--breakpoint-lg)">
       {applications?.items.length ? (
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">

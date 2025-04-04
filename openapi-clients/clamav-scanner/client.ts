@@ -1,4 +1,4 @@
-import { DefaultApiFactory, ScannerApiFactory, StatusesApiFactory } from './api'
+import { HealthApiFactory, ScannerApiFactory, StatusesApiFactory } from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'
 
@@ -19,7 +19,7 @@ export const createClamavScannerClient = ({
   const args = [configuration, basePath, axios] as const
 
   return {
-    ...DefaultApiFactory(...args),
+    ...HealthApiFactory(...args),
     ...ScannerApiFactory(...args),
     ...StatusesApiFactory(...args),
   }

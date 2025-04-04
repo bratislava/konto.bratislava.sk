@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
@@ -13,7 +13,6 @@ import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormLandingPageCard from './info-components/FormLandingPageCard'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
-import Waves from './simple-components/Waves/Waves'
 
 export type FormWithLandingPageRequiredFragment = Omit<
   FormWithLandingPageFragment,
@@ -36,7 +35,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerCreateForm(
+      formsClient.nasesControllerCreateForm(
         {
           formDefinitionSlug: formDefinition.slug,
         },
@@ -61,13 +60,13 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
   return (
     <AccountPageLayout>
       <div className="relative flex flex-col">
-        <div className="size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
-          <div className="mx-auto flex max-w-screen-lg justify-between">
+        <div className="size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
+          <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
             <div className="flex flex-col gap-2 lg:gap-4">
               <h1 className="text-h1-form">{formDefinition.title}</h1>
               {strapiForm.moreInformationUrl ? (
                 <Link
-                  className="text-p1-underline w-max"
+                  className="w-max text-p1 underline"
                   href={strapiForm.moreInformationUrl}
                   target="_blank"
                 >
@@ -77,13 +76,8 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
             </div>
           </div>
         </div>
-        <Waves
-          className="hidden lg:block"
-          waveColor="rgb(var(--color-main-200))"
-          wavePosition="bottom"
-        />
       </div>
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
+      <div className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
         <div className="flex max-w-[800px] flex-col gap-10">
           {strapiForm.landingPage.text && (
             <AccountMarkdown content={strapiForm.landingPage.text} variant="sm" />

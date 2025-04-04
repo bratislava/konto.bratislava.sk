@@ -24,7 +24,6 @@ import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 
 const inter = Inter({
-  variable: '--inter-font',
   subsets: ['latin', 'latin-ext'],
 })
 
@@ -40,13 +39,6 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
   return (
     <>
-      {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}
-      {/* eslint-disable-next-line react/no-unknown-property */}
-      <style jsx global>{`
-        body {
-          font-family: ${inter.style.fontFamily};
-        }
-      `}</style>
       <Head>
         <title>Bratislavské konto</title>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -59,6 +51,11 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
         {/* Prevents automatic zooming on input fields on safari, which some users consider a bug. Source: https://stackoverflow.com/a/46254706 */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
+        <style>{`
+          :root {
+            --inter-font: ${inter.style.fontFamily};
+          }
+        `}</style>
       </Head>
 
       <AmplifyClientProvider>

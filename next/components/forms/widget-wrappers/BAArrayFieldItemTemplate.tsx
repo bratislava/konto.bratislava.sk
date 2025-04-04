@@ -5,10 +5,10 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import cx from 'classnames'
 import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
+import cn from '../../../frontend/cn'
 import Button from '../simple-components/ButtonNew'
 
 export type BAArrayFieldItemTemplateAdditionalProps = {
@@ -31,18 +31,18 @@ const BAArrayFieldItemTemplate = <
   const { children, hasRemove, index, onDropIndexClick, parentUiOptions, parentSelfId } = props
   const { variant, itemTitle } = parentUiOptions
 
-  const boxStyle = cx({
-    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pb-6 md:pt-8':
+  const boxStyle = cn({
+    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pt-8 md:pb-6':
       variant === 'topLevel',
     'rounded-lg bg-gray-50': variant === 'nested',
   })
 
-  const headingStyle = cx('flex items-center gap-8', {
+  const headingStyle = cn('flex items-center gap-8', {
     'mb-8': variant === 'topLevel',
     'border-b border-gray-200 px-4 py-5 md:px-6': variant === 'nested',
   })
 
-  const contentStyle = cx({
+  const contentStyle = cn({
     'px-4 py-5 md:px-6': variant === 'nested',
   })
 
@@ -57,8 +57,8 @@ const BAArrayFieldItemTemplate = <
   return (
     <div className={boxStyle} data-cy={`section-${parentSelfId}-${index}`}>
       <div className={headingStyle}>
-        {variant === 'topLevel' && <h3 className="text-h3 grow">{title}</h3>}
-        {variant === 'nested' && <h4 className="text-h4 grow">{title}</h4>}
+        {variant === 'topLevel' && <h3 className="grow text-h3">{title}</h3>}
+        {variant === 'nested' && <h4 className="grow text-h4">{title}</h4>}
         {hasRemove && (
           <Button
             variant="icon-wrapped"

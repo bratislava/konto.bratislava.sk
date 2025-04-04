@@ -1,12 +1,13 @@
 import { CheckIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
-import cx from 'classnames'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
+
+import cn from '../../../../../frontend/cn'
 
 type TaxPaidStatusProps = { status: TaxPaidStatusEnum; mobileIcon?: boolean }
 
 const TaxPaidStatus = ({ status, mobileIcon = false }: TaxPaidStatusProps) => {
-  const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max', {
+  const statusStyle: string = cn('w-max text-p3-semibold lg:text-16-semibold', {
     'text-negative-700': status === TaxPaidStatusEnum.NotPaid,
     'text-warning-700':
       status === TaxPaidStatusEnum.PartiallyPaid || status === TaxPaidStatusEnum.OverPaid,
@@ -31,7 +32,7 @@ const TaxPaidStatus = ({ status, mobileIcon = false }: TaxPaidStatusProps) => {
   return (
     <div className="flex items-center gap-[6px]">
       <span
-        className={cx(mobileIcon ? 'flex' : 'hidden lg:flex', 'size-6 items-center justify-center')}
+        className={cn(mobileIcon ? 'flex' : 'hidden lg:flex', 'size-6 items-center justify-center')}
       >
         {icon}
       </span>

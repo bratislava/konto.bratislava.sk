@@ -17,6 +17,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import { TaxIdVariableSymbol } from '../utils/types/types.prisma'
+import { transformDeliveryMethodToDatabaseType } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
@@ -123,6 +124,7 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
         },
         create: {
           amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
@@ -141,6 +143,9 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          deliveryMethod: transformDeliveryMethodToDatabaseType(
+            dataFromNoris.delivery_method,
+          ),
         },
       })
       const taxInstallments =
@@ -184,7 +189,7 @@ export class AdminService {
       return taxPayer
     })
 
-    return { userData, dataFromNoris }
+    return userData
   }
 
   async loadDataFromNoris(
@@ -204,28 +209,33 @@ export class AdminService {
       )
 
     await Promise.all(
-      norisData.map(async (elem) => {
-        birthNumbersResult.push(elem.ICO_RC)
+      norisData.map(async (norisItem) => {
+        birthNumbersResult.push(norisItem.ICO_RC)
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
             year: +data.year,
             taxPayer: {
-              birthNumber: elem.ICO_RC,
+              birthNumber: norisItem.ICO_RC,
             },
           },
         })
         if (!taxExists) {
-          const { userData, dataFromNoris } =
-            await this.insertTaxPayerDataToDatabase(elem, data.year)
+          const userData = await this.insertTaxPayerDataToDatabase(
+            norisItem,
+            data.year,
+          )
           const userFromCityAccount =
             userDataFromCityAccount[userData.birthNumber] || null
           if (userFromCityAccount !== null) {
             const bloomreachTracker =
               await this.bloomreachService.trackEventTax(
                 {
-                  amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
+                  amount: currency(norisItem.dan_spolu.replace(',', '.'))
                     .intValue,
                   year: +data.year,
+                  delivery_method: transformDeliveryMethodToDatabaseType(
+                    norisItem.delivery_method,
+                  ),
                 },
                 userFromCityAccount.externalId ?? undefined,
               )
@@ -252,12 +262,12 @@ export class AdminService {
     const norisData = await this.norisService.getDataFromNoris(data)
     let count = 0
     await Promise.all(
-      norisData.map(async (elem) => {
+      norisData.map(async (norisItem) => {
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
             year: +data.year,
             taxPayer: {
-              birthNumber: elem.ICO_RC,
+              birthNumber: norisItem.ICO_RC,
             },
           },
         })
@@ -273,7 +283,7 @@ export class AdminService {
             },
           })
           const userData = await this.insertTaxPayerDataToDatabase(
-            elem,
+            norisItem,
             data.year,
           )
           if (userData) {

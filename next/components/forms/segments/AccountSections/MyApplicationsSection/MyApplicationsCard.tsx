@@ -7,8 +7,7 @@ import {
   EyeIcon,
   PdfIcon,
 } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -21,6 +20,7 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
@@ -98,7 +98,7 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
           formId,
         },
@@ -122,7 +122,7 @@ const MyApplicationsCard = ({
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
-      const response = await formsApi.convertControllerConvertToPdf(
+      const response = await formsClient.convertControllerConvertToPdf(
         {
           formId,
         },
@@ -142,7 +142,7 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
-      await formsApi.nasesControllerDeleteForm(formId, {
+      await formsClient.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       closeSnackbarInfo()
@@ -300,13 +300,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
+              <h3 className="pb-3 text-20-semibold">
                 {isLoading ? <Skeleton width="75%" /> : title}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center ">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
@@ -328,7 +328,7 @@ const MyApplicationsCard = ({
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_back_button_title')}
+            {ft('modals_close_button_title')}
           </Button>,
           <Button
             variant="negative-solid"

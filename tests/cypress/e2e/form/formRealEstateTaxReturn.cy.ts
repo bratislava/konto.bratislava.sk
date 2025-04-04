@@ -66,7 +66,7 @@ describe('F05 -', { testIsolation: false }, () => {
             it('4. Checking "Taxpayer data" step validation.', () => {
               cy.checkActiveStep(2)
               cy.dataCy('form-container').then((form) => {
-                cy.checkFormValidation(device, form, 13, this.inputData.taxpayerBorderFields)
+                cy.checkFormValidation(device, form, 11, this.inputData.taxpayerBorderFields)
               })
             })
 
@@ -838,7 +838,7 @@ describe('F05 -', { testIsolation: false }, () => {
                   'not.have.class',
                   'border-red-500',
                 )
-                cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form))
+                cy.wrap(Cypress.$(`[data-cy=download-pdf-button]`, form))
               })
             })
 

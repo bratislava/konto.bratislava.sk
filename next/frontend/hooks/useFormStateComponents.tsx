@@ -6,9 +6,9 @@ import {
   SendIcon,
   TwoPeopleIcon,
 } from '@assets/ui-icons'
-import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 import { useMemo } from 'react'
 
 export type UseFormStateComponentsParams = {

@@ -19,110 +19,20 @@ SELECT
             end)
         else 0 
     end ) zbyva_uhradit,
-    /* 
-    lcs.fn21_dec2string(lcs.dane21_doklad.suma_mena, 2) suma_mena, 
-    lcs.fn21_dec2string(ABS(lcs.dane21_doklad.suma_mena), 2) AS abs_suma, 
-    lcs.dane21_doklad.datum_storno, 
-    lcs.dane21_doklad.stav_dokladu, 
-    lcs.dane21_doklad.text_dokladu, 
-    lcs.dane21_doklad.subjekt subjekt, 
-    */
     subjekty_c.reference_subjektu subjekt_refer, 
     ltrim(case when lcs.dane21_priznanie.podnikatel='N' then isnull(lcs.dane21_priznanie.titul+' ', '')+isnull(lcs.dane21_priznanie.meno+' ', '') +isnull(lcs.dane21_priznanie.priezvisko, '') +(case when lcs.dane21_priznanie.titul_za is null then '' else isnull(', '+lcs.dane21_priznanie.titul_za, '') end )         else  lcs.dane21_priznanie.obchodny_nazov end  ) subjekt_nazev, 
-    /*
-    lcs.dane21_priznanie.obchodny_nazov subjekt_nazev, 
-    */  
-    /*
-    lcs.dane21_doklad.podklad podklad, 
-    subjekty_d.reference_subjektu podklad_refer, 
-    subjekty_d.nazev_subjektu podklad_nazev, 
-    lcs.dane21_doklad.pohladavka pohladavka, 
-    subjekty_e.reference_subjektu pohladavka_refer, 
-    subjekty_e.nazev_subjektu pohladavka_nazev, 
-    lcs.dane21_doklad.text_vzor text_vzor, 
-    subjekty_f.reference_subjektu text_vzor_refer, 
-    subjekty_f.nazev_subjektu text_vzor_nazev, 
-    lcs.dane21_doklad.datum_odvolania, 
-    lcs.dane21_doklad.ciarovy_kod, 
-    lcs.dane21_doklad.ciastka_slovom, 
-    */
     lcs.dane21_priznanie.rok, 
-    /*
-    lcs.dane21_priznanie.datum_priznania, 
-    lcs.dane21_priznanie.druh_priznania, 
-    lcs.dane21_priznanie.platnost, 
-    lcs.dane21_priznanie.rodne_cislo, 
-    lcs.dane21_priznanie.ico ico, 
-    lcs.dane21_priznanie.priezvisko, 
-    lcs.dane21_priznanie.meno, 
-    lcs.dane21_priznanie.titul, 
-    lcs.dane21_priznanie.adr_tp_telefon, 
-    lcs.dane21_priznanie.adr_pp_telefon, 
-    lcs.dane21_priznanie.adr_tp_fax, 
-    lcs.dane21_priznanie.adr_pp_fax, 
-    lcs.dane21_priznanie.email, 
-    lcs.dane21_priznanie.pravna_forma, 
-    lcs.dane21_priznanie.subjekt subjekt, 
-    lcs.dane21_priznanie.adresa_tp_sidlo adresa_tp_sidlo, 
-    subjekty_d1.reference_subjektu adresa_tp_sidlo_refer, 
-    subjekty_d1.nazev_subjektu adresa_tp_sidlo_nazev, 
-    lcs.dane21_priznanie.adresa_prech_pobyt adresa_prech_pobyt, 
-    subjekty_e1.reference_subjektu adresa_prech_pobyt_refer, 
-    subjekty_e1.nazev_subjektu adresa_prech_pobyt_nazev, 
-    lcs.dane21_priznanie.bankove_spojenie bankove_spojenie, 
-    subjekty_f1.reference_subjektu bankove_spojenie_refer, 
-    subjekty_f1.nazev_subjektu bankove_spojenie_nazev, 
-    lcs.dane21_priznanie.statutarny_zastupca statutarny_zastupca, 
-    subjekty_g1.reference_subjektu statutarny_zastupca_refer, 
-    subjekty_g1.nazev_subjektu statutarny_zastupca_nazev, 
-    lcs.dane21_priznanie.adresa_postova adresa_postova, 
-    subjekty_h1.nazev_subjektu adresa_postova_nazev, 
-    lcs.dane21_priznanie.zastupca_adresa zastupca_adresa, 
-    subjekty_i1.nazev_subjektu zastupca_adresa_nazev, 
-    */
     a_tb.ulica_nazev as ulica_tb, 
-    /*
-    REM 21052017 a_tb.ulica_nazev+isnull( ' '+lcs.dane21_priznanie.adr_tp_or_cislo, '') as ulica_tb_cislo, 
-    */
     a_tb.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_priznanie.adr_tp_sup_cislo, lcs.dane21_priznanie.adr_tp_or_cislo), '') as ulica_tb_cislo, 
     a_tb.psc_refer as psc_ref_tb,
     a_tb.psc_nazev as psc_naz_tb, 
     a_tb.stat_nazov_plny, 
     a_tb.obec_nazev obec_nazev_tb, 
-    /*   
-    zast_tb.ulica_nazev+isnull( ' '+lcs.dane21_priznanie.zastupca_orient_cislo, '') as zast_ulica_tb_cislo, 
-    zast_tb.ulica_nazev zast_ulica_tb, 
-    zast_tb.psc_refer as zast_psc_ref_tb, 
-    zast_tb.psc_nazev as zast_psc_naz_tb, 
-    zast_tb.stat_nazov_plny zast_stat_nazov_plny, 
-    zast_tb.obec_nazev zast_obec_nazev, 
-    a_pb.ulica_nazev as ulica_pb, 
-    a_pb.ulica_nazev+isnull( ' '+lcs.dane21_priznanie.adr_pp_or_cislo, '') as ulica_pb_cislo, 
-    a_pb.psc_refer as psc_ref_pb, 
-    a_pb.psc_nazev as psc_naz_pb, 
-    a_pb.stat_nazov_plny stat_nazov_plny_pb, 
-    a_pb.obec_nazev obec_nazev_pb, 
-    zast_org.ico as zast_org_ico, 
-    sbanspoj.nazev_subjektu naz_bank_ustav, 
-    editpr_forma.disp_val pr_forma_disp_val, 
-    */
-    /*
-    CAST(CONVERT(char(8), lcs.dane21_doklad.datum_realizacie, 112) AS datetime) akt_datum, 
-    chcu to bez casu lcs.dane21_doklad.datum_realizacie akt_datum, 
-    */   
     CONVERT(char(10), lcs.dane21_doklad.datum_realizacie, 104) akt_datum, 
     lcs.fn21_meno_osoby_org(lcs.dane21_doklad.vybavuje, null) vyb_nazov, 
     z_vybav.telefon_prace vyb_telefon_prace, 
     z_vybav.e_mail vyb_email, 
     dp_conf.vybavuje vyb_id,
-    /*
-    svzt212080.reference_subjektu svzt212080ref, 
-    dvzt212080.datum_realizacie dvzt212080datum, 
-    svzt212081.reference_subjektu svzt212081ref, 
-    dvzt212081.datum_realizacie dvzt212081datum, 
-    svzt212082.reference_subjektu svzt212082ref, 
-    dvzt212082.datum_realizacie dvzt212082datum, 
-    */
     lcs.fn21_dec2string( dsum.dan_spolu , 2) as dan_spolu, 
     lcs.fn21_dec2string(dsum.dan_byty, 2) dan_byty, 
     lcs.fn21_dec2string(dsum.dan_pozemky, 2) dan_pozemky, 
@@ -243,12 +153,6 @@ SELECT
             end )
         else  ''
     end  ) TXTSPL4_3, 
-    /*
-        (case 
-            when suma_splatky<floor  ( dsum.dan_spolu ) then   '- tretia splátka v termíne do '+convert(varchar(10), lcs.dane21_doklad.datum_spl3, 104) +' v sume:'
-            else  ''
-        end  ) TXTSPL4_3, 
-    */    
    (case 
         when  lcs.dane21_doklad.datum_spl3 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl3 , 2)
         else  ''
@@ -261,12 +165,6 @@ SELECT
                 end )
         else  ''
     end  ) TXTSPL4_4, 
-    /*    
-        (case 
-            when suma_splatky<floor  ( dsum.dan_spolu ) then '- štvrtá splátka v termíne do '+convert(varchar(10), lcs.dane21_doklad.datum_spl4, 104)  +' v sume:'
-            else  ''
-        end  ) TXTSPL4_4, 
-    */
    (case 
         when  lcs.dane21_doklad.datum_spl4 is not null  then lcs.fn21_dec2string( lcs.dane21_doklad.suma_spl4 , 2)
         else  ''
@@ -274,22 +172,6 @@ SELECT
 
    /* --------- Texty splátok výmeru end ----------------------------*/       /* obalka start */  
    
-   (case
-        when lcs.dane21_doklad.spis_sluzba_id is null then '' 
-        else '*'+lcs.dane21_doklad.spis_sluzba_id+'*' 
-    end )obalka_cp, 
-    (case 
-        when  lcs.dane21_doklad.spis_sluzba_id is null then '' 
-        else lcs.dane21_doklad.spis_sluzba_id 
-    end ) obalka_cp1, 
-    (case 
-        when lcs.dane21_doklad.postadresa_oslovenie2 is null or lcs.dane21_doklad.postadresa_oslovenie2='' then  '' 
-        else  lcs.dane21_doklad.postadresa_oslovenie1 
-    end) obalka_meno, 
-    (case 
-        when lcs.dane21_doklad.postadresa_oslovenie2 is null or lcs.dane21_doklad.postadresa_oslovenie2='' then  lcs.dane21_doklad.postadresa_oslovenie1 
-        else  lcs.dane21_doklad.postadresa_oslovenie2 
-    end)  obalka_meno2, 
     (a_post_doklad.ulica_nazev+isnull( ' '+lcs.fn21_adresa_string(NULL, lcs.dane21_doklad.adr_po_sup_cislo, lcs.dane21_doklad.adr_po_or_cislo), '')  +
         (case 
             when  a_post_doklad.ulica is not null and isnull(a_post_doklad.psc_nazev, '')<>'' and a_post_doklad.obec_nazev<>left(isnull(a_post_doklad.psc_nazev, ''), len(a_post_doklad.obec_nazev)) then ', '+a_post_doklad.obec_nazev else '' 
@@ -298,37 +180,11 @@ SELECT
     a_post_doklad.psc_refer  obalka_psc, 
     a_post_doklad.psc_nazev  obalka_mesto, 
     a_post_doklad.stat_nazov_plny  obalka_stat, 
-    /* zmena 14052008 sumy z odpoctom preplatku  
-        left(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''), len(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
-        right(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''), 2) pouk_cena_hal  
-    */  
-    /* 26032010  
-        left(replace (cast(floor( lcs.fn21_get_spl_suma_prepl(lcs.dane21_doklad.cislo_subjektu, 0)) as varchar), '.', ''), len(replace (cast(floor( lcs.fn21_get_spl_suma_prepl(lcs.dane21_doklad.cislo_subjektu, 0)) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
-        right(replace (cast(lcs.fn21_get_spl_suma_prepl(lcs.dane21_doklad.cislo_subjektu, 0) as varchar), '.', ''), 2) pouk_cena_hal  
-     */
         left(replace (cast(floor( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), len(replace (cast(floor( (  view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''))-2) pouk_cena_bez_hal, 
         right(replace (cast(( ( view_doklad_saldo.zbyva_uhradit  ) ) as varchar), '.', ''), 2) pouk_cena_hal,     
-    /* poukazka start */    
-    /*  
-        case 
-            when lcs.dane21_druh_dokladu.typ_dokladu='V' then 'DZN '+cast(lcs.dane21_priznanie.rok as varchar(4))
-            when lcs.dane21_druh_dokladu.typ_dokladu='P' then 'Pokuta '+cast(lcs.dane21_priznanie.rok as varchar(4))
-            when lcs.dane21_druh_dokladu.typ_dokladu='NED' then 'Nedoplatok '+cast(lcs.dane21_priznanie.rok as varchar(4))
-            else ''
-        end ) text_poukazky, 
-        '='+replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', '') pouk_cenah, 
-        '='+left(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''), len(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''))-2) pouk_cena, 
-        right(replace (cast(floor( lcs.dane21_doklad.suma_mena) as varchar), '.', ''), 2) ph, lcs.dane21_doklad.variabilny_symbol pouk_VS, 
-        lcs.dane21_doklad.text_dokladu, 
-    */    
-    /* poukazka end  */  
-    /*
-        lcs.dane21_doklad.rok_podkladu,
-    */ 
     lcs.dane21_doklad.specificky_symbol,
-    view_drazb.drazba_od drazba_dedic_od, 
-    view_drazb.drazba_do drazba_dedic_do, 
-    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut  
+    lcs.nf_valuace_atributu(21276, 0, 'lcs.dane21_doklad.uzivatelsky_atribut', lcs.dane21_doklad.uzivatelsky_atribut) as uzivatelsky_atribut,
+    uda_21_organizacia_mag.dkba_sposob_dorucovania as delivery_method
 
 FROM 
     lcs.dane21_doklad  
@@ -548,6 +404,11 @@ LEFT OUTER JOIN
     lcs.dane_21_dzn_drazba_dedicstvo view_drazb  
     ON
         view_drazb.cislo_subjektu=lcs.dane21_priznanie.cislo_subjektu  
+
+LEFT OUTER JOIN
+    lcs.uda_21_organizacia_mag uda_21_organizacia_mag
+    ON
+        uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
 WHERE 
     -- (subjekty_a.cislo_poradace = 12562)  

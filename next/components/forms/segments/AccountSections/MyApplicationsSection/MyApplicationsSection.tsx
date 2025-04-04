@@ -1,4 +1,3 @@
-import { GetFormsResponseDto } from '@clients/openapi-forms/api'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationsList, {
   getDraftApplications,
@@ -6,6 +5,7 @@ import MyApplicationsList, {
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { GetFormsResponseDto } from 'openapi-clients/forms'
 import { ApplicationsListVariant, sections } from 'pages/moje-ziadosti'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
@@ -96,9 +96,9 @@ const MyApplicationsSection = ({
       className="flex flex-col"
     >
       <div className="bg-gray-50 pl-8 lg:pl-0">
-        <div className="m-auto size-full max-w-screen-lg flex-col justify-end gap-4 pt-6 lg:gap-6 lg:pt-14">
-          <h1 className="text-h1 pt-4">{title}</h1>
-          <TabList className="flex max-w-screen-lg gap-4 overflow-auto whitespace-nowrap pt-6 scrollbar-hide lg:gap-6 lg:pt-14">
+        <div className="m-auto size-full max-w-(--breakpoint-lg) flex-col justify-end gap-4 pt-6 lg:gap-6 lg:pt-14">
+          <h1 className="pt-4 text-h1">{title}</h1>
+          <TabList className="scrollbar-hide flex max-w-(--breakpoint-lg) gap-4 overflow-auto pt-6 whitespace-nowrap lg:gap-6 lg:pt-14">
             {headerNavigationList.map((item) => {
               const count = totalCounts[item.tag].data
               const countText = count == null ? '' : ` (${count})`
@@ -110,7 +110,7 @@ const MyApplicationsSection = ({
                   key={item.tag}
                   id={item.tag}
                   data-before-text={text}
-                  className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold before:text-20-semibold cursor-pointer py-4 text-center transition-all before:invisible before:block before:h-0 before:overflow-hidden before:content-[attr(data-before-text)] hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
+                  className="cursor-pointer py-4 text-center text-20 transition-all before:invisible before:block before:h-0 before:overflow-hidden before:text-20-semibold before:content-[attr(data-before-text)] hover:border-gray-700 hover:text-20-semibold data-selected:border-b-2 data-selected:border-gray-700 data-selected:text-20-semibold"
                 >
                   {text}
                 </Tab>

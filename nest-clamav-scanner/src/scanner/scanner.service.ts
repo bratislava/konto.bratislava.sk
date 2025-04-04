@@ -8,13 +8,14 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ClamavClientService } from 'src/clamav-client/clamav-client.service';
-import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
-import { isBase64, isDefined, isValid } from '../common/utils/helpers';
 import { FileStatus } from '@prisma/client';
 import { contentType } from 'mime-types';
+import { ClamavClientService } from 'src/clamav-client/clamav-client.service';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
+
+import { isBase64, isDefined, isValidUid } from '../common/utils/helpers';
+import { PrismaService } from '../prisma/prisma.service';
+import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
 
 @Injectable()
 export class ScannerService {
@@ -30,7 +31,7 @@ export class ScannerService {
     this.logger = new Logger('ScannerService');
     this.clamavClientService = new ClamavClientService(configService);
     this.supportedMimeTypes = this.configService
-      .get(`MIMETYPE_WHITELIST`)
+      .get<string>('MIMETYPE_WHITELIST', '')
       .split(' ');
   }
 
@@ -40,31 +41,28 @@ export class ScannerService {
 
   public async scanFile(bucketFile: ScanFileDto): Promise<ScanFileResponseDto> {
     {
-      if (!isValid(bucketFile.fileUid)) {
+      if (!isValidUid(bucketFile.fileUid)) {
         throw new BadRequestException('Please provide a valid fileUid.');
       }
 
-      if (!isValid(bucketFile.bucketUid)) {
+      if (!isValidUid(bucketFile.bucketUid)) {
         bucketFile.bucketUid = this.configService.get(
           'CLAMAV_UNSCANNED_BUCKET',
         );
       }
 
+      const bucketUid = bucketFile.bucketUid || '';
+
       //check if file has already been scanned - record is in database
       const fileStatus = await this.prismaService.files.findFirst({
         where: {
-          AND: [
-            { bucketUid: bucketFile.bucketUid },
-            { fileUid: bucketFile.fileUid },
-          ],
+          AND: [{ bucketUid }, { fileUid: bucketFile.fileUid }],
         },
       });
 
       if (fileStatus) {
         //base64 bucketUid and fileUid
-        const bucketUid64 = Buffer.from(bucketFile.bucketUid).toString(
-          'base64',
-        );
+        const bucketUid64 = Buffer.from(bucketUid).toString('base64');
         const fileUid64 = Buffer.from(bucketFile.fileUid).toString('base64');
 
         throw new GoneException(
@@ -72,22 +70,24 @@ export class ScannerService {
         );
       }
 
+      let fileSize: number;
       //check if file exists in minio
-      const fileInfo = await this.minioClientService.fileExists(
-        bucketFile.bucketUid,
-        bucketFile.fileUid,
-      );
-
-      if (!fileInfo) {
+      try {
+        const fileInfo = await this.minioClientService.fileExists(
+          bucketUid,
+          bucketFile.fileUid,
+        );
+        fileSize = fileInfo.size;
+      } catch {
         throw new NotFoundException(
-          `This file: ${bucketFile.fileUid} does not exist in the bucket '${bucketFile.bucketUid}'. Please check if the bucketUid or fileUid is correct.`,
+          `This file: ${bucketFile.fileUid} does not exist in the bucket '${bucketUid}'. Please check if the bucketUid or fileUid is correct.`,
         );
       }
 
-      const MAX_FILE_SIZE = this.configService.get('MAX_FILE_SIZE');
-      if (fileInfo.size > MAX_FILE_SIZE) {
+      const MAX_FILE_SIZE: number = this.configService.get('MAX_FILE_SIZE', 0);
+      if (fileSize > MAX_FILE_SIZE) {
         throw new PayloadTooLargeException(
-          `File size (${fileInfo.size}) exceeds the maximum allowed size (${MAX_FILE_SIZE}). Please check the file size.`,
+          `File size (${fileSize}) exceeds the maximum allowed size (${MAX_FILE_SIZE}). Please check the file size.`,
         );
       }
 
@@ -97,19 +97,19 @@ export class ScannerService {
       const fileFormat = bucketFile.fileUid.split('.').pop();
       const proformaName = `proforma.${fileFormat}`;
       const mimeType = contentType(proformaName);
-      if (this.isSupportedMimeType(<string>mimeType) === false) {
+      if (!mimeType || !this.isSupportedMimeType(mimeType)) {
         throw new BadRequestException(
-          `Unsupported file mime-type: ${mimeType}.`,
+          `Unsupported file mime-type: ${mimeType || 'unknown'}.`,
         );
       }
 
       try {
         const result = await this.prismaService.files.create({
           data: {
-            bucketUid: bucketFile.bucketUid,
+            bucketUid,
             fileUid: bucketFile.fileUid,
-            fileSize: fileInfo.size,
-            fileMimeType: <string>mimeType,
+            fileSize,
+            fileMimeType: mimeType,
             status: FileStatus.ACCEPTED,
           },
         });
@@ -143,7 +143,7 @@ export class ScannerService {
     }
 
     //check if bucketFiles array contains more than 20 files
-    const maxFiles: number = +this.configService.get('MAX_FILES_PER_REQUEST');
+    const maxFiles: number = this.configService.get('MAX_FILES_PER_REQUEST', 1);
     if (bucketFiles.length > maxFiles) {
       throw new PayloadTooLargeException(
         `Please provide a maximum of ${maxFiles} files!`,
@@ -159,10 +159,16 @@ export class ScannerService {
       try {
         result = await this.scanFile(bucketFile);
       } catch (error) {
+        if (!(error instanceof Error)) {
+          this.logger.error(
+            `scanFiles is throwing non Error: ${String(error)}`,
+          );
+          throw error;
+        }
         result = {
-          status: error.name,
+          status: FileStatus.SCAN_ERROR,
           fileUid: bucketFile.fileUid,
-          id: null,
+          id: '',
           message: error.message,
         };
       }
@@ -186,7 +192,7 @@ export class ScannerService {
     const bucketUid = Buffer.from(bucketUid64, 'base64').toString('ascii');
     const fileUid = Buffer.from(fileUid64, 'base64').toString('ascii');
 
-    if (!isValid(bucketUid) && !isValid(fileUid)) {
+    if (!isValidUid(bucketUid) && !isValidUid(fileUid)) {
       throw new BadRequestException(
         'Please provide a valid bucketUid and fileUid.',
       );
@@ -195,10 +201,10 @@ export class ScannerService {
     try {
       return await this.prismaService.files.findFirstOrThrow({
         where: {
-          AND: [{ bucketUid: bucketUid }, { fileUid: fileUid }],
+          AND: [{ bucketUid }, { fileUid }],
         },
       });
-    } catch (error) {
+    } catch {
       throw new NotFoundException(
         `This file: ${fileUid} has not been submitted for scanning. Please submit the file for scanning by POST /api/scan.`,
       );
@@ -216,7 +222,7 @@ export class ScannerService {
       return await this.prismaService.files.findUniqueOrThrow({
         where: { id: resourceId },
       });
-    } catch (error) {
+    } catch {
       throw new NotFoundException(
         `This file with id: ${resourceId} has not been submitted for scanning. Please submit the file for scanning by POST /api/scan.`,
       );
@@ -233,20 +239,13 @@ export class ScannerService {
       `Received request for deletion of file with id: ${resourceId}`,
     );
 
-    let file;
     try {
-      file = await this.prismaService.files.findUniqueOrThrow({
+      await this.prismaService.files.findUniqueOrThrow({
         where: { id: resourceId },
       });
-    } catch (error) {
+    } catch {
       throw new UnprocessableEntityException(
         `There was an error with searching for the file.`,
-      );
-    }
-
-    if (!file) {
-      throw new NotFoundException(
-        `This file with id: ${resourceId} has not been submitted for scanning. Please submit the file for scanning by POST /api/scan.`,
       );
     }
 
@@ -254,7 +253,7 @@ export class ScannerService {
       return await this.prismaService.files.delete({
         where: { id: resourceId },
       });
-    } catch (error) {
+    } catch {
       throw new UnprocessableEntityException(
         `There was an issue deleting file: ${resourceId} from the database.`,
       );

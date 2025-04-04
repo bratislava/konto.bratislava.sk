@@ -2,12 +2,12 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
-import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
 
 import logger from '../../../../../frontend/utils/logger'
+import { useTaxFeeSection } from '../TaxesFeesSection/useTaxFeeSection'
 
 export const PaymentStatusOptions = {
   FAILED_TO_VERIFY: 'failed-to-verify',
@@ -40,6 +40,13 @@ const statusToTranslationPath = {
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
+  const {
+    strapiTax: {
+      paymentSuccessFeedbackLink,
+      paymentSuccessPrivacyPolicyLink,
+      paymentSuccessFaqLink,
+    },
+  } = useTaxFeeSection()
   const status = useMemo(
     () =>
       typeof router.query.status === 'string' &&
@@ -67,7 +74,7 @@ const ThankYouSection = () => {
             firstButtonTitle={t('thank_you.button_to_formular_text')}
             secondButtonTitle={t('thank_you.button_to_profil_text')}
             feedbackTitle={t(statusToTranslationPath[status].feedbackTitle!)}
-            feedbackUrl={formsFeedbackLinks['platba-dane-z-nehnutelnosti']}
+            feedbackLink={paymentSuccessFeedbackLink ?? undefined}
           />
         ) : (
           <ThankYouCard
@@ -79,7 +86,7 @@ const ThankYouSection = () => {
           />
         )}
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
-          <span className="text-p2 flex">
+          <span className="flex text-p2">
             <AccountMarkdown
               variant="sm"
               content={`<span className='text-p2'>${t(
@@ -87,24 +94,30 @@ const ThankYouSection = () => {
               )}</span>.`}
             />
           </span>
-          <div className="mt-4 flex flex-col gap-3 md:mt-6">
-            <Button
-              label={t('thank_you.button_faq_text')}
-              href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
-              variant="link-black"
-              size="sm"
-            />
-            <Button
-              label={t('thank_you.button_privacy_text')}
-              href="https://bratislava.sk/ochrana-osobnych-udajov"
-              variant="link-black"
-              size="sm"
-            />
-          </div>
+          {paymentSuccessFaqLink || paymentSuccessPrivacyPolicyLink ? (
+            <div className="mt-4 flex flex-col gap-3 md:mt-6">
+              {paymentSuccessFaqLink ? (
+                <Button
+                  label={t('thank_you.button_faq_text')}
+                  href={paymentSuccessFaqLink}
+                  variant="link-black"
+                  size="sm"
+                />
+              ) : null}
+              {paymentSuccessPrivacyPolicyLink ? (
+                <Button
+                  label={t('thank_you.button_privacy_text')}
+                  href="https://bratislava.sk/ochrana-osobnych-udajov"
+                  variant="link-black"
+                  size="sm"
+                />
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
 
-      <div className="mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex">
+      <div className="mx-auto hidden w-full max-w-(--breakpoint-lg) flex-col items-center gap-6 pb-6 lg:flex">
         <BratislavaIcon />
         <p className="text-p2">{t('thank_you.footer_text')}</p>
       </div>

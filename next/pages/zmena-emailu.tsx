@@ -1,3 +1,4 @@
+import { cityAccountClient } from '@clients/city-account'
 import {
   AuthError,
   confirmUserAttribute,
@@ -10,7 +11,6 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import EmailChangeForm from 'components/forms/segments/EmailChangeForm/EmailChangeForm'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { changeEmailApi } from 'frontend/api/api'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -111,7 +111,10 @@ const EmailChangePage = () => {
         userAttributeKey: 'email',
         confirmationCode,
       })
-      await changeEmailApi({ newEmail: lastEmail })
+      await cityAccountClient.userControllerChangeEmail(
+        { newEmail: lastEmail },
+        { accessToken: 'always' },
+      )
       logger.info(
         `[AUTH] Successfully verified new email ${lastEmail} for email ${userAttributes?.email}`,
       )

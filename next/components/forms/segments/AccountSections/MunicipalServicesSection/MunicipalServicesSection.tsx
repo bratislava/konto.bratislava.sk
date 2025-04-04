@@ -60,6 +60,7 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
+  1,
   environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
   44,
   9,
@@ -67,7 +68,6 @@ const foMunicipalServicesSection = [
   34,
   35,
   43,
-  1,
   2,
   3,
   4,
@@ -94,8 +94,10 @@ const foMunicipalServicesSection = [
   28,
   32,
   18,
+  46,
 ].filter(isDefined)
 const poMunicipalServicesSection = [
+  1,
   environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
   34,
   35,
@@ -104,7 +106,6 @@ const poMunicipalServicesSection = [
   4,
   6,
   43,
-  1,
   42,
   8,
   10,
@@ -124,6 +125,7 @@ const poMunicipalServicesSection = [
   41,
   32,
   18,
+  46,
 ].filter(isDefined)
 
 const MunicipalServicesSection = () => {
@@ -156,9 +158,9 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="mx-auto w-full max-w-screen-lg pt-4 lg:pt-8">
+      <div className="mx-auto w-full max-w-(--breakpoint-lg) pt-4 lg:pt-8">
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
-        <div className="grid grid-cols-1 gap-3 px-4 sm:gap-6 min-[615px]:grid-cols-2 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:px-0">
+        <div className="grid grid-cols-1 gap-3 px-4 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>

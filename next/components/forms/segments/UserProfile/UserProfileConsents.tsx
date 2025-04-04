@@ -1,6 +1,5 @@
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../frontend/hooks/useUser'
@@ -41,7 +40,7 @@ const UserProfileConsents = () => {
         underline
         isMobileColumn
       />
-      <div className={cx('px-4', 'md:px-8')}>
+      <div className="px-4 md:px-8">
         <UserConsent
           consent={{
             id: 'receive_information',

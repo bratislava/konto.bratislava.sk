@@ -1,5 +1,4 @@
 import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import {
   FileInfoSummary,
   isDoneFileStatusType,
@@ -9,6 +8,7 @@ import {
 } from 'forms-shared/form-files/fileStatus'
 import React, { useMemo } from 'react'
 
+import cn from '../../../../frontend/cn'
 import Spinner from '../../simple-components/Spinner'
 
 type SummaryFileProps = {
@@ -39,7 +39,7 @@ const SummaryFile = ({ fileInfo }: SummaryFileProps) => {
   }, [isErrorStyle, isScanningStyle, isDoneStyle, isUploadingStyle])
 
   return (
-    <div className={cx('flex items-center gap-3', { 'text-error': isErrorStyle })}>
+    <div className={cn('flex items-center gap-3', { 'text-error': isErrorStyle })}>
       <div className="shrink-0">{Icon}</div>
       {fileInfo.fileName}
     </div>

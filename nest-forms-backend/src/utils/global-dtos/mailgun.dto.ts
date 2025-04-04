@@ -1,4 +1,4 @@
-import { MailgunTemplateEnum } from '../global-services/mailgun/mailgun.constants'
+import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 
 export interface SendEmailInputDto {
   to: string
@@ -16,7 +16,8 @@ export interface SendEmailVariablesDto {
   applicationName?: string
   firstName?: string
   feHost?: string
-  feedbackLinks?: string
+  feedbackLink?: string
   formId?: string
   htmlData?: string
+  slug?: string
 }

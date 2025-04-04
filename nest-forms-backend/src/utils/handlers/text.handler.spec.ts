@@ -1,6 +1,9 @@
 import { Forms, Prisma } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
 import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import stanoviskoKInvesticnemuZameruExample from 'forms-shared/example-forms/examples/stanoviskoKInvesticnemuZameruExample'
+import zavazneStanoviskoKInvesticnejCinnostiExample from 'forms-shared/example-forms/examples/zavazneStanoviskoKInvesticnejCinnostiExample'
 
 import {
   getFrontendFormTitleFromForm,
@@ -91,6 +94,36 @@ describe('getSubjectTextFromForm', () => {
       } as FormDefinition,
     )
     expect(result).toBe('Subject  value data3Val')
+  })
+
+  it('stanovisko-k-investicnemu-zameru special case', () => {
+    const formDefinition = getFormDefinitionBySlug(
+      'stanovisko-k-investicnemu-zameru',
+    )
+    const result = getSubjectTextFromForm(
+      { formDataJson: stanoviskoKInvesticnemuZameruExample.formData } as Forms,
+      formDefinition!,
+    )
+
+    expect(result).toBe(
+      'e-SIZ ž. Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka',
+    )
+  })
+
+  it('zavazne-stanovisko-k-investicnej-cinnosti special case', () => {
+    const formDefinition = getFormDefinitionBySlug(
+      'zavazne-stanovisko-k-investicnej-cinnosti',
+    )
+    const result = getSubjectTextFromForm(
+      {
+        formDataJson: zavazneStanoviskoKInvesticnejCinnostiExample.formData,
+      } as Forms,
+      formDefinition!,
+    )
+
+    expect(result).toBe(
+      'e-ZST ž. Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka',
+    )
   })
 })
 

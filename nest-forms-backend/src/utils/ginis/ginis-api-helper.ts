@@ -1,15 +1,7 @@
-import { Ginis } from '@bratislava/ginis-sdk'
-
-// helper types (until fixed in ginis-sdk)
-export type DetailDokumentu = Awaited<
-  ReturnType<InstanceType<typeof Ginis>['json']['ssl']['detailDokumentu']>
->
-export type DetailFunkcnihoMista = Awaited<
-  ReturnType<InstanceType<typeof Ginis>['json']['gin']['detailFunkcnihoMista']>
->
-export type DetailReferenta = Awaited<
-  ReturnType<InstanceType<typeof Ginis>['json']['gin']['detailReferenta']>
->
+import {
+  SslDetailDokumentuHistorieDokumentuItem,
+  SslDetailDokumentuResponse,
+} from '@bratislava/ginis-sdk'
 
 export enum GinisDocumentChangeType {
   DOCUMENT_CREATED = 'DOCUMENT_CREATED',
@@ -26,7 +18,7 @@ const validIdKtgZmeny = Object.keys(idKtgZmenyToGinisDocumentChangeType)
 type ValidIdKtgZmeny = keyof typeof idKtgZmenyToGinisDocumentChangeType
 
 type DocumentHistoryElementWithAssignedCategory =
-  DetailDokumentu['HistorieDokumentu'][number] & {
+  SslDetailDokumentuHistorieDokumentuItem & {
     assignedCategory: GinisDocumentChangeType
   }
 export type MappedDocumentHistory =
@@ -34,17 +26,19 @@ export type MappedDocumentHistory =
 
 // likely more functions will be added to this file
 export const mapGinisHistory = (
-  document: DetailDokumentu,
+  document: SslDetailDokumentuResponse,
 ): Array<DocumentHistoryElementWithAssignedCategory> =>
   // document history contains events such as "this document was viewed by someone"
   // we want to filter the uninteresting ones out
   // we also want to map to a small-enough enum of types of changes which FE can reference from here
-  document.HistorieDokumentu.filter((historyElement) =>
-    validIdKtgZmeny.includes(historyElement.IdKtgZmeny),
-  ).map((historyElement) => ({
-    ...historyElement,
-    assignedCategory:
-      idKtgZmenyToGinisDocumentChangeType[
-        historyElement.IdKtgZmeny as ValidIdKtgZmeny
-      ],
-  }))
+  document['Historie-dokumentu']
+    .filter((historyElement) =>
+      validIdKtgZmeny.includes(historyElement['Id-ktg-zmeny']),
+    )
+    .map((historyElement) => ({
+      ...historyElement,
+      assignedCategory:
+        idKtgZmenyToGinisDocumentChangeType[
+          historyElement['Id-ktg-zmeny'] as ValidIdKtgZmeny
+        ],
+    }))

@@ -1,3 +1,5 @@
+import { DeliveryMethod } from './noris.types'
+
 export interface NorisTaxPayersDto {
   adresa_tp_sidlo: string
   sposob_dorucenia: string
@@ -88,10 +90,6 @@ export interface NorisTaxPayersDto {
   SPL4_3: string
   TXTSPL4_4: string
   SPL4_4: string
-  obalka_cp: string
-  obalka_cp1: string
-  obalka_meno: string
-  obalka_meno2: string
   obalka_ulica: string
   obalka_psc: string
   obalka_mesto: string
@@ -99,11 +97,10 @@ export interface NorisTaxPayersDto {
   pouk_cena_bez_hal: string
   pouk_cena_hal: string
   specificky_symbol: string
-  drazba_dedic_od: string
-  drazba_dedic_do: string
   uzivatelsky_atribut: string
   uhrazeno: string
   zbyva_uhradit: string
+  delivery_method: DeliveryMethod | null
 }
 
 export interface NorisPaymentsDto {

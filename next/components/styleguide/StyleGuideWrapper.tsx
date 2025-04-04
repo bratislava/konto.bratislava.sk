@@ -38,9 +38,9 @@ const StyleGuideWrapper = ({ children }: StyleGuideWrapperProps) => {
       color: activeBrandColor === brand.color ? 'white' : 'black',
       backgroundColor:
         activeBrandColor === brand.color
-          ? `rgb(var(${colorVariable.c700}))`
-          : `rgb(var(${colorVariable.c200}))`,
-      border: `1px solid rgb(var(${colorVariable.c700}))`,
+          ? `var(${colorVariable.c700})`
+          : `var(${colorVariable.c200})`,
+      border: `1px solid var(${colorVariable.c700})`,
       transition: '0.125s linear all',
     }
 
@@ -58,17 +58,12 @@ const StyleGuideWrapper = ({ children }: StyleGuideWrapperProps) => {
   }
 
   return (
-    <main>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: pageStyle(activeBrandColor),
-        }}
-      />
+    <main style={pageStyle(activeBrandColor)}>
       <div className="min-h-screen bg-[#E5E5E5]">
-        <div className="mx-auto max-w-screen-lg pb-64 md:px-12 md:pt-12">
-          <h1 className="text-h1 mb-10 text-center underline">Style Guide</h1>
+        <div className="mx-auto max-w-(--breakpoint-lg) pb-64 md:px-12 md:pt-12">
+          <h1 className="mb-10 text-center text-h1 underline">Style Guide</h1>
           <div className="mb-10">
-            <h1 className="text-h2 ml-2">Change brand of Style Guide</h1>
+            <h1 className="ml-2 text-h2">Change brand of Style Guide</h1>
             <p className="ml-2">
               <b>WARNING:</b> Components should change automatically brand color scheme after we
               change colors in :root based on chosen brand. Click on button for change in styleguide

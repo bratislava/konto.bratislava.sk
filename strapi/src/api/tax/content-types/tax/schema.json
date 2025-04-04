@@ -32,6 +32,15 @@
     },
     "channelChangeEffectiveNextYearText": {
       "type": "richtext"
+    },
+    "paymentSuccessFeedbackLink": {
+      "type": "string"
+    },
+    "paymentSuccessPrivacyPolicyLink": {
+      "type": "string"
+    },
+    "paymentSuccessFaqLink": {
+      "type": "string"
     }
   }
 }

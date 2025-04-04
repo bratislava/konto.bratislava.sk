@@ -1,7 +1,7 @@
-import cx from 'classnames'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import React from 'react'
 
+import cn from '../../frontend/cn'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormContent from './FormContent'
 import FormVersionCompareAction from './FormVersionCompareAction'
@@ -31,7 +31,7 @@ const FormLayoutContainer = () => {
   const { isEmbedded, versionCompareContinueAction } = useFormContext()
   const { formSent } = useFormSent()
 
-  const accountPageLayoutClassName = cx({
+  const accountPageLayoutClassName = cn({
     'bg-gray-50': formSent,
     'bg-gray-0 md:bg-gray-50':
       !formSent && versionCompareContinueAction !== VersionCompareContinueAction.None,

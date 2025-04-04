@@ -1,7 +1,7 @@
 import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { ReactNode } from 'react'
 
+import cn from '../../../frontend/cn'
 import ButtonNew from './ButtonNew'
 import { LinkPlausibleProps } from './MLinkNew'
 
@@ -28,7 +28,7 @@ const ServiceCard = ({
   href,
   plausibleProps,
 }: ServiceCardBase) => {
-  const style = cx(
+  const style = cn(
     'group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
@@ -39,11 +39,11 @@ const ServiceCard = ({
     <div className={style}>
       <div className="flex w-full justify-between">
         <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
-        <span className={cx('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>{tag}</span>
+        <span className={cn('h-min rounded-[4px] px-2 text-p3-medium', tagStyle)}>{tag}</span>
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
         <h3
-          className={cx('text-h5 font-semibold leading-5 lg:leading-7', {
+          className={cn('text-h5 leading-5 font-semibold lg:leading-7', {
             'group-hover:underline': buttonText,
           })}
         >

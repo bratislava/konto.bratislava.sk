@@ -1,5 +1,4 @@
 import { CrossIcon, EditIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 
@@ -22,14 +21,14 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
           <div className="flex flex-row items-center gap-5">
             <Button className="hidden size-0" />
             <Button
-              className={cx('hidden h-full', 'md:block')}
+              className="hidden h-full"
               variant="plain-black"
               size="sm"
               text={t('profile_detail.stop_edit_button')}
               onPress={onCancelEditing}
             />
             <Button
-              className={cx('hidden', 'md:block')}
+              className="hidden md:block"
               variant="black"
               size="sm"
               text={t('profile_detail.save_edit_button')}
@@ -38,7 +37,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               data-cy="save-personal-information-button"
             />
             <CrossIcon
-              className={cx('block h-6 w-6 cursor-pointer', 'md:hidden')}
+              className="block h-6 w-6 cursor-pointer md:hidden"
               onClick={onCancelEditing}
             />
           </div>

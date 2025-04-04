@@ -1,5 +1,6 @@
-import cx from 'classnames'
 import React from 'react'
+
+import cn from '../../../../frontend/cn'
 
 interface SectionContainerProps {
   hasBackground?: boolean
@@ -12,12 +13,16 @@ export const SectionContainer = ({
   ...rest
 }: React.HTMLAttributes<HTMLDivElement> & SectionContainerProps) => (
   <div
-    className={cx(className, 'px-8', {
-      'bg-category-200': hasBackground === true,
-    })}
+    className={cn(
+      'px-8',
+      {
+        'bg-category-200': hasBackground === true,
+      },
+      className,
+    )}
     {...rest}
   >
-    <div className="mx-auto w-full max-w-screen-lg">{children}</div>
+    <div className="mx-auto w-full max-w-(--breakpoint-lg)">{children}</div>
   </div>
 )
 

@@ -1,6 +1,7 @@
 import { EditIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { PropsWithChildren } from 'react'
+
+import cn from '../../../frontend/cn'
 
 type SummaryRowProps = PropsWithChildren<{
   label: string
@@ -13,18 +14,18 @@ type SummaryRowProps = PropsWithChildren<{
 const SummaryRowSimple = (props: SummaryRowProps) => {
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
-  const containerClassName = cx('flex flex-wrap gap-2 border-b-2 py-4 sm:flex-nowrap', {
+  const containerClassName = cn('flex flex-wrap gap-2 border-b-2 py-4 sm:flex-nowrap', {
     'border-red-500 [&>div>*]:block': isError,
-    'border-gray-200 [&>div>*]:hover:block': !isError,
+    'border-gray-200 hover:[&>div>*]:block': !isError,
     'hover:border-gray-700': isEditable,
   })
 
-  const labelClassName = cx('w-full', {
+  const labelClassName = cn('w-full', {
     'text-p1-semibold': size === 'large',
     'text-p2-semibold': size === 'small',
   })
 
-  const valueClassName = cx('grow', {
+  const valueClassName = cn('grow', {
     'text-p1': size === 'large',
     'text-p2': size === 'small',
   })

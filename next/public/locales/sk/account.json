@@ -170,9 +170,9 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Daňové priznanie z nehnuteľností online",
-    "announcement_card_text_first": "Teraz môžete podať daňové priznanie k nehnuteľnostiam už aj z pohodlia domova. Potrebujete len elektronický občiansky preukaz, aktívnu schránku na slovensko.sk a vyplnený formulár. Online a bez návštevy daňového úradu.",
-    "announcement_card_button_first": "Vyplniť podanie",
+    "announcement_card_title_first": "Platba dane z nehnuteľností online",
+    "announcement_card_text_first": "Ušetrite si cestu na poštu. Zaregistrujte sa (alebo prihláste) do Bratislavského konta. Overte svoju identitu, ak ste tak už nespravili a nastavte do 31. 03. 2025 spôsob doručenia oznámením.",
+    "announcement_card_button_first": "Chcem zmeniť doručenie",
     "announcement_card_title_second": "Žiadosť o nájom bytu",
     "announcement_card_text_second": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
     "announcement_card_button_second": "Mám záujem",
@@ -416,8 +416,13 @@
       "45": {
         "title": "Oznámenie za komunálne odpady",
         "description": "Vyplňte jednoducho oznámenie o vzniku, zmene a zániku poplatkovej povinnosti za komunálny odpad.",
-        "buttonText": "Prejsť na priznanie",
+        "buttonText": "Prejsť na oznámenie",
         "tag": "Nová služba"
+      },
+      "46": {
+        "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+        "description": "Podajte žiadosť o sprístupnenie informácií jednoducho. Mesto Bratislava má 12 pracovných dní na spracovanie žiadosti a sprístupnenie informácií.",
+        "buttonText": "Prejsť na žiadosť"
       }
     }
   },

@@ -14,7 +14,6 @@ export const textArea = (
       title: options.title,
       baUiSchema: {
         'ui:widget': BaWidgetType.TextArea,
-        'ui:label': false,
         'ui:options': uiOptions,
       },
     }),

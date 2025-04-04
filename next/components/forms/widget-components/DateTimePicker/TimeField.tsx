@@ -1,9 +1,9 @@
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useRef } from 'react'
 import { TimeValue, useTimeField } from 'react-aria'
 import { useTimeFieldState } from 'react-stately'
 
+import cn from '../../../../frontend/cn'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 
@@ -64,7 +64,7 @@ const TimeField = (props: TimeFieldProps) => {
     ref,
   )
 
-  const timeFieldStyle = cx('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
+  const timeFieldStyle = cn('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
     'border-gray-200 focus-within:border-gray-700 hover:border-gray-400': !disabled,
     'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
     'pointer-events-none border-gray-300 bg-gray-100 text-gray-400': disabled,

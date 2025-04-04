@@ -5,6 +5,7 @@ SELECT
     lcs.dane21_doklad.cislo_subjektu, 
     subjekty_d1.nazev_subjektu adresa_tp_sidlo,
     subjekty_a.reference_subjektu cislo_konania , 
+    lcs.dane21_doklad.datum_platnosti,
     lcs.dane21_doklad.variabilny_symbol, 
     (case 
         when isnull(lcs.dane21_druh_dokladu.generovat_pohladavku,'')='A' then view_doklad_saldo.uhrazeno 
@@ -510,4 +511,10 @@ export const setDeliveryMethodsForUser = `
             WHERE podnikatel = 'N' 
             AND rodne_cislo IN (@birth_numbers)
         )
+`
+
+export const getNorisDataForUpdate = `
+    SELECT variabilny_symbol, datum_platnosti
+    FROM lcs.dane21_doklad
+    WHERE variabilny_symbol IN (@variable_symbols)
 `

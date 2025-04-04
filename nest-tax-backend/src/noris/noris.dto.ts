@@ -17,6 +17,7 @@ export interface NorisTaxPayersDto {
   stat_nazov_plny: string
   obec_nazev_tb: string
   akt_datum: string
+  datum_platnosti: string | null
   vyb_nazov: string
   vyb_telefon_prace: string
   vyb_email: string
@@ -107,4 +108,9 @@ export interface NorisPaymentsDto {
   uhrazeno: string
   zbyva_uhradit: string
   specificky_symbol: string
+}
+
+export interface NorisUpdateDto {
+  variabilny_symbol: string
+  datum_platnosti: string | null
 }

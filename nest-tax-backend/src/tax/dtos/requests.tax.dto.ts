@@ -377,6 +377,9 @@ export class ResponseTaxDto {
     description: 'Date and time of tax ruling (právoplatnosť rozhodnutia)',
     default: '2023-04-13T14:39:49.004Z',
   })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
   dateTaxRuling: Date | null
 
   @ApiProperty({

@@ -16,8 +16,10 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
-import { TaxIdVariableSymbol } from '../utils/types/types.prisma'
-import { transformDeliveryMethodToDatabaseType } from '../utils/types/types.prisma'
+import {
+  TaxIdVariableSymbol,
+  transformDeliveryMethodToDatabaseType,
+} from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,

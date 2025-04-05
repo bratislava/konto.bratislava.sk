@@ -4,15 +4,13 @@ import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
-import {
-  FormDefinition,
-  FormDefinitionType,
-} from 'forms-shared/definitions/formDefinitionTypes'
+import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
   SharepointData,
   SharepointRelationData,
 } from 'forms-shared/definitions/sharepointTypes'
+import { getFormSubject } from 'forms-shared/form-utils/getFormSubject'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
@@ -29,10 +27,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../handlers/text.handler'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
@@ -213,7 +207,7 @@ export default class SharepointSubservice {
 
     const accessToken = await this.getAccessToken()
     const { sharepointData, schema } = formDefinition
-    const formTitle = this.getTitle(form, formDefinition)
+    const formTitle = getFormSubject(formDefinition, form.formDataJson)
     const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
 
     const jsonDataExtraDataOmitted = omitExtraData(
@@ -444,13 +438,5 @@ export default class SharepointSubservice {
       })
 
     return result
-  }
-
-  private getTitle(form: Forms, formDefinition: FormDefinition): string {
-    // fallback to messageSubject if title can't be parsed
-    return (
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-    )
   }
 }

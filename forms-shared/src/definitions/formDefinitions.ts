@@ -1,5 +1,8 @@
-import stanoviskoKInvesticnemuZameru from '../schemas/stanoviskoKInvesticnemuZameru'
-import predzahradky from '../schemas/predzahradky'
+import stanoviskoKInvesticnemuZameru, {
+  stanoviskoKInvesticnemuZameruExtractGinisSubject,
+  stanoviskoKInvesticnemuZameruExtractSubject,
+} from '../schemas/stanoviskoKInvesticnemuZameru'
+import predzahradky, { predzahradkyExtractSubject } from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
@@ -8,8 +11,11 @@ import {
   taxTermsAndConditions,
   ziadostONajomBytuTermsAndConditions,
 } from './termsAndConditions'
-import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
-import komunitneZahrady from '../schemas/komunitneZahrady'
+import zavazneStanoviskoKInvesticnejCinnosti, {
+  zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
+} from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
+import komunitneZahrady, { komunitneZahradyExtractSubject } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
 import ziadostONajomBytu, {
@@ -81,12 +87,11 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '0.9',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Podanie',
-    messageSubjectFormat:
-      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCisla} kú {stavba.katastralneUzemia}',
+    extractSubject: stanoviskoKInvesticnemuZameruExtractSubject,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
+      extractGinisSubject: stanoviskoKInvesticnemuZameruExtractGinisSubject,
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -102,12 +107,11 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '0.8',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Podanie',
-    messageSubjectFormat:
-      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCisla} kú {stavba.katastralneUzemia}',
+    extractSubject: zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
+      extractGinisSubject: zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
@@ -123,12 +127,12 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectFormat: 'Registrácia - {predzahradka.typRegistracie} predzáhradka',
-    messageSubjectDefault: 'Registrácia predzáhradky',
+    extractSubject: predzahradkyExtractSubject,
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
+      extractGinisSubject: predzahradkyExtractSubject,
     },
   },
   {
@@ -142,12 +146,12 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.1',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o komunitnú záhradu',
-    messageSubjectFormat: 'Žiadosť o komunitnú záhradu - {pozemok.typPozemku} mestský pozemok',
+    extractSubject: komunitneZahradyExtractSubject,
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
+      extractGinisSubject: komunitneZahradyExtractSubject,
     },
   },
   {
@@ -161,7 +165,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.2',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
-    messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
   },
@@ -177,7 +180,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
-    messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
     isSigned: true,
     exampleFormNotRequired: true,
   },
@@ -193,7 +195,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.2',
     publisher: 'ico://sk/00603481',
     termsAndConditions: ziadostONajomBytuTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o nájom bytu',
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisAssignment: {
@@ -219,7 +220,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Mimoriadny odvoz a zhodnotenie odpadu',
     embedded: 'olo',
   },
   {
@@ -239,7 +239,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Energetické zhodnotenie odpadu v ZEVO',
     embedded: 'olo',
   },
   {
@@ -259,7 +258,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Uzatvorenie zmluvy o nakladaní s odpadom',
     embedded: 'olo',
   },
   {
@@ -279,7 +277,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Dočistenie stanovišťa zberných nádob',
     embedded: 'olo',
   },
   {
@@ -299,7 +296,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom',
     embedded: 'olo',
   },
   {
@@ -319,7 +315,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloKoloTaxiTermsAndConditions,
-    messageSubjectDefault: 'KOLO Taxi',
     embedded: 'olo',
   },
   {
@@ -339,7 +334,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'OLO Taxi',
     embedded: 'olo',
   },
   {
@@ -359,7 +353,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Podnety a pochvaly občanov',
     embedded: 'olo',
   },
   {
@@ -379,7 +372,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Odvoz objemného odpadu valníkom',
     embedded: 'olo',
   },
   {
@@ -399,7 +391,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre právnické osoby',
     embedded: 'olo',
   },
   {
@@ -419,7 +410,6 @@ export const formDefinitions: FormDefinition[] = [
       newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     },
     termsAndConditions: oloTermsAndConditions,
-    messageSubjectDefault: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
     embedded: 'olo',
   },
   {
@@ -430,7 +420,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Objednávka informatívneho zákresu sietí',
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeQNdJ',
     email: {
@@ -456,7 +445,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeYNBT',
     email: {
@@ -482,7 +470,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o stanovisko k projektovej dokumentácii',
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeC4TS',
     email: {
@@ -508,7 +495,6 @@ export const formDefinitions: FormDefinition[] = [
     schema: ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetlenia,
     sendPolicy: FormSendPolicy.NotAuthenticated,
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia',
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
@@ -538,7 +524,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.0',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
     ginisAssignment: {
       ginisOrganizationName: 'OMDP',
     },
@@ -556,7 +541,6 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.0',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    messageSubjectDefault: 'Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.',
     ginisAssignment: {
       ginisOrganizationName: 'OVPP',
     },

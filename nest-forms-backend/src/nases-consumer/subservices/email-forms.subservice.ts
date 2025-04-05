@@ -7,6 +7,7 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormSubject } from 'forms-shared/form-utils/getFormSubject'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   FileIdInfoMap,
@@ -26,10 +27,6 @@ import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../../utils/handlers/text.handler'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
@@ -202,7 +199,6 @@ export default class EmailFormsSubservice {
     userEmail: string,
     form: EmailFormChecked,
     formDefinition: FormDefinitionEmail,
-    formTitle: string,
     userName: string | null,
   ): Promise<void> {
     try {
@@ -226,7 +222,7 @@ export default class EmailFormsSubservice {
           template: formDefinition.email.userResponseTemplate,
           data: {
             formId: form.id,
-            messageSubject: formTitle,
+            messageSubject: getFormSubject(formDefinition, form.formDataJson),
             firstName: userName,
             slug: formDefinition.slug,
           },
@@ -280,10 +276,6 @@ export default class EmailFormsSubservice {
       `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
     )
 
-    const formTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
@@ -296,7 +288,7 @@ export default class EmailFormsSubservice {
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
-          messageSubject: formTitle,
+          messageSubject: getFormSubject(formDefinition, form.formDataJson),
           firstName: null,
           slug: formDefinition.slug,
           htmlData: await renderSummaryEmail({
@@ -337,7 +329,6 @@ export default class EmailFormsSubservice {
         userConfirmationEmail,
         form,
         formDefinition,
-        formTitle,
         userName,
       )
     } else {

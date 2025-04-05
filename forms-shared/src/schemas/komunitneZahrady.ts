@@ -11,6 +11,8 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { match } from 'ts-pattern'
+import { createFormDataExtractor } from '../form-utils/formDataExtractor'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 const getAdresaFields = (title: string) => [
   input(
@@ -297,4 +299,35 @@ export default schema(
       ),
     ),
   ],
+)
+
+type ExtractSubjectFormData = {
+  pozemok: {
+    typPozemku: 'odporucanyPozemok' | 'inyPozemok'
+  }
+}
+
+const extractSubjectSchema = {
+  type: 'object',
+  properties: {
+    pozemok: {
+      type: 'object',
+      properties: {
+        typPozemku: { type: 'string', enum: ['odporucanyPozemok', 'inyPozemok'] },
+      },
+    },
+  },
+} as BAJSONSchema7
+
+export const komunitneZahradyExtractSubject = createFormDataExtractor<ExtractSubjectFormData>(
+  extractSubjectSchema,
+  (formData) => {
+    if (formData.pozemok.typPozemku === 'odporucanyPozemok') {
+      return 'Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok'
+    }
+    if (formData.pozemok.typPozemku === 'inyPozemok') {
+      return 'Žiadosť o komunitnú záhradu - iný mestský pozemok'
+    }
+    return 'Žiadosť o komunitnú záhradu'
+  },
 )

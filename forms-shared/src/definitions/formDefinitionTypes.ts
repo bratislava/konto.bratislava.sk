@@ -2,6 +2,7 @@ import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
 import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
+import { FormDataExtractor } from '../form-utils/formDataExtractor'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -17,8 +18,7 @@ type FormDefinitionBase = {
   jsonVersion: string
   sendPolicy: FormSendPolicy
   termsAndConditions: string
-  messageSubjectDefault: string
-  messageSubjectFormat?: string
+  extractSubject?: FormDataExtractor
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
@@ -38,6 +38,7 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   ginisAssignment: {
     ginisOrganizationName: string
     ginisPersonName?: string
+    extractGinisSubject?: FormDataExtractor
   }
   sharepointData?: SharepointData
 }

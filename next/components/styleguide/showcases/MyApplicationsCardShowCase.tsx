@@ -28,7 +28,7 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
     finishSubmission: null,
     archived: false,
     frontendTitle: 'Nazov stavby',
-    messageSubject: 'Podanie',
+    formSubject: 'Podanie',
     jsonVersion: '1.0.0',
     ...overrides,
   }) as GetFormResponseDto

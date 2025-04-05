@@ -9,6 +9,8 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { match } from 'ts-pattern'
+import { createFormDataExtractor } from '../form-utils/formDataExtractor'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 export default schema(
   {
@@ -149,4 +151,34 @@ export default schema(
       fileUpload('inePrilohy', { title: 'Iné' }, { type: 'dragAndDrop' }),
     ]),
   ],
+)
+
+type ExtractSubjectFormData = {
+  predzahradka: {
+    typRegistracie: 'nova' | 'existujuca'
+  }
+}
+
+const extractSubjectSchema = {
+  type: 'object',
+  properties: {
+    predzahradka: {
+      type: 'object',
+      properties: {
+        typRegistracie: { type: 'string', enum: ['nova', 'existujuca'] },
+      },
+    },
+  },
+} as BAJSONSchema7
+
+export const predzahradkyExtractSubject = createFormDataExtractor<ExtractSubjectFormData>(
+  extractSubjectSchema,
+  (formData) => {
+    if (formData.predzahradka.typRegistracie === 'nova') {
+      return 'Registrácia novej predzáhradky'
+    }
+    if (formData.predzahradka.typRegistracie === 'existujuca') {
+      return 'Registrácia existujúcej predzáhradky'
+    }
+  },
 )

@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getGinisSubject > komunitneZahradyExample GINIS subject should match snapshot 1`] = `"Komunitné záhrady"`;
+
+exports[`getGinisSubject > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample GINIS subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
+
+exports[`getGinisSubject > predzahradkyExample GINIS subject should match snapshot 1`] = `"Predzáhradky"`;
+
+exports[`getGinisSubject > stanoviskoKInvesticnemuZameruExample GINIS subject should match snapshot 1`] = `"e-SIZ Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+
+exports[`getGinisSubject > zavazneStanoviskoKInvesticnejCinnostiExample GINIS subject should match snapshot 1`] = `"e-ZST Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+
+exports[`getGinisSubject > ziadostONajomBytuExample GINIS subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
+
+exports[`getGinisSubject > ziadostOSlobodnyPristupKInformaciamExample GINIS subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;

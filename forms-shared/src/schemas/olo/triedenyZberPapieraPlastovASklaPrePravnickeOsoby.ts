@@ -199,7 +199,7 @@ export default schema(
         {
           variant: 'topLevel',
           addButtonLabel: 'Pridať ďalší odpad',
-          itemTitle: 'Odpad {index}',
+          itemTitle: 'Odpad č. {index}',
         },
         [
           input(
@@ -402,11 +402,32 @@ export default schema(
           ),
         ],
       ),
-      input(
-        'emailPotvrdenie',
-        { type: 'email', title: 'E-mail (potvrdenie o prevzatí odpadov/obalov)', required: true },
-        {},
+      radioGroup(
+        'emailPotvrdeniePouzitIny',
+        {
+          type: 'boolean',
+          title:
+            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?',
+          required: true,
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
+          ],
+        },
+        {
+          variant: 'boxed',
+          orientations: 'row',
+        },
       ),
+      conditionalFields(createCondition([[['emailPotvrdeniePouzitIny'], { const: true }]]), [
+        input(
+          'emailPotvrdenie',
+          { type: 'text', title: 'Email', required: true },
+          {
+            helptext: 'V prípade viacerých emailov ich oddeľte čiarkou',
+          },
+        ),
+      ]),
     ]),
     step('suhlasy', { title: 'Súhlasy' }, [
       checkbox(

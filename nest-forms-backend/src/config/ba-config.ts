@@ -49,16 +49,9 @@ export default class BaConfig {
     }
   }
 
-  get turnstile() {
-    return {
-      secret: this.validatedConfig.TURNSTILE_SECRET,
-    }
-  }
-
   get mailgun() {
     return {
       apiKey: this.validatedConfig.MAILGUN_API_KEY,
-      defaultDomain: this.validatedConfig.DEFAULT_MAILGUN_DOMAIN,
       domain: this.validatedConfig.MAILGUN_DOMAIN,
       host: this.validatedConfig.MAILGUN_HOST,
       emailFrom: this.validatedConfig.MAILGUN_EMAIL_FROM,
@@ -84,13 +77,6 @@ export default class BaConfig {
     }
   }
 
-  get taxBackend() {
-    return {
-      url: this.validatedConfig.TAX_BACKEND_URL,
-      apiKey: this.validatedConfig.TAX_BACKEND_API_KEY,
-    }
-  }
-
   get cityAccountBackend() {
     return {
       url: this.validatedConfig.USER_ACCOUNT_API,
@@ -102,18 +88,6 @@ export default class BaConfig {
       url: this.validatedConfig.NEST_CLAMAV_SCANNER,
       username: this.validatedConfig.NEST_CLAMAV_SCANNER_USERNAME,
       password: this.validatedConfig.NEST_CLAMAV_SCANNER_PASSWORD,
-    }
-  }
-
-  get bloomreach() {
-    return {
-      integrationState: this.validatedConfig.BLOOMREACH_INTEGRATION_STATE,
-      projectToken: this.validatedConfig.BLOOMREACH_PROJECT_TOKEN,
-      api: {
-        url: this.validatedConfig.BLOOMREACH_API_URL,
-        key: this.validatedConfig.BLOOMREACH_API_KEY,
-        secret: this.validatedConfig.BLOOMREACH_API_SECRET,
-      },
     }
   }
 

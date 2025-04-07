@@ -20,7 +20,7 @@ export const getMetaXml = (formDefinition: FormDefinitionSlovenskoSk, validFrom:
       'dc:title': formDefinition.title,
       'dc:identifier': getSlovenskoSkMetaIdentifier(formDefinition),
       'dc:description': formDefinition.title,
-      'dc:creator': formDefinition.gestor,
+      'dc:creator': formDefinition.publisher,
       'dc:publisher': formDefinition.publisher,
       'meta:version': formDefinition.pospVersion,
       'meta:language': 'sk',

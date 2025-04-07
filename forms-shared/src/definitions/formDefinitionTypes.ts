@@ -29,8 +29,8 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   pospID: string
   pospVersion: string
   publisher: string
-  gestor: string
   isSigned: boolean
+  skipGinisStateUpdate?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

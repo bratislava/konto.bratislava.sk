@@ -1551,7 +1551,7 @@ export default schema(
         [
           fileUploadMultiple(
             'prilohy',
-            { title: 'Prílohy', required: true },
+            { title: 'Prílohy' },
             {
               type: 'dragAndDrop',
               helptext: match(osobaTypy)

@@ -483,4 +483,13 @@ export const serviceCards: ServiceCardBase[] = [
         ),
       }
     : null,
+  {
+    id: 46,
+    title: 'account_section_services.cards.46.title',
+    description: 'account_section_services.cards.46.description',
+    buttonText: 'account_section_services.cards.46.buttonText',
+    icon: <AdministrationIcon className="size-10 text-main-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-slobodny-pristup-k-informaciam'),
+  },
 ].filter(isDefined)

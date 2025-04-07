@@ -628,7 +628,9 @@
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+      "content_generic": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
+      "content_signed_in": "Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti).",
+      "content_feedback": "Prosíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
       "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
     },
     "form_submit_tax": {

@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import cn from '../../../../../frontend/cn'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { useFormContext } from '../../../useFormContext'
 
 const useThankYouFormSection = () => {
@@ -14,6 +15,7 @@ const useThankYouFormSection = () => {
     formDefinition: { feedbackLink },
     isEmbedded,
   } = useFormContext()
+  const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('account')
 
   if (isTaxForm) {
@@ -41,7 +43,11 @@ const useThankYouFormSection = () => {
     title: t('thank_you.form_submit.title'),
     firstButtonTitle: t('thank_you.button_to_formular_text_2'),
     secondButtonTitle: t('thank_you.button_to_profil_text'),
-    content: t('thank_you.form_submit.content'),
+    content: [
+      t('thank_you.form_submit.content_generic'),
+      isSignedIn ? ` ${t('thank_you.form_submit.content_signed_in')}` : '',
+      feedbackLink ? `\n\n${t('thank_you.form_submit.content_feedback')}` : '',
+    ].join(''),
     feedbackLink,
     largePadding: true,
     displayAccountLinks: true,

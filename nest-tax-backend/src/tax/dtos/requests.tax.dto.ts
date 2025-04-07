@@ -24,23 +24,6 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
-export enum TaxDetailareaTypeEnum {
-  NONRESIDENTIAL = 'NONRESIDENTIAL',
-  RESIDENTIAL = 'RESIDENTIAL',
-  A = 'A',
-  B = 'B',
-  C = 'C',
-  D = 'D',
-  E = 'E',
-  F = 'F',
-  G = 'G',
-  H = 'H',
-  jH = 'jH',
-  jI = 'jI',
-  byt = 'byt',
-  nebyt = 'nebyt',
-}
-
 export enum TaxPaidStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',

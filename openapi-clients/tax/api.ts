@@ -47,6 +47,20 @@ export interface CreateBirthNumbersResponseDto {
   birthNumbers: Array<string>
 }
 /**
+ * delivery_method
+ * @export
+ * @enum {string}
+ */
+
+export const DeliveryMethodNamed = {
+  Edesk: 'EDESK',
+  Postal: 'POSTAL',
+  CityAccount: 'CITY_ACCOUNT',
+} as const
+
+export type DeliveryMethodNamed = (typeof DeliveryMethodNamed)[keyof typeof DeliveryMethodNamed]
+
+/**
  *
  * @export
  * @interface RequestPostNorisLoadDataDto
@@ -391,10 +405,10 @@ export interface ResponseTaxDetailsDto {
   type: TaxDetailTypeEnum
   /**
    * Area type of tax detail - exact type of object of tax
-   * @type {TaxDetailTypeEnum}
+   * @type {TaxDetailareaType}
    * @memberof ResponseTaxDetailsDto
    */
-  areaType: TaxDetailTypeEnum
+  areaType: TaxDetailareaType
   /**
    * Area of tax detail - square meters
    * @type {string}
@@ -573,10 +587,10 @@ export interface ResponseTaxDto {
   lastCheckedPayments: string
   /**
    * delivery_method
-   * @type {object}
+   * @type {DeliveryMethodNamed}
    * @memberof ResponseTaxDto
    */
-  deliveryMethod: object | null
+  deliveryMethod: DeliveryMethodNamed | null
 }
 
 /**
@@ -732,6 +746,31 @@ export const TaxDetailTypeEnum = {
 } as const
 
 export type TaxDetailTypeEnum = (typeof TaxDetailTypeEnum)[keyof typeof TaxDetailTypeEnum]
+
+/**
+ * Area type of tax detail - exact type of object of tax
+ * @export
+ * @enum {string}
+ */
+
+export const TaxDetailareaType = {
+  Nonresidential: 'NONRESIDENTIAL',
+  Residential: 'RESIDENTIAL',
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
+  E: 'E',
+  F: 'F',
+  G: 'G',
+  H: 'H',
+  JH: 'jH',
+  JI: 'jI',
+  Byt: 'byt',
+  Nebyt: 'nebyt',
+} as const
+
+export type TaxDetailareaType = (typeof TaxDetailareaType)[keyof typeof TaxDetailareaType]
 
 /**
  * Type of paid status

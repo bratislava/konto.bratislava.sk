@@ -216,8 +216,8 @@ export class ResponseTaxDetailsDto {
   @ApiProperty({
     description: 'Area type of tax detail - exact type of object of tax',
     default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailTypeEnum',
-    enum: TaxDetailType,
+    enumName: 'TaxDetailareaType',
+    enum: TaxDetailareaType,
   })
   areaType: TaxDetailareaType
 
@@ -533,7 +533,8 @@ export class ResponseTaxDto {
   @ApiProperty({
     description: 'delivery_method',
     example: DeliveryMethodNamed.CITY_ACCOUNT,
-    enumName: 'DeliveryMethod',
+    enumName: 'DeliveryMethodNamed',
+    enum: DeliveryMethodNamed,
   })
   @IsEnum(DeliveryMethodNamed)
   @IsOptional()

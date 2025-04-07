@@ -24,23 +24,6 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
-export enum TaxDetailareaTypeEnum {
-  NONRESIDENTIAL = 'NONRESIDENTIAL',
-  RESIDENTIAL = 'RESIDENTIAL',
-  A = 'A',
-  B = 'B',
-  C = 'C',
-  D = 'D',
-  E = 'E',
-  F = 'F',
-  G = 'G',
-  H = 'H',
-  jH = 'jH',
-  jI = 'jI',
-  byt = 'byt',
-  nebyt = 'nebyt',
-}
-
 export enum TaxPaidStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',
@@ -216,8 +199,8 @@ export class ResponseTaxDetailsDto {
   @ApiProperty({
     description: 'Area type of tax detail - exact type of object of tax',
     default: TaxDetailareaType.byt,
-    enumName: 'TaxDetailTypeEnum',
-    enum: TaxDetailType,
+    enumName: 'TaxDetailareaType',
+    enum: TaxDetailareaType,
   })
   areaType: TaxDetailareaType
 
@@ -533,7 +516,8 @@ export class ResponseTaxDto {
   @ApiProperty({
     description: 'delivery_method',
     example: DeliveryMethodNamed.CITY_ACCOUNT,
-    enumName: 'DeliveryMethod',
+    enumName: 'DeliveryMethodNamed',
+    enum: DeliveryMethodNamed,
   })
   @IsEnum(DeliveryMethodNamed)
   @IsOptional()

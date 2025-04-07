@@ -11,6 +11,7 @@ import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { NorisUpdateDto } from './noris.dto'
 import {
+  getNorisDataForUpdate,
   queryPayersFromNoris,
   queryPaymentsFromNoris,
   setDeliveryMethodsForUser,
@@ -251,7 +252,7 @@ export class NorisService {
       variableSymbols.forEach((variableSymbol, index) => {
         request.input(`variablesymbol${index}`, variableSymbol)
       })
-      const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+      const queryWithPlaceholders = getNorisDataForUpdate.replaceAll(
         '@variable_symbols',
         variableSymbolsPlaceholders,
       )

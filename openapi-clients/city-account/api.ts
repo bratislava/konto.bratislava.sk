@@ -3294,6 +3294,44 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         options: localVarRequestOptions,
       }
     },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateOrCreateBloomreachCustomer: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/user/update-or-create-bloomreach-customer`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -3524,6 +3562,30 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerUpdateOrCreateBloomreachCustomer(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.userControllerUpdateOrCreateBloomreachCustomer(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUpdateOrCreateBloomreachCustomer']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -3644,6 +3706,19 @@ export const UsersManipulationApiFactory = function (
     ): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateOrCreateBloomreachCustomer(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseUserDataDto> {
+      return localVarFp
+        .userControllerUpdateOrCreateBloomreachCustomer(options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3771,6 +3846,19 @@ export class UsersManipulationApi extends BaseAPI {
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+   * @summary Update or create bloomreach customer for logged user
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UsersManipulationApi
+   */
+  public userControllerUpdateOrCreateBloomreachCustomer(options?: RawAxiosRequestConfig) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerUpdateOrCreateBloomreachCustomer(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

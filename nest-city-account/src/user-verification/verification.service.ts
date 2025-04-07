@@ -36,6 +36,7 @@ import {
 import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 
 @Injectable()
 export class VerificationService {
@@ -50,7 +51,8 @@ export class VerificationService {
     private mailgunSubservice: MailgunSubservice,
     private readonly amqpConnection: AmqpConnection,
     private verificationSubservice: VerificationSubservice,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly bloomreachService: BloomreachService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
       throw new Error('Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)')
@@ -74,11 +76,12 @@ export class VerificationService {
       }
     } else {
       try {
-        await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+        await this.cognitoSubservice.changeTier(
           user.idUser,
           CognitoUserAttributesTierEnum.QUEUE_IDENTITY_CARD,
           user['custom:account_type']
         )
+        await this.bloomreachService.trackCustomer(user.idUser)
       } catch (error) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
@@ -120,11 +123,15 @@ export class VerificationService {
         const throwerErrorGuard: ThrowerErrorGuard = new ThrowerErrorGuard()
         const prismaService = new PrismaService()
         const cognitoSubservice = new CognitoSubservice(throwerErrorGuard, prismaService)
-        await cognitoSubservice.changeCognitoTierAndInDatabase(
+        await cognitoSubservice.changeTier(
           data.msg.user.idUser,
           CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
           data.msg.type
         )
+
+        const bloomreachService = new BloomreachService(cognitoSubservice)
+
+        await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
         const logger = new LineLoggerSubservice('RabbitRPC')
         logger.error('RabbitMQ error handler - catch cognito/parser error', errorCatch)
@@ -164,11 +171,12 @@ export class VerificationService {
     }
 
     if (verification.statusCode === 200) {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      await this.cognitoSubservice.changeTier(
         data.msg.user.idUser,
         CognitoUserAttributesTierEnum.IDENTITY_CARD,
         data.msg.type
       )
+      await this.bloomreachService.trackCustomer(data.msg.user.idUser)
       const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
       if (
         newUserData[CognitoUserAttributesEnum.TIER] ===
@@ -230,11 +238,12 @@ export class VerificationService {
       })
       return new Nack()
     } else {
-      await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+      await this.cognitoSubservice.changeTier(
         data.msg.user.idUser,
         CognitoUserAttributesTierEnum.NOT_VERIFIED_IDENTITY_CARD,
         data.msg.type
       )
+      await this.bloomreachService.trackCustomer(data.msg.user.idUser)
       const newUserData = await this.cognitoSubservice.getDataFromCognito(data.msg.user.idUser)
       if (
         newUserData[CognitoUserAttributesEnum.TIER] ===
@@ -335,11 +344,13 @@ export class VerificationService {
       }
     }
 
-    await this.cognitoSubservice.changeCognitoTierAndInDatabase(
+    await this.cognitoSubservice.changeTier(
       user.idUser,
       CognitoUserAttributesTierEnum.EID,
       user['custom:account_type']
     )
+    await this.bloomreachService.trackCustomer(user.idUser)
+
     const newUserData = await this.cognitoSubservice.getDataFromCognito(user.idUser)
     if (newUserData[CognitoUserAttributesEnum.TIER] !== CognitoUserAttributesTierEnum.EID) {
       throw this.throwerErrorGuard.UnprocessableEntityException(

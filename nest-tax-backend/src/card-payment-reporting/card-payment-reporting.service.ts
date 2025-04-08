@@ -152,7 +152,15 @@ export class CardPaymentReportingService {
           key: {
             in: requiredKeys,
           },
+          validSince: {
+            lte: new Date(),
+          }
         },
+        orderBy: [
+          {validSince: 'desc'},
+          {createdAt: 'desc'},
+          ],
+        distinct: ['key'],
         select: {
           key: true,
           value: true,

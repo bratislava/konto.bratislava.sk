@@ -239,7 +239,7 @@ export default class NasesController {
   })
   @ApiOkResponse({
     description: 'Create form in db',
-    type: GetFormResponseDto,
+    type: CreateFormResponseDto,
   })
   @ApiNotFoundResponse({
     description: 'Form definition not found',

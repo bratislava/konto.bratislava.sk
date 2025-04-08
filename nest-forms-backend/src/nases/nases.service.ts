@@ -6,6 +6,7 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
 import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
@@ -39,10 +40,6 @@ import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormRequestDto,
@@ -132,13 +129,8 @@ export default class NasesService {
     }
     const result = await this.formsService.createForm(data)
 
-    const messageSubject = getSubjectTextFromForm(result, formDefinition)
-    const frontendTitle =
-      getFrontendFormTitleFromForm(result, formDefinition) || messageSubject
     return {
-      ...result,
-      messageSubject,
-      frontendTitle,
+      formId: result.id,
     }
   }
 
@@ -199,14 +191,9 @@ export default class NasesService {
       )
     }
 
-    const messageSubject = getSubjectTextFromForm(form, formDefinition)
-    const frontendTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
     return {
       ...form,
-      messageSubject,
-      frontendTitle,
-      formDefinitionSlug: formDefinition.slug,
+      formSubject: extractFormSubject(formDefinition, form.formDataJson),
     }
   }
 

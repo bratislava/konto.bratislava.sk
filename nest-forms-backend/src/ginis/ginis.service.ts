@@ -4,11 +4,16 @@ import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
+import { GenericObjectType } from '@rjsf/utils'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  extractFormSubject,
+  extractGinisSubject,
+} from 'forms-shared/form-utils/formDataExtractors'
 
 import {
   FormsErrorsEnum,
@@ -24,10 +29,6 @@ import {
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../utils/handlers/text.handler'
 import alertError, {
   LineLoggerSubservice,
 } from '../utils/subservices/line-logger.subservice'
@@ -526,7 +527,10 @@ export default class GinisService {
       }
       await this.editSubmission(
         form.ginisDocumentId,
-        getSubjectTextFromForm(form, formDefinition),
+        extractGinisSubject(
+          formDefinition,
+          form.formDataJson as GenericObjectType,
+        ),
       )
       return this.nackTrueWithWait(20_000)
     }
@@ -567,17 +571,16 @@ export default class GinisService {
       }
 
       if (data.userData.email) {
-        // fallback to messageSubject if title can't be parsed
-        const formTitle =
-          getFrontendFormTitleFromForm(form, formDefinition) ||
-          getSubjectTextFromForm(form, formDefinition)
         await this.mailgunService.sendEmail({
           data: {
             template: MailgunTemplateEnum.GINIS_DELIVERED,
             data: {
               formId: form.id,
               firstName: data.userData.firstName,
-              messageSubject: formTitle,
+              messageSubject: extractFormSubject(
+                formDefinition,
+                form.formDataJson,
+              ),
               slug: form.formDefinitionSlug,
             },
             to: data.userData.email,

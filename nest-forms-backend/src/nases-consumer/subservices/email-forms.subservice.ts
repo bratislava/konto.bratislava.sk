@@ -7,6 +7,11 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  extractEmailFormEmail,
+  extractEmailFormName,
+  extractFormSubject,
+} from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   FileIdInfoMap,
@@ -26,10 +31,6 @@ import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../../utils/handlers/text.handler'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
@@ -188,11 +189,7 @@ export default class EmailFormsSubservice {
       return userFirstName
     }
 
-    if (formDefinition.email.extractName) {
-      return formDefinition.email.extractName(formDataJson) ?? null
-    }
-
-    return null
+    return extractEmailFormName(formDefinition, formDataJson) ?? null
   }
 
   /**
@@ -202,7 +199,6 @@ export default class EmailFormsSubservice {
     userEmail: string,
     form: EmailFormChecked,
     formDefinition: FormDefinitionEmail,
-    formTitle: string,
     userName: string | null,
   ): Promise<void> {
     try {
@@ -226,7 +222,10 @@ export default class EmailFormsSubservice {
           template: formDefinition.email.userResponseTemplate,
           data: {
             formId: form.id,
-            messageSubject: formTitle,
+            messageSubject: extractFormSubject(
+              formDefinition,
+              form.formDataJson as GenericObjectType,
+            ),
             firstName: userName,
             slug: formDefinition.slug,
           },
@@ -280,10 +279,6 @@ export default class EmailFormsSubservice {
       `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
     )
 
-    const formTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
 
@@ -296,7 +291,7 @@ export default class EmailFormsSubservice {
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
-          messageSubject: formTitle,
+          messageSubject: extractFormSubject(formDefinition, form.formDataJson),
           firstName: null,
           slug: formDefinition.slug,
           htmlData: await renderSummaryEmail({
@@ -321,31 +316,21 @@ export default class EmailFormsSubservice {
       subject: formDefinition.email.technicalEmailSubject,
     })
 
-    // Determine user email address for confirmation
     const userConfirmationEmail =
-      userEmail ?? formDefinition.email.extractEmail(form.formDataJson)
+      userEmail ?? extractEmailFormEmail(formDefinition, form.formDataJson)
 
-    // Send confirmation email to user if we have an email address
-    if (userConfirmationEmail) {
-      const userName = this.resolveUserName(
-        userFirstName,
-        formDefinition,
-        form.formDataJson,
-      )
+    const userName = this.resolveUserName(
+      userFirstName,
+      formDefinition,
+      form.formDataJson,
+    )
 
-      await this.sendUserConfirmationEmail(
-        userConfirmationEmail,
-        form,
-        formDefinition,
-        formTitle,
-        userName,
-      )
-    } else {
-      alertError(
-        `No email address to send confirmation email to (toEmail) for form ${formId}.`,
-        this.logger,
-      )
-    }
+    await this.sendUserConfirmationEmail(
+      userConfirmationEmail,
+      form,
+      formDefinition,
+      userName,
+    )
 
     // Update form state to FINISHED
     await this.updateFormState(form)

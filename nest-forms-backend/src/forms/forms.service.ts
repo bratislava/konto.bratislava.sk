@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
@@ -23,10 +24,6 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
@@ -131,12 +128,11 @@ export default class FormsService {
     return form
   }
 
-  // we can't get the frontend title unless we ask to include schema - without it we always return frontendTitle: null
   async getForm(
     id: string,
     ico: string | null,
     userExternalId?: string,
-  ): Promise<Forms & { frontendTitle: string | null }> {
+  ): Promise<Forms> {
     let form: Forms
     try {
       form = await this.prisma.forms.findUniqueOrThrow({
@@ -173,12 +169,8 @@ export default class FormsService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    const frontendTitle = getFrontendFormTitleFromForm(form, formDefinition)
 
-    return {
-      ...form,
-      frontendTitle,
-    }
+    return form
   }
 
   async getForms(
@@ -275,14 +267,9 @@ export default class FormsService {
         )
       }
 
-      const messageSubject = getSubjectTextFromForm(form, formDefinition)
-      // fallback to messageSubject if title can't be parsed
-      const frontendTitle =
-        getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
       dataWithLatestFlag.push({
         ...form,
-        messageSubject,
-        frontendTitle,
+        formSubject: extractFormSubject(formDefinition, form.formDataJson),
         formDefinitionSlug: formDefinition.slug,
       })
     })

@@ -11,7 +11,7 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 @Injectable()
 export default class SftpFileSubservice {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
@@ -65,7 +65,7 @@ export default class SftpFileSubservice {
   }
 
   private async filterAlreadyReportedFiles(files: FileInfo[]) {
-    const alreadyReportedFiles = await this.prisma.csvFile.findMany({
+    const alreadyReportedFiles = await this.prismaService.csvFile.findMany({
       select: { name: true },
       where: { name: { in: files.map((file) => file.name) } },
     })

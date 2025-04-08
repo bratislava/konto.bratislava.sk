@@ -45,7 +45,7 @@ export type OutputFile = {
 @Injectable()
 export class CardPaymentReportingService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailSubservice: EmailSubservice,
@@ -61,10 +61,10 @@ export class CardPaymentReportingService {
     return price >= 0 ? paddedPrice : '-'.concat(paddedPrice)
   }
 
-  private async getVsByOrderId(
+  private async getVariableSymbolsByOrderIds(
     orderIds: string[],
   ): Promise<{ variableSymbol: string; orderIds: (string | null)[] }[]> {
-    const result = await this.prisma.tax.findMany({
+    const result = await this.prismaService.tax.findMany({
       where: {
         taxPayments: {
           some: {
@@ -142,13 +142,13 @@ export class CardPaymentReportingService {
       'REPORTING_VARIABLE_SYMBOL',
       'REPORTING_SPECIFIC_SYMBOL',
       'REPORTING_CONSTANT_SYMBOL',
-      'REPORTING_USER_CONSTAT_SYMBOL',
+      'REPORTING_USER_CONSTANT_SYMBOL',
       'REPORTING_RECIPIENT_EMAIL',
       'REPORTING_SEND_EMAIL',
     ]
     let constants: Record<string, string>
     try {
-      const result = await this.prisma.config.findMany({
+      const result = await this.prismaService.config.findMany({
         where: {
           key: {
             in: requiredKeys,
@@ -168,7 +168,7 @@ export class CardPaymentReportingService {
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
         undefined,
-        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTAT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL' from Config.",
+        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_SEND_EMAIL' from Config.",
         error instanceof Error ? error : undefined,
       )
     }
@@ -179,7 +179,7 @@ export class CardPaymentReportingService {
           ErrorsEnum.DATABASE_ERROR,
           ErrorsResponseEnum.DATABASE_ERROR,
           undefined,
-          "Could not find 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTAT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL' settings in database.",
+          "Could not find 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_SEND_EMAIL' settings in database.",
         )
       }
     })
@@ -233,7 +233,7 @@ export class CardPaymentReportingService {
         '000017S000000S', // padding?
         this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
         this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
-        constants.REPORTING_USER_CONSTAT_SYMBOL,
+        constants.REPORTING_USER_CONSTANT_SYMBOL,
         row.variableSymbol.padStart(10, '0'),
         '00000000003',
         ' '.repeat(14),
@@ -328,7 +328,7 @@ export class CardPaymentReportingService {
         const csvData = this.processCsvData(file.content)
 
         // Extract variable symbols with all orderIds belonging to each VS
-        const variableSymbols = await this.getVsByOrderId(
+        const variableSymbols = await this.getVariableSymbolsByOrderIds(
           csvData.map((row) => row.orderId),
         )
 
@@ -384,7 +384,7 @@ export class CardPaymentReportingService {
     )
 
     // Write updated CSV names
-    await this.prisma.csvFile.createMany({
+    await this.prismaService.csvFile.createMany({
       data: sftpFiles.map((file) => ({
         name: file.name,
       })),

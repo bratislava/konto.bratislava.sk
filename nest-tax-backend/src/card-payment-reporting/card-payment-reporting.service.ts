@@ -220,7 +220,7 @@ export class CardPaymentReportingService {
     const constants = await this.getConfigFromDatabase()
 
     finalData.forEach((row) => {
-      if (row.orderId.length == 0) return
+      if (row.orderId.length === 0) return
 
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
 
@@ -247,7 +247,6 @@ export class CardPaymentReportingService {
   }
 
   private generateFooter(finalData: CsvColumnsWithVariableSymbol[]) {
-
     const formatedData = finalData.map((row) => {
       return {
         totalPrice: parseFloat(row.totalPrice.replace(',', '.')),
@@ -375,7 +374,7 @@ export class CardPaymentReportingService {
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file?.date, ' s debetom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file?.date, ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       [configs.REPORTING_RECIPIENT_EMAIL],

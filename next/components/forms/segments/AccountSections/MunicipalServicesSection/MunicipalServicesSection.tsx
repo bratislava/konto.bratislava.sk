@@ -94,6 +94,7 @@ const foMunicipalServicesSection = [
   28,
   32,
   18,
+  46,
 ].filter(isDefined)
 const poMunicipalServicesSection = [
   1,
@@ -124,6 +125,7 @@ const poMunicipalServicesSection = [
   41,
   32,
   18,
+  46,
 ].filter(isDefined)
 
 const MunicipalServicesSection = () => {

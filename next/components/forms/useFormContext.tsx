@@ -1,13 +1,14 @@
 import { FormBaseFragment } from '@clients/graphql-strapi/api'
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import {
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
+import { evaluateFormSendPolicy, SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
@@ -41,20 +42,22 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
 
-  // TODO: Revisit this logic
-  const requiresVerification =
-    !formDefinition.allowSendingUnauthenticatedUsers &&
-    !isSlovenskoSkTaxFormDefinition(formDefinition)
-  const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
+  const getSendPolicyAccountType = () => {
+    if (!isSignedIn) {
+      return SendPolicyAccountType.NotAuthenticated
+    }
 
-  // TODO: Revisit this logic
-  const requiresSignIn =
-    !formDefinition.allowSendingUnauthenticatedUsers &&
-    !isSlovenskoSkTaxFormDefinition(formDefinition)
-  const signInMissing = requiresSignIn && !isSignedIn
+    if (tierStatus.isIdentityVerified) {
+      return SendPolicyAccountType.AuthenticatedVerified
+    }
 
-  // TODO: Revisit this logic
-  const sendWithEidAllowed = isSlovenskoSkFormDefinition(formDefinition)
+    return SendPolicyAccountType.AuthenticatedNotVerified
+  }
+
+  const evaluatedSendPolicy = evaluateFormSendPolicy(
+    formDefinition.sendPolicy,
+    getSendPolicyAccountType(),
+  )
 
   const displayHeaderAndMenu = !isEmbedded
 
@@ -83,9 +86,7 @@ const useGetContext = (formServerContext: FormServerContext) => {
 
   return {
     ...formServerContext,
-    verificationMissing,
-    signInMissing,
-    sendWithEidAllowed,
+    evaluatedSendPolicy,
     displayHeaderAndMenu,
     xmlImportExportAllowed,
     jsonImportExportAllowed,

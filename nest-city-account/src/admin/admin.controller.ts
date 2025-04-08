@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   HttpException,
-  HttpStatus,
   Param,
   Post,
   Query,
@@ -65,7 +64,6 @@ export class AdminController {
     description: 'Get user data by birthnumber',
   })
   @ApiNotFoundResponse({
-    status: HttpStatus.NOT_FOUND,
     description: 'User by birth number not found',
     type: HttpException,
   })

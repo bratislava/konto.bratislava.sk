@@ -2,21 +2,21 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
-import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import cn from '../../../../../frontend/cn'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { useFormContext } from '../../../useFormContext'
 
 const useThankYouFormSection = () => {
   const {
     isTaxForm,
-    formDefinition: { slug },
+    formDefinition: { feedbackLink },
     isEmbedded,
   } = useFormContext()
+  const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('account')
-  const feedbackUrl = formsFeedbackLinks[slug]
 
   if (isTaxForm) {
     return {
@@ -24,7 +24,7 @@ const useThankYouFormSection = () => {
       firstButtonTitle: t('thank_you.button_to_formular_text_2'),
       secondButtonTitle: t('thank_you.button_to_profil_text'),
       content: t('thank_you.form_submit_tax.content'),
-      feedbackUrl,
+      feedbackLink,
       feedbackTitle: t('thank_you.form_submit_tax.feedbackTitle'),
       largePadding: true,
       displayAccountLinks: true,
@@ -43,8 +43,12 @@ const useThankYouFormSection = () => {
     title: t('thank_you.form_submit.title'),
     firstButtonTitle: t('thank_you.button_to_formular_text_2'),
     secondButtonTitle: t('thank_you.button_to_profil_text'),
-    content: t('thank_you.form_submit.content'),
-    feedbackUrl,
+    content: [
+      t('thank_you.form_submit.content_generic'),
+      isSignedIn ? ` ${t('thank_you.form_submit.content_signed_in')}` : '',
+      feedbackLink ? `\n\n${t('thank_you.form_submit.content_feedback')}` : '',
+    ].join(''),
+    feedbackLink,
     largePadding: true,
     displayAccountLinks: true,
   }
@@ -56,7 +60,7 @@ const ThankYouFormSection = () => {
     firstButtonTitle,
     secondButtonTitle,
     content,
-    feedbackUrl,
+    feedbackLink,
     feedbackTitle,
     largePadding,
     displayAccountLinks,
@@ -77,7 +81,7 @@ const ThankYouFormSection = () => {
           firstButtonTitle={firstButtonTitle}
           secondButtonTitle={secondButtonTitle}
           content={content}
-          feedbackUrl={feedbackUrl}
+          feedbackLink={feedbackLink}
           feedbackTitle={feedbackTitle}
         />
         {displayAccountLinks ? (

@@ -97,9 +97,9 @@ export class ScannerService {
       const fileFormat = bucketFile.fileUid.split('.').pop();
       const proformaName = `proforma.${fileFormat}`;
       const mimeType = contentType(proformaName);
-      if (!this.isSupportedMimeType(mimeType as string)) {
+      if (!mimeType || !this.isSupportedMimeType(mimeType)) {
         throw new BadRequestException(
-          `Unsupported file mime-type: ${mimeType}.`,
+          `Unsupported file mime-type: ${mimeType || 'unknown'}.`,
         );
       }
 
@@ -109,7 +109,7 @@ export class ScannerService {
             bucketUid,
             fileUid: bucketFile.fileUid,
             fileSize,
-            fileMimeType: mimeType as string,
+            fileMimeType: mimeType,
             status: FileStatus.ACCEPTED,
           },
         });

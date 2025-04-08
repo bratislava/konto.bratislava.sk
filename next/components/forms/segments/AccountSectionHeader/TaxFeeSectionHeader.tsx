@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import {

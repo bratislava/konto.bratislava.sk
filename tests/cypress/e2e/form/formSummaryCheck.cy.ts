@@ -32,7 +32,7 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 8)
           })
 
           cy.dataCy('form-container').should('be.visible') //.matchImage()
@@ -42,7 +42,9 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
-            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.first_name)
+
+            cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.last_name)
 
             cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 
@@ -76,22 +78,30 @@ describe('F03 -', { testIsolation: false }, () => {
 
         it('6. Checking filled in information are saved', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_menoPriezvisko]', form)).should(
+            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_meno]', form)).should(
               'contain',
-              this.fileData.name,
+              this.fileData.first_name,
             )
 
-            cy.wrap(
-              Cypress.$('[data-cy=summary-row-root_ziadatel_adresa_ulicaACislo]', form),
-            ).should('contain', this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_priezvisko]', form)).should(
+              'contain',
+              this.fileData.last_name,
+            )
 
-            cy.wrap(
-              Cypress.$('[data-cy=summary-row-root_ziadatel_adresa_mestoPsc_mesto]', form),
-            ).should('contain', this.fileData.city)
+            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_ulicaACislo]', form)).should(
+              'contain',
+              this.fileData.address,
+            )
 
-            cy.wrap(
-              Cypress.$('[data-cy=summary-row-root_ziadatel_adresa_mestoPsc_psc]', form),
-            ).should('contain', this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_mesto]', form)).should(
+              'contain',
+              this.fileData.city,
+            )
+
+            cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_psc]', form)).should(
+              'contain',
+              this.fileData.zip_code,
+            )
 
             cy.wrap(Cypress.$('[data-cy=summary-row-root_ziadatel_email]', form)).should(
               'contain',

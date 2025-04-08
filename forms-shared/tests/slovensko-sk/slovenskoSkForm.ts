@@ -11,14 +11,25 @@ import { generatePageScreenshot } from '../../test-utils/generatePageScreenshot'
 import { getSchemaXsd } from '../../src/slovensko-sk/file-templates/schemaXsd'
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { validateXml } from '../../src/slovensko-sk/validateXml'
-import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
+import {
+  fetchSlovenskoSkMetadata,
+  findSlovenskoSkFormMetadata,
+  SlovenskoSkMetadataJson,
+} from '../../test-utils/fetchSlovenskoSkFormMetadata'
 import { extractJsonFromSlovenskoSkXml } from '../../src/slovensko-sk/extractJson'
 import { buildSlovenskoSkXml } from '../../src/slovensko-sk/xmlBuilder'
 import { screenshotTestTimeout } from '../../test-utils/consts'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { getFormSummary } from '../../src/summary/summary'
+import { getSlovenskoSkMetaIdentifier } from '../../src/slovensko-sk/urls'
 
 describe('slovenskoSkForm', () => {
+  let slovenskoSkMetadata: SlovenskoSkMetadataJson[]
+
+  beforeAll(async () => {
+    slovenskoSkMetadata = await fetchSlovenskoSkMetadata()
+  })
+
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     describe(`${formDefinition.slug}`, () => {
       test('schema XSD should match snapshot', () => {
@@ -29,17 +40,17 @@ describe('slovenskoSkForm', () => {
       test(`should match Slovensko.sk data`, async () => {
         // temp until the test pospid is removed, we don't want to publish this form into production forms
         if (formDefinition.pospID === 'hmba.eforms.bratislava.obec_024') return
-        const metadata = await fetchSlovenskoSkFormMetadata(formDefinition)
 
-        expect(metadata['dc:identifier']).toEqual([
-          `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
-        ])
-        expect(metadata['dc:creator']).toEqual([formDefinition.gestor])
-        expect(metadata['dc:publisher']).toEqual([formDefinition.publisher])
-        expect(metadata['meta:version']).toEqual([formDefinition.pospVersion])
+        const metadata = findSlovenskoSkFormMetadata(slovenskoSkMetadata, formDefinition)
+
+        expect(metadata.XSDtargetNamespace).toContain(formDefinition.pospID)
+        expect(metadata.identifier).toEqual(getSlovenskoSkMetaIdentifier(formDefinition))
+        expect(metadata.shortIdentifier).toEqual(formDefinition.pospID)
+        expect(metadata.publisherURI).toEqual(formDefinition.publisher)
+        expect(metadata.version).toEqual(formDefinition.pospVersion)
 
         // Change in the future when forms with limited date validity are added
-        const inForceFromDate = new Date(metadata['meta:inForceFrom'][0])
+        const inForceFromDate = new Date(metadata.inForceFrom)
         expect(inForceFromDate.getTime()).toBeLessThanOrEqual(new Date().getTime())
       })
     })

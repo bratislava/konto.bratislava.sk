@@ -1,5 +1,6 @@
 {
-  "name": "Cypress_Name",
+  "first_name": "Cypress",
+  "last_name": "Name",
   "address": "Test address 1",
   "city": "City",
   "zip_code": "12345",
@@ -10,5 +11,5 @@
   "month": "12",
   "year": "2023",
   "construction_name": "Test",
-  "kataster": "Devín"
+  "kataster": "Jarovce"
 }

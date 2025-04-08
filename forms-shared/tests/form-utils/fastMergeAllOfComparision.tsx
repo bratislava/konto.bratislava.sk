@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { beforeAll, describe, expect, test, vi } from 'vitest'
 import { renderTestForm } from '../../test-utils/testForm'
 import * as fastMergeAllOfModule from '../../src/form-utils/fastMergeAllOf'
 import type mergeAllOf from 'json-schema-merge-allof'
@@ -81,7 +81,7 @@ describe('fastMergeAllOfComparision', () => {
       let fastFormResults: typeof spyFastMergeAllOf.mock.results
       let fastFormOriginalCalls: typeof mockOriginalMergeAllOf.mock.calls
 
-      beforeEach(() => {
+      beforeAll(() => {
         // Clear the existing spies/mocks.
         mockOriginalMergeAllOf.mockClear()
         spyFastMergeAllOf.mockClear()

@@ -968,6 +968,9 @@ export type Tax = {
   currentYearTaxInPreparationText?: Maybe<Scalars['String']['output']>
   currentYearTaxInPreparationTitle?: Maybe<Scalars['String']['output']>
   displayCurrentYearTaxInPreparation: Scalars['Boolean']['output']
+  paymentSuccessFaqLink?: Maybe<Scalars['String']['output']>
+  paymentSuccessFeedbackLink?: Maybe<Scalars['String']['output']>
+  paymentSuccessPrivacyPolicyLink?: Maybe<Scalars['String']['output']>
   updatedAt?: Maybe<Scalars['DateTime']['output']>
 }
 
@@ -989,6 +992,9 @@ export type TaxInput = {
   currentYearTaxInPreparationText?: InputMaybe<Scalars['String']['input']>
   currentYearTaxInPreparationTitle?: InputMaybe<Scalars['String']['input']>
   displayCurrentYearTaxInPreparation?: InputMaybe<Scalars['Boolean']['input']>
+  paymentSuccessFaqLink?: InputMaybe<Scalars['String']['input']>
+  paymentSuccessFeedbackLink?: InputMaybe<Scalars['String']['input']>
+  paymentSuccessPrivacyPolicyLink?: InputMaybe<Scalars['String']['input']>
 }
 
 export type UploadFile = {
@@ -1547,6 +1553,9 @@ export type TaxFragment = {
   displayCurrentYearTaxInPreparation: boolean
   channelChangeEffectiveNextYearText?: string | null
   channelChangeEffectiveNextYearTitle?: string | null
+  paymentSuccessFeedbackLink?: string | null
+  paymentSuccessPrivacyPolicyLink?: string | null
+  paymentSuccessFaqLink?: string | null
 }
 
 export type TaxQueryVariables = Exact<{ [key: string]: never }>
@@ -1565,6 +1574,9 @@ export type TaxQuery = {
         displayCurrentYearTaxInPreparation: boolean
         channelChangeEffectiveNextYearText?: string | null
         channelChangeEffectiveNextYearTitle?: string | null
+        paymentSuccessFeedbackLink?: string | null
+        paymentSuccessPrivacyPolicyLink?: string | null
+        paymentSuccessFaqLink?: string | null
       } | null
     } | null
   } | null
@@ -1650,6 +1662,9 @@ export const TaxFragmentDoc = gql`
     displayCurrentYearTaxInPreparation
     channelChangeEffectiveNextYearText
     channelChangeEffectiveNextYearTitle
+    paymentSuccessFeedbackLink
+    paymentSuccessPrivacyPolicyLink
+    paymentSuccessFaqLink
   }
 `
 export const FormBaseBySlugDocument = gql`

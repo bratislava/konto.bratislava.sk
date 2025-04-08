@@ -48,6 +48,7 @@ model Tax {
   qrCodeEmail         String?
   taxId               String?
   dateCreateTax       String?
+  dateTaxRuling       DateTime? // "dátum právoplatnosti rozhodnutia"
   taxLand             Int?
   taxConstructions    Int?
   taxFlat             Int?
@@ -56,6 +57,8 @@ model Tax {
   taxDetails          TaxDetail[]
   taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
   lastCheckedPayments DateTime         @default(now())
+  lastCheckedUpdates  DateTime         @default(now())
+  deliveryMethod      DeliveryMethodNamed?
 
   @@unique([taxPayerId, year])
   @@unique([uuid])
@@ -163,4 +166,10 @@ enum PaymentStatus {
   NEW
   FAIL
   SUCCESS
+}
+
+enum DeliveryMethodNamed {
+  EDESK
+  POSTAL
+  CITY_ACCOUNT
 }

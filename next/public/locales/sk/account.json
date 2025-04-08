@@ -416,8 +416,13 @@
       "45": {
         "title": "Oznámenie za komunálne odpady",
         "description": "Vyplňte jednoducho oznámenie o vzniku, zmene a zániku poplatkovej povinnosti za komunálny odpad.",
-        "buttonText": "Prejsť na priznanie",
+        "buttonText": "Prejsť na oznámenie",
         "tag": "Nová služba"
+      },
+      "46": {
+        "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+        "description": "Podajte žiadosť o sprístupnenie informácií jednoducho. Mesto Bratislava má 12 pracovných dní na spracovanie žiadosti a sprístupnenie informácií.",
+        "buttonText": "Prejsť na žiadosť"
       }
     }
   },
@@ -623,7 +628,9 @@
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať. Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+      "content_generic": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
+      "content_signed_in": "Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti).",
+      "content_feedback": "Prosíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
       "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
     },
     "form_submit_tax": {

@@ -59,6 +59,12 @@ RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip 
 
 ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 
+# Download the Slovensko.sk metadata file
+RUN mkdir -p /opt/slovensko-metadata
+RUN wget -O /opt/slovensko-metadata/mef.json https://www.slovensko.sk/static/eForm/datasetexport/json/mef.json
+
+ENV SLOVENSKO_SK_METADATA_PATH=/opt/slovensko-metadata/mef.json
+
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./

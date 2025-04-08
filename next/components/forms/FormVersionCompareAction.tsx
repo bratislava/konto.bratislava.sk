@@ -1,5 +1,5 @@
 import { AlertIcon, ErrorIcon } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 import cn from 'frontend/cn'
@@ -9,6 +9,7 @@ import { useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 import ButtonNew from './simple-components/ButtonNew'
 import { useFormContext } from './useFormContext'
@@ -19,13 +20,14 @@ const FormVersionCompareAction = () => {
     versionCompareContinueAction,
     formDefinition: { slug },
   } = useFormContext()
+  const { isSignedIn } = useSsrAuth()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [isRedirecting, setIsRedirecting] = useState(false)
 
   const { mutate: bumpVersionMutate, isPending: bumpVersionIsPending } = useMutation({
     mutationFn: () =>
-      formsApi.formsControllerBumpJsonVersion(formId, { accessToken: 'onlyAuthenticated' }),
+      formsClient.formsControllerBumpJsonVersion(formId, { accessToken: 'onlyAuthenticated' }),
     networkMode: 'always',
     onSuccess: () => {
       router.reload()
@@ -99,9 +101,11 @@ const FormVersionCompareAction = () => {
           </div>
 
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row">
-            <ButtonNew variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
-              {t('form_version_compare_action.button_back')}
-            </ButtonNew>
+            {isSignedIn ? (
+              <ButtonNew variant="black-outline" fullWidth href={ROUTES.MY_APPLICATIONS}>
+                {t('form_version_compare_action.button_back')}
+              </ButtonNew>
+            ) : null}
             {versionCompareContinueAction === VersionCompareContinueAction.CannotContinue ? (
               <ButtonNew
                 variant="black-solid"

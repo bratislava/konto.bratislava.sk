@@ -5,7 +5,10 @@ import { Prisma } from '@prisma/client'
 import { AdminService } from '../admin/admin.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { PrismaService } from '../prisma/prisma.service'
-import { MAX_NORIS_PAYMENTS_BATCH_SELECT } from '../utils/constants'
+import {
+  MAX_NORIS_PAYMENTS_BATCH_SELECT,
+  MAX_NORIS_TAXES_TO_UPDATE,
+} from '../utils/constants'
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
@@ -115,6 +118,43 @@ export class TasksService {
     this.logger.log(
       `TasksService: Updated payments from Noris, result: ${JSON.stringify(result)}`,
     )
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async updateTaxesFromNoris() {
+    const taxes = await this.prismaService.tax.findMany({
+      select: {
+        id: true,
+        variableSymbol: true,
+      },
+      where: {
+        dateTaxRuling: null,
+      },
+      take: MAX_NORIS_TAXES_TO_UPDATE,
+      orderBy: {
+        lastCheckedUpdates: 'asc',
+      },
+    })
+
+    if (taxes.length === 0) return
+
+    this.logger.log(
+      `TasksService: Updating taxes from Noris with variable symbols: ${taxes.map((t) => t.variableSymbol).join(', ')}`,
+    )
+
+    await this.adminService.updateTaxesFromNoris(taxes)
+
+    await this.prismaService.tax.updateMany({
+      where: {
+        id: {
+          in: taxes.map((t) => t.id),
+        },
+      },
+      data: {
+        lastCheckedUpdates: new Date(),
+      },
+    })
   }
 
   @Cron(CronExpression.EVERY_WEEKDAY)

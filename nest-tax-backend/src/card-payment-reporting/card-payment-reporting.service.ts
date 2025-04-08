@@ -112,14 +112,12 @@ export class CardPaymentReportingService {
     csvData: CsvRecord[],
     variableSymbols: { variableSymbol: string; orderIds: (string | null)[] }[],
   ): CsvColumnsWithVariableSymbol[] {
-    return csvData
-      .filter((row) => row.cardNumber !== 'GP analytics')
-      .map((row) => {
-        const vsMatch =
-          variableSymbols.find((item) => item.orderIds.includes(row.orderId))
-            ?.variableSymbol || ''
-        return { ...row, variableSymbol: vsMatch }
-      })
+    return csvData.map((row) => {
+      const vsMatch =
+        variableSymbols.find((item) => item.orderIds.includes(row.orderId))
+          ?.variableSymbol || ''
+      return { ...row, variableSymbol: vsMatch }
+    })
   }
 
   private processCsvData(csvContent: string): CsvRecord[] {

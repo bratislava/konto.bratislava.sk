@@ -582,7 +582,7 @@ export class AdminService {
     )
     const variableSymbols = [...variableSymbolToId.keys()]
     const data = await this.norisService.getDataForUpdate(variableSymbols)
-    const variableSymbolsToUpdateMap: Map<string, string> = new Map(
+    const variableSymbolsToNonNullDateFromNoris: Map<string, string> = new Map(
       data
         .filter((item) => item.datum_platnosti !== null)
         .map((item) => [
@@ -592,7 +592,7 @@ export class AdminService {
     )
 
     await this.prismaService.$transaction(
-      [...variableSymbolsToUpdateMap.entries()].map(
+      [...variableSymbolsToNonNullDateFromNoris.entries()].map(
         ([variableSymbol, dateTaxRuling]) =>
           this.prismaService.tax.update({
             where: { id: variableSymbolToId.get(variableSymbol) },

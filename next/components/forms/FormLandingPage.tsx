@@ -48,7 +48,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     onSuccess: async (response) => {
       closeSnackbarInfo()
       await router.push(
-        ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.id),
+        ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.formId),
       )
     },
     onError: () => {

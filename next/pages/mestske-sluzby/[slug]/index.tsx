@@ -86,7 +86,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
         : ''
       return {
         redirect: {
-          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}${isEmbeddedPostfix}`,
+          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.formId}${isEmbeddedPostfix}`,
           permanent: false,
         },
       }

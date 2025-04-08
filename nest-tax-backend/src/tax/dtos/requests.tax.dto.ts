@@ -357,6 +357,15 @@ export class ResponseTaxDto {
   dateCreateTax: string | null
 
   @ApiProperty({
+    description: 'Date and time of tax ruling (právoplatnosť rozhodnutia)',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  dateTaxRuling: Date | null
+
+  @ApiProperty({
     description: 'Part of tax amount for lands in cents in Eur.',
     default: 1000,
   })
@@ -512,6 +521,15 @@ export class ResponseTaxDto {
   @IsDate()
   @Type(() => Date)
   lastCheckedPayments: Date
+
+  @ApiProperty({
+    description:
+      'When were last checked updates for this tax with automatic task.',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  lastCheckedUpdates: Date
 
   @ApiProperty({
     description: 'delivery_method',

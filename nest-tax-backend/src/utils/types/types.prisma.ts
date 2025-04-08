@@ -12,6 +12,13 @@ export type TaxPaymentWithTaxYear = Prisma.TaxPaymentGetPayload<{
   }
 }>
 
+export type TaxIdVariableSymbol = Prisma.TaxGetPayload<{
+  select: {
+    id: true
+    variableSymbol: true
+  }
+}>
+
 export const transformDeliveryMethodToDatabaseType = (
   deliveryMethod: DeliveryMethod | null,
 ): DeliveryMethodNamed | null => {

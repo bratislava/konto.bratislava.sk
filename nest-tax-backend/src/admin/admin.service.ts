@@ -16,7 +16,10 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
-import { transformDeliveryMethodToDatabaseType } from '../utils/types/types.prisma'
+import {
+  TaxIdVariableSymbol,
+  transformDeliveryMethodToDatabaseType,
+} from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
   RequestPostNorisLoadDataDto,
@@ -113,6 +116,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,
@@ -131,6 +135,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,
@@ -569,5 +574,31 @@ export class AdminService {
         date: null,
       },
     ])
+  }
+
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbol[]): Promise<void> {
+    const variableSymbolToId = new Map(
+      taxes.map((tax) => [tax.variableSymbol, tax.id]),
+    )
+    const variableSymbols = [...variableSymbolToId.keys()]
+    const data = await this.norisService.getDataForUpdate(variableSymbols)
+    const variableSymbolsToNonNullDateFromNoris: Map<string, string> = new Map(
+      data
+        .filter((item) => item.datum_platnosti !== null)
+        .map((item) => [
+          item.variabilny_symbol,
+          item.datum_platnosti as string,
+        ]),
+    )
+
+    await this.prismaService.$transaction(
+      [...variableSymbolsToNonNullDateFromNoris.entries()].map(
+        ([variableSymbol, dateTaxRuling]) =>
+          this.prismaService.tax.update({
+            where: { id: variableSymbolToId.get(variableSymbol) },
+            data: { dateTaxRuling },
+          }),
+      ),
+    )
   }
 }

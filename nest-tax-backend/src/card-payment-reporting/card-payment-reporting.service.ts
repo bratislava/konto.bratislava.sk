@@ -137,10 +137,11 @@ export class CardPaymentReportingService {
 
   private async getConfigFromDatabase() {
     const requiredKeys = [
-      'VARIABLE_SYMBOL',
-      'SPECIFIC_SYMBOL',
-      'CONSTANT_SYMBOL',
-      'USER_CONSTAT_SYMBOL',
+      'REPORTING_VARIABLE_SYMBOL',
+      'REPORTING_SPECIFIC_SYMBOL',
+      'REPORTING_CONSTANT_SYMBOL',
+      'REPORTING_USER_CONSTAT_SYMBOL',
+      'REPORTING_RECIPIENT_EMAIL',
       'REPORTING_SEND_EMAIL',
     ]
     let constants: Record<string, string>
@@ -165,7 +166,7 @@ export class CardPaymentReportingService {
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
         undefined,
-        "Error while getting 'VARIABLE_SYMBOL', 'SPECIFIC_SYMBOL', 'CONSTANT_SYMBOL', 'USER_CONSTAT_SYMBOL' from Config.",
+        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTAT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL' from Config.",
         error instanceof Error ? error : undefined,
       )
     }
@@ -176,7 +177,7 @@ export class CardPaymentReportingService {
           ErrorsEnum.DATABASE_ERROR,
           ErrorsResponseEnum.DATABASE_ERROR,
           undefined,
-          "Could not find 'VARIABLE_SYMBOL', 'SPECIFIC_SYMBOL', 'CONSTANT_SYMBOL', 'USER_CONSTAT_SYMBOL' settings in database.",
+          "Could not find 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTAT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL' settings in database.",
         )
       }
     })
@@ -201,9 +202,9 @@ export class CardPaymentReportingService {
       dateInfo.today_DDMMYYYY,
       this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
       this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
-      constants.VARIABLE_SYMBOL,
-      constants.SPECIFIC_SYMBOL,
-      constants.CONSTANT_SYMBOL,
+      constants.REPORTING_VARIABLE_SYMBOL,
+      constants.REPORTING_SPECIFIC_SYMBOL,
+      constants.REPORTING_CONSTANT_SYMBOL,
       '\n',
     ].join('')
   }
@@ -227,7 +228,7 @@ export class CardPaymentReportingService {
         '000017S000000S', // padding?
         this.configService.getOrThrow<string>('REPORTING_ACCOUNT_ID'),
         this.configService.getOrThrow<string>('REPORTING_BANK_ID'),
-        constants.USER_CONSTAT_SYMBOL,
+        constants.REPORTING_USER_CONSTAT_SYMBOL,
         row.variableSymbol.padStart(10, '0'),
         '00000000003',
         ' '.repeat(14),
@@ -351,7 +352,7 @@ export class CardPaymentReportingService {
         : `Report z dní:\n${dates.join(', ')}`
 
     await this.mailSubservice.send(
-      [this.configService.getOrThrow<string>('RECIPIENT_EMAIL')],
+      [configs.REPORTING_RECIPIENT_EMAIL],
       'Report platieb kartou',
       message,
       attachments,

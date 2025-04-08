@@ -371,10 +371,14 @@ export class CardPaymentReportingService {
       }
     })
 
+    const validOutputFilesSorted = validOutputFiles.sort((a, b) => {
+      return a.date > b.date ? 1 : 0
+    })
+
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file?.date, ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date, ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       [configs.REPORTING_RECIPIENT_EMAIL],

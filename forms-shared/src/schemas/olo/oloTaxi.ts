@@ -16,7 +16,6 @@ export default schema(
   {
     title: 'OLO Taxi',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(

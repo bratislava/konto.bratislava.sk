@@ -13,7 +13,6 @@ export default schema(
   {
     title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
   },
-  {},
   [
     getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [

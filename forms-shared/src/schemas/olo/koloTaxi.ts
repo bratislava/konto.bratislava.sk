@@ -12,7 +12,7 @@ import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'KOLO Taxi' }, {}, [
+export default schema({ title: 'KOLO Taxi' }, [
   step('ziadatel', { title: 'Žiadateľ' }, [
     radioGroup(
       'ziadatelTyp',

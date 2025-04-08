@@ -18,7 +18,6 @@ export default schema(
   {
     title: 'Mimoriadny odvoz a zhodnotenie odpadu',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(

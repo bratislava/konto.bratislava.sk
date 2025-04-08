@@ -13,7 +13,6 @@ export default schema(
   {
     title: 'Žiadosť o stanovisko k projektovej dokumentácii',
   },
-  {},
   [
     getObjednavatelZiadatelStep('ziadatel'),
     step('udajeOStavbe', { title: 'Údaje o stavbe' }, [

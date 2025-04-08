@@ -12,7 +12,6 @@ export default schema(
   {
     title: 'Objednávka informatívneho zákresu sietí',
   },
-  {},
   [
     getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [

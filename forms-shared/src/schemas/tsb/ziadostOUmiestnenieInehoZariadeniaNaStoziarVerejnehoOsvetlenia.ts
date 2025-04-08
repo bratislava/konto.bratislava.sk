@@ -12,7 +12,6 @@ import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtr
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },
-  {},
   [
     getObjednavatelZiadatelStep('ziadatel'),
     step('informacieOZariadeni', { title: 'Informácie o zariadení' }, [

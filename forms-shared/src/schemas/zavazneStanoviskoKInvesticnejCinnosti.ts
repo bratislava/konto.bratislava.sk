@@ -80,10 +80,6 @@ export default schema(
   {
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
   },
-  {
-    titlePath: 'stavba.nazov',
-    titleFallback: 'Názov stavby/projektu',
-  },
   [
     step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikInvestorFields),
     step('investor', { title: 'Investor' }, [

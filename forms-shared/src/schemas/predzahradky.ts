@@ -19,7 +19,6 @@ export default schema(
   {
     title: 'Predzáhradky',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),

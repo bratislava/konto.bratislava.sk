@@ -76,10 +76,6 @@ export default schema(
   {
     title: 'Žiadosť o stanovisko k investičnému zámeru',
   },
-  {
-    titlePath: 'stavba.nazov',
-    titleFallback: 'Názov stavby/projektu',
-  },
   [
     step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikFields),
     step('stavebnik', { title: 'Stavebník' }, [

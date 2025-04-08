@@ -11,7 +11,7 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
+export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
   step('ziadatel', { title: 'Žiadateľ' }, [
     radioGroup(
       'ziadatelTyp',

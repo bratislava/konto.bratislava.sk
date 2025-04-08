@@ -22,7 +22,6 @@ export default schema(
   {
     title: 'Showcase',
   },
-  {},
   [
     step('textInputs', { title: 'Text Inputs' }, [
       input(

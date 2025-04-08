@@ -11,7 +11,7 @@ import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple
 import { match } from 'ts-pattern'
 import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
+export default schema({ title: 'Podnety a pochvaly občanov' }, [
   step('podnet', { title: 'Podať podnet' }, [
     radioGroup(
       'kategoriaPodnetu',

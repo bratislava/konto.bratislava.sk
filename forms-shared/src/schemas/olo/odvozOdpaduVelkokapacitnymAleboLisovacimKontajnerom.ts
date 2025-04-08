@@ -1,7 +1,5 @@
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
@@ -14,6 +12,7 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom' }, {}, [
   step('ziadatel', { title: 'Žiadateľ' }, [
@@ -224,20 +223,44 @@ export default schema({ title: 'Odvoz odpadu veľkokapacitným alebo lisovacím 
   ]),
 ])
 
-export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail = (
-  formData: GenericObjectType,
-) => safeString(formData.ziadatel?.email)
-
-export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.ziadatelTyp === 'Fyzická osoba') {
-    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
-  }
-  if (
-    formData.ziadatel?.ziadatelTyp === 'Právnická osoba' ||
-    formData.ziadatel?.ziadatelTyp === 'Správcovská spoločnosť'
-  ) {
-    return safeString(formData.ziadatel?.nazov)
-  }
+type ExtractFormData = {
+  ziadatel: {
+    email: string
+  } & (
+    | {
+        ziadatelTyp: 'Fyzická osoba'
+        menoPriezvisko: {
+          meno: string
+        }
+      }
+    | {
+        ziadatelTyp: 'Právnická osoba' | 'Správcovská spoločnosť'
+        nazov: string
+      }
+  )
 }
+
+export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.email,
+  }
+
+export const odvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      const ziadatel = formData.ziadatel
+      if (ziadatel.ziadatelTyp === 'Fyzická osoba') {
+        return ziadatel.menoPriezvisko.meno
+      } else if (
+        ziadatel.ziadatelTyp === 'Právnická osoba' ||
+        ziadatel.ziadatelTyp === 'Správcovská spoločnosť'
+      ) {
+        return ziadatel.nazov
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
+  }

@@ -9,6 +9,11 @@ import { conditionalFields } from '../generator/functions/conditionalFields'
 import { schema } from '../generator/functions/schema'
 import { esbsBratislavaMestskaCastNoPrefixCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { match } from 'ts-pattern'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../form-utils/evaluateFormDataExtractor'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 export default schema(
   {
@@ -150,3 +155,46 @@ export default schema(
     ]),
   ],
 )
+
+type ExtractSubjectFormData = {
+  predzahradka: {
+    typRegistracie: 'nova' | 'existujuca'
+  }
+}
+
+const extractSubjectSchema = {
+  type: 'object',
+  properties: {
+    predzahradka: {
+      type: 'object',
+      properties: {
+        typRegistracie: { type: 'string', enum: ['nova', 'existujuca'] },
+      },
+    },
+  },
+} as BAJSONSchema7
+
+const extractFn = (formData: ExtractSubjectFormData) => {
+  if (formData.predzahradka.typRegistracie === 'nova') {
+    return 'Registrácia novej predzáhradky'
+  }
+  if (formData.predzahradka.typRegistracie === 'existujuca') {
+    return 'Registrácia existujúcej predzáhradky'
+  }
+
+  // Unreachable code, provided for type-safety to return `string` as required.
+  throw new Error('Failed to extract the subject.')
+}
+
+export const predzahradkyExtractSubject: SchemaFormDataExtractor<ExtractSubjectFormData> = {
+  type: 'schema',
+  schema: extractSubjectSchema,
+  extractFn,
+  schemaValidationFailedFallback: 'Registrácia predzáhradky',
+}
+
+export const predzahradkyExtractGinisSubject: SchemalessFormDataExtractor<ExtractSubjectFormData> =
+  {
+    type: 'schemaless',
+    extractFn,
+  }

@@ -11,6 +11,11 @@ import { fileUploadMultiple } from '../generator/functions/fileUploadMultiple'
 import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCiselniky'
 import { object } from '../generator/object'
 import { textArea } from '../generator/functions/textArea'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../form-utils/evaluateFormDataExtractor'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 const addressFields = (title: string) => [
   input(
@@ -216,3 +221,51 @@ export default schema(
     ]),
   ],
 )
+
+type ExtractGinisSubjectFormData = {
+  stavba: {
+    ulica: string
+    nazov: string
+    parcelneCisla: string
+    katastralneUzemia: (typeof esbsKatastralneUzemiaCiselnik)[number]['Code'][]
+  }
+}
+
+export const stanoviskoKInvesticnemuZameruExtractGinisSubject: SchemalessFormDataExtractor<ExtractGinisSubjectFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      const katastralneUzemiaNames = formData.stavba.katastralneUzemia.map(
+        (item) => esbsKatastralneUzemiaCiselnik.find(({ Code }) => Code === item)!.Name,
+      )
+
+      return `e-SIZ ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla} kú ${katastralneUzemiaNames.join(', ')}`
+    },
+  }
+
+type ExtractSubjectFormData = {
+  stavba: {
+    nazov: string
+  }
+}
+
+const extractSubjectSchema = {
+  type: 'object',
+  required: ['stavba'],
+  properties: {
+    stavba: {
+      type: 'object',
+      required: ['nazov'],
+      properties: {
+        nazov: { type: 'string' },
+      },
+    },
+  },
+} as BAJSONSchema7
+
+export const stanoviskoKInvesticnemuZameruExtractSubject: SchemaFormDataExtractor<ExtractSubjectFormData> =
+  {
+    type: 'schema',
+    schema: extractSubjectSchema,
+    extractFn: (formData) => formData.stavba.nazov,
+  }

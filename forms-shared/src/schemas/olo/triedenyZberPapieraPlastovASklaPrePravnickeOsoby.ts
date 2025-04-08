@@ -1,7 +1,5 @@
 import { createCondition, createStringItems, createStringItemsV2 } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
@@ -14,6 +12,7 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
 
 const getFakturacia = (novyOdberatel: boolean) =>
   object(
@@ -461,16 +460,38 @@ export default schema(
   ],
 )
 
-export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
-    return safeString(formData.ziadatel?.novyEmail)
+type ExtractFormData = {
+  ziadatel: (
+    | {
+        typOdberatela:
+          | 'Nový'
+          | 'Existujúci'
+          | 'Zmena poplatkovej povinnosti pre existujúceho zákazníka'
+        email: string
+      }
+    | {
+        typOdberatela: 'Zmena odberateľa'
+        novyEmail: string
+      }
+  ) & {
+    nazovOrganizacie: string
   }
-
-  return safeString(formData.ziadatel?.email)
 }
 
-export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName = (
-  formData: GenericObjectType,
-) => safeString(formData.ziadatel?.nazovOrganizacie)
+export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.typOdberatela === 'Zmena odberateľa') {
+        return formData.ziadatel.novyEmail
+      }
+
+      return formData.ziadatel.email
+    },
+  }
+
+export const triedenyZberPapieraPlastovASklaPrePravnickeOsobyExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.nazovOrganizacie,
+  }

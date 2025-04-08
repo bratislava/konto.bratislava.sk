@@ -5,10 +5,9 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
@@ -107,22 +106,39 @@ export default schema(
   ],
 )
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  return safeString(formData.objednavatel?.email)
+type ExtractFormData = {
+  objednavatel: { email: string } & (
+    | {
+        objednavatelTyp: 'fyzickaOsoba' | 'fyzickaOsobaPodnikatel'
+        meno: string
+      }
+    | {
+        objednavatelTyp: 'pravnickaOsoba'
+        obchodneMeno: string
+      }
+  )
 }
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsoba' ||
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsobaPodnikatel'
-  ) {
-    return safeString(formData.objednavatel?.meno)
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.objednavatel.email,
   }
-  if (formData.objednavatel?.objednavatelTyp === 'pravnickaOsoba') {
-    return safeString(formData.objednavatel?.obchodneMeno)
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsoba' ||
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsobaPodnikatel'
+      ) {
+        return formData.objednavatel.meno
+      } else if (formData.objednavatel.objednavatelTyp === 'pravnickaOsoba') {
+        return formData.objednavatel.obchodneMeno
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
   }
-}

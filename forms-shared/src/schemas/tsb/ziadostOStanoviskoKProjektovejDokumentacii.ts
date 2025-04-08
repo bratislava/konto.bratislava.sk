@@ -7,8 +7,7 @@ import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
+import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
@@ -130,22 +129,39 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
   ],
 )
 
-export const ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  return safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel: { email: string } & (
+    | {
+        ziadatelTyp: 'fyzickaOsoba' | 'fyzickaOsobaPodnikatel'
+        meno: string
+      }
+    | {
+        ziadatelTyp: 'pravnickaOsoba'
+        obchodneMeno: string
+      }
+  )
 }
 
-export const ziadostOStanoviskoKProjektovejDokumentaciiExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (
-    formData.ziadatel?.ziadatelTyp === 'fyzickaOsoba' ||
-    formData.ziadatel?.ziadatelTyp === 'fyzickaOsobaPodnikatel'
-  ) {
-    return safeString(formData.ziadatel?.meno)
+export const ziadostOStanoviskoKProjektovejDokumentaciiExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.email,
   }
-  if (formData.ziadatel?.ziadatelTyp === 'pravnickaOsoba') {
-    return safeString(formData.ziadatel?.obchodneMeno)
+
+export const ziadostOStanoviskoKProjektovejDokumentaciiExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (
+        formData.ziadatel.ziadatelTyp === 'fyzickaOsoba' ||
+        formData.ziadatel.ziadatelTyp === 'fyzickaOsobaPodnikatel'
+      ) {
+        return formData.ziadatel.meno
+      } else if (formData.ziadatel.ziadatelTyp === 'pravnickaOsoba') {
+        return formData.ziadatel.obchodneMeno
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
   }
-}

@@ -38,6 +38,8 @@ export type CsvColumnsWithVariableSymbol = CsvRecord & {
 export type OutputFile = {
   filename: string
   content: string
+  debet: number
+  date: string
 }
 
 @Injectable()
@@ -196,7 +198,7 @@ export class CardPaymentReportingService {
       ' '.repeat(6),
       this.configService.getOrThrow<string>('REPORTING_ICO'),
       ' '.repeat(22),
-      '<\n',
+      '\n',
       '1',
       dateInfo.today_DDMMYYYY,
       dateInfo.today_DDMMYYYY,
@@ -212,13 +214,14 @@ export class CardPaymentReportingService {
   private async generateFileBody(
     finalData: CsvColumnsWithVariableSymbol[],
     yesterday_DDMMYYYY: string,
-  ) {
+  ): Promise<string> {
     let body = ''
 
     const constants = await this.getConfigFromDatabase()
 
     finalData.forEach((row) => {
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
+
       const generatedRow = [
         '2390080180', // padding?
         Number(row.transactionId),
@@ -243,14 +246,22 @@ export class CardPaymentReportingService {
 
   private generateFooter(finalData: CsvColumnsWithVariableSymbol[]) {
     const countTransactions = finalData.length
-    const kredit = finalData.reduce(
-      (sum, row) => sum + parseFloat(row.totalPrice.replace(',', '.')),
-      0,
-    )
-    const debet = finalData.reduce(
-      (sum, row) => sum + parseFloat(row.provision.replace(',', '.')),
-      0,
-    )
+
+    const formatedData = finalData.map((row) => {
+      return {
+        totalPrice: parseFloat(row.totalPrice.replace(',', '.')),
+        provision: parseFloat(row.provision.replace(',', '.')),
+      }
+    })
+
+    let kredit = 0
+    let debet = 0
+
+    formatedData.forEach((row) => {
+      kredit += Math.max(row.totalPrice, 0)
+      debet += row.provision - Math.min(row.totalPrice, 0)
+    })
+
     return [
       '3',
       String(countTransactions).padStart(6, '0'),
@@ -301,8 +312,6 @@ export class CardPaymentReportingService {
     dayjs.extend(utc)
     dayjs.extend(timezone)
 
-    const dates: string[] = []
-
     // Processing new files
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
@@ -310,7 +319,6 @@ export class CardPaymentReportingService {
         if (!fileDate) return null
 
         const dateInfo = this.getDateInfo(fileDate)
-        dates.push(dateInfo.humanReadable)
 
         // Parse CSV and add columns
         const csvData = this.processCsvData(file.content)
@@ -333,9 +341,18 @@ export class CardPaymentReportingService {
         // Generate file name
         const processedFileFileName = this.createFileName(dateInfo.today_YYMMDD)
 
+        // Count debet
+        // eslint-disable-next-line unicorn/no-array-reduce
+        const debet = finalData.reduce((sum, row) => {
+          const value = parseFloat(row.totalPrice.replace(',', '.'))
+          return value < 0 ? sum - value : sum
+        }, 0)
+
         return {
           filename: processedFileFileName,
           content: processedFileResult,
+          debet,
+          date: dateInfo.humanReadable,
         }
       }),
     )
@@ -343,13 +360,17 @@ export class CardPaymentReportingService {
     const validOutputFiles = outputFiles.filter((file) => file !== null)
 
     const attachments = validOutputFiles.map((item) => {
-      return { ...item, contentType: 'text/plain' }
+      return {
+        filename: item.filename,
+        content: item.content,
+        contentType: 'text/plain',
+      }
     })
 
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n${dates.join(', ')}`
+        : `Report z dní:\n  - ${validOutputFiles.map((file) => [file?.date, ' s debetom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       [configs.REPORTING_RECIPIENT_EMAIL],

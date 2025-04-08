@@ -220,6 +220,8 @@ export class CardPaymentReportingService {
     const constants = await this.getConfigFromDatabase()
 
     finalData.forEach((row) => {
+      if (row.orderId.length == 0) return
+
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
 
       const generatedRow = [
@@ -245,21 +247,24 @@ export class CardPaymentReportingService {
   }
 
   private generateFooter(finalData: CsvColumnsWithVariableSymbol[]) {
-    const countTransactions = finalData.length
 
     const formatedData = finalData.map((row) => {
       return {
         totalPrice: parseFloat(row.totalPrice.replace(',', '.')),
         provision: parseFloat(row.provision.replace(',', '.')),
+        isRegular: row.orderId.length > 0,
       }
     })
 
+    let countTransactions = 0
     let kredit = 0
     let debet = 0
 
     formatedData.forEach((row) => {
+      if (!row.isRegular) return
       kredit += Math.max(row.totalPrice, 0)
       debet += row.provision - Math.min(row.totalPrice, 0)
+      countTransactions += 1
     })
 
     return [

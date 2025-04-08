@@ -105,7 +105,7 @@ export class CardPaymentReportingService {
       today_YYMMDD: today.format('YYMMDD'),
       yesterday_DDMMYYYY: yesterday.format('DDMMYYYY'),
       humanReadable: today.format('DD.MM.YYYY'),
-      today
+      today,
     }
   }
 
@@ -154,12 +154,9 @@ export class CardPaymentReportingService {
           },
           validSince: {
             lte: new Date(),
-          }
+          },
         },
-        orderBy: [
-          {validSince: 'desc'},
-          {createdAt: 'desc'},
-          ],
+        orderBy: [{ validSince: 'desc' }, { createdAt: 'desc' }],
         distinct: ['key'],
         select: {
           key: true,
@@ -363,7 +360,7 @@ export class CardPaymentReportingService {
           filename: processedFileFileName,
           content: processedFileResult,
           debet,
-          date: dateInfo.today
+          date: dateInfo.today,
         }
       }),
     )
@@ -379,7 +376,10 @@ export class CardPaymentReportingService {
     })
 
     const validOutputFilesSorted = validOutputFiles.sort((a, b) => {
-      return a.date.isAfter(b.date) ? 1 : a.date.isBefore(b.date) ? -1 : 0
+      if (a.date.isBefore(b.date)) {
+        return a.date.isAfter(b.date) ? 1 : -1
+      }
+      return a.date.isAfter(b.date) ? 1 : 0
     })
 
     const message =

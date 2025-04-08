@@ -39,7 +39,7 @@ export type OutputFile = {
   filename: string
   content: string
   debet: number
-  date: string
+  date: dayjs.Dayjs
 }
 
 @Injectable()
@@ -105,6 +105,7 @@ export class CardPaymentReportingService {
       today_YYMMDD: today.format('YYMMDD'),
       yesterday_DDMMYYYY: yesterday.format('DDMMYYYY'),
       humanReadable: today.format('DD.MM.YYYY'),
+      today
     }
   }
 
@@ -177,7 +178,7 @@ export class CardPaymentReportingService {
           ErrorsEnum.DATABASE_ERROR,
           ErrorsResponseEnum.DATABASE_ERROR,
           undefined,
-          "Could not find 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_SEND_EMAIL' settings in database.",
+          `Could not find '${key}' settings in database. ${JSON.stringify(constants)}`,
         )
       }
     })
@@ -354,7 +355,7 @@ export class CardPaymentReportingService {
           filename: processedFileFileName,
           content: processedFileResult,
           debet,
-          date: dateInfo.humanReadable,
+          date: dateInfo.today
         }
       }),
     )
@@ -370,13 +371,13 @@ export class CardPaymentReportingService {
     })
 
     const validOutputFilesSorted = validOutputFiles.sort((a, b) => {
-      return a.date > b.date ? 1 : 0
+      return a.date.isAfter(b.date) ? 1 : a.date.isBefore(b.date) ? -1 : 0
     })
 
     const message =
       attachments.length === 0
         ? 'Dnes nie je čo reportovať.'
-        : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date, ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
+        : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
       [configs.REPORTING_RECIPIENT_EMAIL],

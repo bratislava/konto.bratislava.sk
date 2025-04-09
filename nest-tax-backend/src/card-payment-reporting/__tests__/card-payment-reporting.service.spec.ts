@@ -1,14 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import { CardPaymentReportingService } from '../card-payment-reporting.service'
-import { PrismaService } from '../../prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import EmailSubservice from '../../utils/subservices/email.subservice'
-import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
+import { Test, TestingModule } from '@nestjs/testing'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
+import { PrismaService } from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import EmailSubservice from '../../utils/subservices/email.subservice'
+import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
+import { CardPaymentReportingService } from '../card-payment-reporting.service'
 
 const csvColumnNames = [
   'transactionType',
@@ -34,10 +34,6 @@ type CsvRecord = Record<CsvColumns, string>
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
   let prismaService: PrismaService
-  let configService: ConfigService
-  let throwerErrorGuard: ThrowerErrorGuard
-  let emailSubservice: EmailSubservice
-  let sftpFileSubservice: SftpFileSubservice
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -84,12 +80,10 @@ describe('CardPaymentReportingService', () => {
       ],
     }).compile()
 
-    service = module.get<CardPaymentReportingService>(CardPaymentReportingService)
+    service = module.get<CardPaymentReportingService>(
+      CardPaymentReportingService,
+    )
     prismaService = module.get<PrismaService>(PrismaService)
-    configService = module.get<ConfigService>(ConfigService)
-    throwerErrorGuard = module.get<ThrowerErrorGuard>(ThrowerErrorGuard)
-    emailSubservice = module.get<EmailSubservice>(EmailSubservice)
-    sftpFileSubservice = module.get<SftpFileSubservice>(SftpFileSubservice)
   })
 
   it('should be defined', () => {
@@ -110,7 +104,10 @@ describe('CardPaymentReportingService', () => {
       ]
       prismaService.tax.findMany = jest.fn().mockResolvedValue(mockedResponse)
 
-      const result = await service['getVariableSymbolsByOrderIds'](['order1', 'order3'])
+      const result = await service['getVariableSymbolsByOrderIds']([
+        'order1',
+        'order3',
+      ])
       expect(result).toEqual([
         { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
         { variableSymbol: 'VS234', orderIds: ['order3', 'order4'] },
@@ -128,7 +125,7 @@ describe('CardPaymentReportingService', () => {
     it('should extract and return file date when valid', () => {
       const fileName = 'AH_DATA_99999999_9999999999_999_2411089999.csv'
       const result = service['extractFileDate'](fileName)
-      expect(result).toEqual('20241108')
+      expect(result).toBe('20241108')
     })
 
     it('should return null for invalid file name format', () => {
@@ -146,7 +143,7 @@ describe('CardPaymentReportingService', () => {
       const result = service['getDateInfo'](fileDate)
       expect(result.today_DDMMYYYY).toBe('01102023')
       expect(result.today_YYMMDD).toBe('231001')
-      expect(result.humanReadable).toEqual('01.10.2023')
+      expect(result.humanReadable).toBe('01.10.2023')
     })
   })
 
@@ -159,52 +156,56 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
       const result = service['processCsvData'](csvContent)
       expect(result).toHaveLength(3)
-      expect(result).toStrictEqual([{
-        authCode: '777777',
-        cardNumber: '888888******9999',
-        cardType: 'V',
-        cashBack: '6,66',
-        closureId: '111111',
-        date: '09.11.24',
-        orderId: '2222222222222222',
-        priceWithoutProvision: '555,55',
-        provision: '4,44',
-        terminalId: '11111111',
-        totalPrice: '333,33',
-        transactionId: '222222222222',
-        transactionType: 'POS',
-        transactionType_: 'S',
-      }, {
-        authCode: '222222',
-        cardNumber: '333333******4444',
-        cardType: 'V',
-        cashBack: '1,11',
-        closureId: '555555',
-        date: '09.11.24',
-        orderId: '6666666666666666',
-        priceWithoutProvision: '99,99',
-        provision: '8,88',
-        terminalId: '55555555',
-        totalPrice: '77,77',
-        transactionId: '666666666666',
-        transactionType: 'POS',
-        transactionType_: 'S',
-      }, {
-        authCode: '',
-        cardNumber: 'Popl. za settlement',
-        cardType: ' ',
-        cashBack: '0,00',
-        closureId: '0',
-        date: '05.11.24',
-        orderId: '',
-        priceWithoutProvision: '-9,99',
-        provision: '-0,00',
-        terminalId: '',
-        totalPrice: '-9,99',
-        transactionId: '0000001',
-        transactionType: 'POS',
-        transactionType_: 'D',
-      }])
+      expect(result).toStrictEqual([
+        {
+          authCode: '777777',
+          cardNumber: '888888******9999',
+          cardType: 'V',
+          cashBack: '6,66',
+          closureId: '111111',
+          date: '09.11.24',
+          orderId: '2222222222222222',
+          priceWithoutProvision: '555,55',
+          provision: '4,44',
+          terminalId: '11111111',
+          totalPrice: '333,33',
+          transactionId: '222222222222',
+          transactionType: 'POS',
+          transactionType_: 'S',
+        },
+        {
+          authCode: '222222',
+          cardNumber: '333333******4444',
+          cardType: 'V',
+          cashBack: '1,11',
+          closureId: '555555',
+          date: '09.11.24',
+          orderId: '6666666666666666',
+          priceWithoutProvision: '99,99',
+          provision: '8,88',
+          terminalId: '55555555',
+          totalPrice: '77,77',
+          transactionId: '666666666666',
+          transactionType: 'POS',
+          transactionType_: 'S',
+        },
+        {
+          authCode: '',
+          cardNumber: 'Popl. za settlement',
+          cardType: ' ',
+          cashBack: '0,00',
+          closureId: '0',
+          date: '05.11.24',
+          orderId: '',
+          priceWithoutProvision: '-9,99',
+          provision: '-0,00',
+          terminalId: '',
+          totalPrice: '-9,99',
+          transactionId: '0000001',
+          transactionType: 'POS',
+          transactionType_: 'D',
+        },
+      ])
     })
   })
 
@@ -231,7 +232,10 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         { variableSymbol: 'VS456', orderIds: ['order3', 'order4'] },
       ]
 
-      const result = service['enrichDataWithVariableSymbols'](csvData, variableSymbols)
+      const result = service['enrichDataWithVariableSymbols'](
+        csvData,
+        variableSymbols,
+      )
       expect(result).toStrictEqual([
         { orderId: 'order1', totalPrice: '123', variableSymbol: 'VS123' },
         { orderId: 'order3', totalPrice: '456', variableSymbol: 'VS456' },
@@ -240,13 +244,20 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
 
     it('should assign an empty string as variable symbol if no match is found', () => {
       const csvData = [
-        { orderId: 'order3', totalPrice: '123', transactionType: 'type1' } as CsvRecord,
+        {
+          orderId: 'order3',
+          totalPrice: '123',
+          transactionType: 'type1',
+        } as CsvRecord,
       ]
       const variableSymbols = [
         { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
       ]
 
-      const result = service['enrichDataWithVariableSymbols'](csvData, variableSymbols)
+      const result = service['enrichDataWithVariableSymbols'](
+        csvData,
+        variableSymbols,
+      )
       expect(result[0].variableSymbol).toBe('')
     })
   })

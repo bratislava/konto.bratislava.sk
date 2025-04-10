@@ -76,7 +76,7 @@ const ziadostONajomBytuExample: ExampleForm = {
         zamestnaniePrijem: 1500,
       },
       sucasneByvanie: { situaciaRovnakaAkoVasa: true },
-      zdravotnyStav: { mieraFunkcnejPoruchy: '50az74', tzpPreukaz: true },
+      zdravotnyStav: { chronickeOchorenie: false },
     },
     deti: {
       detiSucastouDomacnosti: true,
@@ -90,7 +90,7 @@ const ziadostONajomBytuExample: ExampleForm = {
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
           prijem: { student: true, maPrijem: false },
-          zdravotnyStav: { tzpPreukaz: false, chronickeOchorenie: false },
+          zdravotnyStav: { chronickeOchorenie: false },
         },
         {
           osobneUdaje: {
@@ -101,7 +101,7 @@ const ziadostONajomBytuExample: ExampleForm = {
           },
           sucasneByvanie: { situaciaRovnakaAkoVasa: true },
           prijem: { student: true, maPrijem: true, prijemVyska: 200 },
-          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: '75az100' },
+          zdravotnyStav: { chronickeOchorenie: false },
         },
       ],
     },
@@ -127,7 +127,7 @@ const ziadostONajomBytuExample: ExampleForm = {
             inePrijmy: false,
             dochodokVyska: 550,
           },
-          zdravotnyStav: { tzpPreukaz: true, mieraFunkcnejPoruchy: '50az74' },
+          zdravotnyStav: { chronickeOchorenie: false },
         },
       ],
     },
@@ -135,6 +135,7 @@ const ziadostONajomBytuExample: ExampleForm = {
       dovodyPodaniaZiadosti:
         'Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.',
       maximalnaVyskaNajomneho: 700,
+      maPreferovanuLokalitu: true,
       preferovanaLokalita: ['ruzinov', 'noveMesto'],
       preferovanaVelkost: '3izbovy',
     },

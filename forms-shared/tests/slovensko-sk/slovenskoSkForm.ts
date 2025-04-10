@@ -82,7 +82,7 @@ describe('slovenskoSkForm', () => {
 
         test('XML should be valid', async () => {
           const xsdString = getSchemaXsd(formDefinition)
-          const isValid = validateXml(xmlString, xsdString)
+          const isValid = await validateXml(xmlString, xsdString)
 
           expect(isValid).toBe(true)
         })

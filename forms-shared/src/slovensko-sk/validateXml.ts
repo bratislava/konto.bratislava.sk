@@ -1,11 +1,20 @@
-import * as libxmljs from 'libxmljs'
-
-export function validateXml(xmlString: string, xsdString: string) {
+export async function validateXml(xmlString: string, xsdString: string) {
   try {
-    const xmlDoc = libxmljs.parseXml(xmlString)
-    const xsdDoc = libxmljs.parseXml(xsdString)
+    const { XmlDocument, XsdValidator } = await import('libxml2-wasm')
+    const xmlDoc = XmlDocument.fromString(xmlString)
+    const xsdDoc = XmlDocument.fromString(xsdString)
+    const xsdValidator = XsdValidator.fromDoc(xsdDoc)
 
-    return xmlDoc.validate(xsdDoc) as boolean
+    try {
+      xsdValidator.validate(xmlDoc)
+      return true
+    } catch (e) {
+      return false
+    } finally {
+      xsdValidator.dispose()
+      xmlDoc.dispose()
+      xsdDoc.dispose()
+    }
   } catch (error) {
     return false
   }

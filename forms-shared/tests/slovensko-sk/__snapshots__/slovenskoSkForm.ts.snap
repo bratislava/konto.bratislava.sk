@@ -2452,7 +2452,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
 "<?xml version="1.0" encoding="UTF-8"?>
 <eform xmlns="http://schemas.gov.sk/form/00603481.ziadostONajomnyByt/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <JsonVersion>1.0.0</JsonVersion>
-  <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["opustenieUstavnejStarostlivosti","osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":true,"typByvania":"institucionalnaStarostlivost","dlzkaBytovejNudze":"menejAko1"},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"mieraFunkcnejPoruchy":"50az74","tzpPreukaz":true}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"tzpPreukaz":false,"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"75az100"}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"tzpPreukaz":true,"mieraFunkcnejPoruchy":"50az74"}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
+  <Json>{"ziadatelZiadatelka":{"osobneUdaje":{"adresaTrvalehoPobytu":{"adresaSkutocnehoPobytuRovnaka":true,"byvanieVMestskomNajomnomByte":false,"mestoPsc":{"mesto":"Bratislava","psc":"81101"},"pobytVBratislaveViacAkoRok":true,"ulicaACislo":"Hlavná 123","vlastnikNehnutelnosti":false},"datumNarodenia":"1985-03-15","email":"jana.novakova@email.com","kontaktovanyEmailom":true,"menoPriezvisko":{"meno":"Jana","priezvisko":"Nováková"},"rodinnyStav":"rozvedeny","rodnePriezvisko":"Kováčová","statnaPrislusnost":"slovenska","telefonneCislo":"+421901234567"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":true,"inePrijmyVyska":150,"samostatnaZarobkovaCinnost":false,"vyzivne":true,"vyzivneVyska":200,"zamestnanie":true,"zamestnaniePrijem":1200},"rizikoveFaktory":{"rizikoveFaktoryPritomne":true,"vekNajstarsiehoClena":"menejAko63","zoznamRizikovychFaktorov":["opustenieUstavnejStarostlivosti","osamelyRodic"]},"sucasneByvanie":{"bytovaNudza":true,"typByvania":"institucionalnaStarostlivost","dlzkaBytovejNudze":"menejAko1"},"zdravotnyStav":{"bezbarierovyByt":false,"chronickeOchorenie":true,"existujuceDiagnozy":["astma","chronickaParadentoza"],"tzpPreukaz":false}},"manzelManzelka":{"manzelManzelkaSucastouDomacnosti":false},"druhDruzka":{"druhDruzkaSucastouDomacnosti":true,"osobneUdaje":{"adresaSkutocnehoPobytu":{"mestoPsc":{"mesto":"Bratislava","psc":"82105"},"ulicaACislo":"Nová 456","vlastnikNehnutelnosti":false},"datumNarodenia":"1982-07-22","menoPriezvisko":{"meno":"Peter","priezvisko":"Horváth"},"rodinnyStav":"slobodny","rodnePriezvisko":"Horváth","statnaPrislusnost":"slovenska"},"prijem":{"davkaVNezamestnanosti":false,"dochodok":false,"inePrijmy":false,"samostatnaZarobkovaCinnost":true,"samostatnaZarobkovaCinnostPrijem":300,"vyzivne":false,"zamestnanie":true,"zamestnaniePrijem":1500},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"zdravotnyStav":{"chronickeOchorenie":false}},"deti":{"detiSucastouDomacnosti":true,"zoznamDeti":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Lucia","priezvisko":"Nováková"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2010-11-30"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":false},"zdravotnyStav":{"chronickeOchorenie":false}},{"osobneUdaje":{"menoPriezvisko":{"meno":"Michal","priezvisko":"Novák"},"statnaPrislusnost":"slovenska","vlastnikNehnutelnosti":false,"datumNarodenia":"2005-04-18"},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"student":true,"maPrijem":true,"prijemVyska":200},"zdravotnyStav":{"chronickeOchorenie":false}}]},"inyClenoviaClenkyDomacnosti":{"inyClenoviaClenkySucastouDomacnosti":true,"zoznamInychClenov":[{"osobneUdaje":{"menoPriezvisko":{"meno":"Mária","priezvisko":"Kováčová"},"statnaPrislusnost":"slovenska","datumNarodenia":"1960-09-05","rodinnyStav":"vdovec","rodnePriezvisko":"Hrušková","vlastnikNehnutelnosti":false},"sucasneByvanie":{"situaciaRovnakaAkoVasa":true},"prijem":{"zamestnanie":false,"samostatnaZarobkovaCinnost":false,"dochodok":true,"vyzivne":false,"davkaVNezamestnanosti":false,"inePrijmy":false,"dochodokVyska":550},"zdravotnyStav":{"chronickeOchorenie":false}}]},"ineOkolnosti":{"dovodyPodaniaZiadosti":"Potrebujeme väčší byt pre našu rastúcu rodinu a lepšie podmienky pre dieťa so zdravotným postihnutím.","maximalnaVyskaNajomneho":700,"maPreferovanuLokalitu":true,"preferovanaLokalita":["ruzinov","noveMesto"],"preferovanaVelkost":"3izbovy"},"sucetPrijmovCestneVyhlasenie":{"cestneVyhlasenie":true}}</Json>
   <Summary>
     <Form title="Žiadosť o nájom bytu">
       <Step id="root_ziadatelZiadatelka" title="Žiadateľ/žiadateľka">
@@ -2540,7 +2540,7 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
         <Field id="root_ziadatelZiadatelka_prijem_inePrijmyVyska" label="Iné pravidelné mesačné príjmy">
           <StringValue>150</StringValue>
         </Field>
-        <Field id="root_ziadatelZiadatelka_zdravotnyStav_tzpPreukaz" label="Ste držiteľom preukazu ŤZP?">
+        <Field id="root_ziadatelZiadatelka_zdravotnyStav_tzpPreukaz" label="Ste vy, alebo niekto z členov budúcej domácnosti držiteľom preukazu ŤZP?">
           <StringValue>Nie</StringValue>
         </Field>
         <Field id="root_ziadatelZiadatelka_zdravotnyStav_chronickeOchorenie" label="Trpíte chronickým ochorením?">
@@ -2630,15 +2630,12 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
         <Field id="root_druhDruzka_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
           <StringValue>Nie</StringValue>
         </Field>
-        <Field id="root_druhDruzka_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
-          <StringValue>Áno</StringValue>
-        </Field>
-        <Field id="root_druhDruzka_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
-          <StringValue>Od 50 % do 74 %</StringValue>
+        <Field id="root_druhDruzka_zdravotnyStav_chronickeOchorenie" label="Trpí chronickým ochorením?">
+          <StringValue>Nie</StringValue>
         </Field>
       </Step>
       <Step id="root_deti" title="Nezaopatrené deti do 25 rokov">
-        <Field id="root_deti_detiSucastouDomacnosti" label="Bude súčasťou budúcej domácnosti aj vaše dieťa/deti?">
+        <Field id="root_deti_detiSucastouDomacnosti" label="Bude súčasťou budúcej domácnosti aj vaše nezaopatrené dieťa/deti?">
           <StringValue>Áno</StringValue>
         </Field>
         <Array id="root_deti_zoznamDeti" title="Deti">
@@ -2655,19 +2652,16 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
             <Field id="root_deti_zoznamDeti_0_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
               <StringValue>Slovenská</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_0_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+            <Field id="root_deti_zoznamDeti_0_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše nezaopatrené dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho dieťaťa rovnaká ako vaša?">
+            <Field id="root_deti_zoznamDeti_0_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho nezaopatreného dieťaťa rovnaká ako vaša?">
               <StringValue>Áno</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_0_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
               <StringValue>Áno</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_0_prijem_maPrijem" label="Malo dieťa staršie ako 15 rokov v minulom kalendárnom roku príjem, ktorý by sa mohol zarátavať do celkového príjmu domácnosti?">
-              <StringValue>Nie</StringValue>
-            </Field>
-            <Field id="root_deti_zoznamDeti_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
               <StringValue>Nie</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_0_zdravotnyStav_chronickeOchorenie" label="Trpí chronickým ochorením?">
@@ -2687,10 +2681,10 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
             <Field id="root_deti_zoznamDeti_1_osobneUdaje_statnaPrislusnost" label="Štátna príslušnosť">
               <StringValue>Slovenská</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_1_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
+            <Field id="root_deti_zoznamDeti_1_osobneUdaje_vlastnikNehnutelnosti" label="Je vaše nezaopatrené dieťa vlastníkom/vlastníčkou alebo spoluvlastníkom/spoluvlastníčkou nehnuteľnosti určenej na bývanie?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_1_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho dieťaťa rovnaká ako vaša?">
+            <Field id="root_deti_zoznamDeti_1_sucasneByvanie_situaciaRovnakaAkoVasa" label="Je situácia súčasného bývania vášho nezaopatreného dieťaťa rovnaká ako vaša?">
               <StringValue>Áno</StringValue>
             </Field>
             <Field id="root_deti_zoznamDeti_1_prijem_student" label="Je dieťa študent základnej, strednej alebo vysokej školy na dennom štúdiu?">
@@ -2702,11 +2696,8 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
             <Field id="root_deti_zoznamDeti_1_prijem_prijemVyska" label="Čistý mesačný príjem dieťaťa">
               <StringValue>200</StringValue>
             </Field>
-            <Field id="root_deti_zoznamDeti_1_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
-              <StringValue>Áno</StringValue>
-            </Field>
-            <Field id="root_deti_zoznamDeti_1_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
-              <StringValue>Od 75 % do 100 %</StringValue>
+            <Field id="root_deti_zoznamDeti_1_zdravotnyStav_chronickeOchorenie" label="Trpí chronickým ochorením?">
+              <StringValue>Nie</StringValue>
             </Field>
           </ArrayItem>
         </Array>
@@ -2762,11 +2753,8 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
             <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_prijem_inePrijmy" label="Poberal/poberala v minulom kalendárnom roku iné príjmy?">
               <StringValue>Nie</StringValue>
             </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_tzpPreukaz" label="Je držiteľom preukazu ŤZP?">
-              <StringValue>Áno</StringValue>
-            </Field>
-            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_mieraFunkcnejPoruchy" label="Má uznanú mieru funkčnej poruchy?">
-              <StringValue>Od 50 % do 74 %</StringValue>
+            <Field id="root_inyClenoviaClenkyDomacnosti_zoznamInychClenov_0_zdravotnyStav_chronickeOchorenie" label="Trpí chronickým ochorením?">
+              <StringValue>Nie</StringValue>
             </Field>
           </ArrayItem>
         </Array>
@@ -2778,7 +2766,10 @@ exports[`slovenskoSkForm > ziadostONajomBytuExample > XML should match snapshot 
         <Field id="root_ineOkolnosti_preferovanaVelkost" label="Akú veľkosť nájomného bytu preferujete?">
           <StringValue>3-izbový byt</StringValue>
         </Field>
-        <Field id="root_ineOkolnosti_preferovanaLokalita" label="Aká je vaša preferovaná lokalita nájomného bytu (mestská časť)?">
+        <Field id="root_ineOkolnosti_maPreferovanuLokalitu" label="Máte preferovanú lokalitu nájomného bytu (mestskú časť)?">
+          <StringValue>Áno</StringValue>
+        </Field>
+        <Field id="root_ineOkolnosti_preferovanaLokalita" label="Aká je vaša preferovaná lokalita?">
           <StringValue>Ružinov</StringValue>
           <StringValue>Nové Mesto</StringValue>
         </Field>

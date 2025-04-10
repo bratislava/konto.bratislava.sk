@@ -59,13 +59,12 @@ exports[`getValuesForFields > should match snapshots 2`] = `
 
 exports[`getValuesForFields > should match snapshots 3`] = `
 {
+  "ChronickeOchorenie": false,
   "GinisID": "MAG123",
   "SucasneByvaniaRovnakaSituacia": true,
-  "TzpPreukaz": true,
   "VlastnikNehnutelnosti": false,
   "ZiadatelDatumNarodenia": "1982-07-22",
   "ZiadatelMeno": "Peter",
-  "ZiadatelMieraFunkcnejPoruchy": "50az74",
   "ZiadatelPriezvisko": "Horváth",
   "ZiadatelRodinnyStav": "slobodny",
   "ZiadatelRodnePriezvisko": "Horváth",
@@ -85,7 +84,6 @@ exports[`getValuesForFields > should match snapshots 4`] = `
   "MaPrijem": false,
   "Student": true,
   "SucasneByvanieRovnakeAkoVase": true,
-  "TzpPreukaz": false,
   "VlastnikNehnutelnosti": false,
   "ZiadatelDatumNarodenia": "2010-11-30",
   "ZiadatelMeno": "Lucia",
@@ -96,12 +94,11 @@ exports[`getValuesForFields > should match snapshots 4`] = `
 
 exports[`getValuesForFields > should match snapshots 5`] = `
 {
+  "ChronickeOchorenie": false,
   "GinisID": "MAG123",
   "MaPrijem": true,
-  "MieraFunkcnejPoruchy": "75az100",
   "Student": true,
   "SucasneByvanieRovnakeAkoVase": true,
-  "TzpPreukaz": true,
   "VlastnikNehnutelnosti": false,
   "ZiadatelDatumNarodenia": "2005-04-18",
   "ZiadatelMeno": "Michal",
@@ -113,11 +110,10 @@ exports[`getValuesForFields > should match snapshots 5`] = `
 
 exports[`getValuesForFields > should match snapshots 6`] = `
 {
+  "ChronickeOchorenie": false,
   "DochodokVyska": 550,
   "GinisID": "MAG123",
-  "MieraFunkcnejPoruchy": "50az74",
   "SucasneByvanieRovnakeAkoVase": true,
-  "TzpPreukaz": true,
   "VlastnikNehnutelnosti": false,
   "ZiadatelDatumNarodenia": "1960-09-05",
   "ZiadatelMeno": "Mária",

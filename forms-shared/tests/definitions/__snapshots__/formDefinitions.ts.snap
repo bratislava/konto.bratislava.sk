@@ -868,9 +868,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
       },
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Komunitné záhrady",
 }
 `;
@@ -1581,9 +1578,6 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Dočistenie stanovišťa zberných nádob",
 }
 `;
@@ -4702,9 +4696,6 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Energetické zhodnotenie odpadu v ZEVO",
 }
 `;
@@ -5363,9 +5354,6 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "KOLO Taxi",
 }
 `;
@@ -6520,9 +6508,6 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Mimoriadny odvoz a zhodnotenie odpadu",
 }
 `;
@@ -7011,9 +6996,6 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Odvoz objemného odpadu valníkom",
 }
 `;
@@ -7821,9 +7803,6 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom",
 }
 `;
@@ -8188,9 +8167,6 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "OLO Taxi",
 }
 `;
@@ -8607,9 +8583,6 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Podnety a pochvaly občanov",
 }
 `;
@@ -9950,9 +9923,6 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Triedený zber papiera, plastov a skla pre právnické osoby",
 }
 `;
@@ -11215,9 +11185,6 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Triedený zber papiera, plastov a skla pre správcovské spoločnosti",
 }
 `;
@@ -13335,9 +13302,6 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Uzatvorenie zmluvy o nakladaní s odpadom",
 }
 `;
@@ -41058,9 +41022,6 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
       },
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Oznámenie o poplatkovej povinnosti za komunálne odpady",
 }
 `;
@@ -41559,9 +41520,6 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Predzáhradky",
 }
 `;
@@ -56369,9 +56327,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Priznanie k dani z nehnuteľností",
 }
 `;
@@ -71179,9 +71134,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Priznanie k dani z nehnuteľností",
 }
 `;
@@ -72384,12 +72336,6 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {
-      "titleFallback": "Názov stavby/projektu",
-      "titlePath": "stavba.nazov",
-    },
-  },
   "title": "Žiadosť o stanovisko k investičnému zámeru",
 }
 `;
@@ -73110,9 +73056,6 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Objednávka informatívneho zákresu sietí",
 }
 `;
@@ -73877,9 +73820,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Objednávka vytýčenia podzemných vedení verejného osvetlenia",
 }
 `;
@@ -74652,9 +74592,6 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o stanovisko k projektovej dokumentácii",
 }
 `;
@@ -75401,9 +75338,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
 }
 `;
@@ -76849,12 +76783,6 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {
-      "titleFallback": "Názov stavby/projektu",
-      "titlePath": "stavba.nazov",
-    },
-  },
   "title": "Žiadosť o záväzné stanovisko k investičnej činnosti",
 }
 `;
@@ -85067,9 +84995,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o nájom bytu",
 }
 `;
@@ -85805,9 +85730,6 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
 }
 `;

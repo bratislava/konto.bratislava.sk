@@ -304,7 +304,6 @@ describe('NasesService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         title: 'Test Form',
         termsAndConditions: 'Test Terms and Conditions',
-        messageSubjectDefault: 'Test Subject',
         pospID: 'test-posp-id',
         pospVersion: '1.0',
         publisher: 'Test Publisher',

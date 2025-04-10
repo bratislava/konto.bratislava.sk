@@ -32,7 +32,7 @@ const MyApplicationDetailsHeader = ({
   const firstGinisChangeDate =
     ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.['Datum-zmeny']
 
-  const title = data?.frontendTitle
+  const subject = data?.formSubject
   const formSlug = data?.formDefinitionSlug
   const formId = data?.id
   const createdAt = firstGinisChangeDate || data?.createdAt
@@ -78,7 +78,7 @@ const MyApplicationDetailsHeader = ({
             <div className="flex flex-col gap-2">
               <p className="text-p2-semibold text-main-700">{formDefinitionTitle}</p>
               <div className="flex w-full items-center justify-between">
-                <h1 className="text-h1">{title}</h1>
+                <h1 className="text-h1">{subject}</h1>
                 <Button
                   className="hidden md:flex"
                   startIcon={<DownloadIcon className="size-6" />}

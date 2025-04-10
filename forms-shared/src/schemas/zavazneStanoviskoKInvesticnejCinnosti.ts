@@ -12,6 +12,11 @@ import { esbsKatastralneUzemiaCiselnik } from '../tax-form/mapping/shared/esbsCi
 import { textArea } from '../generator/functions/textArea'
 import { object } from '../generator/object'
 import { number } from '../generator/functions/number'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../form-utils/evaluateFormDataExtractor'
+import { BAJSONSchema7 } from '../form-utils/ajvKeywords'
 
 const addressFields = (title: string) => [
   input(
@@ -74,10 +79,6 @@ const ziadatelStavebnikInvestorFields = [
 export default schema(
   {
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
-  },
-  {
-    titlePath: 'stavba.nazov',
-    titleFallback: 'Názov stavby/projektu',
   },
   [
     step('ziadatel', { title: 'Žiadateľ' }, ziadatelStavebnikInvestorFields),
@@ -365,3 +366,51 @@ export default schema(
     ]),
   ],
 )
+
+type ExtractGinisSubjectFormData = {
+  stavba: {
+    ulica: string
+    nazov: string
+    parcelneCisla: string
+    katastralneUzemia: (typeof esbsKatastralneUzemiaCiselnik)[number]['Code'][]
+  }
+}
+
+export const zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject: SchemalessFormDataExtractor<ExtractGinisSubjectFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      const katastralneUzemiaNames = formData.stavba.katastralneUzemia.map(
+        (item) => esbsKatastralneUzemiaCiselnik.find(({ Code }) => Code === item)!.Name,
+      )
+
+      return `e-ZST ${formData.stavba.ulica} ${formData.stavba.nazov}, p.č. ${formData.stavba.parcelneCisla} kú ${katastralneUzemiaNames.join(', ')}`
+    },
+  }
+
+type ExtractSubjectFormData = {
+  stavba: {
+    nazov: string
+  }
+}
+
+const extractSubjectSchema = {
+  type: 'object',
+  required: ['stavba'],
+  properties: {
+    stavba: {
+      type: 'object',
+      required: ['nazov'],
+      properties: {
+        nazov: { type: 'string' },
+      },
+    },
+  },
+} as BAJSONSchema7
+
+export const zavazneStanoviskoKInvesticnejCinnostiExtractSubject: SchemaFormDataExtractor<ExtractSubjectFormData> =
+  {
+    type: 'schema',
+    schema: extractSubjectSchema,
+    extractFn: (formData) => formData.stavba.nazov,
+  }

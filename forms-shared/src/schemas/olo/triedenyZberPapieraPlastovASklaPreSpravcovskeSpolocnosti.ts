@@ -1,7 +1,5 @@
 import { createCondition, createStringItems, createStringItemsV2 } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { safeString } from '../../form-utils/safeData'
-import { GenericObjectType } from '@rjsf/utils'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
@@ -14,6 +12,7 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 const getFakturacia = (novyOdberatel: boolean) =>
   object(
@@ -56,7 +55,6 @@ export default schema(
   {
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(
@@ -387,21 +385,39 @@ export default schema(
   ],
 )
 
-export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
-    return safeString(formData.ziadatel?.novyEmail)
-  }
-
-  return safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel:
+    | {
+        typOdberatela: 'Nový' | 'Existujúci'
+        email: string
+        nazovOrganizacie: string
+      }
+    | {
+        typOdberatela: 'Zmena odberateľa'
+        novyEmail: string
+        nazovOrganizacieNovehoOdberatela: string
+      }
 }
 
-export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
-    return safeString(formData.ziadatel?.nazovOrganizacieNovehoOdberatela)
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.typOdberatela === 'Zmena odberateľa') {
+        return formData.ziadatel.novyEmail
+      }
+
+      return formData.ziadatel.email
+    },
   }
-  return safeString(formData.ziadatel?.nazovOrganizacie)
-}
+
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.typOdberatela === 'Zmena odberateľa') {
+        return formData.ziadatel.nazovOrganizacieNovehoOdberatela
+      }
+      return formData.ziadatel.nazovOrganizacie
+    },
+  }

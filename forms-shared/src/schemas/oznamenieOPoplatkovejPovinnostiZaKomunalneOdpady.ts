@@ -697,7 +697,6 @@ export default schema(
   {
     title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
   },
-  {},
   [
     step('typOznamenia', { title: 'Typ oznámenia' }, [
       radioGroup(

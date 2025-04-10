@@ -10,6 +10,7 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import * as getFormDefinitionBySlug from 'forms-shared/definitions/getFormDefinitionBySlug'
+import * as formDataExtractors from 'forms-shared/form-utils/formDataExtractors'
 import * as omitExtraData from 'forms-shared/form-utils/omitExtraData'
 import { FormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import { FormSummary } from 'forms-shared/summary/summary'
@@ -30,10 +31,16 @@ import EmailFormsSubservice from '../email-forms.subservice'
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
 jest.mock('forms-shared/form-utils/omitExtraData')
+jest.mock('forms-shared/form-utils/formDataExtractors')
 
 const formId = 'test-form-id'
 const userEmail = 'test@example.com'
 const userFirstName = 'Test'
+const mockExtractedSubject = 'Mock Extracted Subject'
+const mockExtractedEmail = 'extracted@example.com'
+const mockExtractedName = 'Extracted Name'
+const mockExtractedOloEmail = 'extracted-olo@example.com'
+const mockExtractedOloName = 'Extracted OLO Name'
 
 const mockForm = {
   id: formId,
@@ -78,7 +85,6 @@ const mockFormDefinitionWithSendEmail = {
   jsonVersion: '1.0',
   sendPolicy: FormSendPolicy.NotAuthenticated,
   termsAndConditions: 'test-terms',
-  messageSubjectDefault: 'Test Subject',
   email: {
     address: {
       prod: 'department@bratislava.sk',
@@ -86,8 +92,8 @@ const mockFormDefinitionWithSendEmail = {
     },
     fromAddress: undefined, // Tests the fallback to email
     mailer: 'mailgun',
-    extractEmail: jest.fn().mockReturnValue('extracted@example.com'),
-    extractName: jest.fn().mockReturnValue('Extracted Name'),
+    extractEmail: { type: 'schemaless', extractFn: () => mockExtractedEmail },
+    extractName: { type: 'schemaless', extractFn: () => mockExtractedName },
     newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
     sendJsonDataAttachmentInTechnicalMail: true,
@@ -102,13 +108,15 @@ const mockFormDefinitionWithSendOloEmail = {
   jsonVersion: '1.0',
   sendPolicy: FormSendPolicy.NotAuthenticated,
   termsAndConditions: 'test-terms',
-  messageSubjectDefault: 'Test Subject',
   email: {
     mailer: 'olo',
     newSubmissionTemplate: MailgunTemplateEnum.OLO_NEW_SUBMISSION,
     userResponseTemplate: MailgunTemplateEnum.NASES_SENT,
-    extractEmail: jest.fn().mockReturnValue('extracted-olo@example.com'),
-    extractName: jest.fn().mockReturnValue('Extracted OLO Name'),
+    extractEmail: {
+      type: 'schemaless',
+      extractFn: () => mockExtractedOloEmail,
+    },
+    extractName: { type: 'schemaless', extractFn: () => mockExtractedOloName },
     address: { prod: 'olo@bratislava.sk', test: 'olo-test@bratislava.sk' },
     fromAddress: {
       prod: 'from-olo@bratislava.sk',
@@ -191,13 +199,17 @@ describe('EmailFormsSubservice', () => {
   })
 
   describe('sendEmailForm', () => {
+    let extractEmailFormEmailSpy: jest.SpyInstance
+    let extractEmailFormNameSpy: jest.SpyInstance
+    let extractFormSubjectSpy: jest.SpyInstance
+
     beforeEach(() => {
       jest.clearAllMocks()
       prismaMock.forms.findUnique.mockResolvedValue(mockForm)
       prismaMock.forms.update.mockResolvedValue(mockForm)
       jest
         .spyOn(getFormDefinitionBySlug, 'getFormDefinitionBySlug')
-        .mockImplementation((slug) => {
+        .mockImplementation((slug: string) => {
           if (slug === 'test-form-email') return mockFormDefinitionWithSendEmail
           if (slug === 'test-form-olo')
             return mockFormDefinitionWithSendOloEmail
@@ -210,6 +222,17 @@ describe('EmailFormsSubservice', () => {
       jest
         .spyOn(omitExtraData, 'omitExtraData')
         .mockReturnValue({ test: 'data' })
+
+      extractEmailFormEmailSpy = jest
+        .spyOn(formDataExtractors, 'extractEmailFormEmail')
+        .mockReturnValue(mockExtractedEmail)
+      extractEmailFormNameSpy = jest
+        .spyOn(formDataExtractors, 'extractEmailFormName')
+        .mockReturnValue(mockExtractedName)
+      extractFormSubjectSpy = jest
+        .spyOn(formDataExtractors, 'extractFormSubject')
+        .mockReturnValue(mockExtractedSubject)
+
       mailgunService.sendEmail.mockResolvedValue()
       oloMailerService.sendEmail.mockResolvedValue()
     })
@@ -233,6 +256,12 @@ describe('EmailFormsSubservice', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug,
       ).toHaveBeenCalledWith(mockForm.formDefinitionSlug)
 
+      // Check subject extraction
+      expect(extractFormSubjectSpy).toHaveBeenCalledWith(
+        mockFormDefinitionWithSendEmail,
+        mockForm.formDataJson,
+      )
+
       // Should send email to department
       expect(mailgunService.sendEmail).toHaveBeenCalledTimes(2)
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(1, {
@@ -242,6 +271,7 @@ describe('EmailFormsSubservice', () => {
           data: expect.objectContaining({
             formId: mockForm.id,
             slug: mockFormDefinitionWithSendEmail.slug,
+            messageSubject: mockExtractedSubject,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
@@ -263,6 +293,7 @@ describe('EmailFormsSubservice', () => {
             formId: mockForm.id,
             firstName: userFirstName,
             slug: mockFormDefinitionWithSendEmail.slug,
+            messageSubject: mockExtractedSubject,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
@@ -288,6 +319,8 @@ describe('EmailFormsSubservice', () => {
     it('should successfully send emails using sendOloEmail function and update form state', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
       prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
+      extractEmailFormEmailSpy.mockReturnValue(mockExtractedOloEmail)
+      extractEmailFormNameSpy.mockReturnValue(mockExtractedOloName)
 
       await service.sendEmailForm(
         mockFormWithOloDefinition.id,
@@ -311,6 +344,12 @@ describe('EmailFormsSubservice', () => {
         getFormDefinitionBySlug.getFormDefinitionBySlug,
       ).toHaveBeenCalledWith(mockFormWithOloDefinition.formDefinitionSlug)
 
+      // Check subject extraction
+      expect(extractFormSubjectSpy).toHaveBeenCalledWith(
+        mockFormDefinitionWithSendOloEmail,
+        mockFormWithOloDefinition.formDataJson,
+      )
+
       // Should send email to department using sendOloEmail
       expect(oloMailerService.sendEmail).toHaveBeenCalledTimes(2)
       expect(oloMailerService.sendEmail).toHaveBeenNthCalledWith(1, {
@@ -321,6 +360,7 @@ describe('EmailFormsSubservice', () => {
           data: expect.objectContaining({
             formId: mockFormWithOloDefinition.id,
             slug: mockFormDefinitionWithSendOloEmail.slug,
+            messageSubject: mockExtractedSubject,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
@@ -338,6 +378,7 @@ describe('EmailFormsSubservice', () => {
             formId: mockFormWithOloDefinition.id,
             firstName: userFirstName,
             slug: mockFormDefinitionWithSendOloEmail.slug,
+            messageSubject: mockExtractedSubject,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendOloEmail.email.fromAddress?.prod,
@@ -424,14 +465,17 @@ describe('EmailFormsSubservice', () => {
     })
 
     it('should extract email from form data when userEmail is null', async () => {
+      extractEmailFormEmailSpy.mockReturnValue(mockExtractedEmail)
+
       await service.sendEmailForm(formId, null, userFirstName)
 
-      expect(
-        mockFormDefinitionWithSendEmail.email.extractEmail,
-      ).toHaveBeenCalledWith(mockForm.formDataJson)
+      expect(extractEmailFormEmailSpy).toHaveBeenCalledWith(
+        mockFormDefinitionWithSendEmail,
+        mockForm.formDataJson,
+      )
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
         data: expect.objectContaining({
-          to: 'extracted@example.com',
+          to: mockExtractedEmail,
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
         attachments: expect.any(Array),
@@ -439,30 +483,18 @@ describe('EmailFormsSubservice', () => {
     })
 
     it('should extract name from form data when userFirstName is null', async () => {
+      extractEmailFormNameSpy.mockReturnValue(mockExtractedName)
+
       await service.sendEmailForm(formId, userEmail, null)
 
-      expect(
-        mockFormDefinitionWithSendEmail.email.extractName,
-      ).toHaveBeenCalledWith(mockForm.formDataJson)
+      expect(extractEmailFormNameSpy).toHaveBeenCalledWith(
+        mockFormDefinitionWithSendEmail,
+        mockForm.formDataJson,
+      )
       expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
         data: expect.objectContaining({
           data: expect.objectContaining({
-            firstName: 'Extracted Name',
-          }),
-        }),
-        emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
-        attachments: expect.any(Array),
-      })
-    })
-
-    it('should use null for firstName when both userFirstName and extractName are not available', async () => {
-      mockFormDefinitionWithSendEmail.email.extractName = undefined
-      await service.sendEmailForm(formId, userEmail, null)
-
-      expect(mailgunService.sendEmail).toHaveBeenNthCalledWith(2, {
-        data: expect.objectContaining({
-          data: expect.objectContaining({
-            firstName: null,
+            firstName: mockExtractedName,
           }),
         }),
         emailFrom: mockFormDefinitionWithSendEmail.email.address.prod,
@@ -503,44 +535,6 @@ describe('EmailFormsSubservice', () => {
       // Should still update form state despite email failure
       expect(prismaMock.forms.update).toHaveBeenCalled()
       expect(errorSpy).toHaveBeenCalled()
-    })
-
-    it('should log warning when no user email is available with sendEmail', async () => {
-      jest
-        .spyOn(mockFormDefinitionWithSendEmail.email, 'extractEmail')
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        .mockImplementation(() => undefined)
-      const errorSpy = jest.spyOn(service['logger'], 'error')
-
-      await service.sendEmailForm(formId, null, userFirstName)
-
-      // Should only send one email (to department)
-      expect(mailgunService.sendEmail).toHaveBeenCalledTimes(1)
-      expect(errorSpy).toHaveBeenCalled()
-      // Should still update form state
-      expect(prismaMock.forms.update).toHaveBeenCalled()
-    })
-
-    it('should log warning when no user email is available with sendOloEmail', async () => {
-      prismaMock.forms.findUnique.mockResolvedValue(mockFormWithOloDefinition)
-      prismaMock.forms.update.mockResolvedValue(mockFormWithOloDefinition)
-      jest
-        .spyOn(mockFormDefinitionWithSendOloEmail.email, 'extractEmail')
-        // eslint-disable-next-line unicorn/no-useless-undefined
-        .mockImplementation(() => undefined)
-      const errorSpy = jest.spyOn(service['logger'], 'error')
-
-      await service.sendEmailForm(
-        mockFormWithOloDefinition.id,
-        null,
-        userFirstName,
-      )
-
-      // Should only send one email (to department)
-      expect(oloMailerService.sendEmail).toHaveBeenCalledTimes(1)
-      expect(errorSpy).toHaveBeenCalled()
-      // Should still update form state
-      expect(prismaMock.forms.update).toHaveBeenCalled()
     })
 
     it('should send JSON data as attachment when sendJsonDataAttachmentInTechnicalMail is true', async () => {

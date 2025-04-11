@@ -143,7 +143,7 @@ export class CardPaymentReportingService {
       'REPORTING_CONSTANT_SYMBOL',
       'REPORTING_USER_CONSTANT_SYMBOL',
       'REPORTING_RECIPIENT_EMAIL',
-      'REPORTING_SEND_EMAIL',
+      'REPORTING_GENERATE_REPORT',
     ]
     let constants: Record<string, string>
     try {
@@ -172,7 +172,7 @@ export class CardPaymentReportingService {
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
         undefined,
-        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_SEND_EMAIL' from Config.",
+        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_GENERATE_REPORT' from Config.",
         error instanceof Error ? error : undefined,
       )
     }
@@ -311,7 +311,7 @@ export class CardPaymentReportingService {
   async generateAndSendPaymentReport() {
     const configs = await this.getConfigFromDatabase()
 
-    if (configs.REPORTING_SEND_EMAIL !== 'true') {
+    if (configs.REPORTING_GENERATE_REPORT !== 'true') {
       return
     }
 

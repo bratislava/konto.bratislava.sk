@@ -25,9 +25,6 @@
     "test:send-form": "jest --config test/jest-send-form.json",
     "test:generate-pdf": "jest --config test/jest-generate-pdf.json",
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
-    "generate-client-slovensko-sk": "ts-node scripts/generateOpenApiClient.ts slovensko-sk",
-    "generate-client-city-account": "ts-node scripts/generateOpenApiClient.ts city-account",
-    "generate-clients": "npm run generate-client-slovensko-sk && npm run generate-client-city-account",
     "update-rjsf": "npm install @rjsf/utils@latest --save-exact"
   },
   "dependencies": {

@@ -8,7 +8,8 @@ const ziadostONajomBytuExample: ExampleForm = {
         adresaTrvalehoPobytu: {
           adresaSkutocnehoPobytuRovnaka: true,
           byvanieVMestskomNajomnomByte: false,
-          mestoPsc: { mesto: 'Bratislava', psc: '81101' },
+          mesto: 'Bratislava',
+          psc: '81101',
           pobytVBratislaveViacAkoRok: true,
           ulicaACislo: 'Hlavná 123',
           vlastnikNehnutelnosti: false,
@@ -16,7 +17,8 @@ const ziadostONajomBytuExample: ExampleForm = {
         datumNarodenia: '1985-03-15',
         email: 'jana.novakova@email.com',
         kontaktovanyEmailom: true,
-        menoPriezvisko: { meno: 'Jana', priezvisko: 'Nováková' },
+        meno: 'Jana',
+        priezvisko: 'Nováková',
         rodinnyStav: 'rozvedeny',
         rodnePriezvisko: 'Kováčová',
         statnaPrislusnost: 'slovenska',
@@ -55,12 +57,14 @@ const ziadostONajomBytuExample: ExampleForm = {
       druhDruzkaSucastouDomacnosti: true,
       osobneUdaje: {
         adresaSkutocnehoPobytu: {
-          mestoPsc: { mesto: 'Bratislava', psc: '82105' },
+          mesto: 'Bratislava',
+          psc: '82105',
           ulicaACislo: 'Nová 456',
           vlastnikNehnutelnosti: false,
         },
         datumNarodenia: '1982-07-22',
-        menoPriezvisko: { meno: 'Peter', priezvisko: 'Horváth' },
+        meno: 'Peter',
+        priezvisko: 'Horváth',
         rodinnyStav: 'slobodny',
         rodnePriezvisko: 'Horváth',
         statnaPrislusnost: 'slovenska',
@@ -83,7 +87,8 @@ const ziadostONajomBytuExample: ExampleForm = {
       zoznamDeti: [
         {
           osobneUdaje: {
-            menoPriezvisko: { meno: 'Lucia', priezvisko: 'Nováková' },
+            meno: 'Lucia',
+            priezvisko: 'Nováková',
             statnaPrislusnost: 'slovenska',
             vlastnikNehnutelnosti: false,
             datumNarodenia: '2010-11-30',
@@ -94,7 +99,8 @@ const ziadostONajomBytuExample: ExampleForm = {
         },
         {
           osobneUdaje: {
-            menoPriezvisko: { meno: 'Michal', priezvisko: 'Novák' },
+            meno: 'Michal',
+            priezvisko: 'Novák',
             statnaPrislusnost: 'slovenska',
             vlastnikNehnutelnosti: false,
             datumNarodenia: '2005-04-18',
@@ -110,7 +116,8 @@ const ziadostONajomBytuExample: ExampleForm = {
       zoznamInychClenov: [
         {
           osobneUdaje: {
-            menoPriezvisko: { meno: 'Mária', priezvisko: 'Kováčová' },
+            meno: 'Mária',
+            priezvisko: 'Kováčová',
             statnaPrislusnost: 'slovenska',
             datumNarodenia: '1960-09-05',
             rodinnyStav: 'vdovec',

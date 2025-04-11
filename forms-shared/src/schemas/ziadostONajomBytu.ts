@@ -47,10 +47,8 @@ const getConditionalStep = (
 
 const adresaSharedFields = [
   input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-  object('mestoPsc', { required: true }, {}, [
-    input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
-    input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
-  ]),
+  input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+  input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
 ]
 
 const getVlastnikNehnutelnostiFields = (stepType: StepType) => {
@@ -230,14 +228,12 @@ const getOsobneUdajeSection = (stepType: StepType) => {
     { required: true },
     { objectDisplay: 'boxed', title: 'Osobné údaje' },
     [
-      object('menoPriezvisko', { required: true }, {}, [
-        input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
-        input(
-          'priezvisko',
-          { title: 'Priezvisko', required: true, type: 'text' },
-          { selfColumn: '2/4' },
-        ),
-      ]),
+      input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
+      input(
+        'priezvisko',
+        { title: 'Priezvisko', required: true, type: 'text' },
+        { selfColumn: '2/4' },
+      ),
       stepType !== StepType.Dieta
         ? input(
             'rodnePriezvisko',
@@ -1703,7 +1699,7 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 #### Nezaopatrené deti do 25 rokov
 
 <% it.helpers.safeArray(it.formData.deti.zoznamDeti).forEach(function(dieta, index) { %>
-<% let dietaName = [dieta.osobneUdaje?.menoPriezvisko?.meno, dieta.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
+<% let dietaName = [dieta.osobneUdaje?.meno, dieta.osobneUdaje?.priezvisko].filter(Boolean).join(' ') %>
 ##### Dieťa č. <%= index + 1 %><% if (dietaName) { %> (<%= dietaName %>)<% } %>
 
 - Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
@@ -1729,7 +1725,7 @@ export const ziadostONajomBytuAdditionalInfoTemplate = `### Zoznam potrebných d
 #### Iní členovia/členky domácnosti
 
 <% it.helpers.safeArray(it.formData.inyClenoviaClenkyDomacnosti.zoznamInychClenov).forEach(function(clen, index) { %>
-<% let clenName = [clen.osobneUdaje?.menoPriezvisko?.meno, clen.osobneUdaje?.menoPriezvisko?.priezvisko].filter(Boolean).join(' ') %>
+<% let clenName = [clen.osobneUdaje?.meno, clen.osobneUdaje?.priezvisko].filter(Boolean).join(' ') %>
 ##### Člen/členka domácnosti č. <%= index + 1 %><% if (clenName) { %> (<%= clenName %>)<% } %>
 
 - Osobné údaje - kópia občianskeho preukazu

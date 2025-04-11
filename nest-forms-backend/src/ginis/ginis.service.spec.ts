@@ -1,6 +1,8 @@
 /* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
+import { Readable } from 'node:stream'
 
+import { SslPridatSouborPridatSoubor } from '@bratislava/ginis-sdk'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -9,10 +11,12 @@ import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
+import BaConfigService from '../config/ba-config.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import {
   GinisAssignSubmissionResponseInfo,
@@ -21,11 +25,10 @@ import {
   GinisEditSubmissionResponseInfo,
   GinisRegisterSubmissionResponse,
   GinisRegisterSubmissionResponseInfo,
-  GinisUploadFileResponse,
-  GinisUploadFileResponseInfo,
 } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
+import GinisAPIService from './subservices/ginis-api.service'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
@@ -67,12 +70,36 @@ describe('GinisService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GinisService,
+        GinisAPIService,
         GinisHelper,
         { provide: MailgunService, useValue: createMock<MailgunService>() },
+        {
+          provide: MinioClientSubservice,
+          useValue: {
+            download: jest.fn(),
+          },
+        },
         ThrowerErrorGuard,
         RabbitmqClientService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
+        {
+          provide: BaConfigService,
+          useValue: {
+            ginisApi: {
+              username: '',
+              password: '',
+              sslHost: '',
+              sslMtomHost: '',
+              ginHost: '',
+            },
+            minio: {
+              buckets: {
+                safe: '',
+              },
+            },
+          },
+        },
       ],
     }).compile()
 
@@ -125,46 +152,6 @@ describe('GinisService', () => {
             ginisDocumentId: 'ginis1',
             error: FormError.NONE,
             ginisState: GinisState.REGISTERED,
-          },
-        }),
-      )
-    })
-  })
-
-  describe('consumeGinisFileUploaded', () => {
-    it('should process failure', async () => {
-      const msg: GinisAutomationResponse<
-        GinisUploadFileResponse,
-        GinisUploadFileResponseInfo
-      > = { status: 'failure', info: { msg_id: 'id1', file_id: 'file1' } }
-      const spy = jest.spyOn(prismaMock.files, 'update')
-      await service.consumeGinisFileUploaded(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            ginisUploadedError: true,
-          },
-        }),
-      )
-    })
-
-    it('should process success', async () => {
-      const msg: GinisAutomationResponse<
-        GinisUploadFileResponse,
-        GinisUploadFileResponseInfo
-      > = {
-        status: 'success',
-        info: { msg_id: 'id1', file_id: 'file1' },
-        result: { upload_info: { Poradie: 10 } },
-      }
-
-      const spy = jest.spyOn(prismaMock.files, 'update')
-      await service.consumeGinisFileUploaded(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            ginisOrder: 10,
-            ginisUploaded: true,
           },
         }),
       )
@@ -746,15 +733,72 @@ describe('GinisService', () => {
 
   describe('uploadAttachments', () => {
     const formMock = {
-      files: [{} as File, {} as File],
+      id: 'id1',
+      ginisDocumentId: 'gid1',
+      files: [
+        {
+          ginisUploaded: false,
+          fileName: 'file1.pdf',
+          minioFileName: 'minio-file1.pdf',
+        },
+      ],
     } as unknown as FormWithFiles
 
-    it('should update file to RUNNING_UPLOAD_ATTACHMENTS', async () => {
+    const mockStream = new Readable({
+      read() {
+        this.push('file content')
+        this.push(null)
+      },
+    })
+
+    beforeEach(() => {
+      jest
+        .spyOn(service['ginisHelper'], 'retryWithDelay')
+        .mockImplementation(async (fn) => fn())
+
+      jest
+        .spyOn(service['minioClientSubservice'], 'download')
+        .mockResolvedValue(mockStream)
+
+      jest.spyOn(service['ginisApiService'], 'uploadFile').mockResolvedValue({
+        'Verze-souboru': '1',
+      } as SslPridatSouborPridatSoubor)
+    })
+
+    it('should update form to RUNNING_UPLOAD_ATTACHMENTS', async () => {
       await service.uploadAttachments(formMock, 'mockPospID')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {
             ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+          },
+        }),
+      )
+    })
+
+    it('should update file with error after ginis error', async () => {
+      jest
+        .spyOn(service['ginisApiService'], 'uploadFile')
+        .mockRejectedValueOnce(new Error('Ginis upload failed'))
+
+      const spy = jest.spyOn(prismaMock.files, 'update')
+      await service.uploadAttachments(formMock, 'mockPospID')
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            ginisUploadedError: true,
+          },
+        }),
+      )
+    })
+
+    it('should update file as uploaded on success', async () => {
+      const spy = jest.spyOn(prismaMock.files, 'update')
+      await service.uploadAttachments(formMock, 'mockPospID')
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            ginisUploaded: true,
           },
         }),
       )

@@ -32,16 +32,16 @@ const getConditionalStep = (
   stepOptions: {
     title: string
   } & StepUiOptions,
-  inner: (tzpZiadatelom: boolean) => (GeneratorFieldType | null)[],
+  inner: (ziadatelTzpPreukaz: boolean) => (GeneratorFieldType | null)[],
 ) =>
-  [true, false].map((tzpZiadatelom) =>
+  [true, false].map((ziadatelTzpPreukaz) =>
     conditionalStep(
       stepProperty,
       createCondition([
-        [['ziadatelZiadatelka', 'zdravotnyStav', 'tzpPreukaz'], { const: tzpZiadatelom }],
+        [['ziadatelZiadatelka', 'zdravotnyStav', 'tzpPreukaz'], { const: ziadatelTzpPreukaz }],
       ]),
       stepOptions,
-      inner(tzpZiadatelom),
+      inner(ziadatelTzpPreukaz),
     ),
   )
 

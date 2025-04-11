@@ -5,6 +5,7 @@ import { CognitoAuthModule } from '@nestjs-cognito/auth'
 
 import { AdminModule } from './admin/admin.module'
 import { AppController } from './app.controller'
+import { CardPaymentReportingModule } from './card-payment-reporting/card-payment-reporting.module'
 import { PaymentModule } from './payment/payment.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { TasksModule } from './tasks/tasks.module'
@@ -30,6 +31,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger'
     AdminModule,
     TasksModule,
     ScheduleModule.forRoot(),
+    CardPaymentReportingModule,
   ],
   controllers: [AppController],
   providers: [],

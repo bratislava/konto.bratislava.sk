@@ -45,6 +45,8 @@ spec:
             name: bloomreach-secret
         - secretRef:
             name: noris-secret
+        - secretRef:
+            name: reporting-secret
         - configMapRef:
             name: env
         readinessProbe:

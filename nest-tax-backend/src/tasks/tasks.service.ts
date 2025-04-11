@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
+import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
@@ -20,6 +21,7 @@ export class TasksService {
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly cardPaymentReportingService: CardPaymentReportingService,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -153,5 +155,11 @@ export class TasksService {
         lastCheckedUpdates: new Date(),
       },
     })
+  }
+
+  @Cron(CronExpression.EVERY_WEEKDAY)
+  @HandleErrors('Cron Error')
+  async reportCardPayments() {
+    await this.cardPaymentReportingService.generateAndSendPaymentReport()
   }
 }

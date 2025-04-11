@@ -617,7 +617,7 @@ export class AdminService {
       ),
     )
   }
-  
+
   /**
    * Creates a testing tax record with specified details for development and testing purposes.
    * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.

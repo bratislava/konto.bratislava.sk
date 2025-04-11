@@ -17,6 +17,7 @@ export const createTestingTaxMock = (
     subjekt_nazev: norisData.nameSurname,
     dan_spolu: norisData.taxTotal,
     rok: year,
+    datum_platnosti: norisData.dateTaxRuling,
 
     // payment data
     specificky_symbol: '2024100000',

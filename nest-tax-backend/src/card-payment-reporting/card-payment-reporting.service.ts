@@ -309,13 +309,13 @@ export class CardPaymentReportingService {
   }
 
   async generateAndSendPaymentReport() {
-    const sftpFiles = await this.sftpFileSubservice.getNewFiles()
-
     const configs = await this.getConfigFromDatabase()
 
     if (configs.REPORTING_SEND_EMAIL !== 'true') {
       return
     }
+
+    const sftpFiles = await this.sftpFileSubservice.getNewFiles()
 
     dayjs.extend(utc)
     dayjs.extend(timezone)

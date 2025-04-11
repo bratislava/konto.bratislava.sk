@@ -423,7 +423,6 @@ export default class NasesService {
     oboToken: string,
     user: JwtNasesPayloadDto,
     cognitoUser?: CognitoGetUserData,
-    bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)

@@ -55,13 +55,6 @@ export const UserInfo = createParamDecorator(
   },
 )
 
-export const BearerToken = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<express.Request>()
-    return request.headers.authorization
-  },
-)
-
 export function ToBoolean(): PropertyDecorator {
   return Transform(({ value }: TransformFnParams) =>
     value === undefined

@@ -17,10 +17,11 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
+import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import verifyUserByEidToken from '../common/utils/city-account'
+import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -34,8 +35,6 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { UpvsNaturalPerson } from '../utils/clients/openapi-slovensko-sk'
-import { slovenskoSkApi } from '../utils/clients/slovenskoSkApi'
 import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
@@ -73,6 +72,7 @@ export default class NasesService {
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
+    private readonly clientsService: ClientsService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -81,7 +81,7 @@ export default class NasesService {
   }
 
   async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
-    const result = await slovenskoSkApi
+    const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -610,10 +610,6 @@ export default class NasesService {
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
       )
-    }
-
-    if (!this.isUserVerified(cognitoUser)) {
-      await verifyUserByEidToken(oboToken, this.logger, bearerToken)
     }
 
     return {

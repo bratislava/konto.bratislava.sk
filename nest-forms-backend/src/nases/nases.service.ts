@@ -20,7 +20,6 @@ import {
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import verifyUserByEidToken from '../common/utils/city-account'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -424,7 +423,6 @@ export default class NasesService {
     oboToken: string,
     user: JwtNasesPayloadDto,
     cognitoUser?: CognitoGetUserData,
-    bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
@@ -610,10 +608,6 @@ export default class NasesService {
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
       )
-    }
-
-    if (!this.isUserVerified(cognitoUser)) {
-      await verifyUserByEidToken(oboToken, this.logger, bearerToken)
     }
 
     return {

@@ -46,7 +46,6 @@ import {
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
 import {
-  BearerToken,
   User,
   UserInfo,
   UserInfoResponse,
@@ -646,7 +645,6 @@ export default class NasesController {
     @Param('id') id: string,
     @Body() body: EidSendFormRequestDto,
     @User() cognitoUser?: CognitoGetUserData,
-    @BearerToken() bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(body.eidToken)
     if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
@@ -662,7 +660,6 @@ export default class NasesController {
       body.eidToken,
       user,
       cognitoUser,
-      bearerToken,
     )
     return data
   }
@@ -888,7 +885,6 @@ export default class NasesController {
     @Param('id') id: string,
     @User() cognitoUser?: CognitoGetUserData,
     @UserInfo() userInfo?: UserInfoResponse,
-    @BearerToken() bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
@@ -927,7 +923,6 @@ export default class NasesController {
       data.eidToken,
       user,
       cognitoUser,
-      bearerToken,
     )
     return returnData
   }

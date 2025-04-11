@@ -16,6 +16,7 @@ import {
 } from '@nestjs/swagger'
 import { AdminGuard } from 'src/auth/guards/admin.guard'
 
+import { NotProductionGuard } from '../auth/guards/not-production.guard'
 import { AdminService } from './admin.service'
 import {
   RequestAdminCreateTestingTaxDto,
@@ -132,6 +133,7 @@ export class AdminController {
     description: 'Internal server error',
   })
   @UseGuards(AdminGuard)
+  @UseGuards(NotProductionGuard)
   @Post('create-testing-tax')
   async createTestingTax(
     @Body() request: RequestAdminCreateTestingTaxDto,
@@ -151,6 +153,7 @@ export class AdminController {
     description: 'Internal server error or tax payer not found',
   })
   @UseGuards(AdminGuard)
+  @UseGuards(NotProductionGuard)
   @Post('delete-testing-tax')
   async deleteTestingTax(
     @Body() request: RequestAdminDeleteTaxDto,

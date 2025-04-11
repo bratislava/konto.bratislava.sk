@@ -37,4 +37,22 @@ export default class GinisHelper {
       // ignore
     }
   }
+
+  async retryWithDelay<T>(
+    fn: () => Promise<T>,
+    retries = 1,
+    delayMs = 10_000,
+  ): Promise<T> {
+    try {
+      return await fn()
+    } catch (error) {
+      if (retries <= 0) {
+        throw error
+      }
+      await new Promise((resolve) => {
+        setTimeout(resolve, delayMs)
+      })
+      return this.retryWithDelay(fn, retries - 1, delayMs)
+    }
+  }
 }

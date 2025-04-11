@@ -22,11 +22,14 @@ import {
 } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
+  RequestAdminCreateTestingTaxDto,
+  RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
+import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
 export class AdminService {
@@ -194,13 +197,10 @@ export class AdminService {
     return userData
   }
 
-  async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
-  ): Promise<CreateBirthNumbersResponseDto> {
-    this.logger.log('Start Loading data from noris')
-    const norisData = (await this.norisService.getDataFromNoris(
-      data,
-    )) as NorisTaxPayersDto[]
+  async processNorisTaxData(
+    norisData: NorisTaxPayersDto[],
+    year: number,
+  ): Promise<string[]> {
     const birthNumbersResult: string[] = []
 
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
@@ -215,7 +215,7 @@ export class AdminService {
         birthNumbersResult.push(norisItem.ICO_RC)
         const taxExists = await this.prismaService.tax.findFirst({
           where: {
-            year: +data.year,
+            year: +year,
             taxPayer: {
               birthNumber: norisItem.ICO_RC,
             },
@@ -224,7 +224,7 @@ export class AdminService {
         if (!taxExists) {
           const userData = await this.insertTaxPayerDataToDatabase(
             norisItem,
-            data.year,
+            year,
           )
           const userFromCityAccount =
             userDataFromCityAccount[userData.birthNumber] || null
@@ -234,7 +234,7 @@ export class AdminService {
                 {
                   amount: currency(norisItem.dan_spolu.replace(',', '.'))
                     .intValue,
-                  year: +data.year,
+                  year,
                   delivery_method: transformDeliveryMethodToDatabaseType(
                     norisItem.delivery_method,
                   ),
@@ -245,7 +245,7 @@ export class AdminService {
               this.logger.error(
                 this.throwerErrorGuard.InternalServerErrorException(
                   ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
+                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
                 ),
               )
             }
@@ -256,6 +256,22 @@ export class AdminService {
 
     // Add the payments for these added taxes to database
     await this.updatePaymentsFromNorisWithData(norisData)
+
+    return birthNumbersResult
+  }
+
+  async loadDataFromNoris(
+    data: RequestPostNorisLoadDataDto,
+  ): Promise<CreateBirthNumbersResponseDto> {
+    this.logger.log('Start Loading data from noris')
+    const norisData = (await this.norisService.getDataFromNoris(
+      data,
+    )) as NorisTaxPayersDto[]
+
+    const birthNumbersResult: string[] = await this.processNorisTaxData(
+      norisData,
+      data.year,
+    )
 
     return { birthNumbers: birthNumbersResult }
   }
@@ -600,5 +616,84 @@ export class AdminService {
           }),
       ),
     )
+  }
+
+  /**
+   * Creates a testing tax record with specified details for development and testing purposes.
+   * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
+   */
+  async createTestingTax({
+    year,
+    norisData,
+  }: RequestAdminCreateTestingTaxDto): Promise<void> {
+    const taxEmployee = await this.prismaService.taxEmployee.findFirst({})
+    if (!taxEmployee) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'No tax employee found in the database',
+      )
+    }
+
+    // Generate the mock tax record
+    const mockTaxRecord = createTestingTaxMock(norisData, taxEmployee, year)
+
+    // Process the mock data to create the testing tax
+    await this.processNorisTaxData([mockTaxRecord], year)
+  }
+
+  async deleteTestingTax({
+    year,
+    birthNumber,
+  }: RequestAdminDeleteTaxDto): Promise<void> {
+    const taxPayer = await this.prismaService.taxPayer.findUnique({
+      where: {
+        birthNumber,
+      },
+    })
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax payer not found',
+      )
+    }
+
+    const tax = await this.prismaService.tax.findUnique({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
+        },
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax not found',
+      )
+    }
+
+    await this.prismaService.taxPayment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxInstallment.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.taxDetail.deleteMany({
+      where: {
+        taxId: tax.id,
+      },
+    })
+    await this.prismaService.tax.delete({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
+        },
+      },
+    })
   }
 }

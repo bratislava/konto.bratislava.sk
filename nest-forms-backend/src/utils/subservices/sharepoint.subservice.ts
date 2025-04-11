@@ -18,6 +18,7 @@ import {
   getArrayForOneToMany,
   getValuesForFields,
 } from 'forms-shared/sharepoint/getValuesForSharepoint'
+import { ziadostONajomBytuSharepointData } from 'forms-shared/sharepoint/mappings/ziadostONajomBytu'
 import { SharepointDataAllColumnMappingsToFields } from 'forms-shared/sharepoint/types'
 import escape from 'lodash/escape'
 import lodashGet from 'lodash/get'
@@ -63,6 +64,12 @@ export default class SharepointSubservice {
         'Missing Sharepoint .env values, one of: SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL',
       )
     }
+
+    this.getAccessToken().then((token) => {
+      this.getAllFieldsMappings(ziadostONajomBytuSharepointData, token).then(
+        (res) => console.log(JSON.stringify(res, null, 2)),
+      )
+    })
   }
 
   @Process()

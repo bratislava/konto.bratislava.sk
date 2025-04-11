@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { getSignerData } from 'forms-shared/signer/signerData'
-import validateSchema from 'xsd-validator'
+import {
+  formatValidateXmlResultErrors,
+  validateXml,
+} from 'forms-shared/slovensko-sk/validateXml'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -32,17 +35,17 @@ export default class SignerService {
     this.logger = new Logger('SignerService')
   }
 
-  private validateXml(xmlData: string, xsd: string): void {
-    const result = validateSchema(xmlData, xsd)
-    if (result === true) {
+  private async validateXml(xmlData: string, xsd: string): Promise<void> {
+    const result = await validateXml(xmlData, xsd)
+    if (result.success) {
       return
     }
 
     throw this.throwerErrorGuard.BadRequestException(
       SignerErrorsEnum.XML_VALIDATION_ERROR,
-      `${SignerErrorsResponseEnum.XML_VALIDATION_ERROR} Errors: ${result
-        .map((e) => e.message)
-        .join(', ')}`,
+      result.errors
+        ? `${SignerErrorsResponseEnum.XML_VALIDATION_ERROR} Errors: ${formatValidateXmlResultErrors(result.errors)}`
+        : SignerErrorsResponseEnum.XML_VALIDATION_ERROR,
     )
   }
 
@@ -86,7 +89,7 @@ export default class SignerService {
       serverFiles: files,
     })
 
-    this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)
+    await this.validateXml(signerData.xdcXMLData, signerData.xdcUsedXSD)
 
     return signerData
   }

@@ -16,9 +16,11 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
+import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
@@ -26,9 +28,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
-import { cityAccountApi } from '../../utils/clients/cityAccountApi'
-import { UserControllerGetOrCreateUser200Response } from '../../utils/clients/openapi-city-account'
-import { slovenskoSkApi } from '../../utils/clients/slovenskoSkApi'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
@@ -55,6 +54,7 @@ export default class NasesUtilsService {
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
     private configService: ConfigService,
+    private readonly clientsService: ClientsService,
   ) {
     this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
@@ -252,7 +252,7 @@ export default class NasesUtilsService {
   async getUserInfo(
     bearerToken: string,
   ): Promise<UserControllerGetOrCreateUser200Response> {
-    return cityAccountApi
+    return this.clientsService.cityAccountApi
       .userControllerGetOrCreateUser({
         headers: {
           Authorization: bearerToken,
@@ -522,8 +522,8 @@ export default class NasesUtilsService {
     const sktalkReceiveFn =
       !senderUri ||
       senderUri === (this.configService.get<string>('NASES_SENDER_URI') ?? '')
-        ? slovenskoSkApi.apiSktalkReceivePost
-        : slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+        ? this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+        : this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
 
     try {
       const response = await sktalkReceiveFn(
@@ -590,7 +590,7 @@ export default class NasesUtilsService {
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
     const jwtToken = this.createTechnicalAccountJwtToken()
-    const result = await slovenskoSkApi
+    const result = await this.clientsService.slovenskoSkApi
       .apiEdeskMessagesSearchGet(formId, undefined, undefined, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

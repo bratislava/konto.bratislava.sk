@@ -504,7 +504,7 @@ export const formDefinitions: FormDefinition[] = [
     exampleFormNotRequired: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFeud2E',
     email: {
-      address: { prod: 'wf-ouz@bratislava.sk', test: 'inovacie.bratislava@gmail.com' },
+      address: { prod: 'wf-ouz@tsb.sk', test: 'inovacie.bratislava@gmail.com' },
       fromAddress: {
         prod: 'Mesto Bratislava <konto@bratislava.sk>',
         test: 'Mesto Bratislava <konto@bratislava.sk>',

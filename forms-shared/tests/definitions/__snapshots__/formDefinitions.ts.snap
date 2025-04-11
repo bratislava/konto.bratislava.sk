@@ -76868,11 +76868,9 @@ exports[`Form definitions > ziadost-o-najom-bytu > default form state should mat
       "adresaTrvalehoPobytu": {
         "adresaSkutocnehoPobytuRovnaka": true,
         "byvanieVMestskomNajomnomByte": false,
-        "mestoPsc": {},
         "pobytVBratislaveViacAkoRok": false,
         "vlastnikNehnutelnosti": false,
       },
-      "menoPriezvisko": {},
       "statnaPrislusnost": "slovenska",
     },
     "prijem": {
@@ -76935,7 +76933,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                         "anyOf": [
                           {},
                         ],
-                        "baOrder": 6,
+                        "baOrder": 7,
                         "baUiSchema": {
                           "ui:field": "CustomComponents",
                           "ui:fieldReplacesAnyOrOneOf": true,
@@ -76972,7 +76970,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "then": {
                     "properties": {
                       "kontaktovanyEmailom": {
-                        "baOrder": 8,
+                        "baOrder": 9,
                         "baUiSchema": {
                           "ui:options": {
                             "enumMetadata": [
@@ -77031,7 +77029,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "then": {
                         "properties": {
                           "vlastnikNehnutelnostiDovody": {
-                            "baOrder": 4,
+                            "baOrder": 5,
                             "baUiSchema": {
                               "ui:options": {
                                 "belowComponents": [
@@ -77075,7 +77073,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                             "anyOf": [
                               {},
                             ],
-                            "baOrder": 7,
+                            "baOrder": 8,
                             "baUiSchema": {
                               "ui:field": "CustomComponents",
                               "ui:fieldReplacesAnyOrOneOf": true,
@@ -77112,7 +77110,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "then": {
                         "properties": {
                           "adresaSkutocnehoPobytu": {
-                            "baOrder": 9,
+                            "baOrder": 10,
                             "baUiSchema": {
                               "ui:options": {
                                 "objectDisplay": "wrapper",
@@ -77120,40 +77118,30 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                               },
                             },
                             "properties": {
-                              "mestoPsc": {
+                              "mesto": {
                                 "baOrder": 2,
-                                "properties": {
-                                  "mesto": {
-                                    "baOrder": 1,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "3/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Mesto",
-                                    "type": "string",
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "3/4",
                                   },
-                                  "psc": {
-                                    "baOrder": 2,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "1/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "format": "ba-slovak-zip",
-                                    "title": "PSČ",
-                                    "type": "string",
-                                  },
+                                  "ui:widget": "Input",
                                 },
-                                "required": [
-                                  "mesto",
-                                  "psc",
-                                ],
-                                "type": "object",
+                                "title": "Mesto",
+                                "type": "string",
+                              },
+                              "psc": {
+                                "baOrder": 3,
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "1/4",
+                                  },
+                                  "ui:widget": "Input",
+                                },
+                                "format": "ba-slovak-zip",
+                                "title": "PSČ",
+                                "type": "string",
                               },
                               "ulicaACislo": {
                                 "baOrder": 1,
@@ -77169,7 +77157,8 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                             },
                             "required": [
                               "ulicaACislo",
-                              "mestoPsc",
+                              "mesto",
+                              "psc",
                             ],
                             "type": "object",
                           },
@@ -77181,7 +77170,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       },
                     },
                   ],
-                  "baOrder": 10,
+                  "baOrder": 11,
                   "baUiSchema": {
                     "ui:options": {
                       "description": "Ak máte v občianskom preukaze uvedenú mestskú časť, uveďte adresu daného mestského úradu.",
@@ -77191,7 +77180,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   },
                   "properties": {
                     "adresaSkutocnehoPobytuRovnaka": {
-                      "baOrder": 8,
+                      "baOrder": 9,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -77218,7 +77207,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "type": "boolean",
                     },
                     "byvanieVMestskomNajomnomByte": {
-                      "baOrder": 5,
+                      "baOrder": 6,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -77244,43 +77233,20 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "title": "Bývate v mestskom nájomnom byte v Bratislave?",
                       "type": "boolean",
                     },
-                    "mestoPsc": {
+                    "mesto": {
                       "baOrder": 2,
-                      "properties": {
-                        "mesto": {
-                          "baOrder": 1,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                              "selfColumn": "3/4",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "title": "Mesto",
-                          "type": "string",
+                      "baUiSchema": {
+                        "ui:options": {
+                          "inputType": "text",
+                          "selfColumn": "3/4",
                         },
-                        "psc": {
-                          "baOrder": 2,
-                          "baUiSchema": {
-                            "ui:options": {
-                              "inputType": "text",
-                              "selfColumn": "1/4",
-                            },
-                            "ui:widget": "Input",
-                          },
-                          "format": "ba-slovak-zip",
-                          "title": "PSČ",
-                          "type": "string",
-                        },
+                        "ui:widget": "Input",
                       },
-                      "required": [
-                        "mesto",
-                        "psc",
-                      ],
-                      "type": "object",
+                      "title": "Mesto",
+                      "type": "string",
                     },
                     "pobytVBratislaveViacAkoRok": {
-                      "baOrder": 6,
+                      "baOrder": 7,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -77306,6 +77272,19 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "title": "Žijete na území Bratislavy viac ako 1 rok? (vrátane trvalého a skutočného pobytu)",
                       "type": "boolean",
                     },
+                    "psc": {
+                      "baOrder": 3,
+                      "baUiSchema": {
+                        "ui:options": {
+                          "inputType": "text",
+                          "selfColumn": "1/4",
+                        },
+                        "ui:widget": "Input",
+                      },
+                      "format": "ba-slovak-zip",
+                      "title": "PSČ",
+                      "type": "string",
+                    },
                     "ulicaACislo": {
                       "baOrder": 1,
                       "baUiSchema": {
@@ -77318,7 +77297,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                       "type": "string",
                     },
                     "vlastnikNehnutelnosti": {
-                      "baOrder": 3,
+                      "baOrder": 4,
                       "baUiSchema": {
                         "ui:options": {
                           "enumMetadata": [
@@ -77349,7 +77328,8 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   },
                   "required": [
                     "ulicaACislo",
-                    "mestoPsc",
+                    "mesto",
+                    "psc",
                     "vlastnikNehnutelnosti",
                     "byvanieVMestskomNajomnomByte",
                     "pobytVBratislaveViacAkoRok",
@@ -77358,7 +77338,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "type": "object",
                 },
                 "datumNarodenia": {
-                  "baOrder": 3,
+                  "baOrder": 4,
                   "baUiSchema": {
                     "ui:options": {
                       "belowComponents": [
@@ -77379,7 +77359,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "type": "string",
                 },
                 "email": {
-                  "baOrder": 7,
+                  "baOrder": 8,
                   "baUiSchema": {
                     "ui:options": {
                       "helptext": "Ak nemáte email, uveďte kontaktné údaje na inú osobu resp. organizáciu.",
@@ -77391,42 +77371,32 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "title": "Email",
                   "type": "string",
                 },
-                "menoPriezvisko": {
+                "meno": {
                   "baOrder": 1,
-                  "properties": {
-                    "meno": {
-                      "baOrder": 1,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "2/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Meno",
-                      "type": "string",
+                  "baUiSchema": {
+                    "ui:options": {
+                      "inputType": "text",
+                      "selfColumn": "2/4",
                     },
-                    "priezvisko": {
-                      "baOrder": 2,
-                      "baUiSchema": {
-                        "ui:options": {
-                          "inputType": "text",
-                          "selfColumn": "2/4",
-                        },
-                        "ui:widget": "Input",
-                      },
-                      "title": "Priezvisko",
-                      "type": "string",
-                    },
+                    "ui:widget": "Input",
                   },
-                  "required": [
-                    "meno",
-                    "priezvisko",
-                  ],
-                  "type": "object",
+                  "title": "Meno",
+                  "type": "string",
+                },
+                "priezvisko": {
+                  "baOrder": 2,
+                  "baUiSchema": {
+                    "ui:options": {
+                      "inputType": "text",
+                      "selfColumn": "2/4",
+                    },
+                    "ui:widget": "Input",
+                  },
+                  "title": "Priezvisko",
+                  "type": "string",
                 },
                 "rodinnyStav": {
-                  "baOrder": 5,
+                  "baOrder": 6,
                   "baUiSchema": {
                     "ui:options": {
                       "enumMetadata": [
@@ -77465,7 +77435,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "type": "string",
                 },
                 "rodnePriezvisko": {
-                  "baOrder": 2,
+                  "baOrder": 3,
                   "baUiSchema": {
                     "ui:options": {
                       "helptext": "Vyplňte iba v prípade, ak je vaše priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -77477,7 +77447,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "type": "string",
                 },
                 "statnaPrislusnost": {
-                  "baOrder": 4,
+                  "baOrder": 5,
                   "baUiSchema": {
                     "ui:options": {
                       "enumMetadata": [
@@ -77504,7 +77474,7 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                   "type": "string",
                 },
                 "telefonneCislo": {
-                  "baOrder": 9,
+                  "baOrder": 10,
                   "baUiSchema": {
                     "ui:options": {
                       "helptext": "Ak nemáte telefonický kontakt, uveďte kontaktné údaje na inú osobu resp. organizáciu. Vyplňte vo formáte s predvoľbou +421.",
@@ -77520,7 +77490,8 @@ exports[`Form definitions > ziadost-o-najom-bytu > schema matches snapshot 1`] =
                 },
               },
               "required": [
-                "menoPriezvisko",
+                "meno",
+                "priezvisko",
                 "datumNarodenia",
                 "statnaPrislusnost",
                 "rodinnyStav",
@@ -78969,7 +78940,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "then": {
                                 "properties": {
                                   "vlastnikNehnutelnostiDovody": {
-                                    "baOrder": 4,
+                                    "baOrder": 5,
                                     "baUiSchema": {
                                       "ui:options": {
                                         "belowComponents": [
@@ -78996,7 +78967,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                           ],
-                          "baOrder": 5,
+                          "baOrder": 6,
                           "baUiSchema": {
                             "ui:options": {
                               "description": "Ak má váš manžel/manželka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.",
@@ -79005,40 +78976,30 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                           },
                           "properties": {
-                            "mestoPsc": {
+                            "mesto": {
                               "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "3/4",
                                 },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
+                                "ui:widget": "Input",
                               },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "baOrder": 3,
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "1/4",
+                                },
+                                "ui:widget": "Input",
+                              },
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
                             },
                             "ulicaACislo": {
                               "baOrder": 1,
@@ -79052,7 +79013,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "type": "string",
                             },
                             "vlastnikNehnutelnosti": {
-                              "baOrder": 3,
+                              "baOrder": 4,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -79083,13 +79044,14 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           },
                           "required": [
                             "ulicaACislo",
-                            "mestoPsc",
+                            "mesto",
+                            "psc",
                             "vlastnikNehnutelnosti",
                           ],
                           "type": "object",
                         },
                         "datumNarodenia": {
-                          "baOrder": 3,
+                          "baOrder": 4,
                           "baUiSchema": {
                             "ui:options": {
                               "belowComponents": [
@@ -79109,42 +79071,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "title": "Dátum narodenia",
                           "type": "string",
                         },
-                        "menoPriezvisko": {
+                        "meno": {
                           "baOrder": 1,
-                          "properties": {
-                            "meno": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Meno",
-                              "type": "string",
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
                             },
-                            "priezvisko": {
-                              "baOrder": 2,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Priezvisko",
-                              "type": "string",
-                            },
+                            "ui:widget": "Input",
                           },
-                          "required": [
-                            "meno",
-                            "priezvisko",
-                          ],
-                          "type": "object",
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "baOrder": 2,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Priezvisko",
+                          "type": "string",
                         },
                         "rodnePriezvisko": {
-                          "baOrder": 2,
+                          "baOrder": 3,
                           "baUiSchema": {
                             "ui:options": {
                               "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -79156,7 +79108,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "statnaPrislusnost": {
-                          "baOrder": 4,
+                          "baOrder": 5,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -79184,7 +79136,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         },
                       },
                       "required": [
-                        "menoPriezvisko",
+                        "meno",
+                        "priezvisko",
                         "datumNarodenia",
                         "statnaPrislusnost",
                         "adresaSkutocnehoPobytu",
@@ -80035,7 +79988,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "then": {
                                 "properties": {
                                   "vlastnikNehnutelnostiDovody": {
-                                    "baOrder": 4,
+                                    "baOrder": 5,
                                     "baUiSchema": {
                                       "ui:options": {
                                         "belowComponents": [
@@ -80062,7 +80015,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                           ],
-                          "baOrder": 5,
+                          "baOrder": 6,
                           "baUiSchema": {
                             "ui:options": {
                               "description": "Ak má váš manžel/manželka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu.",
@@ -80071,40 +80024,30 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                           },
                           "properties": {
-                            "mestoPsc": {
+                            "mesto": {
                               "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "3/4",
                                 },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
+                                "ui:widget": "Input",
                               },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "baOrder": 3,
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "1/4",
+                                },
+                                "ui:widget": "Input",
+                              },
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
                             },
                             "ulicaACislo": {
                               "baOrder": 1,
@@ -80118,7 +80061,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "type": "string",
                             },
                             "vlastnikNehnutelnosti": {
-                              "baOrder": 3,
+                              "baOrder": 4,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -80149,13 +80092,14 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           },
                           "required": [
                             "ulicaACislo",
-                            "mestoPsc",
+                            "mesto",
+                            "psc",
                             "vlastnikNehnutelnosti",
                           ],
                           "type": "object",
                         },
                         "datumNarodenia": {
-                          "baOrder": 3,
+                          "baOrder": 4,
                           "baUiSchema": {
                             "ui:options": {
                               "belowComponents": [
@@ -80175,42 +80119,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "title": "Dátum narodenia",
                           "type": "string",
                         },
-                        "menoPriezvisko": {
+                        "meno": {
                           "baOrder": 1,
-                          "properties": {
-                            "meno": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Meno",
-                              "type": "string",
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
                             },
-                            "priezvisko": {
-                              "baOrder": 2,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Priezvisko",
-                              "type": "string",
-                            },
+                            "ui:widget": "Input",
                           },
-                          "required": [
-                            "meno",
-                            "priezvisko",
-                          ],
-                          "type": "object",
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "baOrder": 2,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Priezvisko",
+                          "type": "string",
                         },
                         "rodnePriezvisko": {
-                          "baOrder": 2,
+                          "baOrder": 3,
                           "baUiSchema": {
                             "ui:options": {
                               "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -80222,7 +80156,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "statnaPrislusnost": {
-                          "baOrder": 4,
+                          "baOrder": 5,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -80250,7 +80184,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         },
                       },
                       "required": [
-                        "menoPriezvisko",
+                        "meno",
+                        "priezvisko",
                         "datumNarodenia",
                         "statnaPrislusnost",
                         "adresaSkutocnehoPobytu",
@@ -81489,7 +81424,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "anyOf": [
                                   {},
                                 ],
-                                "baOrder": 6,
+                                "baOrder": 7,
                                 "baUiSchema": {
                                   "ui:field": "CustomComponents",
                                   "ui:fieldReplacesAnyOrOneOf": true,
@@ -81537,7 +81472,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "then": {
                                 "properties": {
                                   "vlastnikNehnutelnostiDovody": {
-                                    "baOrder": 4,
+                                    "baOrder": 5,
                                     "baUiSchema": {
                                       "ui:options": {
                                         "belowComponents": [
@@ -81564,7 +81499,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                           ],
-                          "baOrder": 7,
+                          "baOrder": 8,
                           "baUiSchema": {
                             "ui:options": {
                               "description": "Ak má váš druh/družka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu. ",
@@ -81573,40 +81508,30 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                           },
                           "properties": {
-                            "mestoPsc": {
+                            "mesto": {
                               "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "3/4",
                                 },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
+                                "ui:widget": "Input",
                               },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "baOrder": 3,
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "1/4",
+                                },
+                                "ui:widget": "Input",
+                              },
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
                             },
                             "ulicaACislo": {
                               "baOrder": 1,
@@ -81620,7 +81545,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "type": "string",
                             },
                             "vlastnikNehnutelnosti": {
-                              "baOrder": 3,
+                              "baOrder": 4,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -81651,13 +81576,14 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           },
                           "required": [
                             "ulicaACislo",
-                            "mestoPsc",
+                            "mesto",
+                            "psc",
                             "vlastnikNehnutelnosti",
                           ],
                           "type": "object",
                         },
                         "datumNarodenia": {
-                          "baOrder": 3,
+                          "baOrder": 4,
                           "baUiSchema": {
                             "ui:options": {
                               "belowComponents": [
@@ -81677,42 +81603,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "title": "Dátum narodenia",
                           "type": "string",
                         },
-                        "menoPriezvisko": {
+                        "meno": {
                           "baOrder": 1,
-                          "properties": {
-                            "meno": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Meno",
-                              "type": "string",
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
                             },
-                            "priezvisko": {
-                              "baOrder": 2,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Priezvisko",
-                              "type": "string",
-                            },
+                            "ui:widget": "Input",
                           },
-                          "required": [
-                            "meno",
-                            "priezvisko",
-                          ],
-                          "type": "object",
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "baOrder": 2,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Priezvisko",
+                          "type": "string",
                         },
                         "rodinnyStav": {
-                          "baOrder": 5,
+                          "baOrder": 6,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -81751,7 +81667,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "rodnePriezvisko": {
-                          "baOrder": 2,
+                          "baOrder": 3,
                           "baUiSchema": {
                             "ui:options": {
                               "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -81763,7 +81679,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "statnaPrislusnost": {
-                          "baOrder": 4,
+                          "baOrder": 5,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -81791,7 +81707,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         },
                       },
                       "required": [
-                        "menoPriezvisko",
+                        "meno",
+                        "priezvisko",
                         "datumNarodenia",
                         "statnaPrislusnost",
                         "rodinnyStav",
@@ -82642,7 +82559,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "anyOf": [
                                   {},
                                 ],
-                                "baOrder": 6,
+                                "baOrder": 7,
                                 "baUiSchema": {
                                   "ui:field": "CustomComponents",
                                   "ui:fieldReplacesAnyOrOneOf": true,
@@ -82690,7 +82607,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "then": {
                                 "properties": {
                                   "vlastnikNehnutelnostiDovody": {
-                                    "baOrder": 4,
+                                    "baOrder": 5,
                                     "baUiSchema": {
                                       "ui:options": {
                                         "belowComponents": [
@@ -82717,7 +82634,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                           ],
-                          "baOrder": 7,
+                          "baOrder": 8,
                           "baUiSchema": {
                             "ui:options": {
                               "description": "Ak má váš druh/družka v občianskom preukaze uvedenú mestskú časť, uveďte adresu príslušného mestského úradu. ",
@@ -82726,40 +82643,30 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                           },
                           "properties": {
-                            "mestoPsc": {
+                            "mesto": {
                               "baOrder": 2,
-                              "properties": {
-                                "mesto": {
-                                  "baOrder": 1,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "3/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "title": "Mesto",
-                                  "type": "string",
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "3/4",
                                 },
-                                "psc": {
-                                  "baOrder": 2,
-                                  "baUiSchema": {
-                                    "ui:options": {
-                                      "inputType": "text",
-                                      "selfColumn": "1/4",
-                                    },
-                                    "ui:widget": "Input",
-                                  },
-                                  "format": "ba-slovak-zip",
-                                  "title": "PSČ",
-                                  "type": "string",
-                                },
+                                "ui:widget": "Input",
                               },
-                              "required": [
-                                "mesto",
-                                "psc",
-                              ],
-                              "type": "object",
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "baOrder": 3,
+                              "baUiSchema": {
+                                "ui:options": {
+                                  "inputType": "text",
+                                  "selfColumn": "1/4",
+                                },
+                                "ui:widget": "Input",
+                              },
+                              "format": "ba-slovak-zip",
+                              "title": "PSČ",
+                              "type": "string",
                             },
                             "ulicaACislo": {
                               "baOrder": 1,
@@ -82773,7 +82680,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               "type": "string",
                             },
                             "vlastnikNehnutelnosti": {
-                              "baOrder": 3,
+                              "baOrder": 4,
                               "baUiSchema": {
                                 "ui:options": {
                                   "enumMetadata": [
@@ -82804,13 +82711,14 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           },
                           "required": [
                             "ulicaACislo",
-                            "mestoPsc",
+                            "mesto",
+                            "psc",
                             "vlastnikNehnutelnosti",
                           ],
                           "type": "object",
                         },
                         "datumNarodenia": {
-                          "baOrder": 3,
+                          "baOrder": 4,
                           "baUiSchema": {
                             "ui:options": {
                               "belowComponents": [
@@ -82830,42 +82738,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "title": "Dátum narodenia",
                           "type": "string",
                         },
-                        "menoPriezvisko": {
+                        "meno": {
                           "baOrder": 1,
-                          "properties": {
-                            "meno": {
-                              "baOrder": 1,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Meno",
-                              "type": "string",
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
                             },
-                            "priezvisko": {
-                              "baOrder": 2,
-                              "baUiSchema": {
-                                "ui:options": {
-                                  "inputType": "text",
-                                  "selfColumn": "2/4",
-                                },
-                                "ui:widget": "Input",
-                              },
-                              "title": "Priezvisko",
-                              "type": "string",
-                            },
+                            "ui:widget": "Input",
                           },
-                          "required": [
-                            "meno",
-                            "priezvisko",
-                          ],
-                          "type": "object",
+                          "title": "Meno",
+                          "type": "string",
+                        },
+                        "priezvisko": {
+                          "baOrder": 2,
+                          "baUiSchema": {
+                            "ui:options": {
+                              "inputType": "text",
+                              "selfColumn": "2/4",
+                            },
+                            "ui:widget": "Input",
+                          },
+                          "title": "Priezvisko",
+                          "type": "string",
                         },
                         "rodinnyStav": {
-                          "baOrder": 5,
+                          "baOrder": 6,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -82904,7 +82802,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "rodnePriezvisko": {
-                          "baOrder": 2,
+                          "baOrder": 3,
                           "baUiSchema": {
                             "ui:options": {
                               "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -82916,7 +82814,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                           "type": "string",
                         },
                         "statnaPrislusnost": {
-                          "baOrder": 4,
+                          "baOrder": 5,
                           "baUiSchema": {
                             "ui:options": {
                               "enumMetadata": [
@@ -82944,7 +82842,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                         },
                       },
                       "required": [
-                        "menoPriezvisko",
+                        "meno",
+                        "priezvisko",
                         "datumNarodenia",
                         "statnaPrislusnost",
                         "rodinnyStav",
@@ -84188,7 +84087,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "then": {
                                   "properties": {
                                     "vlastnikNehnutelnostiDovody": {
-                                      "baOrder": 5,
+                                      "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
                                           "belowComponents": [
@@ -84224,7 +84123,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                             "properties": {
                               "datumNarodenia": {
-                                "baOrder": 2,
+                                "baOrder": 3,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "belowComponents": [
@@ -84244,42 +84143,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "title": "Dátum narodenia",
                                 "type": "string",
                               },
-                              "menoPriezvisko": {
+                              "meno": {
                                 "baOrder": 1,
-                                "properties": {
-                                  "meno": {
-                                    "baOrder": 1,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Meno",
-                                    "type": "string",
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
                                   },
-                                  "priezvisko": {
-                                    "baOrder": 2,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Priezvisko",
-                                    "type": "string",
-                                  },
+                                  "ui:widget": "Input",
                                 },
-                                "required": [
-                                  "meno",
-                                  "priezvisko",
-                                ],
-                                "type": "object",
+                                "title": "Meno",
+                                "type": "string",
+                              },
+                              "priezvisko": {
+                                "baOrder": 2,
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
+                                  },
+                                  "ui:widget": "Input",
+                                },
+                                "title": "Priezvisko",
+                                "type": "string",
                               },
                               "statnaPrislusnost": {
-                                "baOrder": 3,
+                                "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -84306,7 +84195,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "vlastnikNehnutelnosti": {
-                                "baOrder": 4,
+                                "baOrder": 5,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -84336,7 +84225,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                             "required": [
-                              "menoPriezvisko",
+                              "meno",
+                              "priezvisko",
                               "datumNarodenia",
                               "statnaPrislusnost",
                               "vlastnikNehnutelnosti",
@@ -84930,7 +84820,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "then": {
                                   "properties": {
                                     "vlastnikNehnutelnostiDovody": {
-                                      "baOrder": 5,
+                                      "baOrder": 6,
                                       "baUiSchema": {
                                         "ui:options": {
                                           "belowComponents": [
@@ -84966,7 +84856,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                             "properties": {
                               "datumNarodenia": {
-                                "baOrder": 2,
+                                "baOrder": 3,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "belowComponents": [
@@ -84986,42 +84876,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "title": "Dátum narodenia",
                                 "type": "string",
                               },
-                              "menoPriezvisko": {
+                              "meno": {
                                 "baOrder": 1,
-                                "properties": {
-                                  "meno": {
-                                    "baOrder": 1,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Meno",
-                                    "type": "string",
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
                                   },
-                                  "priezvisko": {
-                                    "baOrder": 2,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Priezvisko",
-                                    "type": "string",
-                                  },
+                                  "ui:widget": "Input",
                                 },
-                                "required": [
-                                  "meno",
-                                  "priezvisko",
-                                ],
-                                "type": "object",
+                                "title": "Meno",
+                                "type": "string",
+                              },
+                              "priezvisko": {
+                                "baOrder": 2,
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
+                                  },
+                                  "ui:widget": "Input",
+                                },
+                                "title": "Priezvisko",
+                                "type": "string",
                               },
                               "statnaPrislusnost": {
-                                "baOrder": 3,
+                                "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -85048,7 +84928,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "vlastnikNehnutelnosti": {
-                                "baOrder": 4,
+                                "baOrder": 5,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -85078,7 +84958,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                             "required": [
-                              "menoPriezvisko",
+                              "meno",
+                              "priezvisko",
                               "datumNarodenia",
                               "statnaPrislusnost",
                               "vlastnikNehnutelnosti",
@@ -86069,7 +85950,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "anyOf": [
                                         {},
                                       ],
-                                      "baOrder": 6,
+                                      "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:field": "CustomComponents",
                                         "ui:fieldReplacesAnyOrOneOf": true,
@@ -86106,7 +85987,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "then": {
                                   "properties": {
                                     "vlastnikNehnutelnostiDovody": {
-                                      "baOrder": 8,
+                                      "baOrder": 9,
                                       "baUiSchema": {
                                         "ui:options": {
                                           "belowComponents": [
@@ -86142,7 +86023,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                             "properties": {
                               "datumNarodenia": {
-                                "baOrder": 3,
+                                "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "belowComponents": [
@@ -86162,42 +86043,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "title": "Dátum narodenia",
                                 "type": "string",
                               },
-                              "menoPriezvisko": {
+                              "meno": {
                                 "baOrder": 1,
-                                "properties": {
-                                  "meno": {
-                                    "baOrder": 1,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Meno",
-                                    "type": "string",
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
                                   },
-                                  "priezvisko": {
-                                    "baOrder": 2,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Priezvisko",
-                                    "type": "string",
-                                  },
+                                  "ui:widget": "Input",
                                 },
-                                "required": [
-                                  "meno",
-                                  "priezvisko",
-                                ],
-                                "type": "object",
+                                "title": "Meno",
+                                "type": "string",
+                              },
+                              "priezvisko": {
+                                "baOrder": 2,
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
+                                  },
+                                  "ui:widget": "Input",
+                                },
+                                "title": "Priezvisko",
+                                "type": "string",
                               },
                               "rodinnyStav": {
-                                "baOrder": 5,
+                                "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -86236,7 +86107,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "rodnePriezvisko": {
-                                "baOrder": 2,
+                                "baOrder": 3,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -86248,7 +86119,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "statnaPrislusnost": {
-                                "baOrder": 4,
+                                "baOrder": 5,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -86275,7 +86146,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "vlastnikNehnutelnosti": {
-                                "baOrder": 7,
+                                "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -86305,7 +86176,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                             "required": [
-                              "menoPriezvisko",
+                              "meno",
+                              "priezvisko",
                               "datumNarodenia",
                               "statnaPrislusnost",
                               "rodinnyStav",
@@ -87178,7 +87050,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                       "anyOf": [
                                         {},
                                       ],
-                                      "baOrder": 6,
+                                      "baOrder": 7,
                                       "baUiSchema": {
                                         "ui:field": "CustomComponents",
                                         "ui:fieldReplacesAnyOrOneOf": true,
@@ -87215,7 +87087,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "then": {
                                   "properties": {
                                     "vlastnikNehnutelnostiDovody": {
-                                      "baOrder": 8,
+                                      "baOrder": 9,
                                       "baUiSchema": {
                                         "ui:options": {
                                           "belowComponents": [
@@ -87251,7 +87123,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                             },
                             "properties": {
                               "datumNarodenia": {
-                                "baOrder": 3,
+                                "baOrder": 4,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "belowComponents": [
@@ -87271,42 +87143,32 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "title": "Dátum narodenia",
                                 "type": "string",
                               },
-                              "menoPriezvisko": {
+                              "meno": {
                                 "baOrder": 1,
-                                "properties": {
-                                  "meno": {
-                                    "baOrder": 1,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Meno",
-                                    "type": "string",
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
                                   },
-                                  "priezvisko": {
-                                    "baOrder": 2,
-                                    "baUiSchema": {
-                                      "ui:options": {
-                                        "inputType": "text",
-                                        "selfColumn": "2/4",
-                                      },
-                                      "ui:widget": "Input",
-                                    },
-                                    "title": "Priezvisko",
-                                    "type": "string",
-                                  },
+                                  "ui:widget": "Input",
                                 },
-                                "required": [
-                                  "meno",
-                                  "priezvisko",
-                                ],
-                                "type": "object",
+                                "title": "Meno",
+                                "type": "string",
+                              },
+                              "priezvisko": {
+                                "baOrder": 2,
+                                "baUiSchema": {
+                                  "ui:options": {
+                                    "inputType": "text",
+                                    "selfColumn": "2/4",
+                                  },
+                                  "ui:widget": "Input",
+                                },
+                                "title": "Priezvisko",
+                                "type": "string",
                               },
                               "rodinnyStav": {
-                                "baOrder": 5,
+                                "baOrder": 6,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -87345,7 +87207,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "rodnePriezvisko": {
-                                "baOrder": 2,
+                                "baOrder": 3,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "helptext": "Vyplňte iba v prípade, ak je priezvisko iné ako to, ktoré ste uviedli v predchádzajúcej odpovedi.",
@@ -87357,7 +87219,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "statnaPrislusnost": {
-                                "baOrder": 4,
+                                "baOrder": 5,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -87384,7 +87246,7 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                                 "type": "string",
                               },
                               "vlastnikNehnutelnosti": {
-                                "baOrder": 7,
+                                "baOrder": 8,
                                 "baUiSchema": {
                                   "ui:options": {
                                     "enumMetadata": [
@@ -87414,7 +87276,8 @@ zamestnaniePrijemSum + samostatnaZarobkovaCinnostPrijemSum + dochodokSum + vyziv
                               },
                             },
                             "required": [
-                              "menoPriezvisko",
+                              "meno",
+                              "priezvisko",
                               "datumNarodenia",
                               "statnaPrislusnost",
                               "rodinnyStav",

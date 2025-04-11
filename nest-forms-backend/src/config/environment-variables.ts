@@ -192,6 +192,11 @@ export default class EnvironmentVariables {
   @Expose()
   @IsUrl()
   @IsNotEmpty()
+  GINIS_SSL_MTOM_HOST: string
+
+  @Expose()
+  @IsUrl()
+  @IsNotEmpty()
   GINIS_GIN_HOST: string
 
   @Expose()

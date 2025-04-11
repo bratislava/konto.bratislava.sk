@@ -38,31 +38,21 @@ export default class GinisHelper {
     }
   }
 
-  /**
-   * @param pospId posp id of form definition, the id by which the form is registered in NASES.
-   * @returns properties for ginis-automation register submission - determines the official who processes the form further
-   */
-  getReferentForPospID(pospId: string): {
-    organization: string
-    person: string
-  } {
-    // for now, all of the forms are processed by the same person, but this person isn't available in 'vyvoj' GINIS
-    // later change this for a map between pospId's and referents and their sub-organizations
-    const stagingEnvOverride =
-      process.env.GINIS_TEMP_REFERENT_OVERRIDE === 'true'
-    console.log(
-      `Referent info is static! Generating for ${pospId}, staging override: ${
-        stagingEnvOverride ? 'true' : 'false'
-      }`,
-    )
-    return stagingEnvOverride
-      ? {
-          organization: 'OUIC',
-          person: 'Martančík Ľudmila',
-        }
-      : {
-          organization: 'OUIC',
-          person: 'Simeunovičová Ľudmila',
-        }
+  async retryWithDelay<T>(
+    fn: () => Promise<T>,
+    retries = 1,
+    delayMs = 10_000,
+  ): Promise<T> {
+    try {
+      return await fn()
+    } catch (error) {
+      if (retries <= 0) {
+        throw error
+      }
+      await new Promise((resolve) => {
+        setTimeout(resolve, delayMs)
+      })
+      return this.retryWithDelay(fn, retries - 1, delayMs)
+    }
   }
 }

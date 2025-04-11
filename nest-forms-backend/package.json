@@ -31,7 +31,7 @@
     "update-rjsf": "npm install @rjsf/utils@latest --save-exact"
   },
   "dependencies": {
-    "@bratislava/ginis-sdk": "^1.1.0",
+    "@bratislava/ginis-sdk": "^1.2.0",
     "@golevelup/nestjs-rabbitmq": "5.7.0",
     "@golevelup/ts-jest": "0.6.2",
     "@nestjs/bull": "11.0.2",

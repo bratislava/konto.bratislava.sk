@@ -48,7 +48,6 @@ import GinisHelper from './subservices/ginis.helper'
 
 const UPLOAD_QUEUE = 'submission.upload'
 const REGISTER_SUBMISSION_QUEUE = 'submission.register'
-// const CHECK_UPLOADS_QUEUE = 'submission.attachments'
 const ASSIGN_QUEUE = 'submission.assign'
 const EDIT_SUBMISSION_QUEUE = 'submission.edit'
 
@@ -418,11 +417,7 @@ export default class GinisService {
     const form = await this.prismaService.forms.findUnique({
       where: { id: data.formId, archived: false },
       include: {
-        files: {
-          where: {
-            ginisUploaded: false,
-          },
-        },
+        files: true,
       },
     })
 
@@ -450,10 +445,8 @@ export default class GinisService {
       )
     }
 
-    const errorFiles = form.files.filter(
-      (file) => file.ginisUploadedError === true,
-    )
-    const filesNotYetUploaded = form.files.filter((file) => !file.ginisUploaded)
+    const filesWithError = form.files.filter((file) => file.ginisUploadedError)
+    const filesToUpload = form.files.filter((file) => !file.ginisUploaded)
 
     // Registration
     if (
@@ -469,14 +462,21 @@ export default class GinisService {
     }
 
     // Attachments upload
-    if (form.ginisState === GinisState.REGISTERED && form.files.length > 0) {
+    if (form.ginisState === GinisState.REGISTERED && filesToUpload.length > 0) {
+      if (!form.ginisDocumentId) {
+        alertError(
+          `ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
+          this.logger,
+        )
+        return this.nackTrueWithWait(20_000)
+      }
       await this.uploadAttachments(form, formDefinition.pospID)
       return this.nackTrueWithWait(20_000)
     }
 
     if (
       form.ginisState === GinisState.ERROR_ATTACHMENT_UPLOAD ||
-      (form.files.length === errorFiles.length && errorFiles.length > 0)
+      filesWithError.length > 0
     ) {
       this.logger.error(
         '---- ERROR uploading attachments (manual intervention required) ----',
@@ -484,23 +484,10 @@ export default class GinisService {
       return this.nackTrueWithWait(20_000)
     }
 
-    if (form.ginisState === GinisState.REGISTERED && form.files.length === 0) {
-      await this.prismaService.forms.update({
-        where: { id: form.id },
-        data: {
-          ginisState: GinisState.ATTACHMENTS_UPLOADED,
-          error: FormError.NONE,
-        },
-      })
-      this.logger.debug('---- attachments uploaded ----')
-      return this.nackTrueWithWait(20_000)
-    }
-
-    // TODO: merge with previous case of zero files, think more about setting error to NONE in this case
-    // this means we've finished uploading files and can move to next step
     if (
-      form.ginisState === GinisState.RUNNING_UPLOAD_ATTACHMENTS &&
-      filesNotYetUploaded.length === 0
+      filesToUpload.length === 0 &&
+      (form.ginisState === GinisState.RUNNING_UPLOAD_ATTACHMENTS ||
+        form.ginisState === GinisState.REGISTERED)
     ) {
       await this.prismaService.forms.update({
         where: { id: form.id },
@@ -520,10 +507,10 @@ export default class GinisService {
     ) {
       if (!form.ginisDocumentId) {
         alertError(
-          `ERROR - ginisDocumentId in form do not exists in Ginis consumption queue. Form id: ${form.id}`,
+          `ERROR editSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
           this.logger,
         )
-        return new Nack(false)
+        return this.nackTrueWithWait(20_000)
       }
       await this.editSubmission(
         form.ginisDocumentId,
@@ -542,7 +529,7 @@ export default class GinisService {
     ) {
       if (!form.ginisDocumentId) {
         alertError(
-          `ERROR - documentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
+          `ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
           this.logger,
         )
         return this.nackTrueWithWait(20_000)
@@ -554,6 +541,8 @@ export default class GinisService {
       )
       return this.nackTrueWithWait(20_000)
     }
+
+    // Send externally
     if (form.ginisState === GinisState.SUBMISSION_ASSIGNED) {
       await this.prismaService.forms.update({
         where: { id: form.id },
@@ -566,10 +555,12 @@ export default class GinisService {
         },
       })
 
+      // Send to SharePoint
       if (formDefinition.sharepointData) {
         await this.sendToSharepoint(form.id)
       }
 
+      // Send via email
       if (data.userData.email) {
         await this.mailgunService.sendEmail({
           data: {

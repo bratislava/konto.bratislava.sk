@@ -1,8 +1,13 @@
+import path from 'node:path'
+import { Readable } from 'node:stream'
+
 import {
   GinDetailFunkcnihoMistaResponse,
   GinDetailReferentaResponse,
   Ginis,
   SslDetailDokumentuResponse,
+  SslPridatSouborPridatSoubor,
+  SslPridatSouborResponse,
 } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 
@@ -27,6 +32,7 @@ export default class GinisAPIService {
       // connect to any subset of services needed, all the urls are optional but requests to services missing urls will fail
       urls: {
         ssl: this.baConfigService.ginisApi.sslHost,
+        ssl_mtom: this.baConfigService.ginisApi.sslMtomHost,
         gin: this.baConfigService.ginisApi.ginHost,
       },
       username: this.baConfigService.ginisApi.username,
@@ -56,5 +62,25 @@ export default class GinisAPIService {
     return this.ginis.gin.detailReferenta({
       'Id-osoby': functionDetail['Detail-funkcniho-mista']['Id-referenta'],
     })
+  }
+
+  async uploadFile(
+    documentId: string,
+    fileName: string,
+    contentStream: Readable,
+  ): Promise<SslPridatSouborPridatSoubor> {
+    const baseName = path.parse(fileName).name
+
+    const fileUpload: SslPridatSouborResponse =
+      await this.ginis.ssl.pridatSouborMtom({
+        'Id-dokumentu': documentId,
+        'Jmeno-souboru': fileName,
+        'Typ-vazby': 'elektronicka-priloha',
+        'Popis-souboru': baseName,
+        'Podrobny-popis-souboru': baseName,
+        Obsah: contentStream,
+      })
+
+    return fileUpload['Pridat-soubor']
   }
 }

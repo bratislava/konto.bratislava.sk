@@ -341,7 +341,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
       jest.resetAllMocks()
 
-      // should regiser again if there was error
+      // should register again if there was error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -364,6 +364,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.REGISTERED,
+        ginisDocumentId: 'ginis1',
         files: [
           {
             ginisUploadedError: false,
@@ -385,7 +386,7 @@ describe('GinisService', () => {
       expect(uploadSpy).toHaveBeenCalled()
       jest.resetAllMocks()
 
-      // When one error - requeue but do not upload
+      // When one error - requeue, do not upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -393,6 +394,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+        ginisDocumentId: 'ginis1',
         files: [
           {
             ginisUploadedError: true,
@@ -400,7 +402,7 @@ describe('GinisService', () => {
           } as unknown as Files,
           {
             ginisUploadedError: false,
-            ginisUploaded: false,
+            ginisUploaded: true,
           } as unknown as Files,
         ],
       } as FormWithFiles)
@@ -409,7 +411,7 @@ describe('GinisService', () => {
       expect(uploadSpy).not.toHaveBeenCalled()
       jest.resetAllMocks()
 
-      // When two errors, don't call upload just report error (TODO update behavior)
+      // When all errors - requeue, do not upload, report error (TODO update behavior)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -417,31 +419,12 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+        ginisDocumentId: 'ginis1',
         files: [
           {
             ginisUploadedError: true,
             ginisUploaded: false,
           } as unknown as Files,
-          {
-            ginisUploadedError: true,
-            ginisUploaded: false,
-          } as unknown as Files,
-        ],
-      } as FormWithFiles)
-      result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
-      expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
-
-      // When one still uploading, second uploaded, don't call upload just report error (TODO update behavior)
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: FormDefinitionType.SlovenskoSkGeneric,
-        pospID: 'pospIdValue',
-      })
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
-        files: [
           {
             ginisUploadedError: true,
             ginisUploaded: false,
@@ -461,6 +444,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+        ginisDocumentId: 'ginis1',
         files: [],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
@@ -474,6 +458,31 @@ describe('GinisService', () => {
           },
         }),
       )
+
+      // When missing ginisDocumentId, skip upload
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'pospIdValue',
+      })
+      prismaMock.forms.findUnique.mockResolvedValue({
+        ...formBase,
+        ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
+        files: [
+          {
+            ginisUploadedError: false,
+            ginisUploaded: false,
+          } as unknown as Files,
+          {
+            ginisUploadedError: false,
+            ginisUploaded: false,
+          } as unknown as Files,
+        ],
+      } as FormWithFiles)
+
+      result = await service.onQueueConsumption(messageBase)
+      expect(result.requeue).toBeTruthy()
+      expect(uploadSpy).not.toHaveBeenCalled()
+      jest.resetAllMocks()
     })
 
     it('should mark as files uploaded if there are no files', async () => {
@@ -517,7 +526,7 @@ describe('GinisService', () => {
       const editSpy = jest.spyOn(service, 'editSubmission').mockResolvedValue()
 
       let result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeFalsy() // there is no ginisDocumentId
+      expect(result.requeue).toBeTruthy()
       expect(editSpy).not.toHaveBeenCalled()
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -542,7 +551,7 @@ describe('GinisService', () => {
       })
 
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeFalsy() // there is no ginisDocumentId
+      expect(result.requeue).toBeTruthy()
       expect(editSpy).not.toHaveBeenCalled()
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -574,7 +583,7 @@ describe('GinisService', () => {
         .mockResolvedValue()
 
       let result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy() // there is no ginisDocumentId
+      expect(result.requeue).toBeTruthy()
       expect(assignSpy).not.toHaveBeenCalled()
 
       prismaMock.forms.findUnique.mockResolvedValue({

@@ -15,6 +15,7 @@ import {
   extractGinisSubject,
 } from 'forms-shared/form-utils/formDataExtractors'
 
+import BaConfigService from '../config/ba-config.service'
 import {
   FormsErrorsEnum,
   FormsErrorsResponseEnum,
@@ -32,6 +33,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import alertError, {
   LineLoggerSubservice,
 } from '../utils/subservices/line-logger.subservice'
+import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import {
   GinisAssignSubmissionResponseInfo,
@@ -40,18 +42,14 @@ import {
   GinisEditSubmissionResponseInfo,
   GinisRegisterSubmissionResponse,
   GinisRegisterSubmissionResponseInfo,
-  GinisUploadFileResponse,
-  GinisUploadFileResponseInfo,
-  GinisUploadInfo,
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
+import GinisAPIService from './subservices/ginis-api.service'
 
-const UPLOAD_QUEUE = 'submission.upload'
 const REGISTER_SUBMISSION_QUEUE = 'submission.register'
 const ASSIGN_QUEUE = 'submission.assign'
 const EDIT_SUBMISSION_QUEUE = 'submission.edit'
 
-const GINIS_AUTOMATION_UPLOAD_QUEUE = 'ginis-automation.upload'
 const GINIS_AUTOMATION_REGISTER_SUBMISSION_QUEUE = 'ginis-automation.register'
 const GINIS_AUTOMATION_ASSIGN_QUEUE = 'ginis-automation.assign'
 const GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE = 'ginis-automation.edit'
@@ -61,9 +59,12 @@ export default class GinisService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
+    private readonly baConfigService: BaConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly ginisHelper: GinisHelper,
+    private readonly ginisApiService: GinisAPIService,
     private mailgunService: MailgunService,
+    private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
     private readonly rabbitMqClientService: RabbitmqClientService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
@@ -131,56 +132,6 @@ export default class GinisService {
         },
       })
       this.logger.debug('---- registered to ginis ----')
-    }
-    return new Nack()
-  }
-
-  @RabbitRPC({
-    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
-    routingKey: UPLOAD_QUEUE,
-    queue: UPLOAD_QUEUE,
-    errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      alertError(
-        `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new LineLoggerSubservice('GinisService'),
-      )
-      channel.reject(message, false)
-    },
-  })
-  public async consumeGinisFileUploaded(
-    content: GinisAutomationResponse<
-      GinisUploadFileResponse,
-      GinisUploadFileResponseInfo
-    >,
-  ): Promise<Nack> {
-    this.logger.log(
-      `Consuming ginis file uploaded message, content: ${JSON.stringify(content)}`,
-    )
-    if (content.status === 'failure') {
-      await this.prismaService.files.update({
-        where: {
-          id: content.info.file_id,
-        },
-        data: {
-          ginisUploadedError: true,
-        },
-      })
-      alertError(
-        `ERROR - Ginis consumer - error upload File - response from Ginis automation. File id: ${content.info.file_id}.`,
-        this.logger,
-        content.message,
-      )
-    } else {
-      await this.prismaService.files.update({
-        where: { id: content.info.file_id },
-        data: {
-          ginisOrder:
-            'Poradie' in content.result.upload_info
-              ? +(content.result.upload_info as GinisUploadInfo).Poradie
-              : undefined,
-          ginisUploaded: true,
-        },
-      })
     }
     return new Nack()
   }
@@ -312,6 +263,30 @@ export default class GinisService {
     )
   }
 
+  private async updateFailedAttachmentUpload(fileId: string): Promise<void> {
+    await this.prismaService.files.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        ginisUploadedError: true,
+      },
+    })
+  }
+
+  private async updateSuccessfulAttachmentUpload(
+    fileId: string,
+  ): Promise<void> {
+    await this.prismaService.files.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        ginisUploaded: true,
+      },
+    })
+  }
+
   async uploadAttachments(form: FormWithFiles, pospID: string): Promise<void> {
     this.logger.debug('---- start to upload attachments ----')
     await this.prismaService.forms.update({
@@ -325,19 +300,39 @@ export default class GinisService {
 
     await Promise.all(
       form.files.map(async (file) => {
-        if (file.ginisUploaded) return
+        if (file.ginisUploaded || !form.ginisDocumentId) {
+          return
+        }
 
-        await this.rabbitMqClientService.publishMessageToGinisAutomation(
-          GINIS_AUTOMATION_UPLOAD_QUEUE,
-          {
-            doc_id: form.ginisDocumentId,
-            msg_id: form.id,
-            s3_path: `${process.env.MINIO_SAFE_BUCKET ?? ''}/${pospID}/${form.id}/${file.minioFileName}`,
-            filename: file.fileName,
-            file_id: file.id,
-          },
-          UPLOAD_QUEUE,
-        )
+        try {
+          const fileStream = await this.minioClientSubservice.download(
+            this.baConfigService.minio.buckets.safe,
+            `${pospID}/${form.id}/${file.minioFileName}`,
+          )
+
+          // sometimes ginis times-out on the first try
+          const uploadFileinfo = await this.ginisHelper.retryWithDelay(
+            async () =>
+              this.ginisApiService.uploadFile(
+                form.ginisDocumentId || '', // type safety only, guaranteed to be not null
+                file.fileName,
+                fileStream,
+              ),
+          )
+
+          if (!uploadFileinfo['Verze-souboru']) {
+            throw new Error('Ginis uploadFile missing file version.')
+          }
+
+          await this.updateSuccessfulAttachmentUpload(file.id)
+        } catch (error) {
+          alertError(
+            `ERROR uploadAttachments - error upload file to ginis. Form id: ${form.id}; Ginis id: ${form.ginisDocumentId}; File id: ${file.id}`,
+            this.logger,
+            error,
+          )
+          await this.updateFailedAttachmentUpload(file.id)
+        }
       }),
     )
   }

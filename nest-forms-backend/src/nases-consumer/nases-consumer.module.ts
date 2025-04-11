@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
@@ -29,6 +30,7 @@ import WebhookSubservice from './subservices/webhook.subservice'
     ConvertPdfModule,
     TaxModule,
     FormValidatorRegistryModule,
+    ClientsModule,
   ],
   providers: [
     NasesConsumerService,

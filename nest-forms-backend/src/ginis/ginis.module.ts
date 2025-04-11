@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bull'
 import { Module } from '@nestjs/common'
 
+import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
@@ -28,6 +29,7 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     BullModule.registerQueue({
       name: 'sharepoint',
     }),
+    ClientsModule,
   ],
   providers: [
     GinisService,

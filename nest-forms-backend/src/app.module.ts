@@ -8,6 +8,7 @@ import AdminModule from './admin/admin.module'
 import AppController from './app.controller'
 import AppService from './app.service'
 import AuthModule from './auth/auth.module'
+import ClientsModule from './clients/clients.module'
 import BaConfigModule from './config/ba-config.module'
 import BaConfigService from './config/ba-config.service'
 import ConvertModule from './convert/convert.module'
@@ -73,6 +74,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
       }),
     }),
     ScheduleModule.forRoot(),
+    ClientsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SharepointSubservice, ThrowerErrorGuard],

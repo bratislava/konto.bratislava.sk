@@ -11,7 +11,7 @@ import { LineLoggerSubservice } from './line-logger.subservice'
  * transporter with optional support for attachments.
  *
  * The service is configured via environment variables, including a fixed sender
- * email set by the SENDER_EMAIL variable.
+ * email set by the AWS_SES_SENDER_EMAIL variable.
  *
  * @note We use AWS SES (Simple Email Service) instead of Mailgun due to GDPR
  * compliance requirements, ensuring that email data is handled securely and

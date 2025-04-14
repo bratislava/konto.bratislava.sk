@@ -85,7 +85,7 @@ jobs:
     name: validate nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@build-openapi-test
     with:
       directory: nest-forms-backend/
     permissions: write-all
@@ -109,7 +109,7 @@ jobs:
     name: validate nest-clamav-scanner
     needs: conditions
     if: needs.conditions.outputs.nest-clamav-scanner == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@build-openapi-test
     with:
       directory: nest-clamav-scanner/
     permissions: write-all
@@ -132,7 +132,7 @@ jobs:
     name: validate nest-tax-backend
     needs: conditions
     if: needs.conditions.outputs.nest-tax-backend == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@build-openapi-test
     with:
       directory: nest-tax-backend/
     permissions: write-all
@@ -155,7 +155,7 @@ jobs:
     name: validate nest-city-account
     needs: conditions
     if: needs.conditions.outputs.nest-city-account == 'true' || needs.conditions.outputs.openapi-clients == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@build-openapi-test
     with:
       directory: nest-city-account/
     permissions: write-all

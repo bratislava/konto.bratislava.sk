@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { FormError, Forms, FormState } from '@prisma/client'
 
-import { UserInfoResponse } from '../utils/decorators/request.decorator'
+import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 // import { Forms } from '@prisma/client'
 import FormsHelper from './forms.helper'
 

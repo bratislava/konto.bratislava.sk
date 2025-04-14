@@ -2,6 +2,7 @@
 /* eslint-disable pii/no-email */
 import { Readable } from 'node:stream'
 
+import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -11,6 +12,7 @@ import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../test/singleton'
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
@@ -61,6 +63,7 @@ describe('NasesUtilsService', () => {
           provide: getQueueToken('tax'),
           useValue: {},
         },
+        { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()
 

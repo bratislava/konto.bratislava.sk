@@ -40,13 +40,17 @@ jobs:
         with:
           node-version: ${{ inputs.node }}
 
-      # build forms-shared first
       - name: Build forms-shared
+        working-directory: forms-shared
         run: |
-          cd forms-shared/
-          npm ci
+          npm install
           npm run build
-          cd ..
+
+      - name: Build openapi-clients
+        working-directory: openapi-clients
+        run: |
+          npm install
+          npm run build
 
       # move to directory
       - name: Install dependencies

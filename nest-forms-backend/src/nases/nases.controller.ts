@@ -26,6 +26,10 @@ import {
 import { Forms } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import NasesAuthGuard from '../auth/guards/nases.guard'
@@ -45,11 +49,7 @@ import {
   NoFormXmlDataErrorDto,
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import {
   DatabaseErrorDto,
   NotFoundErrorDto,
@@ -139,8 +139,8 @@ export default class NasesController {
   @Get('form/:id')
   async getForm(
     @Param('id') id: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<GetFormResponseDto> {
     const data = await this.nasesService.getForm(
       id,
@@ -183,7 +183,7 @@ export default class NasesController {
     const data = await this.nasesService.getForms(
       query,
       user.sub,
-      userInfo.ico ?? null,
+      userInfo?.ico ?? null,
     )
     return data
   }
@@ -217,8 +217,8 @@ export default class NasesController {
   @Delete(':id')
   async deleteForm(
     @Param('id') id: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<FormDeleteResponseDto> {
     await this.formsService.archiveForm(
       id,
@@ -259,8 +259,8 @@ export default class NasesController {
   @Post('create-form')
   async createForm(
     @Body() data: CreateFormRequestDto,
+    @UserInfo() userInfo: UserInfoResponse,
     @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
   ): Promise<CreateFormResponseDto> {
     const returnData = await this.nasesService.createForm(
       data,
@@ -321,8 +321,8 @@ export default class NasesController {
   async updateForm(
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<Forms> {
     const returnData = await this.nasesService.updateForm(
       id,
@@ -530,8 +530,8 @@ export default class NasesController {
   @Post('send-form/:id')
   async sendForm(
     @Param('id') id: string,
-    @UserInfo() userInfo?: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @UserInfo() userInfo: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
   ): Promise<SendFormResponseDto> {
     const data = await this.nasesService.sendForm(id, userInfo, user)
     return data
@@ -759,8 +759,8 @@ export default class NasesController {
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<SendFormResponseDto> {
     await this.nasesService.updateForm(id, data, userInfo?.ico ?? null, user)
 
@@ -883,8 +883,8 @@ export default class NasesController {
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,
     @Param('id') id: string,
-    @User() cognitoUser?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() cognitoUser: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
@@ -949,7 +949,7 @@ export default class NasesController {
     @Param('id') id: string,
     @UserInfo() userInfo: UserInfoResponse,
   ): Promise<MigrateFormResponseDto> {
-    await this.nasesService.migrateForm(id, user, userInfo.ico ?? null)
+    await this.nasesService.migrateForm(id, user, userInfo?.ico ?? null)
     return {
       formId: id,
       success: true,

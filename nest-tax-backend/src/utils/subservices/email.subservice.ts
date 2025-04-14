@@ -6,6 +6,17 @@ import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
 
+/**
+ * EmailSubservice handles the functionality of sending emails using an SMTP
+ * transporter with optional support for attachments.
+ *
+ * The service is configured via environment variables, including a fixed sender
+ * email set by the SENDER_EMAIL variable.
+ *
+ * @note We use AWS SES (Simple Email Service) instead of Mailgun due to GDPR
+ * compliance requirements, ensuring that email data is handled securely and
+ * within GDPR-regulated regions.
+ */
 @Injectable()
 export default class EmailSubservice {
   private readonly logger = new LineLoggerSubservice(EmailSubservice.name)

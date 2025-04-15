@@ -43,6 +43,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import {
+  SendMessageNasesMethod,
+  SendMessageNasesMethodType,
+} from '../types/send-message-nases.types'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -367,6 +371,17 @@ export default class NasesUtilsService {
     return message
   }
 
+  private getSenderId(method: SendMessageNasesMethod) {
+    if (method.type === SendMessageNasesMethodType.Eid) {
+      return method.senderUri
+    }
+    if (method.type === SendMessageNasesMethodType.Self) {
+      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+    }
+
+    throw 'TODO message'
+  }
+
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
@@ -384,7 +399,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    senderUri?: string,
+    method: SendMessageNasesMethod,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -403,8 +418,7 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
-    const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+    const senderId = this.getSenderId(method)
     const correlationId = uuidv4()
     let subject: string = form.id
     const mimeType = isSigned
@@ -500,15 +514,26 @@ export default class NasesUtilsService {
     }`
   }
 
+  private getSendMessageNasesEndpoint = (method: SendMessageNasesMethod) => {
+    if (method.type === SendMessageNasesMethodType.Eid) {
+      return slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+    }
+    if (method.type === SendMessageNasesMethodType.Self) {
+      return slovenskoSkApi.apiSktalkReceivePost
+    }
+
+    throw 'TODO message'
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    senderUri?: string,
+    method: SendMessageNasesMethod,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, senderUri)
+      message = await this.createEnvelopeSendMessage(data, method)
     } catch (error) {
       return {
         status: 500,
@@ -518,7 +543,7 @@ export default class NasesUtilsService {
       }
     }
     try {
-      const response = await slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
+      const response = await this.getSendMessageNasesEndpoint(method)(
         {
           message,
         },

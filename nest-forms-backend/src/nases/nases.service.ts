@@ -52,6 +52,7 @@ import {
 import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
+import { SendMessageNasesMethodType } from './types/send-message-nases.types'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
@@ -582,7 +583,7 @@ export default class NasesService {
         form,
         data,
         formDefinition,
-        user.sub,
+        { type: SendMessageNasesMethodType.Eid, senderUri: user.sub },
       )
     } catch (error) {
       this.logger.error(`Error sending form to nases: ${error}`)

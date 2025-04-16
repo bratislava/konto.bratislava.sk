@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
+import { TaxPaymentBloomreachDataDto } from '../../bloomreach/bloomreach.dto'
 import { DeliveryMethod } from '../../noris/noris.types'
 
 export class RequestPostNorisLoadDataDto {
@@ -202,6 +203,22 @@ export class RequestAdminDeleteTaxDto {
   })
   @IsNumber()
   year: number
+
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '000000/0000',
+  })
+  @IsString()
+  birthNumber: string
+}
+
+export class RequestAdminBloomreachCustomerEventTaxPaymentDto {
+  @ApiProperty({
+    description: 'Fake Bloomreach Data',
+  })
+  @IsObject()
+  @ValidateNested()
+  bloomreachData: TaxPaymentBloomreachDataDto
 
   @ApiProperty({
     description: 'Birth number in format with slash',

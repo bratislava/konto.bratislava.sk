@@ -22,6 +22,7 @@ import {
 } from '../utils/types/types.prisma'
 import {
   NorisRequestGeneral,
+  RequestAdminBloomreachCustomerEventTaxPaymentDto,
   RequestAdminCreateTestingTaxDto,
   RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
@@ -695,5 +696,35 @@ export class AdminService {
         },
       },
     })
+  }
+
+  async bloomreachCustomerEventTaxPayment({
+    bloomreachData,
+    birthNumber,
+  }: RequestAdminBloomreachCustomerEventTaxPaymentDto): Promise<void> {
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+
+    if (!userDataFromCityAccount) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax payer not found',
+      )
+    }
+    if (!userDataFromCityAccount.externalId) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax payer external id not found',
+      )
+    }
+
+    await this.bloomreachService.trackEventTaxPayment(
+      {
+        year: bloomreachData.year,
+        amount: bloomreachData.amount,
+        payment_source: bloomreachData.payment_source,
+      },
+      userDataFromCityAccount.externalId,
+    )
   }
 }

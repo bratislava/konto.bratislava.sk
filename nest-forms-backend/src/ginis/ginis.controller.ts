@@ -15,6 +15,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
@@ -22,11 +26,7 @@ import {
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import {
   mapGinisHistory,
   MappedDocumentHistory,
@@ -78,8 +78,8 @@ export default class GinisController {
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<GinisDocumentDetailResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       formId,

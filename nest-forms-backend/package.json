@@ -25,9 +25,6 @@
     "test:send-form": "jest --config test/jest-send-form.json",
     "test:generate-pdf": "jest --config test/jest-generate-pdf.json",
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
-    "generate-client-slovensko-sk": "ts-node scripts/generateOpenApiClient.ts slovensko-sk",
-    "generate-client-city-account": "ts-node scripts/generateOpenApiClient.ts city-account",
-    "generate-clients": "npm run generate-client-slovensko-sk && npm run generate-client-city-account",
     "update-rjsf": "npm install @rjsf/utils@latest --save-exact"
   },
   "dependencies": {
@@ -46,7 +43,7 @@
     "@rjsf/utils": "5.24.8",
     "amqplib": "^0.10.5",
     "aws-sdk": "2.1692.0",
-    "axios": "1.8.1",
+    "axios": "1.8.4",
     "bull": "4.16.5",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",

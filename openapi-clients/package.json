@@ -34,7 +34,7 @@
     "@types/app-root-dir": "^0.1.4",
     "@types/diff": "^7.0.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "app-root-dir": "^1.0.2",
     "axios": "^1.8.3",
     "camelcase": "^8.0.0",

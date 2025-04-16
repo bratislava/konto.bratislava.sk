@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import FilesModule from '../files/files.module'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
@@ -22,6 +23,7 @@ import ConvertService from './convert.service'
     FilesModule,
     TaxModule,
     FormValidatorRegistryModule,
+    UserInfoPipeModule,
   ],
   providers: [
     ConvertService,

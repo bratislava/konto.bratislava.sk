@@ -97,7 +97,6 @@ const foMunicipalServicesSection = [
   46,
 ].filter(isDefined)
 const poMunicipalServicesSection = [
-  1,
   environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
   34,
   35,

@@ -35,6 +35,10 @@ import {
 import { Response } from 'express'
 import { contentType } from 'mime-types'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import CognitoGuard from '../auth/guards/cognito.guard'
@@ -50,11 +54,7 @@ import {
   FileWrongParamsErrorDto,
   ProblemWithScannerErrorDto,
 } from '../scanner-client/scanner-client.errors.dto'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import {
   BadRequestDecoratorErrorDto,
   DatabaseErrorDto,
@@ -128,7 +128,7 @@ export default class FilesController {
   @Get(':fileId')
   getFile(
     @Param('fileId') fileId: string,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @UserInfo() userInfo: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<GetFileResponseDto> {
     return this.filesService.getFileWithUserVerify(
@@ -164,7 +164,7 @@ export default class FilesController {
   @Get('forms/:formId')
   getFilesStatusByForm(
     @Param('formId') formId: string,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @UserInfo() userInfo: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<GetFileResponseReducedDto[]> {
     return this.filesService.getFilesByForm(formId, userInfo?.ico ?? null, user)
@@ -320,7 +320,7 @@ export default class FilesController {
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @UserInfo() userInfo: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<PostFileResponseDto> {
     return this.filesService.uploadFile(
@@ -349,7 +349,7 @@ export default class FilesController {
   @Get('download/jwt/:fileId')
   async downloadToken(
     @Param('fileId') fileId: string,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @UserInfo() userInfo: UserInfoResponse,
     @User() user?: CognitoGetUserData,
   ): Promise<DownloadTokenResponseDataDto> {
     return this.filesService.downloadToken(fileId, userInfo?.ico ?? null, user)

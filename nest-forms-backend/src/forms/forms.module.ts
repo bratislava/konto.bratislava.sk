@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 // eslint-disable-next-line import/no-cycle
 import FilesModule from '../files/files.module'
 import FilesService from '../files/files.service'
@@ -20,6 +21,7 @@ import FormsTaskSubservice from './subservices/forms-task.subservice'
     ScannerClientModule,
     forwardRef(() => FilesModule),
     FormValidatorRegistryModule,
+    UserInfoPipeModule,
   ],
   providers: [
     FormsService,

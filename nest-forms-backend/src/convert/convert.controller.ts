@@ -21,6 +21,10 @@ import {
 } from '@nestjs/swagger'
 import { Response } from 'express'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
@@ -30,11 +34,7 @@ import {
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
@@ -101,8 +101,8 @@ export default class ConvertController {
   @Post('json-to-xml-v2')
   async convertJsonToXmlV2(
     @Body() data: JsonToXmlV2RequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<string> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
@@ -170,8 +170,8 @@ export default class ConvertController {
   @Post('xml-to-json')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<XmlToJsonResponseDto> {
     return this.convertService.convertXmlToJson(
       data,
@@ -218,8 +218,8 @@ export default class ConvertController {
   async convertToPdf(
     @Res({ passthrough: true }) res: Response,
     @Body() data: ConvertToPdfRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<StreamableFile> {
     return this.convertService.convertToPdf(
       data,

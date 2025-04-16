@@ -12,6 +12,10 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
@@ -20,11 +24,7 @@ import {
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
 import { XmlValidationErrorDto } from './signer.errors.dto'
 import SignerService from './signer.service'
@@ -76,8 +76,8 @@ export default class SignerController {
   @Post('get-signer-data')
   async getSignerData(
     @Body() data: SignerDataRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<SignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
+import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesHelper from '../files/files.helper'
@@ -30,6 +32,8 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     TaxModule,
     ConvertPdfModule,
     FormValidatorRegistryModule,
+    ClientsModule,
+    UserInfoPipeModule,
   ],
   providers: [
     NasesService,

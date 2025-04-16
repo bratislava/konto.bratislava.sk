@@ -1,17 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import { Transform, TransformFnParams } from 'class-transformer'
-import express from 'express'
-
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../../nases/nases.errors.enum'
-import { cityAccountApi } from '../clients/cityAccountApi'
-import {
-  ResponseLegalPersonDataDto,
-  ResponseUserDataDto,
-} from '../clients/openapi-city-account'
-import ThrowerErrorGuard from '../guards/thrower-error.guard'
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 export const User = createParamDecorator(
@@ -24,36 +12,6 @@ export const User = createParamDecorator(
   },
 )
 /* eslint-enable @typescript-eslint/no-unsafe-assignment */
-
-export type UserInfoResponse = ResponseLegalPersonDataDto & ResponseUserDataDto
-
-export const UserInfo = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<express.Request>()
-    const token = request.headers.authorization
-
-    // eslint-disable-next-line security/detect-possible-timing-attacks
-    if (token === undefined) return token
-
-    return cityAccountApi
-      .userControllerGetOrCreateUser({
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((response) => response.data)
-      .catch((error) => {
-        const thrower = new ThrowerErrorGuard()
-
-        throw thrower.NotFoundException(
-          NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${<
-            string
-          >error}`,
-        )
-      })
-  },
-)
 
 export function ToBoolean(): PropertyDecorator {
   return Transform(({ value }: TransformFnParams) =>

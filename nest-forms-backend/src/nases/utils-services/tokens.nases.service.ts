@@ -517,8 +517,16 @@ export default class NasesUtilsService {
         },
       }
     }
+
+    // skip saving the message to outbox if we are sending it to ourselves as it will be available in inbox
+    const sktalkReceiveFn =
+      !senderUri ||
+      senderUri === (this.configService.get<string>('NASES_SENDER_URI') ?? '')
+        ? slovenskoSkApi.apiSktalkReceivePost
+        : slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+
     try {
-      const response = await slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
+      const response = await sktalkReceiveFn(
         {
           message,
         },

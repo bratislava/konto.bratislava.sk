@@ -7,6 +7,7 @@ import prismaMock from '../../../test/singleton'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { SendMessageNasesSenderType } from '../types/send-message-nases-sender.type'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
 
 jest.mock('../../convert/convert.service')
@@ -52,7 +53,9 @@ describe('SendXmlToNases', () => {
       .fn()
       .mockReturnValue(generateMessageXml(messageId))
 
-    const response = await service.sendMessageNases(jwt, {} as Forms)
+    const response = await service.sendMessageNases(jwt, {} as Forms, {
+      type: SendMessageNasesSenderType.Self,
+    })
     expect(response.status).toBe(200)
   })
 })

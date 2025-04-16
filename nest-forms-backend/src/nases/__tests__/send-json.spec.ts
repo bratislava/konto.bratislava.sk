@@ -7,6 +7,7 @@ import prismaMock from '../../../test/singleton'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { SendMessageNasesSenderType } from '../types/send-message-nases-sender.type'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
 
 /* eslint-disable no-secrets/no-secrets, pii/no-phone-number, unicorn/no-thenable */
@@ -104,10 +105,16 @@ describe('SendJsonToNases', () => {
     // eslint-disable-next-line no-console
     console.log('Sending test json with messageId:', messageId)
 
-    const response = await service.sendMessageNases(jwt, {
-      id: messageId,
-      formDataJson,
-    } as unknown as Forms)
+    const response = await service.sendMessageNases(
+      jwt,
+      {
+        id: messageId,
+        formDataJson,
+      } as unknown as Forms,
+      {
+        type: SendMessageNasesSenderType.Self,
+      },
+    )
     expect(response.status).toBe(200)
   })
 })

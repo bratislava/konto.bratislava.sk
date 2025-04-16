@@ -63,6 +63,97 @@ export type DeliveryMethodNamed = (typeof DeliveryMethodNamed)[keyof typeof Deli
 /**
  *
  * @export
+ * @interface RequestAdminCreateTestingTaxDto
+ */
+export interface RequestAdminCreateTestingTaxDto {
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof RequestAdminCreateTestingTaxDto
+   */
+  year: number
+  /**
+   * Fake Noris Data
+   * @type {RequestAdminCreateTestingTaxNorisData}
+   * @memberof RequestAdminCreateTestingTaxDto
+   */
+  norisData: RequestAdminCreateTestingTaxNorisData
+}
+/**
+ *
+ * @export
+ * @interface RequestAdminCreateTestingTaxNorisData
+ */
+export interface RequestAdminCreateTestingTaxNorisData {
+  /**
+   * Delivery method for the tax
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  deliveryMethod: RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum | null
+  /**
+   * Birth number in format with slash
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  fakeBirthNumber: string
+  /**
+   * Full name and surname of the tax payer
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  nameSurname: string
+  /**
+   * Total tax amount as string
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  taxTotal: string
+  /**
+   * Amount already paid as string
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  alreadyPaid: string
+  /**
+   * Date of tax ruling (dátum právoplatnosti)
+   * @type {string}
+   * @memberof RequestAdminCreateTestingTaxNorisData
+   */
+  dateTaxRuling: string | null
+}
+
+export const RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum = {
+  E: 'E',
+  O: 'O',
+  P: 'P',
+} as const
+
+export type RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum =
+  (typeof RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum)[keyof typeof RequestAdminCreateTestingTaxNorisDataDeliveryMethodEnum]
+
+/**
+ *
+ * @export
+ * @interface RequestAdminDeleteTaxDto
+ */
+export interface RequestAdminDeleteTaxDto {
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof RequestAdminDeleteTaxDto
+   */
+  year: number
+  /**
+   * Birth number in format with slash
+   * @type {string}
+   * @memberof RequestAdminDeleteTaxDto
+   */
+  birthNumber: string
+}
+/**
+ *
+ * @export
  * @interface RequestPostNorisLoadDataDto
  */
 export interface RequestPostNorisLoadDataDto {
@@ -508,6 +599,12 @@ export interface ResponseTaxDto {
    */
   dateCreateTax: string | null
   /**
+   * Date and time of tax ruling (právoplatnosť rozhodnutia)
+   * @type {string}
+   * @memberof ResponseTaxDto
+   */
+  dateTaxRuling: string | null
+  /**
    * Part of tax amount for lands in cents in Eur.
    * @type {number}
    * @memberof ResponseTaxDto
@@ -585,6 +682,12 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   lastCheckedPayments: string
+  /**
+   * When were last checked updates for this tax with automatic task.
+   * @type {string}
+   * @memberof ResponseTaxDto
+   */
+  lastCheckedUpdates: string
   /**
    * delivery_method
    * @type {DeliveryMethodNamed}
@@ -793,6 +896,110 @@ export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidS
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * Creates a testing tax record with specified details for development and testing purposes
+     * @summary Create a testing tax record
+     * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCreateTestingTax: async (
+      requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestAdminCreateTestingTaxDto' is not null or undefined
+      assertParamExists(
+        'adminControllerCreateTestingTax',
+        'requestAdminCreateTestingTaxDto',
+        requestAdminCreateTestingTaxDto,
+      )
+      const localVarPath = `/admin/create-testing-tax`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestAdminCreateTestingTaxDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Deletes a tax record for a specific birth number and year
+     * @summary Delete a tax record
+     * @param {RequestAdminDeleteTaxDto} requestAdminDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeleteTestingTax: async (
+      requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestAdminDeleteTaxDto' is not null or undefined
+      assertParamExists(
+        'adminControllerDeleteTestingTax',
+        'requestAdminDeleteTaxDto',
+        requestAdminDeleteTaxDto,
+      )
+      const localVarPath = `/admin/delete-testing-tax`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestAdminDeleteTaxDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
@@ -1056,6 +1263,62 @@ export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
   return {
     /**
+     * Creates a testing tax record with specified details for development and testing purposes
+     * @summary Create a testing tax record
+     * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerCreateTestingTax(
+      requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateTestingTax(
+        requestAdminCreateTestingTaxDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerCreateTestingTax']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Deletes a tax record for a specific birth number and year
+     * @summary Delete a tax record
+     * @param {RequestAdminDeleteTaxDto} requestAdminDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerDeleteTestingTax(
+      requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeleteTestingTax(
+        requestAdminDeleteTaxDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerDeleteTestingTax']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1215,6 +1478,36 @@ export const AdminApiFactory = function (
   const localVarFp = AdminApiFp(configuration)
   return {
     /**
+     * Creates a testing tax record with specified details for development and testing purposes
+     * @summary Create a testing tax record
+     * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCreateTestingTax(
+      requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Deletes a tax record for a specific birth number and year
+     * @summary Delete a tax record
+     * @param {RequestAdminDeleteTaxDto} requestAdminDeleteTaxDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeleteTestingTax(
+      requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerDeleteTestingTax(requestAdminDeleteTaxDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      *
      * @summary Integrate data from norris if not exists by birth numbers or all
      * @param {RequestPostNorisLoadDataDto} requestPostNorisLoadDataDto
@@ -1299,6 +1592,40 @@ export const AdminApiFactory = function (
  * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
+  /**
+   * Creates a testing tax record with specified details for development and testing purposes
+   * @summary Create a testing tax record
+   * @param {RequestAdminCreateTestingTaxDto} requestAdminCreateTestingTaxDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminControllerCreateTestingTax(
+    requestAdminCreateTestingTaxDto: RequestAdminCreateTestingTaxDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerCreateTestingTax(requestAdminCreateTestingTaxDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Deletes a tax record for a specific birth number and year
+   * @summary Delete a tax record
+   * @param {RequestAdminDeleteTaxDto} requestAdminDeleteTaxDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminControllerDeleteTestingTax(
+    requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminControllerDeleteTestingTax(requestAdminDeleteTaxDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    *
    * @summary Integrate data from norris if not exists by birth numbers or all

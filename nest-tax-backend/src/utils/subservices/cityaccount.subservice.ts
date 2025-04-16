@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { AxiosError } from 'axios'
-
 import {
   ADMINApi as AdminApi,
   Configuration,
   ResponseUserByBirthNumberDto,
-} from '../../generated-clients/nest-city-account'
+} from 'openapi-clients/city-account'
+
 import { addSlashToBirthNumber } from '../functions/birthNumber'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'

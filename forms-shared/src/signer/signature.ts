@@ -11,7 +11,7 @@ export type FormSignature = {
 }
 
 export const createFormSignature = (
-  formDefinition: FormDefinitionSlovenskoSk,
+  formDefinition: Pick<FormDefinitionSlovenskoSk, 'pospID' | 'pospVersion' | 'jsonVersion'>,
   rawSignatureBase64: string,
   formDataJson: GenericObjectType,
 ): FormSignature => {
@@ -41,7 +41,7 @@ export class VerifyFormSignatureError extends Error {
 }
 
 export const verifyFormSignature = (
-  formDefinition: FormDefinitionSlovenskoSk,
+  formDefinition: Pick<FormDefinitionSlovenskoSk, 'pospID' | 'pospVersion' | 'jsonVersion'>,
   formDataJson: GenericObjectType,
   formSignature: FormSignature,
 ): void => {

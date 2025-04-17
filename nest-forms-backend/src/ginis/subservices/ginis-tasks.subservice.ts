@@ -13,6 +13,7 @@ import {
   GinisTaskErrorEnum,
   GinisTaskErrorResponseEnum,
 } from '../errors/ginis-tasks.errors.enum'
+import GinisHelper from './ginis.helper'
 import GinisAPIService from './ginis-api.service'
 
 const GINIS_PROCESSING_DOCUMENT_STATES = new Set(['podano', 'nevyrizen'])
@@ -29,27 +30,10 @@ export default class GinisTasksSubservice {
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly ginisHelper: GinisHelper,
     private readonly ginisApiService: GinisAPIService,
   ) {
     this.logger = new LineLoggerSubservice('GinisTasksSubservice')
-  }
-
-  private async retryWithDelay<T>(
-    fn: () => Promise<T>,
-    retries = 1,
-    delayMs = 10_000,
-  ): Promise<T> {
-    try {
-      return await fn()
-    } catch (error) {
-      if (retries <= 0) {
-        throw error
-      }
-      await new Promise((resolve) => {
-        setTimeout(resolve, delayMs)
-      })
-      return this.retryWithDelay(fn, retries - 1, delayMs)
-    }
   }
 
   private async updateSubmissionState(submission: Forms): Promise<void> {
@@ -59,7 +43,7 @@ export default class GinisTasksSubservice {
     let docState: string
     try {
       // sometimes ginis times-out on the first try
-      docState = await this.retryWithDelay<string>(async () => {
+      docState = await this.ginisHelper.retryWithDelay(async () => {
         const docDetail =
           await this.ginisApiService.getDocumentDetail(ginisDocumentId)
 

@@ -130,38 +130,4 @@ describe('GinisHelper', () => {
       expect(spy).toHaveBeenCalledTimes(1)
     })
   })
-
-  describe('getReferentForPospID', () => {
-    const { env } = process
-
-    beforeEach(() => {
-      jest.resetModules()
-      process.env = { ...env }
-    })
-
-    afterEach(() => {
-      process.env = env
-      global.console = console
-    })
-
-    it('should return Martančík Ľudmila', () => {
-      process.env = { ...env, GINIS_TEMP_REFERENT_OVERRIDE: 'true' }
-
-      const result = helper.getReferentForPospID('123')
-      expect(result).toEqual({
-        organization: 'OUIC',
-        person: 'Martančík Ľudmila',
-      })
-    })
-  })
-
-  it('should return Simeunovičová Ľudmila', () => {
-    process.env.GINIS_TEMP_REFERENT_OVERRIDE = 'false'
-
-    const result = helper.getReferentForPospID('123')
-    expect(result).toEqual({
-      organization: 'OUIC',
-      person: 'Simeunovičová Ľudmila',
-    })
-  })
 })

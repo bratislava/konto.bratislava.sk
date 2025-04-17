@@ -9,8 +9,8 @@ import {
 } from 'forms-shared/versioning/version-compare'
 import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
+import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
 import FormPage, { FormPageProps } from '../../../components/forms/FormPage'
-import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
@@ -40,8 +40,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
     }
 
     const { slug, id: formId } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
-    if (!formDefinition) {
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
@@ -72,19 +72,19 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
       const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
 
       const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
-        formDefinition,
+        serverFormDefinition,
         context,
       )
       if (!embeddedSuccess) {
         return { notFound: true }
       }
       const initialFormDataJson =
-        form.formDataJson ?? getDefaultFormDataForFormDefinition(formDefinition)
+        form.formDataJson ?? getDefaultFormDataForFormDefinition(serverFormDefinition)
 
       return {
         props: {
           formServerContext: {
-            formDefinition: makeSerializableFormDefinition(formDefinition),
+            formDefinition: makeClientFormDefinition(serverFormDefinition),
             formId,
             initialFormDataJson,
             initialServerFiles: files,
@@ -92,7 +92,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
             initialFormSent,
             initialSummaryJson: getInitialSummaryJson(
               context.query,
-              formDefinition,
+              serverFormDefinition,
               initialFormDataJson,
             ),
             formMigrationRequired,
@@ -101,7 +101,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
             versionCompareContinueAction: environment.featureToggles.versioning
               ? versionCompareContinueAction({
                   currentVersion: form.jsonVersion,
-                  latestVersion: formDefinition.jsonVersion,
+                  latestVersion: serverFormDefinition.jsonVersion,
                 })
               : VersionCompareContinueAction.None,
           },

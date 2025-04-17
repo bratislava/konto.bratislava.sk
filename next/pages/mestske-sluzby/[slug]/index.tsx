@@ -4,6 +4,7 @@ import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
+import { makeClientLandingPageFormDefinition } from '../../../components/forms/clientFormDefinitions'
 import FormLandingPage, {
   FormLandingPageProps,
   FormWithLandingPageRequiredFragment,
@@ -43,8 +44,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
     }
 
     const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
-    if (!formDefinition) {
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
@@ -52,7 +53,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
     if (formHasLandingPage(strapiForm)) {
       return {
         props: {
-          formDefinition,
+          formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
           strapiForm,
           ...(await slovakServerSideTranslations()),
         },
@@ -73,7 +74,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
       }
 
       const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
-        formDefinition,
+        serverFormDefinition,
         context,
       )
       if (!embeddedSuccess) {

@@ -1,8 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { AppService } from './app.service';
-import { ServiceRunningDto } from './status/status.dto';
+import { AppService } from './app.service'
+import { ServiceRunningDto } from './status/status.dto'
 
 @ApiTags('Health')
 @Controller()
@@ -22,7 +22,7 @@ export class AppController {
   isStatusRunning(): ServiceRunningDto {
     return {
       running: true,
-    };
+    }
   }
 
   @ApiOperation({
@@ -35,6 +35,6 @@ export class AppController {
   })
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return this.appService.getHello()
   }
 }

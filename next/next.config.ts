@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
   },
-  turbo: {
+  turbopack: {
     // https://github.com/vercel/next.js/issues/73360
     root: path.join(__dirname, '..'),
     rules: {

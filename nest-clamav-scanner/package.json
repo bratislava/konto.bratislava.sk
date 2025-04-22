@@ -32,7 +32,7 @@
     "@nestjs/platform-express": "^11.0.20",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.1.5",
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "^6.6.0",
     "@types/passport-http-bearer": "^1.0.41",
     "@types/uuid": "^10.0.0",
     "await-exec": "^0.1.2",
@@ -52,7 +52,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "prisma": "^6.5.0",
+    "prisma": "^6.6.0",
     "rimraf": "^6.0.1",
     "uuid": "^11.1.0"
   },

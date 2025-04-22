@@ -283,6 +283,7 @@ export default class GinisService {
       },
       data: {
         ginisUploaded: true,
+        ginisUploadedError: false,
       },
     })
   }

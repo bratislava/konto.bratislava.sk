@@ -799,6 +799,7 @@ describe('GinisService', () => {
         expect.objectContaining({
           data: {
             ginisUploaded: true,
+            ginisUploadedError: false,
           },
         }),
       )

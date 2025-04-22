@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import FormsHelper from '../forms/forms.helper'
 // eslint-disable-next-line import/no-cycle
 import FormsModule from '../forms/forms.module'
@@ -13,7 +14,7 @@ import FilesHelper from './files.helper'
 import FilesService from './files.service'
 
 @Module({
-  imports: [PrismaModule, FormsModule, ScannerClientModule],
+  imports: [PrismaModule, FormsModule, ScannerClientModule, UserInfoPipeModule],
   providers: [
     FilesService,
     FilesHelper,

@@ -167,164 +167,12 @@ export interface CreateFormRequestDto {
  */
 export interface CreateFormResponseDto {
   /**
-   * Change email, on which you can be contacted
+   * ID of form
    * @type {string}
    * @memberof CreateFormResponseDto
    */
-  email: string | null
-  /**
-   * Id of record
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  id: string
-  /**
-   * Create date of record
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  createdAt: string
-  /**
-   * Update date of record
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  updatedAt: string
-  /**
-   * Id of send form from other system, (probably ginis)
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  externalId: string | null
-  /**
-   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  userExternalId: string | null
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  mainUri: string | null
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  actorUri: string | null
-  /**
-   * State of form
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  state: CreateFormResponseDtoStateEnum
-  /**
-   * Specific error type
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  error: CreateFormResponseDtoErrorEnum
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  formDataGinis: string | null
-  /**
-   * Ginis document id generated after registering the submission
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  ginisDocumentId: string | null
-  /**
-   * Data in JSON format
-   * @type {object}
-   * @memberof CreateFormResponseDto
-   */
-  formDataJson: object | null
-  /**
-   * Form signature with metadata
-   * @type {FormSignatureDto}
-   * @memberof CreateFormResponseDto
-   */
-  formSignature?: FormSignatureDto | null
-  /**
-   * Technical NASES id of sender
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  senderId: string | null
-  /**
-   * Technical NASES id of recipient
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  recipientId: string | null
-  /**
-   * end of submition
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  finishSubmission: string | null
-  /**
-   * Message subject created from uiSchema
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  messageSubject: string
-  /**
-   * Title used in frontend when listing forms
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  frontendTitle: string
-  /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  formDefinitionSlug: string
-  /**
-   * JSON version
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  jsonVersion: string
+  formId: string
 }
-
-export const CreateFormResponseDtoStateEnum = {
-  Draft: 'DRAFT',
-  Queued: 'QUEUED',
-  SendingToNases: 'SENDING_TO_NASES',
-  DeliveredNases: 'DELIVERED_NASES',
-  DeliveredGinis: 'DELIVERED_GINIS',
-  SendingToSharepoint: 'SENDING_TO_SHAREPOINT',
-  Processing: 'PROCESSING',
-  Finished: 'FINISHED',
-  Rejected: 'REJECTED',
-  Error: 'ERROR',
-} as const
-
-export type CreateFormResponseDtoStateEnum =
-  (typeof CreateFormResponseDtoStateEnum)[keyof typeof CreateFormResponseDtoStateEnum]
-export const CreateFormResponseDtoErrorEnum = {
-  None: 'NONE',
-  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
-  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
-  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
-  InfectedFiles: 'INFECTED_FILES',
-  NasesSendError: 'NASES_SEND_ERROR',
-  GinisSendError: 'GINIS_SEND_ERROR',
-  SharepointSendError: 'SHAREPOINT_SEND_ERROR',
-  EmailSendError: 'EMAIL_SEND_ERROR',
-  WebhookSendError: 'WEBHOOK_SEND_ERROR',
-} as const
-
-export type CreateFormResponseDtoErrorEnum =
-  (typeof CreateFormResponseDtoErrorEnum)[keyof typeof CreateFormResponseDtoErrorEnum]
-
 /**
  *
  * @export
@@ -2369,6 +2217,12 @@ export interface GetFormResponseDto {
    */
   formDataJson: object | null
   /**
+   * Form subject
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formSubject: string
+  /**
    * Form signature with metadata
    * @type {FormSignatureDto}
    * @memberof GetFormResponseDto
@@ -2392,18 +2246,6 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   finishSubmission: string | null
-  /**
-   * Message subject created from uiSchema
-   * @type {string}
-   * @memberof GetFormResponseDto
-   */
-  messageSubject: string
-  /**
-   * Title used in frontend when listing forms
-   * @type {string}
-   * @memberof GetFormResponseDto
-   */
-  frontendTitle: string
   /**
    * Slug of the form definition
    * @type {string}
@@ -2492,17 +2334,11 @@ export interface GetFormResponseSimpleDto {
    */
   formDataJson: object | null
   /**
-   * Message subject created from uiSchema
+   * Form subject
    * @type {string}
    * @memberof GetFormResponseSimpleDto
    */
-  messageSubject: string
-  /**
-   * Title used in frontend when listing forms
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
-   */
-  frontendTitle: string
+  formSubject: string
   /**
    * Slug of the form definition
    * @type {string}
@@ -3066,6 +2902,106 @@ export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendAndUpdateFormEid422Response
+ */
+export interface NasesControllerSendAndUpdateFormEid422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  errorName: NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendAndUpdateFormEid422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum =
+  (typeof NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateFormEid422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendForm403Response
+ */
+export interface NasesControllerSendForm403Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendForm403Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendForm403Response
+   */
+  errorName: NasesControllerSendForm403ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendForm403Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendForm403ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerSendForm403ResponseErrorNameEnum =
+  (typeof NasesControllerSendForm403ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm403ResponseErrorNameEnum]
 
 /**
  *
@@ -3697,6 +3633,106 @@ export interface SendFormResponseDto {
    */
   state: object
 }
+/**
+ *
+ * @export
+ * @interface SendPolicyNotAllowedForUserErrorDto
+ */
+export interface SendPolicyNotAllowedForUserErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  errorName: SendPolicyNotAllowedForUserErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SendPolicyNotAllowedForUserErrorDto
+   */
+  object?: object
+}
+
+export const SendPolicyNotAllowedForUserErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SendPolicyNotAllowedForUserErrorDtoErrorNameEnum =
+  (typeof SendPolicyNotAllowedForUserErrorDtoErrorNameEnum)[keyof typeof SendPolicyNotAllowedForUserErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface SendPolicyNotPossibleErrorDto
+ */
+export interface SendPolicyNotPossibleErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  errorName: SendPolicyNotPossibleErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof SendPolicyNotPossibleErrorDto
+   */
+  object?: object
+}
+
+export const SendPolicyNotPossibleErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type SendPolicyNotPossibleErrorDtoErrorNameEnum =
+  (typeof SendPolicyNotPossibleErrorDtoErrorNameEnum)[keyof typeof SendPolicyNotPossibleErrorDtoErrorNameEnum]
+
 /**
  *
  * @export
@@ -7012,7 +7048,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerCreateForm(
       createFormRequestDto: CreateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(
         createFormRequestDto,
         options,
@@ -7361,7 +7397,7 @@ export const NasesApiFactory = function (
     nasesControllerCreateForm(
       createFormRequestDto: CreateFormRequestDto,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
+    ): AxiosPromise<CreateFormResponseDto> {
       return localVarFp
         .nasesControllerCreateForm(createFormRequestDto, options)
         .then((request) => request(axios, basePath))

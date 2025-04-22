@@ -4,15 +4,13 @@ import { ConfigService } from '@nestjs/config'
 import { FormError, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { Job } from 'bull'
-import {
-  FormDefinition,
-  FormDefinitionType,
-} from 'forms-shared/definitions/formDefinitionTypes'
+import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
   SharepointData,
   SharepointRelationData,
 } from 'forms-shared/definitions/sharepointTypes'
+import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
   getArrayForOneToMany,
@@ -29,10 +27,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../handlers/text.handler'
 import {
   SharepointErrorsEnum,
   SharepointErrorsResponseEnum,
@@ -100,7 +94,7 @@ export default class SharepointSubservice {
   private async handleOneToOne(
     sharepointDataOneToOne: Record<string, SharepointRelationData>,
     form: Forms,
-    formTitle: string,
+    formSubject: string,
     jsonDataExtraDataOmitted: PrismaJson.FormDataJson,
     accessToken: string,
     fields: SharepointDataAllColumnMappingsToFields,
@@ -114,7 +108,7 @@ export default class SharepointSubservice {
 
         const valuesForFieldsOneToOne = getValuesForFields(
           value,
-          { ...form, title: formTitle },
+          { ...form, title: formSubject },
           jsonDataExtraDataOmitted,
           fields.oneToOne.fieldMaps[value.databaseName].fieldMap,
         )
@@ -134,7 +128,7 @@ export default class SharepointSubservice {
   private async handleOneToMany(
     sharepointDataOneToMany: Record<string, SharepointRelationData>,
     form: Forms,
-    formTitle: string,
+    formSubject: string,
     jsonDataExtraDataOmitted: PrismaJson.FormDataJson,
     accessToken: string,
     fields: SharepointDataAllColumnMappingsToFields,
@@ -152,7 +146,7 @@ export default class SharepointSubservice {
         const recordPromises = recordsArray.map(async (record) => {
           const valuesForFieldsOneToMany = getValuesForFields(
             value,
-            { ...form, title: formTitle },
+            { ...form, title: formSubject },
             record,
             fields.oneToMany.fieldMaps[value.databaseName].fieldMap,
           )
@@ -213,7 +207,7 @@ export default class SharepointSubservice {
 
     const accessToken = await this.getAccessToken()
     const { sharepointData, schema } = formDefinition
-    const formTitle = this.getTitle(form, formDefinition)
+    const formSubject = extractFormSubject(formDefinition, form.formDataJson)
     const fields = await this.getAllFieldsMappings(sharepointData, accessToken)
 
     const jsonDataExtraDataOmitted = omitExtraData(
@@ -223,7 +217,7 @@ export default class SharepointSubservice {
     )
     const valuesForFields = getValuesForFields(
       sharepointData,
-      { ...form, title: formTitle },
+      { ...form, title: formSubject },
       jsonDataExtraDataOmitted,
       fields.fieldMap,
     )
@@ -232,7 +226,7 @@ export default class SharepointSubservice {
       const oneToOneAdded = await this.handleOneToOne(
         sharepointData.oneToOne,
         form,
-        formTitle,
+        formSubject,
         jsonDataExtraDataOmitted,
         accessToken,
         fields,
@@ -246,7 +240,7 @@ export default class SharepointSubservice {
       const oneToManyAdded = await this.handleOneToMany(
         sharepointData.oneToMany,
         form,
-        formTitle,
+        formSubject,
         jsonDataExtraDataOmitted,
         accessToken,
         fields,
@@ -451,13 +445,5 @@ export default class SharepointSubservice {
       })
 
     return result
-  }
-
-  private getTitle(form: Forms, formDefinition: FormDefinition): string {
-    // fallback to messageSubject if title can't be parsed
-    return (
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-    )
   }
 }

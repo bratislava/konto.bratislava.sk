@@ -8,12 +8,10 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
+import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtractor'
 
 export default schema(
   { title: 'Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia' },
-  {},
   [
     getObjednavatelZiadatelStep('ziadatel'),
     step('informacieOZariadeni', { title: 'Informácie o zariadení' }, [
@@ -138,22 +136,39 @@ export default schema(
   ],
 )
 
-export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  return safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel: { email: string } & (
+    | {
+        ziadatelTyp: 'fyzickaOsoba' | 'fyzickaOsobaPodnikatel'
+        meno: string
+      }
+    | {
+        ziadatelTyp: 'pravnickaOsoba'
+        obchodneMeno: string
+      }
+  )
 }
 
-export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (
-    formData.ziadatel?.ziadatelTyp === 'fyzickaOsoba' ||
-    formData.ziadatel?.ziadatelTyp === 'fyzickaOsobaPodnikatel'
-  ) {
-    return safeString(formData.ziadatel?.meno)
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.email,
   }
-  if (formData.ziadatel?.ziadatelTyp === 'pravnickaOsoba') {
-    return safeString(formData.ziadatel?.obchodneMeno)
+
+export const ziadostOUmiestnenieInehoZariadeniaNaStoziarVerejnehoOsvetleniaExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (
+        formData.ziadatel.ziadatelTyp === 'fyzickaOsoba' ||
+        formData.ziadatel.ziadatelTyp === 'fyzickaOsobaPodnikatel'
+      ) {
+        return formData.ziadatel.meno
+      } else if (formData.ziadatel.ziadatelTyp === 'pravnickaOsoba') {
+        return formData.ziadatel.obchodneMeno
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
   }
-}

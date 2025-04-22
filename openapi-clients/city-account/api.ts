@@ -822,11 +822,11 @@ export interface ResponseUserDataBasicDto {
    */
   birthNumber: string | null
   /**
-   *
+   * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
    * @type {UserOfficialCorrespondenceChannelEnum}
    * @memberof ResponseUserDataBasicDto
    */
-  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum
+  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
    * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
    * @type {boolean}
@@ -884,11 +884,11 @@ export interface ResponseUserDataDto {
    */
   birthNumber: string | null
   /**
-   *
+   * State, if we can communicate user with email, or user have active e-desk slovensko.sk mail or we need to communicate with him with post. First we are looking for edesk, if he has registered edesk communication in NASES use edesk. If not, check if there is subscription for communication through email, use email from city account. Else use Postal communication.
    * @type {UserOfficialCorrespondenceChannelEnum}
    * @memberof ResponseUserDataDto
    */
-  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum
+  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum | null
   /**
    * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
    * @type {boolean}
@@ -2296,6 +2296,124 @@ export class ADMINApi extends BaseAPI {
 }
 
 /**
+ * AppApi - axios parameter creator
+ * @export
+ */
+export const AppApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/healthcheck`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * AppApi - functional programming interface
+ * @export
+ */
+export const AppApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = AppApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async appControllerHealthCheck(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AppApi.appControllerHealthCheck']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * AppApi - factory interface
+ * @export
+ */
+export const AppApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = AppApiFp(configuration)
+  return {
+    /**
+     * See if app is working!
+     * @summary HealthCheck
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .appControllerHealthCheck(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * AppApi - object-oriented interface
+ * @export
+ * @class AppApi
+ * @extends {BaseAPI}
+ */
+export class AppApi extends BaseAPI {
+  /**
+   * See if app is working!
+   * @summary HealthCheck
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AppApi
+   */
+  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
+    return AppApiFp(this.configuration)
+      .appControllerHealthCheck(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * AuthApi - axios parameter creator
  * @export
  */
@@ -2411,125 +2529,6 @@ export class AuthApi extends BaseAPI {
   public authControllerLogin(options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .authControllerLogin(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * DefaultApi - axios parameter creator
- * @export
- */
-export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/healthcheck`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * DefaultApi - functional programming interface
- * @export
- */
-export const DefaultApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async appControllerHealthCheck(
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['DefaultApi.appControllerHealthCheck']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * DefaultApi - factory interface
- * @export
- */
-export const DefaultApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = DefaultApiFp(configuration)
-  return {
-    /**
-     * See if app is working!
-     * @summary HealthCheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    appControllerHealthCheck(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-      return localVarFp
-        .appControllerHealthCheck(options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
- */
-export class DefaultApi extends BaseAPI {
-  /**
-   * See if app is working!
-   * @summary HealthCheck
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
-    return DefaultApiFp(this.configuration)
-      .appControllerHealthCheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -3295,6 +3294,44 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
         options: localVarRequestOptions,
       }
     },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateOrCreateBloomreachCustomer: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/user/update-or-create-bloomreach-customer`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -3525,6 +3562,30 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async userControllerUpdateOrCreateBloomreachCustomer(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.userControllerUpdateOrCreateBloomreachCustomer(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUpdateOrCreateBloomreachCustomer']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -3645,6 +3706,19 @@ export const UsersManipulationApiFactory = function (
     ): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+     * @summary Update or create bloomreach customer for logged user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    userControllerUpdateOrCreateBloomreachCustomer(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseUserDataDto> {
+      return localVarFp
+        .userControllerUpdateOrCreateBloomreachCustomer(options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3772,6 +3846,19 @@ export class UsersManipulationApi extends BaseAPI {
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUnsubscribePublicUserByExternalId(id, type, category, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This controller will call bloomreach endpoint with bloomreach credentials from env variables. This endpoint is used to update or create bloomreach customer for logged user. It is used to track user attributes change in cognito.
+   * @summary Update or create bloomreach customer for logged user
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UsersManipulationApi
+   */
+  public userControllerUpdateOrCreateBloomreachCustomer(options?: RawAxiosRequestConfig) {
+    return UsersManipulationApiFp(this.configuration)
+      .userControllerUpdateOrCreateBloomreachCustomer(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

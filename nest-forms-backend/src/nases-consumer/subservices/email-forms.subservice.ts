@@ -7,8 +7,16 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  extractEmailFormEmail,
+  extractEmailFormName,
+  extractFormSubject,
+} from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
-import { renderSummaryEmail } from 'forms-shared/summary-email/renderSummaryEmail'
+import {
+  FileIdInfoMap,
+  renderSummaryEmail,
+} from 'forms-shared/summary-email/renderSummaryEmail'
 
 import ConvertService from '../../convert/convert.service'
 import FormValidatorRegistryService from '../../form-validator-registry/form-validator-registry.service'
@@ -23,10 +31,6 @@ import { Mailer } from '../../utils/global-services/mailer/mailer.interface'
 import MailgunService from '../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../../utils/handlers/text.handler'
 import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
@@ -149,21 +153,26 @@ export default class EmailFormsSubservice {
    * Creates JSON data attachment for the email if sendJsonData is enabled
    */
   private createJsonAttachment(
+    formId: string,
     formDefinition: FormDefinitionEmail,
     formDataJson: GenericObjectType,
+    fileIdUrlMap: FileIdInfoMap,
   ): { filename: string; content: Buffer }[] {
+    const attachment = {
+      formId,
+      slug: formDefinition.slug,
+      jsonVersion: formDefinition.jsonVersion,
+      json: omitExtraData(
+        formDefinition.schema,
+        formDataJson,
+        this.formValidatorRegistryService.getRegistry(),
+      ),
+      fileIdUrlMap,
+    }
     return [
       {
         filename: 'submission.json',
-        content: Buffer.from(
-          JSON.stringify(
-            omitExtraData(
-              formDefinition.schema,
-              formDataJson,
-              this.formValidatorRegistryService.getRegistry(),
-            ),
-          ),
-        ),
+        content: Buffer.from(JSON.stringify(attachment)),
       },
     ]
   }
@@ -180,11 +189,7 @@ export default class EmailFormsSubservice {
       return userFirstName
     }
 
-    if (formDefinition.email.extractName) {
-      return formDefinition.email.extractName(formDataJson) ?? null
-    }
-
-    return null
+    return extractEmailFormName(formDefinition, formDataJson) ?? null
   }
 
   /**
@@ -194,7 +199,6 @@ export default class EmailFormsSubservice {
     userEmail: string,
     form: EmailFormChecked,
     formDefinition: FormDefinitionEmail,
-    formTitle: string,
     userName: string | null,
   ): Promise<void> {
     try {
@@ -218,7 +222,10 @@ export default class EmailFormsSubservice {
           template: formDefinition.email.userResponseTemplate,
           data: {
             formId: form.id,
-            messageSubject: formTitle,
+            messageSubject: extractFormSubject(
+              formDefinition,
+              form.formDataJson as GenericObjectType,
+            ),
             firstName: userName,
             slug: formDefinition.slug,
           },
@@ -272,12 +279,10 @@ export default class EmailFormsSubservice {
       `Sending email of form ${formId} to ${this.resolveAddress(formDefinition.email.address)}.`,
     )
 
-    const formTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) ||
-      getSubjectTextFromForm(form, formDefinition)
-
     const jwtSecret = this.configService.getOrThrow<string>('JWT_SECRET')
     const selfUrl = this.configService.getOrThrow<string>('SELF_URL')
+
+    const fileIdInfoMap = getFileIdsToInfoMap(form, jwtSecret, selfUrl)
 
     // Send email to the department/office
     await this.getMailer(formDefinition).sendEmail({
@@ -286,13 +291,13 @@ export default class EmailFormsSubservice {
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
-          messageSubject: formTitle,
+          messageSubject: extractFormSubject(formDefinition, form.formDataJson),
           firstName: null,
           slug: formDefinition.slug,
           htmlData: await renderSummaryEmail({
             formSummary: form.formSummary,
             serverFiles: form.files,
-            fileIdInfoMap: getFileIdsToInfoMap(form, jwtSecret, selfUrl),
+            fileIdInfoMap,
             validatorRegistry: this.formValidatorRegistryService.getRegistry(),
           }),
         },
@@ -301,35 +306,31 @@ export default class EmailFormsSubservice {
         formDefinition.email.fromAddress ?? formDefinition.email.address,
       ),
       attachments: formDefinition.email.sendJsonDataAttachmentInTechnicalMail
-        ? this.createJsonAttachment(formDefinition, form.formDataJson)
+        ? this.createJsonAttachment(
+            formId,
+            formDefinition,
+            form.formDataJson,
+            fileIdInfoMap,
+          )
         : undefined,
+      subject: formDefinition.email.technicalEmailSubject,
     })
 
-    // Determine user email address for confirmation
     const userConfirmationEmail =
-      userEmail ?? formDefinition.email.extractEmail(form.formDataJson)
+      userEmail ?? extractEmailFormEmail(formDefinition, form.formDataJson)
 
-    // Send confirmation email to user if we have an email address
-    if (userConfirmationEmail) {
-      const userName = this.resolveUserName(
-        userFirstName,
-        formDefinition,
-        form.formDataJson,
-      )
+    const userName = this.resolveUserName(
+      userFirstName,
+      formDefinition,
+      form.formDataJson,
+    )
 
-      await this.sendUserConfirmationEmail(
-        userConfirmationEmail,
-        form,
-        formDefinition,
-        formTitle,
-        userName,
-      )
-    } else {
-      alertError(
-        `No email address to send confirmation email to (toEmail) for form ${formId}.`,
-        this.logger,
-      )
-    }
+    await this.sendUserConfirmationEmail(
+      userConfirmationEmail,
+      form,
+      formDefinition,
+      userName,
+    )
 
     // Update form state to FINISHED
     await this.updateFormState(form)

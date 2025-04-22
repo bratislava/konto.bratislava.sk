@@ -68,3 +68,32 @@ npm run test
 # test coverage
 npm run test:cov
 ```
+
+# Configuration Management
+
+## Overview
+
+The card payment reporting system uses database-driven configuration instead of environment variables for some values.
+This allows for scheduling configuration changes without deployment or manual intervention.
+This was done to prevent problems with changes during weekends or holidays, since we should know about changes in these values beforehand.
+
+## How It Works
+
+- Settings are stored in the `Config` table
+- Each configuration entry includes a `validSince` timestamp
+- System automatically applies configurations when their `validSince` time is reached
+
+## Adding New Configurations
+
+You can use this query to create new configuration key-value pairs. 
+If you want to apply the setting immediately, set `validSince` to the current timestamp or leave it empty.
+
+```postgresql
+INSERT INTO "Config" (key, value, "validSince")
+VALUES ('REPORTING_VARIABLE_SYMBOL', '0000000000', '2099-12-31 23:59:59'),
+       ('REPORTING_SPECIFIC_SYMBOL', '0000000000', '2099-12-31 23:59:59'),
+       ('REPORTING_CONSTANT_SYMBOL', '0000000000', '2099-12-31 23:59:59'),
+       ('REPORTING_USER_CONSTANT_SYMBOL', '0000', '2099-12-31 23:59:59'),
+       ('REPORTING_RECIPIENT_EMAIL', 'test@test.sk', '2099-12-31 23:59:59'),
+       ('REPORTING_GENERATE_REPORT', 'false', '2099-12-31 23:59:59');
+```

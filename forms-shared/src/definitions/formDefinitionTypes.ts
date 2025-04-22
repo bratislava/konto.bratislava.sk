@@ -1,6 +1,11 @@
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
-import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
+import { type RJSFSchema } from '@rjsf/utils'
+import { FormSendPolicy } from '../send-policy/sendPolicy'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../form-utils/evaluateFormDataExtractor'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -14,21 +19,21 @@ type FormDefinitionBase = {
   title: string
   schema: RJSFSchema
   jsonVersion: string
+  sendPolicy: FormSendPolicy
   termsAndConditions: string
-  messageSubjectDefault: string
-  messageSubjectFormat?: string
+  extractSubject?: SchemaFormDataExtractor<any>
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
-  allowSendingUnauthenticatedUsers?: boolean // Default should be false, so undefined must be handled as false
   exampleFormNotRequired?: boolean
+  feedbackLink?: string
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   pospID: string
   pospVersion: string
   publisher: string
-  gestor: string
   isSigned: boolean
+  skipGinisStateUpdate?: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
@@ -36,6 +41,7 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   ginisAssignment: {
     ginisOrganizationName: string
     ginisPersonName?: string
+    extractGinisSubject?: SchemalessFormDataExtractor<any>
   }
   sharepointData?: SharepointData
 }
@@ -65,8 +71,12 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
     sendJsonDataAttachmentInTechnicalMail?: boolean
-    extractEmail: (formData: GenericObjectType) => string | undefined
-    extractName?: (formData: GenericObjectType) => string | undefined
+    extractEmail: SchemalessFormDataExtractor<any>
+    extractName?: SchemalessFormDataExtractor<any>
+    /**
+     * If undefined, the default value from the email template is used.
+     */
+    technicalEmailSubject?: string
   }
 }
 

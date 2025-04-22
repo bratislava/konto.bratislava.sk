@@ -1,12 +1,58 @@
-import * as libxmljs from 'libxmljs'
+export type ValidateXmlResultError = {
+  message: string
+  line: number
+  col: number
+}
 
-export function validateXml(xmlString: string, xsdString: string) {
+export type ValidateXmlResult =
+  | {
+      success: true
+    }
+  | {
+      success: false
+      errors?: ValidateXmlResultError[]
+    }
+
+export async function validateXml(
+  xmlString: string,
+  xsdString: string,
+): Promise<ValidateXmlResult> {
+  const { XmlDocument, XsdValidator, XmlLibError } = await import('libxml2-wasm')
+
+  let xmlDoc: InstanceType<typeof XmlDocument> | null = null
+  let xsdDoc: InstanceType<typeof XmlDocument> | null = null
+  let xsdValidator: InstanceType<typeof XsdValidator> | null = null
+
   try {
-    const xmlDoc = libxmljs.parseXml(xmlString)
-    const xsdDoc = libxmljs.parseXml(xsdString)
+    xmlDoc = XmlDocument.fromString(xmlString)
+    xsdDoc = XmlDocument.fromString(xsdString)
+    xsdValidator = XsdValidator.fromDoc(xsdDoc)
 
-    return xmlDoc.validate(xsdDoc) as boolean
+    xsdValidator.validate(xmlDoc)
+
+    return {
+      success: true,
+    }
   } catch (error) {
-    return false
+    if (error instanceof XmlLibError) {
+      return {
+        success: false,
+        errors: error.details,
+      }
+    }
+
+    return {
+      success: false,
+    }
+  } finally {
+    xsdValidator?.dispose()
+    xmlDoc?.dispose()
+    xsdDoc?.dispose()
   }
+}
+
+export const formatValidateXmlResultErrors = (errors: ValidateXmlResultError[]) => {
+  return errors
+    .map((error) => `${error.message} (line ${error.line}, column ${error.col})`)
+    .join('\n')
 }

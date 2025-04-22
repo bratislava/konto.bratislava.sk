@@ -86,3 +86,17 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
 
   return { subType, isSubscribed, changeSubscription, subscriptionChangePending }
 }
+
+export const useUserUpdateBloomreachData = () => {
+  const { mutateAsync: updateBloomreachData, isPending: updateBloomreachDataPending } = useMutation(
+    {
+      mutationFn: () =>
+        cityAccountClient.userControllerUpdateOrCreateBloomreachCustomer({ accessToken: 'always' }),
+      networkMode: 'always',
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  )
+
+  return { updateBloomreachData, updateBloomreachDataPending }
+}

@@ -1,7 +1,6 @@
 import { formsClient } from '@clients/forms'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { useMutation } from '@tanstack/react-query'
-import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { isDefined } from 'frontend/utils/general'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -11,6 +10,7 @@ import React from 'react'
 import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountPageLayout from '../layouts/AccountPageLayout'
+import { ClientLandingPageFormDefinition } from './clientFormDefinitions'
 import FormLandingPageCard from './info-components/FormLandingPageCard'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 
@@ -22,7 +22,7 @@ export type FormWithLandingPageRequiredFragment = Omit<
 }
 
 export type FormLandingPageProps = {
-  formDefinition: FormDefinition
+  formDefinition: ClientLandingPageFormDefinition
   moreInformationUrl?: string
   strapiForm: FormWithLandingPageRequiredFragment
 }
@@ -48,7 +48,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
     onSuccess: async (response) => {
       closeSnackbarInfo()
       await router.push(
-        ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.id),
+        ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(formDefinition.slug, response.data.formId),
       )
     },
     onError: () => {

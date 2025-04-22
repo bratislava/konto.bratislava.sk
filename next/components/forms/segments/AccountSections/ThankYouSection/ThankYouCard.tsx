@@ -12,7 +12,7 @@ type ThankYouCardBase = {
   firstButtonTitle?: string
   secondButtonTitle?: string
   content?: string
-  feedbackUrl?: string
+  feedbackLink?: string
   feedbackTitle?: string
 }
 
@@ -22,7 +22,7 @@ const ThankYouCard = ({
   firstButtonTitle,
   secondButtonTitle,
   content,
-  feedbackUrl,
+  feedbackLink,
   feedbackTitle,
 }: ThankYouCardBase) => {
   return (
@@ -53,16 +53,16 @@ const ThankYouCard = ({
       >
         {success ? (
           <>
-            {firstButtonTitle && feedbackUrl ? (
+            {firstButtonTitle && feedbackLink ? (
               feedbackTitle ? (
                 <div className="flex w-full flex-col gap-6 rounded-lg bg-gray-100 p-8">
                   <h3 className="text-left text-h3">{feedbackTitle}</h3>
-                  <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                  <ButtonNew href={feedbackLink} variant="black-solid" fullWidth>
                     {firstButtonTitle}
                   </ButtonNew>
                 </div>
               ) : (
-                <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                <ButtonNew href={feedbackLink} variant="black-solid" fullWidth>
                   {firstButtonTitle}
                 </ButtonNew>
               )

@@ -1317,7 +1317,6 @@ export default schema(
   {
     title: 'Žiadosť o nájom bytu',
   },
-  {},
   [
     step(
       'ziadatelZiadatelka',

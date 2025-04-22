@@ -160,11 +160,6 @@ export type StepUiOptions = {
   stepperTitle?: string
 } & Pick<ObjectFieldUiOptions, 'description' | 'descriptionMarkdown'>
 
-export type SchemaUiOptions = {
-  titlePath?: string
-  titleFallback?: string
-}
-
 /**
  * Unique prefix for Markdown text.
  */

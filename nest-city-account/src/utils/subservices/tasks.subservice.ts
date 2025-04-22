@@ -50,7 +50,7 @@ export class TasksSubservice {
     })
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async loadTaxesForUsers() {
     this.logger.log('Starting loadTaxesForUsers task')

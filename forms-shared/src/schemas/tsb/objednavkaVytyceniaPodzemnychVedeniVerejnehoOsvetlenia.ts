@@ -1,23 +1,18 @@
-import { createCondition, createStringItems } from '../../generator/helpers'
-import { select } from '../../generator/functions/select'
 import { selectMultiple } from '../../generator/functions/selectMultiple'
 import { input } from '../../generator/functions/input'
-import { radioGroup } from '../../generator/functions/radioGroup'
 import { datePicker } from '../../generator/functions/datePicker'
 import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
-import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
+import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
     title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
   },
-  {},
   [
     getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [
@@ -64,92 +59,20 @@ export default schema(
             { title: 'Požadované miesto plnenia', required: true, type: 'text' },
             { helptext: 'Vyplňte vo formáte ulica a číslo' },
           ),
-          radioGroup(
-            'viacKatastralneUzemia',
+          selectMultiple(
+            'katastralneUzemie',
             {
-              type: 'boolean',
-              title: 'Nachádza sa adresa stavby v dvoch alebo viacerých katastrálnych územiach?',
+              title: 'Katastrálne územie',
               required: true,
-              items: [
-                { value: true, label: 'Áno' },
-                { value: false, label: 'Nie', isDefault: true },
-              ],
+              items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+                value: Code,
+                label: Name,
+              })),
             },
             {
-              variant: 'boxed',
-              orientations: 'row',
+              helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
             },
           ),
-          conditionalFields(createCondition([[['viacKatastralneUzemia'], { const: true }]]), [
-            selectMultiple(
-              'katastralneUzemia',
-              {
-                title: 'Katastrálne územia',
-                required: true,
-                items: createStringItems([
-                  'Čunovo',
-                  'Devín',
-                  'Devínska Nová Ves',
-                  'Dúbravka',
-                  'Jarovce',
-                  'Karlova Ves',
-                  'Lamač',
-                  'Nové Mesto',
-                  'Vinohrady',
-                  'Petržalka',
-                  'Podunajské Biskupice',
-                  'Rača',
-                  'Rusovce',
-                  'Ružinov',
-                  'Trnávka',
-                  'Nivy',
-                  'Staré Mesto',
-                  'Vajnory',
-                  'Vrakuňa',
-                  'Záhorská Bystrica',
-                ]),
-              },
-              {
-                helptext:
-                  'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
-              },
-            ),
-          ]),
-          conditionalFields(createCondition([[['viacKatastralneUzemia'], { const: false }]]), [
-            select(
-              'katastralneUzemie',
-              {
-                title: 'Katastrálne územie',
-                required: true,
-                items: createStringItems([
-                  'Čunovo',
-                  'Devín',
-                  'Devínska Nová Ves',
-                  'Dúbravka',
-                  'Jarovce',
-                  'Karlova Ves',
-                  'Lamač',
-                  'Nové Mesto',
-                  'Vinohrady',
-                  'Petržalka',
-                  'Podunajské Biskupice',
-                  'Rača',
-                  'Rusovce',
-                  'Ružinov',
-                  'Trnávka',
-                  'Nivy',
-                  'Staré Mesto',
-                  'Vajnory',
-                  'Vrakuňa',
-                  'Záhorská Bystrica',
-                ]),
-              },
-              {
-                helptext:
-                  'Vyberte zo zoznamu katastrálnych území. Zobraziť ukážku katastrálnych území.',
-              },
-            ),
-          ]),
           input(
             'druhStavby',
             { title: 'Druh stavby', required: false, type: 'text' },
@@ -173,7 +96,8 @@ export default schema(
         {
           type: 'dragAndDrop',
           helptext:
-            'Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby Objednávka informatívneho zákresu sietí',
+            'Požiadať o informatívny zákres vydaný Technickými sieťami Bratislava, a.s. môžete formou spoplatnenej služby [Objednávka informatívneho zákresu sietí](https://konto.bratislava.sk/mestske-sluzby/tsb-objednavka-informativneho-zakresu-sieti)',
+          helptextMarkdown: true,
           accept: '.pdf,.jpg,.jpeg,.png',
         },
       ),
@@ -181,22 +105,39 @@ export default schema(
   ],
 )
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  return safeString(formData.objednavatel?.email)
+type ExtractFormData = {
+  objednavatel: { email: string } & (
+    | {
+        objednavatelTyp: 'fyzickaOsoba' | 'fyzickaOsobaPodnikatel'
+        meno: string
+      }
+    | {
+        objednavatelTyp: 'pravnickaOsoba'
+        obchodneMeno: string
+      }
+  )
 }
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsoba' ||
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsobaPodnikatel'
-  ) {
-    return safeString(formData.objednavatel?.meno)
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.objednavatel.email,
   }
-  if (formData.objednavatel?.objednavatelTyp === 'pravnickaOsoba') {
-    return safeString(formData.objednavatel?.obchodneMeno)
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsoba' ||
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsobaPodnikatel'
+      ) {
+        return formData.objednavatel.meno
+      } else if (formData.objednavatel.objednavatelTyp === 'pravnickaOsoba') {
+        return formData.objednavatel.obchodneMeno
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
   }
-}

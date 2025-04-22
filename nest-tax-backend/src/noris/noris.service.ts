@@ -9,7 +9,9 @@ import {
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { NorisUpdateDto } from './noris.dto'
 import {
+  getNorisDataForUpdate,
   queryPayersFromNoris,
   queryPaymentsFromNoris,
   setDeliveryMethodsForUser,
@@ -228,6 +230,50 @@ export class NorisService {
         'Failed to update delivery methods',
         undefined,
         <string>error,
+      )
+    } finally {
+      // Always close the connection
+      await connection.close()
+    }
+  }
+
+  async getDataForUpdate(variableSymbols: string[]): Promise<NorisUpdateDto[]> {
+    const connection = await connect({
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      port: 1433,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    try {
+      const request = new Request(connection)
+      const variableSymbolsPlaceholders = variableSymbols
+        .map((_, index) => `@variablesymbol${index}`)
+        .join(',')
+      variableSymbols.forEach((variableSymbol, index) => {
+        request.input(`variablesymbol${index}`, variableSymbol)
+      })
+      const queryWithPlaceholders = getNorisDataForUpdate.replaceAll(
+        '@variable_symbols',
+        variableSymbolsPlaceholders,
+      )
+
+      const norisData = await request.query(queryWithPlaceholders)
+      return norisData.recordset
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        `Failed to get data from Noris during tax update`,
+        undefined,
+        error instanceof Error ? undefined : <string>error,
+        error instanceof Error ? error : undefined,
       )
     } finally {
       // Always close the connection

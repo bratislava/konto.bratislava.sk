@@ -36,7 +36,7 @@ const exampleForm: ExampleForm = {
           frekvenciaOdvozovPapierPlasty: '1 x do týždňa',
         },
       ],
-      emailPotvrdenie: 'test@test.test',
+      emailPotvrdeniePouzitIny: false,
     },
     suhlasy: {
       suhlasSVop: true,

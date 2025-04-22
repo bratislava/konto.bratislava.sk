@@ -1,7 +1,5 @@
 import { createCondition, createStringItems, createStringItemsV2 } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { safeString } from '../../form-utils/safeData'
-import { GenericObjectType } from '@rjsf/utils'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { number } from '../../generator/functions/number'
@@ -14,6 +12,7 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 const getFakturacia = (novyOdberatel: boolean) =>
   object(
@@ -56,7 +55,6 @@ export default schema(
   {
     title: 'Triedený zber papiera, plastov a skla pre správcovské spoločnosti',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(
@@ -200,7 +198,7 @@ export default schema(
         {
           variant: 'topLevel',
           addButtonLabel: 'Pridať ďalší odpad',
-          itemTitle: 'Odpad {index}',
+          itemTitle: 'Odpad č. {index}',
         },
         [
           input(
@@ -328,11 +326,32 @@ export default schema(
           ),
         ],
       ),
-      input(
-        'emailPotvrdenie',
-        { type: 'email', title: 'E-mail (potvrdenie o prevzatí odpadov/obalov)', required: true },
-        {},
+      radioGroup(
+        'emailPotvrdeniePouzitIny',
+        {
+          type: 'boolean',
+          title:
+            'Chcete dostať potvrdenie o prevzatí odpadov/obalov aj na iný email ako uvedený v kroku žiadateľ?',
+          required: true,
+          items: [
+            { value: true, label: 'Áno' },
+            { value: false, label: 'Nie', isDefault: true },
+          ],
+        },
+        {
+          variant: 'boxed',
+          orientations: 'row',
+        },
       ),
+      conditionalFields(createCondition([[['emailPotvrdeniePouzitIny'], { const: true }]]), [
+        input(
+          'emailPotvrdenie',
+          { type: 'text', title: 'Email', required: true },
+          {
+            helptext: 'V prípade viacerých emailov ich oddeľte čiarkou',
+          },
+        ),
+      ]),
     ]),
     step('suhlasy', { title: 'Súhlasy' }, [
       checkbox(
@@ -366,21 +385,39 @@ export default schema(
   ],
 )
 
-export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
-    return safeString(formData.ziadatel?.novyEmail)
-  }
-
-  return safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel:
+    | {
+        typOdberatela: 'Nový' | 'Existujúci'
+        email: string
+        nazovOrganizacie: string
+      }
+    | {
+        typOdberatela: 'Zmena odberateľa'
+        novyEmail: string
+        nazovOrganizacieNovehoOdberatela: string
+      }
 }
 
-export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (formData.ziadatel?.typOdberatela === 'Zmena odberateľa') {
-    return safeString(formData.ziadatel?.nazovOrganizacieNovehoOdberatela)
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.typOdberatela === 'Zmena odberateľa') {
+        return formData.ziadatel.novyEmail
+      }
+
+      return formData.ziadatel.email
+    },
   }
-  return safeString(formData.ziadatel?.nazovOrganizacie)
-}
+
+export const triedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.typOdberatela === 'Zmena odberateľa') {
+        return formData.ziadatel.nazovOrganizacieNovehoOdberatela
+      }
+      return formData.ziadatel.nazovOrganizacie
+    },
+  }

@@ -1,8 +1,8 @@
 import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
+import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
 import FormPageWrapper, { FormPageProps } from '../../../components/forms/FormPage'
-import { makeSerializableFormDefinition } from '../../../components/forms/serializableFormDefinition'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
@@ -26,32 +26,32 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
     }
 
     const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlugDev(slug)
-    if (!formDefinition) {
+    const serverFormDefinition = getFormDefinitionBySlugDev(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
     const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
-      formDefinition,
+      serverFormDefinition,
       context,
     )
     if (!embeddedSuccess) {
       return { notFound: true }
     }
 
-    const initialFormDataJson = getDefaultFormDataForFormDefinition(formDefinition)
+    const initialFormDataJson = getDefaultFormDataForFormDefinition(serverFormDefinition)
 
     return {
       props: {
         formServerContext: {
-          formDefinition: makeSerializableFormDefinition(formDefinition),
+          formDefinition: makeClientFormDefinition(serverFormDefinition),
           formId: '',
           initialFormDataJson,
           initialServerFiles: [],
           initialFormSent: false,
           initialSummaryJson: getInitialSummaryJson(
             context.query,
-            formDefinition,
+            serverFormDefinition,
             initialFormDataJson,
           ),
           formMigrationRequired: false,

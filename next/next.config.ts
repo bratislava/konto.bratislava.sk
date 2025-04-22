@@ -65,20 +65,18 @@ const nextConfig: NextConfig = {
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
   },
-  experimental: {
-    turbo: {
-      // https://github.com/vercel/next.js/issues/73360
-      root: path.join(__dirname, '..'),
-      rules: {
-        '*.svg': {
-          loaders: [svgrLoader],
-          as: '*.js',
-        },
+  turbopack: {
+    // https://github.com/vercel/next.js/issues/73360
+    root: path.join(__dirname, '..'),
+    rules: {
+      '*.svg': {
+        loaders: [svgrLoader],
+        as: '*.js',
       },
-      resolveAlias: {
-        react: 'react',
-        'react-dom': 'react-dom',
-      },
+    },
+    resolveAlias: {
+      react: 'react',
+      'react-dom': 'react-dom',
     },
   },
   async redirects() {

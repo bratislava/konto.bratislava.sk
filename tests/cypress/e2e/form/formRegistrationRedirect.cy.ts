@@ -39,7 +39,7 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 8)
           })
 
           cy.dataCy('form-container').should('be.visible') //.matchImage()
@@ -49,7 +49,9 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
-            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.first_name)
+
+            cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.last_name)
 
             cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 

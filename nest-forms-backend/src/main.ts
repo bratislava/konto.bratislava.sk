@@ -5,12 +5,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
 import AppModule from './app.module'
+import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
 import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap(): Promise<void> {
-  const port = process.env.PORT || 3000
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
@@ -43,6 +43,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new HttpExceptionFilter())
   // https://stackoverflow.com/a/59978098
   app.use(json({ limit: '50mb' }))
+  const baConfigService = app.get(BaConfigService)
 
   const config = new DocumentBuilder()
     .setTitle('Nest Forms Backend')
@@ -53,7 +54,7 @@ async function bootstrap(): Promise<void> {
       'https://inovacie.bratislava.sk',
       INNOVATION_MAIL,
     )
-    .addServer(`http://localhost:${port}/`)
+    .addServer(`http://localhost:${baConfigService.self.port}/`)
     .addServer('https://nest-forms-backend.dev.bratislava.sk/')
     .addServer('https://nest-forms-backend.staging.bratislava.sk/')
     .addServer('https://nest-forms-backend.bratislava.sk/')
@@ -78,8 +79,8 @@ async function bootstrap(): Promise<void> {
       res.json(document),
     )
 
-  await app.listen(port)
-  logger.log(`Nest is running on port: ${port}`)
+  await app.listen(baConfigService.self.port)
+  logger.log(`Nest is running on port: ${baConfigService.self.port}`)
   logger.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises

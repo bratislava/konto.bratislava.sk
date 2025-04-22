@@ -6,6 +6,8 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
   VerifyFormSignatureError,
@@ -15,10 +17,12 @@ import {
   versionCompareBumpDuringSend,
   versionCompareCanSendForm,
 } from 'forms-shared/versioning/version-compare'
+import { UpvsNaturalPerson } from 'openapi-clients/slovensko-sk'
 import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
+import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import verifyUserByEidToken from '../common/utils/city-account'
+import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormUpdateBodyDto } from '../forms/dtos/forms.requests.dto'
@@ -32,16 +36,9 @@ import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { UpvsNaturalPerson } from '../utils/clients/openapi-slovensko-sk'
-import { slovenskoSkApi } from '../utils/clients/slovenskoSkApi'
-import { UserInfoResponse } from '../utils/decorators/request.decorator'
 import { Tier } from '../utils/global-enums/city-account.enum'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormRequestDto,
@@ -56,6 +53,7 @@ import { CreateFormResponseDto } from './dtos/responses.dto'
 import { verifyFormSignatureErrorMapping } from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import userToSendPolicyAccountType from './utils-services/user-to-send-policy-account-type'
 
 @Injectable()
 export default class NasesService {
@@ -74,6 +72,7 @@ export default class NasesService {
     private readonly prisma: PrismaService,
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
+    private readonly clientsService: ClientsService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -82,7 +81,7 @@ export default class NasesService {
   }
 
   async getNasesIdentity(token: string): Promise<UpvsNaturalPerson | null> {
-    const result = await slovenskoSkApi
+    const result = await this.clientsService.slovenskoSkApi
       .apiUpvsIdentityGet({
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -130,13 +129,8 @@ export default class NasesService {
     }
     const result = await this.formsService.createForm(data)
 
-    const messageSubject = getSubjectTextFromForm(result, formDefinition)
-    const frontendTitle =
-      getFrontendFormTitleFromForm(result, formDefinition) || messageSubject
     return {
-      ...result,
-      messageSubject,
-      frontendTitle,
+      formId: result.id,
     }
   }
 
@@ -197,14 +191,9 @@ export default class NasesService {
       )
     }
 
-    const messageSubject = getSubjectTextFromForm(form, formDefinition)
-    const frontendTitle =
-      getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
     return {
       ...form,
-      messageSubject,
-      frontendTitle,
-      formDefinitionSlug: formDefinition.slug,
+      formSubject: extractFormSubject(formDefinition, form.formDataJson),
     }
   }
 
@@ -331,27 +320,29 @@ export default class NasesService {
       )
     }
 
-    if (
-      !formDefinition.allowSendingUnauthenticatedUsers &&
-      !this.isUserVerified(user)
-    ) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.SEND_UNVERIFIED,
-        NasesErrorsResponseEnum.SEND_UNVERIFIED,
-      )
-    }
-
-    if (
-      !this.formsHelper.userCanSendForm(
-        form,
-        formDefinition.allowSendingUnauthenticatedUsers ?? false,
-        userInfo,
-        user?.sub,
-      )
-    ) {
+    if (!this.formsHelper.userCanSendForm(form, userInfo, user?.sub)) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
+      )
+    }
+
+    const evaluatedSendPolicy = evaluateFormSendPolicy(
+      formDefinition.sendPolicy,
+      userToSendPolicyAccountType(user),
+    )
+
+    if (!evaluatedSendPolicy.sendPossible) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
+      )
+    }
+
+    if (!evaluatedSendPolicy.sendAllowedForUser) {
+      throw this.throwerErrorGuard.ForbiddenException(
+        NasesErrorsEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_ALLOWED_FOR_USER,
       )
     }
 
@@ -453,7 +444,6 @@ export default class NasesService {
     oboToken: string,
     user: JwtNasesPayloadDto,
     cognitoUser?: CognitoGetUserData,
-    bearerToken?: string,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
     const jwt = this.nasesUtilsService.createUserJwtToken(oboToken)
@@ -471,12 +461,23 @@ export default class NasesService {
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
-
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const evaluatedSendPolicy = evaluateFormSendPolicy(
+      formDefinition.sendPolicy,
+      userToSendPolicyAccountType(cognitoUser),
+    )
+
+    if (!evaluatedSendPolicy.eidSendPossible) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        NasesErrorsEnum.SEND_POLICY_NOT_POSSIBLE,
+        NasesErrorsResponseEnum.SEND_POLICY_NOT_POSSIBLE,
       )
     }
 
@@ -628,10 +629,6 @@ export default class NasesService {
         NasesErrorsEnum.SEND_TO_NASES_ERROR,
         NasesErrorsResponseEnum.SEND_TO_NASES_ERROR,
       )
-    }
-
-    if (!this.isUserVerified(cognitoUser)) {
-      await verifyUserByEidToken(oboToken, this.logger, bearerToken)
     }
 
     return {

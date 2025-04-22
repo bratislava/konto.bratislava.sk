@@ -31,10 +31,13 @@ jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('./subservices/ginis.helper')
-jest.mock('../utils/handlers/text.handler')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
 jest.mock('node:crypto', () => ({
   randomUUID: jest.fn(),
+}))
+jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
+  extractFormSubject: jest.fn(),
+  extractGinisSubject: jest.fn(),
 }))
 
 describe('GinisService', () => {

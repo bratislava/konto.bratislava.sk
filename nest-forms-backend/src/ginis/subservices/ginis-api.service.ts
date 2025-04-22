@@ -7,7 +7,6 @@ import {
   Ginis,
   SslDetailDokumentuResponse,
   SslPridatSouborPridatSoubor,
-  SslPridatSouborResponse,
 } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 
@@ -71,15 +70,14 @@ export default class GinisAPIService {
   ): Promise<SslPridatSouborPridatSoubor> {
     const baseName = path.parse(fileName).name
 
-    const fileUpload: SslPridatSouborResponse =
-      await this.ginis.ssl.pridatSouborMtom({
-        'Id-dokumentu': documentId,
-        'Jmeno-souboru': fileName,
-        'Typ-vazby': 'elektronicka-priloha',
-        'Popis-souboru': baseName,
-        'Podrobny-popis-souboru': baseName,
-        Obsah: contentStream,
-      })
+    const fileUpload = await this.ginis.ssl.pridatSouborMtom({
+      'Id-dokumentu': documentId,
+      'Jmeno-souboru': fileName,
+      'Typ-vazby': 'elektronicka-priloha',
+      'Popis-souboru': baseName,
+      'Podrobny-popis-souboru': baseName,
+      Obsah: contentStream,
+    })
 
     return fileUpload['Pridat-soubor']
   }

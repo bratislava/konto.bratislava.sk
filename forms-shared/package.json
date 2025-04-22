@@ -73,7 +73,7 @@
     "@types/lodash": "^4.17.16",
     "@types/object-hash": "^3.0.6",
     "@types/prompts": "^2.4.9",
-    "@types/react": "19.1.1",
+    "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
     "@types/remove-markdown": "^0.3.4",
     "@types/semver": "^7.7.0",

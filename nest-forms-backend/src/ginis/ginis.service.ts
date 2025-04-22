@@ -311,18 +311,13 @@ export default class GinisService {
           )
 
           // sometimes ginis times-out on the first try
-          const uploadFileinfo = await this.ginisHelper.retryWithDelay(
-            async () =>
-              this.ginisApiService.uploadFile(
-                form.ginisDocumentId || '', // type safety only, guaranteed to be not null
-                file.fileName,
-                fileStream,
-              ),
+          await this.ginisHelper.retryWithDelay(async () =>
+            this.ginisApiService.uploadFile(
+              form.ginisDocumentId || '', // type safety only, guaranteed to be not null
+              file.fileName,
+              fileStream,
+            ),
           )
-
-          if (!uploadFileinfo['Verze-souboru']) {
-            throw new Error('Ginis uploadFile missing file version.')
-          }
 
           await this.updateSuccessfulAttachmentUpload(file.id)
         } catch (error) {

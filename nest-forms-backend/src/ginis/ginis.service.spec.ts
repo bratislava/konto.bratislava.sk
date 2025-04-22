@@ -760,9 +760,9 @@ describe('GinisService', () => {
         .spyOn(service['minioClientSubservice'], 'download')
         .mockResolvedValue(mockStream)
 
-      jest.spyOn(service['ginisApiService'], 'uploadFile').mockResolvedValue({
-        'Verze-souboru': '1',
-      } as SslPridatSouborPridatSoubor)
+      jest
+        .spyOn(service['ginisApiService'], 'uploadFile')
+        .mockResolvedValue({} as SslPridatSouborPridatSoubor)
     })
 
     it('should update form to RUNNING_UPLOAD_ATTACHMENTS', async () => {

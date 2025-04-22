@@ -299,9 +299,17 @@ export default class GinisService {
       },
     })
 
+    if (!form.ginisDocumentId) {
+      alertError(
+        `ERROR uploadAttachments - missing ginisDocumentId. Form id: ${form.id}`,
+        this.logger,
+      )
+      return
+    }
+
     await Promise.all(
       form.files.map(async (file) => {
-        if (file.ginisUploaded || !form.ginisDocumentId) {
+        if (file.ginisUploaded) {
           return
         }
 
@@ -314,7 +322,7 @@ export default class GinisService {
           // sometimes ginis times-out on the first try
           await this.ginisHelper.retryWithDelay(async () =>
             this.ginisApiService.uploadFile(
-              form.ginisDocumentId || '', // type safety only, guaranteed to be not null
+              form.ginisDocumentId!, // check for null already present above
               file.fileName,
               fileStream,
             ),

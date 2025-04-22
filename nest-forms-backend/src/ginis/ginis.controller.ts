@@ -38,6 +38,7 @@ import {
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisDocumentDetailResponseDto from './dtos/ginis-api.response.dto'
+import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 @ApiTags('ginis')
@@ -50,6 +51,7 @@ import GinisAPIService from './subservices/ginis-api.service'
 export default class GinisController {
   constructor(
     private readonly ginisAPIService: GinisAPIService,
+    private readonly ginisHelper: GinisHelper,
     private readonly formsService: FormsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
@@ -126,7 +128,8 @@ export default class GinisController {
     return {
       id: wflDocument['Id-dokumentu'],
       dossierId: wflDocument['Id-spisu'],
-      ownerName: `${ownerDetail.Jmeno || ''} ${ownerDetail.Prijmeni || ''}`,
+      ownerName:
+        this.ginisHelper.extractSanitizeGinisOwnerFullName(ownerDetail),
       ownerEmail: ownerDetail.Mail || '',
       ownerPhone: ownerDetail.Telefon || '',
       documentHistory,

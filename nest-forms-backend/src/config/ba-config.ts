@@ -96,6 +96,7 @@ export default class BaConfig {
       username: this.validatedConfig.GINIS_USERNAME,
       password: this.validatedConfig.GINIS_PASSWORD,
       sslHost: this.validatedConfig.GINIS_SSL_HOST,
+      sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
     }
   }

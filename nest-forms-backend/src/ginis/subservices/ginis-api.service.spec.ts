@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
+import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import GinisAPIService from './ginis-api.service'
 
@@ -23,7 +24,21 @@ describe('GinisAPIService', () => {
     jest.resetAllMocks()
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GinisAPIService, ThrowerErrorGuard],
+      providers: [
+        GinisAPIService,
+        ThrowerErrorGuard,
+        {
+          provide: BaConfigService,
+          useValue: {
+            ginisApi: {
+              username: '',
+              password: '',
+              sslHost: '',
+              ginHost: '',
+            },
+          },
+        },
+      ],
     }).compile()
 
     service = module.get<GinisAPIService>(GinisAPIService)
@@ -35,27 +50,6 @@ describe('GinisAPIService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('constructor no testing', () => {
-    const { env } = process
-
-    beforeEach(() => {
-      jest.resetModules()
-      process.env = {
-        ...env,
-        JEST_WORKER_ID: undefined,
-        GINIS_USERNAME: undefined,
-      }
-    })
-
-    afterEach(() => {
-      process.env = env
-    })
-
-    it('should throw error if some env value is not set and not during testing', () => {
-      expect(() => new GinisAPIService(new ThrowerErrorGuard())).toThrow()
-    })
   })
 
   describe('getDocumentDetail', () => {

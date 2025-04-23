@@ -16,7 +16,6 @@ import { removeUndefinedValues } from './helpers'
  */
 export const object = (
   property: string | null,
-  options: { required?: boolean },
   uiOptions: ObjectFieldUiOptions,
   fields: (GeneratorFieldType | null)[],
 ): GeneratorObjectField => {
@@ -64,7 +63,7 @@ export const object = (
  * and uiOptions.
  */
 export const simpleObjectInternal = (fields: (GeneratorFieldType | null)[]) => {
-  const result = object(null, {}, {}, fields)
+  const result = object(null, {}, fields)
   if (result.schema.baUiSchema) {
     throw new Error('Simple object should not have uiOptions.')
   }

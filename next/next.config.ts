@@ -35,8 +35,14 @@ const svgrLoader = {
     svgoConfig: {
       plugins: [
         {
-          name: 'removeViewBox',
-          active: false,
+          name: 'preset-default',
+          params: {
+            overrides: {
+              removeViewBox: false,
+              /* The icons are misplaced when `cleanupIds` is not turned off. */
+              cleanupIds: false,
+            },
+          },
         },
       ],
     },

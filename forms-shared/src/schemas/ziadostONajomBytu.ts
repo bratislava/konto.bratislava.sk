@@ -26,7 +26,7 @@ enum StepType {
 
 const adresaSharedFields = [
   input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-  object('mestoPsc', { required: true }, {}, [
+  object('mestoPsc', {}, [
     input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
     input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
   ]),
@@ -98,7 +98,7 @@ const getAdresaSkutocnehoPobytuFields = (stepType: StepType) => {
 
   return object(
     'adresaSkutocnehoPobytu',
-    { required: true },
+
     {
       title: 'Adresa skutočného pobytu',
       description: {
@@ -126,7 +126,7 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
 
   return object(
     'adresaTrvalehoPobytu',
-    { required: true },
+
     {
       objectDisplay: 'boxed',
       title: 'Adresa trvalého pobytu',
@@ -206,10 +206,10 @@ const getAdresaTrvalehoPobytuFields = (stepType: StepType) => {
 const getOsobneUdajeSection = (stepType: StepType) => {
   return object(
     'osobneUdaje',
-    { required: true },
+
     { objectDisplay: 'boxed', title: 'Osobné údaje' },
     [
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -370,7 +370,6 @@ const getPrijemSection = (stepType: StepType) => {
   const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'prijem',
-      { required: true },
       {
         objectDisplay: 'boxed',
         title: 'Príjem',
@@ -778,7 +777,6 @@ const getZdravotnyStavSection = (stepType: StepType) => {
 
   return object(
     'zdravotnyStav',
-    { required: true },
     {
       objectDisplay: 'boxed',
       title: 'Zdravotný stav',
@@ -1033,7 +1031,6 @@ const getSucasneByvanieSection = (stepType: StepType) => {
   const wrapper = (fields: (GeneratorFieldType | null)[]) =>
     object(
       'sucasneByvanie',
-      { required: true },
       {
         objectDisplay: 'boxed',
         title: 'Súčasné bývanie',
@@ -1207,100 +1204,95 @@ const getRizikoveFaktorySection = (stepType: StepType) => {
     return null
   }
 
-  return object(
-    'rizikoveFaktory',
-    { required: true },
-    { title: 'Rizikové faktory', objectDisplay: 'boxed' },
-    [
-      radioGroup(
-        'rizikoveFaktoryPritomne',
+  return object('rizikoveFaktory', { title: 'Rizikové faktory', objectDisplay: 'boxed' }, [
+    radioGroup(
+      'rizikoveFaktoryPritomne',
+      {
+        type: 'boolean',
+        title:
+          'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
+        required: true,
+        items: [
+          { value: true, label: 'Áno', isDefault: true },
+          { value: false, label: 'Nie' },
+        ],
+      },
+      { variant: 'boxed', orientations: 'row' },
+    ),
+    conditionalFields(createCondition([[['rizikoveFaktoryPritomne'], { const: true }]]), [
+      checkboxGroup(
+        'zoznamRizikovychFaktorov',
         {
-          type: 'boolean',
-          title:
-            'Týkajú sa vás alebo niektorého člena/členky vašej domácnosti rizikové faktory, ktoré zvyšujú sociálno-ekonomickú zraniteľnosť?',
-          required: true,
+          title: 'Označte rizikové faktory',
           items: [
-            { value: true, label: 'Áno', isDefault: true },
-            { value: false, label: 'Nie' },
-          ],
-        },
-        { variant: 'boxed', orientations: 'row' },
-      ),
-      conditionalFields(createCondition([[['rizikoveFaktoryPritomne'], { const: true }]]), [
-        checkboxGroup(
-          'zoznamRizikovychFaktorov',
-          {
-            title: 'Označte rizikové faktory',
-            items: [
-              {
-                value: 'osamelyRodic',
-                label:
-                  'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
-              },
-              {
-                value: 'rodicNaDovolenke',
-                label: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
-              },
-              {
-                value: 'moznostNavratuDeti',
-                label:
-                  'Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania',
-              },
-              {
-                value: 'opustenieUstavnejStarostlivosti',
-                label:
-                  'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
-              },
-              {
-                value: 'opustenieVazby',
-                label:
-                  'Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr',
-              },
-              {
-                value: 'opustenieSpecialnehoZariadenia',
-                label:
-                  'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)',
-              },
-            ],
-            required: true,
-          },
-          {
-            helptext: 'Môžete označiť viac možností.',
-            variant: 'boxed',
-          },
-        ),
-      ]),
-      radioGroup(
-        'vekNajstarsiehoClena',
-        {
-          type: 'string',
-          title: 'Zvoľte vek najstaršieho člena domácnosti',
-          required: true,
-          items: [
-            { value: 'menejAko63', label: 'menej ako 63 rokov' },
-            { value: '63az70', label: '63 - 70 rokov' },
-            { value: '71az80', label: '71 - 80 rokov' },
-            { value: '81aViac', label: '81 a viac rokov' },
-          ],
-        },
-        {
-          variant: 'boxed',
-          helptext:
-            'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.',
-          belowComponents: [
             {
-              type: 'alert',
-              props: {
-                type: 'info',
-                message:
-                  'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedené rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
-              },
+              value: 'osamelyRodic',
+              label:
+                'Osamelý rodič (dospelá osoba), ktorý/á žije v spoločnej domácnosti s nezaopatreným dieťaťom/deťmi, avšak bez manžela/manželky alebo partnera/partnerky, a zároveň tomuto dieťaťu/deťom zabezpečuje osobnú starostlivosť.',
+            },
+            {
+              value: 'rodicNaDovolenke',
+              label: 'Rodič na rodičovskej/materskej/otcovskej dovolenke',
+            },
+            {
+              value: 'moznostNavratuDeti',
+              label:
+                'Možnosť návratu detí do rodiny z Centra pre detí a rodiny alebo možnosť zlúčenia rodiny, v prípade získania vhodného bývania',
+            },
+            {
+              value: 'opustenieUstavnejStarostlivosti',
+              label:
+                'Opustenie ústavnej starostlivosti v uplynulých 3 rokoch: Centrum pre deti a rodiny a resocializačné stredisko',
+            },
+            {
+              value: 'opustenieVazby',
+              label:
+                'Opustenie Ústavu na výkon väzby a Ústavu na výkon trestu odňatia slobody v uplynulých 3 rokoch a skôr',
+            },
+            {
+              value: 'opustenieSpecialnehoZariadenia',
+              label:
+                'Opustenie špeciálneho výchovného zariadenia v uplynulých 3 rokoch a skôr (Diagnostické centrá, reedukačné centrá, liečebno-výchovné sanatória)',
             },
           ],
+          required: true,
+        },
+        {
+          helptext: 'Môžete označiť viac možností.',
+          variant: 'boxed',
         },
       ),
-    ],
-  )
+    ]),
+    radioGroup(
+      'vekNajstarsiehoClena',
+      {
+        type: 'string',
+        title: 'Zvoľte vek najstaršieho člena domácnosti',
+        required: true,
+        items: [
+          { value: 'menejAko63', label: 'menej ako 63 rokov' },
+          { value: '63az70', label: '63 - 70 rokov' },
+          { value: '71az80', label: '71 - 80 rokov' },
+          { value: '81aViac', label: '81 a viac rokov' },
+        ],
+      },
+      {
+        variant: 'boxed',
+        helptext:
+          'Vyšší vek jedného z členov domácnosti je považovaný za rizikový faktor. Otázka sa vzťahuje iba na členov domácnosti, s ktorými by ste chceli bývať v mestskom nájomnom byte.',
+        belowComponents: [
+          {
+            type: 'alert',
+            props: {
+              type: 'info',
+              message:
+                'V prípade, že vás bude kontaktovať zástupca mesta, na nahliadnutie si pripravte dokumenty dokazujúce uvedené rizikové faktory dokazujúce zvýšenú zraniteľnosť vás alebo iného člena/členky domácnosti. (Napr. rozhodnutie súdu/doklad o prepustení zo zariadenia/doklad od ÚPSVR a pod.)',
+            },
+          },
+        ],
+      },
+    ),
+  ])
 }
 
 const getFieldsForStep = (stepType: StepType) => {

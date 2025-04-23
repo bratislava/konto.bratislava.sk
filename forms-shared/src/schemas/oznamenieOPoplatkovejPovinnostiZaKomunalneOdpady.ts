@@ -742,7 +742,6 @@ export default schema(
       conditionalFields(createCondition([[['voSvojomMene'], { const: false }]]), [
         object(
           'opravnenaOsoba',
-          { required: true },
           {
             objectDisplay: 'boxed',
             title: 'Údaje o oprávnenej osobe na podanie oznámenia',
@@ -853,7 +852,6 @@ export default schema(
         [
           object(
             'opravnenaOsoba',
-            { required: false },
             {
               objectDisplay: 'boxed',
               title: 'Údaje o oprávnenej osobe na podanie oznámenia',
@@ -1344,7 +1342,6 @@ export default schema(
           [
             object(
               'nadoba',
-              { required: true },
               {
                 objectDisplay: 'boxed',
                 title: 'Nádoba',

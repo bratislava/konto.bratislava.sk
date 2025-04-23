@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { getFileUuids, getFileUuidsNaive } from '../../src/form-utils/fileUtils'
 import { selectMultiple } from '../../src/generator/functions/selectMultiple'
 import { input } from '../../src/generator/functions/input'
@@ -7,7 +7,7 @@ import { object } from '../../src/generator/object'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
 
 describe('fileUtils', () => {
-  const fileUploadSchema = object('files', {}, {}, [
+  const fileUploadSchema = object('files', {}, [
     fileUpload('file', { title: 'File' }, {}),
     fileUploadMultiple('fileMultiple', { title: 'File multiple' }, {}),
     input('fakeFileInput', { type: 'text', title: 'Fake file' }, {}),

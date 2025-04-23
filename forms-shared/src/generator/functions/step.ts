@@ -11,7 +11,7 @@ export const step = (
   } & StepUiOptions,
   fields: (GeneratorFieldType | null)[],
 ) => {
-  const { schema } = object(property, { required: true }, {}, fields)
+  const { schema } = object(property, {}, fields)
   const getHash = () => {
     if (options.stepQueryParam) {
       return options.stepQueryParam

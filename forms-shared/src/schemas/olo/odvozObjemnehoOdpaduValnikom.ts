@@ -54,7 +54,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
     input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-    object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+    object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
         'elektronickaFaktura',

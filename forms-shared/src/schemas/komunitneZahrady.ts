@@ -57,7 +57,6 @@ export default schema(
       ...getAdresaFields('Adresa sídla'),
       object(
         'statutar',
-        { required: true },
         {
           title: 'Štatutár',
         },

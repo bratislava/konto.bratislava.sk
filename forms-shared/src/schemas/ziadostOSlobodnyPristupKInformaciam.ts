@@ -90,7 +90,6 @@ export default schema(
             [
               object(
                 'kontaktneUdaje',
-                {},
                 {
                   title: 'Kontaktné údaje',
                   description:

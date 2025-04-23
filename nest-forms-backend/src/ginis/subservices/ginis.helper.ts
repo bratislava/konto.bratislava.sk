@@ -1,3 +1,4 @@
+import { GinDetailReferentaDetailReferenta } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 import { FormError, FormState } from '@prisma/client'
 
@@ -54,5 +55,26 @@ export default class GinisHelper {
       })
       return this.retryWithDelay(fn, retries - 1, delayMs)
     }
+  }
+
+  private stripNumbersWithDash(name?: string): string {
+    if (!name) {
+      return ''
+    }
+    return name.replaceAll(/(^\d+-|-\d+$)/g, '')
+  }
+
+  /**
+   * Sanitize owner name and surname from GINIS, as they might contain some internal
+   * identifiers consisting of digits and a dash (e.g. 23-Peter).
+   * @param ownerDetail detail information about owner from ginis
+   * @returns sanitized first name and last name of the owner delimited by a space
+   */
+  extractSanitizeGinisOwnerFullName(
+    ownerDetail: GinDetailReferentaDetailReferenta,
+  ): string {
+    const name = this.stripNumbersWithDash(ownerDetail.Jmeno)
+    const surname = this.stripNumbersWithDash(ownerDetail.Prijmeni)
+    return `${name} ${surname}`
   }
 }

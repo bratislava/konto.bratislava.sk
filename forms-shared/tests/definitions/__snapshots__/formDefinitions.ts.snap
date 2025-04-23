@@ -53170,6 +53170,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                                             ],
                                             "type": "object",
@@ -54099,6 +54100,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                                               "spoluvlastnickyPodiel",
                                             ],
@@ -67977,6 +67979,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                                             ],
                                             "type": "object",
@@ -68906,6 +68909,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                                               "spoluvlastnickyPodiel",
                                             ],

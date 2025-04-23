@@ -31,7 +31,7 @@ export default schema(
         { variant: 'boxed', orientations: 'column' },
       ),
       conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-        object('menoPriezvisko', { required: true }, {}, [
+        object('menoPriezvisko', {}, [
           input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
           input(
             'priezvisko',
@@ -97,37 +97,32 @@ export default schema(
           [['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }],
         ]),
         [
-          object(
-            'fakturacia',
-            { required: true },
-            { objectDisplay: 'boxed', title: 'Fakturácia' },
-            [
-              input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
-              checkbox(
-                'elektronickaFaktura',
+          object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+            input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
+            checkbox(
+              'elektronickaFaktura',
+              {
+                title: 'Zasielanie faktúry elektronicky',
+              },
+              {
+                helptext:
+                  'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+                checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+                variant: 'boxed',
+              },
+            ),
+            conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+              input(
+                'emailPreFaktury',
                 {
-                  title: 'Zasielanie faktúry elektronicky',
+                  type: 'email',
+                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  required: true,
                 },
-                {
-                  helptext:
-                    'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-                  checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-                  variant: 'boxed',
-                },
+                {},
               ),
-              conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
-                input(
-                  'emailPreFaktury',
-                  {
-                    type: 'email',
-                    title: 'E-mail pre zasielanie elektronických faktúr',
-                    required: true,
-                  },
-                  {},
-                ),
-              ]),
-            ],
-          ),
+            ]),
+          ]),
         ],
       ),
     ]),

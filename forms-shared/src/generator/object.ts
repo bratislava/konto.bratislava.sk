@@ -16,7 +16,6 @@ import { removeUndefinedValues } from './helpers'
  */
 export const object = (
   property: string | null,
-  options: { required?: boolean },
   uiOptions: ObjectFieldUiOptions,
   fields: (GeneratorFieldType | null)[],
 ): GeneratorObjectField => {
@@ -36,12 +35,19 @@ export const object = (
     else: field.elseSchema,
   }))
 
+  const requiredOrdinaryFields = ordinaryFields.filter((field) => field.required)
+  const requiredConditionalFields = conditionalFields.filter(
+    (field) => field.thenSchema.required || field.elseSchema?.required,
+  )
+  const requiredFieldsProperties = requiredOrdinaryFields.map((field) => field.property)
+  const selfRequired = requiredOrdinaryFields.length > 0 || requiredConditionalFields.length > 0
+
   return {
     property,
     schema: removeUndefinedValues({
       type: 'object' as const,
       properties: Object.fromEntries(ordinaryFields.map((field) => [field.property, field.schema])),
-      required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
+      required: requiredFieldsProperties,
       allOf: allOf.length > 0 ? allOf : undefined,
       baUiSchema: isUiOptionsEmpty
         ? undefined
@@ -49,7 +55,7 @@ export const object = (
             'ui:options': uiOptions,
           },
     }),
-    required: Boolean(options.required),
+    required: selfRequired,
   }
 }
 /**
@@ -57,7 +63,7 @@ export const object = (
  * and uiOptions.
  */
 export const simpleObjectInternal = (fields: (GeneratorFieldType | null)[]) => {
-  const result = object(null, {}, {}, fields)
+  const result = object(null, {}, fields)
   if (result.schema.baUiSchema) {
     throw new Error('Simple object should not have uiOptions.')
   }

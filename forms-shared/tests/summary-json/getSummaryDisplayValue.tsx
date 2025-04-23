@@ -52,7 +52,7 @@ const retrieveRuntimeValues = (field: GeneratorField) => {
     fields: defaultFormFields,
   })
 
-  const { schema: wrapperSchema } = object('wrapper', { required: true }, {}, [field])
+  const { schema: wrapperSchema } = object('wrapper', {}, [field])
   renderToString(
     <Form schema={wrapperSchema} {...getBaFormDefaults(wrapperSchema, testValidatorRegistry)} />,
   )

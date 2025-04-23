@@ -77,7 +77,7 @@ const spoluvlastnickyPodiel = input(
   },
 )
 
-const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', title: 'Sumár' }, [
+const sumar = object('sumar', { objectDisplay: 'boxed', title: 'Sumár' }, [
   number(
     'vymeraPodlahovychPloch',
     {
@@ -167,7 +167,7 @@ const innerArray = (kalkulacka: boolean) =>
             'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV).',
         },
       ),
-      object('datumy', {}, {}, [
+      object('datumy', {}, [
         datePicker(
           'datumVznikuDanovejPovinnosti',
           { title: 'Dátum vzniku daňovej povinnosti' },
@@ -245,7 +245,7 @@ const innerArray = (kalkulacka: boolean) =>
           },
         ),
       ]),
-      object('nehnutelnosti', { required: true }, { objectDisplay: 'boxed' }, [
+      object('nehnutelnosti', { objectDisplay: 'boxed' }, [
         arrayField(
           'nehnutelnosti',
           { title: 'Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?', required: true },

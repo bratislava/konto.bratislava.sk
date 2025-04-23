@@ -36,7 +36,7 @@ export const getZevoSchema = (type: ZevoType) => [
       { variant: 'boxed', orientations: 'column' },
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -257,7 +257,7 @@ export const getZevoSchema = (type: ZevoType) => [
         ],
       ]),
       [
-        object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+        object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
           radioGroup(
             'sposobPlatby',
             {

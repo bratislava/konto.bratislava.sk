@@ -28,7 +28,6 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   conditionalFields(createCondition([[['voSvojomMene'], { const: false }]]), [
     object(
       'opravnenaOsoba',
-      { required: true },
       {
         objectDisplay: 'boxed',
         title: 'Údaje o oprávnenej osobe na podanie priznania',

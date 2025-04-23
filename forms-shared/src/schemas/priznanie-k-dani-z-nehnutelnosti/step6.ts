@@ -260,7 +260,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'Dosiahli ste maximálny počet nebytových pozemkov (15) na jedno priznanie. Pridajte ďalšie priznanie.',
               },
               [
-                object('riadok', {}, {}, [
+                object('riadok', { required: true }, {}, [
                   input(
                     'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
                     {

@@ -7,14 +7,15 @@ import { filterConsole } from '../../test-utils/filterConsole'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 import { isSlovenskoSkTaxFormDefinition } from '../../src/definitions/formDefinitionTypes'
 import { screenshotTestTimeout } from '../../test-utils/consts'
-import { getFormDefinitionBySlug } from '../../src/definitions/getFormDefinitionBySlug'
 import { toMatchImageSnapshot } from 'jest-image-snapshot'
+import { getTaxXsd } from '../../src/tax-form/taxXsdXslt'
+import { formatValidateXmlResultErrors, validateXml } from '../../src/slovensko-sk/validateXml'
 
 expect.extend({ toMatchImageSnapshot })
 
 describe('tax-form', () => {
   getExampleFormPairs({ formDefinitionFilterFn: isSlovenskoSkTaxFormDefinition }).forEach(
-    ({ exampleForm }) => {
+    ({ exampleForm, formDefinition }) => {
       describe('PDF', () => {
         beforeEach(() => {
           // Without `shouldAdvanceTime` the PDF generation would hang indefinitely.
@@ -48,8 +49,11 @@ describe('tax-form', () => {
       })
 
       describe('XML', () => {
+        let xmlString: string
+
         beforeEach(() => {
           vi.useFakeTimers({ now: new Date('2024-01-01') })
+          xmlString = generateTaxXml(exampleForm.formData, true, formDefinition)
         })
 
         afterEach(() => {
@@ -57,12 +61,18 @@ describe('tax-form', () => {
         })
 
         test(`should return correct XML for ${exampleForm.name}`, () => {
-          const formDefinition = getFormDefinitionBySlug('priznanie-k-dani-z-nehnutelnosti')
-          if (!formDefinition || !isSlovenskoSkTaxFormDefinition(formDefinition)) {
-            throw new Error('Form definition not found')
+          expect(xmlString).toMatchSnapshot()
+        })
+
+        test(`should produce valid XML for ${exampleForm.name}`, async () => {
+          const result = await validateXml(xmlString, getTaxXsd(formDefinition))
+          if (!result.success && result.errors) {
+            throw new Error(
+              `XML validation errors: ${formatValidateXmlResultErrors(result.errors)}`,
+            )
           }
 
-          expect(generateTaxXml(exampleForm.formData, true, formDefinition)).toMatchSnapshot()
+          expect(result.success).toBe(true)
         })
       })
     },

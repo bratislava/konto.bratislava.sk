@@ -15,12 +15,16 @@ import {
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 
 @Injectable()
 export class DatabaseSubserviceUser {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private bloomreachService: BloomreachService
+  ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
@@ -48,22 +52,18 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.userGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-          ],
-        })
+        await this.changeUserGdprData(user.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
@@ -88,14 +88,13 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.userGdprData.create({
-        data: {
+      this.changeUserGdprData(user.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          userId: user.id,
         },
-      })
+      ])
     }
 
     return prismaExclude(user, ['ifo'])
@@ -245,7 +244,7 @@ export class DatabaseSubserviceUser {
       //   },
       // })
     }
-    await this.prisma.userGdprData.createMany({ data: data })
+    this.changeUserGdprData(userId, data)
     return data
   }
 
@@ -377,5 +376,35 @@ export class DatabaseSubserviceUser {
       return false
     }
     return true
+  }
+
+  async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    })
+    if (!user) {
+      throw new Error('User not found')
+    }
+    await this.prisma.userGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        userId: user.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        user.externalId
+      )
+    }
   }
 }

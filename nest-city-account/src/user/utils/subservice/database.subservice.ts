@@ -127,22 +127,18 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.legalPersonGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-          ],
-        })
+        await this.changeLegalPersonGdprData(legalPerson.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
         await this.createLegalPersonGdprData(legalPerson.id, null)
       } else if (legalPerson.email != email) {
         const oldEmail = legalPerson.email
@@ -168,14 +164,13 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.legalPersonGdprData.create({
-        data: {
+      await this.changeLegalPersonGdprData(legalPerson.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          legalPersonId: legalPerson.id,
         },
-      })
+      ])
       await this.createLegalPersonGdprData(legalPerson.id, null)
     }
     return legalPerson
@@ -277,10 +272,10 @@ export class DatabaseSubserviceUser {
         })
       }
     }
-    await this.prisma.legalPersonGdprData.createMany({ data: data })
     return data
   }
 
+  // is this ok?
   async getUserGdprData(userId: string): Promise<ResponseGdprUserDataDto[]> {
     const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -305,6 +300,7 @@ export class DatabaseSubserviceUser {
     return data
   }
 
+  // is this ok?
   async getLegalPersonGdprData(legalPersonId: string): Promise<ResponseGdprLegalPersonDataDto[]> {
     const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -383,7 +379,7 @@ export class DatabaseSubserviceUser {
       where: { id: userId },
     })
     if (!user) {
-      throw new Error('User not found')
+      return
     }
     await this.prisma.userGdprData.createMany({
       data: gdprData.map((elem) => ({
@@ -404,6 +400,36 @@ export class DatabaseSubserviceUser {
           },
         ],
         user.externalId
+      )
+    }
+  }
+
+  async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { id: legalPersonId },
+    })
+    if (!legalPerson) {
+      return
+    }
+    await this.prisma.legalPersonGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        legalPersonId: legalPerson.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        legalPerson.externalId
       )
     }
   }

@@ -139,6 +139,8 @@ export class DatabaseSubserviceUser {
             subType: GdprSubType.SUB,
           },
         ])
+
+        // this makes no sense, it doesn't provide any subType and it removes marketing consent
         await this.createLegalPersonGdprData(legalPerson.id, null)
       } else if (legalPerson.email != email) {
         const oldEmail = legalPerson.email
@@ -171,6 +173,7 @@ export class DatabaseSubserviceUser {
           subType: GdprSubType.SUB,
         },
       ])
+      // this makes no sense, it doesn't provide any subType
       await this.createLegalPersonGdprData(legalPerson.id, null)
     }
     return legalPerson

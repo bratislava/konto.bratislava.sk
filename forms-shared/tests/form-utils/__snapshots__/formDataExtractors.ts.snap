@@ -82,6 +82,8 @@ exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiE
 
 exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample5 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
+exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample5NoCalculators form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+
 exports[`formDataExtractors > extractFormSubject > stanoviskoKInvesticnemuZameruExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;
 
 exports[`formDataExtractors > extractFormSubject > zavazneStanoviskoKInvesticnejCinnostiExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;

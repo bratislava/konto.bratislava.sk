@@ -1,6 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
-import { DeliveryMethodNamed } from '@prisma/client'
 
 import { AdminService } from '../../admin/admin.service'
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -65,7 +64,6 @@ describe('TasksService', () => {
           {
             id: 1,
             year: 2024,
-            deliveryMethod: DeliveryMethodNamed.POSTAL,
             taxPayer: {
               birthNumber: '123456/7890',
             },
@@ -90,7 +88,6 @@ describe('TasksService', () => {
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
-          delivery_method: DeliveryMethodNamed.POSTAL,
         },
         'external-id-123',
       )
@@ -103,7 +100,6 @@ describe('TasksService', () => {
           {
             id: 1,
             year: 2024,
-            deliveryMethod: DeliveryMethodNamed.POSTAL,
             taxPayer: {
               birthNumber: '123456/7890',
             },
@@ -111,7 +107,6 @@ describe('TasksService', () => {
           {
             id: 2,
             year: 2024,
-            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
             taxPayer: {
               birthNumber: '123456/7891',
             },
@@ -119,7 +114,6 @@ describe('TasksService', () => {
           {
             id: 3,
             year: 2024,
-            deliveryMethod: DeliveryMethodNamed.EDESK,
             taxPayer: {
               birthNumber: '123456/7892',
             },
@@ -148,14 +142,12 @@ describe('TasksService', () => {
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
-          delivery_method: DeliveryMethodNamed.POSTAL,
         },
         'external-id-1',
       )
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
         {
           year: 2024,
-          delivery_method: DeliveryMethodNamed.CITY_ACCOUNT,
         },
         'external-id-2',
       )

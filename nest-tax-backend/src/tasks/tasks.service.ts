@@ -174,7 +174,6 @@ export class TasksService {
       select: {
         id: true,
         year: true,
-        deliveryMethod: true,
         taxPayer: {
           select: {
             birthNumber: true,

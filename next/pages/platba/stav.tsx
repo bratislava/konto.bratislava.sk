@@ -1,23 +1,126 @@
+import {
+  getTaxAdministratorForUser,
+  StrapiTaxAdministrator,
+} from '@backend/utils/tax-administrator'
+import { strapiClient } from '@clients/graphql-strapi'
+import { TaxFragment } from '@clients/graphql-strapi/api'
+import { taxClient } from '@clients/tax'
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import ThankYouSection from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 
+import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+type AccountThankYouPageProps = {
+  taxData: ResponseTaxDto
+  taxAdministrator: StrapiTaxAdministrator | null
+  strapiTax: TaxFragment
+  dehydratedState: DehydratedState
+}
 
-const AccountThankYouPage = () => {
+function convertYearToNumber(input: string | undefined) {
+  if (input === undefined || !/^(20\d{2})$/.test(input)) {
+    return null
+  }
+
+  return parseInt(input, 10)
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<AccountThankYouPageProps>(
+  async ({ amplifyContextSpec, getAccessToken }) => {
+    // TODO: get year from params
+    const year = '2025'
+    const yearNumber = convertYearToNumber(year)
+    if (!yearNumber) {
+      return { notFound: true }
+    }
+
+    const queryClient = new QueryClient()
+
+    try {
+      const [{ data: taxData }, strapiTax, taxAdministrator, user] = await Promise.all([
+        taxClient.taxControllerGetActualTaxes(yearNumber, {
+          accessToken: 'always',
+          accessTokenSsrGetFn: getAccessToken,
+        }),
+        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        getTaxAdministratorForUser(amplifyContextSpec),
+        prefetchUserQuery(queryClient, getAccessToken),
+      ])
+
+      if (!strapiTax) {
+        return { notFound: true }
+      }
+
+      if (!user.birthNumber || !taxData.taxPayer.birthNumber) {
+        // TODO needs close monitoring, I can't tell enough about our tax data yet - but this condition failing may potentially lead to displaying of incorrect tax data
+        throw new Error(
+          `Error (Status-500): User or tax birthnumber is missing! Invalid invariant (not aborting request). user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
+        )
+      } else if (
+        // account birthnumbers may be without slashes, the tax one should always have them (but I did not see enough of that data)
+        user.birthNumber.replaceAll('/', '') !== taxData.taxPayer.birthNumber.replaceAll('/', '')
+      ) {
+        // this definitely leads to displaying of incorrect tax data
+        throw new Error(
+          `Tax and user birthnumber does not match! Server error. user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
+        )
+      }
+
+      return {
+        props: {
+          taxData,
+          strapiTax,
+          taxAdministrator: taxAdministrator ?? null,
+          dehydratedState: dehydrate(queryClient),
+          ...(await slovakServerSideTranslations()),
+        },
+      }
+    } catch (error) {
+      // TAXYEAR_OR_USER_NOT_FOUND
+      if (isAxiosError(error)) {
+        const is422Error = error.response?.status === 422
+        // The user is not verified, the BE returns 403, but it means that the tax doesn't exist
+        const isForbiddenTierError =
+          error.response?.status === 403 &&
+          // TODO: This should be replaced with a proper error code (which is not returned)
+          error.response?.data?.message === 'Forbidden tier'
+
+        if (is422Error || isForbiddenTierError) {
+          return { notFound: true }
+        }
+      }
+
+      throw error
+    }
+  },
+  { requiresSignIn: true },
+)
+
+const AccountThankYouPage = ({
+  taxData,
+  strapiTax,
+  dehydratedState,
+  taxAdministrator,
+}: AccountThankYouPageProps) => {
   return (
-    <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
-      <ThankYouSection />
-    </AccountPageLayout>
+    <HydrationBoundary state={dehydratedState}>
+      <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+        <TaxFeeSectionProvider
+          taxData={taxData}
+          taxAdministrator={taxAdministrator}
+          strapiTax={strapiTax}
+        >
+          <ThankYouSection />
+        </TaxFeeSectionProvider>
+      </AccountPageLayout>
+    </HydrationBoundary>
   )
 }
 

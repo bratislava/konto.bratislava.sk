@@ -13,10 +13,9 @@ import logger from '../../../../../frontend/utils/logger'
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
   taxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
 }
 
-const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -62,7 +61,6 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
 
   return {
     taxData,
-    strapiTax,
     redirectToPayment,
     redirectToPaymentIsPending,
     downloadQrCode,

@@ -11,12 +11,14 @@ import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const Details = () => {
-  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode, strapiTax } =
+  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode } =
     useTaxFeeSection()
+  const strapiTax = useStrapiTax()
   const { channelCurrentYearEffective } = useTaxChannel()
 
   const { t } = useTranslation('account')

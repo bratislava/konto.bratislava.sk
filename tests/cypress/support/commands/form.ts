@@ -98,6 +98,8 @@ declare namespace Cypress {
       form: object,
       shareOfSpace: string,
       jointShare: string,
+      cisloNebytovehoPriestoruVBytovomDome?: string,
+      ucelVyuzitiaNebytovehoPriestoruVBytovomDome?: string,
     ): Chainable<any>
 
     /**
@@ -242,13 +244,33 @@ Cypress.Commands.add('selectLegalRelationship', (form, index, relationship) => {
   }
 })
 
-Cypress.Commands.add('fillInApartmentInformation', (form, shareOfSpace, jointShare) => {
-  cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form))
-    .eq(0)
-    .type(shareOfSpace)
+Cypress.Commands.add(
+  'fillInApartmentInformation',
+  (
+    form,
+    shareOfSpace,
+    jointShare,
+    cisloNebytovehoPriestoruVBytovomDome,
+    ucelVyuzitiaNebytovehoPriestoruVBytovomDome,
+  ) => {
+    cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form))
+      .eq(0)
+      .type(shareOfSpace)
 
-  cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(jointShare)
-})
+    cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(jointShare)
+
+    if (cisloNebytovehoPriestoruVBytovomDome) {
+      cy.wrap(Cypress.$('[data-cy=input-cisloNebytovehoPriestoruVBytovomDome]', form))
+        .eq(0)
+        .type(cisloNebytovehoPriestoruVBytovomDome)
+    }
+    if (ucelVyuzitiaNebytovehoPriestoruVBytovomDome) {
+      cy.wrap(Cypress.$('[data-cy=input-ucelVyuzitiaNebytovehoPriestoruVBytovomDome]', form))
+        .eq(0)
+        .type(ucelVyuzitiaNebytovehoPriestoruVBytovomDome)
+    }
+  },
+)
 
 Cypress.Commands.add(
   'fillHouseInformation',

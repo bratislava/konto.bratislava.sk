@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, test } from 'vitest'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
@@ -17,7 +17,7 @@ describe('omitExtraData', () => {
   })
 
   test('should omit extra data for simple schema', () => {
-    const { schema } = object('wrapper', {}, {}, [
+    const { schema } = object('wrapper', {}, [
       input('input', { type: 'text', title: 'Input title' }, {}),
     ])
 

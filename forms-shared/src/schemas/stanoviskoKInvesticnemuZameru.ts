@@ -162,7 +162,7 @@ export default schema(
             'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
         },
       ),
-      object('clenenieStavby', { required: true }, { title: 'Členenie stavby' }, [
+      object('clenenieStavby', { title: 'Členenie stavby' }, [
         input(
           'hlavnaStavba',
           { type: 'text', title: 'Hlavná stavba', required: true },

@@ -26,7 +26,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
       { variant: 'boxed', orientations: 'column' },
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -81,7 +81,7 @@ export default schema({ title: 'Dočistenie stanovišťa zberných nádob' }, [
     ),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-    object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+    object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
         'elektronickaFaktura',

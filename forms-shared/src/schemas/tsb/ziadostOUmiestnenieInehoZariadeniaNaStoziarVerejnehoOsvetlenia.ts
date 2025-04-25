@@ -32,7 +32,6 @@ export default schema(
       ),
       object(
         'zodpovednost',
-        { required: true },
         {
           objectDisplay: 'boxed',
           title: 'Zodpovednosť za montáž, prevádzku a demontáž zariadenia',
@@ -56,23 +55,18 @@ export default schema(
                 { type: 'text', title: 'Názov organizácie', required: true },
                 {},
               ),
-              object(
-                'kontaktnaOsoba',
-                { required: true },
-                { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
-                [
-                  input(
-                    'meno',
-                    { title: 'Meno', required: true, type: 'text' },
-                    { selfColumn: '2/4' },
-                  ),
-                  input(
-                    'priezvisko',
-                    { title: 'Priezvisko', required: true, type: 'text' },
-                    { selfColumn: '2/4' },
-                  ),
-                ],
-              ),
+              object('kontaktnaOsoba', { objectDisplay: 'boxed', title: 'Kontaktná osoba' }, [
+                input(
+                  'meno',
+                  { title: 'Meno', required: true, type: 'text' },
+                  { selfColumn: '2/4' },
+                ),
+                input(
+                  'priezvisko',
+                  { title: 'Priezvisko', required: true, type: 'text' },
+                  { selfColumn: '2/4' },
+                ),
+              ]),
             ],
           ),
           conditionalFields(

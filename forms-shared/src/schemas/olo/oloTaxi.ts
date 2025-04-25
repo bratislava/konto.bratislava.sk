@@ -28,7 +28,7 @@ export default schema(
         },
         { variant: 'boxed', orientations: 'column' },
       ),
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',

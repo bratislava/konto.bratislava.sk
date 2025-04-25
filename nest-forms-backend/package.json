@@ -41,7 +41,7 @@
     "@nestjs/swagger": "11.1.4",
     "@prisma/client": "6.6.0",
     "@rjsf/utils": "5.24.9",
-    "amqplib": "^0.10.5",
+    "amqplib": "^0.10.7",
     "aws-sdk": "2.1692.0",
     "axios": "1.8.4",
     "bull": "4.16.5",

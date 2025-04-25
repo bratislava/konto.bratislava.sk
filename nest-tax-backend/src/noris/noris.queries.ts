@@ -516,5 +516,6 @@ export const setDeliveryMethodsForUser = `
 export const getNorisDataForUpdate = `
     SELECT variabilny_symbol, datum_platnosti
     FROM lcs.dane21_doklad
-    WHERE variabilny_symbol IN (@variable_symbols)
+    WHERE rok_podkladu IN (@years)
+    AND variabilny_symbol IN (@variable_symbols)
 `

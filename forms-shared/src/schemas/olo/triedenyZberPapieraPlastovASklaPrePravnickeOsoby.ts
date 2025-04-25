@@ -17,7 +17,6 @@ import { SchemalessFormDataExtractor } from 'src/form-utils/evaluateFormDataExtr
 const getFakturacia = (novyOdberatel: boolean) =>
   object(
     novyOdberatel ? 'fakturaciaNovehoOdoberatela' : 'fakturacia',
-    { required: true },
     { objectDisplay: 'boxed', title: 'Fakturácia' },
     [
       input(

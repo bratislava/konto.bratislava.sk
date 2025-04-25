@@ -156,7 +156,7 @@ const innerArray = (kalkulacka: boolean) =>
             },
             {},
           ),
-          object('parcelneCisloSposobVyuzitiaPozemku', { required: true }, {}, [
+          object('parcelneCisloSposobVyuzitiaPozemku', {}, [
             input(
               'cisloParcely',
               { type: 'text', title: 'Číslo parcely', required: true },
@@ -271,7 +271,7 @@ const innerArray = (kalkulacka: boolean) =>
                 vymeraPozemkuKalkulacka,
               ]
             : [vymeraPozemku]),
-          object('datumy', {}, {}, [
+          object('datumy', {}, [
             datePicker(
               'datumVznikuDanovejPovinnosti',
               { title: 'Dátum vzniku daňovej povinnosti' },

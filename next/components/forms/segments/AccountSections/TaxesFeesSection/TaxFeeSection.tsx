@@ -10,6 +10,7 @@ import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethodChangeModal'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 import TaxFooter from './TaxFooter'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
@@ -18,9 +19,9 @@ const TaxFeeSection = () => {
     taxData,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
-    strapiTax: { accountCommunicationConsentText },
     taxAdministrator,
   } = useTaxFeeSection()
+  const { accountCommunicationConsentText } = useStrapiTax()
   const displayTaxAdministratorCard =
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
 

@@ -169,7 +169,7 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
-  async setUnpaidTaxReminders() {
+  async sendUnpaidTaxReminders() {
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,

@@ -41,7 +41,7 @@ describe('TasksService', () => {
     expect(service).toBeDefined()
   })
 
-  describe('setUnpaidTaxReminders', () => {
+  describe('sendUnpaidTaxReminders', () => {
     it('should not do anything when there are no taxes', async () => {
       const findManyMock = jest
         .spyOn(service['prismaService'].tax, 'findMany')
@@ -51,7 +51,7 @@ describe('TasksService', () => {
         'trackEventUnpaidTaxReminder',
       )
 
-      await service.setUnpaidTaxReminders()
+      await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
@@ -82,7 +82,7 @@ describe('TasksService', () => {
         } as any)
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
-      await service.setUnpaidTaxReminders()
+      await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
@@ -135,7 +135,7 @@ describe('TasksService', () => {
         } as any)
       jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
-      await service.setUnpaidTaxReminders()
+      await service.sendUnpaidTaxReminders()
 
       expect(findManyMock).toHaveBeenCalled()
       expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)

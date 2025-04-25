@@ -24,6 +24,10 @@ type AccountThankYouPageProps = {
   dehydratedState: DehydratedState
 }
 
+type QueryParams = {
+  year: string
+}
+
 function convertYearToNumber(input: string | undefined) {
   if (input === undefined || !/^(20\d{2})$/.test(input)) {
     return null
@@ -33,9 +37,8 @@ function convertYearToNumber(input: string | undefined) {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountThankYouPageProps>(
-  async ({ amplifyContextSpec, getAccessToken }) => {
-    // TODO: get year from params
-    const year = '2025'
+  async ({ amplifyContextSpec, context, getAccessToken }) => {
+    const { year } = context.query as QueryParams
     const yearNumber = convertYearToNumber(year)
     if (!yearNumber) {
       return { notFound: true }

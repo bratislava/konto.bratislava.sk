@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { DeliveryMethodNamed, Prisma } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -182,6 +182,11 @@ export class TasksService {
       },
       where: {
         bloomreachUnpaidTaxReminderSent: false,
+        taxPayments: {
+          none: {
+            status: PaymentStatus.SUCCESS,
+          },
+        },
         OR: [
           {
             deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,

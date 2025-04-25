@@ -8,6 +8,8 @@ import dayjs from 'dayjs'
 import { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import { ConfigService } from '@nestjs/config'
 
 type OneTimePaymentDetails = {
   // Jednorázová platba
@@ -221,10 +223,10 @@ const getNextWorkingDay = (date: Dayjs): Dayjs => {
 
   while (
     // Check if it's a weekend or a state holiday
-    nextDay.day() === 6 || // Saturday
-    nextDay.day() === 0 || // Sunday
-    isStateHoliday(nextDay) // Holiday
-  ) {
+  nextDay.day() === 6 || // Saturday
+  nextDay.day() === 0 || // Sunday
+  isStateHoliday(nextDay) // Holiday
+    ) {
     // Move to the next day
     nextDay.add(1, 'day')
   }
@@ -244,23 +246,39 @@ const calculateDueDate = (dateOfValidity: Date | undefined) => {
 const calculateInstallmentAmounts = (
   overallAmount: number,
   overallPaid: number,
-) => {
+): { toPay: number, paid: number, status: 'PAID' | 'UNPAID' | 'PARTIAL' }[] => {
   const truncatedThird = ~~(overallAmount / 3)
   const firstTotal = overallAmount - 2 * truncatedThird
 
   if (overallPaid === 0)
-    return [{toPay: firstTotal, paid: 0}, {toPay: truncatedThird, paid: 0}, {toPay: truncatedThird, paid: 0}]
+    return [{ toPay: firstTotal, paid: 0, status: 'UNPAID' }, {
+      toPay: truncatedThird,
+      paid: 0,
+      status: 'UNPAID',
+    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
 
   if (overallPaid <= firstTotal)
-    return [{toPay: firstTotal - overallPaid, paid: overallPaid}, {toPay: truncatedThird, paid: 0}, {toPay: truncatedThird, paid: 0}]
+    return [{ toPay: firstTotal - overallPaid, paid: overallPaid, status: 'PARTIAL' }, {
+      toPay: truncatedThird,
+      paid: 0,
+      status: 'UNPAID',
+    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
 
   if (overallPaid <= firstTotal + truncatedThird)
-    return [{toPay: 0, paid: firstTotal}, {toPay: firstTotal + truncatedThird - overallPaid, paid: overallPaid - firstTotal}, {toPay: truncatedThird, paid: 0}]
+    return [{ toPay: 0, paid: firstTotal, status: 'PAID' }, {
+      toPay: firstTotal + truncatedThird - overallPaid,
+      paid: overallPaid - firstTotal,
+      status: 'PARTIAL',
+    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
 
-  return [{toPay: 0, paid: firstTotal}, {toPay: 0, paid: truncatedThird}, {toPay:overallAmount - overallPaid, paid: overallPaid - firstTotal - truncatedThird }]
+  return [{ toPay: 0, paid: firstTotal, status: 'PAID' }, {
+    toPay: 0,
+    paid: truncatedThird,
+    status: 'PAID',
+  }, { toPay: overallAmount - overallPaid, paid: overallPaid - firstTotal - truncatedThird, status: 'PARTIAL' }]
 }
 
-export const get_tax_detail = (
+export const get_tax_detail = async (
   overallPaid: number, // zaplatená suma
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
@@ -268,7 +286,7 @@ export const get_tax_detail = (
   payment_calendar_threshold: number, // splátková hranica (66 Eur)
   variableSymbol: string,
   dateOfValidity?: Date, // dátum právoplatnosti
-): TaxSummaryDetail => {
+): Promise<TaxSummaryDetail> => {
   const overallBalance =
     overallAmount - overallPaid > 0 ? overallAmount - overallPaid : 0
   const overallOverpayment =
@@ -278,7 +296,11 @@ export const get_tax_detail = (
     isPossible: true,
     type: overallPaid > 0 ? 'REMAINING_AMOUNT_PAYMENT' : 'ONE_TIME_PAYMENT',
     amount: overallBalance,
-    qrCode: new PaymentService().getQrCodeByTaxUuid(),
+    qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+      amount: overallBalance,
+      variableSymbol: variableSymbol,
+      specificSymbol: '2024200000',
+    }),
     variableSymbol: 'TODO',
     paymentGatewayLink: 'TODO',
   }
@@ -305,29 +327,41 @@ export const get_tax_detail = (
       {
         installmentNumber: 1,
         dueDate: fistPaymentDueDate,
-        status: undefined,
+        status: installmentAmounts[0].status,
         paidAmount: installmentAmounts[0].paid,
         remainingAmount: installmentAmounts[0].toPay,
-        variableSymbol: undefined,
-        qrCode: undefined,
+        variableSymbol,
+        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({ // TODO: placeholder
+          amount: installmentAmounts[0].toPay,
+          variableSymbol: variableSymbol,
+          specificSymbol: '2024200000',
+        }),
       },
       {
-        installmentNumber:2,
-        dueDate:dayjs.tz(`${dayjs().year()}-31-08`, bratislavaTimeZone).toDate(),
-        status:undefined,
+        installmentNumber: 2,
+        dueDate: dayjs.tz(`${dayjs().year()}-31-08`, bratislavaTimeZone).toDate(),
+        status: installmentAmounts[1].status,
         paidAmount: installmentAmounts[1].paid,
         remainingAmount: installmentAmounts[1].toPay,
-        variableSymbol:undefined,
-        qrCode:undefined,
+        variableSymbol,
+        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+          amount: installmentAmounts[0].toPay,
+          variableSymbol: variableSymbol,
+          specificSymbol: '2024200000',
+        }),
       },
       {
-        installmentNumber:3,
-        dueDate:dayjs.tz(`${dayjs().year()}-31-10`, bratislavaTimeZone).toDate(),
-        status:undefined,
+        installmentNumber: 3,
+        dueDate: dayjs.tz(`${dayjs().year()}-31-10`, bratislavaTimeZone).toDate(),
+        status: installmentAmounts[2].status,
         paidAmount: installmentAmounts[2].paid,
         remainingAmount: installmentAmounts[2].toPay,
-        variableSymbol:undefined,
-        qrCode:undefined,
+        variableSymbol,
+        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+          amount: installmentAmounts[0].toPay,
+          variableSymbol: variableSymbol,
+          specificSymbol: '2024200000',
+        }),
       },
     ]
   }

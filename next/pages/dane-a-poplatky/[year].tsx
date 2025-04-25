@@ -11,6 +11,7 @@ import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { ResponseTaxDto } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
@@ -100,13 +101,11 @@ const AccountTaxesFeesPage = ({
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSectionProvider
-          taxData={taxData}
-          taxAdministrator={taxAdministrator}
-          strapiTax={strapiTax}
-        >
-          <TaxFeeSection />
-        </TaxFeeSectionProvider>
+        <StrapiTaxProvider strapiTax={strapiTax}>
+          <TaxFeeSectionProvider taxData={taxData} taxAdministrator={taxAdministrator}>
+            <TaxFeeSection />
+          </TaxFeeSectionProvider>
+        </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

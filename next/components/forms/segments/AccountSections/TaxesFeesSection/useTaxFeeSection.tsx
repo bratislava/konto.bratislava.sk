@@ -1,5 +1,4 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import { TaxFragment } from '@clients/graphql-strapi/api'
 import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'

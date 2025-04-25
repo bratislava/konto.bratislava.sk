@@ -81,13 +81,13 @@ export class ResponseTaxPayerDto {
   name: string | null
 
   @ApiProperty({
-    description: 'Text of descreption of name for pdf',
+    description: 'Text of description of name for pdf',
     default: 'Meno daňovníka/ subjektu',
   })
   nameTxt: string | null
 
   @ApiProperty({
-    description: 'Text of descreption of street for pdf',
+    description: 'Text of description of street for pdf',
     default: 'Ulica trvalého pobytu',
   })
   permanentResidenceStreetTxt: string | null
@@ -444,10 +444,10 @@ export class ResponseTaxDto {
       externalId: '1234',
       name: 'Bratislavčan Daňový',
       nameTxt: 'Meno daňovníka',
-      permanentResidenceStreetTxt: 'TRvalý pobyt',
+      permanentResidenceStreetTxt: 'Trvalý pobyt',
       permanentResidenceStreet: 'Uršulínska 6 3/4',
       permanentResidenceZip: '811 01',
-      permanentResidenceCity: 'BRatislava',
+      permanentResidenceCity: 'Bratislava',
     },
   })
   @IsObject()

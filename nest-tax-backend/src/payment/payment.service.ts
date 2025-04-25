@@ -322,7 +322,7 @@ export class PaymentService {
         )
       }
 
-      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}&year=${taxPayment.tax.year}`
+      return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,

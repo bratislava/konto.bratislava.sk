@@ -72,10 +72,10 @@ export default class GinisAPIService {
 
     const fileUpload = await this.ginis.ssl.pridatSouborMtom({
       'Id-dokumentu': documentId,
-      'Jmeno-souboru': fileName,
+      'Jmeno-souboru': fileName.slice(-254), // filenames usually differ at the end
       'Typ-vazby': 'elektronicka-priloha',
-      'Popis-souboru': baseName,
-      'Podrobny-popis-souboru': baseName,
+      'Popis-souboru': baseName.slice(0, 50),
+      'Podrobny-popis-souboru': baseName.slice(0, 254),
       Obsah: contentStream,
     })
 

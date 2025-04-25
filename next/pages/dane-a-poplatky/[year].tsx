@@ -47,7 +47,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax, taxAdministrator, user] = await Promise.all([
+      const [{ data: taxData }, strapiTax, taxAdministrator] = await Promise.all([
         taxClient.taxControllerGetActualTaxes(yearNumber, {
           accessToken: 'always',
           accessTokenSsrGetFn: getAccessToken,
@@ -59,21 +59,6 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
 
       if (!strapiTax) {
         return { notFound: true }
-      }
-
-      if (!user.birthNumber || !taxData.taxPayer.birthNumber) {
-        // TODO needs close monitoring, I can't tell enough about our tax data yet - but this condition failing may potentially lead to displaying of incorrect tax data
-        throw new Error(
-          `Error (Status-500): User or tax birthnumber is missing! Invalid invariant (not aborting request). user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-        )
-      } else if (
-        // account birthnumbers may be without slashes, the tax one should always have them (but I did not see enough of that data)
-        user.birthNumber.replaceAll('/', '') !== taxData.taxPayer.birthNumber.replaceAll('/', '')
-      ) {
-        // this definitely leads to displaying of incorrect tax data
-        throw new Error(
-          `Tax and user birthnumber does not match! Server error. user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-        )
       }
 
       return {

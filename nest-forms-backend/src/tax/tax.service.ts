@@ -24,6 +24,8 @@ export default class TaxService implements OnModuleDestroy {
     formData: PrismaJson.FormDataJson,
     formId: string,
   ): Promise<string> {
+    /* Generating tax PDF is resource intensive. The generation usually takes ~3 seconds. Only a handful of concurrent
+     * tasks completely block the main thread. */
     return this.pdfPool.run({
       formData: formData as TaxFormData,
       formId,

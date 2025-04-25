@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Prisma } from '@prisma/client'
+import { DeliveryMethodNamed, Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
@@ -12,6 +13,7 @@ import {
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 
 @Injectable()
 export class TasksService {
@@ -22,6 +24,8 @@ export class TasksService {
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
+    private readonly bloomreachService: BloomreachService,
+    private readonly cityAccountSubservice: CityAccountSubservice,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -161,5 +165,79 @@ export class TasksService {
   @HandleErrors('Cron Error')
   async reportCardPayments() {
     await this.cardPaymentReportingService.generateAndSendPaymentReport()
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @HandleErrors('Cron Error')
+  async setUnpaidTaxReminders() {
+    const taxes = await this.prismaService.tax.findMany({
+      select: {
+        id: true,
+        year: true,
+        deliveryMethod: true,
+        taxPayer: {
+          select: {
+            birthNumber: true,
+          },
+        },
+      },
+      where: {
+        bloomreachUnpaidTaxReminderSent: false,
+        OR: [
+          {
+            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
+            createdAt: {
+              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+            },
+          },
+          {
+            deliveryMethod: {
+              in: [DeliveryMethodNamed.POSTAL, DeliveryMethodNamed.EDESK],
+            },
+            dateTaxRuling: {
+              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+            },
+          },
+        ],
+      },
+    })
+
+    if (taxes.length === 0) return
+    this.logger.log(
+      `TasksService: Sending unpaid tax reminder events for taxes: ${JSON.stringify(
+        taxes.map((tax) => ({
+          id: tax.id,
+        })),
+      )}`,
+    )
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        taxes.map((taxData) => taxData.taxPayer.birthNumber),
+      )
+
+    await Promise.all(
+      taxes.map(async (tax) => {
+        const userFromCityAccount =
+          userDataFromCityAccount[tax.taxPayer.birthNumber] || null
+        if (userFromCityAccount && userFromCityAccount.externalId) {
+          await this.bloomreachService.trackEventUnpaidTaxReminder(
+            { year: tax.year },
+            userFromCityAccount.externalId,
+          )
+        }
+      }),
+    )
+
+    await this.prismaService.tax.updateMany({
+      where: {
+        id: {
+          in: taxes.map((tax) => tax.id),
+        },
+      },
+      data: {
+        bloomreachUnpaidTaxReminderSent: true,
+      },
+    })
   }
 }

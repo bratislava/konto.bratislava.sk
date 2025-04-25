@@ -19,7 +19,7 @@ import {
   ResponseTaxDto,
 } from './dtos/requests.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { getTaxStatus } from './utils/helpers/tax.helper'
+import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import {
   InstallmentPaymentDetail,
   OneTimePaymentDetails,
@@ -35,6 +35,25 @@ export class TaxService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
+
+  private async getAmountAlreadyPaidByTaxId(id: number) {
+    const taxPayment = await this.prisma.taxPayment.groupBy({
+      by: ['taxId'],
+      where: {
+        taxId: id,
+        status: PaymentStatus.SUCCESS,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+
+    let total = 0
+    if (taxPayment.length === 1) { // length can only be 0 or 1
+      total = taxPayment[0]._sum.amount || 0
+    }
+    return total
+  }
 
   async getTaxByYear(
     year: number,
@@ -68,25 +87,11 @@ export class TaxService {
       )
     }
 
-    const taxPayment = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
-      where: {
-        taxId: tax.id,
-        status: PaymentStatus.SUCCESS,
-      },
-      _sum: {
-        amount: true,
-      },
-    })
+    const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
-    let total = 0
-    if (taxPayment.length === 1) {
-      total = taxPayment[0]._sum.amount || 0
-    }
-
-    if (total > 0 && tax.amount - total > 0) {
+    if (paidAmount > 0 && tax.amount - paidAmount > 0) {
       const qrCode = await this.qrCodeSubservice.createQrCode({
-        amount: tax.amount - total,
+        amount: tax.amount - paidAmount,
         variableSymbol: tax.variableSymbol,
         specificSymbol: '2023200000',
       })
@@ -94,23 +99,9 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = tax.taxInstallments.map((taxInstallment, i) => {
-      if (i === 1) {
-        return {
-          ...taxInstallment,
-          text: `- druhá splátka v termíne do 31.08.${tax.year} v sume:`,
-        }
-      }
-      if (i === 2) {
-        return {
-          ...taxInstallment,
-          text: `- tretia splátka v termíne do 31.10.${tax.year} v sume:`,
-        }
-      }
-      return taxInstallment
-    })
+    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
 
-    const paidStatus = getTaxStatus(tax.amount, total)
+    const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
     // TODO: We stopped generating PDFs in 2024, edit this for advanced logic
     // const pdfExport = year <= 2023
@@ -122,7 +113,7 @@ export class TaxService {
     return {
       ...tax,
       taxInstallments,
-      paidAmount: total,
+      paidAmount,
       paidStatus,
       pdfExport,
       isPayable,

@@ -314,19 +314,19 @@ export default class GinisService {
         }
 
         try {
-          const fileStream = await this.minioClientSubservice.download(
-            this.baConfigService.minio.buckets.safe,
-            `${pospID}/${form.id}/${file.minioFileName}`,
-          )
-
           // sometimes ginis times-out on the first try
-          await this.ginisHelper.retryWithDelay(async () =>
-            this.ginisApiService.uploadFile(
-              form.ginisDocumentId!, // check for null already present above
+          await this.ginisHelper.retryWithDelay(async () => {
+            const fileStream = await this.minioClientSubservice.download(
+              this.baConfigService.minio.buckets.safe,
+              `${pospID}/${form.id}/${file.minioFileName}`,
+            )
+
+            return this.ginisApiService.uploadFile(
+              form.ginisDocumentId!,
               file.fileName,
               fileStream,
-            ),
-          )
+            )
+          })
 
           await this.updateSuccessfulAttachmentUpload(file.id)
         } catch (error) {

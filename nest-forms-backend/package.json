@@ -69,7 +69,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^5.0.29",
+    "@darraghor/eslint-plugin-nestjs-typed": "^6.4.9",
     "@nestjs/cli": "11.0.6",
     "@nestjs/schematics": "11.0.5",
     "@nestjs/testing": "11.0.20",

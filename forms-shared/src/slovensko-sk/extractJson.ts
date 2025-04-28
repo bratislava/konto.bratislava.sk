@@ -56,9 +56,9 @@ type BaseFormXml = {
     $: {
       xmlns: string
     }
-    /* Added on 29-04-2025. */
+    /* Added on 2025-04-29. */
     FormId?: [string]
-    /* Added on 12-11-2024 with hardcoded value `1.0`, real values (semver format e.g. `1.0.0`) added on 24-02-2025. */
+    /* Added on 2024-11-12 with hardcoded value `1.0`, real values (semver format e.g. `1.0.0`) added on 2025-02-24. */
     JsonVersion?: [string]
     Json: [string]
   }

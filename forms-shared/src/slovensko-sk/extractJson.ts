@@ -20,6 +20,14 @@ const baseFormXmlSchema = {
           },
           required: ['xmlns'],
         },
+        FormId: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+          minItems: 1,
+          maxItems: 1,
+        },
         JsonVersion: {
           type: 'array',
           items: {
@@ -48,6 +56,9 @@ type BaseFormXml = {
     $: {
       xmlns: string
     }
+    /* Added on 29-04-2025. */
+    FormId?: [string]
+    /* Added on 12-11-2024 with hardcoded value `1.0`, real values (semver format e.g. `1.0.0`) added on 24-02-2025. */
     JsonVersion?: [string]
     Json: [string]
   }

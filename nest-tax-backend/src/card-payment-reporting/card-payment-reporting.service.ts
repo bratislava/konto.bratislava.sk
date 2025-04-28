@@ -321,6 +321,8 @@ export class CardPaymentReportingService {
     dayjs.extend(utc)
     dayjs.extend(timezone)
 
+    const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
+
     // Processing new files
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
@@ -328,14 +330,16 @@ export class CardPaymentReportingService {
         if (!fileDate) return null
 
         const dateInfo = this.getDateInfo(fileDate)
-        if (dateInfo.today.isBefore(dayjs().subtract(180, 'day'))) {
+
+        if (dateInfo.today.isBefore(hundredEightyDaysAgo)) {
           return null
         }
 
-        // Parse CSV and add columns
         const csvData = this.processCsvData(file.content)
 
         if (csvData.length >= 2 && csvData[1].transactionType === 'POHL') {
+        // Skip specifically files that return fee as the third row.
+        // We do not have good info about column names in this case, so we just match this exact case
           return null
         }
 

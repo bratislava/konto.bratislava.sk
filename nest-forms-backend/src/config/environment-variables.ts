@@ -309,16 +309,6 @@ export default class EnvironmentVariables {
   REDIS_PASSWORD: string
 
   @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  TAX_PDF_JOB_CONCURRENCY: number
-
-  @Expose()
-  @IsInt()
-  @IsNotEmpty()
-  TAX_PDF_JOB_TIMEOUT: number
-
-  @Expose()
   @IsBoolean()
   @IsNotEmpty()
   FEATURE_TOGGLE_VERSIONING: boolean

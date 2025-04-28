@@ -143,10 +143,6 @@ export default class BaConfig {
       port: this.validatedConfig.REDIS_PORT,
       username: this.validatedConfig.REDIS_USER,
       password: this.validatedConfig.REDIS_PASSWORD,
-      taxJob: {
-        concurrency: this.validatedConfig.TAX_PDF_JOB_CONCURRENCY,
-        timeout: this.validatedConfig.TAX_PDF_JOB_TIMEOUT,
-      },
     }
   }
 

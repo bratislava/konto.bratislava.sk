@@ -328,6 +328,9 @@ export class CardPaymentReportingService {
         if (!fileDate) return null
 
         const dateInfo = this.getDateInfo(fileDate)
+        if (dateInfo.today.isBefore(dayjs().subtract(180, 'day'))) {
+          return null
+        }
 
         // Parse CSV and add columns
         const csvData = this.processCsvData(file.content)

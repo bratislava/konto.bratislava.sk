@@ -59,7 +59,7 @@
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^6.4.3",
     "@eslint/js": "^9.23.0",
-    "@eslint/json": "^0.11.0",
+    "@eslint/json": "^0.12.0",
     "@eslint/markdown": "^6.4.0",
     "@nestjs/cli": "^11.0.7",
     "@nestjs/schematics": "^11.0.5",

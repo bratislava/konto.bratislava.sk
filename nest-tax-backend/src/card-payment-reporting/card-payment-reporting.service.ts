@@ -125,6 +125,7 @@ export class CardPaymentReportingService {
     const rows = parse(csvContent, {
       delimiter: ';',
       fromLine: 2, // Skip first line
+      relax_column_count_less: true,
     }) as string[][]
 
     return rows.map((row: string[]) => {
@@ -330,6 +331,10 @@ export class CardPaymentReportingService {
 
         // Parse CSV and add columns
         const csvData = this.processCsvData(file.content)
+
+        if (csvData.length >= 2 && csvData[1].transactionType === 'POHL') {
+          return null
+        }
 
         // Extract variable symbols with all orderIds belonging to each VS
         const variableSymbols = await this.getVariableSymbolsByOrderIds(

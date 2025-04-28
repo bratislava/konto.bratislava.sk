@@ -666,8 +666,8 @@
     "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
     "first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
     "first_installment_email_channel": "Prvá splátka v termíne do <strong>15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>",
-    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. 2024</strong>",
-    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. 2024</strong>"
+    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. {{year}}</strong>",
+    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. {{year}}</strong>"
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",

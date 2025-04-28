@@ -125,6 +125,7 @@ export class CardPaymentReportingService {
     const rows = parse(csvContent, {
       delimiter: ';',
       fromLine: 2, // Skip first line
+      relaxColumnCountLess: true,
     }) as string[][]
 
     return rows.map((row: string[]) => {
@@ -320,6 +321,8 @@ export class CardPaymentReportingService {
     dayjs.extend(utc)
     dayjs.extend(timezone)
 
+    const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
+
     // Processing new files
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
@@ -328,8 +331,21 @@ export class CardPaymentReportingService {
 
         const dateInfo = this.getDateInfo(fileDate)
 
-        // Parse CSV and add columns
+        if (dateInfo.today.isBefore(hundredEightyDaysAgo)) {
+          return null
+        }
+
         const csvData = this.processCsvData(file.content)
+
+        // Skip specifically files that return fee as the third row.
+        // We do not have good info about column names in this case, so we just match this exact case
+        if (
+          csvData.length === 2 &&
+          csvData[1].transactionType === 'POHL' &&
+          csvData[1].transactionId === '0,15'
+        ) {
+          return null
+        }
 
         // Extract variable symbols with all orderIds belonging to each VS
         const variableSymbols = await this.getVariableSymbolsByOrderIds(

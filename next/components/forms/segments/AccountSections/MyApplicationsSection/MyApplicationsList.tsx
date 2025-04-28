@@ -9,6 +9,7 @@ import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
 import MyApplicationsCard from './MyApplicationsCard'
+import { patchApplicationFormIfNeeded } from './patchApplicationFormIfNeededClient'
 
 // must be string due to typing
 const PAGE_SIZE = '10'
@@ -16,8 +17,9 @@ const PAGE_SIZE = '10'
 export const getDraftApplications = async (
   variant: ApplicationsListVariant,
   page: number,
+  emailFormSlugs: string[],
   accessTokenSsrGetFn?: () => Promise<string | null>,
-) => {
+): Promise<GetFormsResponseDto> => {
   // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued/sending_to_nases
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
@@ -40,7 +42,10 @@ export const getDraftApplications = async (
     undefined,
     { accessToken: 'always', accessTokenSsrGetFn },
   )
-  return response.data
+  return {
+    ...response.data,
+    items: response.data.items.map((item) => patchApplicationFormIfNeeded(item, emailFormSlugs)),
+  }
 }
 
 type MyApplicationsListProps = {

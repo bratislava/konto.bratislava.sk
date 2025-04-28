@@ -25,19 +25,25 @@ const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
 // when this task https://github.com/bratislava/konto.bratislava.sk/issues/670 is done it could be moved back to server side props
 export const getTotalNumberOfApplications = async (
   variant: ApplicationsListVariant,
+  emailFormSlugs: string[],
   accessTokenSsrGetFn?: () => Promise<string | null>,
 ) => {
-  const firstPage = await getDraftApplications(variant, 1, accessTokenSsrGetFn)
+  const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, accessTokenSsrGetFn)
   if (firstPage.countPages === 0) return 0
 
-  const lastPage = await getDraftApplications(variant, firstPage.countPages, accessTokenSsrGetFn)
+  const lastPage = await getDraftApplications(
+    variant,
+    firstPage.countPages,
+    emailFormSlugs,
+    accessTokenSsrGetFn,
+  )
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 
-const useTotalCount = (variant: ApplicationsListVariant) => {
+const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
   const { data, refetch } = useQuery({
     queryKey: [`ApplicationsCount_${variant}`, variant],
-    queryFn: () => getTotalNumberOfApplications(variant),
+    queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })
 
   return { data, refetch }
@@ -47,12 +53,14 @@ type MyApplicationsSectionProps = {
   selectedSection: ApplicationsListVariant
   applications?: GetFormsResponseDto
   formDefinitionSlugTitleMap: Record<string, string>
+  emailFormSlugs: string[]
 }
 
 const MyApplicationsSection = ({
   selectedSection,
   applications,
   formDefinitionSlugTitleMap,
+  emailFormSlugs,
 }: MyApplicationsSectionProps) => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
@@ -65,9 +73,9 @@ const MyApplicationsSection = ({
   ]
 
   const totalCounts = {
-    SENT: useTotalCount('SENT'),
-    SENDING: useTotalCount('SENDING'),
-    DRAFT: useTotalCount('DRAFT'),
+    SENT: useTotalCount('SENT', emailFormSlugs),
+    SENDING: useTotalCount('SENDING', emailFormSlugs),
+    DRAFT: useTotalCount('DRAFT', emailFormSlugs),
   }
 
   const refetchApplicationsCount = async () => {

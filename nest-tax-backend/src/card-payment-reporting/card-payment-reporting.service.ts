@@ -125,7 +125,7 @@ export class CardPaymentReportingService {
     const rows = parse(csvContent, {
       delimiter: ';',
       fromLine: 2, // Skip first line
-      relax_column_count_less: true,
+      relaxColumnCountLess: true,
     }) as string[][]
 
     return rows.map((row: string[]) => {

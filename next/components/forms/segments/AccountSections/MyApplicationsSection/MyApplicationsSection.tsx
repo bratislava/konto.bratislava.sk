@@ -42,6 +42,8 @@ export const getTotalNumberOfApplications = async (
 
 const useTotalCount = (variant: ApplicationsListVariant, emailFormSlugs: string[]) => {
   const { data, refetch } = useQuery({
+    // `emailFormSlugs` is stable and should be part of the key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: [`ApplicationsCount_${variant}`, variant],
     queryFn: () => getTotalNumberOfApplications(variant, emailFormSlugs),
   })

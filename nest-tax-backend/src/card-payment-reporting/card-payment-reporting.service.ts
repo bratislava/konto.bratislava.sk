@@ -337,9 +337,13 @@ export class CardPaymentReportingService {
 
         const csvData = this.processCsvData(file.content)
 
-        if (csvData.length >= 2 && csvData[1].transactionType === 'POHL') {
         // Skip specifically files that return fee as the third row.
         // We do not have good info about column names in this case, so we just match this exact case
+        if (
+          csvData.length === 2 &&
+          csvData[1].transactionType === 'POHL' &&
+          csvData[1].transactionId === '0,15'
+        ) {
           return null
         }
 

@@ -61,6 +61,7 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.1",
+    "piscina": "^4.9.2",
     "playwright": "1.52.0",
     "reflect-metadata": "0.2.2",
     "rimraf": "^6.0.1",

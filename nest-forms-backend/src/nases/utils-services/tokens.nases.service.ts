@@ -42,6 +42,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../types/send-message-nases-sender.type'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -383,6 +387,17 @@ export default class NasesUtilsService {
     return message
   }
 
+  private getSenderId(sender: SendMessageNasesSender): string {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return sender.senderUri
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
@@ -400,7 +415,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -419,8 +434,7 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
-    const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
     let subject: string = form.id
     const mimeType = isSigned
@@ -516,15 +530,31 @@ export default class NasesUtilsService {
     }`
   }
 
+  private getSendMessageNasesEndpoint = (
+    sender: SendMessageNasesSender,
+  ):
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceivePost => {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return this.clientsService.slovenskoSkApi
+        .apiSktalkReceiveAndSaveToOutboxPost
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, senderUri)
+      message = await this.createEnvelopeSendMessage(data, sender)
     } catch (error) {
       return {
         status: 500,
@@ -533,16 +563,8 @@ export default class NasesUtilsService {
         },
       }
     }
-
-    // skip saving the message to outbox if we are sending it to ourselves as it will be available in inbox
-    const sktalkReceiveFn =
-      !senderUri ||
-      senderUri === (this.configService.get<string>('NASES_SENDER_URI') ?? '')
-        ? this.clientsService.slovenskoSkApi.apiSktalkReceivePost
-        : this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
-
     try {
-      const response = await sktalkReceiveFn(
+      const response = await this.getSendMessageNasesEndpoint(sender)(
         {
           message,
         },

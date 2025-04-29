@@ -15,51 +15,41 @@ export default schema(
   [
     getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [
-      object(
-        'fakturacneUdaje',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Fakturačné údaje' },
-        [
-          input(
-            'fakturacnaAdresa',
-            { title: 'Fakturačná adresa', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-          input('mesto', { title: 'Mesto', required: true, type: 'text' }, { selfColumn: '3/4' }),
-          input('psc', { title: 'PSČ', required: true, type: 'text' }, { selfColumn: '1/4' }),
-          input(
-            'email',
-            { title: 'E-mail', required: true, type: 'email' },
-            { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
-          ),
-        ],
-      ),
-      object(
-        'udajeObjednavky',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Údaje objednávky' },
-        [
-          input(
-            'adresaObjednavky',
-            { title: 'Adresa objednávky', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-          selectMultiple(
-            'katastralneUzemie',
-            {
-              title: 'Katastrálne územie',
-              required: true,
-              items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
-                value: Code,
-                label: Name,
-              })),
-            },
-            {
-              helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
-            },
-          ),
-        ],
-      ),
+      object('fakturacneUdaje', { objectDisplay: 'boxed', title: 'Fakturačné údaje' }, [
+        input(
+          'fakturacnaAdresa',
+          { title: 'Fakturačná adresa', required: true, type: 'text' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
+        ),
+        input('mesto', { title: 'Mesto', required: true, type: 'text' }, { selfColumn: '3/4' }),
+        input('psc', { title: 'PSČ', required: true, type: 'text' }, { selfColumn: '1/4' }),
+        input(
+          'email',
+          { title: 'E-mail', required: true, type: 'email' },
+          { helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu' },
+        ),
+      ]),
+      object('udajeObjednavky', { objectDisplay: 'boxed', title: 'Údaje objednávky' }, [
+        input(
+          'adresaObjednavky',
+          { title: 'Adresa objednávky', required: true, type: 'text' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
+        ),
+        selectMultiple(
+          'katastralneUzemie',
+          {
+            title: 'Katastrálne územie',
+            required: true,
+            items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+              value: Code,
+              label: Name,
+            })),
+          },
+          {
+            helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
+          },
+        ),
+      ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
       fileUpload(

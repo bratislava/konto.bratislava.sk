@@ -127,6 +127,7 @@ export class TasksService {
       select: {
         id: true,
         variableSymbol: true,
+        year: true,
       },
       where: {
         dateTaxRuling: null,

@@ -12,6 +12,7 @@ import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisController from './ginis.controller'
+import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 jest.mock('./subservices/ginis-api.service')
@@ -26,6 +27,7 @@ describe('GinisController', () => {
       providers: [
         ThrowerErrorGuard,
         GinisAPIService,
+        GinisHelper,
         FormsService,
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
@@ -144,8 +146,8 @@ describe('GinisController', () => {
         .fn()
         .mockResolvedValue({
           'Detail-referenta': {
-            Jmeno: 'name1',
-            Prijmeni: 'surname1',
+            Jmeno: 'Jack',
+            Prijmeni: 'Brown',
           },
         })
       jest.mock('../utils/ginis/ginis-api-helper', () => ({
@@ -158,8 +160,35 @@ describe('GinisController', () => {
         null,
       )
       expect(result.id).toBe('MAG0X03RZDEB')
-      expect(result.ownerName).toBe('name1 surname1')
+      expect(result.ownerName).toBe('Jack Brown')
       expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
+    })
+
+    it('should sanitize ginis owner name', async () => {
+      controller['formsService'].getFormWithAccessCheck = jest
+        .fn()
+        .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
+      controller['ginisAPIService'].getDocumentDetail = jest
+        .fn()
+        .mockResolvedValue(mockGinisDocumentData)
+      controller['ginisAPIService'].getOwnerDetail = jest
+        .fn()
+        .mockResolvedValue({
+          'Detail-referenta': {
+            Jmeno: 'Jill Mary-47',
+            Prijmeni: '42-Black-Smith',
+          },
+        })
+      jest.mock('../utils/ginis/ginis-api-helper', () => ({
+        mapGinisHistory: jest.fn(),
+      }))
+
+      const result = await controller.getGinisDocumentByFormId(
+        '123',
+        undefined,
+        null,
+      )
+      expect(result.ownerName).toBe('Jill Mary Black-Smith')
     })
   })
 })

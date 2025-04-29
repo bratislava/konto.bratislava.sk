@@ -96,6 +96,7 @@ export default class BaConfig {
       username: this.validatedConfig.GINIS_USERNAME,
       password: this.validatedConfig.GINIS_PASSWORD,
       sslHost: this.validatedConfig.GINIS_SSL_HOST,
+      sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
     }
   }
@@ -142,10 +143,6 @@ export default class BaConfig {
       port: this.validatedConfig.REDIS_PORT,
       username: this.validatedConfig.REDIS_USER,
       password: this.validatedConfig.REDIS_PASSWORD,
-      taxJob: {
-        concurrency: this.validatedConfig.TAX_PDF_JOB_CONCURRENCY,
-        timeout: this.validatedConfig.TAX_PDF_JOB_TIMEOUT,
-      },
     }
   }
 

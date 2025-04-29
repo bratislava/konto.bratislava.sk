@@ -708,6 +708,12 @@ describe('F05 -', { testIsolation: false }, () => {
                                 flatAndNonResTax.priznania[indexPriznania]
                                   .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
                                   .spoluvlastnickyPodiel,
+                                flatAndNonResTax.priznania[indexPriznania]
+                                  .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
+                                  .riadok.cisloNebytovehoPriestoruVBytovomDome,
+                                flatAndNonResTax.priznania[indexPriznania]
+                                  .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
+                                  .riadok.ucelVyuzitiaNebytovehoPriestoruVBytovomDome,
                               )
                             },
                           )

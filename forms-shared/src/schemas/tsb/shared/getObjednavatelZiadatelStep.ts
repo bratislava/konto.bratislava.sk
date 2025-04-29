@@ -102,21 +102,16 @@ export const getObjednavatelZiadatelStep = (type: 'objednavatel' | 'ziadatel') =
         { helptext: 'Vyplňte vo formáte +421' },
       ),
       conditionalFields(createCondition([[[fieldProperty], { const: 'pravnickaOsoba' }]]), [
-        object(
-          'kontaktnaOsoba',
-          { required: true },
-          { objectDisplay: 'boxed', title: 'Kontaktná osoba' },
-          [
-            input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
-            input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
-            input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-            input(
-              'telefonneCislo',
-              { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
-              { helptext: 'Vyplňte vo formáte +421' },
-            ),
-          ],
-        ),
+        object('kontaktnaOsoba', { objectDisplay: 'boxed', title: 'Kontaktná osoba' }, [
+          input('meno', { title: 'Meno', required: true, type: 'text' }, {}),
+          input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
+          input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+          input(
+            'telefonneCislo',
+            { title: 'Telefónne číslo', required: true, type: 'ba-phone-number' },
+            { helptext: 'Vyplňte vo formáte +421' },
+          ),
+        ]),
       ]),
     ],
   )

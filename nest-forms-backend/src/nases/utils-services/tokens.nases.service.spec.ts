@@ -292,7 +292,7 @@ describe('NasesUtilsService', () => {
             `        <MessageInfo>\n` +
             `          <Class>EGOV_APPLICATION</Class>\n` +
             `          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n` +
-            `          <PospVersion>0.9</PospVersion>\n` +
+            `          <PospVersion>1.3</PospVersion>\n` +
             `          <MessageID>123456678901234567890</MessageID>\n` +
             `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
             `        </MessageInfo>\n` +

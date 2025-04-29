@@ -51448,14 +51448,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [
@@ -66281,14 +66282,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [
@@ -72639,6 +72641,56 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
               "if": {
                 "properties": {
                   "objednavatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "objednavatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "objednavatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -72729,18 +72781,6 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -72798,26 +72838,11 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
               "title": "PSČ",
               "type": "string",
             },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
-              "type": "string",
-            },
           },
           "required": [
             "objednavatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Objednávateľ",
           "type": "object",
@@ -73361,6 +73386,56 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "if": {
                 "properties": {
                   "objednavatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "objednavatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "objednavatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -73451,18 +73526,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -73520,26 +73583,11 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "title": "PSČ",
               "type": "string",
             },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
-              "type": "string",
-            },
           },
           "required": [
             "objednavatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Objednávateľ",
           "type": "object",
@@ -74125,6 +74173,56 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               "if": {
                 "properties": {
                   "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -74215,18 +74313,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -74250,19 +74336,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               },
               "format": "ba-slovak-zip",
               "title": "PSČ",
-              "type": "string",
-            },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
               "type": "string",
             },
             "ziadatelTyp": {
@@ -74302,8 +74375,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             "ziadatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Žiadateľ",
           "type": "object",
@@ -74897,6 +74968,56 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
               "if": {
                 "properties": {
                   "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -74987,18 +75108,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -75022,19 +75131,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
               },
               "format": "ba-slovak-zip",
               "title": "PSČ",
-              "type": "string",
-            },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
               "type": "string",
             },
             "ziadatelTyp": {
@@ -75074,8 +75170,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             "ziadatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Žiadateľ",
           "type": "object",

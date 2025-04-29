@@ -288,6 +288,41 @@ export default class GinisService {
     })
   }
 
+  private async uploadAttachmentToGinis(
+    file: FormWithFiles['files'][number],
+    ginisDocumentId: string,
+    minioFilePath: string,
+  ): Promise<void> {
+    if (file.ginisUploaded) {
+      return
+    }
+
+    try {
+      // sometimes ginis times-out on the first try
+      await this.ginisHelper.retryWithDelay(async () => {
+        const fileStream = await this.minioClientSubservice.download(
+          this.baConfigService.minio.buckets.safe,
+          minioFilePath,
+        )
+
+        return this.ginisApiService.uploadFile(
+          ginisDocumentId,
+          file.fileName,
+          fileStream,
+        )
+      })
+
+      await this.updateSuccessfulAttachmentUpload(file.id)
+    } catch (error) {
+      alertError(
+        `ERROR uploadAttachments - error upload file to ginis. Form id: ${file.formId}; Ginis id: ${ginisDocumentId}; File id: ${file.id}`,
+        this.logger,
+        error,
+      )
+      await this.updateFailedAttachmentUpload(file.id)
+    }
+  }
+
   async uploadAttachments(form: FormWithFiles, pospID: string): Promise<void> {
     this.logger.debug('---- start to upload attachments ----')
     await this.prismaService.forms.update({
@@ -307,38 +342,18 @@ export default class GinisService {
       return
     }
 
-    await Promise.all(
-      form.files.map(async (file) => {
-        if (file.ginisUploaded) {
-          return
-        }
+    // ginis can't handle parallel uploads, it's causing race conditions on their side
+    for (let i = 0; i < form.files.length; i += 1) {
+      const file = form.files[i]
+      const minioFilePath = `${pospID}/${form.id}/${file.minioFileName}`
 
-        try {
-          // sometimes ginis times-out on the first try
-          await this.ginisHelper.retryWithDelay(async () => {
-            const fileStream = await this.minioClientSubservice.download(
-              this.baConfigService.minio.buckets.safe,
-              `${pospID}/${form.id}/${file.minioFileName}`,
-            )
-
-            return this.ginisApiService.uploadFile(
-              form.ginisDocumentId!,
-              file.fileName,
-              fileStream,
-            )
-          })
-
-          await this.updateSuccessfulAttachmentUpload(file.id)
-        } catch (error) {
-          alertError(
-            `ERROR uploadAttachments - error upload file to ginis. Form id: ${form.id}; Ginis id: ${form.ginisDocumentId}; File id: ${file.id}`,
-            this.logger,
-            error,
-          )
-          await this.updateFailedAttachmentUpload(file.id)
-        }
-      }),
-    )
+      // eslint-disable-next-line no-await-in-loop
+      await this.uploadAttachmentToGinis(
+        file,
+        form.ginisDocumentId!,
+        minioFilePath,
+      )
+    }
   }
 
   async editSubmission(documentId: string, newSubject: string): Promise<void> {

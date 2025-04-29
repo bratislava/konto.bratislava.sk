@@ -3,6 +3,7 @@
 import { Readable } from 'node:stream'
 
 import { createMock } from '@golevelup/ts-jest'
+import { getQueueToken } from '@nestjs/bull'
 import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
@@ -58,7 +59,11 @@ describe('NasesUtilsService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        { provide: TaxService, useValue: createMock<TaxService>() },
+        TaxService,
+        {
+          provide: getQueueToken('tax'),
+          useValue: {},
+        },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()

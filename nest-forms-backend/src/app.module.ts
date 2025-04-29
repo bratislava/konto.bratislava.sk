@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -24,6 +25,7 @@ import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import SharepointSubservice from './utils/subservices/sharepoint.subservice'
 
 @Module({
   imports: [
@@ -56,10 +58,24 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     TaxModule,
     FormValidatorRegistryModule,
     SignerModule,
+    // BEWARE: If Bull doesn't connect to Redis successfully, it will silently fail!
+    // https://github.com/nestjs/bull/issues/1076
+    BullModule.forRootAsync({
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: async (baConfigService: BaConfigService) => ({
+        redis: {
+          host: baConfigService.redis.service,
+          port: baConfigService.redis.port,
+          username: baConfigService.redis.username,
+          password: baConfigService.redis.password,
+        },
+      }),
+    }),
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService, ThrowerErrorGuard],
+  providers: [AppService, SharepointSubservice, ThrowerErrorGuard],
 })
 export default class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

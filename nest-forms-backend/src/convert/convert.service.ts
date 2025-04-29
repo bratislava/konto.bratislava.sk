@@ -252,7 +252,7 @@ export default class ConvertService {
 
   private async generateTaxPdf(
     formDataJson: PrismaJson.FormDataJson,
-    formId: string,
+    formId?: string,
   ): Promise<Readable> {
     try {
       const base64Pdf = await this.taxService.getFilledInPdfBase64(

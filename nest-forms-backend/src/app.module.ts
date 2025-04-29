@@ -42,18 +42,6 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
         secretKey: baConfigService.minio.secretKey,
       }),
     }),
-    BullModule.forRootAsync({
-      imports: [BaConfigModule],
-      inject: [BaConfigService],
-      useFactory: async (baConfigService: BaConfigService) => ({
-        redis: {
-          host: baConfigService.redis.service,
-          port: baConfigService.redis.port,
-          username: baConfigService.redis.username,
-          password: baConfigService.redis.password,
-        },
-      }),
-    }),
     PrismaModule,
     AuthModule,
     AdminModule,
@@ -69,6 +57,20 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     TaxModule,
     FormValidatorRegistryModule,
     SignerModule,
+    // BEWARE: If Bull doesn't connect to Redis successfully, it will silently fail!
+    // https://github.com/nestjs/bull/issues/1076
+    BullModule.forRootAsync({
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: async (baConfigService: BaConfigService) => ({
+        redis: {
+          host: baConfigService.redis.service,
+          port: baConfigService.redis.port,
+          username: baConfigService.redis.username,
+          password: baConfigService.redis.password,
+        },
+      }),
+    }),
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

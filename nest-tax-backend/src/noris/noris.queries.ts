@@ -411,17 +411,14 @@ LEFT OUTER JOIN
         uda_21_organizacia_mag.cislo_subjektu=lcs.dane21_priznanie.subjekt
 
 WHERE 
-    -- (subjekty_a.cislo_poradace = 12562)  
-    -- AND 
     (
         lcs.dane21_druh_dokladu.typ_dokladu = 'v'
         AND lcs.dane21_druh_dokladu.typ_dane = '1'
         AND lcs.dane21_doklad.stav_dokladu<>'s'  
-        -- AND lcs.dane21_doklad.spis_sluzba_stav <> 'z'
         AND lcs.dane21_doklad.rok_podkladu = {%YEAR%}
         AND lcs.dane21_priznanie.rok = {%YEAR%}
         AND lcs.dane21_priznanie.podnikatel = 'N'
-        -- AND isnull(lcs.dane21_doklad.sposob_dorucenia, '') <> 'e'
+        AND lcs.dane21_doklad.pohladavka IS NOT NULL
     )
     {%BIRTHNUMBERS%}
 

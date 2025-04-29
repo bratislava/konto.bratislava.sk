@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -39,6 +40,18 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
         useSSL: baConfigService.minio.useSSL,
         accessKey: baConfigService.minio.accessKey,
         secretKey: baConfigService.minio.secretKey,
+      }),
+    }),
+    BullModule.forRootAsync({
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: async (baConfigService: BaConfigService) => ({
+        redis: {
+          host: baConfigService.redis.service,
+          port: baConfigService.redis.port,
+          username: baConfigService.redis.username,
+          password: baConfigService.redis.password,
+        },
       }),
     }),
     PrismaModule,

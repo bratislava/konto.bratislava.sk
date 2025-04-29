@@ -51448,14 +51448,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [
@@ -66281,14 +66282,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [

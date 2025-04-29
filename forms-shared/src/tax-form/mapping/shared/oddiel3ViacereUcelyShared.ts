@@ -45,10 +45,10 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebViacereUcelyPriz
     safeBoolean(data.danZoStaviebViacereUcely?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
     ? calculateFormCalculatorFormula(oddiel3ViacereUcelyZakladDaneFormula, priznanie)
-    : safeNumber(priznanie.zakladDane)
+    : safeNumber(priznanie.nehnutelnosti?.sumar?.zakladDane)
   const celkovaVymera = pouzitKalkulacku
     ? calculateFormCalculatorFormula(oddiel3ViacereUcelyCelkovaVymeraFormula, priznanie)
-    : safeNumber(priznanie.celkovaVymera)
+    : safeNumber(priznanie.nehnutelnosti?.sumar?.vymeraPodlahovychPloch)
 
   const vymeryStaviebPodlaTypu = getVymeryStaviebPodlaTypu(priznanie, pouzitKalkulacku)
 

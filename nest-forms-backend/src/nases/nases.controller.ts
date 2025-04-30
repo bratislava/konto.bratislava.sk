@@ -91,6 +91,7 @@ import {
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @ApiTags('nases')
 @ApiBearerAuth()
@@ -105,6 +106,7 @@ export default class NasesController {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   // WORK ENDPOINTS
@@ -905,7 +907,7 @@ export default class NasesController {
     const updateData = { ...data, eidToken: undefined }
 
     // TODO temp SEND_TO_NASES_ERROR log, remove
-    console.log(
+    this.logger.log(
       `Signed data from request for formId ${id} before send:`,
       updateData.formSignature,
     )

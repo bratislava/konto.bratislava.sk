@@ -55,7 +55,10 @@ export class MagproxyService {
       !process.env.MAGPROXY_AZURE_SCOPE ||
       !process.env.MAGPROXY_URL
     ) {
-      throw new Error('MagproxyService ENV vars are not set ')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'MagproxyService ENV vars are not set '
+      )
     }
 
     /** Config */

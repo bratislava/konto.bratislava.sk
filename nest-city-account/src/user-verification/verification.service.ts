@@ -37,6 +37,7 @@ import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class VerificationService {
@@ -55,7 +56,10 @@ export class VerificationService {
     private readonly bloomreachService: BloomreachService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
-      throw new Error('Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)'
+      )
     }
     this.logger = new LineLoggerSubservice(VerificationService.name)
   }
@@ -146,7 +150,7 @@ export class VerificationService {
           data.msg.type
         )
 
-        const bloomreachService = new BloomreachService(cognitoSubservice)
+        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard)
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {

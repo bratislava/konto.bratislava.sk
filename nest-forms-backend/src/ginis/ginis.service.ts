@@ -418,7 +418,8 @@ export default class GinisService {
     queue: RABBIT_NASES.QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       // eslint-disable-next-line no-console
-      console.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
+      const logger = new LineLoggerSubservice('Rabbit')
+      logger.error(`GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`)
       channel.reject(message, false)
     },
   })

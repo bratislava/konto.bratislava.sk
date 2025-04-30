@@ -14,6 +14,8 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -24,14 +26,18 @@ export class BloomreachService {
     'binary'
   ).toString('base64')
 
-  constructor(private readonly cognitoSubservice: CognitoSubservice) {
+  constructor(
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
+  ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
       !process.env.BLOOMREACH_API_SECRET ||
       !process.env.BLOOMREACH_PROJECT_TOKEN
     ) {
-      throw new Error(
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Missing one of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.'
       )
     }

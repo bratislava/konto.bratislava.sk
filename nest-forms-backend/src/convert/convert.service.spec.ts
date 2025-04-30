@@ -1,4 +1,5 @@
 import { createMock } from '@golevelup/ts-jest'
+import { getQueueToken } from '@nestjs/bull'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
@@ -17,8 +18,12 @@ describe('ConvertService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConvertService,
-        { provide: TaxService, useValue: createMock<TaxService>() },
+        TaxService,
         ThrowerErrorGuard,
+        {
+          provide: getQueueToken('tax'),
+          useValue: {},
+        },
         {
           provide: ConfigService,
           useValue: {

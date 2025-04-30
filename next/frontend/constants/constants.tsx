@@ -14,6 +14,7 @@ import GardensIcon from '../../assets/icons/environment-construction/community-g
 import SewerageIcon from '../../assets/icons/environment-construction/connector.svg'
 import FrontGardensIcon from '../../assets/icons/environment-construction/front-gardens.svg'
 import TreeIcon from '../../assets/icons/environment-construction/greenery.svg'
+import LampIcon from '../../assets/icons/environment-construction/lamp.svg'
 import SpatialPlanningIcon from '../../assets/icons/environment-construction/spatial-planning.svg'
 import BasketIcon from '../../assets/icons/environment-construction/waste.svg'
 import SecurityIcon from '../../assets/icons/most-wanted-services/reporting-of-incentives.svg'
@@ -26,8 +27,6 @@ import ExcavationsIcon from '../../assets/icons/transport-and-maps/excavations.s
 import ManagmentCommunicationsIcon from '../../assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../assets/icons/transport-and-maps/towing.svg'
-import { environment } from '../../environment'
-import { isDefined } from '../utils/general'
 
 export const MunicipalServicesCategories = {
   ALL_CATEGORY: 'Všetky kategórie',
@@ -468,21 +467,17 @@ export const serviceCards: ServiceCardBase[] = [
     category: [MunicipalServicesCategories.SOCIAL_SERVICES_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-najom-bytu'),
   },
-  environment.featureToggles.komunalnyOdpadFormServicesList
-    ? {
-        id: 45,
-        title: 'account_section_services.cards.45.title',
-        description: 'account_section_services.cards.45.description',
-        buttonText: 'account_section_services.cards.45.buttonText',
-        icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
-        tag: 'account_section_services.cards.45.tag',
-        tagStyle: 'text-main-700 bg-main-100',
-        category: [MunicipalServicesCategories.TAXES_CATEGORY],
-        href: ROUTES.MUNICIPAL_SERVICES_FORM(
-          'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
-        ),
-      }
-    : null,
+  {
+    id: 45,
+    title: 'account_section_services.cards.45.title',
+    description: 'account_section_services.cards.45.description',
+    buttonText: 'account_section_services.cards.45.buttonText',
+    icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
+    tag: 'account_section_services.cards.45.tag',
+    tagStyle: 'text-main-700 bg-main-100',
+    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady'),
+  },
   {
     id: 46,
     title: 'account_section_services.cards.46.title',
@@ -492,4 +487,53 @@ export const serviceCards: ServiceCardBase[] = [
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-slobodny-pristup-k-informaciam'),
   },
-].filter(isDefined)
+  {
+    id: 47,
+    title: 'account_section_services.cards.47.title',
+    description: 'account_section_services.cards.47.description',
+    buttonText: 'account_section_services.cards.47.buttonText',
+    icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-objednavka-informativneho-zakresu-sieti'),
+  },
+  {
+    id: 48,
+    title: 'account_section_services.cards.48.title',
+    description: 'account_section_services.cards.48.description',
+    buttonText: 'account_section_services.cards.48.buttonText',
+    icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii'),
+  },
+  {
+    id: 49,
+    title: 'account_section_services.cards.49.title',
+    description: 'account_section_services.cards.49.description',
+    buttonText: 'account_section_services.cards.49.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM(
+      'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
+    ),
+  },
+  {
+    id: 50,
+    title: 'account_section_services.cards.50.title',
+    description: 'account_section_services.cards.50.description',
+    buttonText: 'account_section_services.cards.50.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM(
+      'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
+    ),
+  },
+  {
+    id: 51,
+    title: 'account_section_services.cards.51.title',
+    description: 'account_section_services.cards.51.description',
+    buttonText: 'account_section_services.cards.51.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: 'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava/podnety',
+  },
+]

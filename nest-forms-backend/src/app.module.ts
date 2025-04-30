@@ -25,6 +25,7 @@ import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import ThrowerErrorGuard from './utils/guards/thrower-error.guard'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import SharepointSubservice from './utils/subservices/sharepoint.subservice'
 
 @Module({
   imports: [
@@ -74,7 +75,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService, ThrowerErrorGuard],
+  providers: [AppService, SharepointSubservice, ThrowerErrorGuard],
 })
 export default class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

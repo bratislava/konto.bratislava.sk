@@ -173,9 +173,9 @@
     "announcement_card_title_first": "Platba dane z nehnuteľností online",
     "announcement_card_text_first": "Ušetrite si cestu na poštu. Zaregistrujte sa (alebo prihláste) do Bratislavského konta. Overte svoju identitu, ak ste tak už nespravili a nastavte do 31. 03. 2025 spôsob doručenia oznámením.",
     "announcement_card_button_first": "Chcem zmeniť doručenie",
-    "announcement_card_title_second": "Žiadosť o nájom bytu",
-    "announcement_card_text_second": "Podajte si žiadosť o nájomné bývanie online. Získate všetky potrebné informácie na jednom mieste, žiadosť si počas vypĺňania môžete uložiť ako koncept a po odoslaní viete jednoducho sledovať stav žiadosti v sekcii Moje žiadosti.",
-    "announcement_card_button_second": "Mám záujem",
+    "announcement_card_title_second": "Služby Technických sietí Bratislava v Bratislavskom konte",
+    "announcement_card_text_second": "Požiadajte o stanovisko k projektovej dokumentácii, umiestnite zariadenie na stožiar verejného osvetlenia, objednajte si informatívny zákres sietí či vytýčenie podzemných vedení a nahláste poruchu v správe Technických sietí Bratislava – všetko jednoducho a online.",
+    "announcement_card_button_second": "Prejsť na mestské služby",
     "announcement_card_title_third": "Založte si komunitnú záhradu",
     "announcement_card_text_third": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
     "announcement_card_button_third": "Viac informácií",
@@ -423,6 +423,31 @@
         "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
         "description": "Podajte žiadosť o sprístupnenie informácií jednoducho. Mesto Bratislava má 12 pracovných dní na spracovanie žiadosti a sprístupnenie informácií.",
         "buttonText": "Prejsť na žiadosť"
+      },
+      "47": {
+        "title": "Objednávka informatívneho zákresu sietí",
+        "description": "Informatívny zákres sietí slúži na zistenie polohy metropolitnej optickej siete a verejného osvetlenia voči záujmovému územiu objednávateľa. Služba je spoplatnená.",
+        "buttonText": "Prejsť na objednávku"
+      },
+      "48": {
+        "title": "Žiadosť o stanovisko k projektovej dokumentácií",
+        "description": "Stanovisko k projektovej dokumentácii slúži ako podklad na stavebné a územné konanie alebo pri ohlásení stavby v rámci plánovanej stavebnej činnosti v Bratislave.",
+        "buttonText": "Prejsť na žiadosť"
+      },
+      "49": {
+        "title": "Objednávka vytýčenia podzemných vedení verejného osvetlenia",
+        "description": "Pred realizáciou stavebných prác je potrebné vytýčenie sietí verejného osvetlenia. Služba je spoplatnená.",
+        "buttonText": "Prejsť na objednávku"
+      },
+      "50": {
+        "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
+        "description": "Pre umiestnenie zariadenia na stožiar verejného osvetlenia je potrebné súhlasné stanovisko Technických sietí Bratislava, pričom každá žiadosť sa posudzuje individuálne.",
+        "buttonText": "Prejsť na žiadosť"
+      },
+      "51": {
+        "title": "Nahlásiť poruchu verejného osvetlenia",
+        "description": "Nefunguje verejné osvetlenie vo vašom okolí? Nahláste jednoduchým spôsobom poruchu verejného osvetlenia v správe Technických sietí Bratislava.",
+        "buttonText": "Nahlásiť poruchu"
       }
     }
   },

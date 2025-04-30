@@ -4,6 +4,7 @@ import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
 import { GetFormsResponseDto } from 'openapi-clients/forms'
 
+import { getEmailFormSlugs } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
@@ -12,6 +13,7 @@ type AccountMyApplicationsPageProps = {
   applications: GetFormsResponseDto
   selectedSection: ApplicationsListVariant
   formDefinitionSlugTitleMap: Record<string, string>
+  emailFormSlugs: string[]
 }
 export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 
@@ -24,7 +26,9 @@ const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
 }
 
 const getFormDefinitionSlugTitleMap = () =>
-  Object.fromEntries(formDefinitions.map((form) => [form.slug, form.title]))
+  Object.fromEntries(
+    formDefinitions.map((formDefinition) => [formDefinition.slug, formDefinition.title]),
+  )
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context, getAccessToken }) => {
@@ -32,12 +36,19 @@ export const getServerSideProps = amplifyGetServerSideProps(
       ? slovakToEnglishSectionNames[context.query.sekcia as ApplicationsListVariant]
       : 'SENT'
     const currentPage = parseInt(context.query.strana as string, 10) || 1
+    const emailFormSlugs = getEmailFormSlugs()
 
     return {
       props: {
-        applications: await getDraftApplications(selectedSection, currentPage, getAccessToken),
+        applications: await getDraftApplications(
+          selectedSection,
+          currentPage,
+          emailFormSlugs,
+          getAccessToken,
+        ),
         selectedSection,
         formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
+        emailFormSlugs: getEmailFormSlugs(),
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -49,6 +60,7 @@ const AccountMyApplicationsPage = ({
   selectedSection,
   applications,
   formDefinitionSlugTitleMap,
+  emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
   return (
     <AccountPageLayout>
@@ -56,6 +68,7 @@ const AccountMyApplicationsPage = ({
         selectedSection={selectedSection}
         applications={applications}
         formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+        emailFormSlugs={emailFormSlugs}
       />
     </AccountPageLayout>
   )

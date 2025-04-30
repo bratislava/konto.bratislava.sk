@@ -75,7 +75,7 @@ const formatTitleForObjectId = (title: string): string => {
 const getSlovenskoSkGenericXmls = async (
   params: GetSignerDataParams<FormDefinitionSlovenskoSkGeneric>,
 ) => {
-  const { formDefinition, formData, jsonVersion, serverFiles, validatorRegistry } = params
+  const { formDefinition, formId, formData, jsonVersion, serverFiles, validatorRegistry } = params
 
   const formSummary = getFormSummary({
     formDefinition,
@@ -84,6 +84,7 @@ const getSlovenskoSkGenericXmls = async (
   })
   const xmlObject = await generateSlovenskoSkXmlObject({
     formDefinition,
+    formId,
     formData,
     jsonVersion,
     formSummary,

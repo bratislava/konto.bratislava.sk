@@ -40,7 +40,7 @@
     "@nestjs/schedule": "6.0.0",
     "@nestjs/swagger": "11.1.4",
     "@prisma/client": "6.6.0",
-    "@rjsf/utils": "5.24.8",
+    "@rjsf/utils": "5.24.9",
     "amqplib": "^0.10.7",
     "aws-sdk": "2.1692.0",
     "axios": "1.8.4",
@@ -61,8 +61,7 @@
     "passport-http": "^0.3.0",
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^4.0.1",
-    "piscina": "^4.9.2",
-    "playwright": "1.51.1",
+    "playwright": "1.52.0",
     "reflect-metadata": "0.2.2",
     "rimraf": "^6.0.1",
     "rodnecislo": "^1.6.0",
@@ -130,12 +129,12 @@
     "path": "^0.12.7",
     "prettier": "^3.5.2",
     "prisma": "6.6.0",
-    "prisma-json-types-generator": "3.2.3",
+    "prisma-json-types-generator": "3.3.0",
     "ts-jest": "29.3.2",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "5.7.3"
+    "typescript": "5.8.3"
   },
   "jest": {
     "moduleFileExtensions": [

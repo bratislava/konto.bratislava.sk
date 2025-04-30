@@ -196,19 +196,16 @@ export type DanZoStaviebViacereUcelyPriznania = {
   pocetSpoluvlastnikov?: number
   naZakladeDohody?: boolean
   splnomocnenie?: string[]
-  zakladDane?: number
   vymeraPodlahovychPloch?: number
   castStavbyOslobodenaOdDaneDetaily?: CastStavbyOslobodenaOdDaneDetaily
 }
 
 export type StavbyNehnutelnosti = {
   nehnutelnosti?: NehnutelnostiElement[]
-  sumar?: SumarElement
-}
-
-export type SumarElement = {
-  vymeraPodlahovychPloch?: number
-  zakladDane?: number
+  sumar?: {
+    vymeraPodlahovychPloch?: number
+    zakladDane?: number
+  }
 }
 
 export type UcelVyuzitiaStavby = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i'

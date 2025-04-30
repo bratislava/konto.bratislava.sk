@@ -24,7 +24,7 @@ import {
 import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 
 import { BratislavaUser } from '../auth/decorators/user-info.decorator'
-import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
+import type { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
 import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'

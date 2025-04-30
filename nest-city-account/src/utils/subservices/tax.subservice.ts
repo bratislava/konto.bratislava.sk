@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common'
+import { AxiosResponse } from 'axios'
 import {
   AdminApi,
   Configuration,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
-} from '../../generated-clients/nest-tax-backend'
+  CreateBirthNumbersResponseDto,
+} from 'openapi-clients/tax'
+
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
@@ -56,7 +59,9 @@ export class TaxSubservice {
     }
   }
 
-  async loadDataFromNoris(data: RequestPostNorisLoadDataDto) {
+  async loadDataFromNoris(
+    data: RequestPostNorisLoadDataDto
+  ): Promise<AxiosResponse<CreateBirthNumbersResponseDto>> {
     return this.taxBackendAdminApi.adminControllerLoadDataFromNorris(data, {
       headers: {
         apiKey: this.config.taxBackendApiKey,
@@ -64,7 +69,9 @@ export class TaxSubservice {
     })
   }
 
-  async updateDeliveryMethodsInNoris(data: RequestUpdateNorisDeliveryMethodsDto) {
+  async updateDeliveryMethodsInNoris(
+    data: RequestUpdateNorisDeliveryMethodsDto
+  ): Promise<AxiosResponse<void>> {
     return this.taxBackendAdminApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
       headers: {
         apiKey: this.config.taxBackendApiKey,

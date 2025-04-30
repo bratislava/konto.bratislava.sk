@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
-
 import {
   Configuration,
   UsersManipulationApi,
-} from '../../generated-clients/nest-city-account'
+} from 'openapi-clients/city-account'
+
 import { addSlashToBirthNumber } from '../../utils/functions/birthNumber'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'

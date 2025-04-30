@@ -13,6 +13,7 @@ docker-compose up --build
 # Local installation
 
 1. Build required shared package:
+
 ```bash
 # Build openapi-clients
 cd ../openapi-clients/
@@ -22,6 +23,7 @@ cd ../nest-tax-backend/
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
@@ -42,6 +44,13 @@ If you have issues connecting to your Postgres, maybe you need to set timeout `c
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/?connect_timeout=30&schema=public"
+```
+
+Migrate database and generate prisma files
+
+```
+npx prisma migrate dev
+npx prisma generate
 ```
 
 ## Running the app
@@ -85,7 +94,7 @@ This was done to prevent problems with changes during weekends or holidays, sinc
 
 ## Adding New Configurations
 
-You can use this query to create new configuration key-value pairs. 
+You can use this query to create new configuration key-value pairs.
 If you want to apply the setting immediately, set `validSince` to the current timestamp or leave it empty.
 
 ```postgresql

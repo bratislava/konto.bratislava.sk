@@ -61,11 +61,11 @@ const enumOptions: SelectOption[] = [
 const foMunicipalServicesSection = [
   1, 45, 44, 9, 19, 34, 35, 43, 47, 48, 49, 50, 51, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 33, 17,
   20, 21, 22, 23, 24, 25, 29, 26, 27, 28, 32, 18, 46,
-].filter(isDefined)
+]
 const poMunicipalServicesSection = [
   45, 34, 35, 44, 3, 4, 6, 43, 47, 48, 49, 50, 51, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39,
   28, 14, 40, 41, 32, 18, 46,
-].filter(isDefined)
+]
 
 const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')

@@ -136,8 +136,8 @@ export const formDefinitions: FormDefinition[] = [
     extractSubject: predzahradkyExtractSubject,
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisOrganizationName: 'OTMZ',
+      ginisPersonName: 'Vacek Dušan',
       extractGinisSubject: predzahradkyExtractGinisSubject,
     },
   },
@@ -155,8 +155,8 @@ export const formDefinitions: FormDefinition[] = [
     extractSubject: komunitneZahradyExtractSubject,
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisOrganizationName: 'SSN',
+      ginisPersonName: 'Viziová Alexandra',
       extractGinisSubject: komunitneZahradyExtractGinisSubject,
     },
   },

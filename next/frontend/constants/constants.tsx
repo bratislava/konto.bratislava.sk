@@ -494,6 +494,8 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.47.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.47.tag',
+    tagStyle: 'text-education-700 bg-education-100',
     href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-objednavka-informativneho-zakresu-sieti'),
   },
   {
@@ -503,6 +505,8 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.48.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.48.tag',
+    tagStyle: 'text-education-700 bg-education-100',
     href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii'),
   },
   {
@@ -512,6 +516,8 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.49.buttonText',
     icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.49.tag',
+    tagStyle: 'text-education-700 bg-education-100',
     href: ROUTES.MUNICIPAL_SERVICES_FORM(
       'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
     ),
@@ -523,6 +529,8 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.50.buttonText',
     icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.50.tag',
+    tagStyle: 'text-education-700 bg-education-100',
     href: ROUTES.MUNICIPAL_SERVICES_FORM(
       'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
     ),
@@ -534,6 +542,8 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.51.buttonText',
     icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.51.tag',
+    tagStyle: 'text-education-700 bg-education-100',
     href: 'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava/podnety',
   },
 ]

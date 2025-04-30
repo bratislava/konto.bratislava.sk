@@ -427,27 +427,32 @@
       "47": {
         "title": "Objednávka informatívneho zákresu sietí",
         "description": "Informatívny zákres sietí slúži na zistenie polohy metropolitnej optickej siete a verejného osvetlenia voči záujmovému územiu objednávateľa. Služba je spoplatnená.",
-        "buttonText": "Prejsť na objednávku"
+        "buttonText": "Prejsť na objednávku",
+        "tag": "Nová služba"
       },
       "48": {
         "title": "Žiadosť o stanovisko k projektovej dokumentácií",
         "description": "Stanovisko k projektovej dokumentácii slúži ako podklad na stavebné a územné konanie alebo pri ohlásení stavby v rámci plánovanej stavebnej činnosti v Bratislave.",
-        "buttonText": "Prejsť na žiadosť"
+        "buttonText": "Prejsť na žiadosť",
+        "tag": "Nová služba"
       },
       "49": {
         "title": "Objednávka vytýčenia podzemných vedení verejného osvetlenia",
         "description": "Pred realizáciou stavebných prác je potrebné vytýčenie sietí verejného osvetlenia. Služba je spoplatnená.",
-        "buttonText": "Prejsť na objednávku"
+        "buttonText": "Prejsť na objednávku",
+        "tag": "Nová služba"
       },
       "50": {
         "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
         "description": "Pre umiestnenie zariadenia na stožiar verejného osvetlenia je potrebné súhlasné stanovisko Technických sietí Bratislava, pričom každá žiadosť sa posudzuje individuálne.",
-        "buttonText": "Prejsť na žiadosť"
+        "buttonText": "Prejsť na žiadosť",
+        "tag": "Nová služba"
       },
       "51": {
         "title": "Nahlásiť poruchu verejného osvetlenia",
         "description": "Nefunguje verejné osvetlenie vo vašom okolí? Nahláste jednoduchým spôsobom poruchu verejného osvetlenia v správe Technických sietí Bratislava.",
-        "buttonText": "Nahlásiť poruchu"
+        "buttonText": "Nahlásiť poruchu",
+        "tag": "Nová služba"
       }
     }
   },

@@ -71,7 +71,7 @@ const IdentityVerificationPage = () => {
               identityCard: data.idCard.toUpperCase(),
               turnstileToken: data.turnstileToken,
             },
-            { accessToken: 'always' },
+            { authStrategy: 'authOnly' },
           )
         : cityAccountClient.verificationControllerVerifyBirthNumberAndIdentityCard(
             {
@@ -79,7 +79,7 @@ const IdentityVerificationPage = () => {
               identityCard: data.idCard.toUpperCase(),
               turnstileToken: data.turnstileToken,
             },
-            { accessToken: 'always' },
+            { authStrategy: 'authOnly' },
           ))
       // give the queue a few seconds to process the verification
       await new Promise((resolve) => {

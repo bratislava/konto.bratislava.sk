@@ -27,7 +27,7 @@ const FormVersionCompareAction = () => {
 
   const { mutate: bumpVersionMutate, isPending: bumpVersionIsPending } = useMutation({
     mutationFn: () =>
-      formsClient.formsControllerBumpJsonVersion(formId, { accessToken: 'onlyAuthenticated' }),
+      formsClient.formsControllerBumpJsonVersion(formId, { authStrategy: 'authOrGuestWithToken' }),
     networkMode: 'always',
     onSuccess: () => {
       router.reload()

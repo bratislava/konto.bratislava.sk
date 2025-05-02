@@ -1,4 +1,5 @@
 import { formsClient } from '@clients/forms'
+import { AuthSession } from 'aws-amplify/auth'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
@@ -18,7 +19,7 @@ export const getDraftApplications = async (
   variant: ApplicationsListVariant,
   page: number,
   emailFormSlugs: string[],
-  accessTokenSsrGetFn?: () => Promise<string | null>,
+  getSsrAuthSession?: () => Promise<AuthSession>,
 ): Promise<GetFormsResponseDto> => {
   // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued/sending_to_nases
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
@@ -40,7 +41,7 @@ export const getDraftApplications = async (
     // if this is set varianToStates would be ignored, that does not match the required functionality in any of the tabs
     undefined,
     undefined,
-    { accessToken: 'always', accessTokenSsrGetFn },
+    { authStrategy: 'authOnly', getSsrAuthSession },
   )
   return {
     ...response.data,

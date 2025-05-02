@@ -81,7 +81,7 @@ export const useGetContext = () => {
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
       const response = await formsClient.filesControllerGetFilesStatusByForm(formId, {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
       })
       return response.data
     },
@@ -230,7 +230,7 @@ export const useGetContext = () => {
   const downloadFile = async (id: string) => {
     try {
       const response = await formsClient.filesControllerDownloadToken(id, {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
       })
       const { jwt } = response.data
       window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')

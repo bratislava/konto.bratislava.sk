@@ -6,6 +6,7 @@ import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { AuthSession } from 'aws-amplify/auth'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import { AccountType } from 'frontend/dtos/accountDto'
@@ -30,11 +31,11 @@ type AccountTaxesFeesPageProps = {
 /**
  * BE returns 403 if users identity is not verified, it should return a flag instead
  */
-const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
+const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
   try {
     const { data } = await taxClient.taxControllerGetArchivedTaxes({
-      accessToken: 'always',
-      accessTokenSsrGetFn: getAccessToken,
+      authStrategy: 'authOnly',
+      getSsrAuthSession,
     })
     return data
   } catch (error) {
@@ -51,18 +52,18 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
-  async ({ amplifyContextSpec, getAccessToken }) => {
+  async ({ amplifyContextSpec, fetchAuthSession }) => {
     const queryClient = new QueryClient()
 
     try {
       const [taxesData, taxAdministrator, strapiTax, accountType] = await Promise.all([
-        getTaxes(getAccessToken),
+        getTaxes(fetchAuthSession),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
         fetchUserAttributes(amplifyContextSpec).then(
           (response) => response?.['custom:account_type'],
         ),
-        prefetchUserQuery(queryClient, getAccessToken),
+        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
 
       // Hide taxes and fees section for legal entities

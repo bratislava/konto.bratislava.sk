@@ -54,7 +54,7 @@ const MyApplicationDetailsHeader = ({
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)

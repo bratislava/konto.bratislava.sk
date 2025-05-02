@@ -38,7 +38,7 @@ function convertYearToNumber(input: string | undefined) {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
-  async ({ amplifyContextSpec, context, getAccessToken }) => {
+  async ({ amplifyContextSpec, context, fetchAuthSession }) => {
     const year = context.params?.year
     const yearNumber = convertYearToNumber(year)
     if (!yearNumber) {
@@ -50,12 +50,12 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     try {
       const [{ data: taxData }, strapiTax, taxAdministrator] = await Promise.all([
         taxClient.taxControllerGetActualTaxes(yearNumber, {
-          accessToken: 'always',
-          accessTokenSsrGetFn: getAccessToken,
+          authStrategy: 'authOnly',
+          getSsrAuthSession: fetchAuthSession,
         }),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
         getTaxAdministratorForUser(amplifyContextSpec),
-        prefetchUserQuery(queryClient, getAccessToken),
+        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
 
       if (!strapiTax) {

@@ -1,5 +1,6 @@
 import { cityAccountClient } from '@clients/city-account'
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AuthSession } from 'aws-amplify/auth'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
@@ -11,7 +12,7 @@ const userQueryKey = ['user']
 
 export const prefetchUserQuery = async (
   queryClient: QueryClient,
-  accessTokenSsrGetFn: () => Promise<string | null>,
+  getSsrAuthSession: () => Promise<AuthSession>,
 ) =>
   // https://github.com/TanStack/query/discussions/3306#discussioncomment-2205514
   queryClient.fetchQuery({
@@ -19,7 +20,7 @@ export const prefetchUserQuery = async (
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ accessToken: 'always', accessTokenSsrGetFn })
+        .userControllerGetOrCreateUser({ authStrategy: 'authOnly', getSsrAuthSession })
         .then((response) => response.data),
   })
 
@@ -30,7 +31,7 @@ export const useUser = () => {
     queryKey: userQueryKey,
     queryFn: () =>
       cityAccountClient
-        .userControllerGetOrCreateUser({ accessToken: 'always' })
+        .userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
         .then((response) => response.data),
     staleTime: Infinity,
   })
@@ -72,7 +73,7 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
           gdprData: [gdprData],
         },
         {
-          accessToken: 'always',
+          authStrategy: 'authOnly',
         },
       )
     },
@@ -91,7 +92,9 @@ export const useUserUpdateBloomreachData = () => {
   const { mutateAsync: updateBloomreachData, isPending: updateBloomreachDataPending } = useMutation(
     {
       mutationFn: () =>
-        cityAccountClient.userControllerUpdateOrCreateBloomreachCustomer({ accessToken: 'always' }),
+        cityAccountClient.userControllerUpdateOrCreateBloomreachCustomer({
+          authStrategy: 'authOnly',
+        }),
       networkMode: 'always',
       onSuccess: () => {},
       onError: () => {},

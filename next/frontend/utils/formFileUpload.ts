@@ -47,7 +47,7 @@ export const uploadFile = async ({
         onProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
       },
       signal: abortController.signal,
-      accessToken: 'onlyAuthenticated',
+      authStrategy: 'authOrGuestWithToken',
     })
     onSuccess(response)
   } catch (error: any) {

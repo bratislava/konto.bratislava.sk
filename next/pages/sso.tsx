@@ -14,11 +14,14 @@ type SSOPageProps = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
-  async ({ getAccessToken }) => {
+  async ({ fetchAuthSession }) => {
+    const authSession = await fetchAuthSession()
+    const accessToken = authSession.tokens?.accessToken.toString() ?? null
+
     return {
       props: {
         ...(await slovakServerSideTranslations()),
-        accessToken: await getAccessToken(),
+        accessToken,
       },
     }
   },

@@ -32,7 +32,7 @@ const useGetContext = () => {
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
           formSignature: signature ?? null,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {

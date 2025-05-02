@@ -2,7 +2,6 @@ import { Wrapper } from 'components/styleguide/Wrapper'
 import React from 'react'
 
 import ClipboardCopy from '../components/forms/simple-components/ClipboardCopy'
-// import { resetRcApi } from '../frontend/api/api'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -11,11 +10,18 @@ type GetJwtProps = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<GetJwtProps>(
-  async ({ getAccessToken }) => {
+  async ({ fetchAuthSession }) => {
+    const authSession = await fetchAuthSession()
+    if (!authSession.tokens) {
+      throw new Error("Route passed `requiresSignIn` even if it shouldn't have.")
+    }
+
+    const accessToken = authSession.tokens.accessToken.toString()
+
     return {
       props: {
         ...(await slovakServerSideTranslations()),
-        accessToken: await getAccessToken(),
+        accessToken,
       },
     }
   },
@@ -23,18 +29,6 @@ export const getServerSideProps = amplifyGetServerSideProps<GetJwtProps>(
 )
 
 const GetJwt = ({ accessToken }: GetJwtProps) => {
-  // resetting the birth number was not used for some time - if needed, this needs to be updated
-  // const resetRc = async () => {
-  //   try {
-  //     await resetRcApi()
-  // reset the birth number in cognito data here!
-  //     alert(`Res: ${JSON.stringify(res)}`)
-  //   } catch (error) {
-  //     logger.error(error)
-  //     alert(`ERROR`)
-  //   }
-  // }
-
   return (
     <div className="min-h-screen bg-[#E5E5E5]">
       <div className="mx-auto max-w-(--breakpoint-lg) pb-64 md:px-12 md:pt-12">

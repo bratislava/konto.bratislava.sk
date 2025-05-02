@@ -102,7 +102,7 @@ const MyApplicationsCard = ({
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
@@ -126,7 +126,7 @@ const MyApplicationsCard = ({
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
@@ -143,7 +143,7 @@ const MyApplicationsCard = ({
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsClient.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.concept_delete'))

@@ -1,3 +1,4 @@
+import { AuthSession } from 'aws-amplify/auth'
 import qs from 'qs'
 
 import { environment } from '../../environment'
@@ -104,12 +105,12 @@ export const removeRedirectQueryParamFromUrl = (resolvedUrl: string) => {
  */
 export const getRedirectUrl = async (
   safeRedirect: SafeRedirect,
-  getAccessToken: () => Promise<string | null>,
+  fetchAuthSession: () => Promise<AuthSession>,
 ) => {
   if (safeRedirect.type === SafeRedirectType.Remote) {
     const parsedUrl = new URL(safeRedirect.url)
-    // add access token to the query string
-    const accessToken = await getAccessToken()
+    const authSession = await fetchAuthSession()
+    const accessToken = authSession.tokens?.accessToken.toString()
     if (accessToken) {
       parsedUrl.searchParams.set('access_token', accessToken)
     }

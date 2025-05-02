@@ -81,4 +81,36 @@ export default class GinisAPIService {
 
     return fileUpload['Pridat-soubor']
   }
+
+  async findDocumentId(formId: string): Promise<string | null> {
+    // formId mapping to this attribute was implemented on Ginis side on '2025-05-02'
+    const documentList = await this.ginis.ssl.prehledDokumentu(
+      {
+        'Datum-podani-od': '2025-05-02',
+        'Datum-podani-do': new Date().toISOString().slice(0, 10),
+        'Priznak-spisu': 'neurceno',
+        'Id-vlastnosti': 'MAG000V0A1LL', // id of the attribute containing formId
+        'Hodnota-vlastnosti-raw': formId,
+      },
+      {
+        'Priznak-generovani': 'generovat',
+        'Radek-od': '1',
+        'Radek-do': '10',
+        'Priznak-zachovani': 'nezachovavat',
+        'Rozsah-prehledu': 'standardni',
+      },
+    )
+
+    if (documentList['Prehled-dokumentu'].length === 0) {
+      return null
+    }
+
+    if (documentList['Prehled-dokumentu'].length > 1) {
+      throw new Error(
+        `More than one GINIS document found for formId ${formId}. ${JSON.stringify(documentList)}`,
+      )
+    }
+
+    return documentList['Prehled-dokumentu'][0]['Id-dokumentu']
+  }
 }

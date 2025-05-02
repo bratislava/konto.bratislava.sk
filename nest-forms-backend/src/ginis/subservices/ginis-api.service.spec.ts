@@ -1,5 +1,9 @@
 import { Readable } from 'node:stream'
 
+import {
+  SslPrehledDokumentuPrehledDokumentuItem,
+  SslPrehledDokumentuResponse,
+} from '@bratislava/ginis-sdk'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -11,6 +15,7 @@ jest.mock('@bratislava/ginis-sdk', () => ({
     ssl = {
       detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
       pridatSouborMtom: jest.fn(async (bodyObj: object) => bodyObj),
+      prehledDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
     }
 
     gin = {
@@ -148,6 +153,88 @@ describe('GinisAPIService', () => {
         'Podrobny-popis-souboru': 'foobar',
         Obsah: mockStream,
       })
+    })
+  })
+
+  describe('findDocumentId', () => {
+    beforeEach(() => {
+      jest.spyOn(service['ginis'].ssl, 'prehledDokumentu').mockResolvedValue({
+        'Prehled-dokumentu': [],
+      } as unknown as SslPrehledDokumentuResponse)
+    })
+
+    it('should use current date in field Datum-podani-do', async () => {
+      const findSpy = jest
+        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
+        .mockResolvedValueOnce({
+          'Prehled-dokumentu': [],
+        } as unknown as SslPrehledDokumentuResponse)
+      const currentDate = new Date().toISOString().slice(0, 10)
+
+      await service.findDocumentId('formId')
+      expect(findSpy).toHaveBeenCalledWith(
+        {
+          'Datum-podani-od': '2025-05-02',
+          'Datum-podani-do': currentDate,
+          'Priznak-spisu': 'neurceno',
+          'Id-vlastnosti': 'MAG000V0A1LL',
+          'Hodnota-vlastnosti-raw': 'formId',
+        },
+        {
+          'Priznak-generovani': 'generovat',
+          'Radek-od': '1',
+          'Radek-do': '10',
+          'Priznak-zachovani': 'nezachovavat',
+          'Rozsah-prehledu': 'standardni',
+        },
+      )
+    })
+
+    it('should throw error if Ginis throws error', async () => {
+      jest
+        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
+        .mockRejectedValueOnce(new Error('Ginis find failed'))
+
+      await expect(service.findDocumentId('formId')).rejects.toThrow(
+        'Ginis find failed',
+      )
+    })
+
+    it('should return null if document is not found', async () => {
+      const documentId = await service.findDocumentId('formId')
+      expect(documentId).toBeNull()
+    })
+
+    it('should throw error if more than 1 document is found', async () => {
+      jest
+        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
+        .mockResolvedValueOnce({
+          'Prehled-dokumentu': [
+            {
+              'Id-dokumentu': 'docId1',
+            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
+            {
+              'Id-dokumentu': 'docId2',
+            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
+          ],
+        } as unknown as SslPrehledDokumentuResponse)
+
+      await expect(service.findDocumentId('formId')).rejects.toThrow()
+    })
+
+    it('should return document ID if exactly 1 is found', async () => {
+      jest
+        .spyOn(service['ginis'].ssl, 'prehledDokumentu')
+        .mockResolvedValueOnce({
+          'Prehled-dokumentu': [
+            {
+              'Id-dokumentu': 'docId1',
+            } as unknown as SslPrehledDokumentuPrehledDokumentuItem,
+          ],
+        } as unknown as SslPrehledDokumentuResponse)
+
+      const documentId = await service.findDocumentId('formId')
+      expect(documentId).toBe('docId1')
     })
   })
 })

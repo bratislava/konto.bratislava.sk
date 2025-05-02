@@ -4,6 +4,8 @@ import path from 'node:path'
 import { rimrafSync } from 'rimraf'
 import camelcase from 'camelcase'
 import { get as getAppRootDir } from 'app-root-dir'
+import fetch from 'node-fetch'
+import semver from 'semver'
 
 interface GenerateClientOptions {
   rootDir?: string
@@ -35,6 +37,35 @@ export const getLocalEndpoint = (type: ValidType, localUrl: string): string => {
 }
 
 const appRootDir = getAppRootDir()
+
+async function checkOpenApiGeneratorVersion() {
+  const openapitoolsConfigPath = path.join(appRootDir, 'openapitools.json')
+  const openapitoolsConfig = JSON.parse(readFileSync(openapitoolsConfigPath, 'utf8'))
+  const currentVersion = openapitoolsConfig['generator-cli']?.version
+
+  try {
+    const res = await fetch(
+      'https://search.maven.org/solrsearch/select?q=g:org.openapitools+AND+a:openapi-generator-cli&rows=1&wt=json',
+    )
+    if (!res.ok) {
+      console.warn('Could not fetch latest OpenAPI Generator CLI version.')
+      return
+    }
+    const data = await res.json()
+    const latestVersion = data.response?.docs?.[0]?.latestVersion
+    if (!latestVersion) {
+      console.warn('Could not determine latest OpenAPI Generator CLI version.')
+      return
+    }
+    if (currentVersion && semver.lt(currentVersion, latestVersion)) {
+      console.log(
+        `Your version (${currentVersion}) is behind the latest (${latestVersion}). Please update the version in openapitools.json to "${latestVersion}".`,
+      )
+    }
+  } catch (err) {
+    console.warn('Failed to check OpenAPI Generator CLI version:', err)
+  }
+}
 
 /**
  * Adds missing type definitions to the generated slovensko-sk API code.
@@ -142,6 +173,7 @@ const generateOpenApiClient = (type: ValidType, url: string, outputDir: string) 
 }
 
 export const generateClient = async (type: ValidType, options: GenerateClientOptions = {}) => {
+  await checkOpenApiGeneratorVersion()
   const outputDir = path.join(options.rootDir ?? appRootDir, type)
   const url = options.localUrl ? getLocalEndpoint(type, options.localUrl) : endpoints[type]
 

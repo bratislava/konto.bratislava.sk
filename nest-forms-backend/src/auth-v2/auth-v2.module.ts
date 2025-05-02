@@ -1,0 +1,38 @@
+import { CacheModule } from '@nestjs/cache-manager'
+import { Module } from '@nestjs/common'
+import { PassportModule } from '@nestjs/passport'
+
+import ClientsModule from '../clients/clients.module'
+import BaConfigModule from '../config/ba-config.module'
+import { UserAuthGuard } from './guards/user-auth.guard'
+import { CityAccountUserService } from './services/city-account-user.service'
+import { CognitoAttributesService } from './services/cognito-attributes.service'
+import { CognitoGuestIdentityService } from './services/cognito-guest-identity.service'
+import { CognitoJwtVerifyService } from './services/cognito-jwt-verify.service'
+import { CognitoProvidersService } from './services/cognito-providers.service'
+import { CognitoUserService } from './services/cognito-user.service'
+import { UserAuthStrategy } from './strategies/user-auth.strategy'
+
+@Module({
+  imports: [
+    PassportModule,
+    ClientsModule,
+    BaConfigModule,
+    CacheModule.register({
+      ttl: 3600 * 1000,
+    }),
+  ],
+  providers: [
+    CognitoJwtVerifyService,
+    CognitoProvidersService,
+    CognitoAttributesService,
+    CognitoUserService,
+    CognitoGuestIdentityService,
+    CityAccountUserService,
+    UserAuthStrategy,
+    UserAuthGuard,
+  ],
+  exports: [UserAuthGuard],
+  controllers: [],
+})
+export class AuthV2Module {}

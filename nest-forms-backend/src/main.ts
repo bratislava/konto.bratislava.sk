@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
 import AppModule from './app.module'
+import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
 import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
 import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
@@ -29,7 +30,7 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: false,
     credentials: true,
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    allowedHeaders: `Content-Type, Accept, Authorization, ${cognitoGuestIdentityIdHeaderKey}`,
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(

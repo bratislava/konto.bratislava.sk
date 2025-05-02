@@ -23,8 +23,6 @@ import {
   GinisAutomationResponse,
   GinisCheckNasesPayloadDto,
   GinisEditSubmissionResponseInfo,
-  GinisRegisterSubmissionResponse,
-  GinisRegisterSubmissionResponseInfo,
 } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
@@ -112,50 +110,6 @@ describe('GinisService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('consumeRegisterGinisMessage', () => {
-    it('should process failure', async () => {
-      const msg: GinisAutomationResponse<
-        GinisRegisterSubmissionResponse,
-        GinisRegisterSubmissionResponseInfo
-      > = { status: 'failure', info: { msg_id: 'id1' } }
-      const spy = jest.spyOn(prismaMock.forms, 'update')
-      await service.consumeRegisterGinisMessage(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            state: FormState.ERROR,
-            error: FormError.GINIS_SEND_ERROR,
-            ginisState: GinisState.ERROR_REGISTER,
-          },
-        }),
-      )
-    })
-
-    it('should process success', async () => {
-      const msg: GinisAutomationResponse<
-        GinisRegisterSubmissionResponse,
-        GinisRegisterSubmissionResponseInfo
-      > = {
-        status: 'success',
-        info: { msg_id: 'id1' },
-        result: { identifier: 'ginis1' },
-      }
-
-      const spy = jest.spyOn(prismaMock.forms, 'update')
-      await service.consumeRegisterGinisMessage(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            state: FormState.DELIVERED_GINIS,
-            ginisDocumentId: 'ginis1',
-            error: FormError.NONE,
-            ginisState: GinisState.REGISTERED,
-          },
-        }),
-      )
-    })
   })
 
   describe('consumeEditSubmission', () => {
@@ -306,15 +260,25 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue(formBase)
 
       const registerSpy = jest
-        .spyOn(service, 'registerToGinis')
-        .mockResolvedValue()
+        .spyOn(service, 'registerGinisDocument')
+        .mockResolvedValue(false)
+
+      // should only change state to allow register
       let result = await service.onQueueConsumption(messageBase)
 
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            ginisState: GinisState.RUNNING_REGISTER,
+          },
+        }),
+      )
+
+      expect(registerSpy).not.toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      expect(registerSpy).toHaveBeenCalled()
       jest.resetAllMocks()
 
-      // should just requeue if register is still running
+      // should try to register and requeue if it couldn't find the document
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -324,11 +288,11 @@ describe('GinisService', () => {
         ginisState: GinisState.RUNNING_REGISTER,
       })
       result = await service.onQueueConsumption(messageBase)
-      expect(registerSpy).not.toHaveBeenCalled()
+      expect(registerSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
       jest.resetAllMocks()
 
-      // should register again if there was error
+      // should only change state if there was error to allow register again
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -338,7 +302,14 @@ describe('GinisService', () => {
         ginisState: GinisState.ERROR_REGISTER,
       })
       result = await service.onQueueConsumption(messageBase)
-      expect(registerSpy).toHaveBeenCalled()
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            ginisState: GinisState.RUNNING_REGISTER,
+          },
+        }),
+      )
+      expect(registerSpy).not.toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
     })
 
@@ -719,12 +690,57 @@ describe('GinisService', () => {
   })
 
   describe('registerToGinis', () => {
-    it('should update file to RUNNING_REGISTER', async () => {
-      await service.registerToGinis('formId1', 'pospId1')
+    beforeEach(() => {
+      jest
+        .spyOn(service['ginisHelper'], 'retryWithDelay')
+        .mockImplementation(async (fn) => fn())
+
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockResolvedValue('gid1')
+    })
+
+    it('should update form with error after error is thrown', async () => {
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockRejectedValueOnce(new Error('Ginis find failed'))
+
+      const result = await service.registerGinisDocument('formId1')
+
+      expect(result).toBeFalsy()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {
-            ginisState: GinisState.RUNNING_REGISTER,
+            state: FormState.ERROR,
+            error: FormError.GINIS_SEND_ERROR,
+            ginisState: GinisState.ERROR_REGISTER,
+          },
+        }),
+      )
+    })
+
+    it('should not update form after unsuccessful find', async () => {
+      jest
+        .spyOn(service['ginisApiService'], 'findDocumentId')
+        .mockResolvedValueOnce(null)
+
+      const result = await service.registerGinisDocument('formId1')
+
+      expect(result).toBeFalsy()
+      expect(prismaMock.forms['update']).not.toHaveBeenCalledWith()
+    })
+
+    it('should update form with ginis ID after success', async () => {
+      const result = await service.registerGinisDocument('formId1')
+
+      expect(result).toBeTruthy()
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            state: FormState.DELIVERED_GINIS,
+            ginisDocumentId: 'gid1',
+            error: FormError.NONE,
+            ginisState: GinisState.REGISTERED,
           },
         }),
       )

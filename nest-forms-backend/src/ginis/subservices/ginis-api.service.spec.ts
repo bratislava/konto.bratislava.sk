@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream'
+
 import { Test, TestingModule } from '@nestjs/testing'
 
 import BaConfigService from '../../config/ba-config.service'
@@ -8,6 +10,7 @@ jest.mock('@bratislava/ginis-sdk', () => ({
   Ginis: class {
     ssl = {
       detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
+      pridatSouborMtom: jest.fn(async (bodyObj: object) => bodyObj),
     }
 
     gin = {
@@ -87,6 +90,64 @@ describe('GinisAPIService', () => {
       })
 
       expect(result).toEqual({ 'Detail-referenta': { 'Id-osoby': 'id1' } })
+    })
+  })
+
+  describe('uploadFile', () => {
+    it('should propagate and trim values correctly', async () => {
+      const uploadSpy = jest.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
+      const mockStream = new Readable({
+        read() {
+          this.push('file content')
+          this.push(null)
+        },
+      })
+
+      const filename_first50 =
+        // eslint-disable-next-line no-secrets/no-secrets
+        'B01abcdefghijABCDEFGHIJ1-B02klmnopqrstuvWXYZabcd2-'
+      const filename_middle204 =
+        // eslint-disable-next-line no-secrets/no-secrets
+        'B03LMNOP12345qrstuvABCD7-B04wxyzJKLMN6789opqrHIJ1-B05ZYXWVUTSRQ0987654321A-B06mnopqABCDEF123456789W-B07ijklLMNOPQR98765432S3-B08GHIJK1234mnopWXYZ5678-B09abcdEFGH567890ijklmNO-B10uvwxYZABCD345678stuv1-B11Z'
+      const filename_last50 =
+        // eslint-disable-next-line no-secrets/no-secrets
+        'YXWVUTonmlkjihgfed01-B12PQRSxyz1234567890ABCD_.pdf'
+
+      await service.uploadFile(
+        'docId',
+        filename_first50 + filename_middle204 + filename_last50,
+        mockStream,
+      )
+
+      expect(uploadSpy).toHaveBeenCalledWith({
+        'Id-dokumentu': 'docId',
+        'Jmeno-souboru': filename_middle204 + filename_last50,
+        'Typ-vazby': 'elektronicka-priloha',
+        'Popis-souboru': filename_first50,
+        'Podrobny-popis-souboru': filename_first50 + filename_middle204,
+        Obsah: mockStream,
+      })
+    })
+
+    it('should extract base name of the file correctly', async () => {
+      const uploadSpy = jest.spyOn(service['ginis'].ssl, 'pridatSouborMtom')
+      const mockStream = new Readable({
+        read() {
+          this.push('file content')
+          this.push(null)
+        },
+      })
+
+      await service.uploadFile('docId', 'foobar.zip', mockStream)
+
+      expect(uploadSpy).toHaveBeenCalledWith({
+        'Id-dokumentu': 'docId',
+        'Jmeno-souboru': 'foobar.zip',
+        'Typ-vazby': 'elektronicka-priloha',
+        'Popis-souboru': 'foobar',
+        'Podrobny-popis-souboru': 'foobar',
+        Obsah: mockStream,
+      })
     })
   })
 })

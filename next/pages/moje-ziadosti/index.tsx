@@ -31,7 +31,7 @@ const getFormDefinitionSlugTitleMap = () =>
   )
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async ({ context, getAccessToken }) => {
+  async ({ context, fetchAuthSession }) => {
     const selectedSection = context.query.sekcia
       ? slovakToEnglishSectionNames[context.query.sekcia as ApplicationsListVariant]
       : 'SENT'
@@ -44,7 +44,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
           selectedSection,
           currentPage,
           emailFormSlugs,
-          getAccessToken,
+          fetchAuthSession,
         ),
         selectedSection,
         formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),

@@ -80,7 +80,7 @@ const useGetContext = () => {
           formDataJson: formDataRequest,
         },
         {
-          accessToken: 'onlyAuthenticated',
+          authStrategy: 'authOrGuestWithToken',
         },
       ),
     networkMode: 'always',

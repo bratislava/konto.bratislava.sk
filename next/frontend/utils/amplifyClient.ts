@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { AuthError, fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth'
+import { fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 
 import { ROUTES } from '../api/constants'
@@ -19,20 +19,10 @@ export const removeAllCookiesAndClearLocalStorage = () => {
   localStorage.clear()
 }
 
-const fetchAccessTokenString = async () => {
-  const session = await fetchAuthSession()
-  return session.tokens?.accessToken?.toString() ?? null
-}
-
 export const getAccessToken = async () => {
-  try {
-    return await fetchAccessTokenString()
-  } catch (error) {
-    if (error instanceof AuthError && error.name === 'NotAuthorizedException') {
-      return null
-    }
-    throw error
-  }
+  const authSession = await fetchAuthSession()
+  // `authSession.tokens` presence is synonymous with authenticated user
+  return authSession.tokens ? authSession.tokens.accessToken.toString() : null
 }
 
 export const useSignOut = () => {

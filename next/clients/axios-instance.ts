@@ -61,14 +61,10 @@ export type ClientWithCustomConfig<T> = {
 }
 
 axiosInstance.interceptors.request.use(async (config) => {
-  // Map 'false' or `undefined` to 'noAuth' for internal consistency
-  const authStrategy =
-    config.authStrategy === false || config.authStrategy == null ? 'noAuth' : config.authStrategy
-
   if (
-    authStrategy !== 'authOnly' &&
-    authStrategy !== 'authOrGuestWithToken' &&
-    authStrategy !== 'authOrGuestNoToken'
+    config.authStrategy !== 'authOnly' &&
+    config.authStrategy !== 'authOrGuestWithToken' &&
+    config.authStrategy !== 'authOrGuestNoToken'
   ) {
     return config
   }
@@ -97,31 +93,20 @@ axiosInstance.interceptors.request.use(async (config) => {
     )
   }
 
-  switch (authStrategy) {
-    // `authSession.tokens` presence is synonymous with authenticated user
+  // `authSession.tokens` is synonymous with user being signed in
+  if (authSession.tokens) {
+    // eslint-disable-next-line no-param-reassign
+    config.headers.Authorization = `Bearer ${authSession.tokens.accessToken.toString()}`
+    return config
+  }
+
+  switch (config.authStrategy) {
     case 'authOnly':
-      if (!authSession.tokens) {
-        throw new Error('Authentication required, but no access token found in session.')
-      }
-      // eslint-disable-next-line no-param-reassign
-      config.headers.Authorization = `Bearer ${authSession.tokens.accessToken.toString()}`
-      break
+      throw new Error('Authentication required, but no access token found in session.')
 
     case 'authOrGuestWithToken':
-      if (authSession.tokens) {
-        // eslint-disable-next-line no-param-reassign
-        config.headers.Authorization = `Bearer ${authSession.tokens.accessToken.toString()}`
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId
-      }
-      break
-
-    case 'authOrGuestNoToken':
-      if (authSession.tokens) {
-        // eslint-disable-next-line no-param-reassign
-        config.headers.Authorization = `Bearer ${authSession.tokens.accessToken.toString()}`
-      }
+      // eslint-disable-next-line no-param-reassign
+      config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId
       break
 
     default:

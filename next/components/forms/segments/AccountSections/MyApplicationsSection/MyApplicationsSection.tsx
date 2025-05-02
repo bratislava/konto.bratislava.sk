@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { AuthSession } from 'aws-amplify/auth'
 import MyApplicationsList, {
   getDraftApplications,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
@@ -26,16 +27,16 @@ const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
 export const getTotalNumberOfApplications = async (
   variant: ApplicationsListVariant,
   emailFormSlugs: string[],
-  accessTokenSsrGetFn?: () => Promise<string | null>,
+  getSsrAuthSession?: () => Promise<AuthSession>,
 ) => {
-  const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, accessTokenSsrGetFn)
+  const firstPage = await getDraftApplications(variant, 1, emailFormSlugs, getSsrAuthSession)
   if (firstPage.countPages === 0) return 0
 
   const lastPage = await getDraftApplications(
     variant,
     firstPage.countPages,
     emailFormSlugs,
-    accessTokenSsrGetFn,
+    getSsrAuthSession,
   )
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }

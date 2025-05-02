@@ -113,7 +113,7 @@ const EmailChangePage = () => {
       })
       await cityAccountClient.userControllerChangeEmail(
         { newEmail: lastEmail },
-        { accessToken: 'always' },
+        { authStrategy: 'authOnly' },
       )
       logger.info(
         `[AUTH] Successfully verified new email ${lastEmail} for email ${userAttributes?.email}`,
@@ -146,7 +146,10 @@ const EmailChangePage = () => {
       })
       // In E2E tests, confirmation with code is disabled, so the attribute is updated immediately
       if (result.email?.nextStep.updateAttributeStep === 'DONE') {
-        await cityAccountClient.userControllerChangeEmail({ newEmail }, { accessToken: 'always' })
+        await cityAccountClient.userControllerChangeEmail(
+          { newEmail },
+          { authStrategy: 'authOnly' },
+        )
         logger.info(
           `[AUTH] Successfully changed email to ${newEmail} for email ${userAttributes?.email}`,
         )

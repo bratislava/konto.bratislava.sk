@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { AuthError } from 'aws-amplify/auth'
-import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'
+import { AuthSession } from 'aws-amplify/auth'
+import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 
@@ -16,18 +16,6 @@ import {
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
 } from './queryParamRedirect'
-
-const getIsSignedIn = async (amplifyContextSpec: AmplifyServerContextSpec) => {
-  try {
-    const { userId } = await getCurrentUser(amplifyContextSpec)
-    return Boolean(userId)
-  } catch (error) {
-    if (error instanceof AuthError && error.name === 'UserUnAuthenticatedException') {
-      return false
-    }
-    throw error
-  }
-}
 
 const getAccessToken = async (amplifyContextSpec: AmplifyServerContextSpec) => {
   const authSession = await fetchAuthSession(amplifyContextSpec)
@@ -61,7 +49,7 @@ export const amplifyGetServerSideProps = <
   getServerSidePropsFn: (args: {
     context: GetServerSidePropsContext<Params, Preview>
     amplifyContextSpec: AmplifyServerContextSpec
-    getAccessToken: () => Promise<string | null>
+    fetchAuthSession: () => Promise<AuthSession>
     isSignedIn: boolean
   }) => Promise<GetServerSidePropsResult<Props>>,
   options?: {
@@ -75,7 +63,9 @@ export const amplifyGetServerSideProps = <
     baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
-        const isSignedIn = await getIsSignedIn(contextSpec)
+        // `fetchAuthSession` must be called in each request, otherwise guests wouldn't receive identity ID
+        const authSession = await fetchAuthSession(contextSpec)
+        const isSignedIn = Boolean(authSession.tokens)
         const getAccessTokenFn = isSignedIn
           ? () => getAccessToken(contextSpec)
           : () => Promise.resolve(null)
@@ -124,7 +114,7 @@ export const amplifyGetServerSideProps = <
           getServerSidePropsFn({
             context,
             amplifyContextSpec: contextSpec,
-            getAccessToken: getAccessTokenFn,
+            fetchAuthSession: () => fetchAuthSession(contextSpec),
             isSignedIn,
           }),
         ])

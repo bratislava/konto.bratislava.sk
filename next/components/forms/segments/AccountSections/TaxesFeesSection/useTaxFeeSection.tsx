@@ -25,7 +25,7 @@ const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps
   const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
     mutationFn: () =>
       taxClient.paymentControllerPayment(String(taxData.year), {
-        accessToken: 'always',
+        authStrategy: 'authOnly',
       }),
     networkMode: 'always',
     onSuccess: async (response) => {
@@ -51,7 +51,7 @@ const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps
 
   const downloadPdf = async () => {
     const { data } = await taxClient.taxControllerGetTaxByYearPdf(taxData.year, {
-      accessToken: 'always',
+      authStrategy: 'authOnly',
       responseType: 'blob',
     })
     // @ts-expect-error `taxControllerGetTaxByYearPdf` returns wrong type

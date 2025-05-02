@@ -35,20 +35,6 @@ export const getAccessToken = async () => {
   }
 }
 
-export const getAccessTokenOrLogout = async () => {
-  try {
-    const accessToken = await getAccessToken()
-    if (!accessToken) {
-      throw new Error('No access token found.')
-    }
-    return accessToken
-  } catch (error) {
-    logger.error('Error getting access token - redirect to login.', error)
-    window.location.assign(ROUTES.LOGIN)
-    throw error
-  }
-}
-
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()

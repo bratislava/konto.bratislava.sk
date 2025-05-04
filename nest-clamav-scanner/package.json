@@ -31,7 +31,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.0",
     "@nestjs/schedule": "^6.0.0",
-    "@nestjs/swagger": "^11.1.5",
+    "@nestjs/swagger": "^11.1.6",
     "@prisma/client": "^6.6.0",
     "@types/passport-http-bearer": "^1.0.41",
     "@types/uuid": "^10.0.0",

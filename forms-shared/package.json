@@ -62,7 +62,7 @@
   "devDependencies": {
     "@fontsource/inter": "5.2.5",
     "@prettier/sync": "^0.5.5",
-    "@tailwindcss/postcss": "4.1.4",
+    "@tailwindcss/postcss": "4.1.5",
     "@types/adm-zip": "^0.5.7",
     "@types/app-root-dir": "^0.1.4",
     "@types/archiver": "^6.0.3",

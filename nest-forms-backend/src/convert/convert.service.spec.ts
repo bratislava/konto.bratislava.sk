@@ -17,7 +17,7 @@ describe('ConvertService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConvertService,
-        TaxService,
+        { provide: TaxService, useValue: createMock<TaxService>() },
         ThrowerErrorGuard,
         {
           provide: ConfigService,

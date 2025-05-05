@@ -58,7 +58,7 @@ describe('NasesUtilsService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        TaxService,
+        { provide: TaxService, useValue: createMock<TaxService>() },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()

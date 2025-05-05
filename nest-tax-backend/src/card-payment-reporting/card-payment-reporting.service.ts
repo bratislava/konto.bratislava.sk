@@ -309,14 +309,23 @@ export class CardPaymentReportingService {
     return head + body + footer
   }
 
-  async generateAndSendPaymentReport() {
+  async generateAndSendPaymentReport(from?: Date, email?: string) {
+
+    // We do not want to send to default sender if a custom date is sent
+    if ((from && !email)) {
+      throw this.throwerErrorGuard.BadRequestException(
+        ErrorsEnum.BAD_REQUEST_ERROR,
+        'Email was not provided.',
+      )
+    }
+
     const configs = await this.getConfigFromDatabase()
 
-    if (configs.REPORTING_GENERATE_REPORT !== 'true') {
+    if (!email && configs.REPORTING_GENERATE_REPORT !== 'true') {
       return
     }
 
-    const sftpFiles = await this.sftpFileSubservice.getNewFiles()
+    const sftpFiles = await this.sftpFileSubservice.getNewFiles(from)
 
     dayjs.extend(utc)
     dayjs.extend(timezone)
@@ -404,11 +413,13 @@ export class CardPaymentReportingService {
         : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
-      [configs.REPORTING_RECIPIENT_EMAIL],
+      [email ? email : configs.REPORTING_RECIPIENT_EMAIL],
       'Report platieb kartou',
       message,
       attachments,
     )
+
+    if (email) return
 
     // Write updated CSV names
     await this.prismaService.csvFile.createMany({

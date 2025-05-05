@@ -7,6 +7,12 @@ import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 @Injectable()
 export default class SftpFileSubservice {
@@ -16,7 +22,7 @@ export default class SftpFileSubservice {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
 
-  async getNewFiles() {
+  async getNewFiles(from?: Date) {
     const sftp = new SFTPClient()
 
     const newFileContents: { name: string; content: string }[] = []
@@ -33,7 +39,12 @@ export default class SftpFileSubservice {
         this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
       )
 
-      const newFiles = await this.filterAlreadyReportedFiles(sftpFiles)
+      let newFiles: string[]
+      if (from) {
+        newFiles = this.filterFilesBeforeDate(sftpFiles, from)
+      } else {
+        newFiles = await this.filterAlreadyReportedFiles(sftpFiles)
+      }
 
       // Get contents of all new files
       // eslint-disable-next-line no-restricted-syntax
@@ -62,6 +73,18 @@ export default class SftpFileSubservice {
       await sftp.end()
     }
     return newFileContents
+  }
+
+  private filterFilesBeforeDate(sftpFiles: FileInfo[], from: Date) {
+    return sftpFiles
+      .filter((file) => {
+        const fileDateMatches = file.name.split('_').pop()?.slice(0, 6)
+        if (!fileDateMatches || Number.isNaN(Number(fileDateMatches)))
+          return false
+        const fileDate = dayjs(`20${fileDateMatches}`).tz('Europe/Bratislava')
+        return fileDate.add(1, 'day').isAfter(from, 'day')
+      })
+      .map((file) => file.name)
   }
 
   private async filterAlreadyReportedFiles(files: FileInfo[]) {

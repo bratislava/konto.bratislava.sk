@@ -6,6 +6,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import EmailSubservice from '../utils/subservices/email.subservice'
 import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
 import { CardPaymentReportingService } from './card-payment-reporting.service'
+import { CardPaymentReportingController } from './card-payment-reporting.controller';
 
 @Module({
   imports: [],
@@ -18,5 +19,6 @@ import { CardPaymentReportingService } from './card-payment-reporting.service'
     CardPaymentReportingService,
   ],
   exports: [CardPaymentReportingService],
+  controllers: [CardPaymentReportingController],
 })
 export class CardPaymentReportingModule {}

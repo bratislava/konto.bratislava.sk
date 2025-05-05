@@ -310,9 +310,8 @@ export class CardPaymentReportingService {
   }
 
   async generateAndSendPaymentReport(from?: Date, email?: string) {
-
     // We do not want to send to default sender if a custom date is sent
-    if ((from && !email)) {
+    if (from && !email) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,
         'Email was not provided.',
@@ -413,7 +412,7 @@ export class CardPaymentReportingService {
         : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
-      [email ? email : configs.REPORTING_RECIPIENT_EMAIL],
+      [email || configs.REPORTING_RECIPIENT_EMAIL],
       'Report platieb kartou',
       message,
       attachments,

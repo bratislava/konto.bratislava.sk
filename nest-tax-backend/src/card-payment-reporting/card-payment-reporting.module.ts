@@ -5,8 +5,8 @@ import { PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import EmailSubservice from '../utils/subservices/email.subservice'
 import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
+import { CardPaymentReportingController } from './card-payment-reporting.controller'
 import { CardPaymentReportingService } from './card-payment-reporting.service'
-import { CardPaymentReportingController } from './card-payment-reporting.controller';
 
 @Module({
   imports: [],

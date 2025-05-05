@@ -2,14 +2,14 @@ import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import SFTPClient, { FileInfo } from 'ssh2-sftp-client'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -39,12 +39,9 @@ export default class SftpFileSubservice {
         this.configService.getOrThrow<string>('REPORTING_SFTP_FILES_PATH'),
       )
 
-      let newFiles: string[]
-      if (from) {
-        newFiles = this.filterFilesBeforeDate(sftpFiles, from)
-      } else {
-        newFiles = await this.filterAlreadyReportedFiles(sftpFiles)
-      }
+      const newFiles: string[] = from
+        ? this.filterFilesBeforeDate(sftpFiles, from)
+        : await this.filterAlreadyReportedFiles(sftpFiles)
 
       // Get contents of all new files
       // eslint-disable-next-line no-restricted-syntax

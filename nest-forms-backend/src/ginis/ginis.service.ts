@@ -433,6 +433,11 @@ export default class GinisService {
       form.ginisState === GinisState.CREATED ||
       form.ginisState === GinisState.ERROR_REGISTER
     ) {
+      if (!this.baConfigService.ginis.shouldRegister) {
+        this.logger.debug('---- skipping register to ginis ----')
+        return new Nack(false)
+      }
+
       this.logger.debug('---- start to register to ginis ----')
       await this.prismaService.forms.update({
         where: { id: form.id },

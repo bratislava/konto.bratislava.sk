@@ -42,7 +42,9 @@ describe('GinisAPIService', () => {
               username: '',
               password: '',
               sslHost: '',
+              sslMtomHost: '',
               ginHost: '',
+              formIdPropertyId: 'MAG00example',
             },
           },
         },
@@ -177,7 +179,7 @@ describe('GinisAPIService', () => {
           'Datum-podani-od': '2025-05-02',
           'Datum-podani-do': currentDate,
           'Priznak-spisu': 'neurceno',
-          'Id-vlastnosti': 'MAG000V0A1LL',
+          'Id-vlastnosti': 'MAG00example',
           'Hodnota-vlastnosti-raw': 'formId',
         },
         {

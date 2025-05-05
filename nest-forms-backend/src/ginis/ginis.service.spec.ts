@@ -90,6 +90,10 @@ describe('GinisService', () => {
               sslHost: '',
               sslMtomHost: '',
               ginHost: '',
+              formIdPropertyId: '',
+            },
+            ginis: {
+              shouldRegister: true,
             },
             minio: {
               buckets: {

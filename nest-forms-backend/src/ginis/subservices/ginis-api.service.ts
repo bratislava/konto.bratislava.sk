@@ -89,7 +89,7 @@ export default class GinisAPIService {
         'Datum-podani-od': '2025-05-02',
         'Datum-podani-do': new Date().toISOString().slice(0, 10),
         'Priznak-spisu': 'neurceno',
-        'Id-vlastnosti': 'MAG000V0A1LL', // id of the attribute containing formId
+        'Id-vlastnosti': this.baConfigService.ginisApi.formIdPropertyId,
         'Hodnota-vlastnosti-raw': formId,
       },
       {

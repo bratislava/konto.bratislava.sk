@@ -515,8 +515,8 @@ export const getNorisDataForUpdate = `
     FROM lcs.dane21_doklad d
     JOIN lcs.dane21_druh_dokladu dd ON d.druh_dokladu = dd.cislo_subjektu
     JOIN lcs.dane21_priznanie p ON d.podklad = p.cislo_subjektu
-    WHERE rok_podkladu IN (@years)
-    AND variabilny_symbol IN (@variable_symbols)
+    WHERE d.rok_podkladu IN (@years)
+    AND d.variabilny_symbol IN (@variable_symbols)
     AND dd.typ_dokladu = 'v'
     AND dd.typ_dane = '1'
     AND d.stav_dokladu <> 's'

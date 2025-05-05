@@ -14,7 +14,6 @@ import {
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
 import pdf, { CreateOptions } from 'html-pdf'
-import { BratislavaUser } from 'src/auth/guards/cognito.guard'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
@@ -24,6 +23,7 @@ import {
 } from 'src/utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'

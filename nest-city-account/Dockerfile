@@ -21,7 +21,7 @@ RUN npm ci --include=dev --frozen-lockfile \
  && npx prisma generate
 
 FROM build-base AS build
-COPY --from=openapi-clients /app/ /root/openapi-clients/
+COPY --from=openapi-clients /app/ /openapi-clients/
 
 WORKDIR /build
 COPY --chown=node:node . ./

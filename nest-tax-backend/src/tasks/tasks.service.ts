@@ -196,8 +196,14 @@ export class TasksService {
           },
           {
             deliveryMethod: {
-              in: [DeliveryMethodNamed.POSTAL, DeliveryMethodNamed.EDESK],
+              not: DeliveryMethodNamed.CITY_ACCOUNT,
             },
+            dateTaxRuling: {
+              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+            },
+          },
+          {
+            deliveryMethod: null,
             dateTaxRuling: {
               lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
             },

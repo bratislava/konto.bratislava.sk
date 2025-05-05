@@ -210,7 +210,9 @@ export default class GinisService {
 
   async registerGinisDocument(formId: string): Promise<boolean> {
     try {
-      const documentId = await this.ginisApiService.findDocumentId(formId)
+      const documentId = await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.findDocumentId(formId),
+      )
       if (!documentId) {
         return false
       }

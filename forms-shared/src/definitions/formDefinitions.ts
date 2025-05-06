@@ -6,7 +6,9 @@ import predzahradky, {
   predzahradkyExtractTechnicalSubject,
   predzahradkyExtractPlainSubject,
 } from '../schemas/predzahradky'
-import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
+import priznanieKDaniZNehnutelnosti, {
+  priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+} from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
   oloKoloTaxiTermsAndConditions,
@@ -179,6 +181,9 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.2',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
+    subject: {
+      extractTechnical: priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+    },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
   },
@@ -194,6 +199,9 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
+    subject: {
+      extractTechnical: priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+    },
     isSigned: true,
     exampleFormNotRequired: true,
   },

@@ -425,7 +425,10 @@ export default class NasesUtilsService {
         `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
       )
     }
-    let subject = extractFormSubjectTechnical(formDefinition, form.formDataJson)
+    const subject = extractFormSubjectTechnical(
+      formDefinition,
+      form.formDataJson,
+    )
     const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
     const mimeType = isSigned
@@ -435,7 +438,6 @@ export default class NasesUtilsService {
     let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
-      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 

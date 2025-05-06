@@ -29,7 +29,7 @@ export type GetSignerDataParams<
 }
 
 const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovenskoSkTax>) => {
-  const { formId, formData, formDefinition } = params
+  const { formData, formDefinition } = params
 
   const xdcXMLData = generateTaxXml(formData, false, formDefinition)
   const xdcUsedXSD = getTaxXsd(formDefinition)
@@ -38,18 +38,18 @@ const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovens
   // These are legacy signer data, they might be improved (added missing fields), but the risk is greater than the benefit
   return {
     signatureId: createFormSignatureId(formData),
-    objectId: `object_${formId}`,
-    objectDescription: '',
+    objectId: formatTitleForObjectId(formDefinition.title),
+    objectDescription: formDefinition.title,
     objectFormatIdentifier: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
     xdcXMLData,
-    xdcIdentifier: '',
-    xdcVersion: '',
+    xdcIdentifier: `http://data.gov.sk/doc/eform/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xdcVersion: formDefinition.pospVersion,
     xslMediaDestinationTypeDescription: 'TXT',
     xslTargetEnvironment: '',
     xdcIncludeRefs: true,
-    xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
+    xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.1',
     xdcUsedXSD,
-    xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xsd`,
     xdcUsedXSLT,
     xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
     xslXSLTLanguage: 'sk',
@@ -57,19 +57,21 @@ const getSlovenskoSkTaxXmls = (params: GetSignerDataParams<FormDefinitionSlovens
 }
 
 /**
- * Formats a form title into a XML filename by removing diacritics and replacing spaces with underscores.
+ * Formats a form title into a XDCF filename by removing diacritics and replacing spaces with underscores.
+ *
+ * More info: https://www.slovensko.sk/sk/institucie-formulare-a-ziado/nova-pripona-xdcf-pre-xmldata
  *
  * @example
- * formatTitleForObjectId("Žiadosť o nájom bytu") // returns "Ziadost_o_najom_bytu.xml"
- * formatTitleForObjectId("Predzáhradky") // returns "Predzahradky.xml"
- * formatTitleForObjectId("Komunitné záhrady") // returns "Komunitne_zahrady.xml"
+ * formatTitleForObjectId("Žiadosť o nájom bytu") // returns "Ziadost_o_najom_bytu.xdcf"
+ * formatTitleForObjectId("Predzáhradky") // returns "Predzahradky.xdcf"
+ * formatTitleForObjectId("Komunitné záhrady") // returns "Komunitne_zahrady.xdcf"
  */
 const formatTitleForObjectId = (title: string): string => {
   // https://stackoverflow.com/a/37511463
   const withoutDiacritics = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const formatted = withoutDiacritics.replace(/\s+/g, '_')
 
-  return `${formatted}.xml`
+  return `${formatted}.xdcf`
 }
 
 const getSlovenskoSkGenericXmls = async (
@@ -105,9 +107,9 @@ const getSlovenskoSkGenericXmls = async (
     xslMediaDestinationTypeDescription: 'HTML',
     xslTargetEnvironment: '',
     xdcIncludeRefs: true,
-    xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.0',
+    xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.1',
     xdcUsedXSD,
-    xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}`,
+    xsdReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xsd`,
     xdcUsedXSLT,
     xslReferenceURI: `http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}/form.xslt`,
     xslXSLTLanguage: 'sk',

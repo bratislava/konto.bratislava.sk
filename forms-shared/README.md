@@ -78,6 +78,20 @@ Run the following and let the script guide you. If you need modifications, or yo
   npm run update
 ```
 
+### Generate snapshots
+
+Powershell:
+
+```pwsh
+docker image rm my-test-image -f; if ($?) { } else { }; docker build -t my-test-image --target test-update .; docker run --rm -v ${PWD}:/app -v /app/node_modules my-test-image
+```
+
+Bash:
+
+```bash
+docker image rm my-test-image -f || true && docker build -t my-test-image --target test-update . && docker run --rm -v "${PWD}:/app" -v "/app/node_modules" my-test-image
+```
+
 ## Notes
 
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json

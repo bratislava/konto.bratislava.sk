@@ -24,9 +24,9 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
 
-  tax_pdf_redis:
+  redis:
     image: redis:latest
-    container_name: 'tax_pdf_redis'
+    container_name: 'redis'
     restart: always
     ports:
       - 6311:6379

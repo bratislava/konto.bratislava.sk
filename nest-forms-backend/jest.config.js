@@ -3,7 +3,8 @@ module.exports = {
   rootDir: 'src',
   testRegex: String.raw`.*\.spec\.ts$`,
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    // https://github.com/kulshekhar/ts-jest/issues/4198#issuecomment-2766448843
+    '^.+\\.(t|j)s$': ['ts-jest', { tsconfig: 'tsconfig.spec.json' }],
   },
   collectCoverageFrom: [
     '**/*.(t|j)s',
@@ -14,7 +15,6 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/../test/singleton.ts'],
-  testPathIgnorePatterns: ['<rootDir>/nases/__tests__'],
   moduleNameMapper: {
     '^react-markdown$': '<rootDir>/../test/react-markdown-mock.js',
   },

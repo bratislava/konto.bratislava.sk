@@ -32,8 +32,8 @@ export class CardPaymentReportingController {
     @Query('email') email: string,
   ): Promise<any> {
     return this.cardPaymentReportingService.generateAndSendPaymentReport(
-      new Date(date),
       email,
+      new Date(date),
     )
   }
 }

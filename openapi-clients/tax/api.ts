@@ -955,17 +955,17 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerDeleteTestingTax: async (
+    adminControllerDeleteTax: async (
       requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestAdminDeleteTaxDto' is not null or undefined
       assertParamExists(
-        'adminControllerDeleteTestingTax',
+        'adminControllerDeleteTax',
         'requestAdminDeleteTaxDto',
         requestAdminDeleteTaxDto,
       )
-      const localVarPath = `/admin/delete-testing-tax`
+      const localVarPath = `/admin/delete-tax`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1297,19 +1297,17 @@ export const AdminApiFp = function (configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async adminControllerDeleteTestingTax(
+    async adminControllerDeleteTax(
       requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeleteTestingTax(
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeleteTax(
         requestAdminDeleteTaxDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['AdminApi.adminControllerDeleteTestingTax']?.[
-          localVarOperationServerIndex
-        ]?.url
+        operationServerMap['AdminApi.adminControllerDeleteTax']?.[localVarOperationServerIndex]?.url
       return (axios, basePath) =>
         createRequestFunction(
           localVarAxiosArgs,
@@ -1499,12 +1497,12 @@ export const AdminApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerDeleteTestingTax(
+    adminControllerDeleteTax(
       requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminControllerDeleteTestingTax(requestAdminDeleteTaxDto, options)
+        .adminControllerDeleteTax(requestAdminDeleteTaxDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1617,12 +1615,12 @@ export class AdminApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminControllerDeleteTestingTax(
+  public adminControllerDeleteTax(
     requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto,
     options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminControllerDeleteTestingTax(requestAdminDeleteTaxDto, options)
+      .adminControllerDeleteTax(requestAdminDeleteTaxDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

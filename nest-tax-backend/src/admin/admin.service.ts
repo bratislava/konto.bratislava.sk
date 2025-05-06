@@ -679,7 +679,7 @@ export class AdminService {
     await this.processNorisTaxData([mockTaxRecord], year)
   }
 
-  async deleteTestingTax({
+  async deleteTax({
     year,
     birthNumber,
   }: RequestAdminDeleteTaxDto): Promise<void> {
@@ -710,28 +710,30 @@ export class AdminService {
       )
     }
 
-    await this.prismaService.taxPayment.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.taxInstallment.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.taxDetail.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.tax.delete({
-      where: {
-        taxPayerId_year: {
-          taxPayerId: taxPayer.id,
-          year,
+    await this.prismaService.$transaction([
+      this.prismaService.taxPayment.deleteMany({
+        where: {
+          taxId: tax.id,
         },
-      },
-    })
+      }),
+      this.prismaService.taxInstallment.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.taxDetail.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.tax.delete({
+        where: {
+          taxPayerId_year: {
+            taxPayerId: taxPayer.id,
+            year,
+          },
+        },
+      }),
+    ])
   }
 }

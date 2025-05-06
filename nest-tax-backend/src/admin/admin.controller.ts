@@ -153,11 +153,8 @@ export class AdminController {
     description: 'Internal server error or tax payer not found',
   })
   @UseGuards(AdminGuard)
-  @UseGuards(NotProductionGuard)
-  @Post('delete-testing-tax')
-  async deleteTestingTax(
-    @Body() request: RequestAdminDeleteTaxDto,
-  ): Promise<void> {
-    await this.adminService.deleteTestingTax(request)
+  @Post('delete-tax')
+  async deleteTax(@Body() request: RequestAdminDeleteTaxDto): Promise<void> {
+    await this.adminService.deleteTax(request)
   }
 }

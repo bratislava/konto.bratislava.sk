@@ -234,36 +234,36 @@ export class AdminService {
     await Promise.all(
       norisData.map(async (norisItem) => {
         birthNumbersResult.push(norisItem.ICO_RC)
+
         const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
-        if (!taxExists) {
-          const userData = await this.insertTaxPayerDataToDatabase(
-            norisItem,
+        if (taxExists) return
+
+        const userData = await this.insertTaxPayerDataToDatabase(
+          norisItem,
+          year,
+        )
+
+        const userFromCityAccount =
+          userDataFromCityAccount[userData.birthNumber] || null
+        if (userFromCityAccount === null) return
+
+        const bloomreachTracker = await this.bloomreachService.trackEventTax(
+          {
+            amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
             year,
+            delivery_method: transformDeliveryMethodToDatabaseType(
+              norisItem.delivery_method,
+            ),
+          },
+          userFromCityAccount.externalId ?? undefined,
+        )
+        if (!bloomreachTracker) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+            ),
           )
-          const userFromCityAccount =
-            userDataFromCityAccount[userData.birthNumber] || null
-          if (userFromCityAccount !== null) {
-            const bloomreachTracker =
-              await this.bloomreachService.trackEventTax(
-                {
-                  amount: currency(norisItem.dan_spolu.replace(',', '.'))
-                    .intValue,
-                  year,
-                  delivery_method: transformDeliveryMethodToDatabaseType(
-                    norisItem.delivery_method,
-                  ),
-                },
-                userFromCityAccount.externalId ?? undefined,
-              )
-            if (!bloomreachTracker) {
-              this.logger.error(
-                this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-                ),
-              )
-            }
-          }
         }
       }),
     )

@@ -72,7 +72,6 @@ RUN npx playwright install chromium
 RUN npm prune --production
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
-COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res
 COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 

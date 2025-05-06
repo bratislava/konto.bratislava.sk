@@ -1,4 +1,6 @@
-module.exports = {
+import type { Config } from 'jest'
+
+const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
   testRegex: String.raw`.*\.spec\.ts$`,
@@ -19,3 +21,5 @@ module.exports = {
     '^react-markdown$': '<rootDir>/../test/react-markdown-mock.js',
   },
 }
+
+export default config

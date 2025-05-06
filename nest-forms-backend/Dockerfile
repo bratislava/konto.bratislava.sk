@@ -19,8 +19,6 @@ COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
-RUN npx prisma migrate
-
 RUN npm run build
 
 # development

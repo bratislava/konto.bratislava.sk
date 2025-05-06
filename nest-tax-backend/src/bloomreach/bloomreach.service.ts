@@ -7,6 +7,7 @@ import {
   BloomreachEventNameEnum,
   TaxBloomreachDataDto,
   TaxPaymentBloomreachDataDto,
+  UnpaidTaxReminderBloomreachDataDto,
 } from './bloomreach.dto'
 
 @Injectable()
@@ -96,5 +97,16 @@ export class BloomreachService {
       BloomreachEventNameEnum.TAX,
     )
     return pushEventResult
+  }
+
+  async trackEventUnpaidTaxReminder(
+    taxData: UnpaidTaxReminderBloomreachDataDto,
+    cognitoId: string,
+  ): Promise<void> {
+    await this.trackEvent(
+      taxData,
+      cognitoId,
+      BloomreachEventNameEnum.UNPAID_TAX_REMINDER,
+    )
   }
 }

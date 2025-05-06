@@ -34,31 +34,32 @@ model TaxPayer {
 }
 
 model Tax {
-  id                  Int                  @id @default(autoincrement())
-  uuid                String               @default(uuid()) @db.Uuid
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @default(now()) @updatedAt
-  year                Int
-  taxPayerId          Int
-  taxPayer            TaxPayer             @relation(fields: [taxPayerId], references: [id])
-  amount              Int
-  variableSymbol      String
-  taxEmployeeId       Int
-  qrCodeWeb           String?
-  qrCodeEmail         String?
-  taxId               String?
-  dateCreateTax       String?
-  dateTaxRuling       DateTime? // "dátum právoplatnosti rozhodnutia"
-  taxLand             Int?
-  taxConstructions    Int?
-  taxFlat             Int?
-  taxPayments         TaxPayment[]
-  taxInstallments     TaxInstallment[]
-  taxDetails          TaxDetail[]
-  taxEmployees        TaxEmployee          @relation(fields: [taxEmployeeId], references: [id])
-  lastCheckedPayments DateTime             @default(now())
-  lastCheckedUpdates  DateTime             @default(now())
-  deliveryMethod      DeliveryMethodNamed?
+  id                              Int                  @id @default(autoincrement())
+  uuid                            String               @default(uuid()) @db.Uuid
+  createdAt                       DateTime             @default(now())
+  updatedAt                       DateTime             @default(now()) @updatedAt
+  year                            Int
+  taxPayerId                      Int
+  taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id])
+  amount                          Int
+  variableSymbol                  String
+  taxEmployeeId                   Int
+  qrCodeWeb                       String?
+  qrCodeEmail                     String?
+  taxId                           String?
+  dateCreateTax                   String?
+  dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
+  taxLand                         Int?
+  taxConstructions                Int?
+  taxFlat                         Int?
+  taxPayments                     TaxPayment[]
+  taxInstallments                 TaxInstallment[]
+  taxDetails                      TaxDetail[]
+  taxEmployees                    TaxEmployee          @relation(fields: [taxEmployeeId], references: [id])
+  lastCheckedPayments             DateTime             @default(now())
+  lastCheckedUpdates              DateTime             @default(now())
+  deliveryMethod                  DeliveryMethodNamed?
+  bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
   @@unique([taxPayerId, year])
   @@unique([uuid])

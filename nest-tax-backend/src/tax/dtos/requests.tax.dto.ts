@@ -540,6 +540,14 @@ export class ResponseTaxDto {
   @IsEnum(DeliveryMethodNamed)
   @IsOptional()
   deliveryMethod: DeliveryMethodNamed | null
+
+  @ApiProperty({
+    description:
+      'Has the unpaid tax notification event been sent to Bloomreach for this tax',
+    example: true,
+  })
+  @IsBoolean()
+  bloomreachUnpaidTaxReminderSent: boolean
 }
 
 export class ResponseGetTaxesBodyDto {

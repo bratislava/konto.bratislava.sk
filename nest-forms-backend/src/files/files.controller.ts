@@ -101,6 +101,9 @@ export default class FilesController {
     summary: 'Upload file to form',
     description: 'You can upload file to form. ',
   })
+  @ApiOkResponse({
+    type: PostFileResponseDto,
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -141,6 +144,9 @@ export default class FilesController {
   @ApiOperation({
     summary: 'Obtain jwt token form file download',
     description: 'To be able to download file you need to obtain jwt token. ',
+  })
+  @ApiOkResponse({
+    type: DownloadTokenResponseDataDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Get('download/jwt/:fileId')

@@ -236,7 +236,9 @@ export class AdminService {
         birthNumbersResult.push(norisItem.ICO_RC)
 
         const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
-        if (taxExists) return
+        if (taxExists) {
+          return
+        }
 
         const userData = await this.insertTaxPayerDataToDatabase(
           norisItem,
@@ -245,7 +247,9 @@ export class AdminService {
 
         const userFromCityAccount =
           userDataFromCityAccount[userData.birthNumber] || null
-        if (userFromCityAccount === null) return
+        if (userFromCityAccount === null) {
+          return
+        }
 
         const bloomreachTracker = await this.bloomreachService.trackEventTax(
           {

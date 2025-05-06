@@ -1,4 +1,4 @@
-import { Controller, HttpCode, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import {
   ApiOperation,
   ApiResponse,
@@ -7,6 +7,7 @@ import {
 } from '@nestjs/swagger'
 import { AdminGuard } from 'src/auth/guards/admin.guard'
 
+import { RequestPostReportingSendReport } from '../admin/dtos/requests.dto'
 import { CardPaymentReportingService } from './card-payment-reporting.service'
 
 @ApiTags('card-payment-reporting')
@@ -28,12 +29,11 @@ export class CardPaymentReportingController {
   @UseGuards(AdminGuard)
   @Post('send-report')
   async sendReport(
-    @Query('date') date: string,
-    @Query('email') email: string,
-  ): Promise<any> {
+    @Body() data: RequestPostReportingSendReport,
+  ): Promise<void> {
     return this.cardPaymentReportingService.generateAndSendPaymentReport(
-      email,
-      new Date(date),
+      data.email,
+      new Date(data.date),
     )
   }
 }

@@ -46,6 +46,7 @@ import {
   SendMessageNasesSender,
   SendMessageNasesSenderType,
 } from '../types/send-message-nases-sender.type'
+import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -418,9 +419,15 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      )
+    }
+    let subject = extractFormSubjectTechnical(formDefinition, form.formDataJson)
     const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
-    let subject: string = form.id
     const mimeType = isSigned
       ? 'application/vnd.etsi.asic-e+zip'
       : 'application/x-eform-xml'

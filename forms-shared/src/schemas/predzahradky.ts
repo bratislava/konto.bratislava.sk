@@ -185,14 +185,14 @@ const extractFn = (formData: ExtractSubjectFormData) => {
   throw new Error('Failed to extract the subject.')
 }
 
-export const predzahradkyExtractSubject: SchemaFormDataExtractor<ExtractSubjectFormData> = {
+export const predzahradkyExtractPlainSubject: SchemaFormDataExtractor<ExtractSubjectFormData> = {
   type: 'schema',
   schema: extractSubjectSchema,
   extractFn,
   schemaValidationFailedFallback: 'Registrácia predzáhradky',
 }
 
-export const predzahradkyExtractGinisSubject: SchemalessFormDataExtractor<ExtractSubjectFormData> =
+export const predzahradkyExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractSubjectFormData> =
   {
     type: 'schemaless',
     extractFn,

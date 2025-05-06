@@ -218,7 +218,7 @@ export default schema(
   ],
 )
 
-type ExtractGinisSubjectFormData = {
+type ExtractTechnicalSubjectFormData = {
   stavba: {
     ulica: string
     nazov: string
@@ -227,7 +227,7 @@ type ExtractGinisSubjectFormData = {
   }
 }
 
-export const stanoviskoKInvesticnemuZameruExtractGinisSubject: SchemalessFormDataExtractor<ExtractGinisSubjectFormData> =
+export const stanoviskoKInvesticnemuZameruExtractTechnicalSubject: SchemalessFormDataExtractor<ExtractTechnicalSubjectFormData> =
   {
     type: 'schemaless',
     extractFn: (formData) => {
@@ -239,7 +239,7 @@ export const stanoviskoKInvesticnemuZameruExtractGinisSubject: SchemalessFormDat
     },
   }
 
-type ExtractSubjectFormData = {
+type ExtractPlainSubjectFormData = {
   stavba: {
     nazov: string
   }
@@ -259,7 +259,7 @@ const extractSubjectSchema = {
   },
 } as BAJSONSchema7
 
-export const stanoviskoKInvesticnemuZameruExtractSubject: SchemaFormDataExtractor<ExtractSubjectFormData> =
+export const stanoviskoKInvesticnemuZameruExtractPlainSubject: SchemaFormDataExtractor<ExtractPlainSubjectFormData> =
   {
     type: 'schema',
     schema: extractSubjectSchema,

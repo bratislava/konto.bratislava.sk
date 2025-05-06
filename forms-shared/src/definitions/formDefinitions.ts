@@ -1,10 +1,10 @@
 import stanoviskoKInvesticnemuZameru, {
-  stanoviskoKInvesticnemuZameruExtractGinisSubject,
-  stanoviskoKInvesticnemuZameruExtractSubject,
+  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+  stanoviskoKInvesticnemuZameruExtractPlainSubject,
 } from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky, {
-  predzahradkyExtractGinisSubject,
-  predzahradkyExtractSubject,
+  predzahradkyExtractTechnicalSubject,
+  predzahradkyExtractPlainSubject,
 } from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
@@ -15,12 +15,12 @@ import {
   ziadostONajomBytuTermsAndConditions,
 } from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti, {
-  zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
-  zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
 } from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady, {
-  komunitneZahradyExtractGinisSubject,
-  komunitneZahradyExtractSubject,
+  komunitneZahradyExtractTechnicalSubject,
+  komunitneZahradyExtractPlainSubject,
 } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
@@ -93,11 +93,13 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: stanoviskoKInvesticnemuZameruExtractSubject,
+    subject: {
+      extractPlain: stanoviskoKInvesticnemuZameruExtractPlainSubject,
+      extractTechnical: stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+    },
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
-      extractGinisSubject: stanoviskoKInvesticnemuZameruExtractGinisSubject,
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -113,11 +115,13 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
+    subject: {
+      extractPlain: zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
+      extractTechnical: zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+    },
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: 'Simeunovičová Ľudmila',
-      extractGinisSubject: zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
@@ -133,12 +137,14 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: predzahradkyExtractSubject,
+    subject: {
+      extractPlain: predzahradkyExtractPlainSubject,
+      extractTechnical: predzahradkyExtractTechnicalSubject,
+    },
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OTMZ',
       ginisPersonName: 'Vacek Dušan',
-      extractGinisSubject: predzahradkyExtractGinisSubject,
     },
   },
   {
@@ -152,12 +158,14 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: komunitneZahradyExtractSubject,
+    subject: {
+      extractPlain: komunitneZahradyExtractPlainSubject,
+      extractTechnical: komunitneZahradyExtractTechnicalSubject,
+    },
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'SSN',
       ginisPersonName: 'Viziová Alexandra',
-      extractGinisSubject: komunitneZahradyExtractGinisSubject,
     },
   },
   {

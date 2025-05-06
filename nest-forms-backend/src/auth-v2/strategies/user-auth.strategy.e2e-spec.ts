@@ -8,7 +8,7 @@ import {
   withUser,
 } from '../../../test/fixtures/auth/user'
 import { mockAuthProviders } from '../../../test/mocks/auth/mock-auth-providers'
-import { UserFromRequest } from '../decorators/user-from-request.decorator'
+import { GetUser } from '../decorators/get-user.decorator'
 import { UserAuthGuard } from '../guards/user-auth.guard'
 import { User } from '../types/user'
 import { UserAuthStrategy } from './user-auth.strategy'
@@ -17,7 +17,7 @@ import { UserAuthStrategy } from './user-auth.strategy'
 class TestController {
   @Get()
   @UseGuards(UserAuthGuard)
-  testRoute(@UserFromRequest() user: User) {
+  testRoute(@GetUser() user: User) {
     return { user }
   }
 }

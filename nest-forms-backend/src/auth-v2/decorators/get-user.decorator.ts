@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
-import { User } from '../types/user' // Adjust the import path as needed
+import { User } from '../types/user'
 
-export const UserFromRequest = createParamDecorator(
+export const GetUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest()
     if (!request.user) {

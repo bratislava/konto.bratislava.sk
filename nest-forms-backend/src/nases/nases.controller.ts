@@ -9,19 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotAcceptableResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnauthorizedResponse,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
 import { Forms } from '@prisma/client'
 import jwt from 'jsonwebtoken'
@@ -33,28 +24,9 @@ import {
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import NasesAuthGuard from '../auth/guards/nases.guard'
-import {
-  FileDeleteFromMinioWasNotSuccessfulErrorDto,
-  FileIdsNotFoundInDbErrorDto,
-} from '../files/files.errors.dto'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
-import {
-  EmptyFormDataErrorDto,
-  FormDataInvalidErrorDto,
-  FormDefinitionNotFoundErrorDto,
-  FormDefinitionNotSupportedTypeErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotEditableErrorDto,
-  FormNotFoundErrorDto,
-  NoFormXmlDataErrorDto,
-} from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
-import {
-  DatabaseErrorDto,
-  NotFoundErrorDto,
-  UnauthorizedErrorDto,
-} from '../utils/global-dtos/errors.dto'
 import {
   ErrorsEnum,
   ErrorsResponseEnum,
@@ -76,28 +48,12 @@ import {
   CreateFormResponseDto,
   MigrateFormResponseDto,
 } from './dtos/responses.dto'
-import {
-  ForbiddenFormSendDto,
-  FormAssignedToOtherUserErrorDto,
-  FormSummaryGenerationErrorDto,
-  FormVersionNotCompatibleErrorDto,
-  SendPolicyNotAllowedForUserErrorDto,
-  SendPolicyNotPossibleErrorDto,
-  SignatureFormDataHashMismatchErrorDto,
-  SignatureFormDefinitionMismatchErrorDto,
-  SignatureMissingErrorDto,
-  UnableAddFormToRabbitErrorDto,
-} from './nases.errors.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
 
 @ApiTags('nases')
 @ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'Unauthorized.',
-  type: UnauthorizedErrorDto,
-})
 @Controller('nases')
 export default class NasesController {
   constructor(
@@ -116,24 +72,6 @@ export default class NasesController {
   @ApiOkResponse({
     description: 'Return form',
     type: GetFormResponseDto,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'This form is owned by other user.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Get('form/:id')
@@ -158,21 +96,6 @@ export default class NasesController {
     description: 'Return forms',
     type: GetFormsResponseDto,
   })
-  @ApiNotFoundResponse({
-    description: 'Form definition not found',
-    type: FormDefinitionNotFoundErrorDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-      ],
-    },
-  })
   @UseGuards(CognitoGuard)
   @Get('forms')
   async getForms(
@@ -194,24 +117,6 @@ export default class NasesController {
   })
   @ApiOkResponse({
     description: 'Form successfully deleted',
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad request error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotEditableErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Form not found.',
-    type: FormNotFoundErrorDto,
-  })
-  @ApiForbiddenResponse({
-    description: "This form is some else's",
-    type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Delete(':id')
@@ -240,21 +145,6 @@ export default class NasesController {
     description: 'Create form in db',
     type: CreateFormResponseDto,
   })
-  @ApiNotFoundResponse({
-    description: 'Form definition not found',
-    type: FormDefinitionNotFoundErrorDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-      ],
-    },
-  })
   @UseGuards(new CognitoGuard(true))
   @Post('create-form')
   async createForm(
@@ -278,43 +168,6 @@ export default class NasesController {
     description:
       'Return charging details - price and used free minutes / hours.',
     type: GetFormResponseDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
-  @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FileIdsNotFoundInDbErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileDeleteFromMinioWasNotSuccessfulErrorDto),
-        },
-      ],
-    },
   })
   @UseGuards(new CognitoGuard(true))
   @Post('update-form/:id')
@@ -343,43 +196,6 @@ export default class NasesController {
     description: 'Create form in db',
     type: GetFormResponseDto,
   })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FileIdsNotFoundInDbErrorDto)
-  @ApiExtraModels(FileDeleteFromMinioWasNotSuccessfulErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FileIdsNotFoundInDbErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileDeleteFromMinioWasNotSuccessfulErrorDto),
-        },
-      ],
-    },
-  })
   @UseGuards(NasesAuthGuard)
   @Post('eid/update-form/:id')
   async updateFormEid(
@@ -404,14 +220,6 @@ export default class NasesController {
   @ApiOkResponse({
     description: '',
     type: CanSendResponseDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Form was not found.',
-    type: FormNotFoundErrorDto,
-  })
-  @ApiForbiddenResponse({
-    description: 'It is forbidden to access this form.',
-    type: ForbiddenFormSendDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Get('eid/can-send/:id')
@@ -447,85 +255,6 @@ export default class NasesController {
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(UnableAddFormToRabbitErrorDto)
-  @ApiExtraModels(FormNotEditableErrorDto)
-  @ApiExtraModels(NoFormXmlDataErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(FormSummaryGenerationErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
-  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(ForbiddenFormSendDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Unprocessable entity error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
-        },
-        {
-          $ref: getSchemaPath(NoFormXmlDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormNotEditableErrorDto),
-        },
-        {
-          $ref: getSchemaPath(EmptyFormDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotAcceptableResponse({
-    description: 'Provided data is not sendable, usually it is not valid.',
-    type: FormDataInvalidErrorDto,
-  })
   @UseGuards(new CognitoGuard(true))
   @Post('send-form/:id')
   async sendForm(
@@ -545,99 +274,6 @@ export default class NasesController {
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(UnableAddFormToRabbitErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormNotEditableErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(FormSummaryGenerationErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiExtraModels(SignatureMissingErrorDto)
-  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
-  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
-  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(ForbiddenFormSendDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Unprocessable entity error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
-        },
-        {
-          $ref: getSchemaPath(NoFormXmlDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormNotEditableErrorDto),
-        },
-        {
-          $ref: getSchemaPath(EmptyFormDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureMissingErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotAcceptableResponse({
-    description: 'Provided data is not sendable, usually it is not valid.',
-    type: FormDataInvalidErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-form/:id')
@@ -673,87 +309,6 @@ export default class NasesController {
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(UnableAddFormToRabbitErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(FormSummaryGenerationErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiExtraModels(SignatureMissingErrorDto)
-  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
-  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
-  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
-  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(ForbiddenFormSendDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Unprocessable entity error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
-        },
-        {
-          $ref: getSchemaPath(EmptyFormDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotAcceptableResponse({
-    description: 'Provided data is not sendable, usually it is not valid.',
-    type: FormDataInvalidErrorDto,
-  })
   @UseGuards(new CognitoGuard(true))
   @Post('send-and-update-form/:id')
   async sendAndUpdateForm(
@@ -776,107 +331,6 @@ export default class NasesController {
   @ApiOkResponse({
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(UnableAddFormToRabbitErrorDto)
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormNotEditableErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(FormSummaryGenerationErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiExtraModels(SignatureMissingErrorDto)
-  @ApiExtraModels(SignatureFormDefinitionMismatchErrorDto)
-  @ApiExtraModels(SignatureFormDataHashMismatchErrorDto)
-  @ApiExtraModels(FormVersionNotCompatibleErrorDto)
-  @ApiExtraModels(SendPolicyNotPossibleErrorDto)
-  @ApiExtraModels(SendPolicyNotAllowedForUserErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(SendPolicyNotPossibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(ForbiddenFormSendDto),
-        },
-        {
-          $ref: getSchemaPath(SendPolicyNotAllowedForUserErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Unprocessable entity error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnableAddFormToRabbitErrorDto),
-        },
-        {
-          $ref: getSchemaPath(NoFormXmlDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormNotEditableErrorDto),
-        },
-        {
-          $ref: getSchemaPath(EmptyFormDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureMissingErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureFormDefinitionMismatchErrorDto),
-        },
-        {
-          $ref: getSchemaPath(SignatureFormDataHashMismatchErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormVersionNotCompatibleErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormSummaryGenerationErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotAcceptableResponse({
-    description: 'Provided data is not sendable, usually it is not valid.',
-    type: FormDataInvalidErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-and-update-form/:id')
@@ -933,14 +387,6 @@ export default class NasesController {
   })
   @ApiOkResponse({
     type: MigrateFormResponseDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'No such form found.',
-    type: NotFoundErrorDto,
-  })
-  @ApiForbiddenResponse({
-    description: 'The form is already assigned to someone',
-    type: FormAssignedToOtherUserErrorDto,
   })
   @UseGuards(CognitoGuard)
   @Post('migrate-form/:id')

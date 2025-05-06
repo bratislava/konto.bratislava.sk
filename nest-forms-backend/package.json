@@ -129,35 +129,6 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.8.3"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s",
-      "!**/*.dto.ts",
-      "!**/*.module.ts",
-      "!**/*.enum.ts"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/../test/singleton.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/nases/__tests__"
-    ],
-    "moduleNameMapper": {
-      "^react-markdown$": "<rootDir>/../test/react-markdown-mock.js"
-    }
-  },
   "volta": {
     "node": "20.9.0",
     "npm": "10.7.0"

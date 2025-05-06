@@ -4,7 +4,7 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger'
-import { Files, FileStatus, FormError, FormState } from '@prisma/client'
+import { FileStatus, FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBoolean,
@@ -15,12 +15,6 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
-
-export class processFileResulDto {
-  declare result: boolean
-
-  declare file: Files
-}
 
 class formUserInformationDto {
   @ApiProperty({
@@ -67,16 +61,6 @@ export class DownloadTokenResponseDataDto {
   })
   @IsString()
   declare jwt: string
-}
-
-export class FileIdDto {
-  @ApiProperty({
-    description: 'Desired id of file in db',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsOptional()
-  @IsUUID()
-  declare fileId: string
 }
 
 export class FileNameDto {
@@ -180,12 +164,6 @@ export class BasicFileWithStatusDto extends IntersectionType(
   FileSizeDto,
 ) {}
 
-export class UserFileWithFileIdDto extends IntersectionType(
-  BasicFileDto,
-  FileIdDto,
-  FileSizeDto,
-) {}
-
 export class BasicFileWithStatus extends IntersectionType(
   BasicFileDto,
   BasicFileWithStatusDto,
@@ -248,25 +226,7 @@ export class ResponseFileDto extends ExtendedFileDto {
   declare message: string
 }
 
-export class ResponseBasicFileDto extends BasicFileWithStatusDto {
-  @ApiProperty({
-    description: 'more info',
-    example: 'file is deleted',
-  })
-  @IsString()
-  declare message: string
-}
-
-/* Requests and responses */
-export class PostFileRequestDto extends IntersectionType(
-  BasicFileDto,
-  FileIdDto,
-  FileSizeDto,
-) {}
-
 export class PostFileResponseDto extends ExtendedFileDto {}
-
-export class GetFileStatusResponseDto extends StatusFileDto {}
 
 export class GetFileResponseDto extends IntersectionType(ExtendedFileDto) {}
 
@@ -281,15 +241,6 @@ export class GetFileResponseReducedDto extends IntersectionType(
 export class UpdateFileStatusRequestDto extends StatusFileDto {}
 
 export class UpdateFileStatusResponseDto extends ResponseFileDto {}
-
-export class DeleteFileResponseData extends idDto {
-  @ApiProperty({
-    description: 'more info',
-    example: 'file is deleted',
-  })
-  @IsString()
-  declare message: string
-}
 
 /* file upload */
 

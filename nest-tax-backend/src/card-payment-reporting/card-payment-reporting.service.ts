@@ -10,6 +10,9 @@ import DatabaseSubservice from '../utils/subservices/database.subservice'
 import EmailSubservice from '../utils/subservices/email.subservice'
 import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 const csvColumnNames = [
   'transactionType',
   'terminalId',
@@ -51,7 +54,7 @@ export class CardPaymentReportingService {
     private readonly databaseSubservice: DatabaseSubservice,
   ) {}
 
-  private readonly generatePrice = (price: number, fill: number): string => {
+  private generatePrice(price: number, fill: number): string {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
     const paddedPrice = Math.abs(price)
       .toFixed(2)

@@ -37,7 +37,6 @@ import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
   FormDataFileDto,
-  GetFileResponseDto,
   GetFileResponseReducedDto,
   PostFileResponseDto,
   UpdateFileStatusRequestDto,
@@ -53,28 +52,6 @@ export default class FilesController {
 
   constructor(private readonly filesService: FilesService) {
     this.logger = new LineLoggerSubservice('FilesController')
-  }
-
-  @ApiOperation({
-    summary: 'Get file by fileId',
-    description: 'You get all file info based on fileId.',
-  })
-  @ApiOkResponse({
-    description: 'Status of file',
-    type: GetFileResponseDto,
-  })
-  @UseGuards(new CognitoGuard(true))
-  @Get(':fileId')
-  getFile(
-    @Param('fileId') fileId: string,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
-  ): Promise<GetFileResponseDto> {
-    return this.filesService.getFileWithUserVerify(
-      fileId,
-      userInfo?.ico ?? null,
-      user,
-    )
   }
 
   @ApiOperation({

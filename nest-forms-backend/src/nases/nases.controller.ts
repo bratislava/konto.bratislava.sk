@@ -23,7 +23,6 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import NasesAuthGuard from '../auth/guards/nases.guard'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
@@ -34,7 +33,6 @@ import {
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import {
   CreateFormRequestDto,
-  EidSendFormRequestDto,
   EidUpdateSendFormRequestDto,
   GetFormResponseDto,
   GetFormsRequestDto,
@@ -44,7 +42,6 @@ import {
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
 import {
-  CanSendResponseDto,
   CreateFormResponseDto,
   MigrateFormResponseDto,
 } from './dtos/responses.dto'
@@ -184,120 +181,6 @@ export default class NasesController {
       user,
     )
     return returnData
-  }
-
-  @ApiOperation({
-    deprecated: true,
-    summary: '',
-    description:
-      'Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES',
-  })
-  @ApiOkResponse({
-    description: 'Create form in db',
-    type: GetFormResponseDto,
-  })
-  @UseGuards(NasesAuthGuard)
-  @Post('eid/update-form/:id')
-  async updateFormEid(
-    @User() user: JwtNasesPayloadDto,
-    @Body() data: UpdateFormRequestDto,
-    @Param('id') id: string,
-  ): Promise<Forms> {
-    const returnData = await this.nasesService.updateFormEid(
-      id,
-      user,
-      data,
-      null,
-    )
-    return returnData
-  }
-
-  @ApiOperation({
-    summary: '',
-    description:
-      'Check if given form can be sent to Nases (all files are scanned etc.)',
-  })
-  @ApiOkResponse({
-    description: '',
-    type: CanSendResponseDto,
-  })
-  @UseGuards(new CognitoGuard(true))
-  @Get('eid/can-send/:id')
-  async checkSendConditions(
-    @Param('id') id: string,
-    @Body() data: EidSendFormRequestDto,
-    @User() cognitoUser?: CognitoGetUserData,
-  ): Promise<CanSendResponseDto> {
-    const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-      )
-    }
-
-    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
-    const canSend = await this.nasesService.canSendForm(
-      id,
-      user,
-      cognitoUser?.sub,
-    )
-
-    return { canSend, formId: id }
-  }
-
-  @ApiOperation({
-    summary: '',
-    description:
-      'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
-  })
-  @ApiOkResponse({
-    description: 'Form was successfully send to rabbit, ant then to nases.',
-    type: SendFormResponseDto,
-  })
-  @UseGuards(new CognitoGuard(true))
-  @Post('send-form/:id')
-  async sendForm(
-    @Param('id') id: string,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user: CognitoGetUserData | undefined,
-  ): Promise<SendFormResponseDto> {
-    const data = await this.nasesService.sendForm(id, userInfo, user)
-    return data
-  }
-
-  @ApiOperation({
-    summary: '',
-    description:
-      'This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES',
-  })
-  @ApiOkResponse({
-    description: 'Form was successfully send to rabbit, ant then to nases.',
-    type: SendFormResponseDto,
-  })
-  @UseGuards(new CognitoGuard(true))
-  @Post('eid/send-form/:id')
-  async sendFormEid(
-    @Param('id') id: string,
-    @Body() body: EidSendFormRequestDto,
-    @User() cognitoUser?: CognitoGetUserData,
-  ): Promise<SendFormResponseDto> {
-    const jwtTest = this.nasesUtilsService.createUserJwtToken(body.eidToken)
-    if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
-      throw this.throwerErrorGuard.UnauthorizedException(
-        ErrorsEnum.UNAUTHORIZED_ERROR,
-        ErrorsResponseEnum.UNAUTHORIZED_ERROR,
-      )
-    }
-
-    const user = jwt.decode(body.eidToken, { json: true }) as JwtNasesPayloadDto
-    const data = await this.nasesService.sendFormEid(
-      id,
-      body.eidToken,
-      user,
-      cognitoUser,
-    )
-    return data
   }
 
   @ApiOperation({

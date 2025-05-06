@@ -30,3 +30,4 @@ services:
     restart: always
     ports:
       - 6311:6379
+    command: redis-server --requirepass password

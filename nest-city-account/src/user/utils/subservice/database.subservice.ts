@@ -15,12 +15,16 @@ import {
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { BloomreachService } from '../../../bloomreach/bloomreach.service'
 
 @Injectable()
 export class DatabaseSubserviceUser {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private bloomreachService: BloomreachService
+  ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
@@ -48,22 +52,18 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.userGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              userId: user.id,
-            },
-          ],
-        })
+        await this.changeUserGdprData(user.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
       } else if (user.email != email) {
         const oldEmail = user.email
         user = await this.prisma.user.update({
@@ -88,14 +88,13 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.userGdprData.create({
-        data: {
+      this.changeUserGdprData(user.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          userId: user.id,
         },
-      })
+      ])
     }
 
     return prismaExclude(user, ['ifo'])
@@ -128,22 +127,20 @@ export class DatabaseSubserviceUser {
             email: email,
           },
         })
-        await this.prisma.legalPersonGdprData.createMany({
-          data: [
-            {
-              type: GdprType.LICENSE,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-            {
-              type: GdprType.MARKETING,
-              category: GdprCategory.ESBS,
-              subType: GdprSubType.SUB,
-              legalPersonId: legalPerson.id,
-            },
-          ],
-        })
+        await this.changeLegalPersonGdprData(legalPerson.id, [
+          {
+            type: GdprType.LICENSE,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+          {
+            type: GdprType.MARKETING,
+            category: GdprCategory.ESBS,
+            subType: GdprSubType.SUB,
+          },
+        ])
+
+        // this makes no sense, it doesn't provide any subType and it removes marketing consent
         await this.createLegalPersonGdprData(legalPerson.id, null)
       } else if (legalPerson.email != email) {
         const oldEmail = legalPerson.email
@@ -169,14 +166,14 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      await this.prisma.legalPersonGdprData.create({
-        data: {
+      await this.changeLegalPersonGdprData(legalPerson.id, [
+        {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
           subType: GdprSubType.SUB,
-          legalPersonId: legalPerson.id,
         },
-      })
+      ])
+      // this makes no sense, it doesn't provide any subType
       await this.createLegalPersonGdprData(legalPerson.id, null)
     }
     return legalPerson
@@ -245,7 +242,7 @@ export class DatabaseSubserviceUser {
       //   },
       // })
     }
-    await this.prisma.userGdprData.createMany({ data: data })
+    this.changeUserGdprData(userId, data)
     return data
   }
 
@@ -278,10 +275,10 @@ export class DatabaseSubserviceUser {
         })
       }
     }
-    await this.prisma.legalPersonGdprData.createMany({ data: data })
     return data
   }
 
+  // is this ok?
   async getUserGdprData(userId: string): Promise<ResponseGdprUserDataDto[]> {
     const data: ResponseGdprUserDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -306,6 +303,7 @@ export class DatabaseSubserviceUser {
     return data
   }
 
+  // is this ok?
   async getLegalPersonGdprData(legalPersonId: string): Promise<ResponseGdprLegalPersonDataDto[]> {
     const data: ResponseGdprLegalPersonDataDto[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT ON(category, "type")
@@ -377,5 +375,65 @@ export class DatabaseSubserviceUser {
       return false
     }
     return true
+  }
+
+  async changeUserGdprData(userId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    })
+    if (!user) {
+      return
+    }
+    await this.prisma.userGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        userId: user.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        user.externalId
+      )
+    }
+  }
+
+  async changeLegalPersonGdprData(legalPersonId: string, gdprData: ResponseGdprUserDataDto[]) {
+    const legalPerson = await this.prisma.legalPerson.findUnique({
+      where: { id: legalPersonId },
+    })
+    if (!legalPerson) {
+      return
+    }
+    await this.prisma.legalPersonGdprData.createMany({
+      data: gdprData.map((elem) => ({
+        type: elem.type,
+        category: elem.category,
+        subType: elem.subType,
+        legalPersonId: legalPerson.id,
+      })),
+    })
+
+    for (const elem of gdprData) {
+      this.bloomreachService.trackEventConsent(
+        elem.subType,
+        [
+          {
+            category: elem.category,
+            type: elem.type,
+          },
+        ],
+        legalPerson.externalId
+      )
+    }
   }
 }

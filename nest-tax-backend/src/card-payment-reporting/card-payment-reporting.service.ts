@@ -146,7 +146,9 @@ export class CardPaymentReportingService {
   ): Promise<string> {
     let body = ''
     finalData.forEach((row) => {
-      if (row.orderId.length === 0) return
+      if (row.orderId.length === 0) {
+        return
+      }
 
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
 
@@ -186,7 +188,9 @@ export class CardPaymentReportingService {
     let debet = 0
 
     formatedData.forEach((row) => {
-      if (!row.isRegular) return
+      if (!row.isRegular) {
+        return
+      }
       kredit += Math.max(row.totalPrice, 0)
       debet += row.provision - Math.min(row.totalPrice, 0)
       countTransactions += 1
@@ -246,7 +250,9 @@ export class CardPaymentReportingService {
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
         const fileDate = this.extractFileDate(file.name)
-        if (!fileDate) return null
+        if (!fileDate) {
+          return null
+        }
 
         const dateInfo = this.getDateInfo(fileDate)
 

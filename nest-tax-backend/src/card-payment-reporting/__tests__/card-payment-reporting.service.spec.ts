@@ -6,9 +6,31 @@ import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
 import { CardPaymentReportingService } from '../card-payment-reporting.service'
+
+const csvColumnNames = [
+  'transactionType',
+  'terminalId',
+  'transactionId',
+  'transactionType_',
+  'date',
+  'totalPrice',
+  'provision',
+  'priceWithoutProvision',
+  'cashBack',
+  'authCode',
+  'cardNumber',
+  'cardType',
+  'closureId',
+  'orderId',
+] as const
+
+type CsvColumns = (typeof csvColumnNames)[number]
+
+type CsvRecord = Record<CsvColumns, string>
 
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
@@ -53,6 +75,12 @@ describe('CardPaymentReportingService', () => {
           provide: SftpFileSubservice,
           useValue: {
             getNewFiles: jest.fn(),
+          },
+        },
+        {
+          provide: DatabaseSubservice,
+          useValue: {
+            getVariableSymbolsByOrderIds: jest.fn(),
           },
         },
       ],
@@ -164,6 +192,47 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
     it('should generate a proper price string when price is negative', () => {
       const result = service['generatePrice'](-123.45, 10)
       expect(result).toBe('-00000012345')
+    })
+  })
+
+  describe('enrichDataWithVariableSymbols', () => {
+    it('should enrich CSV data with variable symbols', () => {
+      const csvData = [
+        { orderId: 'order1', totalPrice: '123' } as CsvRecord,
+        { orderId: 'order3', totalPrice: '456' } as CsvRecord,
+      ]
+      const variableSymbols = [
+        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
+        { variableSymbol: 'VS456', orderIds: ['order3', 'order4'] },
+      ]
+
+      const result = service['enrichDataWithVariableSymbols'](
+        csvData,
+        variableSymbols,
+      )
+      expect(result).toStrictEqual([
+        { orderId: 'order1', totalPrice: '123', variableSymbol: 'VS123' },
+        { orderId: 'order3', totalPrice: '456', variableSymbol: 'VS456' },
+      ])
+    })
+
+    it('should assign an empty string as variable symbol if no match is found', () => {
+      const csvData = [
+        {
+          orderId: 'order3',
+          totalPrice: '123',
+          transactionType: 'type1',
+        } as CsvRecord,
+      ]
+      const variableSymbols = [
+        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
+      ]
+
+      const result = service['enrichDataWithVariableSymbols'](
+        csvData,
+        variableSymbols,
+      )
+      expect(result[0].variableSymbol).toBe('')
     })
   })
 })

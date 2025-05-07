@@ -331,7 +331,7 @@ export class CardPaymentReportingService {
     )
 
     // We do not want to update the database if custom range was used
-    if (!from) {
+    if (from) {
       return
     }
 

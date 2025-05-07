@@ -22,7 +22,6 @@ export default schema(
   {
     title: 'Showcase',
   },
-  {},
   [
     step('textInputs', { title: 'Text Inputs' }, [
       input(
@@ -39,7 +38,6 @@ export default schema(
       ),
       object(
         'sizeVariants',
-        { required: true },
         {
           title: 'Size Variants',
         },
@@ -51,7 +49,6 @@ export default schema(
       ),
       object(
         'iconInputs',
-        { required: true },
         {
           title: 'Inputs with Icons',
         },
@@ -84,7 +81,6 @@ export default schema(
       ),
       object(
         'formattedInputs',
-        { required: true },
         {
           title: 'Formatted Inputs',
         },
@@ -239,7 +235,6 @@ export default schema(
       ),
       object(
         'calculatorExample',
-        { required: true },
         {
           title: 'Calculator Example',
           description: 'Shows how calculated values work',
@@ -527,38 +522,28 @@ export default schema(
       ),
     ]),
     step('layouts', { title: 'Layout Examples' }, [
-      object(
-        'columnsLayout',
-        {
-          required: true,
-        },
-        {},
-        [
-          input(
-            'column1',
-            {
-              title: 'Column 1',
-              type: 'text',
-              required: true,
-            },
-            { selfColumn: '2/4' },
-          ),
-          input(
-            'column2',
-            {
-              title: 'Column 2',
-              type: 'text',
-              required: true,
-            },
-            { selfColumn: '2/4' },
-          ),
-        ],
-      ),
+      object('columnsLayout', {}, [
+        input(
+          'column1',
+          {
+            title: 'Column 1',
+            type: 'text',
+            required: true,
+          },
+          { selfColumn: '2/4' },
+        ),
+        input(
+          'column2',
+          {
+            title: 'Column 2',
+            type: 'text',
+            required: true,
+          },
+          { selfColumn: '2/4' },
+        ),
+      ]),
       object(
         'boxedLayout',
-        {
-          required: true,
-        },
         {
           objectDisplay: 'boxed',
           title: 'Boxed Section',

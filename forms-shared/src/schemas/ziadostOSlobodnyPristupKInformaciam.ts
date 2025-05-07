@@ -24,7 +24,6 @@ export default schema(
   {
     title: 'Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(
@@ -91,7 +90,6 @@ export default schema(
             [
               object(
                 'kontaktneUdaje',
-                {},
                 {
                   title: 'Kontaktné údaje',
                   description:

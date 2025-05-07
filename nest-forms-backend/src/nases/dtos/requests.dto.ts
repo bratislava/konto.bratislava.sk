@@ -249,6 +249,12 @@ export class GetFormResponseDto {
   @IsOptional()
   declare formDataJson: PrismaJson.FormDataJson | null
 
+  @ApiProperty({
+    description: 'Form subject',
+  })
+  @IsString()
+  declare formSubject: string
+
   @ApiPropertyOptional({
     description: 'Form signature with metadata',
     type: FormSignatureDto,
@@ -283,21 +289,6 @@ export class GetFormResponseDto {
   })
   @IsOptional()
   declare finishSubmission: Date | null
-
-  @ApiProperty({
-    description: 'Message subject created from uiSchema',
-    example:
-      'e-ZST ž. “Ulica” “Názov stavby / projektu”, pč “Parcelné číslo” kú “Katastrálne územie"',
-  })
-  @IsString()
-  declare messageSubject: string
-
-  @ApiProperty({
-    description: 'Title used in frontend when listing forms',
-    example: 'Názov stavby / projektu',
-  })
-  @IsString()
-  declare frontendTitle: string
 
   @ApiProperty({
     description: 'Slug of the form definition',
@@ -365,19 +356,10 @@ export class GetFormResponseSimpleDto {
   declare formDataJson: PrismaJson.FormDataJson | null
 
   @ApiProperty({
-    description: 'Message subject created from uiSchema',
-    example:
-      'e-ZST ž. “Ulica” “Názov stavby / projektu”, pč “Parcelné číslo” kú “Katastrálne územie"',
+    description: 'Form subject',
   })
   @IsString()
-  declare messageSubject: string
-
-  @ApiProperty({
-    description: 'Title used in frontend when listing forms',
-    example: 'Názov stavby / projektu',
-  })
-  @IsString()
-  declare frontendTitle: string
+  declare formSubject: string
 
   @ApiProperty({
     description: 'Slug of the form definition',

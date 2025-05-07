@@ -2461,11 +2461,11 @@ export interface UpvsIdentityAddressesInner {
    */
   inline?: string
   /**
-   *
-   * @type {UpvsIdentityAddressesInnerCountry}
+   * Krajina podľa číselníka ŠÚSR 0086.
+   * @type {UpvsEnumeration}
    * @memberof UpvsIdentityAddressesInner
    */
-  country?: UpvsIdentityAddressesInnerCountry
+  country?: UpvsEnumeration
   /**
    * Kraj.
    * @type {string}
@@ -2473,17 +2473,17 @@ export interface UpvsIdentityAddressesInner {
    */
   region?: string
   /**
-   *
-   * @type {UpvsIdentityAddressesInnerDistrict}
+   * Okres podľa číselníka ŠÚSR 0024.
+   * @type {UpvsEnumeration}
    * @memberof UpvsIdentityAddressesInner
    */
-  district?: UpvsIdentityAddressesInnerDistrict
+  district?: UpvsEnumeration
   /**
-   *
-   * @type {UpvsIdentityAddressesInnerMunicipality}
+   * Obec podľa číselníka ŠÚSR 0025.
+   * @type {UpvsEnumeration}
    * @memberof UpvsIdentityAddressesInner
    */
-  municipality?: UpvsIdentityAddressesInnerMunicipality
+  municipality?: UpvsEnumeration
   /**
    * Časť obce.
    * @type {string}
@@ -2551,31 +2551,6 @@ export const UpvsIdentityAddressesInnerTypeEnum = {
 export type UpvsIdentityAddressesInnerTypeEnum =
   (typeof UpvsIdentityAddressesInnerTypeEnum)[keyof typeof UpvsIdentityAddressesInnerTypeEnum]
 
-/**
- * Krajina podľa číselníka ŠÚSR 0086.
- * @export
- * @interface UpvsIdentityAddressesInnerCountry
- */
-export interface UpvsIdentityAddressesInnerCountry {
-  /**
-   * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerCountry
-   */
-  id?: string
-  /**
-   * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerCountry
-   */
-  name?: string
-  /**
-   * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerCountry
-   */
-  description?: string
-}
 /**
  * Doručovacia adresa.
  * @export
@@ -2659,56 +2634,6 @@ export interface UpvsIdentityAddressesInnerDeliveryAddressRecipientNaturalPerson
   name?: string
 }
 /**
- * Okres podľa číselníka ŠÚSR 0024.
- * @export
- * @interface UpvsIdentityAddressesInnerDistrict
- */
-export interface UpvsIdentityAddressesInnerDistrict {
-  /**
-   * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDistrict
-   */
-  id?: string
-  /**
-   * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDistrict
-   */
-  name?: string
-  /**
-   * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerDistrict
-   */
-  description?: string
-}
-/**
- * Obec podľa číselníka ŠÚSR 0025.
- * @export
- * @interface UpvsIdentityAddressesInnerMunicipality
- */
-export interface UpvsIdentityAddressesInnerMunicipality {
-  /**
-   * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerMunicipality
-   */
-  id?: string
-  /**
-   * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerMunicipality
-   */
-  name?: string
-  /**
-   * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityAddressesInnerMunicipality
-   */
-  description?: string
-}
-/**
  *
  * @export
  * @interface UpvsIdentityEmailsInner
@@ -2753,11 +2678,11 @@ export interface UpvsIdentityIdsInner {
  */
 export interface UpvsIdentityPhonesInner {
   /**
-   *
-   * @type {UpvsIdentityPhonesInnerType}
+   * Typ telefónu podľa číselníka ŠÚSR 4005.
+   * @type {UpvsEnumeration}
    * @memberof UpvsIdentityPhonesInner
    */
-  type?: UpvsIdentityPhonesInnerType
+  type?: UpvsEnumeration
   /**
    * Formátované číslo.
    * @type {string}
@@ -2794,31 +2719,6 @@ export interface UpvsIdentityPhonesInner {
    * @memberof UpvsIdentityPhonesInner
    */
   extension?: string
-}
-/**
- * Typ telefónu podľa číselníka ŠÚSR 4005.
- * @export
- * @interface UpvsIdentityPhonesInnerType
- */
-export interface UpvsIdentityPhonesInnerType {
-  /**
-   * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInnerType
-   */
-  id?: string
-  /**
-   * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInnerType
-   */
-  name?: string
-  /**
-   * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityPhonesInnerType
-   */
-  description?: string
 }
 /**
  * ÚPVS atribúty.
@@ -2926,11 +2826,11 @@ export type UpvsIdentityUpvsEnotifyPreferredChannelEnum =
  */
 export interface UpvsIdentityVariousIdsInner {
   /**
-   *
-   * @type {UpvsIdentityVariousIdsInnerType}
+   * Typ identifikátora.
+   * @type {UpvsEnumeration}
    * @memberof UpvsIdentityVariousIdsInner
    */
-  type?: UpvsIdentityVariousIdsInnerType
+  type?: UpvsEnumeration
   /**
    * Hodnota identifikátora.
    * @type {string}
@@ -2943,31 +2843,6 @@ export interface UpvsIdentityVariousIdsInner {
    * @memberof UpvsIdentityVariousIdsInner
    */
   specified?: boolean
-}
-/**
- * Typ identifikátora.
- * @export
- * @interface UpvsIdentityVariousIdsInnerType
- */
-export interface UpvsIdentityVariousIdsInnerType {
-  /**
-   * Identifikátor hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityVariousIdsInnerType
-   */
-  id?: string
-  /**
-   * Názov hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityVariousIdsInnerType
-   */
-  name?: string
-  /**
-   * Popis hodnoty.
-   * @type {string}
-   * @memberof UpvsIdentityVariousIdsInnerType
-   */
-  description?: string
 }
 /**
  * ÚPVS identita fyzickej osoby.

@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsObject, ValidateNested } from 'class-validator'
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator'
 
 import { DeliveryMethod } from '../../noris/noris.types'
 
@@ -123,6 +132,101 @@ export class RequestUpdateNorisDeliveryMethodsDto {
   @IsObject()
   @ValidateNested()
   data: RequestUpdateNorisDeliveryMethodsData
+}
+
+export class RequestAdminCreateTestingTaxNorisData {
+  @ApiProperty({
+    description: 'Delivery method for the tax',
+    enum: DeliveryMethod,
+    nullable: true,
+  })
+  @IsEnum(DeliveryMethod)
+  @IsOptional()
+  deliveryMethod: DeliveryMethod | null
+
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '000000/0000',
+  })
+  @IsString()
+  fakeBirthNumber: string
+
+  @ApiProperty({
+    description: 'Full name and surname of the tax payer',
+    example: 'John Doe',
+  })
+  @IsString()
+  nameSurname: string
+
+  @ApiProperty({
+    description: 'Total tax amount as string',
+    example: '100.00',
+  })
+  @IsString()
+  taxTotal: string
+
+  @ApiProperty({
+    description: 'Amount already paid as string',
+    example: '0.00',
+  })
+  @IsString()
+  alreadyPaid: string
+
+  @ApiProperty({
+    description: 'Date of tax ruling (dátum právoplatnosti)',
+    example: '2024-01-01',
+  })
+  @IsString()
+  @IsOptional()
+  dateTaxRuling: string | null
+}
+
+export class RequestAdminCreateTestingTaxDto {
+  @ApiProperty({
+    description: 'Year of tax',
+    default: 2022,
+  })
+  @IsNumber()
+  year: number
+
+  @ApiProperty({
+    description: 'Fake Noris Data',
+  })
+  @IsObject()
+  @ValidateNested()
+  norisData: RequestAdminCreateTestingTaxNorisData
+}
+
+export class RequestAdminDeleteTaxDto {
+  @ApiProperty({
+    description: 'Year of tax',
+    default: 2022,
+  })
+  @IsNumber()
+  year: number
+
+  @ApiProperty({
+    description: 'Birth number in format with slash',
+    example: '000000/0000',
+  })
+  @IsString()
+  birthNumber: string
+}
+
+export class RequestPostReportingSendReport {
+  @ApiProperty({
+    description: 'Date since when reports should be generated',
+    default: 2022,
+  })
+  @IsDateString()
+  date: string
+
+  @ApiProperty({
+    description: 'Email the report will be sent to',
+    default: 'test@bratislava.sk',
+  })
+  @IsEmail()
+  email: string
 }
 
 export type NorisRequestGeneral =

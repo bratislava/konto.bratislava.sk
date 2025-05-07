@@ -1,7 +1,5 @@
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createCondition, createStringItems } from '../../generator/helpers'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
@@ -14,12 +12,12 @@ import { arrayField } from '../../generator/functions/arrayField'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
     title: 'Mimoriadny odvoz a zhodnotenie odpadu',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(
@@ -33,7 +31,7 @@ export default schema(
         { variant: 'boxed', orientations: 'column' },
       ),
       conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-        object('menoPriezvisko', { required: true }, {}, [
+        object('menoPriezvisko', {}, [
           input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
           input(
             'priezvisko',
@@ -99,37 +97,32 @@ export default schema(
           [['ziadatelTyp'], { enum: ['Právnická osoba', 'Správcovská spoločnosť'] }],
         ]),
         [
-          object(
-            'fakturacia',
-            { required: true },
-            { objectDisplay: 'boxed', title: 'Fakturácia' },
-            [
-              input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
-              checkbox(
-                'elektronickaFaktura',
+          object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+            input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
+            checkbox(
+              'elektronickaFaktura',
+              {
+                title: 'Zasielanie faktúry elektronicky',
+              },
+              {
+                helptext:
+                  'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
+                checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
+                variant: 'boxed',
+              },
+            ),
+            conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
+              input(
+                'emailPreFaktury',
                 {
-                  title: 'Zasielanie faktúry elektronicky',
+                  type: 'email',
+                  title: 'E-mail pre zasielanie elektronických faktúr',
+                  required: true,
                 },
-                {
-                  helptext:
-                    'V prípade vyjadrenia nesúhlasu bude zákazníkovi za zasielanie faktúry poštou účtovaný poplatok 10 € bez DPH. Osobitné ustanovenia o zasielaní faktúry v elektronickej podobe v zmysle bodu 5.9 VOP.',
-                  checkboxLabel: 'Súhlasím so zaslaním elektronickej faktúry',
-                  variant: 'boxed',
-                },
+                {},
               ),
-              conditionalFields(createCondition([[['elektronickaFaktura'], { const: true }]]), [
-                input(
-                  'emailPreFaktury',
-                  {
-                    type: 'email',
-                    title: 'E-mail pre zasielanie elektronických faktúr',
-                    required: true,
-                  },
-                  {},
-                ),
-              ]),
-            ],
-          ),
+            ]),
+          ]),
         ],
       ),
     ]),
@@ -348,17 +341,43 @@ export default schema(
   ],
 )
 
-export const mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
-
-export const mimoriadnyOdvozAZhodnotenieOdpaduExtractName = (formData: GenericObjectType) => {
-  if (formData.ziadatel?.ziadatelTyp === 'Fyzická osoba') {
-    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
-  }
-  if (
-    formData.ziadatel?.ziadatelTyp === 'Právnická osoba' ||
-    formData.ziadatel?.ziadatelTyp === 'Správcovská spoločnosť'
-  ) {
-    return safeString(formData.ziadatel?.nazov)
-  }
+type ExtractFormData = {
+  ziadatel: {
+    email: string
+  } & (
+    | {
+        ziadatelTyp: 'Fyzická osoba'
+        menoPriezvisko: {
+          meno: string
+        }
+      }
+    | {
+        ziadatelTyp: 'Právnická osoba' | 'Správcovská spoločnosť'
+        nazov: string
+      }
+  )
 }
+
+export const mimoriadnyOdvozAZhodnotenieOdpaduExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.email,
+  }
+
+export const mimoriadnyOdvozAZhodnotenieOdpaduExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (formData.ziadatel.ziadatelTyp === 'Fyzická osoba') {
+        return formData.ziadatel.menoPriezvisko.meno
+      } else if (
+        formData.ziadatel.ziadatelTyp === 'Právnická osoba' ||
+        formData.ziadatel.ziadatelTyp === 'Správcovská spoločnosť'
+      ) {
+        return formData.ziadatel.nazov
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
+  }

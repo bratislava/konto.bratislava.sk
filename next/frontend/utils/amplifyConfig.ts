@@ -14,6 +14,9 @@ export const amplifyConfig: ResourcesConfig = {
       // OPTIONAL - This is used when autoSignIn is enabled for Auth.signUp
       // 'code' is used for Auth.confirmSignUp, 'link' is used for email link verification
       signUpVerificationMethod: 'code', // 'code' | 'link'
+      // `Guest access` must be enabled in `Identity pools` in Amplify Console, otherwise the whole application will
+      // stop working.
+      // allowGuestAccess: true,
     },
   },
 }

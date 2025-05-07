@@ -868,9 +868,6 @@ exports[`Form definitions > komunitne-zahrady > schema matches snapshot 1`] = `
       },
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Komunitné záhrady",
 }
 `;
@@ -1581,9 +1578,6 @@ exports[`Form definitions > olo-docistenie-stanovista-zbernych-nadob > schema ma
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Dočistenie stanovišťa zberných nádob",
 }
 `;
@@ -4702,9 +4696,6 @@ exports[`Form definitions > olo-energeticke-zhodnotenie-odpadu-v-zevo > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Energetické zhodnotenie odpadu v ZEVO",
 }
 `;
@@ -5363,9 +5354,6 @@ exports[`Form definitions > olo-kolo-taxi > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "KOLO Taxi",
 }
 `;
@@ -6520,9 +6508,6 @@ exports[`Form definitions > olo-mimoriadny-odvoz-a-zhodnotenie-odpadu > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Mimoriadny odvoz a zhodnotenie odpadu",
 }
 `;
@@ -7011,9 +6996,6 @@ exports[`Form definitions > olo-odvoz-objemneho-odpadu-valnikom > schema matches
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Odvoz objemného odpadu valníkom",
 }
 `;
@@ -7821,9 +7803,6 @@ exports[`Form definitions > olo-odvoz-odpadu-velkokapacitnym-alebo-lisovacim-kon
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom",
 }
 `;
@@ -8188,9 +8167,6 @@ exports[`Form definitions > olo-olo-taxi > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "OLO Taxi",
 }
 `;
@@ -8607,9 +8583,6 @@ exports[`Form definitions > olo-podnety-a-pochvaly-obcanov > schema matches snap
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Podnety a pochvaly občanov",
 }
 `;
@@ -9950,9 +9923,6 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-pravnic
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Triedený zber papiera, plastov a skla pre právnické osoby",
 }
 `;
@@ -11215,9 +11185,6 @@ exports[`Form definitions > olo-triedeny-zber-papiera-plastov-a-skla-pre-spravco
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Triedený zber papiera, plastov a skla pre správcovské spoločnosti",
 }
 `;
@@ -13335,9 +13302,6 @@ exports[`Form definitions > olo-uzatvorenie-zmluvy-o-nakladani-s-odpadom > schem
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Uzatvorenie zmluvy o nakladaní s odpadom",
 }
 `;
@@ -24852,7 +24816,9 @@ exports[`Form definitions > oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpa
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "opravnenaOsoba",
+                ],
                 "type": "object",
               },
             },
@@ -41058,9 +41024,6 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
       },
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Oznámenie o poplatkovej povinnosti za komunálne odpady",
 }
 `;
@@ -41559,9 +41522,6 @@ exports[`Form definitions > predzahradky > schema matches snapshot 1`] = `
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Predzáhradky",
 }
 `;
@@ -49587,7 +49547,9 @@ floorToTwoDecimals(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDom
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -49649,7 +49611,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani z pozemkov",
           "type": "object",
         },
@@ -49869,7 +49833,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       "type": "object",
                                     },
                                   },
-                                  "required": [],
+                                  "required": [
+                                    "castStavbyOslobodenaOdDaneDetaily",
+                                  ],
                                   "type": "object",
                                 },
                               },
@@ -50516,7 +50482,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       "type": "object",
                                     },
                                   },
-                                  "required": [],
+                                  "required": [
+                                    "castStavbyOslobodenaOdDaneDetaily",
+                                  ],
                                   "type": "object",
                                 },
                               },
@@ -51041,7 +51009,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -51104,7 +51074,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
           "type": "object",
         },
@@ -51476,14 +51448,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [
@@ -52663,7 +52636,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -52730,7 +52705,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
           "type": "object",
         },
@@ -53212,6 +53189,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                                             ],
                                             "type": "object",
@@ -53486,6 +53464,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                               "riadok2",
                               "pravnyVztah",
                               "spoluvlastnictvo",
+                              "priznanieZaByt",
+                              "priznanieZaNebytovyPriestor",
                             ],
                             "type": "object",
                           },
@@ -54141,6 +54121,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                                               "spoluvlastnickyPodiel",
                                             ],
@@ -54416,6 +54397,8 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                               "riadok2",
                               "pravnyVztah",
                               "spoluvlastnictvo",
+                              "priznanieZaByt",
+                              "priznanieZaNebytovyPriestor",
                             ],
                             "type": "object",
                           },
@@ -54462,7 +54445,9 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -54524,7 +54509,9 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
           "type": "object",
         },
@@ -56369,9 +56356,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Priznanie k dani z nehnuteľností",
 }
 `;
@@ -64397,7 +64381,9 @@ floorToTwoDecimals(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDom
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -64459,7 +64445,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani z pozemkov",
           "type": "object",
         },
@@ -64679,7 +64667,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       "type": "object",
                                     },
                                   },
-                                  "required": [],
+                                  "required": [
+                                    "castStavbyOslobodenaOdDaneDetaily",
+                                  ],
                                   "type": "object",
                                 },
                               },
@@ -65326,7 +65316,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                                       "type": "object",
                                     },
                                   },
-                                  "required": [],
+                                  "required": [
+                                    "castStavbyOslobodenaOdDaneDetaily",
+                                  ],
                                   "type": "object",
                                 },
                               },
@@ -65851,7 +65843,9 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -65914,7 +65908,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
           "type": "object",
         },
@@ -66286,14 +66282,15 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                                           "baOrder": 2,
                                           "baUiSchema": {
                                             "ui:options": {
-                                              "helptextFooter": "Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).",
+                                              "helptextFooter": "Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)",
                                               "helptextFooterMarkdown": true,
                                             },
                                             "ui:widget": "Number",
                                           },
                                           "minimum": 0,
+                                          "multipleOf": 0.01,
                                           "title": "Výmera podlahovej plochy",
-                                          "type": "integer",
+                                          "type": "number",
                                         },
                                       },
                                       "required": [
@@ -67473,7 +67470,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -67540,7 +67539,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
           "type": "object",
         },
@@ -68022,6 +68023,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome",
                                             ],
                                             "type": "object",
@@ -68296,6 +68298,8 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
                               "riadok2",
                               "pravnyVztah",
                               "spoluvlastnictvo",
+                              "priznanieZaByt",
+                              "priznanieZaNebytovyPriestor",
                             ],
                             "type": "object",
                           },
@@ -68951,6 +68955,7 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                                               },
                                             },
                                             "required": [
+                                              "riadok",
                                               "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu",
                                               "spoluvlastnickyPodiel",
                                             ],
@@ -69226,6 +69231,8 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                               "riadok2",
                               "pravnyVztah",
                               "spoluvlastnictvo",
+                              "priznanieZaByt",
+                              "priznanieZaNebytovyPriestor",
                             ],
                             "type": "object",
                           },
@@ -69272,7 +69279,9 @@ ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoru
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kalkulackaWrapper",
+                ],
                 "type": "object",
               },
             },
@@ -69334,7 +69343,9 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
               "type": "object",
             },
           },
-          "required": [],
+          "required": [
+            "vyplnitObject",
+          ],
           "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
           "type": "object",
         },
@@ -71179,9 +71190,6 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Priznanie k dani z nehnuteľností",
 }
 `;
@@ -72384,12 +72392,6 @@ exports[`Form definitions > stanovisko-k-investicnemu-zameru > schema matches sn
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {
-      "titleFallback": "Názov stavby/projektu",
-      "titlePath": "stavba.nazov",
-    },
-  },
   "title": "Žiadosť o stanovisko k investičnému zámeru",
 }
 `;
@@ -72639,6 +72641,56 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
               "if": {
                 "properties": {
                   "objednavatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "objednavatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "objednavatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -72729,18 +72781,6 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -72798,26 +72838,11 @@ exports[`Form definitions > tsb-objednavka-informativneho-zakresu-sieti > schema
               "title": "PSČ",
               "type": "string",
             },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
-              "type": "string",
-            },
           },
           "required": [
             "objednavatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Objednávateľ",
           "type": "object",
@@ -73110,9 +73135,6 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Objednávka informatívneho zákresu sietí",
 }
 `;
@@ -73364,6 +73386,56 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "if": {
                 "properties": {
                   "objednavatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "objednavatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "objednavatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -73454,18 +73526,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -73523,26 +73583,11 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
               "title": "PSČ",
               "type": "string",
             },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
-              "type": "string",
-            },
           },
           "required": [
             "objednavatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Objednávateľ",
           "type": "object",
@@ -73877,9 +73922,6 @@ exports[`Form definitions > tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Objednávka vytýčenia podzemných vedení verejného osvetlenia",
 }
 `;
@@ -74131,6 +74173,56 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               "if": {
                 "properties": {
                   "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -74221,18 +74313,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -74256,19 +74336,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
               },
               "format": "ba-slovak-zip",
               "title": "PSČ",
-              "type": "string",
-            },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
               "type": "string",
             },
             "ziadatelTyp": {
@@ -74308,8 +74375,6 @@ exports[`Form definitions > tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii 
             "ziadatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Žiadateľ",
           "type": "object",
@@ -74652,9 +74717,6 @@ Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o stanovisko k projektovej dokumentácii",
 }
 `;
@@ -74906,6 +74968,56 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
               "if": {
                 "properties": {
                   "ziadatelTyp": {
+                    "enum": [
+                      "fyzickaOsoba",
+                      "fyzickaOsobaPodnikatel",
+                    ],
+                  },
+                },
+                "required": [
+                  "ziadatelTyp",
+                ],
+                "type": "object",
+              },
+              "then": {
+                "properties": {
+                  "email": {
+                    "baOrder": 13,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "inputType": "email",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "email",
+                    "title": "E-mail",
+                    "type": "string",
+                  },
+                  "telefonneCislo": {
+                    "baOrder": 14,
+                    "baUiSchema": {
+                      "ui:options": {
+                        "helptext": "Vyplňte vo formáte +421",
+                        "inputType": "tel",
+                      },
+                      "ui:widget": "Input",
+                    },
+                    "format": "ba-phone-number",
+                    "title": "Telefónne číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                  "telefonneCislo",
+                ],
+                "type": "object",
+              },
+            },
+            {
+              "if": {
+                "properties": {
+                  "ziadatelTyp": {
                     "const": "pravnickaOsoba",
                   },
                 },
@@ -74996,18 +75108,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             },
           },
           "properties": {
-            "email": {
-              "baOrder": 13,
-              "baUiSchema": {
-                "ui:options": {
-                  "inputType": "email",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "email",
-              "title": "E-mail",
-              "type": "string",
-            },
             "mesto": {
               "baOrder": 11,
               "baUiSchema": {
@@ -75031,19 +75131,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
               },
               "format": "ba-slovak-zip",
               "title": "PSČ",
-              "type": "string",
-            },
-            "telefonneCislo": {
-              "baOrder": 14,
-              "baUiSchema": {
-                "ui:options": {
-                  "helptext": "Vyplňte vo formáte +421",
-                  "inputType": "tel",
-                },
-                "ui:widget": "Input",
-              },
-              "format": "ba-phone-number",
-              "title": "Telefónne číslo",
               "type": "string",
             },
             "ziadatelTyp": {
@@ -75083,8 +75170,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
             "ziadatelTyp",
             "mesto",
             "psc",
-            "email",
-            "telefonneCislo",
           ],
           "title": "Žiadateľ",
           "type": "object",
@@ -75401,9 +75486,6 @@ exports[`Form definitions > tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stozia
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
 }
 `;
@@ -76849,12 +76931,6 @@ exports[`Form definitions > zavazne-stanovisko-k-investicnej-cinnosti > schema m
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {
-      "titleFallback": "Názov stavby/projektu",
-      "titlePath": "stavba.nazov",
-    },
-  },
   "title": "Žiadosť o záväzné stanovisko k investičnej činnosti",
 }
 `;
@@ -88783,9 +88859,6 @@ ziadatelPrijem + manzelManzelkaPrijem + druhDruzkaPrijem + detiPrijmy + inyCleno
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o nájom bytu",
 }
 `;
@@ -89230,7 +89303,9 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
                     "type": "object",
                   },
                 },
-                "required": [],
+                "required": [
+                  "kontaktneUdaje",
+                ],
                 "type": "object",
               },
             },
@@ -89521,9 +89596,6 @@ exports[`Form definitions > ziadost-o-slobodny-pristup-k-informaciam > schema ma
       "type": "object",
     },
   ],
-  "baUiSchema": {
-    "ui:options": {},
-  },
   "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
 }
 `;

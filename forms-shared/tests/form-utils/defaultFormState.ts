@@ -15,7 +15,7 @@ import { object } from '../../src/generator/object'
 import { arrayField } from '../../src/generator/functions/arrayField'
 import { conditionalFields } from '../../src/generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../src/generator/functions/fileUploadMultiple'
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 describe('defaultFormState', () => {
   test('isFileMultipleSchema should return true for file array schema', () => {
@@ -38,7 +38,7 @@ describe('defaultFormState', () => {
       },
     ]
 
-    const definition = object('defaultFormState', {}, {}, [
+    const definition = object('defaultFormState', {}, [
       fileUploadMultiple('fileMultiple', { title: 'File multiple', required: false }, {}),
       fileUploadMultiple('fileMultipleRequired', { title: 'File multiple', required: true }, {}),
       selectMultiple(
@@ -103,7 +103,7 @@ describe('defaultFormState', () => {
   })
 
   test('getDefaultForm should not prefill const values', () => {
-    const definition = object('defaultFormState', {}, {}, [
+    const definition = object('defaultFormState', {}, [
       checkbox(
         'checkboxWithConstValue',
         { title: 'Checkbox with const value', required: true, constValue: true },
@@ -116,7 +116,7 @@ describe('defaultFormState', () => {
 })
 
 describe('baGetDefaultFormStateStable', () => {
-  const { schema } = object('wrapper', { required: true }, {}, [
+  const { schema } = object('wrapper', {}, [
     input('input1', { type: 'text', title: 'Input 1', default: 'value1', required: true }, {}),
     conditionalFields(createCondition([[['input1'], { const: 'value1' }]]), [
       input('input2', { type: 'text', title: 'Input 2', default: 'value2', required: true }, {}),

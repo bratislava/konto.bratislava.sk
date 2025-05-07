@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { Prisma } from '@prisma/client'
 
 import { AdminService } from '../admin/admin.service'
+import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
@@ -11,6 +12,7 @@ import {
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import DatabaseSubservice from '../utils/subservices/database.subservice'
 
 @Injectable()
 export class TasksService {
@@ -20,6 +22,8 @@ export class TasksService {
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly cardPaymentReportingService: CardPaymentReportingService,
+    private readonly databaseSubservice: DatabaseSubservice,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -125,6 +129,7 @@ export class TasksService {
       select: {
         id: true,
         variableSymbol: true,
+        year: true,
       },
       where: {
         dateTaxRuling: null,
@@ -153,5 +158,22 @@ export class TasksService {
         lastCheckedUpdates: new Date(),
       },
     })
+  }
+
+  @Cron(CronExpression.EVERY_WEEKDAY)
+  @HandleErrors('Cron Error')
+  async reportCardPayments() {
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'REPORTING_GENERATE_REPORT',
+      'REPORTING_RECIPIENT_EMAIL',
+    ])
+
+    if (!config.REPORTING_GENERATE_REPORT) {
+      return
+    }
+
+    await this.cardPaymentReportingService.generateAndSendPaymentReport(
+      config.REPORTING_RECIPIENT_EMAIL,
+    )
   }
 }

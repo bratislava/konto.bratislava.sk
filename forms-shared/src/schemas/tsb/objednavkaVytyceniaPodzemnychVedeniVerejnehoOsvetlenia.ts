@@ -5,88 +5,76 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { getObjednavatelZiadatelStep } from './shared/getObjednavatelZiadatelStep'
 import { esbsKatastralneUzemiaCiselnik } from '../../tax-form/mapping/shared/esbsCiselniky'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
     title: 'Objednávka vytýčenia podzemných vedení verejného osvetlenia',
   },
-  {},
   [
     getObjednavatelZiadatelStep('objednavatel'),
     step('udaje', { title: 'Údaje' }, [
-      object(
-        'fakturacneUdaje',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Fakturačné údaje' },
-        [
-          input(
-            'adresaSidla',
-            { title: 'Adresa sídla', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-          input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
-          input(
-            'psc',
-            { type: 'ba-slovak-zip', title: 'PSČ', required: true },
-            { selfColumn: '1/4' },
-          ),
-          input(
-            'email',
-            { title: 'E-mail', required: true, type: 'email' },
-            {
-              helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
-            },
-          ),
-        ],
-      ),
-      object(
-        'udajeObjednavky',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Údaje objednávky' },
-        [
-          input(
-            'dovodVytycenia',
-            { title: 'Dôvod vytýčenia', required: true, type: 'text' },
-            {
-              helptext:
-                'Napríklad: vytýčenie káblovej poruchy, za účelom rozkopávky, vybudovanie inžinierskych sietí...',
-            },
-          ),
-          input(
-            'pozadovaneMiestoPlnenia',
-            { title: 'Požadované miesto plnenia', required: true, type: 'text' },
-            { helptext: 'Vyplňte vo formáte ulica a číslo' },
-          ),
-          selectMultiple(
-            'katastralneUzemie',
-            {
-              title: 'Katastrálne územie',
-              required: true,
-              items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
-                value: Code,
-                label: Name,
-              })),
-            },
-            {
-              helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
-            },
-          ),
-          input(
-            'druhStavby',
-            { title: 'Druh stavby', required: false, type: 'text' },
-            { helptext: 'Napríklad: telekomunikačná líniová stavba' },
-          ),
-          datePicker(
-            'pozadovanyTerminPlnenia',
-            { title: 'Požadovaný termín plnenia', required: true },
-            { helptext: 'Štandardný termín na vybavenie objednávky je 30 dní' },
-          ),
-        ],
-      ),
+      object('fakturacneUdaje', { objectDisplay: 'boxed', title: 'Fakturačné údaje' }, [
+        input(
+          'adresaSidla',
+          { title: 'Adresa sídla', required: true, type: 'text' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
+        ),
+        input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
+        input(
+          'psc',
+          { type: 'ba-slovak-zip', title: 'PSČ', required: true },
+          { selfColumn: '1/4' },
+        ),
+        input(
+          'email',
+          { title: 'E-mail', required: true, type: 'email' },
+          {
+            helptext: 'Faktúra vám bude zaslaná prostredníctvom tohto emailu',
+          },
+        ),
+      ]),
+      object('udajeObjednavky', { objectDisplay: 'boxed', title: 'Údaje objednávky' }, [
+        input(
+          'dovodVytycenia',
+          { title: 'Dôvod vytýčenia', required: true, type: 'text' },
+          {
+            helptext:
+              'Napríklad: vytýčenie káblovej poruchy, za účelom rozkopávky, vybudovanie inžinierskych sietí...',
+          },
+        ),
+        input(
+          'pozadovaneMiestoPlnenia',
+          { title: 'Požadované miesto plnenia', required: true, type: 'text' },
+          { helptext: 'Vyplňte vo formáte ulica a číslo' },
+        ),
+        selectMultiple(
+          'katastralneUzemie',
+          {
+            title: 'Katastrálne územie',
+            required: true,
+            items: esbsKatastralneUzemiaCiselnik.map(({ Name, Code }) => ({
+              value: Code,
+              label: Name,
+            })),
+          },
+          {
+            helptext: 'Vyberte jedno alebo viacero katastrálnych území zo zoznamu.',
+          },
+        ),
+        input(
+          'druhStavby',
+          { title: 'Druh stavby', required: false, type: 'text' },
+          { helptext: 'Napríklad: telekomunikačná líniová stavba' },
+        ),
+        datePicker(
+          'pozadovanyTerminPlnenia',
+          { title: 'Požadovaný termín plnenia', required: true },
+          { helptext: 'Štandardný termín na vybavenie objednávky je 30 dní' },
+        ),
+      ]),
     ]),
     step('prilohy', { title: 'Prílohy' }, [
       fileUploadMultiple(
@@ -107,22 +95,39 @@ export default schema(
   ],
 )
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail = (
-  formData: GenericObjectType,
-) => {
-  return safeString(formData.objednavatel?.email)
+type ExtractFormData = {
+  objednavatel: { email: string } & (
+    | {
+        objednavatelTyp: 'fyzickaOsoba' | 'fyzickaOsobaPodnikatel'
+        meno: string
+      }
+    | {
+        objednavatelTyp: 'pravnickaOsoba'
+        obchodneMeno: string
+      }
+  )
 }
 
-export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName = (
-  formData: GenericObjectType,
-) => {
-  if (
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsoba' ||
-    formData.objednavatel?.objednavatelTyp === 'fyzickaOsobaPodnikatel'
-  ) {
-    return safeString(formData.objednavatel?.meno)
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.objednavatel.email,
   }
-  if (formData.objednavatel?.objednavatelTyp === 'pravnickaOsoba') {
-    return safeString(formData.objednavatel?.obchodneMeno)
+
+export const objednavkaVytyceniaPodzemnychVedeniVerejnehoOsvetleniaExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => {
+      if (
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsoba' ||
+        formData.objednavatel.objednavatelTyp === 'fyzickaOsobaPodnikatel'
+      ) {
+        return formData.objednavatel.meno
+      } else if (formData.objednavatel.objednavatelTyp === 'pravnickaOsoba') {
+        return formData.objednavatel.obchodneMeno
+      }
+
+      // Unreachable code, provided for type-safety to return `string` as required.
+      throw new Error('Failed to extract the name.')
+    },
   }
-}

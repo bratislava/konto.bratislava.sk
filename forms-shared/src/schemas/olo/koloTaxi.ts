@@ -1,7 +1,5 @@
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { textArea } from '../../generator/functions/textArea'
@@ -12,8 +10,9 @@ import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'KOLO Taxi' }, {}, [
+export default schema({ title: 'KOLO Taxi' }, [
   step('ziadatel', { title: 'Žiadateľ' }, [
     radioGroup(
       'ziadatelTyp',
@@ -26,7 +25,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
       { variant: 'boxed', orientations: 'column' },
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -72,7 +71,7 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'Email', required: true, type: 'email' }, {}),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Právnická osoba' }]]), [
-      object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+      object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
         input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
         checkbox(
           'elektronickaFaktura',
@@ -177,14 +176,39 @@ export default schema({ title: 'KOLO Taxi' }, {}, [
   ]),
 ])
 
-export const koloTaxiExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
+type ExtractFormData =
+  | {
+      ziadatel: {
+        ziadatelTyp: 'Fyzická osoba'
+        menoPriezvisko: {
+          meno: string
+        }
+        email: string
+      }
+    }
+  | {
+      ziadatel: {
+        ziadatelTyp: 'Právnická osoba'
+        nazovOrganizacie: string
+        email: string
+      }
+    }
 
-export const koloTaxiExtractName = (formData: GenericObjectType) => {
-  if (formData.ziadatel?.ziadatelTyp === 'Fyzická osoba') {
-    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
-  }
-  if (formData.ziadatel?.ziadatelTyp === 'Právnická osoba') {
-    return safeString(formData.ziadatel?.nazovOrganizacie)
-  }
+export const koloTaxiExtractEmail: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.ziadatel.email,
+}
+
+export const koloTaxiExtractName: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => {
+    if (formData.ziadatel.ziadatelTyp === 'Fyzická osoba') {
+      return formData.ziadatel.menoPriezvisko.meno
+    } else if (formData.ziadatel.ziadatelTyp === 'Právnická osoba') {
+      return formData.ziadatel.nazovOrganizacie
+    }
+
+    // Unreachable code, provided for type-safety to return `string` as required.
+    throw new Error('Failed to extract the name.')
+  },
 }

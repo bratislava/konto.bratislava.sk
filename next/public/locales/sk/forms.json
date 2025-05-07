@@ -1,5 +1,4 @@
 {
-  "form_title_fallback": "Podanie",
   "submit": "Odoslať",
   "success": "Úspešne odoslané",
   "errors": {
@@ -197,7 +196,8 @@
   },
   "concept_delete_modal": {
     "title": "Vymazať koncept",
-    "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
+    "content": "Naozaj si želáte vymazať koncept? Táto akcia je nevratná.",
+    "content_with_name": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
     "button_title": "Vymazať"
   },
   "form_landing_page": {

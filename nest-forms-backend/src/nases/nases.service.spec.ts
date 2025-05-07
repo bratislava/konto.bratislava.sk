@@ -19,6 +19,7 @@ import { getFormSummary } from 'forms-shared/summary/summary'
 
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
@@ -83,6 +84,10 @@ describe('NasesService', () => {
         {
           provide: ConfigService,
           useValue: createMock<ConfigService>(),
+        },
+        {
+          provide: ClientsService,
+          useValue: createMock<ClientsService>(),
         },
       ],
     }).compile()
@@ -304,7 +309,6 @@ describe('NasesService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         title: 'Test Form',
         termsAndConditions: 'Test Terms and Conditions',
-        messageSubjectDefault: 'Test Subject',
         pospID: 'test-posp-id',
         pospVersion: '1.0',
         publisher: 'Test Publisher',

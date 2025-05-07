@@ -1,6 +1,4 @@
 import { createCondition } from '../../generator/helpers'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { textArea } from '../../generator/functions/textArea'
@@ -11,8 +9,9 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
 import { fileUploadMultiple } from '../../generator/functions/fileUploadMultiple'
 import { match } from 'ts-pattern'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
+export default schema({ title: 'Podnety a pochvaly občanov' }, [
   step('podnet', { title: 'Podať podnet' }, [
     radioGroup(
       'kategoriaPodnetu',
@@ -126,8 +125,19 @@ export default schema({ title: 'Podnety a pochvaly občanov' }, {}, [
   ]),
 ])
 
-export const podnetyAPochvalyObcanovExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.podnet?.email)
+type ExtractFormData = {
+  podnet: {
+    email: string
+    meno: string
+  }
+}
 
-export const podnetyAPochvalyObcanovExtractName = (formData: GenericObjectType) =>
-  safeString(formData.podnet?.meno)
+export const podnetyAPochvalyObcanovExtractEmail: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.podnet.email,
+}
+
+export const podnetyAPochvalyObcanovExtractName: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.podnet.meno,
+}

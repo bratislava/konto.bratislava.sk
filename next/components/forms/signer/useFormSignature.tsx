@@ -2,7 +2,6 @@ import { formsClient } from '@clients/forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import {
   createFormSignature,
   FormSignature,
@@ -14,6 +13,7 @@ import React, { createContext, PropsWithChildren, useCallback, useContext, useSt
 import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import { isClientSlovenskoSkFormDefinition } from '../clientFormDefinitions'
 import { useFormContext } from '../useFormContext'
 import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
@@ -65,7 +65,7 @@ const useGetContext = () => {
       handleSignatureChange(null)
       return
     }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
 
@@ -80,7 +80,7 @@ const useGetContext = () => {
           formDataJson: formDataRequest,
         },
         {
-          accessToken: 'onlyAuthenticated',
+          authStrategy: 'authOrGuestWithToken',
         },
       ),
     networkMode: 'always',
@@ -123,7 +123,7 @@ const useGetContext = () => {
       return false
     }
 
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
 

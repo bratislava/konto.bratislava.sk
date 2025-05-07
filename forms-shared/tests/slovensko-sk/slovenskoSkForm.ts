@@ -23,6 +23,8 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { getFormSummary } from '../../src/summary/summary'
 import { getSlovenskoSkMetaIdentifier } from '../../src/slovensko-sk/urls'
 
+const mockFormId = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+
 describe('slovenskoSkForm', () => {
   let slovenskoSkMetadata: SlovenskoSkMetadataJson[]
 
@@ -68,6 +70,7 @@ describe('slovenskoSkForm', () => {
           })
           const xmlObject = await generateSlovenskoSkXmlObject({
             formDefinition,
+            formId: mockFormId,
             formSummary,
             jsonVersion: formDefinition.jsonVersion,
             formData: exampleForm.formData,
@@ -82,9 +85,9 @@ describe('slovenskoSkForm', () => {
 
         test('XML should be valid', async () => {
           const xsdString = getSchemaXsd(formDefinition)
-          const isValid = validateXml(xmlString, xsdString)
+          const validationResult = await validateXml(xmlString, xsdString)
 
-          expect(isValid).toBe(true)
+          expect(validationResult.success).toBe(true)
         })
 
         test('extractJsonFromSlovenskoSkXml should extract the same JSON from XML', async () => {

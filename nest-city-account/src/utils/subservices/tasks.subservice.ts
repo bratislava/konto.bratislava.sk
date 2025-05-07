@@ -12,7 +12,7 @@ import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
 
-const UPLOAD_BIRTHNUMBERS_BATCH = 200
+const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
 @Injectable()

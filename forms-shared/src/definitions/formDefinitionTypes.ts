@@ -1,7 +1,11 @@
 import { MailgunTemplateEnum } from './emailFormTypes'
 import { SharepointData } from './sharepointTypes'
-import { GenericObjectType, type RJSFSchema } from '@rjsf/utils'
+import { type RJSFSchema } from '@rjsf/utils'
 import { FormSendPolicy } from '../send-policy/sendPolicy'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../form-utils/evaluateFormDataExtractor'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',
@@ -17,8 +21,7 @@ type FormDefinitionBase = {
   jsonVersion: string
   sendPolicy: FormSendPolicy
   termsAndConditions: string
-  messageSubjectDefault: string
-  messageSubjectFormat?: string
+  extractSubject?: SchemaFormDataExtractor<any>
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
@@ -38,6 +41,7 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   ginisAssignment: {
     ginisOrganizationName: string
     ginisPersonName?: string
+    extractGinisSubject?: SchemalessFormDataExtractor<any>
   }
   sharepointData?: SharepointData
 }
@@ -67,8 +71,8 @@ export type FormDefinitionEmail = FormDefinitionBase & {
     newSubmissionTemplate: MailgunTemplateEnum
     userResponseTemplate: MailgunTemplateEnum
     sendJsonDataAttachmentInTechnicalMail?: boolean
-    extractEmail: (formData: GenericObjectType) => string | undefined
-    extractName?: (formData: GenericObjectType) => string | undefined
+    extractEmail: SchemalessFormDataExtractor<any>
+    extractName?: SchemalessFormDataExtractor<any>
     /**
      * If undefined, the default value from the email template is used.
      */

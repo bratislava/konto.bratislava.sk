@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Forms, FormState } from '@prisma/client'
 
+import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { EDITABLE_ERRORS } from '../utils/constants'
-import { UserInfoResponse } from '../utils/decorators/request.decorator'
 
 @Injectable()
 export default class FormsHelper {

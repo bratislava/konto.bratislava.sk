@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common'
 import { Response } from 'express'
 
-import { RequiredError } from '../../generated-clients/nest-city-account/base'
 import { errorTypeKeys } from '../guards/dtos/error.dto'
 import { symbolKeysToStrings } from '../logging'
 import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
@@ -18,8 +17,6 @@ export class ErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
     const { name, stack, message } = exception
-    const field =
-      exception instanceof RequiredError ? exception.field : undefined
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR)
 
@@ -28,7 +25,6 @@ export class ErrorFilter implements ExceptionFilter {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         [errorTypeKeys.errorType]: name,
         message,
-        [errorTypeKeys.field]: field,
         [errorTypeKeys.stack]: stack,
       })
     } else {

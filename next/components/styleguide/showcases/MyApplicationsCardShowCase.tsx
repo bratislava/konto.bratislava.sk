@@ -1,37 +1,27 @@
 import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
-import { FormState, GetFormResponseDto, GetFormResponseDtoErrorEnum } from 'openapi-clients/forms'
+import {
+  FormState,
+  GetFormResponseDtoErrorEnum,
+  GetFormResponseSimpleDto,
+} from 'openapi-clients/forms'
 import React from 'react'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, overrides?: object) =>
-  ({
-    formDefinitionSlug: 'example-form-definition-slug',
-    id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
-    createdAt: '2023-09-13T08:48:15.346Z',
-    updatedAt: '2023-09-13T08:48:22.121Z',
-    mainUri: 'rc://sk/111111/1111',
-    actorUri: 'rc://sk/111111/1111',
-    externalId: null,
-    userExternalId: '9f2d3023-8c8c-4bad-974a-f8d7262c6836',
-    email: 'email@email.com',
-    uri: 'rc://sk/111111/1111_email@email.com_firstname',
-    state,
-    error,
-    formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
-    formDataGinis: null,
-    formDataBase64: null,
-    ginisDocumentId: null,
-    senderId: null,
-    recipientId: null,
-    finishSubmission: null,
-    archived: false,
-    frontendTitle: 'Nazov stavby',
-    messageSubject: 'Podanie',
-    jsonVersion: '1.0.0',
-    ...overrides,
-  }) as GetFormResponseDto
+const getDummyData = (
+  state: FormState,
+  error: GetFormResponseDtoErrorEnum,
+): GetFormResponseSimpleDto => ({
+  formDefinitionSlug: 'example-form-definition-slug',
+  id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
+  createdAt: '2023-09-13T08:48:15.346Z',
+  updatedAt: '2023-09-13T08:48:22.121Z',
+  state,
+  error,
+  formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
+  formSubject: 'Podanie',
+})
 
 const formDefinitionSlugTitleMap = {
   'example-form-definition-slug': 'Example Form',
@@ -46,15 +36,6 @@ const MyApplicationsCardShowCase = () => {
           <MyApplicationsCard
             variant="DRAFT"
             form={getDummyData('DRAFT', 'NONE')}
-            refreshListData={async (): Promise<[void, boolean]> => {
-              return [undefined, false]
-            }}
-            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
-          />
-          Expired draft
-          <MyApplicationsCard
-            variant="DRAFT"
-            form={getDummyData('DRAFT', 'NONE', { isLatestSchemaVersionForSlug: false })}
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}

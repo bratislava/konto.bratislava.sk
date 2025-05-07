@@ -15,6 +15,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
@@ -22,11 +26,7 @@ import {
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
 import FormsService from '../forms/forms.service'
-import {
-  User,
-  UserInfo,
-  UserInfoResponse,
-} from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import {
   mapGinisHistory,
   MappedDocumentHistory,
@@ -38,6 +38,7 @@ import {
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisDocumentDetailResponseDto from './dtos/ginis-api.response.dto'
+import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 @ApiTags('ginis')
@@ -50,6 +51,7 @@ import GinisAPIService from './subservices/ginis-api.service'
 export default class GinisController {
   constructor(
     private readonly ginisAPIService: GinisAPIService,
+    private readonly ginisHelper: GinisHelper,
     private readonly formsService: FormsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {}
@@ -78,8 +80,8 @@ export default class GinisController {
   @Get(':formId')
   async getGinisDocumentByFormId(
     @Param('formId') formId: string,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: UserInfoResponse,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<GinisDocumentDetailResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       formId,
@@ -126,7 +128,8 @@ export default class GinisController {
     return {
       id: wflDocument['Id-dokumentu'],
       dossierId: wflDocument['Id-spisu'],
-      ownerName: `${ownerDetail.Jmeno || ''} ${ownerDetail.Prijmeni || ''}`,
+      ownerName:
+        this.ginisHelper.extractSanitizeGinisOwnerFullName(ownerDetail),
       ownerEmail: ownerDetail.Mail || '',
       ownerPhone: ownerDetail.Telefon || '',
       documentHistory,

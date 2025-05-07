@@ -112,11 +112,6 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR,
       ) === 'true',
-    komunalnyOdpadFormServicesList:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_KOMUNALNY_ODPAD_FORM_SERVICES_LIST,
-      ) === 'true',
     versioning:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_VERSIONING',

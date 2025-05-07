@@ -16,9 +16,11 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
+import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
@@ -26,9 +28,6 @@ import {
 } from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
-import { cityAccountApi } from '../../utils/clients/cityAccountApi'
-import { UserControllerGetOrCreateUser200Response } from '../../utils/clients/openapi-city-account'
-import { slovenskoSkApi } from '../../utils/clients/slovenskoSkApi'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError, {
@@ -43,6 +42,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../types/send-message-nases-sender.type'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -55,6 +58,7 @@ export default class NasesUtilsService {
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
     private configService: ConfigService,
+    private readonly clientsService: ClientsService,
   ) {
     this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
@@ -252,7 +256,7 @@ export default class NasesUtilsService {
   async getUserInfo(
     bearerToken: string,
   ): Promise<UserControllerGetOrCreateUser200Response> {
-    return cityAccountApi
+    return this.clientsService.cityAccountApi
       .userControllerGetOrCreateUser({
         headers: {
           Authorization: bearerToken,
@@ -367,6 +371,17 @@ export default class NasesUtilsService {
     return message
   }
 
+  private getSenderId(sender: SendMessageNasesSender): string {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return sender.senderUri
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
@@ -384,7 +399,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -403,8 +418,7 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
-    const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
     let subject: string = form.id
     const mimeType = isSigned
@@ -500,15 +514,31 @@ export default class NasesUtilsService {
     }`
   }
 
+  private getSendMessageNasesEndpoint = (
+    sender: SendMessageNasesSender,
+  ):
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceivePost => {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return this.clientsService.slovenskoSkApi
+        .apiSktalkReceiveAndSaveToOutboxPost
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, senderUri)
+      message = await this.createEnvelopeSendMessage(data, sender)
     } catch (error) {
       return {
         status: 500,
@@ -518,7 +548,7 @@ export default class NasesUtilsService {
       }
     }
     try {
-      const response = await slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost(
+      const response = await this.getSendMessageNasesEndpoint(sender)(
         {
           message,
         },
@@ -582,7 +612,7 @@ export default class NasesUtilsService {
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
     const jwtToken = this.createTechnicalAccountJwtToken()
-    const result = await slovenskoSkApi
+    const result = await this.clientsService.slovenskoSkApi
       .apiEdeskMessagesSearchGet(formId, undefined, undefined, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,

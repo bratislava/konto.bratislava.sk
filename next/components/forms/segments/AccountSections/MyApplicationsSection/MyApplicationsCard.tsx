@@ -74,7 +74,7 @@ const MyApplicationsCard = ({
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  const title = form?.frontendTitle || ft('form_title_fallback')
+  const subject = form?.formSubject
   const formSlug = form?.formDefinitionSlug
   const category = formSlug ? formDefinitionSlugTitleMap[formSlug] : undefined
   const createdAt = form?.createdAt
@@ -102,7 +102,7 @@ const MyApplicationsCard = ({
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
@@ -126,7 +126,7 @@ const MyApplicationsCard = ({
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
@@ -143,7 +143,7 @@ const MyApplicationsCard = ({
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsClient.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.concept_delete'))
@@ -209,7 +209,7 @@ const MyApplicationsCard = ({
                   {isLoading ? <Skeleton width="25%" /> : category}
                 </div>
               )}
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
+              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : subject}</h3>
               {(createdAt || isLoading) && (
                 <div className="text-p3">
                   {isLoading ? (
@@ -301,7 +301,7 @@ const MyApplicationsCard = ({
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
               <h3 className="pb-3 text-20-semibold">
-                {isLoading ? <Skeleton width="75%" /> : title}
+                {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
@@ -341,7 +341,7 @@ const MyApplicationsCard = ({
           </Button>,
         ]}
       >
-        {ft('concept_delete_modal.content', { conceptName: title })}
+        {ft('concept_delete_modal.content_with_name', { conceptName: subject })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

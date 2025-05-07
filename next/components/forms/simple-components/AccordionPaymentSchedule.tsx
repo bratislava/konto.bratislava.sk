@@ -63,6 +63,7 @@ const PaymentScheduleView = () => {
                   <Trans
                     ns="account"
                     i18nKey={taxInstallmentsTranslationKeys[index]}
+                    values={{ year: taxData.year }}
                     components={{ strong: <strong className="font-semibold" /> }}
                   />
                 </div>

@@ -10,30 +10,8 @@ import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
 import { CardPaymentReportingService } from '../card-payment-reporting.service'
 
-const csvColumnNames = [
-  'transactionType',
-  'terminalId',
-  'transactionId',
-  'transactionType_',
-  'date',
-  'totalPrice',
-  'provision',
-  'priceWithoutProvision',
-  'cashBack',
-  'authCode',
-  'cardNumber',
-  'cardType',
-  'closureId',
-  'orderId',
-] as const
-
-type CsvColumns = (typeof csvColumnNames)[number]
-
-type CsvRecord = Record<CsvColumns, string>
-
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
-  let prismaService: PrismaService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -83,42 +61,10 @@ describe('CardPaymentReportingService', () => {
     service = module.get<CardPaymentReportingService>(
       CardPaymentReportingService,
     )
-    prismaService = module.get<PrismaService>(PrismaService)
   })
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('getVariableSymbolsByOrderIds', () => {
-    it('should return variable symbols with order IDs', async () => {
-      const mockedResponse = [
-        {
-          variableSymbol: 'VS123',
-          taxPayments: [{ orderId: 'order1' }, { orderId: 'order2' }],
-        },
-        {
-          variableSymbol: 'VS234',
-          taxPayments: [{ orderId: 'order3' }, { orderId: 'order4' }],
-        },
-      ]
-      prismaService.tax.findMany = jest.fn().mockResolvedValue(mockedResponse)
-
-      const result = await service['getVariableSymbolsByOrderIds']([
-        'order1',
-        'order3',
-      ])
-      expect(result).toEqual([
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
-        { variableSymbol: 'VS234', orderIds: ['order3', 'order4'] },
-      ])
-    })
-
-    it('should return an empty array if no data is found', async () => {
-      prismaService.tax.findMany = jest.fn().mockResolvedValue([])
-      const result = await service['getVariableSymbolsByOrderIds'](['order1'])
-      expect(result).toEqual([])
-    })
   })
 
   describe('extractFileDate', () => {
@@ -218,47 +164,6 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
     it('should generate a proper price string when price is negative', () => {
       const result = service['generatePrice'](-123.45, 10)
       expect(result).toBe('-00000012345')
-    })
-  })
-
-  describe('enrichDataWithVariableSymbols', () => {
-    it('should enrich CSV data with variable symbols', () => {
-      const csvData = [
-        { orderId: 'order1', totalPrice: '123' } as CsvRecord,
-        { orderId: 'order3', totalPrice: '456' } as CsvRecord,
-      ]
-      const variableSymbols = [
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
-        { variableSymbol: 'VS456', orderIds: ['order3', 'order4'] },
-      ]
-
-      const result = service['enrichDataWithVariableSymbols'](
-        csvData,
-        variableSymbols,
-      )
-      expect(result).toStrictEqual([
-        { orderId: 'order1', totalPrice: '123', variableSymbol: 'VS123' },
-        { orderId: 'order3', totalPrice: '456', variableSymbol: 'VS456' },
-      ])
-    })
-
-    it('should assign an empty string as variable symbol if no match is found', () => {
-      const csvData = [
-        {
-          orderId: 'order3',
-          totalPrice: '123',
-          transactionType: 'type1',
-        } as CsvRecord,
-      ]
-      const variableSymbols = [
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
-      ]
-
-      const result = service['enrichDataWithVariableSymbols'](
-        csvData,
-        variableSymbols,
-      )
-      expect(result[0].variableSymbol).toBe('')
     })
   })
 })

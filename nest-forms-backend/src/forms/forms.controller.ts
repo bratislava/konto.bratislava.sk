@@ -1,16 +1,10 @@
 import { Controller, Param, Post, UseGuards } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger'
-import { getSchemaPath } from '@nestjs/swagger/dist/utils'
 
 import {
   UserInfo,
@@ -20,13 +14,6 @@ import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import { User } from '../utils/decorators/request.decorator'
 import { BumpJsonVersionResponseDto } from './dtos/forms.responses.dto'
-import {
-  FormDefinitionNotFoundErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotEditableErrorDto,
-  FormNotFoundErrorDto,
-  FormVersionBumpNotPossible,
-} from './forms.errors.dto'
 import FormsService from './forms.service'
 
 @ApiTags('forms')
@@ -42,31 +29,6 @@ export default class FormsController {
   @ApiOkResponse({
     description: 'Version successfully bumped',
     type: BumpJsonVersionResponseDto,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(FormVersionBumpNotPossible)
-  @ApiExtraModels(FormNotEditableErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Form or form definition not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiBadRequestResponse({
-    description: 'Form version cannot be bumped',
-    type: FormVersionBumpNotPossible,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Form is not editable',
-    type: FormNotEditableErrorDto,
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is owned by someone else',
-    type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post(':id/bump-version')

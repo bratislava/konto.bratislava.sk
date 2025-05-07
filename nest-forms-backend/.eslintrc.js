@@ -45,6 +45,7 @@ module.exports = {
     /* Lodash rules that dont make sense */
     'lodash/prefer-noop': 'off',
     'lodash-fp/prefer-constant': 'off',
+    'import/prefer-default-export': 'off',
   },
   overrides: [
     {

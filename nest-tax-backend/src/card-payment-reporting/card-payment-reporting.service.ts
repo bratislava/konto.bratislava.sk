@@ -6,10 +6,12 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import DatabaseSubservice from '../utils/subservices/database.subservice'
 import EmailSubservice from '../utils/subservices/email.subservice'
 import SftpFileSubservice from '../utils/subservices/sftp-file.subservice'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const csvColumnNames = [
   'transactionType',
@@ -47,12 +49,12 @@ export class CardPaymentReportingService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly mailSubservice: EmailSubservice,
     private readonly sftpFileSubservice: SftpFileSubservice,
+    private readonly databaseSubservice: DatabaseSubservice,
   ) {}
 
-  private readonly generatePrice = (price: number, fill: number): string => {
+  private generatePrice(price: number, fill: number): string {
     const adjustedFill = price >= 0 ? fill + 3 : fill + 2
     const paddedPrice = Math.abs(price)
       .toFixed(2)
@@ -61,39 +63,11 @@ export class CardPaymentReportingService {
     return price >= 0 ? paddedPrice : '-'.concat(paddedPrice)
   }
 
-  private async getVariableSymbolsByOrderIds(
-    orderIds: string[],
-  ): Promise<{ variableSymbol: string; orderIds: (string | null)[] }[]> {
-    const result = await this.prismaService.tax.findMany({
-      where: {
-        taxPayments: {
-          some: {
-            orderId: {
-              in: orderIds,
-            },
-          },
-        },
-      },
-      select: {
-        variableSymbol: true,
-        taxPayments: {
-          select: {
-            orderId: true,
-          },
-        },
-      },
-    })
-    return result.map((item) => ({
-      variableSymbol: item.variableSymbol,
-      orderIds: item.taxPayments
-        .map((payment) => payment.orderId)
-        .filter((orderId) => orderId !== null),
-    }))
-  }
-
   private extractFileDate(fileName: string): string | null {
     const fileDateMatches = fileName.split('_').pop()?.slice(0, 6)
-    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) return null
+    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
+      return null
+    }
     return `20${fileDateMatches}` // Add century
   }
 
@@ -137,63 +111,14 @@ export class CardPaymentReportingService {
     })
   }
 
-  private async getConfigFromDatabase() {
-    const requiredKeys = [
-      'REPORTING_VARIABLE_SYMBOL',
-      'REPORTING_SPECIFIC_SYMBOL',
-      'REPORTING_CONSTANT_SYMBOL',
-      'REPORTING_USER_CONSTANT_SYMBOL',
-      'REPORTING_RECIPIENT_EMAIL',
-      'REPORTING_GENERATE_REPORT',
-    ]
-    let constants: Record<string, string>
-    try {
-      const result = await this.prismaService.config.findMany({
-        where: {
-          key: {
-            in: requiredKeys,
-          },
-          validSince: {
-            lte: new Date(),
-          },
-        },
-        orderBy: [{ validSince: 'desc' }, { createdAt: 'desc' }],
-        distinct: ['key'],
-        select: {
-          key: true,
-          value: true,
-        },
-      })
-
-      constants = Object.fromEntries(
-        result.map((item) => [item.key, item.value]),
-      )
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.DATABASE_ERROR,
-        ErrorsResponseEnum.DATABASE_ERROR,
-        undefined,
-        "Error while getting 'REPORTING_VARIABLE_SYMBOL', 'REPORTING_SPECIFIC_SYMBOL', 'REPORTING_CONSTANT_SYMBOL', 'REPORTING_USER_CONSTANT_SYMBOL', 'REPORTING_RECIPIENT_EMAIL', 'REPORTING_GENERATE_REPORT' from Config.",
-        error instanceof Error ? error : undefined,
-      )
-    }
-
-    requiredKeys.forEach((key) => {
-      if (!constants[key]) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.DATABASE_ERROR,
-          ErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          `Could not find '${key}' settings in database. ${JSON.stringify(constants)}`,
-        )
-      }
-    })
-
-    return constants
-  }
-
-  async generateHeader(dateInfo: { today_DDMMYYYY: string }): Promise<string> {
-    const constants = await this.getConfigFromDatabase()
+  async generateHeader(
+    dateInfo: { today_DDMMYYYY: string },
+    constants: {
+      REPORTING_VARIABLE_SYMBOL: string
+      REPORTING_SPECIFIC_SYMBOL: string
+      REPORTING_CONSTANT_SYMBOL: string
+    },
+  ): Promise<string> {
     return [
       '4',
       dateInfo.today_DDMMYYYY,
@@ -219,13 +144,13 @@ export class CardPaymentReportingService {
   private async generateFileBody(
     finalData: CsvColumnsWithVariableSymbol[],
     yesterday_DDMMYYYY: string,
+    constants: { REPORTING_USER_CONSTANT_SYMBOL: string },
   ): Promise<string> {
     let body = ''
-
-    const constants = await this.getConfigFromDatabase()
-
     finalData.forEach((row) => {
-      if (row.orderId.length === 0) return
+      if (row.orderId.length === 0) {
+        return
+      }
 
       const totalPrice = parseFloat(row.totalPrice.replace(',', '.'))
 
@@ -265,7 +190,9 @@ export class CardPaymentReportingService {
     let debet = 0
 
     formatedData.forEach((row) => {
-      if (!row.isRegular) return
+      if (!row.isRegular) {
+        return
+      }
       kredit += Math.max(row.totalPrice, 0)
       debet += row.provision - Math.min(row.totalPrice, 0)
       countTransactions += 1
@@ -299,27 +226,25 @@ export class CardPaymentReportingService {
       yesterday_DDMMYYYY: string
     },
   ) {
-    const head = await this.generateHeader(dateInfo)
+    const constants = await this.databaseSubservice.getConfigByKeys([
+      'REPORTING_USER_CONSTANT_SYMBOL',
+      'REPORTING_VARIABLE_SYMBOL',
+      'REPORTING_SPECIFIC_SYMBOL',
+      'REPORTING_CONSTANT_SYMBOL',
+    ])
+    const head = await this.generateHeader(dateInfo, constants)
     const body = await this.generateFileBody(
       finalData,
       dateInfo.yesterday_DDMMYYYY,
+      constants,
     )
     const footer = this.generateFooter(finalData)
 
     return head + body + footer
   }
 
-  async generateAndSendPaymentReport() {
-    const configs = await this.getConfigFromDatabase()
-
-    if (configs.REPORTING_GENERATE_REPORT !== 'true') {
-      return
-    }
-
-    const sftpFiles = await this.sftpFileSubservice.getNewFiles()
-
-    dayjs.extend(utc)
-    dayjs.extend(timezone)
+  async generateAndSendPaymentReport(email: string, from?: Date) {
+    const sftpFiles = await this.sftpFileSubservice.getNewFiles(from)
 
     const hundredEightyDaysAgo = dayjs().subtract(180, 'day')
 
@@ -327,7 +252,9 @@ export class CardPaymentReportingService {
     const outputFiles: (OutputFile | null)[] = await Promise.all(
       sftpFiles.map(async (file) => {
         const fileDate = this.extractFileDate(file.name)
-        if (!fileDate) return null
+        if (!fileDate) {
+          return null
+        }
 
         const dateInfo = this.getDateInfo(fileDate)
 
@@ -348,9 +275,10 @@ export class CardPaymentReportingService {
         }
 
         // Extract variable symbols with all orderIds belonging to each VS
-        const variableSymbols = await this.getVariableSymbolsByOrderIds(
-          csvData.map((row) => row.orderId),
-        )
+        const variableSymbols =
+          await this.databaseSubservice.getVariableSymbolsByOrderIds(
+            csvData.map((row) => row.orderId),
+          )
 
         // Find a matching variable symbol for each row
         const finalData: CsvColumnsWithVariableSymbol[] =
@@ -404,11 +332,16 @@ export class CardPaymentReportingService {
         : `Report z dní:\n  - ${validOutputFilesSorted.map((file) => [file?.date.format('DD.MM.YYYY'), ' s nezarátaným poplatkom ', file.debet, '€'].join('')).join('\n  - ')}`
 
     await this.mailSubservice.send(
-      [configs.REPORTING_RECIPIENT_EMAIL],
+      [email],
       'Report platieb kartou',
       message,
       attachments,
     )
+
+    // We do not want to update the database if custom range was used
+    if (from) {
+      return
+    }
 
     // Write updated CSV names
     await this.prismaService.csvFile.createMany({

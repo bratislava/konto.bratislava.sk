@@ -168,7 +168,9 @@ export class TasksService {
       'REPORTING_RECIPIENT_EMAIL',
     ])
 
-    if (!config.REPORTING_GENERATE_REPORT) return
+    if (!config.REPORTING_GENERATE_REPORT) {
+      return
+    }
 
     await this.cardPaymentReportingService.generateAndSendPaymentReport(
       config.REPORTING_RECIPIENT_EMAIL,

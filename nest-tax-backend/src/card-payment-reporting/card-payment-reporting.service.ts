@@ -65,7 +65,9 @@ export class CardPaymentReportingService {
 
   private extractFileDate(fileName: string): string | null {
     const fileDateMatches = fileName.split('_').pop()?.slice(0, 6)
-    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) return null
+    if (!fileDateMatches || Number.isNaN(Number(fileDateMatches))) {
+      return null
+    }
     return `20${fileDateMatches}` // Add century
   }
 

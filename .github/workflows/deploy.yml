@@ -14,7 +14,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
-      build_image_no_registry: ''
+      build_image_no_registry: '--no_image_repo_check'
       tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
       fetch-depth: 1
     secrets:
@@ -27,7 +27,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: openapi-clients/
-      build_image_no_registry: ''
+      build_image_no_registry: '--no_image_repo_check'
       tag: '--tag=${{ github.ref_name }}-${{ github.sha }}'
       fetch-depth: 1
     secrets:
@@ -47,6 +47,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -66,6 +67,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -85,6 +87,7 @@ jobs:
     with:
       directory: strapi/
       cluster: tkg-innov-dev
+      skip_deployment_check: '--no_image_repo_check'
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
@@ -103,6 +106,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -122,6 +126,7 @@ jobs:
     with:
       directory: cvdmirror/
       cluster: tkg-innov-dev
+      skip_deployment_check: '--no_image_repo_check'
       url: https://tkg.dev.bratislava.sk
       debug: --debug
       version: beta
@@ -141,6 +146,7 @@ jobs:
       directory: clamav/
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       debug: --debug
       version: beta
       fetch-depth: 1
@@ -158,6 +164,7 @@ jobs:
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -177,6 +184,7 @@ jobs:
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -195,6 +203,7 @@ jobs:
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -213,6 +222,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -232,6 +242,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -251,6 +262,7 @@ jobs:
     with:
       directory: strapi/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -270,6 +282,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -290,6 +303,7 @@ jobs:
       directory: cvdmirror/
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       debug: --debug
       flag: --staging
       fetch-depth: 1
@@ -308,6 +322,7 @@ jobs:
       directory: clamav/
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       debug: --debug
       flag: --staging
       fetch-depth: 1
@@ -325,6 +340,7 @@ jobs:
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -344,6 +360,7 @@ jobs:
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -362,6 +379,7 @@ jobs:
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -398,6 +416,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -417,6 +436,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -437,6 +457,7 @@ jobs:
       directory: strapi/
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -454,6 +475,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -474,6 +496,7 @@ jobs:
       directory: cvdmirror/
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -492,6 +515,7 @@ jobs:
       directory: clamav/
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
+      skip_deployment_check: '--no_image_repo_check'
       flag: --production
       fetch-depth: 1
       debug: --debug
@@ -509,6 +533,7 @@ jobs:
     with:
       directory: nest-clamav-scanner/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -528,6 +553,7 @@ jobs:
     with:
       directory: nest-tax-backend/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -546,6 +572,7 @@ jobs:
     with:
       directory: nest-city-account/
       build_arg: '--build_arg="SHARED_PACKAGE_TAG=${{ github.ref_name }}-${{ github.sha }}"'
+      skip_deployment_check: '--no_image_repo_check'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production

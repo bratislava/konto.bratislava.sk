@@ -277,7 +277,7 @@ export class CardPaymentReportingService {
         // Extract variable symbols with all orderIds belonging to each VS
         const variableSymbols =
           await this.databaseSubservice.getVariableSymbolsByOrderIds(
-            csvData.map((row) => row.orderId),
+            csvData.map((row) => (+row.orderId).toString()),
           )
 
         // Find a matching variable symbol for each row

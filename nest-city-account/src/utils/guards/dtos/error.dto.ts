@@ -49,18 +49,48 @@ export type CustomErrorEnums =
   | AdminErrorsEnum
   | SendToQueueErrorsEnum
 
-export class ResponseErrorDto {
+export class ErrorSymbols {
+  static readonly alert: unique symbol = Symbol('alert')
+
+  static readonly console: unique symbol = Symbol('console')
+
+  static readonly errorType: unique symbol = Symbol('errorType')
+
+  static readonly stack: unique symbol = Symbol('stack')
+
+  static readonly field: unique symbol = Symbol('field')
+
+  static readonly errorCause = Symbol('errorCause')
+
+  static readonly causedByMessage = Symbol('causedByMessage')
+}
+
+export const errorTypeKeys: Record<string, string> = {
+  alert: `$Symbol-alert`,
+  console: `$Symbol-console`,
+  errorType: `$Symbol-errorType`,
+  stack: `$Symbol-stack`,
+  field: `$Symbol-field`,
+  errorCause: `$Symbol-errorCause`,
+  causedByMessage: `$Symbol-causedByMessage`,
+}
+
+export const errorTypeStrings = Object.values(errorTypeKeys)
+
+export class ResponseErrorInternalDto {
   statusCode!: number
 
   status!: string
 
   message!: string
 
-  errorName!: CustomErrorEnums
+  errorName!: CustomErrorEnums;
 
-  $alert?: number
+  [ErrorSymbols.alert]?: number;
 
-  object?: object | undefined
+  [ErrorSymbols.console]?: string;
 
-  $console?: string
+  [ErrorSymbols.errorCause]?: string;
+
+  [ErrorSymbols.causedByMessage]?: string
 }

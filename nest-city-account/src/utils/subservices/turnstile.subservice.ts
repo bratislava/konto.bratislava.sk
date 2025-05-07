@@ -30,6 +30,14 @@ export class TurnstileSubservice {
     try {
       result = await this.turnstile(token)
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.BadRequestException(
+          VerificationErrorsEnum.INVALID_CAPTCHA,
+          VerificationErrorsResponseEnum.INVALID_CAPTCHA,
+          undefined,
+          error
+        )
+      }
       throw this.throwerErrorGuard.BadRequestException(
         VerificationErrorsEnum.INVALID_CAPTCHA,
         VerificationErrorsResponseEnum.INVALID_CAPTCHA,

@@ -24,7 +24,6 @@ import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
 
@@ -192,7 +191,17 @@ describe('EmailFormsSubservice', () => {
       debug: jest.fn(),
       verbose: jest.fn(),
     } as unknown as LineLoggerSubservice
+
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
   })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+  
 
   it('should be defined', () => {
     expect(service).toBeDefined()

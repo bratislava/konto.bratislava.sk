@@ -26,7 +26,6 @@ jest.mock('forms-shared/form-utils/omitExtraData')
 
 describe('WebhookSubservice', () => {
   let service: WebhookSubservice
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,11 +52,16 @@ describe('WebhookSubservice', () => {
       debug: jest.fn(),
       verbose: jest.fn(),
     } as unknown as LineLoggerSubservice
-    throwerErrorGuard = module.get(
-      ThrowerErrorGuard,
-    ) as jest.Mocked<ThrowerErrorGuard>
-    throwerErrorGuard['logger'] = mockLogger
     service['logger'] = mockLogger
+
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should be defined', () => {

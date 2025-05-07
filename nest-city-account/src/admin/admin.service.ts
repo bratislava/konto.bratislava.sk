@@ -37,6 +37,7 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
+import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
 
 @Injectable()
 export class AdminService {
@@ -503,5 +504,26 @@ export class AdminService {
       validatedUsers: result.success.length,
       entities: result,
     }
+  }
+
+  async deleteTax(data: RequestAdminDeleteTaxDto): Promise<OnlySuccessDto> {
+    const user = await this.prismaService.user.findUnique({
+      where: { birthNumber: data.birthNumber },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
+    }
+    
+    await this.prismaService.user.update({
+      where: { birthNumber: data.birthNumber },
+      data: {
+        lastTaxYear: null,
+      },
+    })
+    await this.taxSubservice.deleteTax(data)
+    return { success: true }
   }
 }

@@ -331,7 +331,9 @@ export class CardPaymentReportingService {
     )
 
     // We do not want to update the database if custom range was used
-    if (!from) return
+    if (!from) {
+      return
+    }
 
     // Write updated CSV names
     await this.prismaService.csvFile.createMany({

@@ -89,8 +89,9 @@ export class CardPaymentReportingService {
   ): CsvColumnsWithVariableSymbol[] {
     return csvData.map((row) => {
       const vsMatch =
-        variableSymbols.find((item) => item.orderIds.includes(row.orderId))
-          ?.variableSymbol || ''
+        variableSymbols.find((item) =>
+          item.orderIds.includes((+row.orderId).toString()),
+        )?.variableSymbol || ''
       return { ...row, variableSymbol: vsMatch }
     })
   }

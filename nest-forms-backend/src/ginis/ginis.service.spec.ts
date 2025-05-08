@@ -37,8 +37,8 @@ jest.mock('node:crypto', () => ({
   randomUUID: jest.fn(),
 }))
 jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
-  extractFormSubject: jest.fn(),
-  extractGinisSubject: jest.fn(),
+  extractFormSubjectPlain: jest.fn(),
+  extractFormSubjectTechnical: jest.fn(),
 }))
 
 describe('GinisService', () => {

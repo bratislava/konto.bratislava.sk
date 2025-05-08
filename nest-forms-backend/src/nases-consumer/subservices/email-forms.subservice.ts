@@ -10,7 +10,7 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import {
   extractEmailFormEmail,
   extractEmailFormName,
-  extractFormSubject,
+  extractFormSubjectPlain,
 } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import {
@@ -222,7 +222,7 @@ export default class EmailFormsSubservice {
           template: formDefinition.email.userResponseTemplate,
           data: {
             formId: form.id,
-            messageSubject: extractFormSubject(
+            messageSubject: extractFormSubjectPlain(
               formDefinition,
               form.formDataJson as GenericObjectType,
             ),
@@ -291,7 +291,10 @@ export default class EmailFormsSubservice {
         template: formDefinition.email.newSubmissionTemplate,
         data: {
           formId: form.id,
-          messageSubject: extractFormSubject(formDefinition, form.formDataJson),
+          messageSubject: extractFormSubjectPlain(
+            formDefinition,
+            form.formDataJson,
+          ),
           firstName: null,
           slug: formDefinition.slug,
           htmlData: await renderSummaryEmail({

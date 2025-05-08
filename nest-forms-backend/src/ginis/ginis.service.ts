@@ -11,8 +11,8 @@ import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import {
-  extractFormSubject,
-  extractGinisSubject,
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
 } from 'forms-shared/form-utils/formDataExtractors'
 
 import BaConfigService from '../config/ba-config.service'
@@ -508,7 +508,7 @@ export default class GinisService {
       }
       await this.editSubmission(
         form.ginisDocumentId,
-        extractGinisSubject(
+        extractFormSubjectTechnical(
           formDefinition,
           form.formDataJson as GenericObjectType,
         ),
@@ -562,7 +562,7 @@ export default class GinisService {
             data: {
               formId: form.id,
               firstName: data.userData.firstName,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),

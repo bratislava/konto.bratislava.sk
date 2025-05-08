@@ -1,13 +1,13 @@
 import React from 'react'
 import {
-  SummaryArrayItemRendererProps,
-  SummaryArrayRendererProps,
-  SummaryFieldRendererProps,
-  SummaryFileValueRendererProps,
-  SummaryFormRendererProps,
+  SummaryArrayComponentProps,
+  SummaryArrayItemComponentProps,
+  SummaryFieldComponentProps,
+  SummaryFileValueComponentProps,
+  SummaryFormComponentProps,
   SummaryRenderer,
-  SummaryStepRendererProps,
-  SummaryStringValueRendererProps,
+  SummaryStepComponentProps,
+  SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
@@ -19,24 +19,24 @@ type SummaryPdfProps = {
   formSummary: FormSummary
   cssToInject: string
   fileInfos: Record<string, FileInfoSummary>
-  validationData?: ValidationData<GenericObjectType>
+  validationData: ValidationData<GenericObjectType> | null
 }
 
-const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
+const FormComponent = ({ form, children }: SummaryFormComponentProps) => (
   <div className="flex flex-col gap-8">
     <h1 className="text-2xl font-semibold">{form.title}</h1>
     {children}
   </div>
 )
 
-const StepRenderer = ({ step, children }: SummaryStepRendererProps) => (
+const StepComponent = ({ step, children }: SummaryStepComponentProps) => (
   <div className="flex flex-col gap-4">
     <h2 className="text-xl font-semibold">{step.title}</h2>
     <div>{children}</div>
   </div>
 )
 
-const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps) => {
+const FieldComponent = ({ field, hasError, children }: SummaryFieldComponentProps) => {
   const wrapperClass = cx('flex flex-row flex-nowrap gap-2 border-b-2 py-2.5', {
     'border-gray-200': !hasError,
     'border-red-500': hasError,
@@ -50,7 +50,7 @@ const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps)
   )
 }
 
-const StringValueRenderer = ({ value }: SummaryStringValueRendererProps) => {
+const StringValueComponent = ({ value }: SummaryStringValueComponentProps) => {
   return <span className="whitespace-pre-wrap">{value}</span>
 }
 
@@ -63,7 +63,7 @@ const FileIcon = () => (
   </svg>
 )
 
-const FileValueRenderer = ({ fileInfo }: SummaryFileValueRendererProps) => {
+const FileValueComponent = ({ fileInfo }: SummaryFileValueComponentProps) => {
   return (
     <div className="flex items-center gap-2">
       <div className="shrink-0">
@@ -74,15 +74,15 @@ const FileValueRenderer = ({ fileInfo }: SummaryFileValueRendererProps) => {
   )
 }
 
-const NoneValueRenderer = () => {
+const NoneValueComponent = () => {
   return <span>-</span>
 }
 
-const InvalidValueRenderer = () => {
+const InvalidValueComponent = () => {
   return <span className="text-red-500">Neznáma hodnota</span>
 }
 
-const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
+const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => (
   <div className="mt-4">
     <div className="mb-4 font-semibold">{array.title}</div>
     {children}
@@ -92,7 +92,7 @@ const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
 const getArrayDepth = (id: string): number =>
   id.split('_').filter((part) => !isNaN(parseInt(part))).length
 
-const ArrayItemRenderer = ({ arrayItem, children }: SummaryArrayItemRendererProps) => {
+const ArrayItemComponent = ({ arrayItem, children }: SummaryArrayItemComponentProps) => {
   const arrayDepth = getArrayDepth(arrayItem.id)
 
   const wrapperClass = cx('flex flex-col mb-4', {
@@ -179,15 +179,17 @@ export const SummaryPdf = ({
             summaryJson={summaryJson}
             fileInfos={fileInfos}
             validationData={validationData}
-            renderForm={FormRenderer}
-            renderStep={StepRenderer}
-            renderField={FieldRenderer}
-            renderArray={ArrayRenderer}
-            renderArrayItem={ArrayItemRenderer}
-            renderStringValue={StringValueRenderer}
-            renderFileValue={FileValueRenderer}
-            renderNoneValue={NoneValueRenderer}
-            renderInvalidValue={InvalidValueRenderer}
+            components={{
+              FormComponent,
+              StepComponent,
+              FieldComponent,
+              ArrayComponent,
+              ArrayItemComponent,
+              StringValueComponent,
+              FileValueComponent,
+              NoneValueComponent,
+              InvalidValueComponent,
+            }}
           />
           <AdditionalInfo additionalInfo={additionalInfo} />
           <TermsAndConditions termsAndConditions={termsAndConditions} />

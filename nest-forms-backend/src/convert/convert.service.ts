@@ -340,6 +340,7 @@ export default class ConvertService {
 
         pdfBuffer = await renderSummaryPdf({
           formSummary: form.formSummary,
+          validationData: null,
           launchBrowser: () => chromium.launch(),
           serverFiles: form.files,
         })

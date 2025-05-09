@@ -6,6 +6,7 @@ import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
+import { TaxControllerV2 } from './tax.v2.controller'
 
 @Module({
   imports: [PrismaModule],
@@ -16,6 +17,6 @@ import { TaxService } from './tax.service'
     QrCodeSubservice,
   ],
   exports: [TaxService],
-  controllers: [TaxController],
+  controllers: [TaxController, TaxControllerV2],
 })
 export class TaxModule {}

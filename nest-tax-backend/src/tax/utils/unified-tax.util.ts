@@ -1,201 +1,10 @@
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import {
-  ErrorsEnum,
-  ErrorsResponseEnum,
-} from '../../utils/guards/dtos/error.dto'
-import { PaymentService } from '../../payment/payment.service'
-import dayjs from 'dayjs'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
-import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
-import { ConfigService } from '@nestjs/config'
-
-type OneTimePaymentDetails = {
-  // Jednorázová platba
-  isPossible: boolean // Je jednorázová platba možná. False len ak je plná suma splatená.
-  type?: 'ONE_TIME_PAYMENT' | 'REMAINING_AMOUNT_PAYMENT'
-  reasonNotPossible?: 'ALREADY_PAID' // Dôvod ak nie je možná
-  amount?: number // Suma
-  qrCode?: string // Qr kód
-  variableSymbol?: string // Variabilný symbol
-  paymentGatewayLink?: string // Link na platobnú bránu TODO: len ak type == 'ONE_TIME_PAYMENT'
-}
-
-type InstallmentPaymentDetail = {
-  // Splátkové platby
-  isPossible: boolean // Je splátková platba možná
-  reasonNotPossible?: 'BELOW_THRESHOLD' | 'AFTER_DATE' // Dôvod ak nie je možná
-  installments?: [
-    // Exactly 3 installments or none at all
-    {
-      installmentNumber: 1 // Prvá splátka
-      dueDate?: Date // Dátum splatnosti
-      status: 'PAID' | 'UNPAID' | 'PARTIAL' // Stav
-      paidAmount: number // Uhradená suma zo splátky
-      remainingAmount: number // Zostávajúca suma zo splátky
-      variableSymbol?: string // Variabilný symbol
-      qrCode?: string // QR kód
-    },
-    {
-      installmentNumber: 2 // Druhá splátka
-      dueDate: Date // Dátum splatnosti
-      status: 'PAID' | 'UNPAID' | 'PARTIAL' // Stav
-      paidAmount: number // Uhradená suma zo splátky
-      remainingAmount: number // Zostávajúca suma zo splátky
-      variableSymbol?: string // Variabilný symbol
-      qrCode?: string // QR kód
-    },
-    {
-      installmentNumber: 3 // Tretia splátka
-      dueDate: Date // Dátum splatnosti
-      status: 'PAID' | 'UNPAID' | 'PARTIAL' // Stav
-      paidAmount: number // Uhradená suma zo splátky
-      remainingAmount: number // Zostávajúca suma zo splátky
-      variableSymbol?: string // Variabilný symbol
-      qrCode?: string // QR kód
-    },
-  ]
-}
-
-export type TaxSummaryDetail = {
-  overallPaid: number // Celkovo uhradené
-  overallBalance: number // Celkovo zostatok
-  overallOverpayment: number // Celkovo preplatok
-  overallAmount: number // Celková daň
-  oneTimePayment: OneTimePaymentDetails
-  installmentPayment: InstallmentPaymentDetail
-}
-
-export const validateTaxDetail = (tax_detail: TaxSummaryDetail): undefined => {
-  const errors: string[] = []
-
-  // Validate overall summary
-  if (tax_detail.overallPaid < 0) {
-    errors.push('Overall paid amount cannot be negative.')
-  }
-  if (tax_detail.overallBalance < 0) {
-    errors.push('Overall balance cannot be negative.')
-  }
-  if (tax_detail.overallOverpayment < 0) {
-    errors.push('Overall overpayment cannot be negative.')
-  }
-  if (tax_detail.overallAmount < 0) {
-    errors.push('Overall amount cannot be negative.')
-  }
-
-  // Validate one-time payment
-  const oneTimePayment = tax_detail.oneTimePayment
-  if (oneTimePayment.isPossible) {
-    const paymentTypeName =
-      oneTimePayment.type === 'ONE_TIME_PAYMENT'
-        ? 'One-time'
-        : 'Remaining amount'
-    if (oneTimePayment.type === undefined) {
-      errors.push(`${paymentTypeName} payment type must be provided.`)
-    }
-    if (
-      oneTimePayment.type === 'ONE_TIME_PAYMENT' &&
-      !oneTimePayment.paymentGatewayLink
-    ) {
-      errors.push(`${paymentTypeName} payment must include paymentGatewayLink.`)
-    }
-    if (
-      oneTimePayment.type === 'REMAINING_AMOUNT_PAYMENT' &&
-      oneTimePayment.paymentGatewayLink
-    ) {
-      errors.push(
-        'Remaining amount payment must not include paymentGatewayLink.',
-      )
-    }
-    if (oneTimePayment.amount === undefined) {
-      errors.push(`${paymentTypeName} payment amount must be provideded.`)
-    } else if (oneTimePayment.amount <= 0) {
-      errors.push(
-        `${paymentTypeName} payment amount must be greater or equal 0.`,
-      )
-    }
-    if (!oneTimePayment.qrCode) {
-      errors.push('QR Code must be provided for one-time payments.')
-    }
-    if (!oneTimePayment.paymentGatewayLink) {
-      errors.push(
-        'Payment gateway link must be provided for one-time payments.',
-      )
-    }
-  } else {
-    if (!oneTimePayment.reasonNotPossible) {
-      errors.push(
-        'Reason must be provided when a one-time payment is not possible.',
-      )
-    }
-  }
-
-  // Validate installment payment
-  const installmentPayment = tax_detail.installmentPayment
-  if (installmentPayment.isPossible) {
-    if (!installmentPayment.installments) {
-      errors.push(
-        'Exactly 3 installments must be provided when installment payments are possible.',
-      )
-    } else {
-      if (installmentPayment.installments.length !== 3) {
-        errors.push(
-          'Exactly 3 installments must be provided when installment payments are possible.',
-        )
-      }
-      installmentPayment.installments.forEach((installment) => {
-        if (installment.paidAmount < 0) {
-          errors.push(
-            `Installment ${installment.installmentNumber}: Paid amount cannot be negative.`,
-          )
-        }
-        if (installment.remainingAmount < 0) {
-          errors.push(
-            `Installment ${installment.installmentNumber}: Remaining amount cannot be negative.`,
-          )
-        }
-        if (!installment.dueDate) {
-          errors.push(
-            `Installment ${installment.installmentNumber}: Due date must be provided.`,
-          )
-        }
-        if (!installment.qrCode) {
-          errors.push(
-            `Installment ${installment.installmentNumber}: QR Code must be provided.`,
-          )
-        }
-        if (!installment.variableSymbol) {
-          errors.push(
-            `Installment ${installment.installmentNumber}: Variable symbol must be provided.`,
-          )
-        }
-      })
-    }
-  } else {
-    if (installmentPayment.installments.length !== 0) {
-      errors.push(
-        'Installments should not exist when installment payments are not possible.',
-      )
-    }
-    if (!installmentPayment.reasonNotPossible) {
-      errors.push(
-        'Reason must be provided when installment payments are not possible.',
-      )
-    }
-  }
-
-  const throwerErrorGuard = new ThrowerErrorGuard()
-
-  throw throwerErrorGuard.InternalServerErrorException(
-    ErrorsEnum.INTERNAL_SERVER_ERROR,
-    ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-    errors.join('\n'),
-  )
-}
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
 const bratislavaTimeZone = 'Europe/Bratislava'
 
 const stateHolidays: Dayjs[] = [
@@ -223,10 +32,10 @@ const getNextWorkingDay = (date: Dayjs): Dayjs => {
 
   while (
     // Check if it's a weekend or a state holiday
-  nextDay.day() === 6 || // Saturday
-  nextDay.day() === 0 || // Sunday
-  isStateHoliday(nextDay) // Holiday
-    ) {
+    nextDay.day() === 6 || // Saturday
+    nextDay.day() === 0 || // Sunday
+    isStateHoliday(nextDay) // Holiday
+  ) {
     // Move to the next day
     nextDay.add(1, 'day')
   }
@@ -234,7 +43,7 @@ const getNextWorkingDay = (date: Dayjs): Dayjs => {
   return nextDay
 }
 
-const calculateDueDate = (dateOfValidity: Date | undefined) => {
+const calculateDueDate = (dateOfValidity: Date | null) => {
   if (!dateOfValidity) return undefined
 
   const dueDateBase = dayjs(dateOfValidity).add(20, 'day')
@@ -244,73 +53,142 @@ const calculateDueDate = (dateOfValidity: Date | undefined) => {
 }
 
 const calculateInstallmentAmounts = (
-  overallAmount: number,
+  installments: { order: string | null; amount: number }[],
   overallPaid: number,
-): { toPay: number, paid: number, status: 'PAID' | 'UNPAID' | 'PARTIAL' }[] => {
-  const truncatedThird = ~~(overallAmount / 3)
-  const firstTotal = overallAmount - 2 * truncatedThird
+):
+  | { toPay: number; paid: number; status: 'PAID' | 'UNPAID' | 'PARTIAL' }[]
+  | null => {
+  const amounts = [1, 2, 3].map(
+    (order) =>
+      installments.find((installment) => installment.order === order.toString())
+        ?.amount,
+  )
 
-  if (overallPaid === 0)
-    return [{ toPay: firstTotal, paid: 0, status: 'UNPAID' }, {
-      toPay: truncatedThird,
-      paid: 0,
-      status: 'UNPAID',
-    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
+  if (!amounts.every((amount) => amount !== undefined)) {
+    return null
+  }
 
-  if (overallPaid <= firstTotal)
-    return [{ toPay: firstTotal - overallPaid, paid: overallPaid, status: 'PARTIAL' }, {
-      toPay: truncatedThird,
-      paid: 0,
-      status: 'UNPAID',
-    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
+  let remainingPaid = overallPaid
+  return amounts.map((amount) => {
+    const paid = Math.min(amount, remainingPaid)
+    const toPay = amount - paid
 
-  if (overallPaid <= firstTotal + truncatedThird)
-    return [{ toPay: 0, paid: firstTotal, status: 'PAID' }, {
-      toPay: firstTotal + truncatedThird - overallPaid,
-      paid: overallPaid - firstTotal,
-      status: 'PARTIAL',
-    }, { toPay: truncatedThird, paid: 0, status: 'UNPAID' }]
+    remainingPaid -= paid
 
-  return [{ toPay: 0, paid: firstTotal, status: 'PAID' }, {
-    toPay: 0,
-    paid: truncatedThird,
-    status: 'PAID',
-  }, { toPay: overallAmount - overallPaid, paid: overallPaid - firstTotal - truncatedThird, status: 'PARTIAL' }]
+    const status =
+      toPay === 0 ? 'PAID' : toPay === amount ? 'UNPAID' : 'PARTIAL'
+
+    return { toPay, paid, status }
+  })
 }
 
-export const get_tax_detail = async (
+type InstallmentPaymentDetailWithQrCodeArgs = {
+  isPossible: boolean
+  reasonNotPossible?: 'BELOW_THRESHOLD' | 'AFTER_DATE'
+  installments?: [
+    {
+      installmentNumber: 1
+      dueDate?: Date
+      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      paidAmount: number
+      remainingAmount: number
+      variableSymbol?: string
+      qrCodeArgs?: {
+        amount: number
+        variableSymbol: string
+        specificSymbol: string
+      }
+    },
+    {
+      installmentNumber: 2
+      dueDate: Date
+      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      paidAmount: number
+      remainingAmount: number
+      variableSymbol?: string
+      qrCodeArgs?: {
+        amount: number
+        variableSymbol: string
+        specificSymbol: string
+      }
+    },
+    {
+      installmentNumber: 3
+      dueDate: Date
+      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      paidAmount: number
+      remainingAmount: number
+      variableSymbol?: string
+      qrCodeArgs?: {
+        amount: number
+        variableSymbol: string
+        specificSymbol: string
+      }
+    },
+  ]
+}
+
+type OneTimePaymentDetailsWithQrCodeArgs = {
+  isPossible: boolean
+  type?: 'ONE_TIME_PAYMENT' | 'REMAINING_AMOUNT_PAYMENT'
+  reasonNotPossible?: 'ALREADY_PAID'
+  amount?: number
+  qrCodeArgs?: {
+    amount: number
+    variableSymbol: string
+    specificSymbol: string
+  }
+  variableSymbol?: string
+  paymentGatewayLink?: string
+}
+
+// Modified version of TaxSummaryDetail with qrCodeArgs instead of qrCode
+type TaxSummaryDetailWithQrCodeArgs = {
+  overallPaid: number
+  overallBalance: number
+  overallOverpayment: number
+  overallAmount: number
+  oneTimePayment: OneTimePaymentDetailsWithQrCodeArgs
+  installmentPayment: InstallmentPaymentDetailWithQrCodeArgs
+}
+
+export const get_tax_detail = (
   overallPaid: number, // zaplatená suma
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
   overallAmount: number, // suma na zaplatenie
-  payment_calendar_threshold: number, // splátková hranica (66 Eur)
+  payment_calendar_threshold: string, // splátková hranica (66 Eur)
   variableSymbol: string,
-  dateOfValidity?: Date, // dátum právoplatnosti
-): Promise<TaxSummaryDetail> => {
+  dateOfValidity: Date | null, // dátum právoplatnosti
+  installments: { order: string | null; amount: number }[],
+): TaxSummaryDetailWithQrCodeArgs => {
   const overallBalance =
     overallAmount - overallPaid > 0 ? overallAmount - overallPaid : 0
+
   const overallOverpayment =
     overallPaid - overallAmount > 0 ? overallPaid - overallAmount : 0
 
-  const oneTimePayment: OneTimePaymentDetails = {
+  const oneTimePayment: OneTimePaymentDetailsWithQrCodeArgs = {
     isPossible: true,
     type: overallPaid > 0 ? 'REMAINING_AMOUNT_PAYMENT' : 'ONE_TIME_PAYMENT',
     amount: overallBalance,
-    qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+    qrCodeArgs: {
       amount: overallBalance,
       variableSymbol: variableSymbol,
       specificSymbol: '2024200000',
-    }),
+    },
     variableSymbol: 'TODO',
     paymentGatewayLink: 'TODO',
   }
 
-  const installmentPayment: InstallmentPaymentDetail = { isPossible: false }
+  const installmentPayment: InstallmentPaymentDetailWithQrCodeArgs = {
+    isPossible: false,
+  }
 
-  const novemberFirst = new Date(taxYear, 10, 1)
+  const novemberFirst = new Date(`${taxYear}-${payment_calendar_threshold}`)
 
   const installmentAmounts = calculateInstallmentAmounts(
-    overallAmount,
+    installments,
     overallPaid,
   )
 
@@ -319,6 +197,9 @@ export const get_tax_detail = async (
   }
   if (overallBalance > 6600) {
     installmentPayment.reasonNotPossible = 'BELOW_THRESHOLD'
+  }
+  if (installmentAmounts === null) {
+    throw new Error('Installments invalid') // TODO better error
   } else {
     const fistPaymentDueDate = calculateDueDate(dateOfValidity)
 
@@ -331,37 +212,42 @@ export const get_tax_detail = async (
         paidAmount: installmentAmounts[0].paid,
         remainingAmount: installmentAmounts[0].toPay,
         variableSymbol,
-        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({ // TODO: placeholder
+        qrCodeArgs: {
+          // TODO: placeholder
           amount: installmentAmounts[0].toPay,
           variableSymbol: variableSymbol,
           specificSymbol: '2024200000',
-        }),
+        },
       },
       {
         installmentNumber: 2,
-        dueDate: dayjs.tz(`${dayjs().year()}-31-08`, bratislavaTimeZone).toDate(),
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+          .toDate(),
         status: installmentAmounts[1].status,
         paidAmount: installmentAmounts[1].paid,
         remainingAmount: installmentAmounts[1].toPay,
         variableSymbol,
-        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+        qrCodeArgs: {
           amount: installmentAmounts[0].toPay,
           variableSymbol: variableSymbol,
           specificSymbol: '2024200000',
-        }),
+        },
       },
       {
         installmentNumber: 3,
-        dueDate: dayjs.tz(`${dayjs().year()}-31-10`, bratislavaTimeZone).toDate(),
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+          .toDate(),
         status: installmentAmounts[2].status,
         paidAmount: installmentAmounts[2].paid,
         remainingAmount: installmentAmounts[2].toPay,
         variableSymbol,
-        qrCode: await (new QrCodeSubservice(new ConfigService())).createQrCode({
+        qrCodeArgs: {
           amount: installmentAmounts[0].toPay,
           variableSymbol: variableSymbol,
           specificSymbol: '2024200000',
-        }),
+        },
       },
     ]
   }

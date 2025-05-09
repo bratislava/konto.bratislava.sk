@@ -20,6 +20,13 @@ import {
 } from './dtos/requests.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { getTaxStatus } from './utils/helpers/tax.helper'
+import {
+  InstallmentPaymentDetail,
+  OneTimePaymentDetails,
+  TaxSummaryDetail,
+} from './dtos/response.pdf.dto'
+import dayjs from 'dayjs'
+import { get_tax_detail } from './utils/unified-tax.util'
 
 @Injectable()
 export class TaxService {
@@ -208,5 +215,115 @@ export class TaxService {
         error instanceof Error ? error : undefined,
       )
     }
+  }
+
+  async getTaxDetail(birthNumber: string): Promise<TaxSummaryDetail> {
+    if (!birthNumber) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const today = dayjs().tz('Europe/Bratislava')
+    const currentYear = today.year()
+
+    const tax = await this.prisma.tax.findFirst({
+      where: {
+        year: currentYear,
+        taxPayer: {
+          birthNumber,
+        },
+      },
+      include: {
+        taxInstallments: true,
+        taxPayer: true,
+        taxDetails: true,
+        taxEmployees: true,
+      },
+    })
+
+    if (!tax) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const taxPaymentSum = await this.prisma.taxPayment.aggregate({
+      where: {
+        taxId: tax.id,
+        status: PaymentStatus.SUCCESS,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+
+    const overallPaidTax = taxPaymentSum._sum.amount || 0
+
+    const installmentsValid = 'TODO'
+
+    // TODO dateOfValidity
+    const detailWithoutQrCode = get_tax_detail(
+      overallPaidTax,
+      currentYear,
+      today.toDate(),
+      tax.amount,
+      '11-1',
+      tax.variableSymbol,
+      tax.dateTaxRuling,
+      tax.taxInstallments,
+    )
+
+    let oneTimePaymentQrCode: string | undefined = undefined
+    if (detailWithoutQrCode.oneTimePayment.qrCodeArgs) {
+      oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
+        detailWithoutQrCode.oneTimePayment.qrCodeArgs,
+      )
+      delete detailWithoutQrCode.oneTimePayment.qrCodeArgs
+    }
+    const oneTimePayment: OneTimePaymentDetails = {
+      ...detailWithoutQrCode.oneTimePayment,
+      qrCode: oneTimePaymentQrCode,
+    }
+
+    let installmentsQrCodes: string[] | undefined = undefined
+    if (detailWithoutQrCode.installmentPayment.installments) {
+      installmentsQrCodes = await Promise.all(
+        detailWithoutQrCode.installmentPayment.installments.map(
+          async (installment) => {
+            return await this.qrCodeSubservice.createQrCode(
+              installment.qrCodeArgs!,
+            )
+          },
+        ),
+      )
+      delete detailWithoutQrCode.installmentPayment.installments[0].qrCodeArgs
+      delete detailWithoutQrCode.installmentPayment.installments[1].qrCodeArgs
+      delete detailWithoutQrCode.installmentPayment.installments[2].qrCodeArgs
+    }
+
+    const installmentPayment: InstallmentPaymentDetail = {
+      ...detailWithoutQrCode.installmentPayment,
+      installments: detailWithoutQrCode.installmentPayment.installments
+        ? [
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[0],
+              qrCode: installmentsQrCodes?.[0],
+            },
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[1],
+              qrCode: installmentsQrCodes?.[1],
+            },
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[2],
+              qrCode: installmentsQrCodes?.[2],
+            },
+          ]
+        : undefined,
+    }
+
+    return {...detailWithoutQrCode, oneTimePayment, installmentPayment}
   }
 }

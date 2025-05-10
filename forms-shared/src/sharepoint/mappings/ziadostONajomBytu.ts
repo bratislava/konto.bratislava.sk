@@ -6,11 +6,11 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   MenoZiadatela: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.meno',
+    info: 'ziadatelZiadatelka.osobneUdaje.meno',
   },
   PriezviskoZiadatela: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.priezvisko',
+    info: 'ziadatelZiadatelka.osobneUdaje.priezvisko',
   },
   DatumNarodenia: {
     type: 'json_path',
@@ -30,11 +30,11 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   TrvalyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mesto',
   },
   TrvalyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.psc',
   },
   SkutocnyPobytUlica: {
     type: 'json_path',
@@ -42,15 +42,19 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
   },
   SkutocnyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mesto',
   },
   SkutocnyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.psc',
   },
   PreferovanaVelkost: {
     type: 'json_path',
     info: 'ineOkolnosti.preferovanaVelkost',
+  },
+  MaPreferovanuLokalitu: {
+    type: 'json_path',
+    info: 'ineOkolnosti.maPreferovanuLokalitu',
   },
   PreferovanaLokalita: {
     type: 'json_path',
@@ -64,6 +68,18 @@ const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapValue> =
     type: 'json_path',
     info: 'ziadatelZiadatelka.osobneUdaje.kontaktovanyEmailom',
   },
+  TzpPreukaz: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.zdravotnyStav.tzpPreukaz',
+  },
+  MieraFunkcnejPoruchy: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.zdravotnyStav.mieraFunkcnejPoruchy',
+  },
+  MenoDrzitelaTzp: {
+    type: 'json_path',
+    info: 'ziadatelZiadatelka.zdravotnyStav.menoDrzitelaTzp',
+  },
 }
 
 const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> = {
@@ -76,11 +92,11 @@ const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> 
   },
   Meno: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.meno',
+    info: 'ziadatelZiadatelka.osobneUdaje.meno',
   },
   Priezvisko: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.menoPriezvisko.priezvisko',
+    info: 'ziadatelZiadatelka.osobneUdaje.priezvisko',
   },
   RodnePriezvisko: {
     type: 'json_path',
@@ -112,11 +128,11 @@ const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> 
   },
   TrvalyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mesto',
   },
   TrvalyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.psc',
   },
   TrvalyPobytVlastnikNehnutelnosti: {
     type: 'json_path',
@@ -140,11 +156,11 @@ const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> 
   },
   SkutocnyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mesto',
   },
   SkutocnyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc',
+    info: 'ziadatelZiadatelka.osobneUdaje.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.psc',
   },
   ZamestnaniePrijem: {
     type: 'json_path',
@@ -169,14 +185,6 @@ const columnMapNajomneByvanieZiadatel: Record<string, SharepointColumnMapValue> 
   InePrijmyVyska: {
     type: 'json_path',
     info: 'ziadatelZiadatelka.prijem.inePrijmyVyska',
-  },
-  TzpPreukaz: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.tzpPreukaz',
-  },
-  MieraFunkcnejPoruchy: {
-    type: 'json_path',
-    info: 'ziadatelZiadatelka.zdravotnyStav.mieraFunkcnejPoruchy',
   },
   ChronickeOchorenie: {
     type: 'json_path',
@@ -238,11 +246,11 @@ const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapVal
   },
   Meno: {
     type: 'json_path',
-    info: 'osobneUdaje.menoPriezvisko.meno',
+    info: 'osobneUdaje.meno',
   },
   Priezvisko: {
     type: 'json_path',
-    info: 'osobneUdaje.menoPriezvisko.priezvisko',
+    info: 'osobneUdaje.priezvisko',
   },
   DatumNarodenia: {
     type: 'json_path',
@@ -284,14 +292,6 @@ const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapVal
     type: 'json_path',
     info: 'prijem.prijemVyska',
   },
-  TzpPreukaz: {
-    type: 'json_path',
-    info: 'zdravotnyStav.tzpPreukaz',
-  },
-  MieraFunkcnejPoruchy: {
-    type: 'json_path',
-    info: 'zdravotnyStav.mieraFunkcnejPoruchy',
-  },
   ChronickeOchorenie: {
     type: 'json_path',
     info: 'zdravotnyStav.chronickeOchorenie',
@@ -308,11 +308,11 @@ const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumn
   },
   Meno: {
     type: 'json_path',
-    info: 'osobneUdaje.menoPriezvisko.meno',
+    info: 'osobneUdaje.meno',
   },
   Priezvisko: {
     type: 'json_path',
-    info: 'osobneUdaje.menoPriezvisko.priezvisko',
+    info: 'osobneUdaje.priezvisko',
   },
   DatumNarodenia: {
     type: 'json_path',
@@ -362,14 +362,6 @@ const defaultColumnMapNajomneByvanieIniClenovia: Record<string, SharepointColumn
     type: 'json_path',
     info: 'prijem.inePrijmyVyska',
   },
-  TzpPreukaz: {
-    type: 'json_path',
-    info: 'zdravotnyStav.tzpPreukaz',
-  },
-  MieraFunkcnejPoruchy: {
-    type: 'json_path',
-    info: 'zdravotnyStav.mieraFunkcnejPoruchy',
-  },
   ChronickeOchorenie: {
     type: 'json_path',
     info: 'zdravotnyStav.chronickeOchorenie',
@@ -393,11 +385,11 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
     },
     Meno: {
       type: 'json_path',
-      info: `${prefix}.osobneUdaje.menoPriezvisko.meno`,
+      info: `${prefix}.osobneUdaje.meno`,
     },
     Priezvisko: {
       type: 'json_path',
-      info: `${prefix}.osobneUdaje.menoPriezvisko.priezvisko`,
+      info: `${prefix}.osobneUdaje.priezvisko`,
     },
     RodnePriezvisko: {
       type: 'json_path',
@@ -421,11 +413,11 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
     },
     SkutocnyPobytMesto: {
       type: 'json_path',
-      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.mestoPsc.mesto`,
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.mesto`,
     },
     SkutocnyPobytPsc: {
       type: 'json_path',
-      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.mestoPsc.psc`,
+      info: `${prefix}.osobneUdaje.adresaSkutocnehoPobytu.psc`,
     },
     VlastnikNehnutelnosti: {
       type: 'json_path',
@@ -454,14 +446,6 @@ const getDefaultColumnMapNajomneByvanieDruhDruzkaManzelManzelka = (
     InePrijmyVyska: {
       type: 'json_path',
       info: `${prefix}.prijem.inePrijmyVyska`,
-    },
-    TzpPreukaz: {
-      type: 'json_path',
-      info: `${prefix}.zdravotnyStav.tzpPreukaz`,
-    },
-    MieraFunkcnejPoruchy: {
-      type: 'json_path',
-      info: `${prefix}.zdravotnyStav.mieraFunkcnejPoruchy`,
     },
     ChronickeOchorenie: {
       type: 'json_path',

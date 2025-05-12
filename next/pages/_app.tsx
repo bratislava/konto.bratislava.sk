@@ -1,7 +1,5 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
-// initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
-import '../frontend/utils/logger'
 // configure Amplify
 import '../frontend/utils/amplifyConfig'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -25,6 +23,7 @@ import { useEffectOnce } from 'usehooks-ts'
 import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyClient'
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -53,8 +52,10 @@ const AmplifyCookiesReset = () => {
         '[AUTH] Tried to remove Amplify cookies more than once, infinite loop detected.',
       )
     } else {
+      logger.info(`[AUTH] Removing all Amplify cookies and clearing local storage`)
       sessionStorage.setItem(amplifyCookiesRemovedSessionStorageKey, 'true')
       removeAllCookiesAndClearLocalStorage()
+      logger.info(`[AUTH] Reloading page after cookie cleanup`)
       router.reload()
     }
   })
@@ -69,6 +70,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
 
   useEffectOnce(() => {
     if (!amplifyResetCookies) {
+      logger.info(`[AUTH] Resetting Amplify cookies removal flag in session storage`)
       sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
     }
   })

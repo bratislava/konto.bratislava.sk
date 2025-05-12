@@ -1,4 +1,4 @@
-import { TaxPaidStatusEnum } from 'src/tax/dtos/requests.tax.dto'
+import { TaxPaidStatusEnum } from '../../dtos/response.tax.dto'
 import { TaxInstallment } from '@prisma/client'
 
 export const getTaxStatus = (

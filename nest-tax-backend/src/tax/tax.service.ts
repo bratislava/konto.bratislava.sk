@@ -24,7 +24,7 @@ import {
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import dayjs from 'dayjs'
-import { get_tax_detail } from './utils/unified-tax.util'
+import { getTaxDetailWithoutQrAndUrl } from './utils/unified-tax.util'
 
 @Injectable()
 export class TaxService {
@@ -202,13 +202,6 @@ export class TaxService {
   }
 
   async getTaxDetail(birthNumber: string): Promise<TaxSummaryDetail> {
-    if (!birthNumber) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
-      )
-    }
-
     const today = dayjs().tz('Europe/Bratislava')
     const currentYear = today.year()
 
@@ -234,22 +227,9 @@ export class TaxService {
       )
     }
 
-    const taxPaymentSum = await this.prisma.taxPayment.aggregate({
-      where: {
-        taxId: tax.id,
-        status: PaymentStatus.SUCCESS,
-      },
-      _sum: {
-        amount: true,
-      },
-    })
+    const overallPaidTax = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
-    const overallPaidTax = taxPaymentSum._sum.amount || 0
-
-    const installmentsValid = 'TODO'
-
-    // TODO dateOfValidity
-    const detailWithoutQrCode = get_tax_detail(
+    const detailWithoutQrCode = getTaxDetailWithoutQrAndUrl(
       overallPaidTax,
       currentYear,
       today.toDate(),
@@ -308,6 +288,6 @@ export class TaxService {
         : undefined,
     }
 
-    return {...detailWithoutQrCode, oneTimePayment, installmentPayment}
+    return { ...detailWithoutQrCode, oneTimePayment, installmentPayment }
   }
 }

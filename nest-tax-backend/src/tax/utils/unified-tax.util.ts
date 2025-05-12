@@ -1,6 +1,13 @@
 import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import {
+  InstallmentPaymentReasonNotPossibleEnum,
+  OneTimePaymentTypeEnum,
+  TaxPaidStatusEnum,
+} from '../dtos/response.tax.dto'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { CustomErrorTaxTypesEnum, CustomErrorTaxTypesResponseEnum } from '../dtos/error.dto'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -44,6 +51,7 @@ const getNextWorkingDay = (date: Dayjs): Dayjs => {
 }
 
 const calculateDueDate = (dateOfValidity: Date | null) => {
+  // We will not provide due date if date of validity for the first payment is not set.
   if (!dateOfValidity) return undefined
 
   const dueDateBase = dayjs(dateOfValidity).add(20, 'day')
@@ -55,9 +63,7 @@ const calculateDueDate = (dateOfValidity: Date | null) => {
 const calculateInstallmentAmounts = (
   installments: { order: string | null; amount: number }[],
   overallPaid: number,
-):
-  | { toPay: number; paid: number; status: 'PAID' | 'UNPAID' | 'PARTIAL' }[]
-  | null => {
+): { toPay: number; paid: number; status: TaxPaidStatusEnum }[] => {
   const amounts = [1, 2, 3].map(
     (order) =>
       installments.find((installment) => installment.order === order.toString())
@@ -65,7 +71,10 @@ const calculateInstallmentAmounts = (
   )
 
   if (!amounts.every((amount) => amount !== undefined)) {
-    return null
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+      CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+    )
   }
 
   let remainingPaid = overallPaid
@@ -76,20 +85,24 @@ const calculateInstallmentAmounts = (
     remainingPaid -= paid
 
     const status =
-      toPay === 0 ? 'PAID' : toPay === amount ? 'UNPAID' : 'PARTIAL'
+      toPay === 0
+        ? TaxPaidStatusEnum.PAID
+        : toPay === amount
+          ? TaxPaidStatusEnum.NOT_PAID
+          : TaxPaidStatusEnum.PARTIALLY_PAID
 
     return { toPay, paid, status }
   })
 }
 
-type InstallmentPaymentDetailWithQrCodeArgs = {
+type InstallmentPaymentDetailWithQrCodeAndUrlArgs = {
   isPossible: boolean
-  reasonNotPossible?: 'BELOW_THRESHOLD' | 'AFTER_DATE'
+  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
   installments?: [
     {
       installmentNumber: 1
       dueDate?: Date
-      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      status: TaxPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
@@ -102,7 +115,7 @@ type InstallmentPaymentDetailWithQrCodeArgs = {
     {
       installmentNumber: 2
       dueDate: Date
-      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      status: TaxPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
@@ -115,7 +128,7 @@ type InstallmentPaymentDetailWithQrCodeArgs = {
     {
       installmentNumber: 3
       dueDate: Date
-      status: 'PAID' | 'UNPAID' | 'PARTIAL'
+      status: TaxPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
@@ -128,31 +141,31 @@ type InstallmentPaymentDetailWithQrCodeArgs = {
   ]
 }
 
-type OneTimePaymentDetailsWithQrCodeArgs = {
+type OneTimePaymentDetailsWithQrCodeAndUrlArgs = {
   isPossible: boolean
-  type?: 'ONE_TIME_PAYMENT' | 'REMAINING_AMOUNT_PAYMENT'
-  reasonNotPossible?: 'ALREADY_PAID'
+  type?: OneTimePaymentTypeEnum
+  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID
   amount?: number
+  dueDate?: Date
   qrCodeArgs?: {
     amount: number
     variableSymbol: string
     specificSymbol: string
   }
   variableSymbol?: string
-  paymentGatewayLink?: string
 }
 
 // Modified version of TaxSummaryDetail with qrCodeArgs instead of qrCode
-type TaxSummaryDetailWithQrCodeArgs = {
+type TaxSummaryDetailWithQrCodeAndUrlArgs = {
   overallPaid: number
   overallBalance: number
   overallOverpayment: number
   overallAmount: number
-  oneTimePayment: OneTimePaymentDetailsWithQrCodeArgs
-  installmentPayment: InstallmentPaymentDetailWithQrCodeArgs
+  oneTimePayment: OneTimePaymentDetailsWithQrCodeAndUrlArgs
+  installmentPayment: InstallmentPaymentDetailWithQrCodeAndUrlArgs
 }
 
-export const get_tax_detail = (
+export const getTaxDetailWithoutQrAndUrl = (
   overallPaid: number, // zaplatená suma
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
@@ -161,27 +174,32 @@ export const get_tax_detail = (
   variableSymbol: string,
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
-): TaxSummaryDetailWithQrCodeArgs => {
+): TaxSummaryDetailWithQrCodeAndUrlArgs => {
   const overallBalance =
     overallAmount - overallPaid > 0 ? overallAmount - overallPaid : 0
 
   const overallOverpayment =
     overallPaid - overallAmount > 0 ? overallPaid - overallAmount : 0
 
-  const oneTimePayment: OneTimePaymentDetailsWithQrCodeArgs = {
+  const dueDate = calculateDueDate(dateOfValidity)
+
+  const oneTimePayment: OneTimePaymentDetailsWithQrCodeAndUrlArgs = {
     isPossible: true,
-    type: overallPaid > 0 ? 'REMAINING_AMOUNT_PAYMENT' : 'ONE_TIME_PAYMENT',
+    type:
+      overallPaid > 0
+        ? OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+        : OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT,
     amount: overallBalance,
+    dueDate: dueDate,
     qrCodeArgs: {
       amount: overallBalance,
       variableSymbol: variableSymbol,
       specificSymbol: '2024200000',
     },
-    variableSymbol: 'TODO',
-    paymentGatewayLink: 'TODO',
+    variableSymbol,
   }
 
-  const installmentPayment: InstallmentPaymentDetailWithQrCodeArgs = {
+  const installmentPayment: InstallmentPaymentDetailWithQrCodeAndUrlArgs = {
     isPossible: false,
   }
 
@@ -193,13 +211,12 @@ export const get_tax_detail = (
   )
 
   if (today < novemberFirst) {
-    installmentPayment.reasonNotPossible = 'AFTER_DATE'
+    installmentPayment.reasonNotPossible =
+      InstallmentPaymentReasonNotPossibleEnum.AFTER_DATE
   }
   if (overallBalance > 6600) {
-    installmentPayment.reasonNotPossible = 'BELOW_THRESHOLD'
-  }
-  if (installmentAmounts === null) {
-    throw new Error('Installments invalid') // TODO better error
+    installmentPayment.reasonNotPossible =
+      InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD
   } else {
     const fistPaymentDueDate = calculateDueDate(dateOfValidity)
 
@@ -213,7 +230,6 @@ export const get_tax_detail = (
         remainingAmount: installmentAmounts[0].toPay,
         variableSymbol,
         qrCodeArgs: {
-          // TODO: placeholder
           amount: installmentAmounts[0].toPay,
           variableSymbol: variableSymbol,
           specificSymbol: '2024200000',

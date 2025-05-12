@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
 import { PrismaService } from '../../../prisma/prisma.service'
 import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
@@ -16,6 +17,7 @@ import {
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../../../bloomreach/bloomreach.service'
+import { UserErrorsEnum, UserErrorsResponseEnum } from '../../../user/user.error.enum'
 
 @Injectable()
 export class DatabaseSubserviceUser {
@@ -23,7 +25,8 @@ export class DatabaseSubserviceUser {
 
   constructor(
     private prisma: PrismaService,
-    private bloomreachService: BloomreachService
+    private bloomreachService: BloomreachService,
+    private throwerErrorGuard: ThrowerErrorGuard
   ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
@@ -88,7 +91,7 @@ export class DatabaseSubserviceUser {
           email: email,
         },
       })
-      this.changeUserGdprData(user.id, [
+      await this.changeUserGdprData(user.id, [
         {
           type: GdprType.LICENSE,
           category: GdprCategory.ESBS,
@@ -242,7 +245,7 @@ export class DatabaseSubserviceUser {
       //   },
       // })
     }
-    this.changeUserGdprData(userId, data)
+    await this.changeUserGdprData(userId, data)
     return data
   }
 
@@ -382,7 +385,10 @@ export class DatabaseSubserviceUser {
       where: { id: userId },
     })
     if (!user) {
-      return
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
     await this.prisma.userGdprData.createMany({
       data: gdprData.map((elem) => ({
@@ -412,7 +418,10 @@ export class DatabaseSubserviceUser {
       where: { id: legalPersonId },
     })
     if (!legalPerson) {
-      return
+      throw this.throwerErrorGuard.NotFoundException(
+        UserErrorsEnum.USER_NOT_FOUND,
+        UserErrorsResponseEnum.USER_NOT_FOUND
+      )
     }
     await this.prisma.legalPersonGdprData.createMany({
       data: gdprData.map((elem) => ({

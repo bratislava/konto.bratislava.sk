@@ -7,17 +7,10 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
 import { Response } from 'express'
 
@@ -27,13 +20,6 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  EmptyFormDataErrorDto,
-  FormDefinitionNotFoundErrorDto,
-  FormDefinitionNotSupportedTypeErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
 import { User } from '../utils/decorators/request.decorator'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
@@ -43,14 +29,6 @@ import {
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
-import {
-  IncompatibleJsonVersionErrorDto,
-  InvalidJsonErrorDto,
-  InvalidXmlErrorDto,
-  PdfGenerationFailedErrorDto,
-  WrongPospIdErrorDto,
-  XmlDoesntMatchSchemaErrorDto,
-} from './errors/convert.errors.dto'
 
 @ApiTags('convert')
 @ApiBearerAuth()
@@ -70,32 +48,6 @@ export default class ConvertController {
   @ApiOkResponse({
     description: 'Return XML form',
     type: String,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description:
-      'Got wrong type of form definition for its slug or empty form data.',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormDefinitionNotSupportedTypeErrorDto) },
-        { $ref: getSchemaPath(EmptyFormDataErrorDto) },
-      ],
-    },
   })
   @UseGuards(new CognitoGuard(true))
   @Post('json-to-xml-v2')
@@ -127,45 +79,6 @@ export default class ConvertController {
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
   })
-  @ApiExtraModels(InvalidXmlErrorDto)
-  @ApiExtraModels(XmlDoesntMatchSchemaErrorDto)
-  @ApiExtraModels(WrongPospIdErrorDto)
-  @ApiExtraModels(InvalidJsonErrorDto)
-  @ApiExtraModels(IncompatibleJsonVersionErrorDto)
-  @ApiBadRequestResponse({
-    description: 'There was an error during converting to json.',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(InvalidXmlErrorDto) },
-        { $ref: getSchemaPath(XmlDoesntMatchSchemaErrorDto) },
-        { $ref: getSchemaPath(WrongPospIdErrorDto) },
-        { $ref: getSchemaPath(InvalidJsonErrorDto) },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    description:
-      'Form definition type is wrong or JSON version is incompatible',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormDefinitionNotSupportedTypeErrorDto) },
-        { $ref: getSchemaPath(IncompatibleJsonVersionErrorDto) },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
   @UseGuards(new CognitoGuard(true))
   @Post('xml-to-json')
   async convertXmlToJson(
@@ -183,31 +96,6 @@ export default class ConvertController {
   @ApiOperation({
     summary: '',
     description: 'Generates PDF for given form data.',
-  })
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Form or form definition not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is owned by someone else, the access is not granted.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Empty form data.',
-    type: EmptyFormDataErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'There was an error during generating tax pdf.',
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'There was an error during generating pdf.',
-    type: PdfGenerationFailedErrorDto,
   })
   @ApiOkResponse({
     description: 'Return pdf file stream.',

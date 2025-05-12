@@ -89,7 +89,6 @@ This endpoint does not have any parameters.
 | Status code | Description         | Response headers |
 | ----------- | ------------------- | ---------------- |
 | **200**     | Generated JWT token | -                |
-| **401**     | Unauthorized.       | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

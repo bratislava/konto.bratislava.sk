@@ -13,24 +13,13 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import {
-  ApiBadRequestResponse,
   ApiBasicAuth,
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiGoneResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotAcceptableResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiPayloadTooLargeResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
 import { Response } from 'express'
 import { contentType } from 'mime-types'
@@ -42,100 +31,27 @@ import {
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  FormDefinitionNotFoundErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
-import {
-  FileAlreadyProcessedErrorDto,
-  FileInScannerNotFoundErrorDto,
-  FileSizeTooLargeErrorDto,
-  FileWrongParamsErrorDto,
-  ProblemWithScannerErrorDto,
-} from '../scanner-client/scanner-client.errors.dto'
 import { User } from '../utils/decorators/request.decorator'
-import {
-  BadRequestDecoratorErrorDto,
-  DatabaseErrorDto,
-  SimpleBadRequestErrorDto,
-  UnauthorizedErrorDto,
-} from '../utils/global-dtos/errors.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BufferedFileDto,
   DownloadTokenResponseDataDto,
   FormDataFileDto,
-  GetFileResponseDto,
   GetFileResponseReducedDto,
   PostFileResponseDto,
   UpdateFileStatusRequestDto,
   UpdateFileStatusResponseDto,
 } from './files.dto'
-import {
-  FileByScannerIdNotFoundErrorDto,
-  FileHasUnsupportedMimeTypeErrorDto,
-  FileIdAlreadyExistsErrorDto,
-  FileIsOwnedBySomeoneElseErrorDto,
-  FileNotFoundErrorDto,
-  FileSizeExceededErrorDto,
-  FileSizeZeroErrorDto,
-  FileUploadToMinioWasNotSuccessfulErrorDto,
-  FileWrongStatusNotAcceptedErrorDto,
-  InvalidJwtTokenErrorDto,
-  InvalidOrExpiredJwtTokenErrorDto,
-  NoFileIdInJwtErrorDto,
-  NoFileUploadDataErrorDto,
-  ScannerNoResponseErrorDto,
-} from './files.errors.dto'
 import FilesService from './files.service'
 
 @ApiTags('Files')
 @ApiBearerAuth()
-@ApiUnauthorizedResponse({
-  description: 'Unauthorized.',
-  type: UnauthorizedErrorDto,
-})
 @Controller('files')
 export default class FilesController {
   private readonly logger: LineLoggerSubservice
 
   constructor(private readonly filesService: FilesService) {
     this.logger = new LineLoggerSubservice('FilesController')
-  }
-
-  @ApiOperation({
-    summary: 'Get file by fileId',
-    description: 'You get all file info based on fileId.',
-  })
-  @ApiOkResponse({
-    description: 'Status of file',
-    type: GetFileResponseDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Forbidden.',
-    type: FileIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'File not found.',
-    type: FileNotFoundErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    type: DatabaseErrorDto,
-  })
-  @UseGuards(new CognitoGuard(true))
-  @Get(':fileId')
-  getFile(
-    @Param('fileId') fileId: string,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
-  ): Promise<GetFileResponseDto> {
-    return this.filesService.getFileWithUserVerify(
-      fileId,
-      userInfo?.ico ?? null,
-      user,
-    )
   }
 
   @ApiOperation({
@@ -147,18 +63,6 @@ export default class FilesController {
     description: 'List of files and their statuses',
     type: GetFileResponseReducedDto,
     isArray: true,
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is Forbidden.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Form not found.',
-    type: FormNotFoundErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    type: DatabaseErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Get('forms/:formId')
@@ -180,18 +84,6 @@ export default class FilesController {
     description: 'Successfully updated file status',
     type: UpdateFileStatusResponseDto,
   })
-  @ApiNotFoundResponse({
-    description: 'File or bucket not found.',
-    type: FileByScannerIdNotFoundErrorDto,
-  })
-  @ApiNotAcceptableResponse({
-    description: 'File status is not acceptable.',
-    type: FileWrongStatusNotAcceptedErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error.',
-    type: DatabaseErrorDto,
-  })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
   @Patch('scan/:scannerId')
@@ -209,6 +101,9 @@ export default class FilesController {
     summary: 'Upload file to form',
     description: 'You can upload file to form. ',
   })
+  @ApiOkResponse({
+    type: PostFileResponseDto,
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -225,92 +120,6 @@ export default class FilesController {
           type: 'string',
         },
       },
-    },
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(FileInScannerNotFoundErrorDto)
-  @ApiExtraModels(FileWrongParamsErrorDto)
-  @ApiExtraModels(ProblemWithScannerErrorDto)
-  @ApiExtraModels(NoFileUploadDataErrorDto)
-  @ApiExtraModels(BadRequestDecoratorErrorDto)
-  @ApiExtraModels(FileHasUnsupportedMimeTypeErrorDto)
-  @ApiExtraModels(FileSizeExceededErrorDto)
-  @ApiExtraModels(FileSizeZeroErrorDto)
-  @ApiExtraModels(ScannerNoResponseErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(NoFileUploadDataErrorDto),
-        },
-        {
-          $ref: getSchemaPath(BadRequestDecoratorErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileWrongParamsErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileHasUnsupportedMimeTypeErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileSizeExceededErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileSizeZeroErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FileInScannerNotFoundErrorDto),
-        },
-        {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiNotAcceptableResponse({
-    description: 'File id already exists.',
-    type: FileIdAlreadyExistsErrorDto,
-  })
-  @ApiGoneResponse({
-    description: 'File is already scanned.',
-    type: FileAlreadyProcessedErrorDto,
-  })
-  @ApiPayloadTooLargeResponse({
-    description: 'File is too large.',
-    type: FileSizeTooLargeErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Unprocessable Entity',
-    type: FileUploadToMinioWasNotSuccessfulErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(DatabaseErrorDto),
-        },
-        {
-          $ref: getSchemaPath(ProblemWithScannerErrorDto),
-        },
-        {
-          $ref: getSchemaPath(ScannerNoResponseErrorDto),
-        },
-      ],
     },
   })
   @UseGuards(new CognitoGuard(true))
@@ -336,14 +145,8 @@ export default class FilesController {
     summary: 'Obtain jwt token form file download',
     description: 'To be able to download file you need to obtain jwt token. ',
   })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiNotFoundResponse({
-    description: 'File not found',
-    type: FileNotFoundErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    type: DatabaseErrorDto,
+  @ApiOkResponse({
+    type: DownloadTokenResponseDataDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Get('download/jwt/:fileId')
@@ -364,39 +167,6 @@ export default class FilesController {
     content: {
       'application/octet-stream': {},
     },
-  })
-  @ApiExtraModels(DatabaseErrorDto)
-  @ApiExtraModels(InvalidJwtTokenErrorDto)
-  @ApiExtraModels(FileNotFoundErrorDto)
-  @ApiExtraModels(NoFileIdInJwtErrorDto)
-  @ApiExtraModels(SimpleBadRequestErrorDto)
-  @ApiBadRequestResponse({
-    description: 'Bad request error.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(SimpleBadRequestErrorDto),
-        },
-        {
-          $ref: getSchemaPath(InvalidJwtTokenErrorDto),
-        },
-        {
-          $ref: getSchemaPath(NoFileIdInJwtErrorDto),
-        },
-      ],
-    },
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized error - invalid or expired jwt token.',
-    type: InvalidOrExpiredJwtTokenErrorDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found error.',
-    type: FileNotFoundErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal server error, usually database connected.',
-    type: DatabaseErrorDto,
   })
   @Get('download/file/:jwtToken')
   async downloadFile(

@@ -2,18 +2,14 @@ import { IncomingHttpHeaders } from 'node:http'
 
 import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
-  ApiExtraModels,
   ApiOkResponse,
   ApiOperation,
   ApiSecurity,
   ApiTags,
-  ApiUnauthorizedResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
 
 import AdminGuard from '../auth/guards/admin.guard'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
-import { UnauthorizedErrorDto } from '../utils/global-dtos/errors.dto'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
@@ -63,17 +59,6 @@ export default class AdminController {
   @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
-  })
-  @ApiExtraModels(UnauthorizedErrorDto)
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnauthorizedErrorDto),
-        },
-      ],
-    },
   })
   @UseGuards(AdminGuard)
   @Get('eid-jwt')

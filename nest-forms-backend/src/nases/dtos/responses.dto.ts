@@ -7,22 +7,6 @@ export interface NasesSendResponse {
   data: unknown
 }
 
-export class CanSendResponseDto {
-  @ApiProperty({
-    description: 'True if given form can be sent to Nases.',
-    default: true,
-  })
-  @IsBoolean()
-  canSend: boolean
-
-  @ApiProperty({
-    description: 'ID of form',
-    default: '133e0473-44da-407a-b24f-12da343e808d',
-  })
-  @IsUUID()
-  formId: string
-}
-
 export class MigrateFormResponseDto {
   @ApiProperty({
     description: 'ID of form',

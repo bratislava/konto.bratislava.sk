@@ -28,14 +28,6 @@ export function isValid(resource: unknown): boolean {
 
 export const isDefined = (a: unknown): boolean => a !== undefined
 
-// function which checks if string is in base64 format
-export function isBase64(str: string): boolean {
-  const base64regex =
-    // eslint-disable-next-line security/detect-unsafe-regex
-    /^([\d+/A-Za-z]{4})*(([\d+/A-Za-z]{2}==)|([\d+/A-Za-z]{3}=))?$/
-  return base64regex.test(str)
-}
-
 // check if scan status is valid
 export function isValidScanStatus(status: string): boolean {
   return Object.values(FileStatus).includes(status as FileStatus)
@@ -49,8 +41,4 @@ export function isProcessingScanStatus(status: string): boolean {
 // return list of statuses in string
 export function listOfStatuses(): string {
   return Object.values(FileStatus).toString()
-}
-
-export function removeXMLWhitespace(xml: string): string {
-  return xml.replaceAll(/>\s+</g, '><')
 }

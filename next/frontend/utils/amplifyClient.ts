@@ -14,9 +14,28 @@ export const removeAllCookiesAndClearLocalStorage = () => {
     if (cookieName !== 'gdpr-consents') {
       // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+      logger.info(`[AUTH] Removed cookie: ${cookieName}`)
     }
   })
   localStorage.clear()
+}
+
+/**
+ * Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+ *
+ * Removes guest identity cookie, Amplify should remove it after successful sign in but does not.
+ */
+export const removeAmplifyGuestIdentityIdCookies = () => {
+  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
+  cookies.forEach((cookie) => {
+    const cookieName = cookie.split('=')[0]
+
+    if (cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')) {
+      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+      logger.info(`[AUTH] Removed Cognito identity cookie: ${cookieName}`)
+    }
+  })
 }
 
 export const useSignOut = () => {

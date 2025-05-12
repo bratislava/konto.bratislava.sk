@@ -16,7 +16,7 @@ export const amplifyConfig: ResourcesConfig = {
       signUpVerificationMethod: 'code', // 'code' | 'link'
       // `Guest access` must be enabled in `Identity pools` in Amplify Console, otherwise the whole application will
       // stop working.
-      // allowGuestAccess: true,
+      allowGuestAccess: true,
     },
   },
 }

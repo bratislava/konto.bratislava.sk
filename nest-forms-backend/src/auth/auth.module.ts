@@ -7,22 +7,18 @@ import AuthController from './auth.controller'
 import AuthService from './auth.service'
 import UserInfoPipeModule from './decorators/user-info-pipe.module'
 import BasicGuard from './guards/auth-basic.guard'
-import NasesAuthGuard from './guards/nases.guard'
 import AdminStrategy from './strategies/admin.strategy'
 import BasicStrategy from './strategies/auth-basic.strategy'
 import CognitoStrategy from './strategies/cognito.strategy'
-import NasesStrategy from './strategies/nases.strategy'
 
 @Module({
   imports: [PassportModule, NasesModule, UserInfoPipeModule],
   providers: [
     CognitoStrategy,
     AuthService,
-    NasesStrategy,
     BasicStrategy,
     ThrowerErrorGuard,
     BasicGuard,
-    NasesAuthGuard,
     AdminStrategy,
   ],
   exports: [AuthService],

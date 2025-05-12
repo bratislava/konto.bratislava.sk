@@ -46,13 +46,9 @@ const { status, data } = await apiInstance.signerControllerGetSignerData(signerD
 
 ### HTTP response details
 
-| Status code | Description                                     | Response headers |
-| ----------- | ----------------------------------------------- | ---------------- |
-| **200**     | Return signer data                              | -                |
-| **201**     |                                                 | -                |
-| **400**     | XML validation failed against XSD schema.       | -                |
-| **403**     | Form is owned by someone else.                  | -                |
-| **404**     | Form or form definition was not found           | -                |
-| **422**     | Got wrong type of form definition for its slug. | -                |
+| Status code | Description        | Response headers |
+| ----------- | ------------------ | ---------------- |
+| **200**     | Return signer data | -                |
+| **201**     |                    | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

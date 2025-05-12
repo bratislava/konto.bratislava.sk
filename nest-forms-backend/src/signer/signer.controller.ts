@@ -1,15 +1,9 @@
 import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
 
 import {
@@ -18,15 +12,8 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  FormDefinitionNotFoundErrorDto,
-  FormDefinitionNotSupportedTypeErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
 import { User } from '../utils/decorators/request.decorator'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
-import { XmlValidationErrorDto } from './signer.errors.dto'
 import SignerService from './signer.service'
 
 @ApiTags('Signer')
@@ -47,30 +34,6 @@ export default class SignerController {
   @ApiOkResponse({
     description: 'Return signer data',
     type: SignerDataResponseDto,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(XmlValidationErrorDto)
-  @ApiNotFoundResponse({
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
-  })
-  @ApiBadRequestResponse({
-    description: 'XML validation failed against XSD schema.',
-    type: XmlValidationErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('get-signer-data')

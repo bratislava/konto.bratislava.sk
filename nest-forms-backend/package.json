@@ -21,9 +21,6 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config test/jest-e2e.json",
-    "test:send-form": "jest --config test/jest-send-form.json",
-    "test:generate-pdf": "jest --config test/jest-generate-pdf.json",
     "vulnerabilities": "npm audit --audit-level=high --registry=https://registry.npmjs.org",
     "update-rjsf": "npm install @rjsf/utils@latest --save-exact"
   },
@@ -65,7 +62,6 @@
     "playwright": "1.52.0",
     "reflect-metadata": "0.2.2",
     "rimraf": "^6.0.1",
-    "rodnecislo": "^1.6.0",
     "uuid": "11.1.0",
     "xml2js": "^0.6.2"
   },
@@ -84,11 +80,9 @@
     "@types/passport-http": "^0.3.11",
     "@types/passport-http-bearer": "^1.0.41",
     "@types/passport-jwt": "^4.0.1",
-    "@types/traverse": "^0.6.37",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "clear": "^0.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-adjunct": "^4.13.0",
@@ -127,44 +121,13 @@
     "jest": "29.7.0",
     "jest-mock-extended": "^3.0.7",
     "minio": "^8.0.5",
-    "path": "^0.12.7",
     "prettier": "^3.5.2",
     "prisma": "6.7.0",
     "prisma-json-types-generator": "3.4.1",
     "ts-jest": "29.3.2",
-    "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.8.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s",
-      "!**/*.dto.ts",
-      "!**/*.module.ts",
-      "!**/*.enum.ts"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/../test/singleton.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/nases/__tests__"
-    ],
-    "moduleNameMapper": {
-      "^react-markdown$": "<rootDir>/../test/react-markdown-mock.js"
-    }
   },
   "volta": {
     "node": "20.9.0",

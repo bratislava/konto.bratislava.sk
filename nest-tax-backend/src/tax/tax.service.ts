@@ -37,8 +37,7 @@ export class TaxService {
   ) {}
 
   private async getAmountAlreadyPaidByTaxId(id: number) {
-    const taxPayment = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
+    const taxPayment = await this.prisma.taxPayment.aggregate({
       where: {
         taxId: id,
         status: PaymentStatus.SUCCESS,
@@ -48,11 +47,7 @@ export class TaxService {
       },
     })
 
-    let total = 0
-    if (taxPayment.length === 1) { // length can only be 0 or 1
-      total = taxPayment[0]._sum.amount || 0
-    }
-    return total
+    return taxPayment._sum.amount || 0
   }
 
   async getTaxByYear(

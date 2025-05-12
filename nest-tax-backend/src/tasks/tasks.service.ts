@@ -12,6 +12,7 @@ import {
 import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import DatabaseSubservice from '../utils/subservices/database.subservice'
 
 @Injectable()
 export class TasksService {
@@ -22,6 +23,7 @@ export class TasksService {
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
+    private readonly databaseSubservice: DatabaseSubservice,
   ) {
     this.logger = new Logger('TasksService')
   }
@@ -127,6 +129,7 @@ export class TasksService {
       select: {
         id: true,
         variableSymbol: true,
+        year: true,
       },
       where: {
         dateTaxRuling: null,
@@ -160,6 +163,17 @@ export class TasksService {
   @Cron(CronExpression.EVERY_WEEKDAY)
   @HandleErrors('Cron Error')
   async reportCardPayments() {
-    await this.cardPaymentReportingService.generateAndSendPaymentReport()
+    const config = await this.databaseSubservice.getConfigByKeys([
+      'REPORTING_GENERATE_REPORT',
+      'REPORTING_RECIPIENT_EMAIL',
+    ])
+
+    if (!config.REPORTING_GENERATE_REPORT) {
+      return
+    }
+
+    await this.cardPaymentReportingService.generateAndSendPaymentReport(
+      config.REPORTING_RECIPIENT_EMAIL,
+    )
   }
 }

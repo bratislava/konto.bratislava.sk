@@ -1,9 +1,9 @@
+import { fetchAuthSession } from 'aws-amplify/auth'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useCallback, useMemo } from 'react'
 
 import { ROUTES } from '../api/constants'
-import { getAccessToken } from '../utils/amplifyClient'
 import {
   getRedirectUrl,
   getSafeRedirect,
@@ -65,7 +65,7 @@ export const useQueryParamRedirect = () => {
    * Redirects to the URL specified in the redirect query param.
    */
   const redirect = useCallback(async () => {
-    const url = await getRedirectUrl(safeRedirect, getAccessToken)
+    const url = await getRedirectUrl(safeRedirect, fetchAuthSession)
     return router.push(url)
   }, [router, safeRedirect])
 

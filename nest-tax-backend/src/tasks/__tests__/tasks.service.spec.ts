@@ -5,6 +5,7 @@ import { AdminService } from '../../admin/admin.service'
 import { CardPaymentReportingService } from '../../card-payment-reporting/card-payment-reporting.service'
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import { TasksService } from '../tasks.service'
 
 describe('TasksService', () => {
@@ -17,6 +18,10 @@ describe('TasksService', () => {
         ThrowerErrorGuard,
         { provide: AdminService, useValue: createMock<AdminService>() },
         { provide: PrismaService, useValue: createMock<PrismaService>() },
+        {
+          provide: DatabaseSubservice,
+          useValue: createMock<DatabaseSubservice>(),
+        },
         {
           provide: CardPaymentReportingService,
           useValue: createMock<CardPaymentReportingService>(),

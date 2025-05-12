@@ -7,13 +7,14 @@ import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffect
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
 import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()
-  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen, strapiTax } =
-    useTaxFeesSection()
+  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
+  const strapiTax = useStrapiTax()
   const displayTaxAdministratorCard =
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
   const { showEmailCommunicationBanner, channelChangeEffectiveNextYear } = useTaxChannel()

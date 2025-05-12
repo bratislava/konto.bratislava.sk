@@ -4,11 +4,13 @@ import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { CognitoSubservice } from 'src/utils/subservices/cognito.subservice'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
+import ClientsModule from '../clients/clients.module'
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, ClientsModule, UserInfoPipeModule],
   providers: [
     TaxService,
     CognitoSubservice,

@@ -29,7 +29,8 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: false,
     credentials: true,
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    allowedHeaders:
+      'Content-Type, Accept, Authorization, X-Cognito-Guest-Identity-Id',
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(

@@ -11,6 +11,7 @@ import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { ResponseTaxDto } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
@@ -37,7 +38,7 @@ function convertYearToNumber(input: string | undefined) {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
-  async ({ amplifyContextSpec, context, getAccessToken }) => {
+  async ({ amplifyContextSpec, context, fetchAuthSession }) => {
     const year = context.params?.year
     const yearNumber = convertYearToNumber(year)
     if (!yearNumber) {
@@ -47,33 +48,18 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax, taxAdministrator, user] = await Promise.all([
+      const [{ data: taxData }, strapiTax, taxAdministrator] = await Promise.all([
         taxClient.taxControllerGetActualTaxes(yearNumber, {
-          accessToken: 'always',
-          accessTokenSsrGetFn: getAccessToken,
+          authStrategy: 'authOnly',
+          getSsrAuthSession: fetchAuthSession,
         }),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
         getTaxAdministratorForUser(amplifyContextSpec),
-        prefetchUserQuery(queryClient, getAccessToken),
+        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
 
       if (!strapiTax) {
         return { notFound: true }
-      }
-
-      if (!user.birthNumber || !taxData.taxPayer.birthNumber) {
-        // TODO needs close monitoring, I can't tell enough about our tax data yet - but this condition failing may potentially lead to displaying of incorrect tax data
-        throw new Error(
-          `Error (Status-500): User or tax birthnumber is missing! Invalid invariant (not aborting request). user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-        )
-      } else if (
-        // account birthnumbers may be without slashes, the tax one should always have them (but I did not see enough of that data)
-        user.birthNumber.replaceAll('/', '') !== taxData.taxPayer.birthNumber.replaceAll('/', '')
-      ) {
-        // this definitely leads to displaying of incorrect tax data
-        throw new Error(
-          `Tax and user birthnumber does not match! Server error. user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-        )
       }
 
       return {
@@ -115,13 +101,11 @@ const AccountTaxesFeesPage = ({
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSectionProvider
-          taxData={taxData}
-          taxAdministrator={taxAdministrator}
-          strapiTax={strapiTax}
-        >
-          <TaxFeeSection />
-        </TaxFeeSectionProvider>
+        <StrapiTaxProvider strapiTax={strapiTax}>
+          <TaxFeeSectionProvider taxData={taxData} taxAdministrator={taxAdministrator}>
+            <TaxFeeSection />
+          </TaxFeeSectionProvider>
+        </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

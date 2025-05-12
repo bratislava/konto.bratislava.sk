@@ -39,7 +39,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
         {
           formDefinitionSlug: formDefinition.slug,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onMutate: () => {

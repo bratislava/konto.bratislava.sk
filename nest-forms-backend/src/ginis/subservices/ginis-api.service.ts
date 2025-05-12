@@ -72,13 +72,45 @@ export default class GinisAPIService {
 
     const fileUpload = await this.ginis.ssl.pridatSouborMtom({
       'Id-dokumentu': documentId,
-      'Jmeno-souboru': fileName,
+      'Jmeno-souboru': fileName.slice(-254), // filenames usually differ at the end
       'Typ-vazby': 'elektronicka-priloha',
-      'Popis-souboru': baseName,
-      'Podrobny-popis-souboru': baseName,
+      'Popis-souboru': baseName.slice(0, 50),
+      'Podrobny-popis-souboru': baseName.slice(0, 254),
       Obsah: contentStream,
     })
 
     return fileUpload['Pridat-soubor']
+  }
+
+  async findDocumentId(formId: string): Promise<string | null> {
+    // formId mapping to this attribute was implemented on Ginis side on '2025-05-02'
+    const documentList = await this.ginis.ssl.prehledDokumentu(
+      {
+        'Datum-podani-od': '2025-05-02',
+        'Datum-podani-do': new Date().toISOString().slice(0, 10),
+        'Priznak-spisu': 'neurceno',
+        'Id-vlastnosti': this.baConfigService.ginisApi.formIdPropertyId,
+        'Hodnota-vlastnosti-raw': formId,
+      },
+      {
+        'Priznak-generovani': 'generovat',
+        'Radek-od': '1',
+        'Radek-do': '10',
+        'Priznak-zachovani': 'nezachovavat',
+        'Rozsah-prehledu': 'standardni',
+      },
+    )
+
+    if (documentList['Prehled-dokumentu'].length === 0) {
+      return null
+    }
+
+    if (documentList['Prehled-dokumentu'].length > 1) {
+      throw new Error(
+        `More than one GINIS document found for formId ${formId}. ${JSON.stringify(documentList)}`,
+      )
+    }
+
+    return documentList['Prehled-dokumentu'][0]['Id-dokumentu']
   }
 }

@@ -13,6 +13,7 @@ import {
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
@@ -46,7 +47,6 @@ import {
   SendMessageNasesSender,
   SendMessageNasesSenderType,
 } from '../types/send-message-nases-sender.type'
-import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 
 @Injectable()
 export default class NasesUtilsService {

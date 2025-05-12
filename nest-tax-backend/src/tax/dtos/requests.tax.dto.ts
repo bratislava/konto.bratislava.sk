@@ -608,3 +608,132 @@ export class ResponseGetTaxesDto {
   })
   items: ResponseGetTaxesBodyDto[]
 }
+
+
+export class InstallmentItem {
+  @ApiProperty({ description: 'Installment number', example: 1 })
+  installmentNumber: number
+
+  @ApiProperty({ description: 'Due date', required: false })
+  dueDate?: Date
+
+  @ApiProperty({
+    description: 'Payment status',
+    enum: ['PAID', 'UNPAID', 'PARTIAL'],
+  })
+  status: 'PAID' | 'UNPAID' | 'PARTIAL'
+
+  @ApiProperty({ description: 'Amount already paid', example: 50 })
+  paidAmount: number
+
+  @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
+  remainingAmount: number
+
+  @ApiProperty({ description: 'Variable symbol', required: false })
+  variableSymbol?: string
+
+  @ApiProperty({ description: 'QR code', required: false })
+  qrCode?: string
+}
+
+// OneTimePaymentDetails
+export class OneTimePaymentDetails {
+  @ApiProperty({
+    description:
+      'Indicates if one-time payment is possible. False only if the full amount is paid.',
+    example: true,
+  })
+  isPossible: boolean
+
+  @ApiProperty({
+    description: 'Type of payment',
+    enum: ['ONE_TIME_PAYMENT', 'REMAINING_AMOUNT_PAYMENT'],
+    required: false,
+  })
+  type?: 'ONE_TIME_PAYMENT' | 'REMAINING_AMOUNT_PAYMENT'
+
+  @ApiProperty({
+    description: 'Reason why payment is not possible',
+    enum: ['ALREADY_PAID'],
+    required: false,
+  })
+  reasonNotPossible?: 'ALREADY_PAID'
+
+  @ApiProperty({
+    description: 'Payment amount',
+    example: 10050,
+    required: false,
+  })
+  amount?: number
+
+  @ApiProperty({ description: 'Due date', required: false })
+  dueDate?: Date
+
+  @ApiProperty({
+    description: 'QR code for payment',
+    required: false,
+  })
+  qrCode?: string
+
+  @ApiProperty({
+    description: 'Variable symbol for payment',
+    required: false,
+  })
+  variableSymbol?: string
+
+  @ApiProperty({
+    description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
+    required: false,
+  })
+  paymentGatewayLink?: string
+}
+
+// InstallmentPaymentDetail
+export class InstallmentPaymentDetail {
+  @ApiProperty({
+    description: 'Indicates if installment payment is possible',
+    example: true,
+  })
+  isPossible: boolean
+
+  @ApiProperty({
+    description: 'Reason why installment is not possible',
+    enum: ['BELOW_THRESHOLD', 'AFTER_DATE'],
+    required: false,
+  })
+  reasonNotPossible?: 'BELOW_THRESHOLD' | 'AFTER_DATE'
+
+  @ApiProperty({
+    description: 'List of exactly 3 installments or none at all',
+    type: [InstallmentItem],
+    required: false,
+  })
+  installments?: [InstallmentItem, InstallmentItem, InstallmentItem]
+}
+
+// TaxSummaryDetail
+export class TaxSummaryDetail {
+  @ApiProperty({ description: 'Total amount paid', example: 150 })
+  overallPaid: number
+
+  @ApiProperty({ description: 'Total remaining balance', example: 50 })
+  overallBalance: number
+
+  @ApiProperty({ description: 'Total overpayment', example: 0 })
+  overallOverpayment: number
+
+  @ApiProperty({ description: 'Total tax amount', example: 200 })
+  overallAmount: number
+
+  @ApiProperty({
+    description: 'One-time payment details',
+    type: OneTimePaymentDetails,
+  })
+  oneTimePayment: OneTimePaymentDetails
+
+  @ApiProperty({
+    description: 'Installment payment details',
+    type: InstallmentPaymentDetail,
+  })
+  installmentPayment: InstallmentPaymentDetail
+}

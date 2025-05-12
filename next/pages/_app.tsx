@@ -13,13 +13,16 @@ import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenu
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
 import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
+import { useEffectOnce } from 'usehooks-ts'
 
+import { removeAllCookiesAndClearLocalStorage } from '../frontend/utils/amplifyClient'
 import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 
@@ -30,12 +33,49 @@ const inter = Inter({
 export type GlobalAppProps = {
   appProps?: {
     externallyEmbedded?: boolean
+    amplifyResetCookies?: true
   }
+}
+
+/**
+ * The session storage is used to prevent infinite cycle:
+ * server triggers removal -> remove cookies -> reload -> server triggers removal (this won't happen twice)
+ */
+const amplifyCookiesRemovedSessionStorageKey = 'amplifyCookiesRemoved'
+
+// Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+const AmplifyCookiesReset = () => {
+  const router = useRouter()
+
+  useEffectOnce(() => {
+    if (sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
+      throw new Error(
+        '[AUTH] Tried to remove Amplify cookies more than once, infinite loop detected.',
+      )
+    } else {
+      sessionStorage.setItem(amplifyCookiesRemovedSessionStorageKey, 'true')
+      removeAllCookiesAndClearLocalStorage()
+      router.reload()
+    }
+  })
+
+  return null
 }
 
 const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const [queryClient] = useState(() => new QueryClient())
   const allowCookies = !pageProps.appProps?.externallyEmbedded
+  const amplifyResetCookies = pageProps.appProps?.amplifyResetCookies
+
+  useEffectOnce(() => {
+    if (!amplifyResetCookies) {
+      sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
+    }
+  })
+
+  if (amplifyResetCookies) {
+    return <AmplifyCookiesReset />
+  }
 
   return (
     <>

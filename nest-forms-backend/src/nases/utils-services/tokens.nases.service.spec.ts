@@ -1,5 +1,3 @@
-/* eslint-disable pii/no-phone-number */
-/* eslint-disable pii/no-email */
 import { Readable } from 'node:stream'
 
 import { createMock } from '@golevelup/ts-jest'
@@ -263,7 +261,14 @@ describe('NasesUtilsService', () => {
           state: 'QUEUED',
           error: 'NONE',
           jsonVersion: '1.0',
-          formDataJson: {},
+          formDataJson: {
+            stavba: {
+              ulica: 'Ulica1',
+              nazov: 'StavbaA',
+              parcelneCisla: '1234/56',
+              katastralneUzemia: ['805556', '805343'], // Ružinov, Trnávka
+            },
+          },
           formDataGinis: null,
           formSignature: null,
           formSummary: null,
@@ -298,7 +303,7 @@ describe('NasesUtilsService', () => {
             `          <SenderId>example_sender</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
-            `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
+            `          <MessageSubject>e-SIZ Ulica1 StavbaA, p.č. 1234/56 kú Ružinov, Trnávka</MessageSubject>\n` +
             `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
             `            <eform>\n` +
             `              <tag1 attribute="value1"/>\n` +
@@ -318,5 +323,3 @@ describe('NasesUtilsService', () => {
     })
   })
 })
-/* eslint-enable pii/no-phone-number */
-/* eslint-enable pii/no-email */

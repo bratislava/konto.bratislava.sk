@@ -9,7 +9,6 @@ import {
 } from '../../dtos/gdpr.legalperson.dto'
 import {
   GdprCategory,
-  GdprDataDto,
   GdprSubType,
   GdprType,
   ResponseGdprUserDataDto,
@@ -142,9 +141,6 @@ export class DatabaseSubserviceUser {
             subType: GdprSubType.SUB,
           },
         ])
-
-        // this makes no sense, it doesn't provide any subType and it removes marketing consent
-        await this.createLegalPersonGdprData(legalPerson.id, null)
       } else if (legalPerson.email != email) {
         const oldEmail = legalPerson.email
         legalPerson = await this.prisma.legalPerson.update({
@@ -176,8 +172,6 @@ export class DatabaseSubserviceUser {
           subType: GdprSubType.SUB,
         },
       ])
-      // this makes no sense, it doesn't provide any subType
-      await this.createLegalPersonGdprData(legalPerson.id, null)
     }
     return legalPerson
   }
@@ -221,64 +215,6 @@ export class DatabaseSubserviceUser {
       },
     })
     return user
-  }
-
-  async createUserGdprData(userId: string, gdprSubType: GdprSubType, gdprData: GdprDataDto[]) {
-    const data = []
-    for (const elem of gdprData) {
-      data.push({
-        category: elem.category,
-        type: elem.type,
-        subType: gdprSubType,
-        userId: userId,
-      })
-    }
-    const sendEmailData = gdprData.find((value) => {
-      return value.category === GdprCategory.TAXES && value.type === GdprType.FORMAL_COMMUNICATION
-    })
-    if (sendEmailData && gdprSubType === GdprSubType.SUB) {
-      //TODO - add template and create pdf and send to email
-      // await this.mailgunSubservice.sendEmail('TBD - SUBSCRIPTION TAMPLATE', {
-      //   to: email,
-      //   variables: {
-      //     firstName,
-      //   },
-      // })
-    }
-    await this.changeUserGdprData(userId, data)
-    return data
-  }
-
-  async createLegalPersonGdprData(
-    legalPersonId: string,
-    gdprSubType: GdprSubType | null,
-    gdprData?: GdprDataDto[]
-  ) {
-    const data = []
-    if (!gdprData) {
-      for (const category in GdprCategory) {
-        for (const type in GdprType) {
-          if (type !== GdprType.LICENSE) {
-            data.push({
-              category: category,
-              type: type,
-              subType: gdprSubType,
-              legalPersonId: legalPersonId,
-            })
-          }
-        }
-      }
-    } else {
-      for (const elem of gdprData) {
-        data.push({
-          category: elem.category,
-          type: elem.type,
-          subType: gdprSubType,
-          legalPersonId: legalPersonId,
-        })
-      }
-    }
-    return data
   }
 
   // is this ok?

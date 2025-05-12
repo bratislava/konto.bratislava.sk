@@ -202,6 +202,16 @@ export default class EnvironmentVariables {
   @Expose()
   @IsString()
   @IsNotEmpty()
+  GINIS_FORM_ID_PROPERTY_ID: string
+
+  @Expose()
+  @IsBoolean()
+  @IsNotEmpty()
+  GINIS_SHOULD_REGISTER: boolean
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
   OLO_SMTP_USERNAME: string
 
   @Expose()

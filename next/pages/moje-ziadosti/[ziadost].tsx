@@ -6,6 +6,8 @@ import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
+import { patchApplicationFormIfNeeded } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededClient'
+import { getEmailFormSlugs } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
@@ -17,7 +19,7 @@ type AccountMyApplicationsPageProps = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplicationsPageProps>(
-  async ({ context, getAccessToken }) => {
+  async ({ context, fetchAuthSession }) => {
     const id = context.query.ziadost as string
 
     if (!id) return { notFound: true }
@@ -26,14 +28,15 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
     let myApplicationGinisData: GinisDocumentDetailResponseDto | null = null
     try {
       const response = await formsClient.nasesControllerGetForm(id, {
-        accessToken: 'always',
-        accessTokenSsrGetFn: getAccessToken,
+        authStrategy: 'authOnly',
+        getSsrAuthSession: fetchAuthSession,
       })
-      myApplicationDetailsData = response?.data // getApplicationDetailsData(ctx.query.ziadost) || null
+      const emailFormSlugs = getEmailFormSlugs()
+      myApplicationDetailsData = patchApplicationFormIfNeeded(response.data, emailFormSlugs)
       if (myApplicationDetailsData.ginisDocumentId) {
         const ginisRequest = await formsClient.ginisControllerGetGinisDocumentByFormId(id, {
-          accessToken: 'always',
-          accessTokenSsrGetFn: getAccessToken,
+          authStrategy: 'authOnly',
+          getSsrAuthSession: fetchAuthSession,
         })
         myApplicationGinisData = ginisRequest?.data
       }

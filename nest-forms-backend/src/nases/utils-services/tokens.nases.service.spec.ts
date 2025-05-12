@@ -3,7 +3,6 @@
 import { Readable } from 'node:stream'
 
 import { createMock } from '@golevelup/ts-jest'
-import { getQueueToken } from '@nestjs/bull'
 import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
@@ -19,6 +18,7 @@ import TaxService from '../../tax/tax.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesErrorsResponseEnum } from '../nases.errors.enum'
+import { SendMessageNasesSenderType } from '../types/send-message-nases-sender.type'
 import NasesUtilsService from './tokens.nases.service'
 
 jest.mock('axios')
@@ -58,11 +58,7 @@ describe('NasesUtilsService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        TaxService,
-        {
-          provide: getQueueToken('tax'),
-          useValue: {},
-        },
+        { provide: TaxService, useValue: createMock<TaxService>() },
         { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()
@@ -168,39 +164,42 @@ describe('NasesUtilsService', () => {
           createMockReadableStream('Summary PDF content with form details'),
         )
 
-      let returnXmlString = await service['createEnvelopeSendMessage']({
-        id: '123456678901234567890',
-        formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        externalId: null,
-        userExternalId: null,
-        email: null,
-        finishSubmission: new Date(),
-        mainUri: null,
-        actorUri: null,
-        ownerType: 'FO',
-        ico: '12345678',
-        state: 'QUEUED',
-        error: 'NONE',
-        jsonVersion: '1.0',
-        formDataJson: {},
-        formDataGinis: null,
-        formSignature: {
-          pospID: 'esmao.eforms.bratislava.obec_024',
-          pospVersion: '1.0',
+      let returnXmlString = await service['createEnvelopeSendMessage'](
+        {
+          id: '123456678901234567890',
+          formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          externalId: null,
+          userExternalId: null,
+          email: null,
+          finishSubmission: new Date(),
+          mainUri: null,
+          actorUri: null,
+          ownerType: 'FO',
+          ico: '12345678',
+          state: 'QUEUED',
+          error: 'NONE',
           jsonVersion: '1.0',
-          // eslint-disable-next-line xss/no-mixed-html
-          signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
-          formDataHash: '',
+          formDataJson: {},
+          formDataGinis: null,
+          formSignature: {
+            pospID: 'esmao.eforms.bratislava.obec_024',
+            pospVersion: '1.0',
+            jsonVersion: '1.0',
+            // eslint-disable-next-line xss/no-mixed-html
+            signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+            formDataHash: '',
+          },
+          formSummary: null,
+          ginisDocumentId: null,
+          senderId: null,
+          recipientId: null,
+          archived: false,
+          ginisState: 'CREATED',
         },
-        formSummary: null,
-        ginisDocumentId: null,
-        senderId: null,
-        recipientId: null,
-        archived: false,
-        ginisState: 'CREATED',
-      })
+        { type: SendMessageNasesSenderType.Self },
+      )
 
       const parser = new Parser()
       const builder = new Builder({
@@ -247,32 +246,35 @@ describe('NasesUtilsService', () => {
 
       expect(returnXmlString).toBe(xmlExample)
 
-      returnXmlString = await service['createEnvelopeSendMessage']({
-        id: '123456678901234567890',
-        formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        externalId: null,
-        userExternalId: null,
-        email: null,
-        finishSubmission: new Date(),
-        mainUri: null,
-        actorUri: null,
-        ownerType: 'FO',
-        ico: '12345678',
-        state: 'QUEUED',
-        error: 'NONE',
-        jsonVersion: '1.0',
-        formDataJson: {},
-        formDataGinis: null,
-        formSignature: null,
-        formSummary: null,
-        ginisDocumentId: null,
-        senderId: null,
-        recipientId: null,
-        archived: false,
-        ginisState: 'CREATED',
-      })
+      returnXmlString = await service['createEnvelopeSendMessage'](
+        {
+          id: '123456678901234567890',
+          formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          externalId: null,
+          userExternalId: null,
+          email: null,
+          finishSubmission: new Date(),
+          mainUri: null,
+          actorUri: null,
+          ownerType: 'FO',
+          ico: '12345678',
+          state: 'QUEUED',
+          error: 'NONE',
+          jsonVersion: '1.0',
+          formDataJson: {},
+          formDataGinis: null,
+          formSignature: null,
+          formSummary: null,
+          ginisDocumentId: null,
+          senderId: null,
+          recipientId: null,
+          archived: false,
+          ginisState: 'CREATED',
+        },
+        { type: SendMessageNasesSenderType.Self },
+      )
 
       /* eslint-disable no-secrets/no-secrets */
       xmlExample = builder.buildObject(
@@ -285,7 +287,7 @@ describe('NasesUtilsService', () => {
             `        <MessageInfo>\n` +
             `          <Class>EGOV_APPLICATION</Class>\n` +
             `          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n` +
-            `          <PospVersion>0.9</PospVersion>\n` +
+            `          <PospVersion>1.3</PospVersion>\n` +
             `          <MessageID>123456678901234567890</MessageID>\n` +
             `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
             `        </MessageInfo>\n` +

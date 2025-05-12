@@ -22,6 +22,7 @@ import oloDocistenieStanovistaZbernychNadobExample from './examples/oloDocisteni
 import oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample from './examples/oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample'
 import oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample from './examples/oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample'
 import ziadostOSlobodnyPristupKInformaciamExample from './examples/ziadostOSlobodnyPristupKInformaciamExample'
+import priznanieKDaniZNehnutelnostiExample5NoCalculators from './examples/priznanieKDaniZNehnutelnostiExample5NoCalculators'
 
 export const exampleForms: Record<string, ExampleForm[]> = {
   'stanovisko-k-investicnemu-zameru': [stanoviskoKInvesticnemuZameruExample],
@@ -34,6 +35,7 @@ export const exampleForms: Record<string, ExampleForm[]> = {
     priznanieKDaniZNehnutelnostiExample3,
     priznanieKDaniZNehnutelnostiExample4,
     priznanieKDaniZNehnutelnostiExample5,
+    priznanieKDaniZNehnutelnostiExample5NoCalculators,
   ],
   'ziadost-o-najom-bytu': [ziadostONajomBytuExample],
   'olo-mimoriadny-odvoz-a-zhodnotenie-odpadu': [oloMimoriadnyOdvozAZhodnotenieOdpaduExample],

@@ -38,7 +38,7 @@ export const formHasLandingPage = (
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps, Params>(
-  async ({ context, getAccessToken }) => {
+  async ({ context, fetchAuthSession }) => {
     if (!context.params) {
       return { notFound: true }
     }
@@ -66,7 +66,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
         {
           formDefinitionSlug: slug,
         },
-        { accessToken: 'onlyAuthenticated', accessTokenSsrGetFn: getAccessToken },
+        { authStrategy: 'authOrGuestWithToken', getSsrAuthSession: fetchAuthSession },
       )
 
       if (!form) {

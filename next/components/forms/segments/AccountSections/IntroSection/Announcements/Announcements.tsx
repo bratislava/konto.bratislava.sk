@@ -1,5 +1,5 @@
 import BannerTaxes from '@assets/images/banner-dane.png'
-import BannerRental from '@assets/images/banner-najomne-byvanie.png'
+import BannerStanovisko from '@assets/images/banner-stanovisko.png'
 import BannerGardens from '@assets/images/banner-zahrady.png'
 import { ArrowRightIcon } from '@assets/ui-icons'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
@@ -35,7 +35,7 @@ const Announcements = () => {
   const buttonsSecond: AnchorProps[] = [
     {
       children: t('account_section_intro.announcement_card_button_second'),
-      href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-najom-bytu'),
+      href: ROUTES.MUNICIPAL_SERVICES,
       variant: 'category-solid',
       endIcon: <ArrowRightIcon className="size-6" />,
     },
@@ -60,7 +60,7 @@ const Announcements = () => {
       {!isLegalEntity && (
         <AnnouncementBlock
           announcementContent={announcementContentSecond}
-          imagePath={BannerRental}
+          imagePath={BannerStanovisko}
           buttons={buttonsSecond}
           reversed
         />

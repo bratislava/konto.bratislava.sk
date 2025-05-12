@@ -20,9 +20,9 @@ import { conditionalFields } from '../../generator/functions/conditionalFields'
 
 const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
-  { type: 'integer', title: 'Výmera podlahovej plochy', required: true, minimum: 0 },
+  { type: 'number', title: 'Výmera podlahovej plochy', required: true, minimum: 0, step: 0.01 },
   {
-    helptextFooter: 'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+    helptextFooter: 'Zadávajte číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)',
     helptextFooterMarkdown: true,
   },
 )

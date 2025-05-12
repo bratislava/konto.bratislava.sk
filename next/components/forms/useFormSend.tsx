@@ -101,7 +101,7 @@ const useGetContext = () => {
         {
           formDataJson: formData,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {
@@ -130,7 +130,7 @@ const useGetContext = () => {
             // `null` must be set explicitly, otherwise the signature would not be removed if needed
             formSignature: signature ?? null,
           },
-          { accessToken: 'onlyAuthenticated' },
+          { authStrategy: 'authOrGuestWithToken' },
         ),
       networkMode: 'always',
       onSuccess: async () => {
@@ -160,7 +160,7 @@ const useGetContext = () => {
           formSignature: signature ?? null,
           eidToken: sendEidTokenRef.current as string,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {

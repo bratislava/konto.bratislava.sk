@@ -90,14 +90,15 @@ const AccountMarkdown = ({
   }
 
   return (
-    <ReactMarkdown
-      className={cn('flex flex-col gap-3', className)}
-      remarkPlugins={remarkPlugins}
-      rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
-      components={componentsGroup}
-    >
-      {content ?? ''}
-    </ReactMarkdown>
+    <div className={cn('flex flex-col gap-3', className)}>
+      <ReactMarkdown
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
+        components={componentsGroup}
+      >
+        {content ?? ''}
+      </ReactMarkdown>
+    </div>
   )
 }
 

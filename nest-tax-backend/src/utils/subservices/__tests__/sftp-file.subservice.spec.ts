@@ -87,4 +87,73 @@ describe('SftpFileSubservice', () => {
     })
     expect(result).toEqual(['file2.csv'])
   })
+
+  it('filterFilesBeforeDate should filter files based on date', () => {
+    const mockFiles: FileInfo[] = [
+      {
+        name: 'AA_AAAA_0123456789_0123456789_15_25012434.csv',
+        type: '-',
+        size: 300,
+        modifyTime: 0,
+        accessTime: 0,
+        rights: {
+          user: '',
+          group: '',
+          other: '',
+        },
+        owner: 0,
+        group: 0,
+      },
+      {
+        name: 'AA_AAAA_0123456789_0123456789_15_25012576.csv',
+        type: '-',
+        size: 300,
+        modifyTime: 0,
+        accessTime: 0,
+        rights: {
+          user: '',
+          group: '',
+          other: '',
+        },
+        owner: 0,
+        group: 0,
+      },
+      {
+        name: 'AA_AAAA_0123456789_0123456789_15_25012618.csv',
+        type: '-',
+        size: 300,
+        modifyTime: 0,
+        accessTime: 0,
+        rights: {
+          user: '',
+          group: '',
+          other: '',
+        },
+        owner: 0,
+        group: 0,
+      },
+      {
+        name: 'invalid.csv',
+        type: '-',
+        size: 150,
+        modifyTime: 0,
+        accessTime: 0,
+        rights: {
+          user: '',
+          group: '',
+          other: '',
+        },
+        owner: 0,
+        group: 0,
+      },
+    ]
+    const fromDate = new Date('2025-01-25')
+
+    const result = service['filterFilesBeforeDate'](mockFiles, fromDate)
+
+    expect(result).toEqual([
+      'AA_AAAA_0123456789_0123456789_15_25012576.csv',
+      'AA_AAAA_0123456789_0123456789_15_25012618.csv',
+    ])
+  })
 })

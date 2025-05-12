@@ -8,7 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
-import { TaxIdVariableSymbol } from '../../utils/types/types.prisma'
+import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import { AdminService } from '../admin.service'
 import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
 
@@ -237,9 +237,9 @@ describe('TasksService', () => {
 
   describe('updateTaxesFromNoris', () => {
     it('should update taxes with valid data', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
-        { id: 2, variableSymbol: 'VS2' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2025 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
@@ -262,10 +262,10 @@ describe('TasksService', () => {
 
       await service.updateTaxesFromNoris(mockTaxes)
 
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith([
-        'VS1',
-        'VS2',
-      ])
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024, 2025],
+      )
       expect(service['prismaService'].$transaction).toHaveBeenCalledWith([
         expect.any(Function),
         expect.any(Function),
@@ -273,9 +273,9 @@ describe('TasksService', () => {
     })
 
     it('should not update taxes if datum_platnosti is null', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
-        { id: 2, variableSymbol: 'VS2' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2024 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: null },
@@ -288,16 +288,16 @@ describe('TasksService', () => {
 
       await service.updateTaxesFromNoris(mockTaxes)
 
-      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith([
-        'VS1',
-        'VS2',
-      ])
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024],
+      )
       expect(service['prismaService'].$transaction).toHaveBeenCalledWith([])
     })
 
     it('should propagate errors from norisService', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
       ]
       const mockError = new Error('Update failed')
 
@@ -311,8 +311,8 @@ describe('TasksService', () => {
     })
 
     it('should propagate errors from prismaService', async () => {
-      const mockTaxes: TaxIdVariableSymbol[] = [
-        { id: 1, variableSymbol: 'VS1' },
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
       ]
       const mockData = [
         { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },

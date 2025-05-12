@@ -98,6 +98,13 @@ export default class BaConfig {
       sslHost: this.validatedConfig.GINIS_SSL_HOST,
       sslMtomHost: this.validatedConfig.GINIS_SSL_MTOM_HOST,
       ginHost: this.validatedConfig.GINIS_GIN_HOST,
+      formIdPropertyId: this.validatedConfig.GINIS_FORM_ID_PROPERTY_ID,
+    }
+  }
+
+  get ginis() {
+    return {
+      shouldRegister: this.validatedConfig.GINIS_SHOULD_REGISTER,
     }
   }
 

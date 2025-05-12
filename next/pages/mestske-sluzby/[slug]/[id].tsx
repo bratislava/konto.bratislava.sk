@@ -34,7 +34,7 @@ type Params = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
-  async ({ context, getAccessToken, isSignedIn }) => {
+  async ({ context, fetchAuthSession, isSignedIn }) => {
     if (!context.params) {
       return { notFound: true }
     }
@@ -48,8 +48,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
       const { data: form } = await formsClient.nasesControllerGetForm(formId, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
+        authStrategy: 'authOrGuestWithToken',
+        getSsrAuthSession: fetchAuthSession,
       })
       if (
         !form ||
@@ -61,8 +61,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
 
       const [{ data: files }, strapiForm] = await Promise.all([
         formsClient.filesControllerGetFilesStatusByForm(formId, {
-          accessToken: 'onlyAuthenticated',
-          accessTokenSsrGetFn: getAccessToken,
+          authStrategy: 'authOrGuestWithToken',
+          getSsrAuthSession: fetchAuthSession,
         }),
         fetchStrapiForm(slug),
       ])

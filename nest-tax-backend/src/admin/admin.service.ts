@@ -17,7 +17,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
-  TaxIdVariableSymbol,
+  TaxIdVariableSymbolYear,
   transformDeliveryMethodToDatabaseType,
 } from '../utils/types/types.prisma'
 import {
@@ -592,12 +592,16 @@ export class AdminService {
     ])
   }
 
-  async updateTaxesFromNoris(taxes: TaxIdVariableSymbol[]): Promise<void> {
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]): Promise<void> {
     const variableSymbolToId = new Map(
       taxes.map((tax) => [tax.variableSymbol, tax.id]),
     )
     const variableSymbols = [...variableSymbolToId.keys()]
-    const data = await this.norisService.getDataForUpdate(variableSymbols)
+    const years = [...new Set(taxes.map((tax) => tax.year))]
+    const data = await this.norisService.getDataForUpdate(
+      variableSymbols,
+      years,
+    )
     const variableSymbolsToNonNullDateFromNoris: Map<string, string> = new Map(
       data
         .filter((item) => item.datum_platnosti !== null)

@@ -23,6 +23,8 @@ import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 import { getFormSummary } from '../../src/summary/summary'
 import { getSlovenskoSkMetaIdentifier } from '../../src/slovensko-sk/urls'
 
+const mockFormId = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'
+
 describe('slovenskoSkForm', () => {
   let slovenskoSkMetadata: SlovenskoSkMetadataJson[]
 
@@ -68,6 +70,7 @@ describe('slovenskoSkForm', () => {
           })
           const xmlObject = await generateSlovenskoSkXmlObject({
             formDefinition,
+            formId: mockFormId,
             formSummary,
             jsonVersion: formDefinition.jsonVersion,
             formData: exampleForm.formData,

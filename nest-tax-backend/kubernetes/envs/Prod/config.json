@@ -1,13 +1,13 @@
 {
   "envs": {
-      "NEST_CPU_LIMITS": "1",
-      "NEST_MEMORY_LIMITS": "1Gi",
-      "NEST_CPU_REQUESTS": "10m",
-      "NEST_MEMORY_REQUESTS": "256Mi",
-      "DB_CPU_LIMITS": "2",
-      "DB_MEMORY_LIMITS": "3Gi",
-      "DB_CPU_REQUESTS": "50m",
-      "DB_MEMORY_REQUESTS": "512Mi",
-      "PAYGATE_CERT_PATH": "/home/node/app/paygate_certs"
+    "NEST_CPU_LIMITS": "1",
+    "NEST_MEMORY_LIMITS": "1Gi",
+    "NEST_CPU_REQUESTS": "10m",
+    "NEST_MEMORY_REQUESTS": "256Mi",
+    "DB_CPU_LIMITS": "4",
+    "DB_MEMORY_LIMITS": "8Gi",
+    "DB_CPU_REQUESTS": "50m",
+    "DB_MEMORY_REQUESTS": "512Mi",
+    "PAYGATE_CERT_PATH": "/home/node/app/paygate_certs"
   }
 }

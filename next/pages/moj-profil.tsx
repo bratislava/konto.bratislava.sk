@@ -14,9 +14,9 @@ type MojProfilProps = {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
-  async ({ getAccessToken }) => {
+  async ({ fetchAuthSession }) => {
     const queryClient = new QueryClient()
-    await prefetchUserQuery(queryClient, getAccessToken)
+    await prefetchUserQuery(queryClient, fetchAuthSession)
 
     return {
       props: {

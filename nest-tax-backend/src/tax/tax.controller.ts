@@ -27,7 +27,7 @@ import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
-import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
+import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')

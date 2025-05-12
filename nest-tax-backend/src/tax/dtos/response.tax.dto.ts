@@ -24,6 +24,17 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
+export enum InstallmentPaymentReasonNotPossibleEnum {
+  BELOW_THRESHOLD = 'BELOW_THRESHOLD',
+  AFTER_DATE = 'AFTER_DATE',
+  ALREADY_PAID = 'ALREADY_PAID',
+}
+
+export enum OneTimePaymentTypeEnum {
+  ONE_TIME_PAYMENT = 'ONE_TIME_PAYMENT',
+  REMAINING_AMOUNT_PAYMENT = 'REMAINING_AMOUNT_PAYMENT',
+}
+
 export enum TaxPaidStatusEnum {
   NOT_PAID = 'NOT_PAID',
   PARTIALLY_PAID = 'PARTIALLY_PAID',
@@ -609,7 +620,6 @@ export class ResponseGetTaxesDto {
   items: ResponseGetTaxesBodyDto[]
 }
 
-
 export class InstallmentItem {
   @ApiProperty({ description: 'Installment number', example: 1 })
   installmentNumber: number
@@ -619,9 +629,10 @@ export class InstallmentItem {
 
   @ApiProperty({
     description: 'Payment status',
-    enum: ['PAID', 'UNPAID', 'PARTIAL'],
+    enum: TaxPaidStatusEnum,
+    enumName: 'TaxPaidStatusEnum',
   })
-  status: 'PAID' | 'UNPAID' | 'PARTIAL'
+  status: TaxPaidStatusEnum
 
   @ApiProperty({ description: 'Amount already paid', example: 50 })
   paidAmount: number
@@ -701,14 +712,15 @@ export class InstallmentPaymentDetail {
     enum: ['BELOW_THRESHOLD', 'AFTER_DATE'],
     required: false,
   })
-  reasonNotPossible?: 'BELOW_THRESHOLD' | 'AFTER_DATE'
+  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
 
   @ApiProperty({
     description: 'List of exactly 3 installments or none at all',
     type: [InstallmentItem],
     required: false,
+    isArray: true,
   })
-  installments?: [InstallmentItem, InstallmentItem, InstallmentItem]
+  installments?: InstallmentItem[]
 }
 
 // TaxSummaryDetail

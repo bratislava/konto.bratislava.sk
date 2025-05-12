@@ -14,17 +14,15 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
+  InstallmentPaymentDetail,
+  OneTimePaymentDetails,
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
   ResponseTaxDto,
-} from './dtos/requests.tax.dto'
+  TaxSummaryDetail,
+} from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
-import {
-  InstallmentPaymentDetail,
-  OneTimePaymentDetails,
-  TaxSummaryDetail,
-} from './dtos/response.pdf.dto'
 import dayjs from 'dayjs'
 import { get_tax_detail } from './utils/unified-tax.util'
 

@@ -22,6 +22,7 @@ import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
 import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -102,8 +103,7 @@ export default class NasesService {
 
   async createForm(
     requestData: CreateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<CreateFormResponseDto> {
     const formDefinition = getFormDefinitionBySlug(
       requestData.formDefinitionSlug,
@@ -115,11 +115,19 @@ export default class NasesService {
       )
     }
 
+    const getOwnerType = () => {
+      if
+    }
+
     const data = {
-      userExternalId: user ? user.sub : null,
+      userExternalId: isAuthUser(user) ? user.cognitoPayload.sub : null,
+      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
       formDefinitionSlug: requestData.formDefinitionSlug,
       jsonVersion: formDefinition.jsonVersion,
-      ico,
+      ico:
+        isAuthUser(user) && 'ico' in user.cityAccountUser
+          ? user.cityAccountUser.ico
+          : null,
       ownerType:
         user?.['custom:account_type'] === 'po' ||
         user?.['custom:account_type'] === 'fo-p'

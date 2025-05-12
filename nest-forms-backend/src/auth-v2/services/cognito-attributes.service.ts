@@ -1,7 +1,73 @@
+import {
+  AdminGetUserCommandOutput,
+  AttributeType,
+} from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
+import { plainToInstance } from 'class-transformer'
+import { IsEmail, IsEnum, IsString, validateOrReject } from 'class-validator'
+import {
+  UserVerifyStateCognitoTierEnum,
+  UserVerifyStateTypeEnum,
+} from 'openapi-clients/city-account'
 
 import BaConfigService from '../../config/ba-config.service'
 import { CognitoProvidersService } from './cognito-providers.service'
+
+class CognitoUserAttributesDto {
+  @IsString()
+  sub: string
+
+  @IsEnum(UserVerifyStateTypeEnum)
+  'custom:account_type': UserVerifyStateTypeEnum
+
+  @IsEnum(UserVerifyStateCognitoTierEnum)
+  'custom:tier': UserVerifyStateCognitoTierEnum
+
+  @IsString()
+  given_name: string
+
+  @IsString()
+  family_name: string
+
+  @IsEmail()
+  email: string
+}
+
+const mapAttributesToObject = (attributes: AttributeType[] = []) =>
+  Object.fromEntries(
+    attributes
+      .filter(
+        (attr): attr is AttributeType & { Name: string } => attr.Name != null,
+      )
+      .map(({ Name, Value }) => [Name, Value] as const),
+  )
+
+export const mapResponse = async (response: AdminGetUserCommandOutput) => {
+  const attributesObject = mapAttributesToObject(response.UserAttributes)
+
+  const validatedAttributes = plainToInstance(
+    CognitoUserAttributesDto,
+    attributesObject,
+    {
+      excludeExtraneousValues: true,
+    },
+  )
+  try {
+    await validateOrReject(validatedAttributes)
+  } catch (error) {
+    throw new Error('Invalid user attributes received from Cognito.')
+  }
+
+  return {
+    userAttributes: validatedAttributes,
+    userCreateDate: response.UserCreateDate,
+    userLastModifiedDate: response.UserLastModifiedDate,
+    userStatus: response.UserStatus,
+    username: response.Username,
+  }
+}
+
+export type CognitoUserXX = Awaited<ReturnType<typeof mapResponse>>
 
 @Injectable()
 export class CognitoAttributesService {
@@ -17,6 +83,6 @@ export class CognitoAttributesService {
         Username: sub,
       })
 
-    return response
+    return mapResponse(response)
   }
 }

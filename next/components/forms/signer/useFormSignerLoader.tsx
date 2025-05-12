@@ -9,6 +9,7 @@ type FormSignerLoaderContextType = {
   isReady: boolean
   isNotSupported: boolean
   retry: () => void
+  platforms: string[] | null
 }
 
 const FormSignerLoaderContext = createContext<FormSignerLoaderContextType | undefined>(undefined)
@@ -19,11 +20,20 @@ enum LoadedStatus {
   Error,
 }
 
-enum SupportedStatus {
+enum SupportedStatusType {
   Unknown,
   Supported,
   NotSupported,
 }
+
+type SupportedStatus =
+  | {
+      status: SupportedStatusType.NotSupported | SupportedStatusType.Unknown
+    }
+  | {
+      status: SupportedStatusType.Supported
+      platforms: string[]
+    }
 
 /**
  * This provider is responsible for loading the signer scripts and detecting whether the user's has installed all the
@@ -36,7 +46,9 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
     common: LoadedStatus.False,
     signer: LoadedStatus.False,
   })
-  const [isSupportedStatus, setIsSupportedStatus] = useState(SupportedStatus.Unknown)
+  const [supportedStatus, setSupportedStatus] = useState<SupportedStatus>({
+    status: SupportedStatusType.Unknown,
+  })
   const [retryTimestamp, setRetryTimestamp] = useState<number | null>(null)
 
   if (!isSigned || isReadonly) {
@@ -47,6 +59,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
           isLoading: false,
           isReady: false,
           isNotSupported: false,
+          platforms: null,
           retry: () => {},
         }}
       >
@@ -58,13 +71,21 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
   const handleScriptsLoaded = () => {
     ditec.dSigXadesBpJs.detectSupportedPlatforms(null, {
       onSuccess: (result) => {
-        setIsSupportedStatus(
-          // If the library returns an empty array, it means that the platform is not supported (e.g. phone).
-          result.length > 0 ? SupportedStatus.Supported : SupportedStatus.NotSupported,
-        )
+        if (result.length > 0) {
+          setSupportedStatus({
+            status: SupportedStatusType.Supported,
+            platforms: result,
+          })
+        } else {
+          setSupportedStatus({
+            status: SupportedStatusType.NotSupported,
+          })
+        }
       },
       onError: () => {
-        setIsSupportedStatus(SupportedStatus.NotSupported)
+        setSupportedStatus({
+          status: SupportedStatusType.NotSupported,
+        })
       },
     })
   }
@@ -83,16 +104,20 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
   const isError = Object.values(loadingStatuses).includes(LoadedStatus.Error)
   const isLoading =
     (Object.values(loadingStatuses).includes(LoadedStatus.False) ||
-      isSupportedStatus === SupportedStatus.Unknown) &&
+      supportedStatus.status === SupportedStatusType.Unknown) &&
     !isError
   const isReady =
     Object.values(loadingStatuses).every((status) => status === LoadedStatus.True) &&
-    isSupportedStatus === SupportedStatus.Supported
-  const isNotSupported = isSupportedStatus === SupportedStatus.NotSupported
+    supportedStatus.status === SupportedStatusType.Supported
+  const isNotSupported = supportedStatus.status === SupportedStatusType.NotSupported
+  const platforms =
+    supportedStatus.status === SupportedStatusType.Supported ? supportedStatus.platforms : null
 
   const retry = () => {
     setRetryTimestamp(Date.now())
-    setIsSupportedStatus(SupportedStatus.Unknown)
+    setSupportedStatus({
+      status: SupportedStatusType.Unknown,
+    })
     setLoadingStatuses({
       config: LoadedStatus.False,
       common: LoadedStatus.False,
@@ -105,7 +130,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <FormSignerLoaderContext.Provider
-      value={{ isError, isLoading, isReady, isNotSupported, retry }}
+      value={{ isError, isLoading, isReady, isNotSupported, retry, platforms }}
     >
       {/* Also a custom fragment key is needed to retry the library load. */}
       <Fragment key={retryTimestamp}>

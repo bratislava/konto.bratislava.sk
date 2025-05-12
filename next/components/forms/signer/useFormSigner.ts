@@ -5,6 +5,7 @@ import { useIsMounted } from 'usehooks-ts'
 import { isDefined } from '../../../frontend/utils/general'
 import { mapDitecError, SignerErrorType } from './mapDitecError'
 import { SignOptions } from './signerTypes'
+import { useFormSignerLoader } from './useFormSignerLoader'
 
 export enum SignerDeploymentStatus {
   NotDeployed,
@@ -35,6 +36,7 @@ export const useFormSigner = ({
   onDeploymentStatusChange = () => {},
   onError = () => {},
 }: UseFormSignerProps) => {
+  const { platforms } = useFormSignerLoader()
   const isMounted = useIsMounted()
   // We need also the ref variant, to be accessed in the callbacks.
   const [deploymentStatus, setDeploymentStatus, deploymentStatusRef] = useStateRef(
@@ -129,12 +131,17 @@ export const useFormSigner = ({
         signer.initialize({ onSuccess: handleInitializeSuccess, onError: handleError })
       }
 
+      if (!platforms) {
+        // This should never happen in this stage.
+        throw new Error('No supported platforms found.')
+      }
+
       if (
         deploymentStatusRef.current === SignerDeploymentStatus.NotDeployed ||
         deploymentStatusRef.current === SignerDeploymentStatus.Deploying
       ) {
         signer.deploy(
-          {},
+          { platforms },
           {
             onSuccess: handleDeploySuccess,
             onError: (error) => {

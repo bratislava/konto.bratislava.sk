@@ -16,6 +16,7 @@ import {
 import {
   InstallmentPaymentDetail,
   OneTimePaymentDetails,
+  OneTimePaymentTypeEnum,
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
   ResponseTaxDto,
@@ -24,7 +25,8 @@ import {
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import dayjs from 'dayjs'
-import { getTaxDetailWithoutQrAndUrl } from './utils/unified-tax.util'
+import { getTaxDetailPure } from './utils/unified-tax.util'
+import { PaymentService } from '../payment/payment.service'
 
 @Injectable()
 export class TaxService {
@@ -32,6 +34,7 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
+    private paymentService: PaymentService,
   ) {}
 
   private async getAmountAlreadyPaidByTaxId(id: number) {
@@ -201,13 +204,15 @@ export class TaxService {
     }
   }
 
-  async getTaxDetail(birthNumber: string): Promise<TaxSummaryDetail> {
+  async getTaxDetail(
+    birthNumber: string,
+    year: number,
+  ): Promise<TaxSummaryDetail> {
     const today = dayjs().tz('Europe/Bratislava')
-    const currentYear = today.year()
 
     const tax = await this.prisma.tax.findFirst({
       where: {
-        year: currentYear,
+        year: +year,
         taxPayer: {
           birthNumber,
         },
@@ -229,9 +234,9 @@ export class TaxService {
 
     const overallPaidTax = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
-    const detailWithoutQrCode = getTaxDetailWithoutQrAndUrl(
+    const detailWithoutQrCode = getTaxDetailPure(
       overallPaidTax,
-      currentYear,
+      +year,
       today.toDate(),
       tax.amount,
       '11-1',
@@ -239,6 +244,18 @@ export class TaxService {
       tax.dateTaxRuling,
       tax.taxInstallments,
     )
+
+    let paymentGatewayLink: string | undefined = undefined
+    if (
+      detailWithoutQrCode.oneTimePayment.isPossible &&
+      detailWithoutQrCode.oneTimePayment.type ==
+        OneTimePaymentTypeEnum.ONE_TIME_PAYMENT
+    ) {
+      paymentGatewayLink = await this.paymentService.getPayGateUrlByUserAndYear(
+        year.toString(),
+        birthNumber,
+      )
+    }
 
     let oneTimePaymentQrCode: string | undefined = undefined
     if (detailWithoutQrCode.oneTimePayment.qrCodeArgs) {
@@ -250,6 +267,7 @@ export class TaxService {
     const oneTimePayment: OneTimePaymentDetails = {
       ...detailWithoutQrCode.oneTimePayment,
       qrCode: oneTimePaymentQrCode,
+      paymentGatewayLink,
     }
 
     let installmentsQrCodes: string[] | undefined = undefined
@@ -258,11 +276,12 @@ export class TaxService {
         detailWithoutQrCode.installmentPayment.installments.map(
           async (installment) => {
             return await this.qrCodeSubservice.createQrCode(
-              installment.qrCodeArgs!,
+              installment.qrCodeArgs, // TODO qrCodeArgs can be undefined
             )
           },
         ),
       )
+      // TODO delete this?
       delete detailWithoutQrCode.installmentPayment.installments[0].qrCodeArgs
       delete detailWithoutQrCode.installmentPayment.installments[1].qrCodeArgs
       delete detailWithoutQrCode.installmentPayment.installments[2].qrCodeArgs

@@ -24,9 +24,13 @@ export enum TaxDetailTypeEnum {
   GROUND = 'GROUND',
 }
 
+export enum OneTimePaymentReasonNotPossibleEnum {
+  ALREADY_PAID = 'ALREADY_PAID'
+}
+
 export enum InstallmentPaymentReasonNotPossibleEnum {
   BELOW_THRESHOLD = 'BELOW_THRESHOLD',
-  AFTER_DATE = 'AFTER_DATE',
+  AFTER_DUE_DATE = 'AFTER_DUE_DATE',
   ALREADY_PAID = 'ALREADY_PAID',
 }
 
@@ -40,6 +44,14 @@ export enum TaxPaidStatusEnum {
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
+}
+
+export enum InstallmentPaidStatusEnum {
+  NOT_PAID = 'NOT_PAID',
+  PARTIALLY_PAID = 'PARTIALLY_PAID',
+  PAID = 'PAID',
+  OVER_PAID = 'OVER_PAID',
+  AFTER_DUE_DATE = 'AFTER_DUE_DATE'
 }
 
 export class ResponseTaxPayerDto {
@@ -629,22 +641,14 @@ export class InstallmentItem {
 
   @ApiProperty({
     description: 'Payment status',
-    enum: TaxPaidStatusEnum,
-    enumName: 'TaxPaidStatusEnum',
+    enum: InstallmentPaidStatusEnum,
+    enumName: 'InstallmentPaidStausEnum',
   })
-  status: TaxPaidStatusEnum
-
-  @ApiProperty({ description: 'Amount already paid', example: 50 })
-  paidAmount: number
+  status: InstallmentPaidStatusEnum
 
   @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
   remainingAmount: number
 
-  @ApiProperty({ description: 'Variable symbol', required: false })
-  variableSymbol?: string
-
-  @ApiProperty({ description: 'QR code', required: false })
-  qrCode?: string
 }
 
 // OneTimePaymentDetails
@@ -658,17 +662,17 @@ export class OneTimePaymentDetails {
 
   @ApiProperty({
     description: 'Type of payment',
-    enum: ['ONE_TIME_PAYMENT', 'REMAINING_AMOUNT_PAYMENT'],
+    enum: OneTimePaymentTypeEnum,
     required: false,
   })
-  type?: 'ONE_TIME_PAYMENT' | 'REMAINING_AMOUNT_PAYMENT'
+  type?: OneTimePaymentTypeEnum
 
   @ApiProperty({
     description: 'Reason why payment is not possible',
-    enum: ['ALREADY_PAID'],
+    enum: OneTimePaymentReasonNotPossibleEnum,
     required: false,
   })
-  reasonNotPossible?: 'ALREADY_PAID'
+  reasonNotPossible?: OneTimePaymentReasonNotPossibleEnum
 
   @ApiProperty({
     description: 'Payment amount',
@@ -699,6 +703,20 @@ export class OneTimePaymentDetails {
   paymentGatewayLink?: string
 }
 
+export class ActiveInstallment {
+  @ApiProperty({ description: 'Amount already paid', example: 50 })
+  paidAmount: number
+
+  @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
+  remainingAmount: number
+
+  @ApiProperty({ description: 'Variable symbol', required: false })
+  variableSymbol: string
+
+  @ApiProperty({ description: 'QR code', required: false })
+  qrCode: string
+}
+
 // InstallmentPaymentDetail
 export class InstallmentPaymentDetail {
   @ApiProperty({
@@ -721,6 +739,8 @@ export class InstallmentPaymentDetail {
     isArray: true,
   })
   installments?: InstallmentItem[]
+
+  activeInstallment?: ActiveInstallment
 }
 
 // TaxSummaryDetail

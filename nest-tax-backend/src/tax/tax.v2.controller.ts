@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, UseGuards } from '@nestjs/common'
+import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common'
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -14,33 +14,28 @@ import {
   ResponseErrorDto,
   ResponseInternalServerErrorDto,
 } from 'src/utils/guards/dtos/error.dto'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { TaxService } from './tax.service'
-import { TaxSummaryDetail } from './dtos/response.pdf.dto'
+import { TaxSummaryDetail } from './dtos/response.tax.dto'
 
 @ApiTags('tax')
 @ApiBearerAuth()
 @Controller({ path: 'tax', version: '2' })
 export class TaxControllerV2 {
-  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly taxService: TaxService,
-    private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new LineLoggerSubservice(TaxControllerV2.name)
   }
 
   @HttpCode(200)
   @ApiOperation({
-    summary: 'Get tax detail.',
+    summary: 'Get tax detail by year.',
   })
   @ApiResponse({
     status: 200,
-    description: 'TODO', // TODO add description
+    description: 'Load tax detail about user.',
     type: TaxSummaryDetail,
   })
   @ApiResponse({
@@ -54,11 +49,15 @@ export class TaxControllerV2 {
     type: ResponseInternalServerErrorDto,
   })
   // TODO errors
-  @Tiers(CognitoTiersEnum.IDENTITY_CARD)
-  @UseGuards(TiersGuard)
-  @UseGuards(AuthenticationGuard)
-  @Get('tax-detail')
-  async getTaxDetail(@BratislavaUser() baUser: BratislavaUserDto) {
-    return this.taxService.getTaxDetail(baUser.birthNumber)
+  // @Tiers(CognitoTiersEnum.IDENTITY_CARD)
+  // @UseGuards(TiersGuard)
+  // @UseGuards(AuthenticationGuard)
+  @Get('get-tax-detail-by-year')
+  async getTaxDetailByYear(
+    // @BratislavaUser() baUser: BratislavaUserDto,
+    // @Query('year') year: number,
+  ) {
+    // TODO return all taxes
+    return this.taxService.getTaxDetail('1234567890', 2025)
   }
 }

@@ -2,12 +2,22 @@ import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import {
+  InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
+  OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
   TaxPaidStatusEnum,
 } from '../dtos/response.tax.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import { CustomErrorTaxTypesEnum, CustomErrorTaxTypesResponseEnum } from '../dtos/error.dto'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../dtos/error.dto'
+import {
+  QrCodeGeneratorDto,
+  QrPaymentNoteEnum,
+} from '../../utils/subservices/dtos/qrcode.dto'
+import { ApiProperty } from '@nestjs/swagger'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -57,13 +67,13 @@ const calculateDueDate = (dateOfValidity: Date | null) => {
   const dueDateBase = dayjs(dateOfValidity).add(20, 'day')
   const dueDate = getNextWorkingDay(dueDateBase)
 
-  return dueDate.toDate()
+  return dueDate
 }
 
 const calculateInstallmentAmounts = (
   installments: { order: string | null; amount: number }[],
   overallPaid: number,
-): { toPay: number; paid: number; status: TaxPaidStatusEnum }[] => {
+): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
   const amounts = [1, 2, 3].map(
     (order) =>
       installments.find((installment) => installment.order === order.toString())
@@ -86,10 +96,10 @@ const calculateInstallmentAmounts = (
 
     const status =
       toPay === 0
-        ? TaxPaidStatusEnum.PAID
+        ? InstallmentPaidStatusEnum.PAID
         : toPay === amount
-          ? TaxPaidStatusEnum.NOT_PAID
-          : TaxPaidStatusEnum.PARTIALLY_PAID
+          ? InstallmentPaidStatusEnum.NOT_PAID
+          : InstallmentPaidStatusEnum.PARTIALLY_PAID
 
     return { toPay, paid, status }
   })
@@ -102,56 +112,46 @@ type InstallmentPaymentDetailWithQrCodeAndUrlArgs = {
     {
       installmentNumber: 1
       dueDate?: Date
-      status: TaxPaidStatusEnum
+      status: InstallmentPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
-      qrCodeArgs?: {
-        amount: number
-        variableSymbol: string
-        specificSymbol: string
-      }
+      qrCodeArgs?: QrCodeGeneratorDto
     },
     {
       installmentNumber: 2
       dueDate: Date
-      status: TaxPaidStatusEnum
+      status: InstallmentPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
-      qrCodeArgs?: {
-        amount: number
-        variableSymbol: string
-        specificSymbol: string
-      }
+      qrCodeArgs?: QrCodeGeneratorDto
     },
     {
       installmentNumber: 3
       dueDate: Date
-      status: TaxPaidStatusEnum
+      status: InstallmentPaidStatusEnum
       paidAmount: number
       remainingAmount: number
       variableSymbol?: string
-      qrCodeArgs?: {
-        amount: number
-        variableSymbol: string
-        specificSymbol: string
-      }
+      qrCodeArgs?: QrCodeGeneratorDto
     },
   ]
+  activeInstallment?: {
+  paidAmount: number
+  remainingAmount: number
+  variableSymbol: string
+  qrCode: string
+  }
 }
 
 type OneTimePaymentDetailsWithQrCodeAndUrlArgs = {
   isPossible: boolean
   type?: OneTimePaymentTypeEnum
-  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID
+  reasonNotPossible?: OneTimePaymentReasonNotPossibleEnum
   amount?: number
   dueDate?: Date
-  qrCodeArgs?: {
-    amount: number
-    variableSymbol: string
-    specificSymbol: string
-  }
+  qrCodeArgs?: QrCodeGeneratorDto
   variableSymbol?: string
 }
 
@@ -165,7 +165,177 @@ type TaxSummaryDetailWithQrCodeAndUrlArgs = {
   installmentPayment: InstallmentPaymentDetailWithQrCodeAndUrlArgs
 }
 
-export const getTaxDetailWithoutQrAndUrl = (
+function calculateInstallmentPaymentDetails(
+  overallAmount: number,
+  overallPaid: number,
+  today: Date,
+  taxYear: number,
+  payment_calendar_threshold: string,
+  dateOfValidity: Date | null,
+  installments: { order: string | null; amount: number }[],
+  variableSymbol: string,
+  bratislavaTimeZone = 'Europe/Bratislava',
+): InstallmentPaymentDetailWithQrCodeAndUrlArgs {
+  const installmentPayment: InstallmentPaymentDetailWithQrCodeAndUrlArgs = {
+    isPossible: false,
+  }
+
+  const novemberFirst = dayjs(
+    new Date(`${taxYear}-${payment_calendar_threshold}`),
+  )
+
+  if (dayjs(today) >= novemberFirst) {
+    installmentPayment.reasonNotPossible =
+      InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE
+  }
+  if (overallAmount < 6600) {
+    installmentPayment.reasonNotPossible =
+      InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD
+  }
+  if (overallAmount - overallPaid <= 0) {
+    installmentPayment.reasonNotPossible =
+      InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID
+  } else {
+    const fistPaymentDueDate = calculateDueDate(dateOfValidity)
+
+    const installmentAmounts = calculateInstallmentAmounts(
+      installments,
+      overallPaid,
+    )
+
+    installmentPayment.isPossible = true
+    if (fistPaymentDueDate && fistPaymentDueDate > dayjs(today)) {
+      installmentPayment.installments = [
+        {
+          installmentNumber: 1,
+          dueDate: fistPaymentDueDate.toDate(),
+          status: installmentAmounts[0].status,
+          paidAmount: installmentAmounts[0].paid,
+          remainingAmount: installmentAmounts[0].toPay,
+          variableSymbol,
+          qrCodeArgs: {
+            amount: installmentAmounts[0].toPay,
+            variableSymbol: variableSymbol,
+            specificSymbol: '2024200000',
+            paymentNote: QrPaymentNoteEnum.QR_firstInstallment,
+          },
+        },
+        {
+          installmentNumber: 2,
+          dueDate: dayjs
+            .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+            .toDate(),
+          status: installmentAmounts[1].status,
+          paidAmount: installmentAmounts[1].paid,
+          remainingAmount: installmentAmounts[1].toPay,
+          variableSymbol,
+          qrCodeArgs: {
+            amount: installmentAmounts[1].toPay,
+            variableSymbol: variableSymbol,
+            specificSymbol: '2024200000',
+            paymentNote: QrPaymentNoteEnum.QR_secondInstallment,
+          },
+        },
+        {
+          installmentNumber: 3,
+          dueDate: dayjs
+            .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+            .toDate(),
+          status: installmentAmounts[2].status,
+          paidAmount: installmentAmounts[2].paid,
+          remainingAmount: installmentAmounts[2].toPay,
+          variableSymbol,
+          qrCodeArgs: {
+            amount: installmentAmounts[2].toPay,
+            variableSymbol: variableSymbol,
+            specificSymbol: '2024200000',
+            paymentNote: QrPaymentNoteEnum.QR_thirdInstallment,
+          },
+        },
+      ]
+    } else {
+      installmentPayment.installments = [
+        {
+          installmentNumber: 1,
+          dueDate: fistPaymentDueDate?.toDate(),
+          status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+          paidAmount: installmentAmounts[0].paid,
+          remainingAmount: 0,
+          variableSymbol,
+        },
+        {
+          installmentNumber: 2,
+          dueDate: dayjs
+            .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+            .toDate(),
+          status: installmentAmounts[1].status,
+          paidAmount: installmentAmounts[1].paid,
+          remainingAmount:
+            installmentAmounts[1].toPay + installmentAmounts[0].toPay,
+          variableSymbol,
+          qrCodeArgs: {
+            amount: installmentAmounts[1].toPay + installmentAmounts[0].toPay,
+            variableSymbol: variableSymbol,
+            specificSymbol: '2024200000',
+            paymentNote: QrPaymentNoteEnum.QR_firstSecondInstallment,
+          },
+        },
+        {
+          installmentNumber: 3,
+          dueDate: dayjs
+            .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+            .toDate(),
+          status: installmentAmounts[2].status,
+          paidAmount: installmentAmounts[2].paid,
+          remainingAmount: installmentAmounts[2].toPay,
+          variableSymbol,
+          qrCodeArgs: {
+            amount: installmentAmounts[2].toPay,
+            variableSymbol: variableSymbol,
+            specificSymbol: '2024200000',
+            paymentNote: QrPaymentNoteEnum.QR_thirdInstallment,
+          },
+        },
+      ]
+    }
+  }
+  return installmentPayment
+}
+
+function calculateOneTimePaymentDetails(
+  overallPaid: number,
+  overallBalance: number,
+  dueDate: Date | undefined,
+  variableSymbol: string,
+): OneTimePaymentDetailsWithQrCodeAndUrlArgs {
+  if (overallBalance === 0) {
+    return {
+      isPossible: false,
+      reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
+    }
+  }
+  return {
+    isPossible: true,
+    type:
+      overallPaid > 0
+        ? OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
+        : OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
+    amount: overallBalance,
+    dueDate: dueDate,
+    qrCodeArgs: {
+      amount: overallBalance,
+      variableSymbol: variableSymbol,
+      specificSymbol: '2024200000',
+      paymentNote:
+        overallPaid > 0
+          ? QrPaymentNoteEnum.QR_remainingAmount
+          : QrPaymentNoteEnum.QR_oneTimePay,
+    },
+    variableSymbol,
+  }
+}
+
+export const getTaxDetailPure = (
   overallPaid: number, // zaplatená suma
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
@@ -183,90 +353,25 @@ export const getTaxDetailWithoutQrAndUrl = (
 
   const dueDate = calculateDueDate(dateOfValidity)
 
-  const oneTimePayment: OneTimePaymentDetailsWithQrCodeAndUrlArgs = {
-    isPossible: true,
-    type:
-      overallPaid > 0
-        ? OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
-        : OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT,
-    amount: overallBalance,
-    dueDate: dueDate,
-    qrCodeArgs: {
-      amount: overallBalance,
-      variableSymbol: variableSymbol,
-      specificSymbol: '2024200000',
-    },
-    variableSymbol,
-  }
+  const oneTimePayment: OneTimePaymentDetailsWithQrCodeAndUrlArgs =
+    calculateOneTimePaymentDetails(
+      overallPaid,
+      overallBalance,
+      dueDate?.toDate(),
+      variableSymbol,
+    )
 
-  const installmentPayment: InstallmentPaymentDetailWithQrCodeAndUrlArgs = {
-    isPossible: false,
-  }
-
-  const novemberFirst = new Date(`${taxYear}-${payment_calendar_threshold}`)
-
-  const installmentAmounts = calculateInstallmentAmounts(
-    installments,
+  const installmentPayment = calculateInstallmentPaymentDetails(
+    overallAmount,
     overallPaid,
+    today,
+    taxYear,
+    payment_calendar_threshold,
+    dateOfValidity,
+    installments,
+    variableSymbol,
+    bratislavaTimeZone,
   )
-
-  if (today < novemberFirst) {
-    installmentPayment.reasonNotPossible =
-      InstallmentPaymentReasonNotPossibleEnum.AFTER_DATE
-  }
-  if (overallBalance > 6600) {
-    installmentPayment.reasonNotPossible =
-      InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD
-  } else {
-    const fistPaymentDueDate = calculateDueDate(dateOfValidity)
-
-    installmentPayment.isPossible = true
-    installmentPayment.installments = [
-      {
-        installmentNumber: 1,
-        dueDate: fistPaymentDueDate,
-        status: installmentAmounts[0].status,
-        paidAmount: installmentAmounts[0].paid,
-        remainingAmount: installmentAmounts[0].toPay,
-        variableSymbol,
-        qrCodeArgs: {
-          amount: installmentAmounts[0].toPay,
-          variableSymbol: variableSymbol,
-          specificSymbol: '2024200000',
-        },
-      },
-      {
-        installmentNumber: 2,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[1].status,
-        paidAmount: installmentAmounts[1].paid,
-        remainingAmount: installmentAmounts[1].toPay,
-        variableSymbol,
-        qrCodeArgs: {
-          amount: installmentAmounts[0].toPay,
-          variableSymbol: variableSymbol,
-          specificSymbol: '2024200000',
-        },
-      },
-      {
-        installmentNumber: 3,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[2].status,
-        paidAmount: installmentAmounts[2].paid,
-        remainingAmount: installmentAmounts[2].toPay,
-        variableSymbol,
-        qrCodeArgs: {
-          amount: installmentAmounts[0].toPay,
-          variableSymbol: variableSymbol,
-          specificSymbol: '2024200000',
-        },
-      },
-    ]
-  }
 
   return {
     overallPaid,

@@ -48,117 +48,115 @@ describe('TasksService', () => {
   })
 
   describe('sendUnpaidTaxReminders', () => {
-    if (process.env.FEATURE_TOGGLE_REMINDER_UNPAID_TAX) {
-      it('should not do anything when there are no taxes', async () => {
-        const findManyMock = jest
-          .spyOn(service['prismaService'].tax, 'findMany')
-          .mockResolvedValue([])
-        const trackEventUnpaidTaxReminderMock = jest.spyOn(
-          service['bloomreachService'],
-          'trackEventUnpaidTaxReminder',
-        )
+    it('should not do anything when there are no taxes', async () => {
+      const findManyMock = jest
+        .spyOn(service['prismaService'].tax, 'findMany')
+        .mockResolvedValue([])
+      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+        service['bloomreachService'],
+        'trackEventUnpaidTaxReminder',
+      )
 
-        await service.sendUnpaidTaxReminders()
+      await service.sendUnpaidTaxReminders()
 
-        expect(findManyMock).toHaveBeenCalled()
-        expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
-      })
+      expect(findManyMock).toHaveBeenCalled()
+      expect(trackEventUnpaidTaxReminderMock).not.toHaveBeenCalled()
+    })
 
-      it('should send payment reminder events when there are taxes', async () => {
-        const findManyMock = jest
-          .spyOn(service['prismaService'].tax, 'findMany')
-          .mockResolvedValue([
-            {
-              id: 1,
-              year: 2024,
-              taxPayer: {
-                birthNumber: '123456/7890',
-              },
-            },
-          ] as any)
-        const trackEventUnpaidTaxReminderMock = jest.spyOn(
-          service['bloomreachService'],
-          'trackEventUnpaidTaxReminder',
-        )
-        jest
-          .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
-          .mockResolvedValue({
-            '123456/7890': {
-              externalId: 'external-id-123',
-            },
-          } as any)
-        jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
-
-        await service.sendUnpaidTaxReminders()
-
-        expect(findManyMock).toHaveBeenCalled()
-        expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+    it('should send payment reminder events when there are taxes', async () => {
+      const findManyMock = jest
+        .spyOn(service['prismaService'].tax, 'findMany')
+        .mockResolvedValue([
           {
+            id: 1,
             year: 2024,
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
           },
-          'external-id-123',
-        )
-      })
+        ] as any)
+      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+        service['bloomreachService'],
+        'trackEventUnpaidTaxReminder',
+      )
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/7890': {
+            externalId: 'external-id-123',
+          },
+        } as any)
+      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
 
-      it('should send payment reminder event for each tax where there is user from city account', async () => {
-        const findManyMock = jest
-          .spyOn(service['prismaService'].tax, 'findMany')
-          .mockResolvedValue([
-            {
-              id: 1,
-              year: 2024,
-              taxPayer: {
-                birthNumber: '123456/7890',
-              },
-            },
-            {
-              id: 2,
-              year: 2024,
-              taxPayer: {
-                birthNumber: '123456/7891',
-              },
-            },
-            {
-              id: 3,
-              year: 2024,
-              taxPayer: {
-                birthNumber: '123456/7892',
-              },
-            },
-          ] as any)
-        const trackEventUnpaidTaxReminderMock = jest.spyOn(
-          service['bloomreachService'],
-          'trackEventUnpaidTaxReminder',
-        )
-        jest
-          .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
-          .mockResolvedValue({
-            '123456/7890': {
-              externalId: 'external-id-1',
-            },
-            '123456/7891': {
-              externalId: 'external-id-2',
-            },
-          } as any)
-        jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+      await service.sendUnpaidTaxReminders()
 
-        await service.sendUnpaidTaxReminders()
+      expect(findManyMock).toHaveBeenCalled()
+      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+        {
+          year: 2024,
+        },
+        'external-id-123',
+      )
+    })
 
-        expect(findManyMock).toHaveBeenCalled()
-        expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)
-        expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+    it('should send payment reminder event for each tax where there is user from city account', async () => {
+      const findManyMock = jest
+        .spyOn(service['prismaService'].tax, 'findMany')
+        .mockResolvedValue([
           {
+            id: 1,
             year: 2024,
+            taxPayer: {
+              birthNumber: '123456/7890',
+            },
           },
-          'external-id-1',
-        )
-        expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
           {
+            id: 2,
             year: 2024,
+            taxPayer: {
+              birthNumber: '123456/7891',
+            },
           },
-          'external-id-2',
-        )
-      })
-    }
+          {
+            id: 3,
+            year: 2024,
+            taxPayer: {
+              birthNumber: '123456/7892',
+            },
+          },
+        ] as any)
+      const trackEventUnpaidTaxReminderMock = jest.spyOn(
+        service['bloomreachService'],
+        'trackEventUnpaidTaxReminder',
+      )
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/7890': {
+            externalId: 'external-id-1',
+          },
+          '123456/7891': {
+            externalId: 'external-id-2',
+          },
+        } as any)
+      jest.spyOn(service['logger'], 'log').mockImplementation(() => {})
+
+      await service.sendUnpaidTaxReminders()
+
+      expect(findManyMock).toHaveBeenCalled()
+      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledTimes(2)
+      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+        {
+          year: 2024,
+        },
+        'external-id-1',
+      )
+      expect(trackEventUnpaidTaxReminderMock).toHaveBeenCalledWith(
+        {
+          year: 2024,
+        },
+        'external-id-2',
+      )
+    })
   })
 })

@@ -19,7 +19,14 @@ import {
   ResponseTaxDto,
 } from './dtos/requests.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { getTaxStatus } from './utils/helpers/tax.helper'
+import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
+import {
+  InstallmentPaymentDetail,
+  OneTimePaymentDetails,
+  TaxSummaryDetail,
+} from './dtos/response.pdf.dto'
+import dayjs from 'dayjs'
+import { get_tax_detail } from './utils/unified-tax.util'
 
 @Injectable()
 export class TaxService {
@@ -28,6 +35,25 @@ export class TaxService {
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
+
+  private async getAmountAlreadyPaidByTaxId(id: number) {
+    const taxPayment = await this.prisma.taxPayment.groupBy({
+      by: ['taxId'],
+      where: {
+        taxId: id,
+        status: PaymentStatus.SUCCESS,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+
+    let total = 0
+    if (taxPayment.length === 1) { // length can only be 0 or 1
+      total = taxPayment[0]._sum.amount || 0
+    }
+    return total
+  }
 
   async getTaxByYear(
     year: number,
@@ -61,25 +87,11 @@ export class TaxService {
       )
     }
 
-    const taxPayment = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
-      where: {
-        taxId: tax.id,
-        status: PaymentStatus.SUCCESS,
-      },
-      _sum: {
-        amount: true,
-      },
-    })
+    const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
-    let total = 0
-    if (taxPayment.length === 1) {
-      total = taxPayment[0]._sum.amount || 0
-    }
-
-    if (total > 0 && tax.amount - total > 0) {
+    if (paidAmount > 0 && tax.amount - paidAmount > 0) {
       const qrCode = await this.qrCodeSubservice.createQrCode({
-        amount: tax.amount - total,
+        amount: tax.amount - paidAmount,
         variableSymbol: tax.variableSymbol,
         specificSymbol: '2023200000',
       })
@@ -87,23 +99,9 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = tax.taxInstallments.map((taxInstallment, i) => {
-      if (i === 1) {
-        return {
-          ...taxInstallment,
-          text: `- druhá splátka v termíne do 31.08.${tax.year} v sume:`,
-        }
-      }
-      if (i === 2) {
-        return {
-          ...taxInstallment,
-          text: `- tretia splátka v termíne do 31.10.${tax.year} v sume:`,
-        }
-      }
-      return taxInstallment
-    })
+    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
 
-    const paidStatus = getTaxStatus(tax.amount, total)
+    const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
     // TODO: We stopped generating PDFs in 2024, edit this for advanced logic
     // const pdfExport = year <= 2023
@@ -115,7 +113,7 @@ export class TaxService {
     return {
       ...tax,
       taxInstallments,
-      paidAmount: total,
+      paidAmount,
       paidStatus,
       pdfExport,
       isPayable,
@@ -208,5 +206,115 @@ export class TaxService {
         error instanceof Error ? error : undefined,
       )
     }
+  }
+
+  async getTaxDetail(birthNumber: string): Promise<TaxSummaryDetail> {
+    if (!birthNumber) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const today = dayjs().tz('Europe/Bratislava')
+    const currentYear = today.year()
+
+    const tax = await this.prisma.tax.findFirst({
+      where: {
+        year: currentYear,
+        taxPayer: {
+          birthNumber,
+        },
+      },
+      include: {
+        taxInstallments: true,
+        taxPayer: true,
+        taxDetails: true,
+        taxEmployees: true,
+      },
+    })
+
+    if (!tax) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_USER_NOT_FOUND,
+      )
+    }
+
+    const taxPaymentSum = await this.prisma.taxPayment.aggregate({
+      where: {
+        taxId: tax.id,
+        status: PaymentStatus.SUCCESS,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+
+    const overallPaidTax = taxPaymentSum._sum.amount || 0
+
+    const installmentsValid = 'TODO'
+
+    // TODO dateOfValidity
+    const detailWithoutQrCode = get_tax_detail(
+      overallPaidTax,
+      currentYear,
+      today.toDate(),
+      tax.amount,
+      '11-1',
+      tax.variableSymbol,
+      tax.dateTaxRuling,
+      tax.taxInstallments,
+    )
+
+    let oneTimePaymentQrCode: string | undefined = undefined
+    if (detailWithoutQrCode.oneTimePayment.qrCodeArgs) {
+      oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
+        detailWithoutQrCode.oneTimePayment.qrCodeArgs,
+      )
+      delete detailWithoutQrCode.oneTimePayment.qrCodeArgs
+    }
+    const oneTimePayment: OneTimePaymentDetails = {
+      ...detailWithoutQrCode.oneTimePayment,
+      qrCode: oneTimePaymentQrCode,
+    }
+
+    let installmentsQrCodes: string[] | undefined = undefined
+    if (detailWithoutQrCode.installmentPayment.installments) {
+      installmentsQrCodes = await Promise.all(
+        detailWithoutQrCode.installmentPayment.installments.map(
+          async (installment) => {
+            return await this.qrCodeSubservice.createQrCode(
+              installment.qrCodeArgs!,
+            )
+          },
+        ),
+      )
+      delete detailWithoutQrCode.installmentPayment.installments[0].qrCodeArgs
+      delete detailWithoutQrCode.installmentPayment.installments[1].qrCodeArgs
+      delete detailWithoutQrCode.installmentPayment.installments[2].qrCodeArgs
+    }
+
+    const installmentPayment: InstallmentPaymentDetail = {
+      ...detailWithoutQrCode.installmentPayment,
+      installments: detailWithoutQrCode.installmentPayment.installments
+        ? [
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[0],
+              qrCode: installmentsQrCodes?.[0],
+            },
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[1],
+              qrCode: installmentsQrCodes?.[1],
+            },
+            {
+              ...detailWithoutQrCode.installmentPayment.installments[2],
+              qrCode: installmentsQrCodes?.[2],
+            },
+          ]
+        : undefined,
+    }
+
+    return {...detailWithoutQrCode, oneTimePayment, installmentPayment}
   }
 }

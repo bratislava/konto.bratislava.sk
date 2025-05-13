@@ -188,7 +188,7 @@ export class TasksService {
     if (process.env.FEATURE_TOGGLE_REMINDER_UNPAID_TAX !== 'true') {
       return
     }
-    const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate() // 20 days ago
+    const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate()
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,

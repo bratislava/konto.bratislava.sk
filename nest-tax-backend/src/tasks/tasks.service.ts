@@ -231,7 +231,9 @@ export class TasksService {
       },
     })
 
-    if (taxes.length === 0) return
+    if (taxes.length === 0) {
+      return
+    }
     this.logger.log(
       `TasksService: Sending unpaid tax reminder events for taxes: ${JSON.stringify(
         taxes.map((tax) => ({

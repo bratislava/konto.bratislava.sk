@@ -86,12 +86,12 @@ axiosInstance.interceptors.request.use(async (config) => {
     authSession = await config.getSsrAuthSession()
   }
 
-  // if (!authSession.identityId) {
-  //   // If guest access is enabled both in Amplify client configuration and Amplify admin console administration, this should never happen.
-  //   throw new Error(
-  //     'Failed to retrieve identityId from authentication session. Please check that guest access is enabled in the Amplify client configuration and the Amplify admin console.',
-  //   )
-  // }
+  if (!authSession.identityId) {
+    // If guest access is enabled both in Amplify client configuration and Amplify admin console administration, this should never happen.
+    throw new Error(
+      'Failed to retrieve identityId from authentication session. Please check that guest access is enabled in the Amplify client configuration and the Amplify admin console.',
+    )
+  }
 
   // `authSession.tokens` is synonymous with user being signed in
   if (authSession.tokens) {
@@ -106,7 +106,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
     case 'authOrGuestWithToken':
       // eslint-disable-next-line no-param-reassign
-      // config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId
+      config.headers['X-Cognito-Guest-Identity-Id'] = authSession.identityId
       break
 
     default:

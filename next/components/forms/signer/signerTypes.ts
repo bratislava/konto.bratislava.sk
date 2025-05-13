@@ -12,7 +12,7 @@ declare global {
     }
 
     interface DSigXadesBpJs {
-      deploy: (options: unknown, callback: Callback) => void
+      deploy: (options: { platforms: string[] }, callback: Callback) => void
       initialize: (callback: Callback) => void
       addXmlObject: (
         objectId: string,

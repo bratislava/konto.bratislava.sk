@@ -1358,8 +1358,15 @@ export default schema(
       {
         title: 'Nezaopatrené deti do 25 rokov',
         stepperTitle: 'Nezaopatrené dieťa/deti',
-        description:
-          'Nezaopatrené dieťa je dieťa, ktoré nemá ukončenú povinnú 10-ročnú školskú dochádzku alebo sústavne študuje dennou formou štúdia, najdlhšie však do dovŕšenia 25 rokov, prípadne sa nemôže sústavne pripravovať na budúce povolanie alebo vykonávať zárobkovú činnosť pre chorobu alebo úraz.',
+        description: `Nezaopatrené dieťa je dieťa, ktoré:
+
+- má menej ako 25 rokov a zároveň
+- navštevuje školu dennou formou štúdia (napr. základná, stredná alebo vysoká škola v dennom štúdiu),
+- alebo je v predškolskom veku,
+- alebo sa nemôže učiť ani pracovať kvôli vážnej chorobe alebo úrazu (potvrdené lekárom).
+
+**Poznámka: Ak osoba nespĺňa uvedené podmienky, prosím, uveďte ju v ďalšej časti žiadosti „Iní členovia/členky domácnosti“.**`,
+        descriptionMarkdown: true,
       },
       (ziadatelTzpPreukaz) => [
         radioGroup(

@@ -4,7 +4,6 @@ All URIs are relative to _http://localhost:3000_
 
 | Method                                                                          | HTTP request                                  | Description         |
 | ------------------------------------------------------------------------------- | --------------------------------------------- | ------------------- |
-| [**nasesControllerCheckSendConditions**](#nasescontrollerchecksendconditions)   | **GET** /nases/eid/can-send/{id}              |                     |
 | [**nasesControllerCreateForm**](#nasescontrollercreateform)                     | **POST** /nases/create-form                   |                     |
 | [**nasesControllerDeleteForm**](#nasescontrollerdeleteform)                     | **DELETE** /nases/{id}                        |                     |
 | [**nasesControllerGetForm**](#nasescontrollergetform)                           | **GET** /nases/form/{id}                      |                     |
@@ -12,64 +11,7 @@ All URIs are relative to _http://localhost:3000_
 | [**nasesControllerMigrateForm**](#nasescontrollermigrateform)                   | **POST** /nases/migrate-form/{id}             |                     |
 | [**nasesControllerSendAndUpdateForm**](#nasescontrollersendandupdateform)       | **POST** /nases/send-and-update-form/{id}     |                     |
 | [**nasesControllerSendAndUpdateFormEid**](#nasescontrollersendandupdateformeid) | **POST** /nases/eid/send-and-update-form/{id} |                     |
-| [**nasesControllerSendForm**](#nasescontrollersendform)                         | **POST** /nases/send-form/{id}                |                     |
-| [**nasesControllerSendFormEid**](#nasescontrollersendformeid)                   | **POST** /nases/eid/send-form/{id}            |                     |
 | [**nasesControllerUpdateForm**](#nasescontrollerupdateform)                     | **POST** /nases/update-form/{id}              |                     |
-| [**nasesControllerUpdateFormEid**](#nasescontrollerupdateformeid)               | **POST** /nases/eid/update-form/{id}          |                     |
-
-# **nasesControllerCheckSendConditions**
-
-> CanSendResponseDto nasesControllerCheckSendConditions(eidSendFormRequestDto)
-
-Check if given form can be sent to Nases (all files are scanned etc.)
-
-### Example
-
-```typescript
-import { NasesApi, Configuration, EidSendFormRequestDto } from './api'
-
-const configuration = new Configuration()
-const apiInstance = new NasesApi(configuration)
-
-let id: string // (default to undefined)
-let eidSendFormRequestDto: EidSendFormRequestDto //
-
-const { status, data } = await apiInstance.nasesControllerCheckSendConditions(
-  id,
-  eidSendFormRequestDto,
-)
-```
-
-### Parameters
-
-| Name                      | Type                      | Description | Notes                 |
-| ------------------------- | ------------------------- | ----------- | --------------------- |
-| **eidSendFormRequestDto** | **EidSendFormRequestDto** |             |                       |
-| **id**                    | [**string**]              |             | defaults to undefined |
-
-### Return type
-
-**CanSendResponseDto**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description                          | Response headers |
-| ----------- | ------------------------------------ | ---------------- |
-| **200**     |                                      | -                |
-| **401**     | Unauthorized.                        | -                |
-| **403**     | It is forbidden to access this form. | -                |
-| **404**     | Form was not found.                  | -                |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **nasesControllerCreateForm**
 
@@ -111,13 +53,10 @@ const { status, data } = await apiInstance.nasesControllerCreateForm(createFormR
 
 ### HTTP response details
 
-| Status code | Description                                        | Response headers |
-| ----------- | -------------------------------------------------- | ---------------- |
-| **200**     | Create form in db                                  | -                |
-| **201**     |                                                    | -                |
-| **401**     | Unauthorized.                                      | -                |
-| **404**     | Form definition not found                          | -                |
-| **500**     | Internal server error, usually database connected. | -                |
+| Status code | Description       | Response headers |
+| ----------- | ----------------- | ---------------- |
+| **200**     | Create form in db | -                |
+| **201**     |                   | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -157,17 +96,13 @@ void (empty response body)
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: Not defined
 
 ### HTTP response details
 
-| Status code | Description                   | Response headers |
-| ----------- | ----------------------------- | ---------------- |
-| **200**     | Form successfully deleted     | -                |
-| **400**     | Bad request error.            | -                |
-| **401**     | Unauthorized.                 | -                |
-| **403**     | This form is some else\&#39;s | -                |
-| **404**     | Form not found.               | -                |
+| Status code | Description               | Response headers |
+| ----------- | ------------------------- | ---------------- |
+| **200**     | Form successfully deleted | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -211,12 +146,9 @@ const { status, data } = await apiInstance.nasesControllerGetForm(id)
 
 ### HTTP response details
 
-| Status code | Description                       | Response headers |
-| ----------- | --------------------------------- | ---------------- |
-| **200**     | Return form                       | -                |
-| **401**     | Unauthorized.                     | -                |
-| **403**     | This form is owned by other user. | -                |
-| **404**     | Not found error.                  | -                |
+| Status code | Description | Response headers |
+| ----------- | ----------- | ---------------- |
+| **200**     | Return form | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -274,12 +206,9 @@ const { status, data } = await apiInstance.nasesControllerGetForms(
 
 ### HTTP response details
 
-| Status code | Description                                        | Response headers |
-| ----------- | -------------------------------------------------- | ---------------- |
-| **200**     | Return forms                                       | -                |
-| **401**     | Unauthorized.                                      | -                |
-| **404**     | Form definition not found                          | -                |
-| **500**     | Internal server error, usually database connected. | -                |
+| Status code | Description  | Response headers |
+| ----------- | ------------ | ---------------- |
+| **200**     | Return forms | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -323,13 +252,10 @@ const { status, data } = await apiInstance.nasesControllerMigrateForm(id)
 
 ### HTTP response details
 
-| Status code | Description                             | Response headers |
-| ----------- | --------------------------------------- | ---------------- |
-| **200**     |                                         | -                |
-| **201**     |                                         | -                |
-| **401**     | Unauthorized.                           | -                |
-| **403**     | The form is already assigned to someone | -                |
-| **404**     | No such form found.                     | -                |
+| Status code | Description | Response headers |
+| ----------- | ----------- | ---------------- |
+| **200**     |             | -                |
+| **201**     |             | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -382,13 +308,6 @@ const { status, data } = await apiInstance.nasesControllerSendAndUpdateForm(
 | ----------- | -------------------------------------------------------- | ---------------- |
 | **200**     | Form was successfully send to rabbit, ant then to nases. | -                |
 | **201**     |                                                          | -                |
-| **400**     | Bad request error.                                       | -                |
-| **401**     | Unauthorized.                                            | -                |
-| **403**     | Forbidden error.                                         | -                |
-| **404**     | Not found error.                                         | -                |
-| **406**     | Provided data is not sendable, usually it is not valid.  | -                |
-| **422**     | Unprocessable entity error.                              | -                |
-| **500**     | Internal server error.                                   | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -441,121 +360,6 @@ const { status, data } = await apiInstance.nasesControllerSendAndUpdateFormEid(
 | ----------- | -------------------------------------------------------- | ---------------- |
 | **200**     | Form was successfully send to rabbit, ant then to nases. | -                |
 | **201**     |                                                          | -                |
-| **400**     | Bad request error.                                       | -                |
-| **401**     | Unauthorized.                                            | -                |
-| **403**     | Forbidden error.                                         | -                |
-| **404**     | Not found error.                                         | -                |
-| **406**     | Provided data is not sendable, usually it is not valid.  | -                |
-| **422**     | Unprocessable entity error.                              | -                |
-| **500**     | Internal server error.                                   | -                |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **nasesControllerSendForm**
-
-> SendFormResponseDto nasesControllerSendForm()
-
-This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-
-### Example
-
-```typescript
-import { NasesApi, Configuration } from './api'
-
-const configuration = new Configuration()
-const apiInstance = new NasesApi(configuration)
-
-let id: string // (default to undefined)
-
-const { status, data } = await apiInstance.nasesControllerSendForm(id)
-```
-
-### Parameters
-
-| Name   | Type         | Description | Notes                 |
-| ------ | ------------ | ----------- | --------------------- |
-| **id** | [**string**] |             | defaults to undefined |
-
-### Return type
-
-**SendFormResponseDto**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description                                              | Response headers |
-| ----------- | -------------------------------------------------------- | ---------------- |
-| **200**     | Form was successfully send to rabbit, ant then to nases. | -                |
-| **201**     |                                                          | -                |
-| **401**     | Unauthorized.                                            | -                |
-| **403**     | Forbidden error.                                         | -                |
-| **404**     | Not found error.                                         | -                |
-| **406**     | Provided data is not sendable, usually it is not valid.  | -                |
-| **422**     | Unprocessable entity error.                              | -                |
-| **500**     | Internal server error.                                   | -                |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **nasesControllerSendFormEid**
-
-> SendFormResponseDto nasesControllerSendFormEid(eidSendFormRequestDto)
-
-This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
-
-### Example
-
-```typescript
-import { NasesApi, Configuration, EidSendFormRequestDto } from './api'
-
-const configuration = new Configuration()
-const apiInstance = new NasesApi(configuration)
-
-let id: string // (default to undefined)
-let eidSendFormRequestDto: EidSendFormRequestDto //
-
-const { status, data } = await apiInstance.nasesControllerSendFormEid(id, eidSendFormRequestDto)
-```
-
-### Parameters
-
-| Name                      | Type                      | Description | Notes                 |
-| ------------------------- | ------------------------- | ----------- | --------------------- |
-| **eidSendFormRequestDto** | **EidSendFormRequestDto** |             |                       |
-| **id**                    | [**string**]              |             | defaults to undefined |
-
-### Return type
-
-**SendFormResponseDto**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description                                              | Response headers |
-| ----------- | -------------------------------------------------------- | ---------------- |
-| **200**     | Form was successfully send to rabbit, ant then to nases. | -                |
-| **201**     |                                                          | -                |
-| **401**     | Unauthorized.                                            | -                |
-| **403**     | Forbidden error.                                         | -                |
-| **404**     | Not found error.                                         | -                |
-| **406**     | Provided data is not sendable, usually it is not valid.  | -                |
-| **422**     | Unprocessable entity error.                              | -                |
-| **500**     | Internal server error.                                   | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -605,62 +409,5 @@ const { status, data } = await apiInstance.nasesControllerUpdateForm(id, updateF
 | ----------- | -------------------------------------------------------------- | ---------------- |
 | **200**     | Return charging details - price and used free minutes / hours. | -                |
 | **201**     |                                                                | -                |
-| **400**     | Bad request.                                                   | -                |
-| **401**     | Unauthorized.                                                  | -                |
-| **404**     | Not found error.                                               | -                |
-| **500**     | Internal server error, usually database connected.             | -                |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **nasesControllerUpdateFormEid**
-
-> GetFormResponseDto nasesControllerUpdateFormEid(updateFormRequestDto)
-
-Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-
-### Example
-
-```typescript
-import { NasesApi, Configuration, UpdateFormRequestDto } from './api'
-
-const configuration = new Configuration()
-const apiInstance = new NasesApi(configuration)
-
-let id: string // (default to undefined)
-let updateFormRequestDto: UpdateFormRequestDto //
-
-const { status, data } = await apiInstance.nasesControllerUpdateFormEid(id, updateFormRequestDto)
-```
-
-### Parameters
-
-| Name                     | Type                     | Description | Notes                 |
-| ------------------------ | ------------------------ | ----------- | --------------------- |
-| **updateFormRequestDto** | **UpdateFormRequestDto** |             |                       |
-| **id**                   | [**string**]             |             | defaults to undefined |
-
-### Return type
-
-**GetFormResponseDto**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-### HTTP response details
-
-| Status code | Description                                        | Response headers |
-| ----------- | -------------------------------------------------- | ---------------- |
-| **200**     | Create form in db                                  | -                |
-| **201**     |                                                    | -                |
-| **400**     | Bad request.                                       | -                |
-| **401**     | Unauthorized.                                      | -                |
-| **404**     | Not found error.                                   | -                |
-| **500**     | Internal server error, usually database connected. | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

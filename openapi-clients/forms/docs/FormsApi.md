@@ -46,13 +46,9 @@ const { status, data } = await apiInstance.formsControllerBumpJsonVersion(id)
 
 ### HTTP response details
 
-| Status code | Description                       | Response headers |
-| ----------- | --------------------------------- | ---------------- |
-| **200**     | Version successfully bumped       | -                |
-| **201**     |                                   | -                |
-| **400**     | Form version cannot be bumped     | -                |
-| **403**     | Form is owned by someone else     | -                |
-| **404**     | Form or form definition not found | -                |
-| **422**     | Form is not editable              | -                |
+| Status code | Description                 | Response headers |
+| ----------- | --------------------------- | ---------------- |
+| **200**     | Version successfully bumped | -                |
+| **201**     |                             | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

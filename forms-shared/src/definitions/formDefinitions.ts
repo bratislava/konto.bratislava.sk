@@ -201,6 +201,7 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: ziadostONajomBytuTermsAndConditions,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKiASWp',
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisAssignment: {

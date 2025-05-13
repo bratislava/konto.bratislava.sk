@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import dayjs from 'dayjs'
 
 import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -187,6 +188,7 @@ export class TasksService {
     if (process.env.FEATURE_TOGGLE_REMINDER_UNPAID_TAX !== 'true') {
       return
     }
+    const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate() // 20 days ago
     const taxes = await this.prismaService.tax.findMany({
       select: {
         id: true,
@@ -208,7 +210,7 @@ export class TasksService {
           {
             deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
             createdAt: {
-              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+              lte: TWENTY_DAYS_AGO,
             },
           },
           {
@@ -216,13 +218,13 @@ export class TasksService {
               not: DeliveryMethodNamed.CITY_ACCOUNT,
             },
             dateTaxRuling: {
-              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+              lte: TWENTY_DAYS_AGO,
             },
           },
           {
             deliveryMethod: null,
             dateTaxRuling: {
-              lte: new Date(Date.now() - 1000 * 60 * 60 * 24 * 20), // 20 days ago
+              lte: TWENTY_DAYS_AGO,
             },
           },
         ],

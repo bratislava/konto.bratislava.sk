@@ -736,5 +736,26 @@ export class AdminService {
         },
       }),
     ])
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+    if (userDataFromCityAccount) {
+      const bloomreachResponse = await this.bloomreachService.trackEventTax(
+        {
+          year,
+          amount: 0,
+          delivery_method: null,
+        },
+        userDataFromCityAccount.externalId ?? undefined,
+      )
+      if (!bloomreachResponse) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+          ),
+        )
+      }
+    }
   }
 }

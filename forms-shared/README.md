@@ -78,6 +78,20 @@ Run the following and let the script guide you. If you need modifications, or yo
   npm run update
 ```
 
+## Testing
+
+Due to inconsistencies in snapshot generation across different local machine environments, all tests must be run within a Docker container. This ensures a consistent environment for reliable test outcomes and snapshot comparisons.
+
+You can run the tests using the following npm scripts:
+
+```bash
+# Run tests in Docker
+npm run docker:test
+
+# Run tests in Docker and update snapshots on your local filesystem
+npm run docker:test:update
+```
+
 ## Notes
 
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json

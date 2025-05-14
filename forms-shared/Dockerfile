@@ -73,4 +73,4 @@ FROM test-base AS test
 CMD [ "npm", "run", "test:ci" ]
 
 FROM test-base AS test-update
-CMD [ "npm", "run", "test:update" ]
+CMD [ "npm", "run", "test:ci:update" ]

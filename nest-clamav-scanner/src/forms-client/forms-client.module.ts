@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
-import { FormsClientService } from './forms-client.service';
+import { FormsClientService } from './forms-client.service'
 
 @Module({
   imports: [ConfigModule],
@@ -13,6 +13,6 @@ export class FormsClientModule {
     private readonly formsClientService: FormsClientService,
     private readonly configService: ConfigService,
   ) {
-    this.formsClientService = new FormsClientService(configService);
+    this.formsClientService = new FormsClientService(configService)
   }
 }

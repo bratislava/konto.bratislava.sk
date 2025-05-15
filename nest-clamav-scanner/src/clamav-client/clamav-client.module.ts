@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 
-import { ClamavClientService } from './clamav-client.service';
+import { ClamavClientService } from './clamav-client.service'
 
 @Module({
   imports: [ConfigModule],
@@ -13,6 +13,6 @@ export class ClamavClientModule {
     private readonly clamavClientService: ClamavClientService,
     private readonly configService: ConfigService,
   ) {
-    this.clamavClientService = new ClamavClientService(configService);
+    this.clamavClientService = new ClamavClientService(configService)
   }
 }

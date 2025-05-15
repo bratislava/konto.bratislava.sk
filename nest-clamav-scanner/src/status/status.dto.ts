@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger'
 
 //dto for clamav version.
 export class MinioVersionDto {
@@ -6,7 +6,7 @@ export class MinioVersionDto {
     description: 'minio version',
     example: '0.102.4',
   })
-  version: string;
+  version: string
 }
 
 export class ServiceRunningDto {
@@ -14,7 +14,7 @@ export class ServiceRunningDto {
     description: 'is service running?',
     example: 'true',
   })
-  running: boolean;
+  running: boolean
 }
 
 //dto for clamav version.
@@ -23,23 +23,23 @@ export class ClamavVersionDto {
     description: 'clamav version',
     example: '1.4.2',
   })
-  version: string;
+  version: string
 }
 
 //dto for all statuses
 export class ServicesStatusDto {
   @ApiProperty({ type: ServiceRunningDto })
-  prisma: ServiceRunningDto;
+  prisma: ServiceRunningDto
 
   @ApiProperty({ type: ServiceRunningDto })
-  minio: ServiceRunningDto;
+  minio: ServiceRunningDto
 
   @ApiProperty({ type: ServiceRunningDto })
-  forms: ServiceRunningDto;
+  forms: ServiceRunningDto
 
   @ApiProperty({ type: ServiceRunningDto })
-  clamav: ServiceRunningDto;
+  clamav: ServiceRunningDto
 
   @ApiProperty({ type: ClamavVersionDto })
-  clamavVersion: ClamavVersionDto;
+  clamavVersion: ClamavVersionDto
 }

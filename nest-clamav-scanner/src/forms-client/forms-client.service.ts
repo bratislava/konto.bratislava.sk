@@ -1,12 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosPromise } from 'axios'
+import {
+  UpdateFileStatusRequestDtoStatusEnum,
+  UpdateFileStatusResponseDto,
+} from 'openapi-clients/forms'
+import ClientsService from '../clients/clients.service'
 
 @Injectable()
 export class FormsClientService {
   private readonly logger: Logger
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly clientsService: ClientsService,
+  ) {
     this.logger = new Logger('FormsClientService')
   }
 
@@ -30,19 +38,28 @@ export class FormsClientService {
   }
 
   //create function which will post array of files to forms client with axios and using forms client url NEST_FORMS_BACKEND with updated statuses
-  public async updateFileStatus(id: string, status: string) {
+  async updateFileStatus(
+    id: string,
+    status: UpdateFileStatusRequestDtoStatusEnum,
+  ): AxiosPromise<UpdateFileStatusResponseDto> {
     try {
-      const url = `${this.configService.get('NEST_FORMS_BACKEND')}/files/scan/${id}`
-      return await axios.patch(
-        url,
-        {
-          status,
-        },
+      const username: string = this.configService.get(
+        'NEST_FORMS_BACKEND_USERNAME',
+        '',
+      )
+      const password: string = this.configService.get(
+        'NEST_FORMS_BACKEND_PASSWORD',
+        '',
+      )
+
+      return await this.clientsService.formsApi.filesControllerUpdateFileStatusScannerId(
+        id,
+        { status },
         {
           timeout: 2000,
           auth: {
-            username: this.configService.get('NEST_FORMS_BACKEND_USERNAME', ''),
-            password: this.configService.get('NEST_FORMS_BACKEND_PASSWORD', ''),
+            username,
+            password,
           },
         },
       )

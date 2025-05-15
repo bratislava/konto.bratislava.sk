@@ -1,18 +1,12 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 
 import { FormsClientService } from './forms-client.service'
+import ClientsModule from '../clients/clients.module'
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, ClientsModule],
   providers: [FormsClientService],
   exports: [FormsClientService],
 })
-export class FormsClientModule {
-  constructor(
-    private readonly formsClientService: FormsClientService,
-    private readonly configService: ConfigService,
-  ) {
-    this.formsClientService = new FormsClientService(configService)
-  }
-}
+export class FormsClientModule {}

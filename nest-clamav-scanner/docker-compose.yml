@@ -3,8 +3,11 @@ services:
     depends_on:
       - postgres
     build:
-      context: .
-      # target: dev  # used only for nest-clamav-scanner development, requires volume .:/home/node/app to be mounted
+      context: ..
+      dockerfile: nest-clamav-scanner/Dockerfile
+      target: dev
+      args:
+        SHARED_PACKAGE_TAG: 'latest'
     init: true
     env_file:
       - .env
@@ -21,8 +24,9 @@ services:
       - '127.0.0.1:9229:9229'
     networks:
       - konto
-    # volumes:
-    #   - .:/home/node/app  # needed for nest-clamav-scanner development, required by target: dev
+    volumes:
+      - ../:/home/node/app
+    working_dir: /home/node/app/nest-clamav-scanner
 
   postgres:
     image: postgres:latest

@@ -22,6 +22,11 @@ on:
         type: string
         required: false
         default: 'warning'
+      run_e2e_tests:
+        description: "Run E2E tests"
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   test:
@@ -63,6 +68,11 @@ jobs:
       - name: Run unit tests
         working-directory: ${{ inputs.directory }}
         run: NODE_OPTIONS="--max-old-space-size=4096" npm run test
+
+      - name: Run E2E tests
+        if: ${{ inputs.run_e2e_tests }}
+        working-directory: ${{ inputs.directory }}
+        run: NODE_OPTIONS="--max-old-space-size=4096" npm run test:e2e
 
       - name: Typescript reviewdog check
         uses: EPMatt/reviewdog-action-tsc@v1.7.0

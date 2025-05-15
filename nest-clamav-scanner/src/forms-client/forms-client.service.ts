@@ -1,10 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import axios, { AxiosError, AxiosPromise } from 'axios'
-import {
-  UpdateFileStatusRequestDtoStatusEnum,
-  UpdateFileStatusResponseDto,
-} from 'openapi-clients/forms'
+import { AxiosError } from 'axios'
+import { UpdateFileStatusRequestDtoStatusEnum } from 'openapi-clients/forms'
 import ClientsService from '../clients/clients.service'
 
 @Injectable()
@@ -21,10 +18,12 @@ export class FormsClientService {
   //create function which will check health status of forms client with axios and using forms client url NEST_FORMS_BACKEND
   public async isRunning(): Promise<boolean> {
     try {
-      const url = `${this.configService.get('NEST_FORMS_BACKEND')}/healthcheck`
-      const response = await axios.get(url, {
-        timeout: 2000,
-      })
+      const response = await this.clientsService.formsApi.appControllerGetHello(
+        {
+          timeout: 2000,
+        },
+      )
+
       return response.status === 200
     } catch (error) {
       if (error instanceof Error) {
@@ -41,25 +40,20 @@ export class FormsClientService {
   async updateFileStatus(
     id: string,
     status: UpdateFileStatusRequestDtoStatusEnum,
-  ): AxiosPromise<UpdateFileStatusResponseDto> {
+  ) {
     try {
-      const username: string = this.configService.get(
-        'NEST_FORMS_BACKEND_USERNAME',
-        '',
-      )
-      const password: string = this.configService.get(
-        'NEST_FORMS_BACKEND_PASSWORD',
-        '',
-      )
-
       return await this.clientsService.formsApi.filesControllerUpdateFileStatusScannerId(
         id,
         { status },
         {
           timeout: 2000,
           auth: {
-            username,
-            password,
+            username: this.configService.getOrThrow<string>(
+              'NEST_FORMS_BACKEND_USERNAME',
+            ),
+            password: this.configService.getOrThrow<string>(
+              'NEST_FORMS_BACKEND_PASSWORD',
+            ),
           },
         },
       )

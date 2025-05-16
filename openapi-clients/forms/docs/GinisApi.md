@@ -46,12 +46,8 @@ const { status, data } = await apiInstance.ginisControllerGetGinisDocumentByForm
 
 ### HTTP response details
 
-| Status code | Description            | Response headers |
-| ----------- | ---------------------- | ---------------- |
-| **200**     |                        | -                |
-| **401**     | Unauthorized.          | -                |
-| **403**     | Form is Forbidden.     | -                |
-| **404**     | Form not found.        | -                |
-| **500**     | Internal server error. | -                |
+| Status code | Description | Response headers |
+| ----------- | ----------- | ---------------- |
+| **200**     |             | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

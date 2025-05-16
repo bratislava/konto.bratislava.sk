@@ -2,12 +2,11 @@
 /* eslint-disable pii/no-email */
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { FormError, FormOwnerType, FormState } from '@prisma/client'
+import { FormError, FormState } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
   IsBase64,
   IsDate,
-  IsEmail,
   IsEnum,
   IsHash,
   IsNotEmpty,
@@ -17,44 +16,6 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator'
-
-export class FormCreateBodyDto {
-  @ApiPropertyOptional({
-    description:
-      'User ID who submit this form, can be empty, if it was submitted by user through eID',
-    default: 'e5c84a71-5985-40c7-bb19-e4ad22eda41c',
-  })
-  @IsOptional()
-  @IsUUID()
-  userCognitoID?: string
-
-  @ApiPropertyOptional({
-    description: 'Email, must not be empty',
-    default: 'inovacie@bratislava.sk',
-    nullable: true,
-  })
-  @IsEmail()
-  @IsNotEmpty()
-  @IsOptional()
-  email?: string | null
-
-  @ApiPropertyOptional({
-    description: 'ID of person, who is sending this (URI)',
-    default: 'rc://8808070000/jozko_mrkvicka',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsOptional()
-  senderId?: string
-
-  @ApiPropertyOptional({
-    description: 'Type of owner (FO/PO)',
-    example: FormOwnerType.FO,
-  })
-  @IsOptional()
-  @IsEnum(FormOwnerType)
-  ownerType?: FormOwnerType
-}
 
 export class FormSignatureDto {
   @ApiProperty({

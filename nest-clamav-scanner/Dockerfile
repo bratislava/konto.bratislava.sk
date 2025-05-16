@@ -1,6 +1,6 @@
-ARG SHARED_PACKAGE_TAG
-FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
-FROM node:22.14-alpine AS base
+ARG SHARED_PACKAGE_TAG=latest
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} AS openapi-clients
+FROM node:22.15-alpine AS base
 
 ENV NODE_ENV=production
 
@@ -21,8 +21,7 @@ RUN npm ci --include=dev --frozen-lockfile \
       && npx prisma generate
 
 FROM build-base AS build
-WORKDIR /root/openapi-clients
-COPY --from=openapi-clients /app/ ./
+COPY --from=openapi-clients /app/ /openapi-clients/
 
 WORKDIR /build
 COPY --chown=node:node . ./

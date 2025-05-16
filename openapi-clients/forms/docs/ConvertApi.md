@@ -49,13 +49,10 @@ const { status, data } =
 
 ### HTTP response details
 
-| Status code | Description                                                        | Response headers |
-| ----------- | ------------------------------------------------------------------ | ---------------- |
-| **200**     | Return XML form                                                    | -                |
-| **201**     |                                                                    | -                |
-| **403**     | Form is owned by someone else.                                     | -                |
-| **404**     | Form or form definition was not found                              | -                |
-| **422**     | Got wrong type of form definition for its slug or empty form data. | -                |
+| Status code | Description     | Response headers |
+| ----------- | --------------- | ---------------- |
+| **200**     | Return XML form | -                |
+| **201**     |                 | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -99,14 +96,10 @@ const { status, data } = await apiInstance.convertControllerConvertToPdf(convert
 
 ### HTTP response details
 
-| Status code | Description                                               | Response headers |
-| ----------- | --------------------------------------------------------- | ---------------- |
-| **200**     | Return pdf file stream.                                   | -                |
-| **201**     |                                                           | -                |
-| **403**     | Form is owned by someone else, the access is not granted. | -                |
-| **404**     | Form or form definition not found                         | -                |
-| **422**     | Empty form data.                                          | -                |
-| **500**     | There was an error during generating tax pdf.             | -                |
+| Status code | Description             | Response headers |
+| ----------- | ----------------------- | ---------------- |
+| **200**     | Return pdf file stream. | -                |
+| **201**     |                         | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -150,13 +143,9 @@ const { status, data } = await apiInstance.convertControllerConvertXmlToJson(xml
 
 ### HTTP response details
 
-| Status code | Description                                                   | Response headers |
-| ----------- | ------------------------------------------------------------- | ---------------- |
-| **200**     | Return Json form                                              | -                |
-| **201**     |                                                               | -                |
-| **400**     | There was an error during converting to json.                 | -                |
-| **403**     | Form is owned by someone else.                                | -                |
-| **404**     | Form or form definition was not found                         | -                |
-| **422**     | Form definition type is wrong or JSON version is incompatible | -                |
+| Status code | Description      | Response headers |
+| ----------- | ---------------- | ---------------- |
+| **200**     | Return Json form | -                |
+| **201**     |                  | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

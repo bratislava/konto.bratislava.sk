@@ -3,8 +3,8 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 import {
   extractEmailFormEmail,
   extractEmailFormName,
-  extractFormSubject,
-  extractGinisSubject,
+  extractFormSubjectPlain,
+  extractFormSubjectTechnical,
 } from '../../src/form-utils/formDataExtractors'
 import {
   FormDefinition,
@@ -14,115 +14,175 @@ import {
   isEmailFormDefinition,
   isSlovenskoSkGenericFormDefinition,
 } from '../../src/definitions/formDefinitionTypes'
-import { SchemalessFormDataExtractor } from '../../src/form-utils/evaluateFormDataExtractor'
+import {
+  SchemaFormDataExtractor,
+  SchemalessFormDataExtractor,
+} from '../../src/form-utils/evaluateFormDataExtractor'
+import { BAJSONSchema7 } from '../../src/form-utils/ajvKeywords'
 
 describe('formDataExtractors', () => {
-  describe('extractFormSubject', () => {
-    test('should return form definition title if extractSubject is not provided', () => {
+  describe('extractFormSubjectPlain', () => {
+    test('should return form definition title if subject.extractPlain is not provided', () => {
       const formDefinition = {
         title: 'Test Form Title',
       } as FormDefinition
       const formData = {}
 
-      const result = extractFormSubject(formDefinition, formData)
+      const result = extractFormSubjectPlain(formDefinition, formData)
       expect(result).toBe('Test Form Title')
     })
 
-    test('should return form title if formData is null', () => {
-      const extractSubjectMock: SchemalessFormDataExtractor<any> = {
-        type: 'schemaless',
+    test('should return form definition title if formData is null (schema extractor)', () => {
+      const extractSubjectMock: SchemaFormDataExtractor<any> = {
+        type: 'schema',
+        schema: { type: 'object' } as BAJSONSchema7,
         extractFn: (formData) => 'Extracted Subject',
       }
 
       const formDefinition = {
         title: 'Test Form Title',
-        extractSubject: extractSubjectMock,
+        subject: { extractPlain: extractSubjectMock },
       } as FormDefinition
       const formData = null
 
-      const result = extractFormSubject(formDefinition, formData)
+      const result = extractFormSubjectPlain(formDefinition, formData)
       expect(result).toBe('Test Form Title')
     })
 
-    test('should return result of extractSubject if provided and formData is not null', () => {
+    test('should return result of subject.extractPlain if provided and formData is not null (schema path, validation pass)', () => {
       type FormDataType = {
-        subject: string
+        subjectField: string
       }
-      const extractSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
-        type: 'schemaless',
-        extractFn: (formData) => formData.subject,
+      const extractSubjectMock: SchemaFormDataExtractor<FormDataType> = {
+        type: 'schema',
+        schema: {
+          type: 'object',
+          properties: { subjectField: { type: 'string' } },
+          required: ['subjectField'],
+        } as BAJSONSchema7,
+        extractFn: (formData) => formData.subjectField,
       }
 
       const formDefinition = {
         title: 'Test Form Title',
-        extractSubject: extractSubjectMock,
-      } as FormDefinitionSlovenskoSkGeneric
-      const formData: FormDataType = { subject: 'Extracted Subject' }
+        subject: {
+          extractPlain: extractSubjectMock,
+        },
+      } as FormDefinition
+      const formData: FormDataType = { subjectField: 'Extracted Subject from Schema Extractor' }
 
-      const result = extractFormSubject(formDefinition, formData)
-      expect(result).toBe('Extracted Subject')
+      const result = extractFormSubjectPlain(formDefinition, formData)
+      expect(result).toBe('Extracted Subject from Schema Extractor')
     })
 
-    test('should throw error when extractFormSubject returns empty result', () => {
-      type FormDataType = {
-        subject: string
+    test('should return form definition title if schema validation fails (schema path)', () => {
+      type FormDataType = { subjectField: string }
+      const extractSubjectMock: SchemaFormDataExtractor<FormDataType> = {
+        type: 'schema',
+        schema: {
+          type: 'object',
+          properties: { subjectField: { type: 'string' } },
+          required: ['subjectField'],
+        } as BAJSONSchema7,
+        extractFn: (formData) => formData.subjectField,
       }
-      const extractSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
-        type: 'schemaless',
-        extractFn: (formData) => formData.subject,
+
+      const formDefinition = {
+        title: 'Fallback Title Due To Schema Fail',
+        subject: { extractPlain: extractSubjectMock },
+      } as FormDefinition
+      const formData = { wrongProperty: 'some value' }
+
+      const result = extractFormSubjectPlain(formDefinition, formData)
+      expect(result).toBe('Fallback Title Due To Schema Fail')
+    })
+
+    test('should return extractor specific fallback if schema validation fails and fallback is provided (schema path)', () => {
+      type FormDataType = { subjectField: string }
+      const extractSubjectMock: SchemaFormDataExtractor<FormDataType> = {
+        type: 'schema',
+        schema: {
+          type: 'object',
+          properties: { subjectField: { type: 'string' } },
+          required: ['subjectField'],
+        } as BAJSONSchema7,
+        extractFn: (formData) => formData.subjectField,
+        schemaValidationFailedFallback: 'Extractor Specific Fallback',
+      }
+
+      const formDefinition = {
+        title: 'Parent Fallback Title',
+        subject: { extractPlain: extractSubjectMock },
+      } as FormDefinition
+      const formData = { anotherWrongProperty: 'another value' }
+
+      const result = extractFormSubjectPlain(formDefinition, formData)
+      expect(result).toBe('Extractor Specific Fallback')
+    })
+
+    test('should throw error when extractFn (from Schema extractor) returns empty result after schema validation', () => {
+      type FormDataType = { subjectField?: string | null }
+      const extractSubjectMock: SchemaFormDataExtractor<FormDataType> = {
+        type: 'schema',
+        schema: {
+          type: 'object',
+          properties: { subjectField: { type: ['string', 'null'] } },
+          required: ['subjectField'],
+        } as BAJSONSchema7,
+        extractFn: (formData) => formData.subjectField as unknown as string,
       }
 
       const formDefinition = {
         title: 'Test Form Title',
-        extractSubject: extractSubjectMock,
+        subject: { extractPlain: extractSubjectMock },
       } as FormDefinition
-      const formData = {
-        wrongSubject: 'Extracted Subject',
-      }
+      const formData = { subjectField: null }
 
-      expect(() => extractFormSubject(formDefinition, formData)).toThrow()
+      expect(() => extractFormSubjectPlain(formDefinition, formData)).toThrow(
+        `Extraction returned an empty string for form data: ${JSON.stringify(formData)}.`,
+      )
     })
 
     getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
       test(`${exampleForm.name} form subject should match snapshot`, () => {
-        const result = extractFormSubject(formDefinition, exampleForm.formData)
+        const result = extractFormSubjectPlain(formDefinition, exampleForm.formData)
         expect(result).toMatchSnapshot()
       })
     })
   })
 
-  describe('extractGinisSubject', () => {
-    test('should return form definition title if extractGinisSubject is not provided', () => {
+  describe('extractFormSubjectTechnical', () => {
+    test('should return form definition title if extractFormSubjectTechnical is not provided', () => {
       const formDefinition = {
         title: 'Test Form Title',
         ginisAssignment: {},
       } as FormDefinitionSlovenskoSkGeneric
       const formData = {}
 
-      const result = extractGinisSubject(formDefinition, formData)
+      const result = extractFormSubjectTechnical(formDefinition, formData)
       expect(result).toBe('Test Form Title')
     })
 
-    test('should return result of extractGinisSubject if provided and returns value', () => {
+    test('should return result of subject.extractTechnical if provided and returns value', () => {
       type FormDataType = {
         subject: string
       }
-      const extractGinisSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
+      const extractTechnicalSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
         type: 'schemaless',
         extractFn: (formData) => formData.subject,
       }
 
       const formDefinition = {
         title: 'Test Form Title',
-        ginisAssignment: {
-          extractGinisSubject: extractGinisSubjectMock,
+        subject: {
+          extractTechnical: extractTechnicalSubjectMock,
         },
       } as FormDefinitionSlovenskoSkGeneric
       const formData: FormDataType = {
         subject: 'Extracted Subject',
       }
 
-      const result = extractGinisSubject(formDefinition, formData)
+      const result = extractFormSubjectTechnical(formDefinition, formData)
       expect(result).toBe('Extracted Subject')
     })
 
@@ -130,29 +190,29 @@ describe('formDataExtractors', () => {
       type FormDataType = {
         subject: string
       }
-      const extractGinisSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
+      const extractTechnicalSubjectMock: SchemalessFormDataExtractor<FormDataType> = {
         type: 'schemaless',
         extractFn: (formData) => formData.subject,
       }
 
       const formDefinition = {
         title: 'Test Form Title',
-        ginisAssignment: {
-          extractGinisSubject: extractGinisSubjectMock,
+        subject: {
+          extractTechnical: extractTechnicalSubjectMock,
         },
       } as FormDefinitionSlovenskoSkGeneric
       const formData = {
         wrongSubject: 'Extracted Subject',
       }
 
-      expect(() => extractGinisSubject(formDefinition, formData)).toThrow()
+      expect(() => extractFormSubjectTechnical(formDefinition, formData)).toThrow()
     })
 
     getExampleFormPairs({
       formDefinitionFilterFn: isSlovenskoSkGenericFormDefinition,
     }).forEach(({ formDefinition, exampleForm }) => {
       test(`${exampleForm.name} GINIS subject should match snapshot`, () => {
-        const result = extractGinisSubject(formDefinition, exampleForm.formData)
+        const result = extractFormSubjectTechnical(formDefinition, exampleForm.formData)
         expect(result).toMatchSnapshot()
       })
     })

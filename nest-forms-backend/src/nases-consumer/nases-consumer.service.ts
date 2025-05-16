@@ -11,7 +11,7 @@ import {
   isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
@@ -146,7 +146,7 @@ export default class NasesConsumerService {
             template: MailgunTemplateEnum.NASES_SENT,
             data: {
               formId: form.id,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),
@@ -167,7 +167,7 @@ export default class NasesConsumerService {
             template: MailgunTemplateEnum.NASES_GINIS_IN_PROGRESS,
             data: {
               formId: form.id,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),

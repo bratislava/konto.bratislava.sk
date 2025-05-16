@@ -4,16 +4,12 @@ import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
-import { GenericObjectType } from '@rjsf/utils'
 import { Channel, ConsumeMessage } from 'amqplib'
 import { Queue } from 'bull'
 import { MailgunTemplateEnum } from 'forms-shared/definitions/emailFormTypes'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import {
-  extractFormSubject,
-  extractGinisSubject,
-} from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 
 import BaConfigService from '../config/ba-config.service'
 import {
@@ -39,16 +35,13 @@ import {
   GinisAssignSubmissionResponseInfo,
   GinisAutomationResponse,
   GinisCheckNasesPayloadDto,
-  GinisEditSubmissionResponseInfo,
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 const ASSIGN_QUEUE = 'submission.assign'
-const EDIT_SUBMISSION_QUEUE = 'submission.edit'
 
 const GINIS_AUTOMATION_ASSIGN_QUEUE = 'ginis-automation.assign'
-const GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE = 'ginis-automation.edit'
 
 @Injectable()
 export default class GinisService {
@@ -78,56 +71,6 @@ export default class GinisService {
         `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
       )
     }
-  }
-
-  @RabbitRPC({
-    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
-    routingKey: EDIT_SUBMISSION_QUEUE,
-    queue: EDIT_SUBMISSION_QUEUE,
-    errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      alertError(
-        `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new LineLoggerSubservice('GinisService'),
-      )
-      channel.reject(message, false)
-    },
-  })
-  public async consumeEditSubmission(
-    content: GinisAutomationResponse<
-      Record<string, never>,
-      GinisEditSubmissionResponseInfo
-    >,
-  ): Promise<Nack> {
-    this.logger.log(
-      `Consuming edit ginis submission message, content: ${JSON.stringify(content)}`,
-    )
-    if (content.status === 'failure') {
-      await this.prismaService.forms.update({
-        where: {
-          ginisDocumentId: content.info.doc_id,
-        },
-        data: {
-          state: FormState.ERROR,
-          error: FormError.GINIS_SEND_ERROR,
-          ginisState: GinisState.ERROR_EDIT_SUBMISSION,
-        },
-      })
-      alertError(
-        `ERROR - Ginis consumer - error to edit document - response from Ginis automation. Document id: ${content.info.doc_id}`,
-        this.logger,
-        content.message,
-      )
-    } else {
-      await this.prismaService.forms.update({
-        where: { ginisDocumentId: content.info.doc_id },
-        data: {
-          ginisState: GinisState.SUBMISSION_EDITED,
-          error: FormError.NONE,
-        },
-      })
-      this.logger.debug('---- submission edited ----')
-    }
-    return new Nack()
   }
 
   @RabbitRPC({
@@ -322,29 +265,6 @@ export default class GinisService {
     }
   }
 
-  async editSubmission(documentId: string, newSubject: string): Promise<void> {
-    this.logger.debug('---- start to edit submission ----')
-    await this.prismaService.forms.update({
-      where: {
-        ginisDocumentId: documentId,
-      },
-      data: {
-        ginisState: GinisState.RUNNING_EDIT_SUBMISSION,
-      },
-    })
-
-    await this.rabbitMqClientService.publishMessageToGinisAutomation(
-      GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE,
-      {
-        doc_id: documentId,
-        actions: {
-          Vec: newSubject,
-        },
-      },
-      EDIT_SUBMISSION_QUEUE,
-    )
-  }
-
   async assignSubmission(
     documentId: string,
     organization: string,
@@ -494,31 +414,9 @@ export default class GinisService {
       return this.nackTrueWithWait(20_000)
     }
 
-    // Edit submission
+    // Assign submission
     if (
       form.ginisState === GinisState.ATTACHMENTS_UPLOADED ||
-      form.ginisState === GinisState.ERROR_EDIT_SUBMISSION
-    ) {
-      if (!form.ginisDocumentId) {
-        alertError(
-          `ERROR editSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
-          this.logger,
-        )
-        return this.nackTrueWithWait(20_000)
-      }
-      await this.editSubmission(
-        form.ginisDocumentId,
-        extractGinisSubject(
-          formDefinition,
-          form.formDataJson as GenericObjectType,
-        ),
-      )
-      return this.nackTrueWithWait(20_000)
-    }
-
-    // Assign Submission
-    if (
-      form.ginisState === GinisState.SUBMISSION_EDITED ||
       form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION
     ) {
       if (!form.ginisDocumentId) {
@@ -562,7 +460,7 @@ export default class GinisService {
             data: {
               formId: form.id,
               firstName: data.userData.firstName,
-              messageSubject: extractFormSubject(
+              messageSubject: extractFormSubjectPlain(
                 formDefinition,
                 form.formDataJson,
               ),

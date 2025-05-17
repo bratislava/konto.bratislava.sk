@@ -11,7 +11,7 @@ import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../utils/constants'
-import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
+import HandleErrors from '../utils/decorators/errorHandler.decorator'
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'

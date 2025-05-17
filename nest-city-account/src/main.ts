@@ -8,8 +8,10 @@ import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice
 
 async function bootstrap() {
   const port = process.env.PORT || 3000
-  const app = await NestFactory.create(AppModule, { logger: ['verbose'] })
-  app.useLogger(new LineLoggerSubservice('Nest'))
+  const logger = new LineLoggerSubservice('Nest')
+  const app = await NestFactory.create(AppModule, {
+    logger,
+  })
   const corsOptions = {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -45,6 +47,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document)
 
   await app.listen(port)
-  console.log(`Nest is running on port: ${port}`)
+  logger.log(`Nest is running on port: ${port}`)
 }
 bootstrap()

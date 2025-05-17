@@ -216,12 +216,20 @@ export class NorisService {
         }),
       )
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Failed to update delivery methods',
+          undefined,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to update delivery methods`,
+        'Failed to update delivery methods',
         undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        <string>error,
       )
     } finally {
       // Always close the connection

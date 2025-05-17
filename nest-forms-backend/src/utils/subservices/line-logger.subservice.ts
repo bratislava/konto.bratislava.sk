@@ -27,6 +27,13 @@ export class LineLoggerSubservice implements LoggerService {
     this.color = color
   }
 
+  private formatStringMessage(messages: string): string {
+    if (messages.length === 0) return ''
+    return isLogfmt(messages)
+      ? ' '.concat(messages)
+      : `message="${escapeForLogfmt(messages)}"`
+  }
+
   private printLog(
     severity: string,
     message: unknown,
@@ -43,12 +50,7 @@ export class LineLoggerSubservice implements LoggerService {
       (item): item is string => typeof item !== 'string',
     )
 
-    const formattedStringMessages =
-      stringMessages.length > 0
-        ? isLogfmt(stringMessages)
-          ? ' '.concat(stringMessages)
-          : `message="${escapeForLogfmt(stringMessages)}"`
-        : ''
+    const formattedStringMessages = this.formatStringMessage(stringMessages)
 
     const formattedOtherItems = otherItems
       .map((item) => ToLogfmt(item))

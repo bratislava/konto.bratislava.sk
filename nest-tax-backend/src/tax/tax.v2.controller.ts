@@ -13,6 +13,7 @@ import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { TaxService } from './tax.service'
+import { ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
 
 @ApiTags('tax')
 @ApiBearerAuth()
@@ -27,7 +28,7 @@ export class TaxControllerV2 {
   @ApiResponse({
     status: 200,
     description: 'Load tax detail about user.',
-    // type: TODO,
+    type: ResponseTaxSummaryDetailDto,
   })
   // TODO errors
   @Tiers(CognitoTiersEnum.IDENTITY_CARD)

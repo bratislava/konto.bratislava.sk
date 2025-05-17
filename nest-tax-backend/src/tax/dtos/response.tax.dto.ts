@@ -13,6 +13,7 @@ import {
   IsNumber,
   IsObject,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   ValidateNested,
@@ -29,6 +30,29 @@ export enum TaxPaidStatusEnum {
   PARTIALLY_PAID = 'PARTIALLY_PAID',
   PAID = 'PAID',
   OVER_PAID = 'OVER_PAID',
+}
+
+export enum OneTimePaymentReasonNotPossibleEnum {
+  ALREADY_PAID = 'ALREADY_PAID',
+}
+
+export enum OneTimePaymentTypeEnum {
+  ONE_TIME_PAYMENT = 'ONE_TIME_PAYMENT',
+  REMAINING_AMOUNT_PAYMENT = 'REMAINING_AMOUNT_PAYMENT',
+}
+
+export enum InstallmentPaymentReasonNotPossibleEnum {
+  BELOW_THRESHOLD = 'BELOW_THRESHOLD',
+  AFTER_DUE_DATE = 'AFTER_DUE_DATE',
+  ALREADY_PAID = 'ALREADY_PAID',
+}
+
+export enum InstallmentPaidStatusEnum {
+  NOT_PAID = 'NOT_PAID',
+  PARTIALLY_PAID = 'PARTIALLY_PAID',
+  PAID = 'PAID',
+  OVER_PAID = 'OVER_PAID',
+  AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
 export class ResponseTaxPayerDto {
@@ -615,4 +639,324 @@ export class ResponseGetTaxesDto {
     type: ResponseGetTaxesBodyDto,
   })
   items: ResponseGetTaxesBodyDto[]
+}
+
+export class ResponseApartmentTaxDetailDto {
+  @ApiProperty({
+    description: 'Type of apartment',
+    default: TaxDetailareaType.byt,
+    enumName: 'TaxDetailareaType',
+    enum: TaxDetailareaType,
+  })
+  @IsEnum(TaxDetailareaType)
+  type: TaxDetailareaType
+
+  @ApiProperty({
+    description: 'Base of tax in m^2',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  base: number
+
+  @ApiProperty({
+    description: 'Amount of tax in Eur',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  amount: number
+}
+
+export class ResponseConstructionTaxDetailDto {
+  @ApiProperty({
+    description: 'Type of construction',
+    default: TaxDetailareaType.RESIDENTIAL,
+    enumName: 'TaxDetailareaType',
+    enum: TaxDetailareaType,
+  })
+  @IsEnum(TaxDetailareaType)
+  type: TaxDetailareaType
+
+  @ApiProperty({
+    description: 'Base of tax in m^2',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  base: number
+
+  @ApiProperty({
+    description: 'Amount of tax in Eur',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  amount: number
+}
+
+export class ResponseGroundTaxDetailDto {
+  @ApiProperty({
+    description: 'Type of area',
+    default: TaxDetailareaType.byt,
+    enumName: 'TaxDetailareaType',
+    enum: TaxDetailareaType,
+  })
+  @IsEnum(TaxDetailareaType)
+  type: TaxDetailareaType
+
+  @ApiProperty({
+    description: 'Area of taxed ground in m^2',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  area: number
+
+  @ApiProperty({
+    description: 'Base of tax in Eur',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  base: number
+
+  @ApiProperty({
+    description: 'Amount of tax in Eur',
+    type: Number,
+  })
+  @IsNumber()
+  @IsPositive()
+  amount: number
+}
+
+export class ResponseTaxDetailItemizedDto {
+  @ApiProperty({
+    description: 'Apartment tax itemized',
+    type: [ResponseApartmentTaxDetailDto],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseApartmentTaxDetailDto)
+  apartment: ResponseApartmentTaxDetailDto[]
+
+  @ApiProperty({
+    description: 'Construction tax itemized',
+    type: [ResponseConstructionTaxDetailDto],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseConstructionTaxDetailDto)
+  construction: ResponseConstructionTaxDetailDto[]
+
+  @ApiProperty({
+    description: 'Ground tax itemized',
+    type: [ResponseGroundTaxDetailDto],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseGroundTaxDetailDto)
+  ground: ResponseGroundTaxDetailDto[]
+}
+
+export class ResponseOneTimePaymentDetailsDto {
+  @ApiProperty({
+    description: 'Indicates if one-time payment is possible.',
+    example: true,
+  })
+  @IsBoolean()
+  isPossible: boolean
+
+  @ApiProperty({
+    description: 'Type of payment',
+    enum: OneTimePaymentTypeEnum,
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(OneTimePaymentTypeEnum)
+  type?: OneTimePaymentTypeEnum
+
+  @ApiProperty({
+    description: 'Reason why payment is not possible',
+    enum: OneTimePaymentReasonNotPossibleEnum,
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(OneTimePaymentReasonNotPossibleEnum)
+  reasonNotPossible?: OneTimePaymentReasonNotPossibleEnum
+
+  @ApiProperty({
+    description: 'Payment amount',
+    example: 10050,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  amount?: number
+
+  @ApiProperty({ description: 'Due date', required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dueDate?: Date
+
+  @ApiProperty({
+    description: 'QR code for payment',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  qrCode?: string
+
+  @ApiProperty({
+    description: 'Variable symbol for payment',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  variableSymbol?: string
+
+  @ApiProperty({
+    description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  paymentGatewayLink?: string
+}
+
+export class ResponseInstallmentItemDto {
+  @ApiProperty({ description: 'Installment number', example: 1 })
+  @IsNumber()
+  @IsPositive()
+  installmentNumber: number
+
+  @ApiProperty({ description: 'Due date', required: false })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dueDate?: Date
+
+  @ApiProperty({
+    description: 'Payment status',
+    enum: InstallmentPaidStatusEnum,
+    enumName: 'InstallmentPaidStatusEnum',
+  })
+  status: InstallmentPaidStatusEnum
+
+  @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
+  @IsNumber()
+  @IsPositive()
+  remainingAmount: number
+}
+
+export class ResponseActiveInstallmentDto {
+  @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
+  @IsNumber()
+  @IsPositive()
+  remainingAmount: number
+
+  @ApiProperty({ description: 'Variable symbol', required: false })
+  @IsString()
+  variableSymbol: string
+
+  @ApiProperty({ description: 'QR code', required: false })
+  @IsString()
+  qrCode: string
+}
+
+export class ResponseInstallmentPaymentDetailDto {
+  @ApiProperty({
+    description: 'Indicates if installment payment is possible',
+    example: true,
+  })
+  @IsBoolean()
+  isPossible: boolean
+
+  @ApiProperty({
+    description: 'Reason why installment is not possible',
+    enum: ['BELOW_THRESHOLD', 'AFTER_DATE'],
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(InstallmentPaymentReasonNotPossibleEnum)
+  reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
+
+  @ApiProperty({
+    description: 'List of exactly 3 installments or none at all',
+    type: [ResponseInstallmentItemDto],
+    required: false,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseInstallmentItemDto)
+  installments?: ResponseInstallmentItemDto[]
+
+  @ApiProperty({
+    description: 'Details of active installment',
+    type: ResponseActiveInstallmentDto,
+    required: false,
+  })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() =>
+    ResponseActiveInstallmentDto)
+  activeInstallment?: ResponseActiveInstallmentDto
+}
+
+export class ResponseTaxSummaryDetailDto {
+  @ApiProperty({ description: 'Total amount paid', example: 150 })
+  @IsNumber()
+  @IsPositive()
+  overallPaid: number
+
+  @ApiProperty({ description: 'Total remaining balance', example: 50 })
+  @IsNumber()
+  @IsPositive()
+  overallBalance: number
+
+  @ApiProperty({ description: 'Total overpayment', example: 0 })
+  @IsNumber()
+  @IsPositive()
+  overallOverpayment: number
+
+  @ApiProperty({ description: 'Total tax amount', example: 200 })
+  @IsNumber()
+  @IsPositive()
+  overallAmount: number
+
+  @ApiProperty({
+    description: 'Itemized details',
+    type: [ResponseTaxDetailItemizedDto],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseTaxDetailItemizedDto)
+  itemizedDetail: ResponseTaxDetailItemizedDto[]
+
+  @ApiProperty({
+    description: 'One-time payment details',
+    type: ResponseOneTimePaymentDetailsDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseOneTimePaymentDetailsDto)
+  oneTimePayment: ResponseOneTimePaymentDetailsDto
+
+  @ApiProperty({
+    description: 'Installment payment details',
+    type: ResponseInstallmentPaymentDetailDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseInstallmentPaymentDetailDto)
+  installmentPayment: ResponseInstallmentPaymentDetailDto
 }

@@ -6,6 +6,8 @@ import {
   InstallmentPaymentReasonNotPossibleEnum,
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
+  ResponseActiveInstallmentDto,
+  ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxSummaryDetailDto,
@@ -15,9 +17,17 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../dtos/error.dto'
+import {
+  QrCodeGeneratorDto,
+  QrPaymentNoteEnum,
+} from '../../utils/subservices/dtos/qrcode.dto'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
+
+type ReplaceQrCodeWithGeneratorDto<T extends object> = {
+  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
+}
 
 const bratislavaTimeZone = 'Europe/Bratislava'
 
@@ -108,89 +118,137 @@ const calculateInstallmentPaymentDetails = (
   payment_calendar_threshold: string,
   dateOfValidity: Date | null,
   installments: { order: string | null; amount: number }[],
-): ResponseInstallmentPaymentDetailDto => {
-  const installmentPayment: ResponseInstallmentPaymentDetailDto = {
-    isPossible: false,
-  }
-
+  variableSymbol: string,
+): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
+  activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
+} => {
   const novemberFirst = dayjs(
     new Date(`${taxYear}-${payment_calendar_threshold}`),
   )
 
-  if (dayjs(today) >= novemberFirst) {
-    installmentPayment.reasonNotPossible =
-      InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE
-  }
-  if (overallAmount < 6600) {
-    installmentPayment.reasonNotPossible =
-      InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD
-  }
   if (overallAmount - overallPaid <= 0) {
-    installmentPayment.reasonNotPossible =
-      InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID
-  } else {
-    const fistPaymentDueDate = calculateDueDate(dateOfValidity)
-
-    const installmentAmounts = calculateInstallmentAmounts(
-      installments,
-      overallPaid,
-    )
-
-    installmentPayment.isPossible = true
-    if (fistPaymentDueDate && fistPaymentDueDate > dayjs(today)) {
-      installmentPayment.installments = [
-        {
-          installmentNumber: 1,
-          dueDate: fistPaymentDueDate.toDate(),
-          status: installmentAmounts[0].status,
-          remainingAmount: installmentAmounts[0].toPay,
-        },
-        {
-          installmentNumber: 2,
-          dueDate: dayjs
-            .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-            .toDate(),
-          status: installmentAmounts[1].status,
-          remainingAmount: installmentAmounts[1].toPay,
-        },
-        {
-          installmentNumber: 3,
-          dueDate: dayjs
-            .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-            .toDate(),
-          status: installmentAmounts[2].status,
-          remainingAmount: installmentAmounts[2].toPay,
-        },
-      ]
-    } else {
-      installmentPayment.installments = [
-        {
-          installmentNumber: 1,
-          dueDate: fistPaymentDueDate?.toDate(),
-          status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
-          remainingAmount: 0,
-        },
-        {
-          installmentNumber: 2,
-          dueDate: dayjs
-            .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-            .toDate(),
-          status: installmentAmounts[1].status,
-          remainingAmount:
-            installmentAmounts[1].toPay + installmentAmounts[0].toPay,
-        },
-        {
-          installmentNumber: 3,
-          dueDate: dayjs
-            .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-            .toDate(),
-          status: installmentAmounts[2].status,
-          remainingAmount: installmentAmounts[2].toPay,
-        },
-      ]
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
     }
   }
-  return installmentPayment
+
+  if (dayjs(today) >= novemberFirst) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
+    }
+  }
+
+  if (overallAmount < 6600) {
+    return {
+      isPossible: false,
+      reasonNotPossible:
+        InstallmentPaymentReasonNotPossibleEnum.BELOW_THRESHOLD,
+    }
+  }
+
+  const fistPaymentDueDate = calculateDueDate(dateOfValidity)
+
+  const installmentAmounts = calculateInstallmentAmounts(
+    installments,
+    overallPaid,
+  )
+
+  let installmentDetails: ResponseInstallmentItemDto[] = []
+
+  if (fistPaymentDueDate && fistPaymentDueDate > dayjs(today)) {
+    installmentDetails = [
+      {
+        installmentNumber: 1,
+        dueDate: fistPaymentDueDate.toDate(),
+        status: installmentAmounts[0].status,
+        remainingAmount: installmentAmounts[0].toPay,
+      },
+      {
+        installmentNumber: 2,
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+          .toDate(),
+        status: installmentAmounts[1].status,
+        remainingAmount: installmentAmounts[1].toPay,
+      },
+      {
+        installmentNumber: 3,
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+          .toDate(),
+        status: installmentAmounts[2].status,
+        remainingAmount: installmentAmounts[2].toPay,
+      },
+    ]
+  } else {
+    installmentDetails = [
+      {
+        installmentNumber: 1,
+        dueDate: fistPaymentDueDate?.toDate(),
+        status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+        remainingAmount: 0,
+      },
+      {
+        installmentNumber: 2,
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+          .toDate(),
+        status: installmentAmounts[1].status,
+        remainingAmount:
+          installmentAmounts[1].toPay + installmentAmounts[0].toPay,
+      },
+      {
+        installmentNumber: 3,
+        dueDate: dayjs
+          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+          .toDate(),
+        status: installmentAmounts[2].status,
+        remainingAmount: installmentAmounts[2].toPay,
+      },
+    ]
+  }
+
+  const active = installmentDetails.find(
+    (installment) =>
+      installment.status === InstallmentPaidStatusEnum.NOT_PAID ||
+      installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
+  )
+
+  if (!active) {
+    return {
+      isPossible: false,
+      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
+    }
+  }
+
+  const paymentNote =
+    active.installmentNumber === 1
+      ? QrPaymentNoteEnum.QR_firstInstallment
+      : active.installmentNumber === 2
+        ? installmentDetails[0].status ===
+          InstallmentPaidStatusEnum.AFTER_DUE_DATE
+          ? QrPaymentNoteEnum.QR_firstSecondInstallment
+          : QrPaymentNoteEnum.QR_secondInstallment
+        : QrPaymentNoteEnum.QR_thirdInstallment
+
+  const activeInstallment = {
+    remainingAmount: active?.remainingAmount,
+    variableSymbol: variableSymbol,
+    qrCode: {
+      amount: active.remainingAmount,
+      variableSymbol,
+      specificSymbol: '2025200000', // TODO
+      paymentNote,
+    },
+  }
+
+  return {
+    isPossible: true,
+    installments: installmentDetails,
+    activeInstallment,
+  }
 }
 
 const calculateOneTimePaymentDetails = (
@@ -198,7 +256,7 @@ const calculateOneTimePaymentDetails = (
   overallBalance: number,
   dueDate: Date | undefined,
   variableSymbol: string,
-): ResponseOneTimePaymentDetailsDto => {
+): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
   if (overallBalance === 0) {
     return {
       isPossible: false,
@@ -213,6 +271,15 @@ const calculateOneTimePaymentDetails = (
         : OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
     amount: overallBalance,
     dueDate: dueDate,
+    qrCode: {
+      amount: overallBalance,
+      variableSymbol: variableSymbol,
+      specificSymbol: '2024200000',
+      paymentNote:
+        overallPaid > 0
+          ? QrPaymentNoteEnum.QR_remainingAmount
+          : QrPaymentNoteEnum.QR_oneTimePay,
+    },
     variableSymbol,
   }
 }
@@ -226,7 +293,18 @@ export const getTaxDetailPure = (
   variableSymbol: string,
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
-): Omit<ResponseTaxSummaryDetailDto, 'itemizedDetail'> => {
+): Omit< // TODO use generated types. This is just verbose version while this code is still WIP
+  ResponseTaxSummaryDetailDto,
+  'itemizedDetail' | 'oneTimePayment' | 'installmentPayment'
+> & {
+  oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
+  installmentPayment: Omit<
+    ResponseInstallmentPaymentDetailDto,
+    'activeInstallment'
+  > & {
+    activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
+  }
+} => {
   const overallBalance =
     overallAmount - overallPaid > 0 ? overallAmount - overallPaid : 0
 
@@ -235,13 +313,12 @@ export const getTaxDetailPure = (
 
   const dueDate = calculateDueDate(dateOfValidity)
 
-  const oneTimePayment: ResponseOneTimePaymentDetailsDto =
-    calculateOneTimePaymentDetails(
-      overallPaid,
-      overallBalance,
-      dueDate?.toDate(),
-      variableSymbol,
-    )
+  const oneTimePayment = calculateOneTimePaymentDetails(
+    overallPaid,
+    overallBalance,
+    dueDate?.toDate(),
+    variableSymbol,
+  )
 
   const installmentPayment = calculateInstallmentPaymentDetails(
     overallAmount,
@@ -251,6 +328,7 @@ export const getTaxDetailPure = (
     payment_calendar_threshold,
     dateOfValidity,
     installments,
+    variableSymbol,
   )
 
   return {

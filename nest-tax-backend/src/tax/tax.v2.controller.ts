@@ -10,6 +10,10 @@ import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
+import {
+  ResponseErrorDto,
+  ResponseInternalServerErrorDto,
+} from 'src/utils/guards/dtos/error.dto'
 
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { TaxService } from './tax.service'
@@ -30,7 +34,16 @@ export class TaxControllerV2 {
     description: 'Load tax detail about user.',
     type: ResponseTaxSummaryDetailDto,
   })
-  // TODO errors
+  @ApiResponse({
+    status: 422,
+    description: 'Error to load tax data',
+    type: ResponseErrorDto,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+    type: ResponseInternalServerErrorDto,
+  })
   @Tiers(CognitoTiersEnum.IDENTITY_CARD)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)

@@ -20,6 +20,7 @@ import {
 } from './dtos/requests.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { getTaxStatus } from './utils/helpers/tax.helper'
+import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 
 @Injectable()
 export class TaxService {
@@ -29,16 +30,7 @@ export class TaxService {
     private readonly qrCodeSubservice: QrCodeSubservice,
   ) {}
 
-  async getTaxByYear(
-    year: number,
-    birthNumber: string,
-  ): Promise<ResponseTaxDto> {
-    if (!birthNumber || !year) {
-      throw this.throwerErrorGuard.NotFoundException(
-        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
-      )
-    }
+  private async fetchTaxData(birthNumber: string, year: number) {
     const tax = await this.prisma.tax.findFirst({
       where: {
         year: +year,
@@ -61,10 +53,13 @@ export class TaxService {
       )
     }
 
-    const taxPayment = await this.prisma.taxPayment.groupBy({
-      by: ['taxId'],
+    return tax
+  }
+
+  private async getAmountAlreadyPaidByTaxId(id: number) {
+    const taxPayment = await this.prisma.taxPayment.aggregate({
       where: {
-        taxId: tax.id,
+        taxId: id,
         status: PaymentStatus.SUCCESS,
       },
       _sum: {
@@ -72,14 +67,26 @@ export class TaxService {
       },
     })
 
-    let total = 0
-    if (taxPayment.length === 1) {
-      total = taxPayment[0]._sum.amount || 0
-    }
+    return taxPayment._sum.amount || 0
+  }
 
-    if (total > 0 && tax.amount - total > 0) {
+  async getTaxByYear(
+    year: number,
+    birthNumber: string,
+  ): Promise<ResponseTaxDto> {
+    if (!birthNumber || !year) {
+      throw this.throwerErrorGuard.NotFoundException(
+        CustomErrorTaxTypesEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+        CustomErrorTaxTypesResponseEnum.TAX_YEAR_OR_USER_NOT_FOUND,
+      )
+    }
+    const tax = await this.fetchTaxData(birthNumber, year)
+
+    const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
+
+    if (paidAmount > 0 && tax.amount - paidAmount > 0) {
       const qrCode = await this.qrCodeSubservice.createQrCode({
-        amount: tax.amount - total,
+        amount: tax.amount - paidAmount,
         variableSymbol: tax.variableSymbol,
         specificSymbol: '2023200000',
       })
@@ -87,23 +94,9 @@ export class TaxService {
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
-    const taxInstallments = tax.taxInstallments.map((taxInstallment, i) => {
-      if (i === 1) {
-        return {
-          ...taxInstallment,
-          text: `- druhá splátka v termíne do 31.08.${tax.year} v sume:`,
-        }
-      }
-      if (i === 2) {
-        return {
-          ...taxInstallment,
-          text: `- tretia splátka v termíne do 31.10.${tax.year} v sume:`,
-        }
-      }
-      return taxInstallment
-    })
+    const taxInstallments = fixInstallmentTexts(tax.taxInstallments, tax.year)
 
-    const paidStatus = getTaxStatus(tax.amount, total)
+    const paidStatus = getTaxStatus(tax.amount, paidAmount)
 
     // TODO: We stopped generating PDFs in 2024, edit this for advanced logic
     // const pdfExport = year <= 2023
@@ -115,7 +108,7 @@ export class TaxService {
     return {
       ...tax,
       taxInstallments,
-      paidAmount: total,
+      paidAmount,
       paidStatus,
       pdfExport,
       isPayable,

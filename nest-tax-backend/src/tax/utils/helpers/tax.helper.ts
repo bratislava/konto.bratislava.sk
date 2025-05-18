@@ -1,4 +1,13 @@
-import { TaxPaidStatusEnum } from 'src/tax/dtos/requests.tax.dto'
+import {
+  ResponseTaxDetailItemizedDto,
+  TaxPaidStatusEnum,
+} from '../../dtos/response.tax.dto'
+import {
+  TaxDetail,
+  TaxDetailareaType,
+  TaxDetailType,
+  TaxInstallment,
+} from '@prisma/client'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -9,4 +18,58 @@ export const getTaxStatus = (
   if (alreadyPaid > desiredPayment) return TaxPaidStatusEnum.OVER_PAID
   if (alreadyPaid === desiredPayment) return TaxPaidStatusEnum.PAID
   return TaxPaidStatusEnum.PARTIALLY_PAID
+}
+
+export const generateItemizedTaxDetail = (
+  taxDetails: TaxDetail[],
+): ResponseTaxDetailItemizedDto => {
+  const apartmentTaxDetail = taxDetails
+    .filter((detail) => detail.type === TaxDetailType.APARTMENT)
+    .map((detail) => {
+      return {
+        type: detail.areaType,
+        base: detail.base,
+        amount: detail.amount,
+      }
+    })
+  const groundTaxDetail = taxDetails
+    .filter((detail) => detail.type === TaxDetailType.GROUND)
+    .map((detail) => {
+      return {
+        type: detail.areaType as TaxDetailareaType,
+        area: detail.area,
+        base: detail.base,
+        amount: detail.amount,
+      }
+    })
+  const constructionTaxDetail = taxDetails
+    .filter((detail) => detail.type === TaxDetailType.CONSTRUCTION)
+    .map((detail) => {
+      return {
+        type: detail.areaType,
+        base: detail.base,
+        amount: detail.amount,
+      }
+    })
+
+  const apartmentTotalAmount = apartmentTaxDetail.reduce(
+    (acc, curr) => acc + curr.amount,
+    0,
+  )
+  const groundTotalAmount = groundTaxDetail.reduce(
+    (acc, curr) => acc + curr.amount,
+    0,
+  )
+  const constructionTotalAmount = constructionTaxDetail.reduce(
+    (acc, curr) => acc + curr.amount,
+    0,
+  )
+  return {
+    apartmentTotalAmount,
+    groundTotalAmount,
+    constructionTotalAmount,
+    apartmentTaxDetail,
+    groundTaxDetail,
+    constructionTaxDetail,
+  }
 }

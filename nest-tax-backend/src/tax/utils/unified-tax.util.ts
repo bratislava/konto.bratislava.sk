@@ -21,6 +21,7 @@ import {
   QrCodeGeneratorDto,
   QrPaymentNoteEnum,
 } from '../../utils/subservices/dtos/qrcode.dto'
+import { generateItemizedTaxDetail } from './helpers/tax.helper'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -293,9 +294,10 @@ export const getTaxDetailPure = (
   variableSymbol: string,
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
-): Omit< // TODO use generated types. This is just verbose version while this code is still WIP
+): Omit<
+  // TODO use generated types. This is just verbose version while this code is still WIP
   ResponseTaxSummaryDetailDto,
-  'itemizedDetail' | 'oneTimePayment' | 'installmentPayment'
+  'oneTimePayment' | 'installmentPayment'
 > & {
   oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
   installmentPayment: Omit<
@@ -331,6 +333,8 @@ export const getTaxDetailPure = (
     variableSymbol,
   )
 
+  const itemizedDetail = generateItemizedTaxDetail(tax.taxDetails)
+
   return {
     overallPaid,
     overallBalance,
@@ -338,5 +342,6 @@ export const getTaxDetailPure = (
     overallAmount,
     oneTimePayment,
     installmentPayment,
+    itemizedDetail,
   }
 }

@@ -14,13 +14,18 @@ import {
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
+  OneTimePaymentTypeEnum,
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
+  ResponseInstallmentPaymentDetailDto,
+  ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
-} from './dtos/requests.tax.dto'
+  ResponseTaxSummaryDetailDto,
+} from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
-import { getTaxStatus } from './utils/helpers/tax.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
+import dayjs from 'dayjs'
+import { getTaxDetailPure } from './utils/unified-tax.util'
 
 @Injectable()
 export class TaxService {
@@ -200,6 +205,75 @@ export class TaxService {
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,
       )
+    }
+  }
+
+  async getTaxDetail(
+    birthNumber: string,
+    year: number,
+  ): Promise<ResponseTaxSummaryDetailDto> {
+    const today = dayjs().tz('Europe/Bratislava')
+
+    const tax = await this.fetchTaxData(birthNumber, year)
+
+    const overallPaidTax = await this.getAmountAlreadyPaidByTaxId(tax.id)
+
+    const detailWithoutQrCode = getTaxDetailPure(
+      overallPaidTax,
+      +year,
+      today.toDate(),
+      tax.amount,
+      '11-1',
+      tax.variableSymbol,
+      tax.dateTaxRuling,
+      tax.taxInstallments,
+    )
+
+    const paymentGatewayLink =
+      detailWithoutQrCode.oneTimePayment.isPossible &&
+      detailWithoutQrCode.oneTimePayment.type ==
+        OneTimePaymentTypeEnum.ONE_TIME_PAYMENT
+        ? await this.paymentService.getPayGateUrlByUserAndYear(
+            year.toString(),
+            birthNumber,
+          )
+        : undefined
+
+    let oneTimePaymentQrCode: string | undefined = undefined
+    if (detailWithoutQrCode.oneTimePayment.qrCode) {
+      oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
+        detailWithoutQrCode.oneTimePayment.qrCode,
+      )
+    }
+    const oneTimePayment: ResponseOneTimePaymentDetailsDto = {
+      ...detailWithoutQrCode.oneTimePayment,
+      qrCode: oneTimePaymentQrCode,
+      paymentGatewayLink,
+    }
+
+    const installmentPayment: ResponseInstallmentPaymentDetailDto = {
+      ...detailWithoutQrCode.installmentPayment,
+      activeInstallment: detailWithoutQrCode.installmentPayment
+        .activeInstallment
+        ? {
+            remainingAmount:
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .remainingAmount,
+            variableSymbol:
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .variableSymbol,
+            qrCode: await this.qrCodeSubservice.createQrCode(
+              detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
+            ),
+          }
+        : undefined,
+    }
+
+
+    return {
+      ...detailWithoutQrCode,
+      oneTimePayment,
+      installmentPayment,
     }
   }
 }

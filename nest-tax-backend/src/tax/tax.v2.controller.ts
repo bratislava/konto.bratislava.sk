@@ -39,6 +39,6 @@ export class TaxControllerV2 {
     @BratislavaUser() baUser: BratislavaUserDto,
     @Query('year') year: number,
   ) {
-    // TODO
+    return this.taxService.getTaxDetail(baUser.birthNumber, year)
   }
 }

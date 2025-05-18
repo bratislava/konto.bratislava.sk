@@ -26,6 +26,7 @@ import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import dayjs from 'dayjs'
 import { getTaxDetailPure } from './utils/unified-tax.util'
+import { PaymentService } from '../payment/payment.service'
 
 @Injectable()
 export class TaxService {
@@ -33,6 +34,7 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
+    private paymentService: PaymentService,
   ) {}
 
   private async fetchTaxData(birthNumber: string, year: number) {

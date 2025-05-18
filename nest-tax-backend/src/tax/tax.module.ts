@@ -9,9 +9,10 @@ import ClientsModule from '../clients/clients.module'
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
 import { TaxControllerV2 } from './tax.v2.controller'
+import { PaymentModule } from '../payment/payment.module'
 
 @Module({
-  imports: [PrismaModule, ClientsModule, UserInfoPipeModule],
+  imports: [PrismaModule, PaymentModule, ClientsModule, UserInfoPipeModule],
   providers: [
     TaxService,
     CognitoSubservice,

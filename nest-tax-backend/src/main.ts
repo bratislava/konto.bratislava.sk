@@ -17,7 +17,7 @@ async function bootstrap() {
   app.useLogger(logger)
   app.enableVersioning({
     type: VersioningType.URI,
-  });
+  })
   const corsOptions = {
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

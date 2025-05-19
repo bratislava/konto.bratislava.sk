@@ -105,13 +105,13 @@ export class ResponseTaxPayerDto {
   name: string | null
 
   @ApiProperty({
-    description: 'Text of descreption of name for pdf',
+    description: 'Text of description of name for pdf',
     default: 'Meno daňovníka/ subjektu',
   })
   nameTxt: string | null
 
   @ApiProperty({
-    description: 'Text of descreption of street for pdf',
+    description: 'Text of description of street for pdf',
     default: 'Ulica trvalého pobytu',
   })
   permanentResidenceStreetTxt: string | null
@@ -468,10 +468,10 @@ export class ResponseTaxDto {
       externalId: '1234',
       name: 'Bratislavčan Daňový',
       nameTxt: 'Meno daňovníka',
-      permanentResidenceStreetTxt: 'TRvalý pobyt',
+      permanentResidenceStreetTxt: 'Trvalý pobyt',
       permanentResidenceStreet: 'Uršulínska 6 3/4',
       permanentResidenceZip: '811 01',
-      permanentResidenceCity: 'BRatislava',
+      permanentResidenceCity: 'Bratislava',
     },
   })
   @IsObject()
@@ -880,7 +880,10 @@ export class ResponseInstallmentItemDto {
 }
 
 export class ResponseActiveInstallmentDto {
-  @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
+  @ApiProperty({
+    description: 'Remaining amount to pay in the installment',
+    example: 50,
+  })
   @IsNumber()
   @IsPositive()
   remainingAmount: number
@@ -931,8 +934,7 @@ export class ResponseInstallmentPaymentDetailDto {
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() =>
-    ResponseActiveInstallmentDto)
+  @Type(() => ResponseActiveInstallmentDto)
   activeInstallment?: ResponseActiveInstallmentDto
 }
 

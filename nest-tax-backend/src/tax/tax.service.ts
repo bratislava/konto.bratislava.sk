@@ -271,7 +271,6 @@ export class TaxService {
         : undefined,
     }
 
-
     return {
       ...detailWithoutQrCode,
       oneTimePayment,

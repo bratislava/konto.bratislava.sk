@@ -5,7 +5,7 @@ All URIs are relative to _http://localhost:3000_
 | Method                                                                                              | HTTP request                                                     | Description                                                      |
 | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [**adminControllerCreateTestingTax**](#admincontrollercreatetestingtax)                             | **POST** /admin/create-testing-tax                               | Create a testing tax record                                      |
-| [**adminControllerDeleteTestingTax**](#admincontrollerdeletetestingtax)                             | **POST** /admin/delete-testing-tax                               | Delete a tax record                                              |
+| [**adminControllerDeleteTax**](#admincontrollerdeletetax)                                           | **POST** /admin/delete-tax                                       | Delete a tax record                                              |
 | [**adminControllerLoadDataFromNorris**](#admincontrollerloaddatafromnorris)                         | **POST** /admin/create-data-from-noris                           | Integrate data from norris if not exists by birth numbers or all |
 | [**adminControllerRemoveDeliveryMethodsFromNoris**](#admincontrollerremovedeliverymethodsfromnoris) | **POST** /admin/remove-delivery-methods-from-noris/{birthNumber} | Remove delivery methods for given birth number.                  |
 | [**adminControllerUpdateDataFromNorris**](#admincontrollerupdatedatafromnorris)                     | **POST** /admin/update-data-from-norris                          | Integrate data from norris                                       |
@@ -61,9 +61,9 @@ void (empty response body)
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **adminControllerDeleteTestingTax**
+# **adminControllerDeleteTax**
 
-> adminControllerDeleteTestingTax(requestAdminDeleteTaxDto)
+> adminControllerDeleteTax(requestAdminDeleteTaxDto)
 
 Deletes a tax record for a specific birth number and year
 
@@ -77,7 +77,7 @@ const apiInstance = new AdminApi(configuration)
 
 let requestAdminDeleteTaxDto: RequestAdminDeleteTaxDto //
 
-const { status, data } = await apiInstance.adminControllerDeleteTestingTax(requestAdminDeleteTaxDto)
+const { status, data } = await apiInstance.adminControllerDeleteTax(requestAdminDeleteTaxDto)
 ```
 
 ### Parameters

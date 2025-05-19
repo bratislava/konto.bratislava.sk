@@ -21,7 +21,10 @@ type FormDefinitionBase = {
   jsonVersion: string
   sendPolicy: FormSendPolicy
   termsAndConditions: string
-  extractSubject?: SchemaFormDataExtractor<any>
+  subject?: {
+    extractPlain?: SchemaFormDataExtractor<any>
+    extractTechnical?: SchemalessFormDataExtractor<any>
+  }
   additionalInfoTemplate?: string
   embedded?: false | 'olo'
   exampleFormNotRequired?: boolean
@@ -41,7 +44,6 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   ginisAssignment: {
     ginisOrganizationName: string
     ginisPersonName?: string
-    extractGinisSubject?: SchemalessFormDataExtractor<any>
   }
   sharepointData?: SharepointData
 }

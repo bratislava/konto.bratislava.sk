@@ -26,6 +26,7 @@ import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.s
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
@@ -175,14 +176,6 @@ describe('EmailFormsSubservice', () => {
     configService = module.get(ConfigService) as jest.Mocked<ConfigService>
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
-
-    throwerErrorGuard['logger'] = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
 
     service['logger'] = {
       error: jest.fn(),

@@ -29,6 +29,7 @@ import {
   ManuallyVerifyUserRequestDto,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
+  RequestDeleteTaxDto,
   RequestQueryUserByBirthNumberDto,
   RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
@@ -45,7 +46,6 @@ import {
 } from './dtos/responses.admin.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
-import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
 
 @ApiTags('ADMIN')
 @Controller('admin')
@@ -303,7 +303,7 @@ export class AdminController {
   })
   @UseGuards(AdminGuard)
   @Post('delete-tax')
-  async deleteTax(@Body() data: RequestAdminDeleteTaxDto): Promise<void> {
+  async deleteTax(@Body() data: RequestDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(data)
   }
 }

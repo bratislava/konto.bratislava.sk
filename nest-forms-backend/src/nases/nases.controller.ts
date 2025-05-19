@@ -31,6 +31,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormRequestDto,
   EidUpdateSendFormRequestDto,
@@ -48,7 +49,6 @@ import {
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @ApiTags('nases')
 @ApiBearerAuth()

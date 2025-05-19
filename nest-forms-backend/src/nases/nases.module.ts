@@ -20,6 +20,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
+    LineLoggerSubservice,
   ],
   exports: [NasesService, NasesUtilsService],
   controllers: [NasesController],

@@ -1,7 +1,6 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let service: any
   let consoleSpy: jest.SpyInstance
 

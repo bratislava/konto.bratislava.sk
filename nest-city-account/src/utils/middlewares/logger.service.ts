@@ -13,6 +13,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.locals.middlewareUsed = 'true'
 
     const { send } = response
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     response.send = (exitData: string | object | Buffer | Array<any>) => {
       response.locals.middlewareUsed = undefined
 
@@ -56,6 +57,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     ip: string
     userAgent: string
     originalUrl: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body: any
     userId: string
   } {
@@ -80,6 +82,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
   private parseExitData(
     response: Response,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     exitData: string | object | Buffer | Array<any>,
   ): {
     returnExitData: typeof exitData

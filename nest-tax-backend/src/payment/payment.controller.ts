@@ -17,7 +17,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { BratislavaUser } from 'src/auth/guards/cognito.guard'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
@@ -27,6 +26,7 @@ import {
 } from 'src/utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from 'src/utils/subservices/dtos/gpwebpay.dto'
 
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { ResponseGetPaymentUrlDto } from './dtos/requests.payment.dto'

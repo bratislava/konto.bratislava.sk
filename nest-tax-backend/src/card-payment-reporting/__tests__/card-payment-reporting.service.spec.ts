@@ -6,6 +6,7 @@ import utc from 'dayjs/plugin/utc'
 
 import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import DatabaseSubservice from '../../utils/subservices/database.subservice'
 import EmailSubservice from '../../utils/subservices/email.subservice'
 import SftpFileSubservice from '../../utils/subservices/sftp-file.subservice'
 import { CardPaymentReportingService } from '../card-payment-reporting.service'
@@ -33,7 +34,6 @@ type CsvRecord = Record<CsvColumns, string>
 
 describe('CardPaymentReportingService', () => {
   let service: CardPaymentReportingService
-  let prismaService: PrismaService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -77,48 +77,22 @@ describe('CardPaymentReportingService', () => {
             getNewFiles: jest.fn(),
           },
         },
+        {
+          provide: DatabaseSubservice,
+          useValue: {
+            getVariableSymbolsByOrderIds: jest.fn(),
+          },
+        },
       ],
     }).compile()
 
     service = module.get<CardPaymentReportingService>(
       CardPaymentReportingService,
     )
-    prismaService = module.get<PrismaService>(PrismaService)
   })
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('getVariableSymbolsByOrderIds', () => {
-    it('should return variable symbols with order IDs', async () => {
-      const mockedResponse = [
-        {
-          variableSymbol: 'VS123',
-          taxPayments: [{ orderId: 'order1' }, { orderId: 'order2' }],
-        },
-        {
-          variableSymbol: 'VS234',
-          taxPayments: [{ orderId: 'order3' }, { orderId: 'order4' }],
-        },
-      ]
-      prismaService.tax.findMany = jest.fn().mockResolvedValue(mockedResponse)
-
-      const result = await service['getVariableSymbolsByOrderIds']([
-        'order1',
-        'order3',
-      ])
-      expect(result).toEqual([
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
-        { variableSymbol: 'VS234', orderIds: ['order3', 'order4'] },
-      ])
-    })
-
-    it('should return an empty array if no data is found', async () => {
-      prismaService.tax.findMany = jest.fn().mockResolvedValue([])
-      const result = await service['getVariableSymbolsByOrderIds'](['order1'])
-      expect(result).toEqual([])
-    })
   })
 
   describe('extractFileDate', () => {
@@ -224,12 +198,14 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
   describe('enrichDataWithVariableSymbols', () => {
     it('should enrich CSV data with variable symbols', () => {
       const csvData = [
-        { orderId: 'order1', totalPrice: '123' } as CsvRecord,
-        { orderId: 'order3', totalPrice: '456' } as CsvRecord,
+        { orderId: '0001234', totalPrice: '123' } as CsvRecord,
+        { orderId: '0005678', totalPrice: '567' } as CsvRecord,
       ]
+
+      // orderIds have trimmed zeros when pairing variable symbols
       const variableSymbols = [
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
-        { variableSymbol: 'VS456', orderIds: ['order3', 'order4'] },
+        { variableSymbol: 'VS123', orderIds: ['1234', '2222'] },
+        { variableSymbol: 'VS567', orderIds: ['5678', '4444'] },
       ]
 
       const result = service['enrichDataWithVariableSymbols'](
@@ -237,21 +213,21 @@ POS;;0000001;D;05.11.24;-9,99;-0,00;-9,99;0,00;;Popl. za settlement; ;0;`
         variableSymbols,
       )
       expect(result).toStrictEqual([
-        { orderId: 'order1', totalPrice: '123', variableSymbol: 'VS123' },
-        { orderId: 'order3', totalPrice: '456', variableSymbol: 'VS456' },
+        { orderId: '0001234', totalPrice: '123', variableSymbol: 'VS123' },
+        { orderId: '0005678', totalPrice: '567', variableSymbol: 'VS567' },
       ])
     })
 
     it('should assign an empty string as variable symbol if no match is found', () => {
       const csvData = [
         {
-          orderId: 'order3',
+          orderId: '0005678',
           totalPrice: '123',
           transactionType: 'type1',
         } as CsvRecord,
       ]
       const variableSymbols = [
-        { variableSymbol: 'VS123', orderIds: ['order1', 'order2'] },
+        { variableSymbol: 'VS123', orderIds: ['1234', '2222'] },
       ]
 
       const result = service['enrichDataWithVariableSymbols'](

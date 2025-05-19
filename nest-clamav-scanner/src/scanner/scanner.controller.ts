@@ -9,7 +9,7 @@ import {
   Param,
   Post,
   UseGuards,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBasicAuth,
@@ -20,11 +20,11 @@ import {
   ApiPayloadTooLargeResponse,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
+} from '@nestjs/swagger'
 
-import { BasicGuard } from '../auth/guards/auth-basic.guard';
-import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
-import { ScannerService } from './scanner.service';
+import { BasicGuard } from '../auth/guards/auth-basic.guard'
+import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto'
+import { ScannerService } from './scanner.service'
 
 /*
   Endpoints
@@ -32,10 +32,10 @@ import { ScannerService } from './scanner.service';
 @ApiTags('Scanner')
 @Controller('api/scan')
 export class ScannerController {
-  private readonly logger: Logger;
+  private readonly logger: Logger
 
   constructor(private readonly scannerService: ScannerService) {
-    this.logger = new Logger('ScannerController');
+    this.logger = new Logger('ScannerController')
   }
 
   //post controller which accepts bucket file dto and starts clamav scan. Add swagger documentation.
@@ -118,8 +118,8 @@ export class ScannerController {
   async scanFiles(
     @Body() bucketFiles: ScanFileDto[],
   ): Promise<ScanFileResponseDto[]> {
-    this.logger.debug(`Scan files request: ${JSON.stringify(bucketFiles)}`);
-    return await this.scannerService.scanFiles(bucketFiles);
+    this.logger.debug(`Scan files request: ${JSON.stringify(bucketFiles)}`)
+    return await this.scannerService.scanFiles(bucketFiles)
   }
 
   @Post('file')
@@ -154,8 +154,8 @@ export class ScannerController {
   async scanFile(
     @Body() bucketFile: ScanFileDto,
   ): Promise<ScanFileResponseDto> {
-    this.logger.debug(`Scan file request: ${JSON.stringify(bucketFile)}`);
-    return await this.scannerService.scanFile(bucketFile);
+    this.logger.debug(`Scan file request: ${JSON.stringify(bucketFile)}`)
+    return await this.scannerService.scanFile(bucketFile)
   }
 
   //get controller which returns status of scanned file. Add swagger documentation.
@@ -177,7 +177,7 @@ export class ScannerController {
     @Param('bucketUid64') bucketId64: string,
     @Param('fileUid64') fileId64: string,
   ): Promise<ScanStatusDto> {
-    return await this.scannerService.getStatus(bucketId64, fileId64);
+    return await this.scannerService.getStatus(bucketId64, fileId64)
   }
 
   //get controller which returns status of scanned file by record id or by name in
@@ -199,7 +199,7 @@ export class ScannerController {
   async getStatusById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return await this.scannerService.getStatusByResourceId(resourceId);
+    return await this.scannerService.getStatusByResourceId(resourceId)
   }
 
   @Delete('file/:resourceId')
@@ -219,6 +219,6 @@ export class ScannerController {
   async deleteFileById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return await this.scannerService.deleteFile(resourceId);
+    return await this.scannerService.deleteFile(resourceId)
   }
 }

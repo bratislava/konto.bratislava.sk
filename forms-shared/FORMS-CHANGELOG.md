@@ -94,3 +94,7 @@
 - Changed confirmation email:
   - Added option to use same email as provided in applicant details
   - Added option to provide multiple emails for confirmation
+
+## Žiadosť o nájom bytu (ziadost-o-najom-bytu)
+
+### 2.0.0 (12-05-2025 - https://github.com/bratislava/konto.bratislava.sk/pull/2772)

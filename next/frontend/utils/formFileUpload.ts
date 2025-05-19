@@ -9,8 +9,8 @@ import {
 import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
 import {
-  GetFileResponseDtoStatusEnum,
   GetFileResponseReducedDto,
+  GetFileResponseReducedDtoStatusEnum,
   PostFileResponseDto,
 } from 'openapi-clients/forms'
 import { v4 as createUuid } from 'uuid'
@@ -47,7 +47,7 @@ export const uploadFile = async ({
         onProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
       },
       signal: abortController.signal,
-      accessToken: 'onlyAuthenticated',
+      authStrategy: 'authOrGuestWithToken',
     })
     onSuccess(response)
   } catch (error: any) {
@@ -74,10 +74,10 @@ export const shouldPollServerFiles = (
   const fileNotYetFinishedScanning = data.some((file) =>
     (
       [
-        GetFileResponseDtoStatusEnum.Uploaded,
-        GetFileResponseDtoStatusEnum.Accepted,
-        GetFileResponseDtoStatusEnum.Scanning,
-      ] as GetFileResponseDtoStatusEnum[]
+        GetFileResponseReducedDtoStatusEnum.Uploaded,
+        GetFileResponseReducedDtoStatusEnum.Accepted,
+        GetFileResponseReducedDtoStatusEnum.Scanning,
+      ] as GetFileResponseReducedDtoStatusEnum[]
     ).includes(file.status),
   )
 

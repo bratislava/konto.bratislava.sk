@@ -136,8 +136,8 @@ export const formDefinitions: FormDefinition[] = [
     extractSubject: predzahradkyExtractSubject,
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisOrganizationName: 'OTMZ',
+      ginisPersonName: 'Vacek Dušan',
       extractGinisSubject: predzahradkyExtractGinisSubject,
     },
   },
@@ -155,8 +155,8 @@ export const formDefinitions: FormDefinition[] = [
     extractSubject: komunitneZahradyExtractSubject,
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisOrganizationName: 'SSN',
+      ginisPersonName: 'Viziová Alexandra',
       extractGinisSubject: komunitneZahradyExtractGinisSubject,
     },
   },
@@ -193,7 +193,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'ziadost-o-najom-bytu',
     title: 'Žiadosť o nájom bytu',
-    jsonVersion: '1.0.0',
+    jsonVersion: '2.0.0',
     schema: ziadostONajomBytu,
     sendPolicy: FormSendPolicy.EidOrAuthenticatedNotVerified,
     // pospID contains different wording because the original form was created with a different name
@@ -201,6 +201,7 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: ziadostONajomBytuTermsAndConditions,
+    feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWKiASWp',
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisAssignment: {

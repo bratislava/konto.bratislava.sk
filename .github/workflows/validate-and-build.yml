@@ -88,6 +88,7 @@ jobs:
     uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
     with:
       directory: nest-forms-backend/
+      run_e2e_tests: true
     permissions: write-all
 
   build-nest-forms-backend:

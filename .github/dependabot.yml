@@ -53,6 +53,10 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      aws-dependencies:
+        patterns:
+          - '@aws-sdk/*'
+          - 'aws-jwt-verify'
   - package-ecosystem: 'npm'
     directory: '/nest-clamav-scanner'
     schedule:

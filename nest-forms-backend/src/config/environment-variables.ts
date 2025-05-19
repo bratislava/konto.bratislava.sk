@@ -97,6 +97,16 @@ export default class EnvironmentVariables {
   @Expose()
   @IsString()
   @IsNotEmpty()
+  AWS_ACCOUNT_ID: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  AWS_UNAUTH_ROLE_NAME: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
   RABBIT_MQ_URI: string
 
   @Expose()

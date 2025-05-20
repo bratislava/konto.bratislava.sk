@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
 import AppModule from './app.module'
+import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
 import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
 import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
@@ -29,8 +30,7 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: false,
     credentials: true,
-    allowedHeaders:
-      'Content-Type, Accept, Authorization, X-Cognito-Guest-Identity-Id',
+    allowedHeaders: `Content-Type, Accept, Authorization, ${cognitoGuestIdentityIdHeaderKey}`,
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(
@@ -69,6 +69,12 @@ async function bootstrap(): Promise<void> {
       description: 'Basic auth for communication with scanner backend',
     })
     .addApiKey({ type: 'apiKey', name: 'apiKey', in: 'header' }, 'apiKey')
+    .addSecurity('cognitoGuestIdentityId', {
+      type: 'apiKey',
+      in: 'header',
+      name: cognitoGuestIdentityIdHeaderKey,
+      description: 'Cognito Guest Identity ID for unauthenticated user access',
+    })
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

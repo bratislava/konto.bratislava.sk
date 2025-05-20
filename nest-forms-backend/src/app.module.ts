@@ -8,6 +8,7 @@ import AdminModule from './admin/admin.module'
 import AppController from './app.controller'
 import AppService from './app.service'
 import AuthModule from './auth/auth.module'
+import { AuthV2Module } from './auth-v2/auth-v2.module'
 import BaConfigModule from './config/ba-config.module'
 import BaConfigService from './config/ba-config.service'
 import ConvertModule from './convert/convert.module'
@@ -45,6 +46,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
     }),
     PrismaModule,
     AuthModule,
+    AuthV2Module,
     AdminModule,
     FormsModule,
     FilesModule,

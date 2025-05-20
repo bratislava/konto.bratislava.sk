@@ -37,6 +37,7 @@ export const fixtureAuthUserSub = '6070fed1-2b24-498d-9012-815a2ce2c817'
 export const fixtureAuthUserBearerToken = 'authUserBearerToken'
 export const fixtureInvalidAuthUserBearerToken = 'authUserWrongBearerToken'
 
+/* eslint-disable pii/no-email */
 export const fixtureAuthUser: FixtureUser = {
   headers: {
     Authorization: `Bearer ${fixtureAuthUserBearerToken}`,
@@ -65,7 +66,6 @@ export const fixtureAuthUser: FixtureUser = {
         'custom:tier': UserVerifyStateCognitoTierEnum.IdentityCard,
         given_name: 'John',
         family_name: 'Doe',
-        // eslint-disable-next-line pii/no-email
         email: 'user@example.com',
       },
       userCreateDate: new Date('2024-01-01T00:00:00.000Z'),
@@ -78,7 +78,6 @@ export const fixtureAuthUser: FixtureUser = {
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-02T00:00:00.000Z',
       externalId: fixtureAuthUserSub,
-      // eslint-disable-next-line pii/no-email
       email: 'user@example.com',
       birthNumber: null,
       wasVerifiedBeforeTaxDeadline: false,
@@ -89,6 +88,7 @@ export const fixtureAuthUser: FixtureUser = {
     },
   },
 }
+/* eslint-enable pii/no-email */
 
 export const fixtureInvalidAuthUser: FixtureUser = {
   headers: {

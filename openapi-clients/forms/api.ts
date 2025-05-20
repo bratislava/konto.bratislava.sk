@@ -3035,6 +3035,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)

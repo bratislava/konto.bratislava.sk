@@ -23,6 +23,10 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
+import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { User as UserV2 } from '../auth-v2/types/user'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
@@ -142,18 +146,15 @@ export default class NasesController {
     description: 'Create form in db',
     type: CreateFormResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
   @Post('create-form')
   async createForm(
     @Body() data: CreateFormRequestDto,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @GetUser() user: UserV2,
   ): Promise<CreateFormResponseDto> {
-    const returnData = await this.nasesService.createForm(
-      data,
-      userInfo?.ico ?? null,
-      user,
-    )
+    const returnData = await this.nasesService.createForm(data, user)
     return returnData
   }
 

@@ -48,6 +48,7 @@ const mockForm = {
   updatedAt: new Date(),
   externalId: null,
   userExternalId: '12345678-1234-1234-1234-123456789012',
+  cognitoGuestIdentityId: null,
   email: 'form-email@example.com',
   mainUri: 'uri://test-main-uri',
   actorUri: 'uri://test-actor-uri',

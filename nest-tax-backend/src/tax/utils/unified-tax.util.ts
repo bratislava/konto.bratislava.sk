@@ -74,7 +74,11 @@ const calculateDueDate = (dateOfValidity: Date | null): Dayjs | null => {
   // We will not provide due date if date of validity for the first payment is not set.
   if (!dateOfValidity) return null
 
-  const dueDateBase = dayjs(dateOfValidity).add(20, 'day')
+  // We add one more day to get midnight - start of the next day
+  const dueDateBase = dayjs
+    .tz(dateOfValidity, bratislavaTimeZone)
+    .startOf('day')
+    .add(21, 'day')
   return getNextWorkingDay(dueDateBase)
 }
 
@@ -120,16 +124,18 @@ const calculateInstallmentPaymentDetails = (
   overallPaid: number,
   today: Date,
   taxYear: number,
-  payment_calendar_threshold: string,
-  dateOfValidity: Date | null,
+  payment_calendar_threshold: number,
+  dueDate: Dayjs | null,
   installments: { order: string | null; amount: number }[],
   variableSymbol: string,
 ): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
-  const novemberFirst = dayjs(
-    new Date(`${taxYear}-${payment_calendar_threshold}`),
-  )
+  // Midnight start of the next day
+  const secondPaymentDueDate = dayjs
+    .tz(new Date(`${taxYear}-08-31`), bratislavaTimeZone)
+    .startOf('day')
+    .add(1, 'day')
 
   if (overallAmount - overallPaid <= 0) {
     return {
@@ -138,14 +144,14 @@ const calculateInstallmentPaymentDetails = (
     }
   }
 
-  if (dayjs(today) >= novemberFirst) {
+  if (dayjs(today) > secondPaymentDueDate) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
     }
   }
 
-  if (overallAmount < 6600) {
+  if (overallAmount < payment_calendar_threshold) {
     return {
       isPossible: false,
       reasonNotPossible:
@@ -153,35 +159,29 @@ const calculateInstallmentPaymentDetails = (
     }
   }
 
-  const fistPaymentDueDate = calculateDueDate(dateOfValidity)
-
   const installmentAmounts = calculateInstallmentAmounts(
     installments,
     overallPaid,
   )
 
   const installmentDetails: ResponseInstallmentItemDto[] =
-    fistPaymentDueDate && fistPaymentDueDate > dayjs(today)
+    !dueDate || dueDate > dayjs(today)
       ? [
           {
             installmentNumber: 1,
-            dueDate: fistPaymentDueDate.toDate(),
+            dueDate: dueDate?.toDate(),
             status: installmentAmounts[0].status,
             remainingAmount: installmentAmounts[0].toPay,
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs
-              .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-              .toDate(),
+            dueDate: dayjs.tz(`${taxYear}-09-01`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[1].status,
             remainingAmount: installmentAmounts[1].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs
-              .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-              .toDate(),
+            dueDate: dayjs.tz(`${taxYear}-11-01`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },
@@ -189,24 +189,20 @@ const calculateInstallmentPaymentDetails = (
       : [
           {
             installmentNumber: 1,
-            dueDate: fistPaymentDueDate?.toDate(),
+            dueDate: dueDate?.toDate(),
             status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
             remainingAmount: 0,
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs
-              .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-              .toDate(),
-            status: installmentAmounts[1].status,
+            dueDate: dayjs.tz(`${taxYear}-09-01`, bratislavaTimeZone).toDate(),
+            status: installmentAmounts[0].status,
             remainingAmount:
               installmentAmounts[1].toPay + installmentAmounts[0].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs
-              .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-              .toDate(),
+            dueDate: dayjs.tz(`${taxYear}-11-01`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },
@@ -278,7 +274,7 @@ const calculateOneTimePaymentDetails = (
     qrCode: {
       amount: overallBalance,
       variableSymbol,
-      specificSymbol: '2024200000',
+      specificSymbol: '2025200000',
       paymentNote:
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
@@ -293,7 +289,7 @@ export const getTaxDetailPure = (
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
   overallAmount: number, // suma na zaplatenie
-  payment_calendar_threshold: string, // splátková hranica (66 Eur)
+  payment_calendar_threshold: number, // splátková hranica (66 Eur)
   variableSymbol: string,
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
@@ -330,7 +326,7 @@ export const getTaxDetailPure = (
     today,
     taxYear,
     payment_calendar_threshold,
-    dateOfValidity,
+    dueDate,
     installments,
     variableSymbol,
   )

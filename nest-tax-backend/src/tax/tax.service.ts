@@ -223,7 +223,7 @@ export class TaxService {
       +year,
       today.toDate(),
       tax.amount,
-      '11-1',
+      6600,
       tax.variableSymbol,
       tax.dateTaxRuling,
       tax.taxInstallments,

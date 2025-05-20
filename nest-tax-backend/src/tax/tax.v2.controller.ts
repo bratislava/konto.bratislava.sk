@@ -6,7 +6,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { AuthenticationGuard } from '@nestjs-cognito/auth'
-import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { TiersGuard } from 'src/auth/guards/tiers.guard'
 import { Tiers } from 'src/utils/decorators/tier.decorator'
 import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
@@ -15,9 +14,10 @@ import {
   ResponseInternalServerErrorDto,
 } from 'src/utils/guards/dtos/error.dto'
 
+import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
-import { TaxService } from './tax.service'
 import { ResponseTaxSummaryDetailDto } from './dtos/response.tax.dto'
+import { TaxService } from './tax.service'
 
 @ApiTags('tax')
 @ApiBearerAuth()

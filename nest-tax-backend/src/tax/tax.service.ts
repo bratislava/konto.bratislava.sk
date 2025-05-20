@@ -2,12 +2,14 @@ import path from 'node:path'
 
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus } from '@prisma/client'
+import dayjs from 'dayjs'
 import ejs from 'ejs'
 import { PrismaService } from 'src/prisma/prisma.service'
 import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
+import { PaymentService } from '../payment/payment.service'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
@@ -24,9 +26,7 @@ import {
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
-import dayjs from 'dayjs'
 import { getTaxDetailPure } from './utils/unified-tax.util'
-import { PaymentService } from '../payment/payment.service'
 
 @Injectable()
 export class TaxService {
@@ -34,7 +34,7 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
-    private paymentService: PaymentService,
+    private readonly paymentService: PaymentService,
   ) {}
 
   private async fetchTaxData(birthNumber: string, year: number) {
@@ -92,12 +92,11 @@ export class TaxService {
     const paidAmount = await this.getAmountAlreadyPaidByTaxId(tax.id)
 
     if (paidAmount > 0 && tax.amount - paidAmount > 0) {
-      const qrCode = await this.qrCodeSubservice.createQrCode({
+      tax.qrCodeWeb = await this.qrCodeSubservice.createQrCode({
         amount: tax.amount - paidAmount,
         variableSymbol: tax.variableSymbol,
         specificSymbol: '2023200000',
       })
-      tax.qrCodeWeb = qrCode
     }
 
     // hardcoded dates 'text' of installments because they were generated incorrectly in NORIS
@@ -192,13 +191,12 @@ export class TaxService {
       const user = await this.getTaxByYear(year, birthNumber)
       const taxDetails = taxDetailsToPdf(user.taxDetails)
       const totals = taxTotalsToPdf(user, user.taxInstallments)
-      const ejsData = await ejs.renderFile('public/tax-pdf.ejs', {
+      return await ejs.renderFile('public/tax-pdf.ejs', {
         user,
         logo: path.resolve('public/logoBaTax.png'),
         taxDetails,
         totals,
       })
-      return ejsData
     } catch (error) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
@@ -229,11 +227,12 @@ export class TaxService {
       tax.variableSymbol,
       tax.dateTaxRuling,
       tax.taxInstallments,
+      tax.taxDetails,
     )
 
     const paymentGatewayLink =
       detailWithoutQrCode.oneTimePayment.isPossible &&
-      detailWithoutQrCode.oneTimePayment.type ==
+      detailWithoutQrCode.oneTimePayment.type ===
         OneTimePaymentTypeEnum.ONE_TIME_PAYMENT
         ? await this.paymentService.getPayGateUrlByUserAndYear(
             year.toString(),
@@ -241,7 +240,7 @@ export class TaxService {
           )
         : undefined
 
-    let oneTimePaymentQrCode: string | undefined = undefined
+    let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
       oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
         detailWithoutQrCode.oneTimePayment.qrCode,

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   DeliveryMethodNamed,
   TaxDetailareaType,
@@ -678,14 +678,14 @@ export class ResponseGroundTaxDetailDto {
   @IsEnum(TaxDetailareaType)
   type: TaxDetailareaType
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Area of taxed ground in m^2',
     type: String,
-    nullable: true,
+    required: false,
   })
-  @IsOptional()
   @IsString()
-  area: string | null
+  @IsOptional()
+  area?: string
 
   @ApiProperty({
     description: 'Base of tax in Eur',
@@ -795,62 +795,62 @@ export class ResponseOneTimePaymentDetailsDto {
   @IsBoolean()
   isPossible: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Type of payment',
     enum: OneTimePaymentTypeEnum,
     required: false,
   })
-  @IsOptional()
   @IsEnum(OneTimePaymentTypeEnum)
+  @IsOptional()
   type?: OneTimePaymentTypeEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Reason why payment is not possible',
     enum: OneTimePaymentReasonNotPossibleEnum,
     required: false,
   })
-  @IsOptional()
   @IsEnum(OneTimePaymentReasonNotPossibleEnum)
+  @IsOptional()
   reasonNotPossible?: OneTimePaymentReasonNotPossibleEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Payment amount',
-    example: 10050,
+    example: 10_050,
     required: false,
   })
-  @IsOptional()
   @IsNumber()
   @IsPositive()
+  @IsOptional()
   amount?: number
 
-  @ApiProperty({ description: 'Due date', required: false })
-  @IsOptional()
+  @ApiPropertyOptional({ description: 'Due date', required: false })
   @IsDate()
+  @IsOptional()
   @Type(() => Date)
   dueDate?: Date
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'QR code for payment',
     required: false,
   })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   qrCode?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Variable symbol for payment',
     required: false,
   })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   variableSymbol?: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
     required: false,
   })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   paymentGatewayLink?: string
 }
 
@@ -860,9 +860,9 @@ export class ResponseInstallmentItemDto {
   @IsPositive()
   installmentNumber: number
 
-  @ApiProperty({ description: 'Due date', required: false })
-  @IsOptional()
+  @ApiPropertyOptional({ description: 'Due date', required: false })
   @IsDate()
+  @IsOptional()
   @Type(() => Date)
   dueDate?: Date
 
@@ -871,6 +871,7 @@ export class ResponseInstallmentItemDto {
     enum: InstallmentPaidStatusEnum,
     enumName: 'InstallmentPaidStatusEnum',
   })
+  @IsEnum(InstallmentPaidStatusEnum)
   status: InstallmentPaidStatusEnum
 
   @ApiProperty({ description: 'Remaining amount to pay', example: 50 })
@@ -905,19 +906,18 @@ export class ResponseInstallmentPaymentDetailDto {
   @IsBoolean()
   isPossible: boolean
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Reason why installment is not possible',
     enum: ['BELOW_THRESHOLD', 'AFTER_DATE'],
     required: false,
   })
-  @IsOptional()
   @IsEnum(InstallmentPaymentReasonNotPossibleEnum)
+  @IsOptional()
   reasonNotPossible?: InstallmentPaymentReasonNotPossibleEnum
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'List of exactly 3 installments or none at all',
     type: [ResponseInstallmentItemDto],
-    required: false,
     isArray: true,
   })
   @IsOptional()
@@ -926,10 +926,9 @@ export class ResponseInstallmentPaymentDetailDto {
   @Type(() => ResponseInstallmentItemDto)
   installments?: ResponseInstallmentItemDto[]
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Details of active installment',
     type: ResponseActiveInstallmentDto,
-    required: false,
   })
   @IsOptional()
   @IsObject()

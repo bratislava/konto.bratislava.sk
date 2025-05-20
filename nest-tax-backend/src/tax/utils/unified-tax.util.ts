@@ -1,6 +1,17 @@
+import { TaxDetail } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import {
+  QrCodeGeneratorDto,
+  QrPaymentNoteEnum,
+} from '../../utils/subservices/dtos/qrcode.dto'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../dtos/error.dto'
 import {
   InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
@@ -12,15 +23,6 @@ import {
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxSummaryDetailDto,
 } from '../dtos/response.tax.dto'
-import ThrowerErrorGuard from '../../utils/guards/errors.guard'
-import {
-  CustomErrorTaxTypesEnum,
-  CustomErrorTaxTypesResponseEnum,
-} from '../dtos/error.dto'
-import {
-  QrCodeGeneratorDto,
-  QrPaymentNoteEnum,
-} from '../../utils/subservices/dtos/qrcode.dto'
 import { generateItemizedTaxDetail } from './helpers/tax.helper'
 
 dayjs.extend(utc)
@@ -49,7 +51,7 @@ const stateHolidays: Dayjs[] = [
 ]
 
 const isStateHoliday = (date: Dayjs): boolean => {
-  return !!stateHolidays.find((holiday) => holiday.isSame(date, 'day'))
+  return stateHolidays.some((holiday) => holiday.isSame(date, 'day'))
 }
 
 const getNextWorkingDay = (date: Dayjs): Dayjs => {
@@ -68,9 +70,9 @@ const getNextWorkingDay = (date: Dayjs): Dayjs => {
   return nextDay
 }
 
-const calculateDueDate = (dateOfValidity: Date | null) => {
+const calculateDueDate = (dateOfValidity: Date | null): Dayjs | null => {
   // We will not provide due date if date of validity for the first payment is not set.
-  if (!dateOfValidity) return undefined
+  if (!dateOfValidity) return null
 
   const dueDateBase = dayjs(dateOfValidity).add(20, 'day')
   return getNextWorkingDay(dueDateBase)
@@ -100,12 +102,14 @@ const calculateInstallmentAmounts = (
 
     remainingPaid -= paid
 
-    const status =
-      toPay === 0
-        ? InstallmentPaidStatusEnum.PAID
-        : toPay === amount
-          ? InstallmentPaidStatusEnum.NOT_PAID
-          : InstallmentPaidStatusEnum.PARTIALLY_PAID
+    let status
+    if (toPay === 0) {
+      status = InstallmentPaidStatusEnum.PAID
+    } else if (toPay === amount) {
+      status = InstallmentPaidStatusEnum.NOT_PAID
+    } else {
+      status = InstallmentPaidStatusEnum.PARTIALLY_PAID
+    }
 
     return { toPay, paid, status }
   })
@@ -156,60 +160,57 @@ const calculateInstallmentPaymentDetails = (
     overallPaid,
   )
 
-  let installmentDetails: ResponseInstallmentItemDto[] = []
-
-  if (fistPaymentDueDate && fistPaymentDueDate > dayjs(today)) {
-    installmentDetails = [
-      {
-        installmentNumber: 1,
-        dueDate: fistPaymentDueDate.toDate(),
-        status: installmentAmounts[0].status,
-        remainingAmount: installmentAmounts[0].toPay,
-      },
-      {
-        installmentNumber: 2,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[1].status,
-        remainingAmount: installmentAmounts[1].toPay,
-      },
-      {
-        installmentNumber: 3,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[2].status,
-        remainingAmount: installmentAmounts[2].toPay,
-      },
-    ]
-  } else {
-    installmentDetails = [
-      {
-        installmentNumber: 1,
-        dueDate: fistPaymentDueDate?.toDate(),
-        status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
-        remainingAmount: 0,
-      },
-      {
-        installmentNumber: 2,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[1].status,
-        remainingAmount:
-          installmentAmounts[1].toPay + installmentAmounts[0].toPay,
-      },
-      {
-        installmentNumber: 3,
-        dueDate: dayjs
-          .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
-          .toDate(),
-        status: installmentAmounts[2].status,
-        remainingAmount: installmentAmounts[2].toPay,
-      },
-    ]
-  }
+  const installmentDetails: ResponseInstallmentItemDto[] =
+    fistPaymentDueDate && fistPaymentDueDate > dayjs(today)
+      ? [
+          {
+            installmentNumber: 1,
+            dueDate: fistPaymentDueDate.toDate(),
+            status: installmentAmounts[0].status,
+            remainingAmount: installmentAmounts[0].toPay,
+          },
+          {
+            installmentNumber: 2,
+            dueDate: dayjs
+              .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+              .toDate(),
+            status: installmentAmounts[1].status,
+            remainingAmount: installmentAmounts[1].toPay,
+          },
+          {
+            installmentNumber: 3,
+            dueDate: dayjs
+              .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+              .toDate(),
+            status: installmentAmounts[2].status,
+            remainingAmount: installmentAmounts[2].toPay,
+          },
+        ]
+      : [
+          {
+            installmentNumber: 1,
+            dueDate: fistPaymentDueDate?.toDate(),
+            status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
+            remainingAmount: 0,
+          },
+          {
+            installmentNumber: 2,
+            dueDate: dayjs
+              .tz(`${dayjs().year()}-31-08`, bratislavaTimeZone)
+              .toDate(),
+            status: installmentAmounts[1].status,
+            remainingAmount:
+              installmentAmounts[1].toPay + installmentAmounts[0].toPay,
+          },
+          {
+            installmentNumber: 3,
+            dueDate: dayjs
+              .tz(`${dayjs().year()}-31-10`, bratislavaTimeZone)
+              .toDate(),
+            status: installmentAmounts[2].status,
+            remainingAmount: installmentAmounts[2].toPay,
+          },
+        ]
 
   const active = installmentDetails.find(
     (installment) =>
@@ -224,19 +225,21 @@ const calculateInstallmentPaymentDetails = (
     }
   }
 
-  const paymentNote =
-    active.installmentNumber === 1
-      ? QrPaymentNoteEnum.QR_firstInstallment
-      : active.installmentNumber === 2
-        ? installmentDetails[0].status ===
-          InstallmentPaidStatusEnum.AFTER_DUE_DATE
-          ? QrPaymentNoteEnum.QR_firstSecondInstallment
-          : QrPaymentNoteEnum.QR_secondInstallment
-        : QrPaymentNoteEnum.QR_thirdInstallment
+  let paymentNote
+  if (active.installmentNumber === 1) {
+    paymentNote = QrPaymentNoteEnum.QR_firstInstallment
+  } else if (active.installmentNumber === 2) {
+    paymentNote =
+      installmentDetails[0].status === InstallmentPaidStatusEnum.AFTER_DUE_DATE
+        ? QrPaymentNoteEnum.QR_firstSecondInstallment
+        : QrPaymentNoteEnum.QR_secondInstallment
+  } else {
+    paymentNote = QrPaymentNoteEnum.QR_thirdInstallment
+  }
 
   const activeInstallment = {
     remainingAmount: active?.remainingAmount,
-    variableSymbol: variableSymbol,
+    variableSymbol,
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
@@ -271,10 +274,10 @@ const calculateOneTimePaymentDetails = (
         ? OneTimePaymentTypeEnum.REMAINING_AMOUNT_PAYMENT
         : OneTimePaymentTypeEnum.ONE_TIME_PAYMENT,
     amount: overallBalance,
-    dueDate: dueDate,
+    dueDate,
     qrCode: {
       amount: overallBalance,
-      variableSymbol: variableSymbol,
+      variableSymbol,
       specificSymbol: '2024200000',
       paymentNote:
         overallPaid > 0
@@ -294,6 +297,7 @@ export const getTaxDetailPure = (
   variableSymbol: string,
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
+  taxDetails: TaxDetail[],
 ): Omit<
   // TODO use generated types. This is just verbose version while this code is still WIP
   ResponseTaxSummaryDetailDto,
@@ -307,11 +311,9 @@ export const getTaxDetailPure = (
     activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
   }
 } => {
-  const overallBalance =
-    overallAmount - overallPaid > 0 ? overallAmount - overallPaid : 0
+  const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  const overallOverpayment =
-    overallPaid - overallAmount > 0 ? overallPaid - overallAmount : 0
+  const overallOverpayment = Math.max(overallPaid - overallAmount, 0)
 
   const dueDate = calculateDueDate(dateOfValidity)
 
@@ -333,7 +335,7 @@ export const getTaxDetailPure = (
     variableSymbol,
   )
 
-  const itemizedDetail = generateItemizedTaxDetail(tax.taxDetails)
+  const itemizedDetail = generateItemizedTaxDetail(taxDetails)
 
   return {
     overallPaid,

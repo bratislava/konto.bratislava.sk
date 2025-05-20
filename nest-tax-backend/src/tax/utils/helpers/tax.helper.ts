@@ -1,13 +1,14 @@
 import {
-  ResponseTaxDetailItemizedDto,
-  TaxPaidStatusEnum,
-} from '../../dtos/response.tax.dto'
-import {
   TaxDetail,
   TaxDetailareaType,
   TaxDetailType,
   TaxInstallment,
 } from '@prisma/client'
+
+import {
+  ResponseTaxDetailItemizedDto,
+  TaxPaidStatusEnum,
+} from '../../dtos/response.tax.dto'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -58,7 +59,7 @@ export const generateItemizedTaxDetail = (
     .map((detail) => {
       return {
         type: detail.areaType as TaxDetailareaType,
-        area: detail.area,
+        area: detail.area ?? undefined,
         base: detail.base,
         amount: detail.amount,
       }

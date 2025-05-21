@@ -220,12 +220,20 @@ export default class ConvertService {
           errorEnum,
           errorMessage,
         )
-      } else {
-        this.logger.error(
-          `Unexpected error during XML to JSON conversion: ${error}`,
-        )
-        throw error
       }
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'Unexpected error during XML to JSON conversion',
+          undefined,
+          error,
+        )
+      }
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Unexpected error during XML to JSON conversion',
+        <string>error,
+      )
     }
 
     if (
@@ -264,9 +272,18 @@ export default class ConvertService {
       const buffer = Buffer.from(base64Pdf, 'base64')
       return Readable.from(buffer)
     } catch (error) {
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          'There was an error during generating pdf.',
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error during generating pdf. ${<string>error}`,
+        'There was an error during generating pdf.',
+        <string>error,
       )
     }
   }
@@ -346,11 +363,21 @@ export default class ConvertService {
         })
       }
     } catch (error) {
-      this.logger.error(`Error during generating PDF: ${<string>error}`)
+      // TODO can we delete this log?
+      this.logger.error(`Error during generating PDF.`, error)
 
+      if (error instanceof Error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ConvertErrorsEnum.PDF_GENERATION_FAILED,
+          ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
+          undefined,
+          error,
+        )
+      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ConvertErrorsEnum.PDF_GENERATION_FAILED,
         ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
+        <string>error,
       )
     }
 

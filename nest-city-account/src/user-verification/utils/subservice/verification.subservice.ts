@@ -21,6 +21,7 @@ import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.sub
 @Injectable()
 export class VerificationSubservice {
   private logger: LineLoggerSubservice
+
   constructor(
     private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,

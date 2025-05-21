@@ -50,9 +50,12 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.spec.ts'],
+      files: ['**/*.spec.ts', '**/*.e2e-spec.ts'],
       rules: {
         '@typescript-eslint/dot-notation': 'off', // to test private methods
+        '@darraghor/nestjs-typed/controllers-should-supply-api-tags': 'off',
+        '@darraghor/nestjs-typed/api-method-should-specify-api-response': 'off',
+        '@darraghor/nestjs-typed/injectable-should-be-provided': 'off',
       },
     },
     {

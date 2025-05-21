@@ -23,10 +23,11 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { User as UserV2 } from '../auth-v2/types/user'
+import { User as UserV2, UserType } from '../auth-v2/types/user'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
@@ -148,6 +149,7 @@ export default class NasesController {
   })
   @ApiCognitoGuestIdentityIdAuth()
   @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard)
   @Post('create-form')
   async createForm(

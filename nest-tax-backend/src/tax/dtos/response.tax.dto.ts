@@ -948,11 +948,6 @@ export class ResponseTaxSummaryDetailDto {
   @IsPositive()
   overallBalance: number
 
-  @ApiProperty({ description: 'Total overpayment', example: 0 })
-  @IsNumber()
-  @IsPositive()
-  overallOverpayment: number
-
   @ApiProperty({ description: 'Total tax amount', example: 200 })
   @IsNumber()
   @IsPositive()

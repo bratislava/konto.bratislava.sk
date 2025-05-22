@@ -151,7 +151,6 @@ const defaultOutput: Omit<
 } = {
   overallPaid: 0,
   overallBalance: 6600,
-  overallOverpayment: 0,
   overallAmount: 6600,
   oneTimePayment: {
     isPossible: true,
@@ -289,7 +288,6 @@ describe('UnifiedTaxUtil', () => {
         // console.log(JSON.stringify(output, null, 2))
 
         expect(output.overallPaid).toBe(1)
-        expect(output.overallOverpayment).toBe(0)
         expect(output.installmentPayment.isPossible).toBe(true)
         expect(output.installmentPayment.installments).toBeDefined()
         expect(output.installmentPayment.installments![0].remainingAmount).toBe(

@@ -309,8 +309,6 @@ export const getTaxDetailPure = (
 } => {
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  const overallOverpayment = Math.max(overallPaid - overallAmount, 0)
-
   const dueDate = calculateDueDate(dateOfValidity)
 
   const oneTimePayment = calculateOneTimePaymentDetails(
@@ -336,7 +334,6 @@ export const getTaxDetailPure = (
   return {
     overallPaid,
     overallBalance,
-    overallOverpayment,
     overallAmount,
     oneTimePayment,
     installmentPayment,

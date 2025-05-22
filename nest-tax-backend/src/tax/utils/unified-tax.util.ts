@@ -166,8 +166,12 @@ const calculateInstallmentPaymentDetails = (
   )
 
   const installmentDetails: ResponseInstallmentItemDto[] =
-    !dueDate || dueDate > dayjs(today)
-      ? [
+    !dueDate ||
+    installmentAmounts[0].status === InstallmentPaidStatusEnum.PAID ||
+    installmentAmounts[0].status === InstallmentPaidStatusEnum.OVER_PAID ||
+    dueDate > dayjs(today)
+      ? // !dueDate || dueDate > dayjs(today)
+        [
           {
             installmentNumber: 1,
             dueDate: dueDate?.toDate(),

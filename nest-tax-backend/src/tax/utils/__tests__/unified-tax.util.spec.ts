@@ -145,7 +145,7 @@ type ReplaceQrCodeWithGeneratorDto<T extends object> = {
 
 const defaultOutput: Omit<
   ResponseTaxSummaryDetailDto,
-  'oneTimePayment' | 'installmentPayment'
+  'oneTimePayment' | 'installmentPayment' | 'taxEmployee'
 > & {
   oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
   installmentPayment: Omit<

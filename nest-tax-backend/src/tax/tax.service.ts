@@ -22,6 +22,7 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
+  ResponseTaxEmployeeDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
@@ -273,10 +274,17 @@ export class TaxService {
         : undefined,
     }
 
+    const taxEmployee: ResponseTaxEmployeeDto = {
+      name: tax.taxEmployees.name,
+      phoneNumber: tax.taxEmployees.phoneNumber,
+      email: tax.taxEmployees.email,
+    }
+
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
+      taxEmployee,
     }
   }
 }

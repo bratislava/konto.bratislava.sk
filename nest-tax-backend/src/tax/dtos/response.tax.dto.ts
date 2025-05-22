@@ -9,6 +9,7 @@ import {
   IsArray,
   IsBoolean,
   IsDate,
+  IsEmail,
   IsEnum,
   IsNumber,
   IsObject,
@@ -975,6 +976,26 @@ export class ResponseInstallmentPaymentDetailDto {
   activeInstallment?: ResponseActiveInstallmentDto
 }
 
+export class ResponseTaxEmployeeDto {
+  @ApiProperty({ description: 'Name of the tax employee', example: 'John Doe' })
+  @IsString()
+  name: string
+
+  @ApiProperty({
+    description: 'Phone number of the tax employee',
+    example: '+421 123 456 789',
+  })
+  @IsString()
+  phoneNumber: string
+
+  @ApiProperty({
+    description: 'Email address of the tax employee',
+    example: 'johndoe@example.com',
+  })
+  @IsEmail()
+  email: string
+}
+
 export class ResponseTaxSummaryDetailDto {
   @ApiProperty({ description: 'Total amount paid', example: 150 })
   @IsNumber()
@@ -1018,4 +1039,13 @@ export class ResponseTaxSummaryDetailDto {
   @ValidateNested()
   @Type(() => ResponseInstallmentPaymentDetailDto)
   installmentPayment: ResponseInstallmentPaymentDetailDto
+
+  @ApiProperty({
+    description: 'Assigned tax employee',
+    type: ResponseTaxEmployeeDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxEmployeeDto)
+  taxEmployee: ResponseTaxEmployeeDto
 }

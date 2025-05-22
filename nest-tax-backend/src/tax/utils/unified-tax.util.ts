@@ -301,7 +301,7 @@ export const getTaxDetailPure = (
 ): Omit<
   // TODO use generated types. This is just verbose version while this code is still WIP
   ResponseTaxSummaryDetailDto,
-  'oneTimePayment' | 'installmentPayment'
+  'oneTimePayment' | 'installmentPayment' | 'taxEmployee'
 > & {
   oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
   installmentPayment: Omit<

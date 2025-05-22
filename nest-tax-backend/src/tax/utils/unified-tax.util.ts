@@ -21,6 +21,7 @@ import {
   ResponseInstallmentItemDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
+  ResponseTaxDetailItemizedDto,
   ResponseTaxSummaryDetailDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedTaxDetail } from './helpers/tax.helper'
@@ -294,6 +295,9 @@ export const getTaxDetailPure = (
   dateOfValidity: Date | null, // dátum právoplatnosti
   installments: { order: string | null; amount: number }[],
   taxDetails: TaxDetail[],
+  taxConstructions: number,
+  taxFlat: number,
+  taxLand: number,
 ): Omit<
   // TODO use generated types. This is just verbose version while this code is still WIP
   ResponseTaxSummaryDetailDto,
@@ -329,7 +333,12 @@ export const getTaxDetailPure = (
     variableSymbol,
   )
 
-  const itemizedDetail = generateItemizedTaxDetail(taxDetails)
+  const itemizedDetail: ResponseTaxDetailItemizedDto = {
+    apartmentTotalAmount: taxFlat,
+    groundTotalAmount: taxLand,
+    constructionTotalAmount: taxConstructions,
+    ...generateItemizedTaxDetail(taxDetails),
+  }
 
   return {
     overallPaid,

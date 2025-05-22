@@ -228,6 +228,9 @@ export class TaxService {
       tax.dateTaxRuling,
       tax.taxInstallments,
       tax.taxDetails,
+      tax.taxConstructions ?? 0,
+      tax.taxFlat ?? 0,
+      tax.taxLand ?? 0,
     )
 
     const paymentGatewayLink =

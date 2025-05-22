@@ -5,10 +5,7 @@ import {
   TaxInstallment,
 } from '@prisma/client'
 
-import {
-  ResponseTaxDetailItemizedDto,
-  TaxPaidStatusEnum,
-} from '../../dtos/response.tax.dto'
+import { TaxPaidStatusEnum } from '../../dtos/response.tax.dto'
 
 export const getTaxStatus = (
   desiredPayment: number,
@@ -42,9 +39,7 @@ export const fixInstallmentTexts = (
   })
 }
 
-export const generateItemizedTaxDetail = (
-  taxDetails: TaxDetail[],
-): ResponseTaxDetailItemizedDto => {
+export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
   const apartmentTaxDetail = taxDetails
     .filter((detail) => detail.type === TaxDetailType.APARTMENT)
     .map((detail) => {
@@ -73,23 +68,7 @@ export const generateItemizedTaxDetail = (
         amount: detail.amount,
       }
     })
-
-  const apartmentTotalAmount = apartmentTaxDetail.reduce(
-    (acc, curr) => acc + curr.amount,
-    0,
-  )
-  const groundTotalAmount = groundTaxDetail.reduce(
-    (acc, curr) => acc + curr.amount,
-    0,
-  )
-  const constructionTotalAmount = constructionTaxDetail.reduce(
-    (acc, curr) => acc + curr.amount,
-    0,
-  )
   return {
-    apartmentTotalAmount,
-    groundTotalAmount,
-    constructionTotalAmount,
     apartmentTaxDetail,
     groundTaxDetail,
     constructionTaxDetail,

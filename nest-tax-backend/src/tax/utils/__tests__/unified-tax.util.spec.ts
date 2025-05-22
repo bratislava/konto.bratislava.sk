@@ -26,6 +26,9 @@ type InputGetTaxDetailPureType = {
   dateOfValidity: Date | null
   installments: { order: string | null; amount: number }[]
   taxDetail: TaxDetail[]
+  taxConstructions: number
+  taxFlat: number
+  taxLand: number
 }
 
 const defaultInput: InputGetTaxDetailPureType = {
@@ -131,6 +134,9 @@ const defaultInput: InputGetTaxDetailPureType = {
       amount: 123,
     },
   ],
+  taxFlat: 369,
+  taxLand: 246,
+  taxConstructions: 369,
 }
 
 type ReplaceQrCodeWithGeneratorDto<T extends object> = {
@@ -267,6 +273,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output).toEqual(defaultOutput)
@@ -283,6 +292,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         // console.log(JSON.stringify(output, null, 2))
@@ -315,6 +327,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         // console.log(JSON.stringify(output, null, 2))
@@ -342,6 +357,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
         expect(output.installmentPayment.installments![0].remainingAmount).toBe(
           0,
@@ -369,6 +387,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.installments![0].remainingAmount).toBe(
@@ -392,6 +413,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.isPossible).toBe(false)
@@ -413,6 +437,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output).toEqual(defaultOutput)
@@ -429,6 +456,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.isPossible).toBe(true)
@@ -476,6 +506,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.isPossible).toBe(true)
@@ -523,6 +556,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.isPossible).toBe(true)
@@ -570,6 +606,9 @@ describe('UnifiedTaxUtil', () => {
           defaultInput.dateOfValidity,
           defaultInput.installments,
           defaultInput.taxDetail,
+          defaultInput.taxConstructions,
+          defaultInput.taxFlat,
+          defaultInput.taxLand,
         )
 
         expect(output.installmentPayment.isPossible).toBe(false)
@@ -592,6 +631,9 @@ describe('UnifiedTaxUtil', () => {
         null,
         defaultInput.installments,
         defaultInput.taxDetail,
+        defaultInput.taxConstructions,
+        defaultInput.taxFlat,
+        defaultInput.taxLand,
       )
 
       expect(output.installmentPayment.isPossible).toBe(true)

@@ -1,105 +1,185 @@
+import jwt from 'jsonwebtoken'
 import {
   UserOfficialCorrespondenceChannelEnum,
   UserVerifyStateCognitoTierEnum,
   UserVerifyStateTypeEnum,
 } from 'openapi-clients/city-account'
 import supertest from 'supertest'
+import { v4 as uuidv4 } from 'uuid'
 
-import { User, UserType } from '../../../src/auth-v2/types/user'
+import { AuthUser, GuestUser, UserType } from '../../../src/auth-v2/types/user'
 
-type FixtureUser = {
-  headers: Record<string, string>
-  user: User | null
+type GuestFixtureUser = {
+  identityId: string
+  headers: {
+    'X-Cognito-Guest-Identity-Id': string
+  }
+  user: GuestUser
+}
+type AuthFixtureUser = {
+  sub: string
+  headers: {
+    Authorization: string
+  }
+  user: AuthUser
 }
 
-export const fixtureGuestUserIdentityId = '2b6fe2b9-5754-4dc9-b653-d96b5d13c03d'
-export const fixtureInvalidGuestUserIdentityId =
-  '98eba9d0-7bb4-4c63-8f1c-9ff427538325'
+type FixtureUser = GuestFixtureUser | AuthFixtureUser
 
-export const fixtureGuestUser: FixtureUser = {
-  headers: {
-    'X-Cognito-Guest-Identity-Id': fixtureGuestUserIdentityId,
-  },
-  user: {
-    type: UserType.Guest,
-    cognitoIdentityId: fixtureGuestUserIdentityId,
-  },
-}
+const getRandomGuestIdentityId = () => `eu-central-1:${uuidv4()}`
 
-export const fixtureInvalidGuestUser: FixtureUser = {
-  headers: {
-    'X-Cognito-Guest-Identity-Id': fixtureInvalidGuestUserIdentityId,
-  },
-  user: null,
-}
+export function createGuestUserFixture(): GuestFixtureUser {
+  const randomGuestIdentityId = getRandomGuestIdentityId()
 
-export const fixtureAuthUserSub = '6070fed1-2b24-498d-9012-815a2ce2c817'
-export const fixtureAuthUserBearerToken = 'authUserBearerToken'
-export const fixtureInvalidAuthUserBearerToken = 'authUserWrongBearerToken'
-
-/* eslint-disable pii/no-email */
-export const fixtureAuthUser: FixtureUser = {
-  headers: {
-    Authorization: `Bearer ${fixtureAuthUserBearerToken}`,
-  },
-  user: {
-    type: UserType.Auth,
-    cognitoJwtPayload: {
-      version: 1,
-      sub: fixtureAuthUserSub,
-      iss: 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_FZDV0j2ZK',
-      client_id: 'exampleclientid',
-      origin_jti: '83c48067-c002-4ce3-9f64-8d039b177913',
-      event_id: '3514487d-f4e3-488b-b1f5-754f29a11f79',
-      token_use: 'access',
-      scope: 'aws.cognito.signin.user.admin',
-      auth_time: 1_700_000_000,
-      exp: 1_700_000_100,
-      iat: 1_700_000_000,
-      jti: '893d2e7c-0fe8-46c7-ad46-4b774d0c8126',
-      username: fixtureAuthUserSub,
+  return {
+    identityId: randomGuestIdentityId,
+    headers: {
+      'X-Cognito-Guest-Identity-Id': randomGuestIdentityId,
     },
-    cognitoUser: {
-      userAttributes: {
-        sub: fixtureAuthUserSub,
-        'custom:account_type': UserVerifyStateTypeEnum.Fo,
-        'custom:tier': UserVerifyStateCognitoTierEnum.IdentityCard,
-        given_name: 'John',
-        family_name: 'Doe',
-        email: 'user@example.com',
-      },
-      userCreateDate: new Date('2024-01-01T00:00:00.000Z'),
-      userLastModifiedDate: new Date('2024-01-02T00:00:00.000Z'),
-      userStatus: 'CONFIRMED',
-      username: fixtureAuthUserSub,
+    user: {
+      type: UserType.Guest,
+      cognitoIdentityId: randomGuestIdentityId,
     },
-    cityAccountUser: {
-      id: 'cb827c6a-9f6e-48e5-b9bb-2e49ce008576',
+  }
+}
+
+const mockJwtSignSecret = 'secret'
+
+export function createAuthUserFixture({
+  accountType = UserVerifyStateTypeEnum.Fo,
+  tier = UserVerifyStateCognitoTierEnum.IdentityCard,
+  givenName = 'John',
+  familyName = 'Doe',
+  email = 'user@example.com',
+  ico = 'ico://sk/1234567890',
+}: {
+  accountType?: UserVerifyStateTypeEnum
+  tier?: UserVerifyStateCognitoTierEnum
+  givenName?: string
+  familyName?: string
+  email?: string
+  ico?: string
+}): AuthFixtureUser {
+  const randomSub = uuidv4()
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+  const cognitoPayloadRaw = {
+    sub: randomSub,
+    iss: 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_GCBQzfACy',
+    client_id: 'exampleClientId',
+    origin_jti: uuidv4(),
+    event_id: uuidv4(),
+    token_use: 'access' as const,
+    scope: 'aws.cognito.signin.user.admin',
+    auth_time: nowInSeconds,
+    username: randomSub,
+  }
+  const bearerToken = jwt.sign(cognitoPayloadRaw, mockJwtSignSecret, {
+    jwtid: uuidv4(),
+    expiresIn: '1h',
+  })
+  const decodedCognitoPayload = jwt.decode(bearerToken, {
+    json: true,
+  }) as {
+    iat: number
+    exp: number
+    jti: string
+  } & typeof cognitoPayloadRaw
+
+  const getCityAccountUser = () => {
+    const base = {
+      id: uuidv4(),
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-02T00:00:00.000Z',
-      externalId: fixtureAuthUserSub,
-      email: 'user@example.com',
+      externalId: randomSub,
+      email,
       birthNumber: null,
-      wasVerifiedBeforeTaxDeadline: false,
-      officialCorrespondenceChannel:
-        UserOfficialCorrespondenceChannelEnum.Postal,
-      showEmailCommunicationBanner: false,
+
       gdprData: [],
+    }
+    if (accountType === UserVerifyStateTypeEnum.Fo) {
+      return {
+        ...base,
+        wasVerifiedBeforeTaxDeadline: false,
+        officialCorrespondenceChannel:
+          UserOfficialCorrespondenceChannelEnum.Postal,
+        showEmailCommunicationBanner: false,
+      }
+    }
+
+    if (
+      accountType === UserVerifyStateTypeEnum.FoP ||
+      accountType === UserVerifyStateTypeEnum.Po
+    ) {
+      return {
+        ...base,
+        ico: ico ?? null,
+      }
+    }
+
+    throw new Error('Invalid account type')
+  }
+
+  /* eslint-disable pii/no-email */
+  return {
+    sub: randomSub,
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
     },
+    user: {
+      type: UserType.Auth,
+      cognitoJwtPayload: {
+        version: 1,
+        ...decodedCognitoPayload,
+      },
+      cognitoUser: {
+        userAttributes: {
+          sub: randomSub,
+          'custom:account_type': accountType,
+          'custom:tier': tier,
+          given_name: givenName,
+          family_name: familyName,
+          email,
+        },
+        userCreateDate: new Date('2024-01-01T00:00:00.000Z'),
+        userLastModifiedDate: new Date('2024-01-02T00:00:00.000Z'),
+        userStatus: 'CONFIRMED',
+        username: randomSub,
+      },
+      cityAccountUser: getCityAccountUser(),
+    },
+  }
+  /* eslint-enable pii/no-email */
+}
+
+export const fixtureGuestUser1 = createGuestUserFixture()
+export const fixtureGuestUser2 = createGuestUserFixture()
+
+export const fixtureAuthUserFo = createAuthUserFixture({})
+export const fixtureAuthUserPo = createAuthUserFixture({
+  accountType: UserVerifyStateTypeEnum.Po,
+})
+
+export const fixtureGuestUsers = [fixtureGuestUser1, fixtureGuestUser2]
+export const fixtureAuthUsers = [fixtureAuthUserFo, fixtureAuthUserPo]
+
+export const fixtureInvalidGuestUser = {
+  headers: {
+    'X-Cognito-Guest-Identity-Id': getRandomGuestIdentityId(),
   },
 }
-/* eslint-enable pii/no-email */
 
-export const fixtureInvalidAuthUser: FixtureUser = {
+export const fixtureInvalidAuthUser = {
   headers: {
-    Authorization: `Bearer ${fixtureInvalidAuthUserBearerToken}`,
+    Authorization: 'Bearer invalidToken',
   },
-  user: null,
 }
 
 export function withUser<Request extends supertest.Test>(
   req: Request,
-  user: FixtureUser,
+  user:
+    | FixtureUser
+    | typeof fixtureInvalidGuestUser
+    | typeof fixtureInvalidAuthUser,
 ) {
   let newReq = req
   Object.entries(user.headers).forEach(([key, value]) => {

@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 
 import {
-  fixtureAuthUser,
-  fixtureGuestUser,
+  fixtureAuthUserFo,
+  fixtureGuestUser1,
   fixtureInvalidAuthUser,
   fixtureInvalidGuestUser,
   withUser,
@@ -83,18 +83,18 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow access for authenticated users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        fixtureAuthUser,
+        fixtureAuthUserFo,
       ).expect(200, {
-        user: createAssertionSafeUser(fixtureAuthUser.user),
+        user: createAssertionSafeUser(fixtureAuthUserFo.user),
       })
     })
 
     it('should allow access for guest users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        fixtureGuestUser,
+        fixtureGuestUser1,
       ).expect(200, {
-        user: fixtureGuestUser.user,
+        user: fixtureGuestUser1.user,
       })
     })
 
@@ -109,16 +109,16 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow guest users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        fixtureGuestUser,
+        fixtureGuestUser1,
       ).expect(200, {
-        user: fixtureGuestUser.user,
+        user: fixtureGuestUser1.user,
       })
     })
 
     it('should reject authenticated (non-guest) users (401)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        fixtureAuthUser,
+        fixtureAuthUserFo,
       ).expect(401)
     })
 
@@ -133,16 +133,16 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow authenticated (non-guest) users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        fixtureAuthUser,
+        fixtureAuthUserFo,
       ).expect(200, {
-        user: createAssertionSafeUser(fixtureAuthUser.user),
+        user: createAssertionSafeUser(fixtureAuthUserFo.user),
       })
     })
 
     it('should reject guest users (401)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        fixtureGuestUser,
+        fixtureGuestUser1,
       ).expect(401)
     })
 
@@ -158,9 +158,9 @@ describe('UserAuthGuard (E2E)', () => {
       await withUser(
         withUser(
           request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-          fixtureAuthUser,
+          fixtureAuthUserFo,
         ),
-        fixtureGuestUser,
+        fixtureGuestUser1,
       ).expect(401)
     })
 

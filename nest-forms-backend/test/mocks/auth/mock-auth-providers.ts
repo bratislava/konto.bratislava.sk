@@ -4,18 +4,16 @@ import { CityAccountUserService } from '../../../src/auth-v2/services/city-accou
 import { CognitoGuestIdentityService } from '../../../src/auth-v2/services/cognito-guest-identity.service'
 import { CognitoJwtVerifyService } from '../../../src/auth-v2/services/cognito-jwt-verify.service'
 import { CognitoUserService } from '../../../src/auth-v2/services/cognito-user.service'
-import { AuthUser } from '../../../src/auth-v2/types/user'
-import {
-  fixtureAuthUser,
-  fixtureAuthUserBearerToken,
-  fixtureAuthUserSub,
-  fixtureGuestUserIdentityId,
-} from '../../fixtures/auth/user'
+import { fixtureAuthUsers, fixtureGuestUsers } from '../../fixtures/auth/user'
 
 const CognitoJwtVerifyServiceMock = {
   verify: async (bearerToken: string) => {
-    if (bearerToken === fixtureAuthUserBearerToken) {
-      return (fixtureAuthUser.user as AuthUser).cognitoJwtPayload
+    const userFixture = fixtureAuthUsers.find(
+      (fixture) => fixture.headers.Authorization === `Bearer ${bearerToken}`,
+    )
+
+    if (userFixture) {
+      return userFixture.user.cognitoJwtPayload
     }
 
     throw new UnauthorizedException(
@@ -24,22 +22,28 @@ const CognitoJwtVerifyServiceMock = {
   },
 } as CognitoJwtVerifyService
 
-const CognitoAttributesServiceMock = {
+const CognitoUserServiceMock = {
   getUserAttributes: async (sub: string) => {
-    if (sub === fixtureAuthUserSub) {
-      return (fixtureAuthUser.user as AuthUser).cognitoUser
+    const userFixture = fixtureAuthUsers.find((fixture) => fixture.sub === sub)
+
+    if (userFixture) {
+      return userFixture.user.cognitoUser
     }
 
     throw new UnauthorizedException(
-      'Invalid sub provided to CognitoAttributesServiceMock.getUserAttributes',
+      'Invalid sub provided to CognitoUserServiceMock.getUserAttributes',
     )
   },
 } as CognitoUserService
 
 const CityAccountUserServiceMock = {
   getUser: async (bearerToken: string) => {
-    if (bearerToken === fixtureAuthUserBearerToken) {
-      return (fixtureAuthUser.user as AuthUser).cityAccountUser
+    const userFixture = fixtureAuthUsers.find(
+      (fixture) => fixture.headers.Authorization === `Bearer ${bearerToken}`,
+    )
+
+    if (userFixture) {
+      return userFixture.user.cityAccountUser
     }
 
     throw new UnauthorizedException(
@@ -49,8 +53,13 @@ const CityAccountUserServiceMock = {
 } as CityAccountUserService
 
 const CognitoGuestIdentityServiceMock = {
-  async verifyGuestIdentityId(guestIdentityId: string): Promise<boolean> {
-    return guestIdentityId === fixtureGuestUserIdentityId
+  async verifyGuestIdentityId(guestIdentityId: string) {
+    const userFixture = fixtureGuestUsers.find(
+      (fixture) =>
+        fixture.headers['X-Cognito-Guest-Identity-Id'] === guestIdentityId,
+    )
+
+    return Boolean(userFixture)
   },
 } as CognitoGuestIdentityService
 
@@ -61,7 +70,7 @@ export const mockAuthProviders: Provider[] = [
   },
   {
     provide: CognitoUserService,
-    useValue: CognitoAttributesServiceMock,
+    useValue: CognitoUserServiceMock,
   },
   {
     provide: CityAccountUserService,

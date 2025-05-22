@@ -760,6 +760,7 @@ export class ResponseTaxDetailItemizedDto {
     description: 'Apartment tax itemized',
     type: [ResponseApartmentTaxDetailDto],
     isArray: true,
+    example: [{ type: TaxDetailareaType.byt, base: 100, amount: 100 }],
   })
   @IsArray()
   @ValidateNested({ each: true })
@@ -769,6 +770,14 @@ export class ResponseTaxDetailItemizedDto {
   @ApiProperty({
     description: 'Ground tax itemized',
     type: [ResponseGroundTaxDetailDto],
+    example: [
+      {
+        type: TaxDetailareaType.A,
+        area: '100m2',
+        base: 100,
+        amount: 100,
+      },
+    ],
     isArray: true,
   })
   @IsArray()
@@ -780,6 +789,7 @@ export class ResponseTaxDetailItemizedDto {
     description: 'Construction tax itemized',
     type: [ResponseConstructionTaxDetailDto],
     isArray: true,
+    example: [{ type: TaxDetailareaType.RESIDENTIAL, base: 100, amount: 100 }],
   })
   @IsArray()
   @ValidateNested({ each: true })
@@ -823,7 +833,11 @@ export class ResponseOneTimePaymentDetailsDto {
   @IsOptional()
   amount?: number
 
-  @ApiPropertyOptional({ description: 'Due date', required: false })
+  @ApiPropertyOptional({
+    description: 'Due date',
+    required: false,
+    example: '2023-04-13',
+  })
   @IsDate()
   @IsOptional()
   @Type(() => Date)
@@ -860,7 +874,11 @@ export class ResponseInstallmentItemDto {
   @IsPositive()
   installmentNumber: number
 
-  @ApiPropertyOptional({ description: 'Due date', required: false })
+  @ApiPropertyOptional({
+    description: 'Due date',
+    required: false,
+    example: '2023-04-13',
+  })
   @IsDate()
   @IsOptional()
   @Type(() => Date)
@@ -919,6 +937,26 @@ export class ResponseInstallmentPaymentDetailDto {
     description: 'List of exactly 3 installments or none at all',
     type: [ResponseInstallmentItemDto],
     isArray: true,
+    example: [
+      {
+        installmentNumber: 1,
+        dueDate: '2023-04-13',
+        status: InstallmentPaidStatusEnum.NOT_PAID,
+        remainingAmount: 50,
+      },
+      {
+        installmentNumber: 2,
+        dueDate: '2023-04-13',
+        status: InstallmentPaidStatusEnum.NOT_PAID,
+        remainingAmount: 50,
+      },
+      {
+        installmentNumber: 3,
+        dueDate: '2023-04-13',
+        status: InstallmentPaidStatusEnum.NOT_PAID,
+        remainingAmount: 50,
+      },
+    ],
   })
   @IsOptional()
   @IsArray()

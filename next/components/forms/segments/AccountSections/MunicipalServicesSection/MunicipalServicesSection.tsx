@@ -12,7 +12,11 @@ import { SelectOption } from '../../../widget-components/SelectField/SelectField
 
 const enumOptions: SelectOption[] = [
   { value: 'ALL_CATEGORY', label: MunicipalServicesCategories.ALL_CATEGORY, description: '' },
-  { value: 'TAXES_CATEGORY', label: MunicipalServicesCategories.TAXES_CATEGORY, description: '' },
+  {
+    value: 'TAXES_FEES_CATEGORY',
+    label: MunicipalServicesCategories.TAXES_FEES_CATEGORY,
+    description: '',
+  },
   {
     value: 'CULTURE_CATEGORY',
     label: MunicipalServicesCategories.CULTURE_CATEGORY,

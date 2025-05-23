@@ -47,7 +47,7 @@
     "form-urlencoded": "^6.1.5",
     "html-pdf": "^3.0.1",
     "mssql": "^11.0.1",
-    "nodemailer": "^6.10.1",
+    "nodemailer": "^7.0.3",
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",
     "qrcode": "^1.5.4",

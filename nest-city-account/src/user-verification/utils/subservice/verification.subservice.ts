@@ -274,12 +274,21 @@ export class VerificationSubservice {
     data: RequestBodyVerifyWithRpoDto
   ): Promise<ResponseVerificationIdentityCardDto> {
     if (!isValidBirthNumber(data.birthNumber)) {
+      this.logger.warn('Birth number is not valid: ', data.birthNumber)
       return this.errorMessengerGuard.birthNumberBadFormat()
     }
 
+    this.logger.debug('Calling await this.magproxyService.rpoIco(data.ico)')
     const rpoData = await this.magproxyService.rpoIco(data.ico)
+    this.logger.debug('rpoData: ', rpoData)
     if (rpoData.statusCode !== 200 && rpoData.data === null) {
       if (rpoData.errorData === null) {
+        this.logger.debug(
+          this.throwerErrorGuard.UnprocessableEntityException(
+            VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
+            `Data and Error data null: ${JSON.stringify(rpoData)}`
+          )
+        )
         throw this.throwerErrorGuard.UnprocessableEntityException(
           VerificationErrorsEnum.EMPTY_RPO_RESPONSE,
           `Data and Error data null: ${JSON.stringify(rpoData)}`
@@ -288,6 +297,7 @@ export class VerificationSubservice {
       return rpoData.errorData
     }
     if (!rpoData || !rpoData.data) {
+      this.logger.debug('return this.errorMessengerGuard.rpoFieldNotExists(\'ico\')')
       return this.errorMessengerGuard.rpoFieldNotExists('ico')
     }
     const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
@@ -295,6 +305,7 @@ export class VerificationSubservice {
       return verifyStatutory
     }
 
+    this.logger.debug('Calling await this.magproxyService.rfoBirthNumberDcom(data.birthNumber)')
     const resultVerifyIdentityCard = await this.verifyIdentityCard(
       user,
       {
@@ -304,6 +315,7 @@ export class VerificationSubservice {
       },
       data.ico
     )
+    this.logger.debug('resultVerifyIdentityCard: ', resultVerifyIdentityCard)
 
     return resultVerifyIdentityCard
   }

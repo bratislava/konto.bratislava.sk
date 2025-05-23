@@ -17,15 +17,20 @@ import {
   ResponseVerificationIdentityCardToQueueDto,
 } from './dtos/requests.verification.dto'
 import { VerificationService } from './verification.service'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @ApiTags('User verifications')
 @ApiBearerAuth()
 @Controller('user-verification')
 export class VerificationController {
+  private logger: LineLoggerSubservice
+
   constructor(
     private verificationService: VerificationService,
     private turnstileSubservice: TurnstileSubservice
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(VerificationController.name)
+  }
 
   @HttpCode(200)
   @ApiOperation({
@@ -94,7 +99,10 @@ export class VerificationController {
     @User() user: CognitoGetUserData,
     @Body() data: RequestBodyVerifyWithRpoDto
   ): Promise<ResponseVerificationDto> {
-    // await this.turnstileSubservice.validateToken(data.turnstileToken)
+    this.logger.log(`user: ${JSON.stringify(user)}`)
+    this.logger.log(`data: ${JSON.stringify(data)}`)
+    await this.turnstileSubservice.validateToken(data.turnstileToken)
+    this.logger.log('turnstileToken passed')
     const result = await this.verificationService.sendToQueue(
       user,
       data,

@@ -88,7 +88,7 @@ export class LineLoggerSubservice implements LoggerService {
     this.printLog('WARN', message, optionalParams, '\x1b[33m')
   }
 
-  debug?(message: unknown, ...optionalParams: unknown[]) {
+  debug(message: unknown, ...optionalParams: unknown[]) {
     this.printLog('DEBUG', message, optionalParams, '\x1b[35m')
   }
 

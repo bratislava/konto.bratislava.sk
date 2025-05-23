@@ -12,7 +12,7 @@ import { RequiredError } from '../generated-clients/new-magproxy/base'
  * need for a query.
  */
 export function escapeForLogfmt(value: string) {
-  return value.replaceAll(/[\\"]/g, '\\$&')
+  return value.replaceAll(/[\\"]/g, '\\$&').replaceAll('\n', '\\n')
 }
 
 /**

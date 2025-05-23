@@ -201,7 +201,7 @@ export class AdminService {
     norisData: NorisTaxPayersDto[],
     year: number,
   ): Promise<string[]> {
-    const birthNumbersResult: string[] = []
+    const birthNumbersResult: Set<string> = new Set()
 
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
 
@@ -231,41 +231,51 @@ export class AdminService {
       taxesExist.map((tax) => tax.taxPayer.birthNumber),
     )
 
-    await Promise.all(
+    await Promise.allSettled(
       norisData.map(async (norisItem) => {
-        birthNumbersResult.push(norisItem.ICO_RC)
+        try {
+          birthNumbersResult.add(norisItem.ICO_RC)
 
-        const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
-        if (taxExists) {
-          return
-        }
+          const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
+          if (taxExists) {
+            return
+          }
 
-        const userData = await this.insertTaxPayerDataToDatabase(
-          norisItem,
-          year,
-        )
-
-        const userFromCityAccount =
-          userDataFromCityAccount[userData.birthNumber] || null
-        if (userFromCityAccount === null) {
-          return
-        }
-
-        const bloomreachTracker = await this.bloomreachService.trackEventTax(
-          {
-            amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+          const userData = await this.insertTaxPayerDataToDatabase(
+            norisItem,
             year,
-            delivery_method: transformDeliveryMethodToDatabaseType(
-              norisItem.delivery_method,
-            ),
-          },
-          userFromCityAccount.externalId ?? undefined,
-        )
-        if (!bloomreachTracker) {
+          )
+
+          const userFromCityAccount =
+            userDataFromCityAccount[userData.birthNumber] || null
+          if (userFromCityAccount === null) {
+            return
+          }
+
+          const bloomreachTracker = await this.bloomreachService.trackEventTax(
+            {
+              amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+              year,
+              delivery_method: transformDeliveryMethodToDatabaseType(
+                norisItem.delivery_method,
+              ),
+            },
+            userFromCityAccount.externalId ?? undefined,
+          )
+          if (!bloomreachTracker) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+              ),
+            )
+          }
+        } catch (error) {
+          birthNumbersResult.delete(norisItem.ICO_RC)
           this.logger.error(
             this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+              `Error processing tax data for birth number ${norisItem.ICO_RC}: ${error}`,
             ),
           )
         }
@@ -275,7 +285,7 @@ export class AdminService {
     // Add the payments for these added taxes to database
     await this.updatePaymentsFromNorisWithData(norisData)
 
-    return birthNumbersResult
+    return [...birthNumbersResult]
   }
 
   async loadDataFromNoris(

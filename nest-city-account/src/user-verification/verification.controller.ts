@@ -94,7 +94,7 @@ export class VerificationController {
     @User() user: CognitoGetUserData,
     @Body() data: RequestBodyVerifyWithRpoDto
   ): Promise<ResponseVerificationDto> {
-    await this.turnstileSubservice.validateToken(data.turnstileToken)
+    // await this.turnstileSubservice.validateToken(data.turnstileToken)
     const result = await this.verificationService.sendToQueue(
       user,
       data,

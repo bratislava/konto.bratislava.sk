@@ -141,6 +141,8 @@ export class VerificationService {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(_: unknown, amqpMessage: ConsumeMessage) {
     const data = JSON.parse(amqpMessage.content.toString()) as RabbitMessageDto
+    this.logger.log("Verifying for data:", data)
+
     let verification: ResponseVerificationIdentityCardDto
     try {
       if (data.msg.type === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
@@ -151,7 +153,9 @@ export class VerificationService {
         data.msg.type === CognitoUserAccountTypesEnum.SELF_EMPLOYED_ENTITY
       ) {
         const body = data.msg.data as RequestBodyVerifyWithRpoDto
+        this.logger.log('before verifyIcoIdentityCard', data.msg.user, body)
         verification = await this.verificationSubservice.verifyIcoIdentityCard(data.msg.user, body)
+        this.logger.log("Verification result:", verification)
       } else {
         this.logger.error('Not exists type of RPO or RFO verification', data.msg.user.sub)
         return new Nack()

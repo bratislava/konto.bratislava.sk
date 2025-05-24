@@ -3,8 +3,14 @@ import {
   AttributeType,
 } from '@aws-sdk/client-cognito-identity-provider'
 import { Injectable } from '@nestjs/common'
-import { plainToInstance } from 'class-transformer'
-import { IsEmail, IsEnum, IsString, validateOrReject } from 'class-validator'
+import { Expose, plainToInstance } from 'class-transformer'
+import {
+  IsEmail,
+  IsEnum,
+  IsString,
+  IsUUID,
+  validateOrReject,
+} from 'class-validator'
 import {
   UserVerifyStateCognitoTierEnum,
   UserVerifyStateTypeEnum,
@@ -14,21 +20,27 @@ import BaConfigService from '../../config/ba-config.service'
 import { CognitoProvidersService } from './cognito-providers.service'
 
 class CognitoUserAttributesDto {
-  @IsString()
+  @Expose()
+  @IsUUID()
   sub: string
 
+  @Expose()
   @IsEnum(UserVerifyStateTypeEnum)
   'custom:account_type': UserVerifyStateTypeEnum
 
+  @Expose()
   @IsEnum(UserVerifyStateCognitoTierEnum)
   'custom:tier': UserVerifyStateCognitoTierEnum
 
+  @Expose()
   @IsString()
   given_name: string
 
+  @Expose()
   @IsString()
   family_name: string
 
+  @Expose()
   @IsEmail()
   email: string
 }

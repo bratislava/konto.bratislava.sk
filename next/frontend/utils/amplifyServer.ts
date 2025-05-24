@@ -131,13 +131,18 @@ export const amplifyGetServerSideProps = <
             isSignedIn,
           }),
         ])
+        const guestIdentityId = isSignedIn ? null : authSession.identityId!
 
         if ('props' in getServerSidePropsResult && !options?.skipSsrAuthContext) {
           return {
             props: {
               // props could be a promise, so we need to await it, if it is not a promise, it will be resolved immediately
               ...(await getServerSidePropsResult.props),
-              [ssrAuthContextPropKey]: { isSignedIn, userAttributes },
+              [ssrAuthContextPropKey]: {
+                isSignedIn,
+                userAttributes,
+                guestIdentityId,
+              },
             },
           } satisfies GetServerSidePropsResult<
             Props & { [ssrAuthContextPropKey]: SsrAuthContextType }

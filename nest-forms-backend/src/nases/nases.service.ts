@@ -176,6 +176,7 @@ export default class NasesService {
             : user?.['custom:account_type']
               ? FormOwnerType.FO
               : undefined,
+        cognitoGuestIdentityId: null,
       },
     })
   }

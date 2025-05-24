@@ -69,7 +69,7 @@ const MyApp = ({ Component, pageProps }: AppProps<GlobalAppProps>) => {
   const amplifyResetCookies = pageProps.appProps?.amplifyResetCookies
 
   useEffectOnce(() => {
-    if (!amplifyResetCookies) {
+    if (!amplifyResetCookies && sessionStorage.getItem(amplifyCookiesRemovedSessionStorageKey)) {
       logger.info(`[AUTH] Resetting Amplify cookies removal flag in session storage`)
       sessionStorage.removeItem(amplifyCookiesRemovedSessionStorageKey)
     }

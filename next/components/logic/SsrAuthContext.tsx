@@ -6,6 +6,7 @@ export const ssrAuthContextPropKey = '__ssrAuthContext'
 export interface SsrAuthContextType {
   isSignedIn: boolean
   userAttributes: UserAttributes | null
+  guestIdentityId: string | null
 }
 
 export const SsrAuthContext = createContext<SsrAuthContextType | null>(null)

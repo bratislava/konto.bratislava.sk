@@ -68,7 +68,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/ssh2-sftp-client": "^9.0.4",
     "@types/supertest": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^7.18.0",
     "clear": "^0.1.0",
     "eslint": "^8.57.1",

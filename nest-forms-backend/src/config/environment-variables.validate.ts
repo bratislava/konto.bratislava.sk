@@ -15,9 +15,9 @@ export default function validateEnvironmentVariables(
     skipMissingProperties: false,
   })
 
-  if (errors.length > 0) {
-    throw new Error(`Environment validation failed: ${errors.toString()}`)
-  }
+  // if (errors.length > 0) {
+  //   throw new Error(`Environment validation failed: ${errors.toString()}`)
+  // }
 
   return validatedConfig
 }

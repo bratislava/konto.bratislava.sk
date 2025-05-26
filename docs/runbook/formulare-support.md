@@ -177,7 +177,7 @@ Query pre Loki:
 
 ```js
 {
-  runApp = "nest-forms-backend", cluster = "tkg-innov-prod"
+  bootstrap = "nest-forms-backend", cluster = "tkg-innov-prod"
 }
 |= `` | label_format
 raw = `{{__line__}}` | decolorize | logfmt | line_format`{{.raw}}` | drop

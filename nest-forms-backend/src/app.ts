@@ -1,23 +1,19 @@
-import { ValidationPipe } from '@nestjs/common'
-import { NestFactory } from '@nestjs/core'
+import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
-import AppModule from './app.module'
 import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
 import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
 import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
-import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
-export async function runApp({
+export function bootstrap({
+  app,
   testEnvironment = false,
 }: {
+  app: INestApplication
   testEnvironment?: boolean
 }) {
-  const appInstance = await NestFactory.create(AppModule, {
-    logger: new LineLoggerSubservice('Nest'),
-  })
   if (!testEnvironment) {
     const corsOptions = {
       origin: [
@@ -36,20 +32,20 @@ export async function runApp({
       credentials: true,
       allowedHeaders: `Content-Type, Accept, Authorization, ${cognitoGuestIdentityIdHeaderKey}`,
     }
-    appInstance.enableCors(corsOptions)
+    app.enableCors(corsOptions)
   }
-  appInstance.useGlobalPipes(
+  app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       forbidUnknownValues: true,
     }),
   )
-  appInstance.useGlobalFilters(new ErrorFilter()) // This filter must be first
-  appInstance.useGlobalFilters(new HttpExceptionFilter())
+  app.useGlobalFilters(new ErrorFilter()) // This filter must be first
+  app.useGlobalFilters(new HttpExceptionFilter())
   // https://stackoverflow.com/a/59978098
-  appInstance.use(json({ limit: '50mb' }))
+  app.use(json({ limit: '50mb' }))
 
-  const baConfigService = appInstance.get(BaConfigService)
+  const baConfigService = app.get(BaConfigService)
 
   if (!testEnvironment) {
     const config = new DocumentBuilder()
@@ -87,14 +83,14 @@ export async function runApp({
       })
       .build()
 
-    const document = SwaggerModule.createDocument(appInstance, config)
-    SwaggerModule.setup('api', appInstance, document)
-    appInstance
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('api', app, document)
+    app
       .getHttpAdapter()
       .get('/spec-json', (req: express.Request, res: express.Response) =>
         res.json(document),
       )
   }
 
-  return appInstance
+  return app
 }

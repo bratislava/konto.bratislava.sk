@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { LineLoggerSubservice } from 'src/utils/subservices/line-logger.subservice'
 
 import { AuthUser } from '../../auth-v2/types/user'
 import PrismaService from '../../prisma/prisma.service'
+import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
 const MIGRATION_EXPIRATION_TIME = 24 * 60 * 60 * 1000 // 24 hours
 

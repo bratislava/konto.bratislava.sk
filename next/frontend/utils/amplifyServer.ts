@@ -1,12 +1,11 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { AuthError, AuthSession } from 'aws-amplify/auth'
+import { AuthSession } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
-import type { GlobalAppProps } from '../../pages/_app'
 import { ROUTES } from '../api/constants'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import { AmplifyServerContextSpec } from './amplifyTypes'
@@ -66,19 +65,19 @@ export const amplifyGetServerSideProps = <
           // `fetchAuthSession` must be called in each request, otherwise guests wouldn't receive identity ID
           authSession = await fetchAuthSessionFn()
         } catch (error) {
-          // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
-          if (
-            error instanceof AuthError &&
-            (error.name === 'ResourceNotFoundException' || error.name === 'NotAuthorizedException')
-          ) {
-            return {
-              props: {
-                appProps: {
-                  amplifyResetCookies: true,
-                },
-              } satisfies GlobalAppProps as unknown as Props,
-            }
-          }
+          // // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+          // if (
+          //   error instanceof AuthError &&
+          //   (error.name === 'ResourceNotFoundException' || error.name === 'NotAuthorizedException')
+          // ) {
+          //   return {
+          //     props: {
+          //       appProps: {
+          //         amplifyResetCookies: true,
+          //       },
+          //     } satisfies GlobalAppProps as unknown as Props,
+          //   }
+          // }
           throw error
         }
         const isSignedIn = Boolean(authSession.tokens)

@@ -176,7 +176,12 @@ Logy sú [dostupné v Grafane](https://grafana.bratislava.sk/explore?schemaVersi
 Query pre Loki:
 
 ```js
-{app="nest-forms-backend", cluster="tkg-innov-prod"} |= `` | label_format raw=`{{__line__}}` | decolorize | logfmt | line_format `{{.raw}}` | drop raw | context = `GinisService`
+{
+  runApp = "nest-forms-backend", cluster = "tkg-innov-prod"
+}
+|= `` | label_format
+raw = `{{__line__}}` | decolorize | logfmt | line_format`{{.raw}}` | drop
+raw | context = `GinisService`
 ```
 
 Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.

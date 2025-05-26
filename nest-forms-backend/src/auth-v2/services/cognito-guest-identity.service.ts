@@ -1,4 +1,7 @@
-import { GetCredentialsForIdentityCommand } from '@aws-sdk/client-cognito-identity'
+import {
+  DescribeIdentityCommand,
+  GetCredentialsForIdentityCommand,
+} from '@aws-sdk/client-cognito-identity'
 import { GetCallerIdentityCommand, STSClient } from '@aws-sdk/client-sts'
 import { Injectable } from '@nestjs/common'
 
@@ -26,6 +29,13 @@ export class CognitoGuestIdentityService {
   }
 
   async verifyGuestIdentityId(guestIdentityId: string) {
+    const describeCommand = new DescribeIdentityCommand({
+      IdentityId: guestIdentityId,
+    })
+    const describeResponse =
+      await this.cognitoProvidersService.identity.send(describeCommand)
+    console.log('describeResponse', describeResponse)
+
     const command = new GetCredentialsForIdentityCommand({
       IdentityId: guestIdentityId,
     })

@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
 import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
@@ -276,7 +276,7 @@ export default class FormsService {
 
       dataWithLatestFlag.push({
         ...form,
-        formSubject: extractFormSubject(formDefinition, form.formDataJson),
+        formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
         formDefinitionSlug: formDefinition.slug,
       })
     })

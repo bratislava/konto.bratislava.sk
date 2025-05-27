@@ -1,34 +1,30 @@
-import {
-  FormDefinition,
-  FormDefinitionEmail,
-  FormDefinitionSlovenskoSkGeneric,
-} from '../definitions/formDefinitionTypes'
+import { FormDefinition, FormDefinitionEmail } from '../definitions/formDefinitionTypes'
 import { GenericObjectType } from '@rjsf/utils'
 import { evaluateFormDataExtractor } from './evaluateFormDataExtractor'
 
-export const extractFormSubject = (
+export const extractFormSubjectPlain = (
   formDefinition: FormDefinition,
   formData: GenericObjectType | null,
 ) => {
-  const extractSubject = formDefinition.extractSubject
+  const extractPlainSubject = formDefinition.subject?.extractPlain
   const defaultSubject = formDefinition.title
-  if (!extractSubject || formData == null) {
+  if (!extractPlainSubject || formData == null) {
     return defaultSubject
   }
 
-  return evaluateFormDataExtractor(extractSubject, formData, defaultSubject)
+  return evaluateFormDataExtractor(extractPlainSubject, formData, defaultSubject)
 }
 
-export const extractGinisSubject = (
-  formDefinition: FormDefinitionSlovenskoSkGeneric,
+export const extractFormSubjectTechnical = (
+  formDefinition: FormDefinition,
   formData: GenericObjectType,
 ) => {
-  const extractGinisSubjectFn = formDefinition.ginisAssignment.extractGinisSubject
-  if (!extractGinisSubjectFn) {
+  const extractTechnicalSubjectFn = formDefinition.subject?.extractTechnical
+  if (!extractTechnicalSubjectFn) {
     return formDefinition.title
   }
 
-  return evaluateFormDataExtractor(extractGinisSubjectFn, formData)
+  return evaluateFormDataExtractor(extractTechnicalSubjectFn, formData)
 }
 
 export const extractEmailFormEmail = (

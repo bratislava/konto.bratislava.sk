@@ -231,7 +231,7 @@ describe('EmailFormsSubservice', () => {
         .spyOn(formDataExtractors, 'extractEmailFormName')
         .mockReturnValue(mockExtractedName)
       extractFormSubjectSpy = jest
-        .spyOn(formDataExtractors, 'extractFormSubject')
+        .spyOn(formDataExtractors, 'extractFormSubjectPlain')
         .mockReturnValue(mockExtractedSubject)
 
       mailgunService.sendEmail.mockResolvedValue()

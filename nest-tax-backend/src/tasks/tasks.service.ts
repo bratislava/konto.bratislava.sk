@@ -177,9 +177,6 @@ export class TasksService {
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
-    if (process.env.FEATURE_TOGGLE_REMINDER_UNPAID_TAX !== 'true') {
-      return
-    }
     const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate()
     const taxes = await this.prismaService.tax.findMany({
       select: {

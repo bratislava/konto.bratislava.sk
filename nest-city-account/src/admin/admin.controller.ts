@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common'
 import {
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiSecurity,
@@ -28,6 +29,7 @@ import {
   ManuallyVerifyUserRequestDto,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
+  RequestDeleteTaxDto,
   RequestQueryUserByBirthNumberDto,
   RequestValidatePhysicalEntityRfoDto,
 } from './dtos/requests.admin.dto'
@@ -289,5 +291,19 @@ export class AdminController {
   @Post('validate-physical-entity-rfo')
   async validatePhysicalEntityRfo(@Body() data: RequestValidatePhysicalEntityRfoDto) {
     return this.physicalEntityService.updateFromRFO(data.physicalEntityId)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Delete tax for user',
+    description: 'Delete tax for user, for example when the tax is cancelled in Noris.',
+  })
+  @ApiOkResponse({
+    description: 'Success if all was updated accordingly.',
+  })
+  @UseGuards(AdminGuard)
+  @Post('delete-tax')
+  async deleteTax(@Body() data: RequestDeleteTaxDto): Promise<void> {
+    await this.adminService.deleteTax(data)
   }
 }

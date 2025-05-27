@@ -6,7 +6,7 @@ import {
   isSlovenskoSkFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { extractFormSubject } from 'forms-shared/form-utils/formDataExtractors'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
 import { evaluateFormSendPolicy } from 'forms-shared/send-policy/sendPolicy'
 import {
   verifyFormSignature,
@@ -195,7 +195,7 @@ export default class NasesService {
 
     return {
       ...form,
-      formSubject: extractFormSubject(formDefinition, form.formDataJson),
+      formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
     }
   }
 

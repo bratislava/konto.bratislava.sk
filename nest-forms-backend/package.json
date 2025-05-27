@@ -125,7 +125,7 @@
     "minio": "^8.0.5",
     "prettier": "^3.5.2",
     "prisma": "6.8.2",
-    "prisma-json-types-generator": "3.4.1",
+    "prisma-json-types-generator": "3.4.2",
     "ts-jest": "29.3.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

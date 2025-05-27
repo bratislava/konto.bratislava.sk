@@ -13,6 +13,9 @@ import { CognitoProvidersService } from './cognito-providers.service'
  * belongs to our specific unauthenticated IAM role ARN (as opposed to, for example, an
  * authenticated role ARN). It achieves this by attempting to assume the unauthenticated role
  * with the provided ID and validating the resulting ARN.
+ *
+ * Note: When users sign in, their guest identity is disabled at the moment of sign-in.
+ * This service will return an error when attempting to verify a disabled guest identity.
  */
 @Injectable()
 export class CognitoGuestIdentityService {

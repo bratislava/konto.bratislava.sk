@@ -363,9 +363,6 @@ export default class ConvertService {
         })
       }
     } catch (error) {
-      // TODO can we delete this log?
-      this.logger.error(`Error during generating PDF.`, error)
-
       if (error instanceof Error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ConvertErrorsEnum.PDF_GENERATION_FAILED,

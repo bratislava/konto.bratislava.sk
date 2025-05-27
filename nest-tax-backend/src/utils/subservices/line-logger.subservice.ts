@@ -13,16 +13,7 @@ const ANSI_YELLOW = '\u001B[33m'
 const ANSI_MAGENTA = '\u001B[35m'
 
 function getCurrentDateTime(): string {
-  const now = new Date()
-  return now.toLocaleString('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  })
+  return new Date().toISOString()
 }
 
 export class LineLoggerSubservice implements LoggerService {

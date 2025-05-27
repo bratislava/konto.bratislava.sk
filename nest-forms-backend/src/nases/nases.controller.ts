@@ -31,6 +31,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormRequestDto,
   EidUpdateSendFormRequestDto,
@@ -58,6 +59,7 @@ export default class NasesController {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   // WORK ENDPOINTS
@@ -242,7 +244,7 @@ export default class NasesController {
     const updateData = { ...data, eidToken: undefined }
 
     // TODO temp SEND_TO_NASES_ERROR log, remove
-    console.log(
+    this.logger.log(
       `Signed data from request for formId ${id} before send:`,
       updateData.formSignature,
     )

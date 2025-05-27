@@ -11,8 +11,9 @@ import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap(): Promise<void> {
+  const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
-    logger: new LineLoggerSubservice('Nest'),
+    logger,
   })
   const corsOptions = {
     origin: [
@@ -80,8 +81,8 @@ async function bootstrap(): Promise<void> {
     )
 
   await app.listen(baConfigService.self.port)
-  console.log(`Nest is running on port: ${baConfigService.self.port}`)
-  console.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
+  logger.log(`Nest is running on port: ${baConfigService.self.port}`)
+  logger.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises
 bootstrap()

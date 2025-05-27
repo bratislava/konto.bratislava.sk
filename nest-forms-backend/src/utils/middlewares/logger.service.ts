@@ -10,23 +10,25 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     const { method, originalUrl, body, ip, userAgent, userId } =
       this.extractRequestData(request)
     const startAt = process.hrtime()
-    const { statusMessage, statusCode } = response
+    response.locals.middlewareUsed = 'true'
 
     const { send } = response
     response.send = (exitData: string | object | Buffer | Array<any>) => {
+      response.locals.middlewareUsed = undefined
+
       const { responseData, logData, returnExitData } = this.parseExitData(
         response,
         exitData,
       )
 
-      const logger = new LineLoggerSubservice(statusMessage)
+      const logger = new LineLoggerSubservice(response.statusMessage)
 
       const diff = process.hrtime(startAt)
       const responseTime = diff[0] * 1e3 + diff[1] * 1e-6
       const logObj: Record<string, string | number> = {
         method,
         originalUrl,
-        statusCode,
+        statusCode: response.statusCode,
         responseTime,
         userAgent,
         ip,

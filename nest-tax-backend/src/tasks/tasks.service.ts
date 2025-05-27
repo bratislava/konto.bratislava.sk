@@ -11,8 +11,8 @@ import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../utils/constants'
-import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import HandleErrors from '../utils/decorators/errorHandler.decorator'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
@@ -72,20 +72,12 @@ export class TasksService {
           error,
         )
       }
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          error.message,
-          undefined,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Unknown error',
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         undefined,
-        <string>error,
+        undefined,
+        error,
       )
     }
 

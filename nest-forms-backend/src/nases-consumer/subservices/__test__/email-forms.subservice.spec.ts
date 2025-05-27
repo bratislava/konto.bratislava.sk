@@ -130,7 +130,6 @@ describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
   let mailgunService: jest.Mocked<MailgunService>
   let oloMailerService: jest.Mocked<OloMailerService>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
   let configService: jest.Mocked<ConfigService>
 
   beforeEach(async () => {
@@ -170,20 +169,9 @@ describe('EmailFormsSubservice', () => {
     oloMailerService = module.get(
       OloMailerService,
     ) as jest.Mocked<OloMailerService>
-    throwerErrorGuard = module.get(
-      ThrowerErrorGuard,
-    ) as jest.Mocked<ThrowerErrorGuard>
     configService = module.get(ConfigService) as jest.Mocked<ConfigService>
 
     jest.spyOn(configService, 'get').mockReturnValue('production')
-
-    throwerErrorGuard['logger'] = {
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-    } as unknown as LineLoggerSubservice
 
     service['logger'] = {
       error: jest.fn(),
@@ -192,6 +180,15 @@ describe('EmailFormsSubservice', () => {
       debug: jest.fn(),
       verbose: jest.fn(),
     } as unknown as LineLoggerSubservice
+
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('should be defined', () => {

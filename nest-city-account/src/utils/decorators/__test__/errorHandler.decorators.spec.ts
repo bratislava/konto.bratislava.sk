@@ -1,6 +1,6 @@
-import { ErrorsEnum } from '../../global-enums/errors.enum'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
 import HandleErrors from '../errorHandler.decorators'
+import ThrowerErrorGuard from '../../guards/errors.guard'
+import { ErrorsEnum } from '../../guards/dtos/error.dto'
 
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
@@ -27,7 +27,7 @@ describe('HandleErrors', () => {
     await expect(t.testMethod()).resolves.toBeNull()
 
     const regex =
-      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="Error" message="This is a test error" method="undefined" stack="Error: This is a test error.*"/
+      /process="\[Nest\]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="Error" message="This is a test error" method="undefined" stack="Error: This is a test error.*"/
 
     expect(consoleErrorMock).toHaveBeenCalledTimes(1)
     expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))
@@ -43,7 +43,7 @@ describe('HandleErrors', () => {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error message',
           'Console error',
-          new Error('Caused by error message test'),
+          new Error('Caused by error message test')
         )
       }
     }
@@ -54,7 +54,7 @@ describe('HandleErrors', () => {
     await expect(t.testMethod()).resolves.toBeNull()
 
     const regex =
-      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*/
+      /process="\[Nest\]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="0" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*"/
 
     expect(consoleErrorMock).toHaveBeenCalledTimes(1)
     expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))

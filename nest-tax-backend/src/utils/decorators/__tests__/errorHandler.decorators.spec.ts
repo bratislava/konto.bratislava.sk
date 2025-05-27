@@ -1,6 +1,6 @@
-import { ErrorsEnum } from '../../global-enums/errors.enum'
-import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import HandleErrors from '../errorHandler.decorators'
+import { ErrorsEnum } from '../../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../guards/errors.guard'
+import HandleErrors from '../errorHandler.decorator'
 
 describe('HandleErrors', () => {
   let consoleErrorMock: jest.SpyInstance
@@ -35,13 +35,14 @@ describe('HandleErrors', () => {
 
   it('should catch and handle HttpExceptions', async () => {
     class TestClass {
-      private throwerErrorGuard = new ThrowerErrorGuard()
+      private readonly throwerErrorGuard = new ThrowerErrorGuard()
 
       @HandleErrors('Test error handler')
       async testMethod(): Promise<void> {
         throw this.throwerErrorGuard.BadRequestException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           'Error message',
+          'Custom status',
           'Console error',
           new Error('Caused by error message test'),
         )
@@ -54,7 +55,7 @@ describe('HandleErrors', () => {
     await expect(t.testMethod()).resolves.toBeNull()
 
     const regex =
-      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Bad Request" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*/
+      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="ERROR" context="Test error handler" errorType="HttpException" statusCode="400" status="Custom status" errorName="INTERNAL_SERVER_ERROR" message="Error message" alert="1" errorCause="Error" causedByMessage="Caused by error message test" console="Console error" method="undefined" stack="HttpException:.*Was directly caused by:.*"/
 
     expect(consoleErrorMock).toHaveBeenCalledTimes(1)
     expect(consoleErrorMock).toHaveBeenCalledWith(expect.stringMatching(regex))

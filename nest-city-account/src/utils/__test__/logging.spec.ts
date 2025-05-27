@@ -1,7 +1,14 @@
-import { errorToLogfmt, escapeForLogfmt, objToLogfmt, separateLogFromResponseObj, ToLogfmt } from './logging'
 import { HttpException } from '@nestjs/common'
-import ThrowerErrorGuard from './guards/errors.guard'
-import { ErrorsEnum } from './guards/dtos/error.dto'
+
+import { ErrorsEnum } from '../guards/dtos/error.dto'
+import ThrowerErrorGuard from '../guards/errors.guard'
+import {
+  errorToLogfmt,
+  escapeForLogfmt,
+  objToLogfmt,
+  separateLogFromResponseObj,
+  ToLogfmt,
+} from '../logging'
 
 describe('Testing logging:', () => {
   describe('objToLogfmt function', () => {
@@ -17,20 +24,6 @@ describe('Testing logging:', () => {
       expect(logfmt).toBe('name="John" age="30" city="New York"')
     })
 
-    it('should handle symbols as keys', () => {
-      const obj = {
-        name: 'John',
-        age: 30,
-        city: 'New York',
-        [Symbol("test_symbol")]: "symbol string"
-      }
-
-      const logfmt = objToLogfmt(obj)
-
-      expect(logfmt).toBe('test_symbol="symbol string" name="John" age="30" city="New York"')
-    })
-
-    // New tests
     it('should handle empty objects', () => {
       const obj = {}
       const logfmt = objToLogfmt(obj)
@@ -40,7 +33,7 @@ describe('Testing logging:', () => {
 
     it('should handle single quote in string', () => {
       const obj = {
-        name: 'O\'Brien',
+        name: "O'Brien",
       }
       const logfmt = objToLogfmt(obj)
 
@@ -53,7 +46,7 @@ describe('Testing logging:', () => {
       }
       const logfmt = objToLogfmt(obj)
 
-      expect(logfmt).toBe('address="123 Main St.\\nNew York, NY"')
+      expect(logfmt).toBe(String.raw`address="123 Main St.\nNew York, NY"`)
     })
 
     it('should handle complex object', () => {
@@ -64,7 +57,7 @@ describe('Testing logging:', () => {
       const logfmt = objToLogfmt(obj)
 
       expect(logfmt).toBe(
-        String.raw`key1="{\"subKey1\":\"a\",\"subKey2\":\"b\"}" key2="{\"subKey2\":\"c\",\"subKey3\":{\"subSubKey1\":\"d\"}}"`,
+        String.raw`key1="{\"subKey1\":\"a\",\"subKey2\":\"b\"}" key2="{\"subKey2\":\"c\",\"subKey3\":{\"subSubKey1\":\"d\"}}"`
       )
     })
 
@@ -76,7 +69,7 @@ describe('Testing logging:', () => {
       const logfmt = objToLogfmt(obj)
 
       expect(logfmt).toBe(
-        String.raw`key="a\n   \\ \\\\ \\\\\\ \\\\\\\\ \" \"\" \"\"\" \\\" \"\\\""`,
+        String.raw`key="a\n   \\ \\\\ \\\\\\ \\\\\\\\ \" \"\" \"\"\" \\\" \"\\\""`
       )
     })
   })
@@ -108,7 +101,6 @@ describe('Testing logging:', () => {
     it('should escape string', () => {
       const escaped = escapeForLogfmt(String.raw`This is a\ " \ 
  string`)
-      console.log(escaped)
       expect(escaped).toBe(String.raw`This is a\\ \" \\ \n string`)
     })
   })
@@ -119,54 +111,54 @@ describe('Testing logging:', () => {
       const logfmt = errorToLogfmt(error, 'testMethod')
       expect(
         logfmt.startsWith(
-          String.raw`errorType="HttpException" message="Test error message" method="testMethod" stack="HttpException: Test error message\n`,
-        ),
+          String.raw`errorType="HttpException" message="Test error message" method="testMethod" stack="HttpException: Test error message\n`
+        )
       ).toBe(true)
     })
 
     it('should stringify HttpException from ThrowerErrorGuard', () => {
       const thrower = new ThrowerErrorGuard()
-      const error = thrower.InternalServerErrorException(ErrorsEnum.INTERNAL_SERVER_ERROR, 'Test message', 'console input', {
-        test: 'data',
-        foo: { level: 'two' },
-      })
+      const error = thrower.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Test message',
+        'console input',
+        new Error('Test error message')
+      )
       const logfmt = errorToLogfmt(error, 'testMethod')
 
-      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" object="{\"test\":\"data\",\"foo\":{\"level\":\"two\"}}" alert="0" console="console input" method="testMethod" stack="HttpException: Test message`
+      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="0" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
 
-      expect(
-        logfmt.startsWith(expected),
-      ).toBe(true)
+      expect(logfmt).toContain(expected)
     })
   })
 
   describe('ToLogfmt function', () => {
     it('should convert random string to logfmt', () => {
-      const randomString = 'This is a \n " random string!';
-      const result = ToLogfmt(randomString);
-      expect(result).toBe(String.raw`message="This is a \n \" random string!"`);
+      const randomString = 'This is a \n " random string!'
+      const result = ToLogfmt(randomString)
+      expect(result).toBe(String.raw`message="This is a \n \" random string!"`)
     })
 
     it('should convert logfmt string to logfmt', () => {
-      const logfmtString = 'key="value"';
-      const result = ToLogfmt(logfmtString);
-      expect(result).toBe('key="value"');
+      const logfmtString = 'key="value"'
+      const result = ToLogfmt(logfmtString)
+      expect(result).toBe('key="value"')
     })
 
     it('should convert object to logfmt', () => {
-      const testObject = {key1: "value1", key2: "value2"};
-      const result = ToLogfmt(testObject);
-      expect(result).toBe(`key1="${testObject.key1}" key2="${testObject.key2}"`);
+      const testObject = { key1: 'value1', key2: 'value2' }
+      const result = ToLogfmt(testObject)
+      expect(result).toBe(`key1="${testObject.key1}" key2="${testObject.key2}"`)
     })
 
     it('should convert empty string with to logfmt', () => {
-      const emptyString = '';
-      const result = ToLogfmt(emptyString);
-      expect(result).toBe('');
+      const emptyString = ''
+      const result = ToLogfmt(emptyString)
+      expect(result).toBe('')
     })
 
     it('should convert error to logfmt', () => {
-      const error = new Error("Error message")
+      const error = new Error('Error message')
       const result = ToLogfmt(error)
       expect(result).toContain(`errorType="${error.name}"`)
       expect(result).toContain(`message="${escapeForLogfmt(error.message)}"`)

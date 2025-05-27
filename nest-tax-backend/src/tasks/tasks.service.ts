@@ -12,7 +12,7 @@ import {
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../utils/constants'
 import HandleErrors from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
@@ -74,7 +74,7 @@ export class TasksService {
       }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Unknown error',
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         undefined,
         undefined,
         error,

@@ -88,22 +88,12 @@ export default class NasesService {
       })
       .then((response) => response.data)
       .catch((error) => {
-        if (error instanceof Error) {
-          this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              'Failed to get nases identity, verify if this is because of invalid token or a server issue',
-              undefined,
-              error,
-            ),
-          )
-          return null
-        }
         this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             'Failed to get nases identity, verify if this is because of invalid token or a server issue',
-            <string>error,
+            undefined,
+            error,
           ),
         )
         return null
@@ -303,17 +293,11 @@ export default class NasesService {
         `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
         error,
       )
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
-          NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
         NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -409,22 +393,13 @@ export default class NasesService {
         10_000,
       )
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.NotFoundException(
-          NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
-          `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
-            form.id
-          }`,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.NotFoundException(
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
         `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
         }`,
-        <string>error,
+        undefined,
+        error,
       )
     }
 

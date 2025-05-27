@@ -429,17 +429,10 @@ export default class SharepointSubservice {
           response.data.access_token,
       )
       .catch((error) => {
-        if (error instanceof Error) {
-          throw this.throwerErrorGuard.BadRequestException(
-            SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
-            SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
-            undefined,
-            error,
-          )
-        }
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
           SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
+          undefined,
           error,
         )
       })

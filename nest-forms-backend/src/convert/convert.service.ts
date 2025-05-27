@@ -221,18 +221,11 @@ export default class ConvertService {
           errorMessage,
         )
       }
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Unexpected error during XML to JSON conversion',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Unexpected error during XML to JSON conversion',
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -272,18 +265,11 @@ export default class ConvertService {
       const buffer = Buffer.from(base64Pdf, 'base64')
       return Readable.from(buffer)
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'There was an error during generating pdf.',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'There was an error during generating pdf.',
-        <string>error,
+        undefined,
+        error,
       )
     }
   }
@@ -363,18 +349,11 @@ export default class ConvertService {
         })
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ConvertErrorsEnum.PDF_GENERATION_FAILED,
-          ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ConvertErrorsEnum.PDF_GENERATION_FAILED,
         ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,
-        <string>error,
+        undefined,
+        error,
       )
     }
 

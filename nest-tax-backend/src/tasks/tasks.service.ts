@@ -72,20 +72,12 @@ export class TasksService {
           error,
         )
       }
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          error.message,
-          undefined,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Unknown error',
+        error.message,
         undefined,
-        <string>error,
+        undefined,
+        error,
       )
     }
 

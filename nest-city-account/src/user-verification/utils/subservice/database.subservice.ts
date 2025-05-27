@@ -35,18 +35,11 @@ export class DatabaseSubserviceUser {
       }
       return user
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -71,18 +64,11 @@ export class DatabaseSubserviceUser {
       }
       return legalPerson
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -166,18 +152,11 @@ export class DatabaseSubserviceUser {
         }
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -267,18 +246,11 @@ export class DatabaseSubserviceUser {
         message: 'upserted',
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -307,18 +279,11 @@ export class DatabaseSubserviceUser {
         })
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -345,18 +310,11 @@ export class DatabaseSubserviceUser {
         })
       }
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          VerificationErrorsEnum.DATABASE_ERROR,
-          VerificationErrorsResponseEnum.DATABASE_ERROR,
-          undefined,
-          error
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }

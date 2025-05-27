@@ -104,18 +104,11 @@ export class MagproxyService {
           return response.data
         })
         .catch((error) => {
-          if (error instanceof Error) {
-            throw this.throwerErrorGuard.UnprocessableEntityException(
-              MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-              MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-              undefined,
-              error
-            )
-          }
           throw this.throwerErrorGuard.UnprocessableEntityException(
             MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-            JSON.stringify(error.response.data)
+            JSON.stringify(error.response.data),
+            error
           )
         })
       return result.access_token

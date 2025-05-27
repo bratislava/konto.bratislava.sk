@@ -34,18 +34,11 @@ export class NasesService {
         }
       })
       .catch((error) => {
-        if (error instanceof Error) {
-          throw this.throwerErrorGuard.BadRequestException(
-            VerificationErrorsEnum.VERIFY_EID_ERROR,
-            VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-            undefined,
-            error
-          )
-        }
         throw this.throwerErrorGuard.BadRequestException(
           VerificationErrorsEnum.VERIFY_EID_ERROR,
           VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

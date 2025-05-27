@@ -58,20 +58,12 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-          'Can not load data from taxPayment',
-          'Database error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not load data from taxPayment',
         'Database error',
-        <string>error,
+        undefined,
+        error,
       )
     }
   }
@@ -105,20 +97,12 @@ export class PaymentService {
         data: { orderId, amount: tax.amount, taxId: tax.id },
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-          'Can not create order',
-          'Database error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not create order',
         'Database error',
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -144,20 +128,12 @@ export class PaymentService {
         },
       )}`
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
-          'Can not create url',
-          'Create url error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
         'Can not create url',
         'Create url error',
-        <string>error,
+        undefined,
+        error,
       )
     }
   }
@@ -171,20 +147,12 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-          'Get tax error',
-          'Database error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -206,20 +174,12 @@ export class PaymentService {
         where: { birthNumber },
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-          'Get taxpayer error',
-          'Database error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get taxpayer error',
         'Database error',
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -242,20 +202,12 @@ export class PaymentService {
         },
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentTypesEnum.DATABASE_ERROR,
-          'Get tax error',
-          'Database error',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Get tax error',
         'Database error',
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -372,20 +324,12 @@ export class PaymentService {
 
       return `${process.env.PAYGATE_AFTER_PAYMENT_REDIRECT_FRONTEND}?status=${PaymentRedirectStateEnum.PAYMENT_SUCCESS}`
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
-          'Error to redirect to response',
-          'Error to redirect',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPaymentResponseTypesEnum.PAYMENT_RESPONSE_ERROR,
         'Error to redirect to response',
         'Error to redirect',
-        <string>error,
+        undefined,
+        error,
       )
     }
   }

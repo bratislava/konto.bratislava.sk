@@ -185,18 +185,11 @@ export class CognitoSubservice {
       })
       .promise()
       .catch((error) => {
-        if (error instanceof Error) {
-          throw this.throwerErrorGuard.UnprocessableEntityException(
-            SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-            SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-            undefined,
-            error
-          )
-        }
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
           SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

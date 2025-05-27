@@ -125,20 +125,12 @@ export class TaxController {
         }
       })
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.UnprocessableEntityException(
-          CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
-          'Error to create pdf',
-          'Error to create pdf',
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.UnprocessableEntityException(
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
         'Error to create pdf',
         'Error to create pdf',
-        <string>error,
+        undefined,
+        error,
       )
     }
   }

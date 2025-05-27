@@ -1,3 +1,4 @@
+import axios, { AxiosRequestConfig } from 'axios'
 import jwt from 'jsonwebtoken'
 import {
   UserOfficialCorrespondenceChannelEnum,
@@ -186,4 +187,27 @@ export function withUser<Request extends supertest.Test>(
     newReq = newReq.set(key, value)
   })
   return newReq
+}
+
+export async function withUserAxios<T>(
+  axiosRequestFn: () => Promise<T>,
+  user:
+    | FixtureUser
+    | typeof fixtureInvalidGuestUser
+    | typeof fixtureInvalidAuthUser,
+): Promise<T> {
+  // Set up axios defaults with user headers
+  const originalDefaults = { ...axios.defaults.headers.common }
+
+  Object.entries(user.headers).forEach(([key, value]) => {
+    axios.defaults.headers.common[key] = value
+  })
+
+  try {
+    const result = await axiosRequestFn()
+    return result
+  } finally {
+    // Restore original axios defaults
+    axios.defaults.headers.common = originalDefaults
+  }
 }

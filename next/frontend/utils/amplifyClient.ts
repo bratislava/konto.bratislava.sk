@@ -1,53 +1,41 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchAuthSession } from '@aws-amplify/core'
 import { useQueryClient } from '@tanstack/react-query'
+import { signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { PropsWithChildren, useRef } from 'react'
 
 import { ROUTES } from '../api/constants'
 import { useSsrAuth } from '../hooks/useSsrAuth'
-import { amplifyConfig } from './amplifyConfig'
 import logger from './logger'
 
+// Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
+export const removeAllCookiesAndClearLocalStorage = () => {
+  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
+  cookies.forEach((cookie) => {
+    const cookieName = cookie.split('=')[0]
+    if (cookieName !== 'gdpr-consents') {
+      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+      logger.info(`[AUTH] Removed cookie: ${cookieName}`)
+    }
+  })
+  localStorage.clear()
+}
+
 /**
- * Based on: https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/nextjs/#configure-amplify-library-for-client-side-usage
+ * Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+ *
+ * Removes guest identity cookie, Amplify should remove it after successful sign in but does not.
  */
-export function AmplifyProvider({ children }: PropsWithChildren) {
-  useRef(amplifyConfig) // This is a hack to make sure amplifyConfig is used, so that it's not tree-shaken away.
+export const removeAmplifyGuestIdentityIdCookies = () => {
+  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
+  cookies.forEach((cookie) => {
+    const cookieName = cookie.split('=')[0]
 
-  return children
-}
-
-const fetchAccessTokenString = async () => {
-  const session = await fetchAuthSession()
-  return session.tokens?.accessToken?.toString() ?? null
-}
-
-export const getAccessToken = async () => {
-  try {
-    return await fetchAccessTokenString()
-  } catch (error) {
-    if (error instanceof AuthError && error.name === 'NotAuthorizedException') {
-      return null
+    if (cookieName.startsWith('com.amplify.Cognito.') && cookieName.endsWith('.identityId')) {
+      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+      logger.info(`[AUTH] Removed Cognito identity cookie: ${cookieName}`)
     }
-    throw error
-  }
-}
-
-export const getAccessTokenOrLogout = async () => {
-  try {
-    const accessToken = await getAccessToken()
-    if (!accessToken) {
-      throw new Error('No access token found.')
-    }
-    return accessToken
-  } catch (error) {
-    logger.error('Error getting access token - redirect to login.', error)
-    window.location.assign(ROUTES.LOGIN)
-    throw error
-  }
+  })
 }
 
 export const useSignOut = () => {

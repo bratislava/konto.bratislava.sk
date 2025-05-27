@@ -12,7 +12,7 @@ import { useNavMenuContext } from './navMenuContext'
 interface MobileMenuNavBarProps {
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
-  mobileNavbarRef: RefObject<HTMLDivElement>
+  mobileNavbarRef: RefObject<HTMLDivElement | null>
 }
 
 export interface MenuSectionItemBase {
@@ -33,7 +33,7 @@ export const MobileNavBar = ({
     <>
       <div
         id="mobile-navbar"
-        className="sticky left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
+        className="sticky top-0 left-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
         ref={mobileNavbarRef}
       >
         <div className="w-full">

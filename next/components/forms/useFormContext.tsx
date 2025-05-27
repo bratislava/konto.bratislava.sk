@@ -1,39 +1,114 @@
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
-import { createContext, PropsWithChildren, useContext } from 'react'
+import { FormBaseFragment } from '@clients/graphql-strapi/api'
+import { GenericObjectType } from '@rjsf/utils'
+import { evaluateFormSendPolicy, SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
+import { FormSignature } from 'forms-shared/signer/signature'
+import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { useIsSSR } from 'react-aria'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { FormFileUploadClientFileInfo } from '../../frontend/types/formFileUploadTypes'
-import type { FormSignature } from './signer/useFormSignature'
+import {
+  ClientFormDefinition,
+  isClientSlovenskoSkFormDefinition,
+  isClientSlovenskoSkTaxFormDefinition,
+} from './clientFormDefinitions'
 
-export type FormContext = {
-  slug: string
+declare global {
+  interface Window {
+    __DEV_ALLOW_IMPORT_EXPORT_JSON?: () => void
+  }
+}
+
+export type FormServerContext = {
+  formDefinition: ClientFormDefinition
   formId: string
-  schema: RJSFSchema
-  uiSchema: UiSchema
   initialFormDataJson: GenericObjectType
-  initialClientFiles?: FormFileUploadClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
-  oldSchemaVersion: boolean
-  formSent: boolean
+  initialSummaryJson?: SummaryJsonForm | null
+  initialFormSent: boolean
   formMigrationRequired: boolean
-  schemaVersionId: string
-  isSigned: boolean
-  isTaxForm: boolean
-  isPdf?: boolean
+  isEmbedded: boolean
+  isDevRoute?: boolean
+  strapiForm: FormBaseFragment | null
+  versionCompareContinueAction: VersionCompareContinueAction
 }
 
-const FormContextContext = createContext<FormContext | undefined>(undefined)
+const useGetContext = (formServerContext: FormServerContext) => {
+  const isSSR = useIsSSR()
+  const { isSignedIn, tierStatus } = useSsrAuth()
+
+  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
+
+  const getSendPolicyAccountType = () => {
+    if (!isSignedIn) {
+      return SendPolicyAccountType.NotAuthenticated
+    }
+
+    if (tierStatus.isIdentityVerified) {
+      return SendPolicyAccountType.AuthenticatedVerified
+    }
+
+    return SendPolicyAccountType.AuthenticatedNotVerified
+  }
+
+  const evaluatedSendPolicy = evaluateFormSendPolicy(
+    formDefinition.sendPolicy,
+    getSendPolicyAccountType(),
+  )
+
+  const displayHeaderAndMenu = !isEmbedded
+
+  const xmlImportExportAllowed = isClientSlovenskoSkFormDefinition(formDefinition)
+  const [jsonImportExportAllowed, setJsonImportExportAllowed] = useState(
+    !isClientSlovenskoSkFormDefinition(formDefinition),
+  )
+
+  // Until terms and conditions are in landing page we cannot allow PDF download from menu as tax PDF with PII is stored
+  const pdfDownloadInMenuAllowed = !isClientSlovenskoSkTaxFormDefinition(formDefinition)
+
+  useEffect(() => {
+    // Dev only debugging feature
+    if (!isSSR) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_ALLOW_IMPORT_EXPORT_JSON = () => setJsonImportExportAllowed(true)
+    }
+  }, [isSSR, setJsonImportExportAllowed])
+
+  const isReadonly = formMigrationRequired
+  const isDeletable = formMigrationRequired && !initialFormSent
+
+  const isTaxForm = isClientSlovenskoSkTaxFormDefinition(formDefinition)
+
+  const isSigned = isClientSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned
+
+  return {
+    ...formServerContext,
+    evaluatedSendPolicy,
+    displayHeaderAndMenu,
+    xmlImportExportAllowed,
+    jsonImportExportAllowed,
+    pdfDownloadInMenuAllowed,
+    isTaxForm,
+    isSigned,
+    isReadonly,
+    isDeletable,
+  }
+}
+
+const FormContextContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
 type FormContextProviderProps = {
-  formContext: FormContext
+  formServerContext: FormServerContext
 }
 export const FormContextProvider = ({
-  formContext,
+  formServerContext,
   children,
 }: PropsWithChildren<FormContextProviderProps>) => {
-  return <FormContextContext.Provider value={formContext}>{children}</FormContextContext.Provider>
+  const context = useGetContext(formServerContext)
+  return <FormContextContext.Provider value={context}>{children}</FormContextContext.Provider>
 }
 
 export const useFormContext = () => {
@@ -41,12 +116,6 @@ export const useFormContext = () => {
   if (!context) {
     throw new Error('useFormContext must be used within a FormContextProvider')
   }
-  const { userAttributes } = useSsrAuth()
-  const { formMigrationRequired, oldSchemaVersion, formSent } = context
-  const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
-  const isDeletable = (formMigrationRequired || oldSchemaVersion) && !formSent
-  // Temporarily allow signing only for beta users.
-  const isSigned = context.isSigned && userAttributes?.['custom:2024_tax_form_beta'] === 'true'
 
-  return { ...context, isSigned, isReadonly, isDeletable }
+  return context
 }

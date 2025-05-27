@@ -11,8 +11,14 @@ function assertEnv<T>(variable: string, value: T) {
   return value
 }
 
-function getOriginsArray<T>(variable: string, value: T) {
-  assertEnv(variable, value)
+function getOriginsArray<T>(variable: string, value: T, required = true) {
+  if (required) {
+    assertEnv(variable, value)
+  }
+
+  if (!value) {
+    return []
+  }
 
   const array = (value as string).split(',')
   array.forEach((origin) => {
@@ -53,6 +59,7 @@ export const environment = {
     process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
   ),
   awsRegion: assertEnv('NEXT_PUBLIC_AWS_REGION', process.env.NEXT_PUBLIC_AWS_REGION),
+  selfUrl: assertEnv('NEXT_PUBLIC_SELF_URL', process.env.NEXT_PUBLIC_SELF_URL),
   formsUrl: assertEnv('NEXT_PUBLIC_FORMS_URL', process.env.NEXT_PUBLIC_FORMS_URL),
   cityAccountUrl: assertEnv(
     'NEXT_PUBLIC_CITY_ACCOUNT_URL',
@@ -79,23 +86,17 @@ export const environment = {
     'NEXT_PUBLIC_AUTH_APPROVED_ORIGINS',
     process.env.NEXT_PUBLIC_AUTH_APPROVED_ORIGINS,
   ),
+  embeddedFormsOloOrigins: getOriginsArray(
+    'NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS',
+    process.env.NEXT_PUBLIC_EMBEDDED_FORMS_OLO_ORIGINS,
+    false,
+  ),
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
+  iframeResizerPublicPath: assertEnv(
+    'IFRAME_RESIZER_PUBLIC_PATH',
+    process.env.IFRAME_RESIZER_PUBLIC_PATH,
+  ),
   featureToggles: {
-    forms:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS,
-      ) === 'true',
-    formsInMenu:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU,
-      ) === 'true',
-    pravnickaOsobaRegistration:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
-      ) === 'true',
     developmentForms:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS',
@@ -105,6 +106,16 @@ export const environment = {
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
+      ) === 'true',
+    hideStatusbar:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_HIDE_STATUSBAR,
+      ) === 'true',
+    versioning:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_VERSIONING',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_VERSIONING,
       ) === 'true',
   },
   formsMimetypes: assertEnv(

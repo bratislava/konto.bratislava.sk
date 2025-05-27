@@ -1,22 +1,9 @@
+ARG SHARED_PACKAGE_TAG
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9-alpine AS base
 
-FROM base AS build-base
-WORKDIR /build
-COPY ./package.json ./yarn.lock ./
-
-FROM build-base AS install-prod
-ENV YARN_CACHE_FOLDER=/build/.cache/yarn
-RUN --mount=type=cache,target=/build/.cache/yarn \
-    yarn config set network-timeout 600000 -g \
- && yarn install --production --frozen-lockfile
-
-FROM install-prod AS build
-COPY . ./
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN --mount=type=cache,target=/build/.cache/yarn \
-    yarn install --development --frozen-lockfile \
- && yarn build
-
+# used as app-base in prodution and development image
 FROM base AS app-base
 RUN apk add --no-cache tini
 RUN mkdir -p /home/node/app \
@@ -29,14 +16,37 @@ EXPOSE 3000
 ARG GIT_COMMIT="undefined"
 ENV GIT_COMMIT=$GIT_COMMIT
 LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk" \
+      org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk/tree/master/next" \
       org.opencontainers.image.licenses="EUPL-1.2"
 ENTRYPOINT [ "/sbin/tini", "--" ]
+
+# used for build-base for building only
+FROM base AS build-base
+WORKDIR /forms-shared
+COPY --from=forms-shared /app/ ./
+WORKDIR /openapi-clients
+COPY --from=openapi-clients /app/ ./
+WORKDIR /build
+COPY ./package.json ./package-lock.json ./
+
+FROM build-base AS install-prod
+ENV NPM_CONFIG_CACHE=/build/.npm
+RUN --mount=type=cache,target=/build/.npm \
+    npm config set cache /build/.npm \
+ && npm ci --omit=dev --frozen-lockfile
+
+FROM install-prod AS build
+COPY . ./
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN --mount=type=cache,target=/build/.npm \
+    npm config set cache /build/.npm \
+    && npm ci --include=dev --frozen-lockfile \
+    && npm run build
 
 FROM app-base AS dev
 ENV NODE_ENV=development
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
-CMD [ "yarn", "develop" ]
+CMD [ "npm run", "develop" ]
 
 FROM app-base AS prod
 COPY --chown=node:node .env.*.local ./

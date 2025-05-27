@@ -1,0 +1,78 @@
+import { ExampleForm } from '../types'
+
+const exampleForm: ExampleForm = {
+  name: 'oloUzatvorenieZmluvyONakladaniSOdpadom',
+  formData: {
+    ziadatel: {
+      ziadatelTyp: 'Právnická osoba s povolením na vstup do ZEVO',
+      telefon: '+421941212332',
+      email: 'test@test.ts',
+      fakturacia: {
+        sposobPlatby: 'Platba kartou',
+      },
+      nazov: 'Test',
+      adresaPravnickaOsoba: {
+        ulicaACislo: 'Galvaniho 1',
+        mestoPsc: {
+          mesto: 'Bratislava',
+          psc: '81101',
+        },
+      },
+      ico: '12334412',
+      dic: '12332123',
+      kontaktnaOsoba: 'Jozef Mrkva',
+      cisloPovoleniaNaVstup: '123/45',
+    },
+    vyberDruhuOdpadu: {
+      separovaneZlozky: [],
+      odpadyZoZahrad: [],
+      ineKomunalneOdpady: [],
+      odpadyZAerobnejUpravy: [],
+      odpadyZCistiarni: [],
+      odpadyZUpravyVody: [],
+      odpadyZMechanickehoSpracovania: [],
+      odpadyZPorodnictva: [],
+      odpadyZVeterinarnehoVyskumu: [],
+      drevoSkloPlasty: [],
+      izolacneMaterialy: ['17_06_04'],
+      ineOdpadyZoStavieb: [],
+      stareVozidla: [],
+      vyrobneZarze: [],
+      obaly: [],
+      absorbenty: [],
+      odpadyZTvarovania: [],
+      odpadyZElektrarni: [],
+      odpadyZVyrobySkla: [],
+      odpadyZFotografickehoPriemyslu: [],
+      odpadyZFariebALakov: [],
+      odpadyZInychNaterovychHmot: [],
+      odpadyZTlaciarenskychFarieb: [],
+      odpadyZLepidiel: [],
+      odpadyZPlastov: [],
+      odpadyZFarmaceutickychVyrobkov: [],
+      odpadyZTukovAMydiel: [],
+      odpadyZCistychChemikalii: [],
+      odpadyZPyrolyznehoSpracovania: [],
+      odpadyZKoziarskehoPriemyslu: [],
+      odpadyZTextilnehoPriemyslu: [],
+      odpadyZoSpracovaniaDreva: [],
+      odpadyZVyrobyPapiera: [],
+      odpadyZPolnohospodarstva: [],
+      odpadyZPripravyMasa: [],
+      odpadyZoSpracovaniaOvocia: [],
+      odpadyZPriemysluMliecnychVyrobkov: [],
+      odpadyZPekarenskehoACukrovinkarskeho: [],
+      odpadyZVyrobyNapojov: [],
+    },
+    informacieOMnozstve: {
+      predpokladaneMnozstvo: 1,
+    },
+    suhlasy: {
+      suhlasPodmienkyPrijatiaOdpadu: true,
+      suhlasZasadySpravavania: true,
+      suhlasSVop: true,
+    },
+  },
+}
+
+export default exampleForm

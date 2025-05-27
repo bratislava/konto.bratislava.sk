@@ -7,14 +7,12 @@ import {
   EyeIcon,
   PdfIcon,
 } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
-import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
@@ -22,9 +20,11 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import ConditionalWrap from '../../../simple-components/ConditionalWrap'
 import FormatDate from '../../../simple-components/FormatDate'
 import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 
@@ -34,6 +34,7 @@ export type MyApplicationsCardProps = {
   form?: GetFormResponseSimpleDto | null
   refreshListData: () => Promise<[void, boolean]>
   variant: MyApplicationsCardVariant
+  formDefinitionSlugTitleMap: Record<string, string>
 }
 
 export type WrapperProps = {
@@ -56,7 +57,12 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
 // designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
 // TODO write docs
 
-const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCardProps) => {
+const MyApplicationsCard = ({
+  form,
+  refreshListData,
+  variant,
+  formDefinitionSlugTitleMap,
+}: MyApplicationsCardProps) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
@@ -68,45 +74,38 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  const title = form?.frontendTitle || ft('form_title_fallback')
-  const category = form?.schemaVersion.schema?.formName
+  const subject = form?.formSubject
+  const formSlug = form?.formDefinitionSlug
+  const category = formSlug ? formDefinitionSlugTitleMap[formSlug] : undefined
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side
   const updatedAt = form?.updatedAt
-  const schemaVersionId = form?.schemaVersionId
-  const formSlug = form?.schemaVersion.schema?.slug || ''
   const formId = form?.id
   const state = form?.state
   const error = form?.error
-  const isLatestSchemaVersionForSlug = form?.isLatestSchemaVersionForSlug
   const isTaxForm = formSlug === 'priznanie-k-dani-z-nehnutelnosti'
-  const canDownloadPdf = isLatestSchemaVersionForSlug && !isTaxForm
+  const canDownloadPdf = !isTaxForm
 
   // derived state
-  const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${form?.schemaVersion.schema?.slug}/${form?.id}`
+  const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${formSlug}/${form?.id}`
   const detailPageHref = `${ROUTES.MY_APPLICATIONS}/${form?.id}`
   // TODO verify the error state
-  const isEditable = state && ['DRAFT', 'ERROR'].includes(state) && isLatestSchemaVersionForSlug
+  const isEditable = state && ['DRAFT', 'ERROR'].includes(state)
 
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
-      if (!schemaVersionId || !formId)
-        throw new Error(
-          // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
-        )
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      if (!formId) throw new Error('No form id provided for exportXml')
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
-          schemaVersionId,
           formId,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${formSlug}_output.xml`
-      downloadBlob(new Blob([response.data.xmlForm]), fileName)
+      downloadBlob(new Blob([response.data]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.xml_export'))
     } catch (error) {
@@ -118,17 +117,16 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!schemaVersionId || !formId)
+      if (!formSlug || !formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
-      const response = await formsApi.convertControllerConvertToPdfv2(
+      const response = await formsClient.convertControllerConvertToPdf(
         {
-          schemaVersionId,
           formId,
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
@@ -144,8 +142,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
     openSnackbarInfo(ft('info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
-      await formsApi.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+      await formsClient.nasesControllerDeleteForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.concept_delete'))
@@ -189,7 +187,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         },
       ]
 
-  const stateIconAndText = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
+  const stateIconAndText = useFormStateComponents({ error, state })
 
   const openBottomSheetModal = () => {
     if (variant === 'SENT') return
@@ -211,7 +209,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                   {isLoading ? <Skeleton width="25%" /> : category}
                 </div>
               )}
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
+              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : subject}</h3>
               {(createdAt || isLoading) && (
                 <div className="text-p3">
                   {isLoading ? (
@@ -302,13 +300,13 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
-                {isLoading ? <Skeleton width="75%" /> : title}
+              <h3 className="pb-3 text-20-semibold">
+                {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center ">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
@@ -330,7 +328,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_back_button_title')}
+            {ft('modals_close_button_title')}
           </Button>,
           <Button
             variant="negative-solid"
@@ -343,7 +341,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
           </Button>,
         ]}
       >
-        {ft('concept_delete_modal.content', { conceptName: title })}
+        {ft('concept_delete_modal.content_with_name', { conceptName: subject })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

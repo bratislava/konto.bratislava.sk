@@ -1,17 +1,24 @@
-import { formsApi } from '@clients/forms'
-import { SendFormResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
+import { SendFormResponseDto } from 'openapi-clients/forms'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { validateSummary } from '../../frontend/utils/form'
 import {
   FORM_SEND_EID_TOKEN_QUERY_KEY,
   popSendEidMetadata,
@@ -20,12 +27,12 @@ import {
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from './signer/useFormSignature'
+import { useFormSummary } from './steps/Summary/useFormSummary'
 import { useFormContext } from './useFormContext'
-import { useFormFileUpload } from './useFormFileUpload'
+import { useFormData } from './useFormData'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
-import { useFormState } from './useFormState'
 
 /**
  * This hook controls the sending of the form. The logic is scattered across the app.
@@ -58,14 +65,14 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
-  const { formId, slug, schema } = useFormContext()
-  const { formData } = useFormState()
-  const { getFileInfoById } = useFormFileUpload()
   const {
-    isSignedIn,
-    accountType,
-    tierStatus: { isIdentityVerified },
-  } = useSsrAuth()
+    formId,
+    formDefinition: { slug },
+    evaluatedSendPolicy: { sendPossible, sendAllowedForUserResult, eidSendPossible },
+  } = useFormContext()
+  const { formData } = useFormData()
+  const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
+  const { isSignedIn, accountType } = useSsrAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { isValidSignature, signature } = useFormSignature()
 
@@ -73,10 +80,6 @@ const useGetContext = () => {
     setRegistrationModal,
     setSendIdentityMissingModal,
     setSendFilesScanningModal,
-    setSendFilesScanningEidModal,
-    setSendFilesScanningNotVerifiedEidModal,
-    setSendFilesScanningNotVerified,
-    setSendFilesScanningNonAuthenticatedEidModal,
     setSendFilesUploadingModal,
     setSendConfirmationModal,
     setSendConfirmationEidModal,
@@ -93,12 +96,12 @@ const useGetContext = () => {
 
   const { mutate: sendFormMutate, isPending: sendFormIsPending } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerSendAndUpdateForm(
+      formsClient.nasesControllerSendAndUpdateForm(
         formId,
         {
           formDataJson: formData,
         },
-        { accessToken: 'always' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {
@@ -120,14 +123,14 @@ const useGetContext = () => {
   const { mutate: saveConceptAndSendEidMutate, isPending: saveConceptAndSendEidIsPending } =
     useMutation({
       mutationFn: () =>
-        formsApi.nasesControllerUpdateForm(
+        formsClient.nasesControllerUpdateForm(
           formId,
           {
             formDataJson: formData,
             // `null` must be set explicitly, otherwise the signature would not be removed if needed
-            formDataBase64: signature?.signature ?? null,
+            formSignature: signature ?? null,
           },
-          { accessToken: 'onlyAuthenticated' },
+          { authStrategy: 'authOrGuestWithToken' },
         ),
       networkMode: 'always',
       onSuccess: async () => {
@@ -149,13 +152,15 @@ const useGetContext = () => {
     { fromRepeatModal?: boolean }
   >({
     mutationFn: () =>
-      formsApi.nasesControllerSendAndUpdateFormEid(
+      formsClient.nasesControllerSendAndUpdateFormEid(
         formId,
         {
           formDataJson: formData,
+          // `null` must be set explicitly, otherwise the signature would not be removed if needed
+          formSignature: signature ?? null,
           eidToken: sendEidTokenRef.current as string,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {
@@ -173,7 +178,7 @@ const useGetContext = () => {
       setEidSendingModal(false)
       setEidSendErrorModal({
         isOpen: true,
-        sendCallback: () => {
+        confirmCallback: () => {
           if (!sendFormEidIsPending) {
             sendFormEidMutate({ fromRepeatModal: true })
           }
@@ -231,98 +236,67 @@ const useGetContext = () => {
     }
   })
 
-  const handleSendButtonPress = async () => {
-    const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
-      schema,
-      formData,
-      getFileInfoById,
-    )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
+  const submitDisabled = useCallback(
+    () => isFormSubmitDisabled(getValidatedSummary(), isValidSignature()),
+    [getValidatedSummary, isValidSignature],
+  )
 
-    if (submitDisabled || sendFormIsPending) {
+  const handleSendButtonPress = () => {
+    if (submitDisabled() || sendFormIsPending || !sendPossible) {
       return
     }
 
-    if (!isSignedIn) {
+    if (
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+    ) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
 
-    const modalValueEid = {
-      isOpen: true,
-      sendCallback: async () => {
-        saveConceptAndSendEidMutate()
-      },
-    }
-
-    // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
-    if (isSignedIn && !isIdentityVerified && scanningFiles.length === 0) {
-      setSendFilesScanningNotVerified(modalValueEid)
-      return
-    }
-
-    if (!isIdentityVerified) {
+    if (sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
       setSendIdentityMissingModal(true)
       return
     }
 
-    if (uploadingFiles.length > 0) {
+    if (sendAllowedForUserResult !== SendAllowedForUserResult.Allowed) {
+      throw new Error(`Unhandled case: ${sendAllowedForUserResult}`)
+    }
+
+    if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
       return
     }
 
-    const modalValue = {
-      isOpen: true,
-      sendCallback: () => sendFormMutate(),
-    }
-
-    if (scanningFiles.length > 0) {
-      setSendFilesScanningModal(modalValue)
+    if (getScanFiles().length > 0) {
+      setSendFilesScanningModal(true)
       return
     }
 
-    setSendConfirmationModal(modalValue)
+    setSendConfirmationModal({
+      isOpen: true,
+      confirmCallback: () => sendFormMutate(),
+    })
   }
 
   const handleSendEidButtonPress = () => {
-    const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
-      schema,
-      formData,
-      getFileInfoById,
-    )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
-
-    if (submitDisabled || sendFormEidIsPending) {
+    if (submitDisabled() || sendFormEidIsPending || !eidSendPossible) {
       return
     }
 
-    if (uploadingFiles.length > 0) {
+    if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
       return
     }
 
-    if (isSignedIn && isIdentityVerified && scanningFiles.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setSendFilesScanningEidModal({
-        isOpen: true,
-        sendCallback: () => sendFormMutate(),
-      })
-      return
-    }
-
-    if (isSignedIn && !isIdentityVerified && scanningFiles.length > 0) {
-      setSendFilesScanningNotVerifiedEidModal(true)
-      return
-    }
-
-    if (!isSignedIn && scanningFiles.length > 0) {
-      setSendFilesScanningNonAuthenticatedEidModal(true)
+    if (getScanFiles().length > 0) {
+      setSendFilesScanningModal(true)
       return
     }
 
     const modalValue = {
       isOpen: true,
-      sendCallback: async () => {
+      confirmCallback: async () => {
         saveConceptAndSendEidMutate()
       },
     }
@@ -346,8 +320,11 @@ const useGetContext = () => {
   }
 
   return {
+    sendPossible,
     handleSendButtonPress,
+    eidSendPossible,
     handleSendEidButtonPress,
+    submitDisabled,
   }
 }
 

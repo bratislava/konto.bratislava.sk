@@ -1,6 +1,7 @@
 {
+  "first_name": "Cypress",
+  "last_name": "Name",
   "file_name": "test.pdf",
-  "name": "Cypress_Name",
   "address": "Test address 1",
   "city": "City",
   "zip_code": "12345",

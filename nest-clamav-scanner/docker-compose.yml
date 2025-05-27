@@ -1,0 +1,50 @@
+services:
+  nest:
+    depends_on:
+      - postgres
+    build:
+      context: ..
+      dockerfile: nest-clamav-scanner/Dockerfile
+      target: dev
+      args:
+        SHARED_PACKAGE_TAG: 'latest'
+    init: true
+    env_file:
+      - .env
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      - DEBUG_HOST=0.0.0.0:9229
+      - DATABASE_URL=postgresql://user:pass@postgres:54302/mydb?schema=public&connect_timeout=30
+      - TINI_SUBREAPER=true
+      - NEST_FORMS_BACKEND=http://host.docker.internal:3100
+      - CLAMAV_HOST=clamav-app
+    ports:
+      - '127.0.0.1:3200:3200'
+      - '127.0.0.1:9229:9229'
+    networks:
+      - konto
+    volumes:
+      - ../:/home/node/app
+    working_dir: /home/node/app/nest-clamav-scanner
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+      PGPORT: 54302
+    expose:
+      - '54302'
+    ports:
+      - '127.0.0.1:54302:54302'
+    networks:
+      - konto
+
+volumes:
+  postgres:
+
+networks:
+  konto:
+    name: konto-network

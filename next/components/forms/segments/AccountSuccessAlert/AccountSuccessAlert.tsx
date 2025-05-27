@@ -31,7 +31,7 @@ const AccountSuccessAlert = ({
           <CheckIcon className="size-6 text-success-700" />
         </div>
       </div>
-      <h1 className="text-h3 text-center">{title}</h1>
+      <h1 className="text-center text-h3">{title}</h1>
       {description && (
         <AccountMarkdown className="text-center" content={description} variant="sm" />
       )}
@@ -42,7 +42,7 @@ const AccountSuccessAlert = ({
         variant="category"
         text={confirmLabel}
         loading={confirmIsLoading}
-        data-cy={`${confirmLabel.replaceAll(" ", "-").toLowerCase()}-button`}
+        data-cy={`${confirmLabel.replaceAll(' ', '-').toLowerCase()}-button`}
       />
       {onCancel && (
         <Button

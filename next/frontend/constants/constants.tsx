@@ -14,12 +14,14 @@ import GardensIcon from '../../assets/icons/environment-construction/community-g
 import SewerageIcon from '../../assets/icons/environment-construction/connector.svg'
 import FrontGardensIcon from '../../assets/icons/environment-construction/front-gardens.svg'
 import TreeIcon from '../../assets/icons/environment-construction/greenery.svg'
+import LampIcon from '../../assets/icons/environment-construction/lamp.svg'
 import SpatialPlanningIcon from '../../assets/icons/environment-construction/spatial-planning.svg'
 import BasketIcon from '../../assets/icons/environment-construction/waste.svg'
 import SecurityIcon from '../../assets/icons/most-wanted-services/reporting-of-incentives.svg'
 import MarianumIcon from '../../assets/icons/other/marianum.svg'
 import MosquitoIcon from '../../assets/icons/other/mosquito-hunters.svg'
 import ChristmasTreeIcon from '../../assets/icons/other/tree.svg'
+import HousingIcon from '../../assets/icons/social-services/housing.svg'
 import TransportIcon from '../../assets/icons/transport-and-maps/city-​​transport.svg'
 import ExcavationsIcon from '../../assets/icons/transport-and-maps/excavations.svg'
 import ManagmentCommunicationsIcon from '../../assets/icons/transport-and-maps/management-communications.svg'
@@ -28,9 +30,10 @@ import TowIcon from '../../assets/icons/transport-and-maps/towing.svg'
 
 export const MunicipalServicesCategories = {
   ALL_CATEGORY: 'Všetky kategórie',
-  TAXES_CATEGORY: 'Dane',
+  TAXES_FEES_CATEGORY: 'Dane a poplatky',
   CULTURE_CATEGORY: 'Kultúra a voľný čas',
   TRANSPORT_CATEGORY: 'Doprava',
+  SOCIAL_SERVICES_CATEGORY: 'Sociálne služby a bývanie',
   ENVIROMENTS_CATEGORY: 'Nebytové priestory',
   BASKET_CATEGORY: 'Odpady',
   MARIANUM_CATEGORY: 'Pohrebníctvo Marianum',
@@ -60,7 +63,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.1.description',
     buttonText: 'account_section_services.cards.1.buttonText',
     icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
-    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
     href: ROUTES.TAXES_AND_FEES,
   },
 
@@ -133,12 +136,14 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.9.description',
     buttonText: 'account_section_services.cards.9.buttonText',
     icon: <GardensIcon className="size-10 text-environment-700 lg:size-12" />,
+    tag: 'account_section_services.cards.9.tag',
+    tagStyle: 'text-environment-700 bg-environment-100',
     category: [
       MunicipalServicesCategories.GREEN_CATEGORY,
       MunicipalServicesCategories.CULTURE_CATEGORY,
       MunicipalServicesCategories.JOIN_CATEGORY,
     ],
-    href: 'https://bratislavskisusedia.sk/temy/komunitne-zahrady',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('komunitne-zahrady'),
   },
   {
     id: 10,
@@ -227,8 +232,10 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.19.description',
     buttonText: 'account_section_services.cards.19.buttonText',
     icon: <FrontGardensIcon className="size-10 text-environment-700 lg:size-12" />,
+    tag: 'account_section_services.cards.19.tag',
+    tagStyle: 'text-environment-700 bg-environment-100',
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
-    href: 'https://bratislavskisusedia.sk/temy/predzahradky',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('predzahradky'),
   },
   {
     id: 20,
@@ -291,7 +298,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.26.buttonText',
     icon: <AdministrationIcon className="size-10 text-main-600 lg:size-12" />,
     category: [MunicipalServicesCategories.ENVIROMENTS_CATEGORY],
-    href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
+    href: 'https://static-pages.s3.bratislava.sk/non-residential-premises-map/index.html?lang=sk',
   },
   {
     id: 27,
@@ -363,10 +370,8 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.34.description',
     buttonText: 'account_section_services.cards.34.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-environment-700 lg:size-12" />,
-    tag: 'account_section_services.cards.34.tag',
-    tagStyle: 'text-environment-700 bg-environment-100',
     category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_INVESTING,
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('zavazne-stanovisko-k-investicnej-cinnosti'),
   },
   {
     id: 35,
@@ -374,10 +379,8 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.35.description',
     buttonText: 'account_section_services.cards.35.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-environment-700 lg:size-12" />,
-    tag: 'account_section_services.cards.35.tag',
-    tagStyle: 'text-environment-700 bg-environment-100',
     category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT,
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('stanovisko-k-investicnemu-zameru'),
   },
   {
     id: 36,
@@ -450,15 +453,97 @@ export const serviceCards: ServiceCardBase[] = [
     icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
     tag: 'account_section_services.cards.43.tag',
     tagStyle: 'text-main-700 bg-main-100',
-    category: [MunicipalServicesCategories.TAXES_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_TAX,
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
+  },
+  {
+    id: 44,
+    title: 'account_section_services.cards.44.title',
+    description: 'account_section_services.cards.44.description',
+    buttonText: 'account_section_services.cards.44.buttonText',
+    icon: <HousingIcon className="size-10 text-social-600 lg:size-12" />,
+    tag: 'account_section_services.cards.44.tag',
+    tagStyle: 'text-social-700 bg-social-100',
+    category: [MunicipalServicesCategories.SOCIAL_SERVICES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-najom-bytu'),
+  },
+  {
+    id: 45,
+    title: 'account_section_services.cards.45.title',
+    description: 'account_section_services.cards.45.description',
+    buttonText: 'account_section_services.cards.45.buttonText',
+    icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
+    tag: 'account_section_services.cards.45.tag',
+    tagStyle: 'text-main-700 bg-main-100',
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady'),
+  },
+  {
+    id: 46,
+    title: 'account_section_services.cards.46.title',
+    description: 'account_section_services.cards.46.description',
+    buttonText: 'account_section_services.cards.46.buttonText',
+    icon: <AdministrationIcon className="size-10 text-main-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('ziadost-o-slobodny-pristup-k-informaciam'),
+  },
+  {
+    id: 47,
+    title: 'account_section_services.cards.47.title',
+    description: 'account_section_services.cards.47.description',
+    buttonText: 'account_section_services.cards.47.buttonText',
+    icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.47.tag',
+    tagStyle: 'text-education-700 bg-education-100',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-objednavka-informativneho-zakresu-sieti'),
+  },
+  {
+    id: 48,
+    title: 'account_section_services.cards.48.title',
+    description: 'account_section_services.cards.48.description',
+    buttonText: 'account_section_services.cards.48.buttonText',
+    icon: <SpatialPlanningIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.48.tag',
+    tagStyle: 'text-education-700 bg-education-100',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii'),
+  },
+  {
+    id: 49,
+    title: 'account_section_services.cards.49.title',
+    description: 'account_section_services.cards.49.description',
+    buttonText: 'account_section_services.cards.49.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.49.tag',
+    tagStyle: 'text-education-700 bg-education-100',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM(
+      'tsb-objednavka-vytycenia-podzemnych-vedeni-verejneho-osvetlenia',
+    ),
+  },
+  {
+    id: 50,
+    title: 'account_section_services.cards.50.title',
+    description: 'account_section_services.cards.50.description',
+    buttonText: 'account_section_services.cards.50.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.50.tag',
+    tagStyle: 'text-education-700 bg-education-100',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM(
+      'tsb-ziadost-o-umiestnenie-ineho-zariadenia-na-stoziar-verejneho-osvetlenia',
+    ),
+  },
+  {
+    id: 51,
+    title: 'account_section_services.cards.51.title',
+    description: 'account_section_services.cards.51.description',
+    buttonText: 'account_section_services.cards.51.buttonText',
+    icon: <LampIcon className="size-10 text-education-600 lg:size-12" />,
+    category: [MunicipalServicesCategories.JOIN_CATEGORY],
+    tag: 'account_section_services.cards.51.tag',
+    tagStyle: 'text-education-700 bg-education-100',
+    href: 'https://bratislava.sk/mesto-bratislava/technicke-siete-bratislava/podnety',
   },
 ]
-
-export const formsFeedbackLinks = {
-  'stanovisko-k-investicnemu-zameru': 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
-  'zavazne-stanovisko-k-investicnej-cinnosti': 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
-  'platba-dane-z-nehnutelnosti':
-    'https://forms.office.com/Pages/DesignPageV2.aspx?origin=NeoPortalPage&subpage=design&id=Tudp_mYey0-ZxVjkotKgYzPfQUHlnllIsPHBW0o8KeNUQlMzWEw1WEZIWEM2SThRNVBUREhWNFlISC4u',
-  'priznanie-k-dani-z-nehnutelnosti': 'https://bravo.staffino.com/bratislava/id=WW14qo6q',
-}

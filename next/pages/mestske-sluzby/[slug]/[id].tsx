@@ -1,71 +1,115 @@
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
+import { strapiClient } from '@clients/graphql-strapi'
+import { FormBaseFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import {
+  VersionCompareContinueAction,
+  versionCompareContinueAction,
+} from 'forms-shared/versioning/version-compare'
+import { GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 
-import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
+import FormPage, { FormPageProps } from '../../../components/forms/FormPage'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
+import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
-import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
+import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
+import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
 import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+import type { GlobalAppProps } from '../../_app'
+
+const fetchStrapiForm = async (slug: string): Promise<FormBaseFragment | null | undefined> => {
+  const result = await strapiClient.FormBaseBySlug({ slug })
+
+  return result.forms?.data?.[0]?.attributes
+}
 
 type Params = {
   slug: string
   id: string
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps, Params>(
-  async ({ context, getAccessToken, isSignedIn }) => {
-    if (!context.params) return { notFound: true }
+export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
+  async ({ context, fetchAuthSession, isSignedIn }) => {
+    if (!context.params) {
+      return { notFound: true }
+    }
 
-    const { slug, id } = context.params
+    const { slug, id: formId } = context.params
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
+      return { notFound: true }
+    }
 
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
-      const { data: form } = await formsApi.nasesControllerGetForm(id, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
+      const { data: form } = await formsClient.nasesControllerGetForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
+        getSsrAuthSession: fetchAuthSession,
       })
       if (
         !form ||
         /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
-        form.schemaVersion.schema?.slug !== slug
+        form.formDefinitionSlug !== slug
       ) {
         return { notFound: true }
       }
 
-      const [{ data: files }, initialSignature] = await Promise.all([
-        formsApi.filesControllerGetFilesStatusByForm(id, {
-          accessToken: 'onlyAuthenticated',
-          accessTokenSsrGetFn: getAccessToken,
+      const [{ data: files }, strapiForm] = await Promise.all([
+        formsClient.filesControllerGetFilesStatusByForm(formId, {
+          authStrategy: 'authOrGuestWithToken',
+          getSsrAuthSession: fetchAuthSession,
         }),
-        getInitialFormSignature(form.formDataBase64),
+        fetchStrapiForm(slug),
       ])
 
-      const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
+      const initialFormSent = form.state !== GetFormResponseDtoStateEnum.Draft
       // If the form was created by an unauthenticated user, a migration modal is displayed and form is not editable.
       const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
 
+      const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+        serverFormDefinition,
+        context,
+      )
+      if (!embeddedSuccess) {
+        return { notFound: true }
+      }
+      const initialFormDataJson =
+        form.formDataJson ?? getDefaultFormDataForFormDefinition(serverFormDefinition)
+
       return {
         props: {
-          formContext: {
-            slug,
-            schema: form.schemaVersion.jsonSchema,
-            uiSchema: form.schemaVersion.uiSchema,
-            formId: id,
-            initialFormDataJson: form.formDataJson ?? {},
+          formServerContext: {
+            formDefinition: makeClientFormDefinition(serverFormDefinition),
+            formId,
+            initialFormDataJson,
             initialServerFiles: files,
-            initialSignature,
-            oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
-            formSent,
+            initialSignature: form.formSignature ?? null,
+            initialFormSent,
+            initialSummaryJson: getInitialSummaryJson(
+              context.query,
+              serverFormDefinition,
+              initialFormDataJson,
+            ),
             formMigrationRequired,
-            schemaVersionId: form.schemaVersionId,
-            isSigned: form.schemaVersion.isSigned,
-            isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
+            isEmbedded,
+            strapiForm: strapiForm ?? null,
+            versionCompareContinueAction: environment.featureToggles.versioning
+              ? versionCompareContinueAction({
+                  currentVersion: form.jsonVersion,
+                  latestVersion: serverFormDefinition.jsonVersion,
+                })
+              : VersionCompareContinueAction.None,
+          },
+          appProps: {
+            externallyEmbedded: isEmbedded,
           },
           ...(await slovakServerSideTranslations()),
-        } satisfies FormPageWrapperProps,
+        },
       }
     } catch (error) {
       if (isAxiosError(error)) {
@@ -95,4 +139,4 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
   },
 )
 
-export default SsrAuthProviderHOC(FormPageWrapper)
+export default SsrAuthProviderHOC(FormPage)

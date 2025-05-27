@@ -4,6 +4,6 @@
   "onePurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-celkovaZastavanaPlocha], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
   "multiPurposeTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-popisStavby], [data-cy=input-celkovaVymera], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu],[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]",
   "nonResidentialTaxBorderFields": "[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely]",
-  "summaryBorderFields": "[data-cy=summary-row-rok], [data-cy=summary-row-rodneCislo], [data-cy=summary-row-priezvisko], [data-cy=summary-row-obec], [data-cy=summary-row-psc], [data-cy=summary-row-email], [data-cy=summary-row-telefon]",
+  "summaryBorderFields": "[data-cy=summary-row-root_druhPriznania_rok], [data-cy=summary-row-root_udajeODanovnikovi_rodneCislo], [data-cy=summary-row-root_udajeODanovnikovi_priezvisko], [data-cy=summary-row-root_udajeODanovnikovi_obecPsc_obec], [data-cy=summary-row-root_udajeODanovnikovi_obecPsc_psc], [data-cy=summary-row-root_udajeODanovnikovi_email], [data-cy=summary-row-root_udajeODanovnikovi_telefon]",
   "husbandWifeBorderFields": "[data-cy=input-rodneCislo], [input-meno], [data-cy=input-priezvisko]"
 }

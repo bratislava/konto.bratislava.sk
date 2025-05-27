@@ -124,7 +124,7 @@
   "menu.show_less": "Zobraziť menej",
   "menu.show_more": "Zobraziť viac",
   "skipNavigation": "Preskočiť navigáciu",
-  "statusBarContent": "<strong>Nové žiadosti a registráciu firemných účtov</strong> práve testujeme. Ak narazíte na chyby, prosíme, dajte nám o nich vedieť na info@bratislava.sk. Ďakujeme!",
+  "statusBarContent": "",
   "modal_close_aria": "Zavrieť",
   "ariaCloseStatusBar": "Zavrieť upozornenie",
   "NavMenu": {

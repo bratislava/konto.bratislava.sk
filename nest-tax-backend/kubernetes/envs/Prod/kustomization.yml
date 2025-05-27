@@ -1,0 +1,15 @@
+resources:
+  - ../../base
+  - scaler.yml
+  - ./secrets/reporting.secret.yml
+  - ./secrets/email.secret.yml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: env
+  namespace: ${NAMESPACE}
+  behavior: merge
+  envs:
+  - .env

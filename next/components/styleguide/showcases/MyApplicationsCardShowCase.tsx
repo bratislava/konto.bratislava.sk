@@ -1,89 +1,31 @@
+import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
 import {
   FormState,
-  GetFormResponseDto,
   GetFormResponseDtoErrorEnum,
-} from '@clients/openapi-forms/api'
-import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
+  GetFormResponseSimpleDto,
+} from 'openapi-clients/forms'
 import React from 'react'
 
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, overrides?: object) =>
-  ({
-    id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
-    createdAt: '2023-09-13T08:48:15.346Z',
-    updatedAt: '2023-09-13T08:48:22.121Z',
-    mainUri: 'rc://sk/111111/1111',
-    actorUri: 'rc://sk/111111/1111',
-    externalId: null,
-    userExternalId: '9f2d3023-8c8c-4bad-974a-f8d7262c6836',
-    email: 'email@email.com',
-    uri: 'rc://sk/111111/1111_email@email.com_firstname',
-    state,
-    error,
-    formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
-    formDataGinis: null,
-    formDataBase64: null,
-    ginisDocumentId: null,
-    senderId: null,
-    recipientId: null,
-    finishSubmission: null,
-    schemaVersionId: 'c25d2151-bf8b-4438-8b29-9bc840ef7e69',
-    archived: false,
-    schemaVersion: {
-      id: 'c25d2151-bf8b-4438-8b29-9bc840ef7e69',
-      version: 'v0.0.3',
-      pospID: 'test',
-      pospVersion: '0.1',
-      formDescription: 'Example schema',
-      messageSubjectFormat: 'Podanie',
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Janko Hraško',
-      previousSchemaVersionId: '24e435cd-75b7-4e88-9371-1db65b86606b',
-      data: {
-        email: 'velit anim Duis esse',
-        phone: 'ipsum',
-        ziadatel: {
-          city: 'reprehenderit id consectetur',
-          address: 'sint irure velit quis',
-          lastName: 'Excepteur',
-          birthDate: 'anim Excepteur est',
-          firstName: 'occaecat',
-          postalCode: 'incididunt veniam nostrud id',
-          newTaxpayer: true,
-        },
-      },
-      dataXml: '',
-      formFo: '',
-      formHtmlSef: {},
-      formSb: '',
-      formHtml: '',
-      formSbSef: {},
-      jsonSchema: {},
-      schemaXsd: '',
-      uiSchema: {},
-      xmlTemplate: '',
-      schemaId: '24e435cd-75b7-4e88-9371-1db65b86607b',
-      isSigned: false,
-      createdAt: '2023-09-13T07:40:08.318Z',
-      updatedAt: '2023-09-13T07:40:08.318Z',
-      schema: {
-        id: '24e435cd-75b7-4e88-9371-1db65b86607b',
-        formName: 'test',
-        slug: 'test',
-        category: null,
-        messageSubject: 'Podanie',
-        createdAt: '2023-09-13T07:40:06.920Z',
-        updatedAt: '2023-09-13T07:40:11.319Z',
-        latestVersionId: 'c25d2151-bf8b-4438-8b29-9bc840ef7e69',
-      },
-    },
-    isLatestSchemaVersionForSlug: true,
-    frontendTitle: 'Nazov stavby',
-    messageSubject: 'Podanie',
-    ...overrides,
-  }) as GetFormResponseDto
+const getDummyData = (
+  state: FormState,
+  error: GetFormResponseDtoErrorEnum,
+): GetFormResponseSimpleDto => ({
+  formDefinitionSlug: 'example-form-definition-slug',
+  id: '1abe3c72-0c1a-4e26-9de9-2207be63d120',
+  createdAt: '2023-09-13T08:48:15.346Z',
+  updatedAt: '2023-09-13T08:48:22.121Z',
+  state,
+  error,
+  formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
+  formSubject: 'Podanie',
+})
+
+const formDefinitionSlugTitleMap = {
+  'example-form-definition-slug': 'Example Form',
+}
 
 const MyApplicationsCardShowCase = () => {
   return (
@@ -97,14 +39,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
-          />
-          Expired draft
-          <MyApplicationsCard
-            variant="DRAFT"
-            form={getDummyData('DRAFT', 'NONE', { isLatestSchemaVersionForSlug: false })}
-            refreshListData={async (): Promise<[void, boolean]> => {
-              return [undefined, false]
-            }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Sending in progress
           <MyApplicationsCard
@@ -113,6 +48,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Virus scan in progress
           <MyApplicationsCard
@@ -121,6 +57,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Virus scan failed (unable to scan)
           <MyApplicationsCard
@@ -129,6 +66,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Virus scan failed (infected)
           <MyApplicationsCard
@@ -137,6 +75,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Virus scan failed (nases_send_error)
           <MyApplicationsCard
@@ -145,6 +84,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Sent (progress - NASES)
           <MyApplicationsCard
@@ -153,6 +93,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Sent (progress - GINIS)
           <MyApplicationsCard
@@ -161,6 +102,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Sent (progress - SENDING_TO_NASES)
           <MyApplicationsCard
@@ -169,6 +111,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           PROCESSING
           <MyApplicationsCard
@@ -177,6 +120,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Rejected
           <MyApplicationsCard
@@ -185,6 +129,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
           Finished
           <MyApplicationsCard
@@ -193,6 +138,7 @@ const MyApplicationsCardShowCase = () => {
             refreshListData={async (): Promise<[void, boolean]> => {
               return [undefined, false]
             }}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
         </div>
       </Stack>

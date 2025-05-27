@@ -1,0 +1,39 @@
+name: Validate forms-shared
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './forms-shared'
+      node:
+        description: "Define node version"
+        type: string
+        required: false
+        default: '20'
+
+jobs:
+  test:
+    name: Forms-shared tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.3.0"
+
+      - name: Build Docker image on test target
+        run: |
+          docker build --target test -t test .
+
+      - name: Run tests
+        run: |
+          docker run test

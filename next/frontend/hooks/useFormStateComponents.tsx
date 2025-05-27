@@ -6,33 +6,20 @@ import {
   SendIcon,
   TwoPeopleIcon,
 } from '@assets/ui-icons'
-import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoErrorEnum, GetFormResponseDtoStateEnum } from 'openapi-clients/forms'
 import { useMemo } from 'react'
 
 export type UseFormStateComponentsParams = {
   state?: GetFormResponseDtoStateEnum | null
   error?: GetFormResponseDtoErrorEnum | null
-  isLatestSchemaVersionForSlug?: boolean
 }
 
-const useFormStateComponents = ({
-  state,
-  error,
-  isLatestSchemaVersionForSlug,
-}: UseFormStateComponentsParams) => {
+const useFormStateComponents = ({ state, error }: UseFormStateComponentsParams) => {
   const { t } = useTranslation('account')
   // note: in case of 'unsafe return of any type' the BE enum likely changed/expanded - see const ret assignment below
   return useMemo(() => {
-    if ((state === 'ERROR' || state === 'DRAFT') && !isLatestSchemaVersionForSlug) {
-      // we ignore all other states for unsent forms which are of old schemas - these become readonly drafts
-      return {
-        icon: null,
-        iconRound: null,
-        text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
-      }
-    }
     if (state === 'ERROR') {
       // note: if ret suddenly becomes 'any', it's because GetFormResponseDtoErrorEnum changed on BE - update accordingly
       const ret = {
@@ -265,7 +252,7 @@ const useFormStateComponents = ({
         },
       } as const
     )[state || 'NONE']
-  }, [error, isLatestSchemaVersionForSlug, state, t])
+  }, [error, state, t])
 }
 
 export default useFormStateComponents

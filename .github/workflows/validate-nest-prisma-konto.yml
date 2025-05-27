@@ -1,0 +1,101 @@
+name: Validate nest-prisma code
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './'
+      typescript-directory:
+        description: "Where typescript have to be checked"
+        type: string
+        required: false
+        default: './src'
+      node:
+        description: "Define node version"
+        type: string
+        required: false
+        default: '20'
+      level:
+        description: "Change reporter level if you need"
+        type: string
+        required: false
+        default: 'warning'
+      run_e2e_tests:
+        description: "Run E2E tests"
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  test:
+    name: Unit tests and lint
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.3.0"  
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      - name: Build forms-shared
+        working-directory: forms-shared
+        run: |
+          npm install
+          npm run build
+
+      - name: Build openapi-clients
+        working-directory: openapi-clients
+        run: |
+          npm install
+          npm run build
+
+      # move to directory
+      - name: Install dependencies
+        working-directory: ${{ inputs.directory }}
+        run: | 
+          pwd
+          npm ci
+          npx prisma generate
+
+      - name: Run unit tests
+        working-directory: ${{ inputs.directory }}
+        run: NODE_OPTIONS="--max-old-space-size=4096" npm run test
+
+      - name: Run E2E tests
+        if: ${{ inputs.run_e2e_tests }}
+        working-directory: ${{ inputs.directory }}
+        run: NODE_OPTIONS="--max-old-space-size=4096" npm run test:e2e
+
+      - name: Typescript reviewdog check
+        uses: EPMatt/reviewdog-action-tsc@v1.7.0
+        # Review dog will fail when pull request has more than 300 changed files.
+        # We want that next typescript check will do its job for all files
+        continue-on-error: true
+        with:
+          # Change reviewdog reporter if you need
+          # [github-pr-check,github-check,github-pr-review].
+          # More about reviewdog reporters at
+          # https://github.com/reviewdog/reviewdog#reporters
+          reporter: github-check
+          # Change reporter level if you need
+          # [info,warning,error].
+          # More about reviewdog reporter level at
+          # https://github.com/reviewdog/reviewdog#reporters
+          level: ${{inputs.level}}
+          workdir: ${{ inputs.typescript-directory }}
+
+      - name: Typescript check
+        working-directory: ${{ inputs.directory }}
+        run: npx tsc
+
+      - name: ESlint check
+        working-directory: ${{ inputs.directory }}
+        run: npm run lint

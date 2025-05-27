@@ -1,53 +1,16 @@
 import { WidgetProps } from '@rjsf/utils'
-import { SelectUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
-import { ComponentProps } from 'react'
+import { WithEnumOptions } from 'forms-shared/form-utils/WithEnumOptions'
+import { mergeEnumOptionsMetadata } from 'forms-shared/generator/optionItems'
+import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
+import { useMemo } from 'react'
 
-import { isDefined } from '../../../frontend/utils/general'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
 
-type SingleMultiSelectBaseProps = Omit<
-  ComponentProps<typeof SelectField>,
-  'options' | 'value' | 'onChange' | 'isMulti'
-> & { options: SelectOption[] }
-
-const SingleSelect = ({
-  value,
-  onChange,
-  ...rest
-}: SingleMultiSelectBaseProps & {
-  value: string | undefined
-  onChange: (value: string | undefined) => void
-}) => {
-  const selectValue = rest.options.find((option) => option.value === value)
-  const selectOnChange = (newValue: SelectOption | null) =>
-    onChange(newValue ? newValue.value : undefined)
-
-  return <SelectField isMulti={false} value={selectValue} onChange={selectOnChange} {...rest} />
-}
-
-const MultiSelect = ({
-  value,
-  onChange,
-  ...rest
-}: SingleMultiSelectBaseProps & {
-  value: string[] | undefined
-  onChange: (value: string[] | undefined) => void
-}) => {
-  const selectValue =
-    value
-      ?.map((value) => rest.options.find((option) => option.value === value))
-      .filter(isDefined) ?? []
-  const selectOnChange = (newValue: readonly SelectOption[]) =>
-    onChange(newValue.map((option) => option.value).filter(isDefined))
-
-  return <SelectField isMulti value={selectValue} onChange={selectOnChange} {...rest} />
-}
-
 interface SelectWidgetRJSFProps extends WidgetProps {
-  options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
-  value: string | string[] | undefined
-  onChange: (value?: string | string[] | undefined) => void
+  options: WithEnumOptions<SelectUiOptions>
+  value: string | undefined
+  onChange: (value?: string | undefined) => void
 }
 
 const SelectWidgetRJSF = ({
@@ -58,67 +21,54 @@ const SelectWidgetRJSF = ({
   required,
   disabled,
   placeholder,
-  schema,
   onChange,
   rawErrors,
   readonly,
 }: SelectWidgetRJSFProps) => {
   const {
     enumOptions,
+    enumMetadata,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     tooltip,
     className,
     size,
     labelSize,
-    selectOptions,
   } = options
 
-  const isMulti = schema.type === 'array'
+  const mergedOptions = useMemo(
+    () => mergeEnumOptionsMetadata(enumOptions, enumMetadata),
+    [enumOptions, enumMetadata],
+  )
+  const selectValue = mergedOptions.find((option) => option.value === value)
 
-  const componentOptions: SelectOption[] = enumOptions
-    ? enumOptions.map((option) => {
-        const selectOption = selectOptions?.[option.value as string]
-
-        return {
-          label: selectOption?.title ?? '',
-          value: option.value,
-          description: selectOption?.description,
-        }
-      })
-    : []
-
-  const componentProps: SingleMultiSelectBaseProps = {
-    label,
-    helptext,
-    helptextHeader,
-    tooltip,
-    errorMessage: rawErrors,
-    required,
-    isDisabled: disabled || readonly,
-    className,
-    size,
-    labelSize,
-    options: componentOptions,
-    placeholder,
-    displayOptionalLabel: true,
-  }
-
-  if (isMulti) {
-    return (
-      <WidgetWrapper id={id} options={options}>
-        <MultiSelect
-          value={value as string[] | undefined}
-          onChange={onChange}
-          {...componentProps}
-        />
-      </WidgetWrapper>
-    )
-  }
+  const handleChange = (newValue: SelectOption | null) =>
+    onChange(newValue ? newValue.value : undefined)
 
   return (
     <WidgetWrapper id={id} options={options}>
-      <SingleSelect value={value as string | undefined} onChange={onChange} {...componentProps} />
+      <SelectField
+        isMulti={false}
+        label={label}
+        helptext={helptext}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
+        tooltip={tooltip}
+        errorMessage={rawErrors}
+        required={required}
+        isDisabled={disabled || readonly}
+        className={className}
+        size={size}
+        labelSize={labelSize}
+        options={mergedOptions}
+        placeholder={placeholder}
+        displayOptionalLabel
+        value={selectValue}
+        onChange={handleChange}
+      />
     </WidgetWrapper>
   )
 }

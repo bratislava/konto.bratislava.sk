@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Tax" ADD COLUMN     "dateTaxRuling" TIMESTAMP(3),
+ADD COLUMN     "lastCheckedUpdates" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

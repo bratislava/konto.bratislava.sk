@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderFormAdditionalInfo > ziadostONajomBytuExample rendered template should match snapshot 1`] = `
+"### Zoznam potrebných dokumentov
+
+#### Žiadateľ/žiadateľka
+
+- Osobné údaje - občiansky preukaz
+- Osobné údaje - rozsudok o rozvode, sobášny list alebo iný doklad dokazujúci rodinný stav
+- Adresa - dokumenty potvrdujúce pôsobenie v Bratislave, napr. pracovnú zmluvu, nájomnú zmluvu, potvrdenie o návšteve školy, potvrdenie z ubytovne, nocľahárne, potvrdenie sociálneho pracovníka o kontakte s klientom a pod.
+- Súčasné bývanie - doklad o budúcom prepustení z ÚVTOS alebo resocializačného zariadenia
+- Príjem - dokumenty dokazujúce všetky príjmy, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
+- Zdravotný stav - dokumenty dokazujúce zdravotný stav, napr. potvrdenie o chronickom ochorení od ošetrujúceho lekára
+- Rizikové faktory - prepúšťacia správa zo zariadenia ústavnej starostlivosti
+
+#### Druh/družka
+
+- Osobné údaje - kópia občianskeho preukazu
+- Príjem - dokumenty dokazujúce všetky príjmy druha/družky, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
+
+#### Nezaopatrené deti do 25 rokov
+
+##### Dieťa č. 1 (Lucia Nováková)
+- Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
+- Príjem - potvrdenie o návšteve školy
+##### Dieťa č. 2 (Michal Novák)
+- Osobné údaje - kópia rodného listu dieťaťa, resp. kópia občianskeho preukazu, ak už dieťa dovŕšilo vek 15 rokov
+- Príjem - potvrdenie o návšteve školy
+- Príjem - potvrdenie o príjme dieťaťa
+
+#### Iní členovia/členky domácnosti
+
+##### Člen/členka domácnosti č. 1 (Mária Kováčová)
+- Osobné údaje - kópia občianskeho preukazu
+- Osobné údaje - doklad dokazujúci rodinný stav člena/členky domácnosti
+- Príjem - dokumenty dokazujúce všetky príjmy člena/členky domácnosti, napr. doklad od zamestnávateľa, potvrdenie z daňového úradu, potvrdenie o výške dôchodku, doklad o poberaní prídavkov na dieťa/deti, o poberaní materského, rodičovský príspevok, doklad o určení výšky výživného a pod.
+"
+`;

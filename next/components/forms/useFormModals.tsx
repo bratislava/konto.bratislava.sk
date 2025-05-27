@@ -1,79 +1,90 @@
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from './useFormContext'
 
-type ModalWithSendCallback =
+type ModalWithConfirmCallback =
   | {
       isOpen: false
     }
   | {
       isOpen: true
-      sendCallback: (() => void) | (() => Promise<void>)
+      confirmCallback: (() => void) | (() => Promise<void>)
     }
 
-const useGetContext = () => {
-  const { formMigrationRequired, oldSchemaVersion, isTaxForm } = useFormContext()
+enum InitialModal {
+  Registration = 'Registration',
+  MigrationRequired = 'MigrationRequired',
+  IdentityVerification = 'IdentityVerification',
+}
+
+const useInitialModal = () => {
+  const {
+    formMigrationRequired,
+    evaluatedSendPolicy: { sendAllowedForUserResult },
+  } = useFormContext()
   const router = useRouter()
-  const { isSignedIn, tierStatus } = useSsrAuth()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
-  const displayInitialWarningModals = !router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+  const hasFormSendEidToken = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
+  if (hasFormSendEidToken) {
+    return null
+  }
 
-  const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
-  const [migrationRequiredModal, setMigrationRequiredModal] = useState<boolean>(
-    displayInitialWarningModals && formMigrationRequired,
-  )
-  const [oldVersionSchemaModal, setOldSchemaVersionModal] = useState<boolean>(
-    displayInitialWarningModals && !migrationRequiredModal && oldSchemaVersion,
+  if (formMigrationRequired) {
+    return InitialModal.MigrationRequired
+  }
+
+  if (
+    sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+    sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+  ) {
+    return InitialModal.Registration
+  }
+
+  if (sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
+    return InitialModal.IdentityVerification
+  }
+
+  return null
+}
+
+const useGetContext = () => {
+  const initialModal = useInitialModal()
+  const [migrationRequiredModal, setMigrationRequiredModal] = useState(
+    initialModal === InitialModal.MigrationRequired,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals && !oldVersionSchemaModal && !isSignedIn && !isTaxForm
-      ? RegistrationModalType.Initial
-      : null,
+    initialModal === InitialModal.Registration ? RegistrationModalType.Initial : null,
   )
   const [identityVerificationModal, setIdentityVerificationModal] = useState(
-    displayInitialWarningModals &&
-      !oldVersionSchemaModal &&
-      !migrationRequiredModal &&
-      isSignedIn &&
-      !isTaxForm &&
-      !tierStatus.isIdentityVerified,
+    initialModal === InitialModal.IdentityVerification,
   )
 
-  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>(
-    { isOpen: false },
-  )
-  const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
-    useState(false)
+  const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
-  const [sendFilesScanningNonAuthenticatedEidModal, setSendFilesScanningNonAuthenticatedEidModal] =
-    useState(false)
   const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
-  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithSendCallback>({
+  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
-  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState<ModalWithSendCallback>({
-    isOpen: false,
-  })
-  const [sendFilesScanningModal, setSendFilesScanningModal] = useState<ModalWithSendCallback>({
-    isOpen: false,
-  })
+  const [sendConfirmationEidModal, setSendConfirmationEidModal] =
+    useState<ModalWithConfirmCallback>({
+      isOpen: false,
+    })
+  const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
   const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
+    useState<ModalWithConfirmCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
-  const [sendFilesScanningNotVerified, setSendFilesScanningNotVerified] =
-    useState<ModalWithSendCallback>({ isOpen: false })
-  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
+    useState<ModalWithConfirmCallback>({ isOpen: false })
+  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [eidSendingModal, setEidSendingModal] = useState(false)
-  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
+  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [sendPending, setSendPending] = useState(false)
@@ -92,11 +103,12 @@ const useGetContext = () => {
   const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
     useState<TaxFormPdfExportModalState | null>(null)
 
+  const [xmlImportVersionConfirmationModal, setXmlImportVersionConfirmationModal] =
+    useState<ModalWithConfirmCallback>({ isOpen: false })
+
   return {
     migrationRequiredModal,
     setMigrationRequiredModal,
-    oldVersionSchemaModal,
-    setOldSchemaVersionModal,
     registrationModal,
     setRegistrationModal,
     identityVerificationModal,
@@ -105,16 +117,8 @@ const useGetContext = () => {
     setConceptSaveErrorModal,
     sendFilesScanningModal,
     setSendFilesScanningModal,
-    sendFilesScanningEidModal,
-    setSendFilesScanningEidModal,
-    sendFilesScanningNotVerifiedEidModal,
-    setSendFilesScanningNotVerifiedEidModal,
-    sendFilesScanningNotVerified,
-    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
-    sendFilesScanningNonAuthenticatedEidModal,
-    setSendFilesScanningNonAuthenticatedEidModal,
     sendFilesUploadingModal,
     setSendFilesUploadingModal,
     sendConfirmationModal,
@@ -142,6 +146,8 @@ const useGetContext = () => {
     setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
+    xmlImportVersionConfirmationModal,
+    setXmlImportVersionConfirmationModal,
   }
 }
 

@@ -1,7 +1,7 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { TimePickerUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { TimePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
@@ -25,7 +25,15 @@ const TimePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: TimePickerWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, size, labelSize } = options
+  const {
+    helptext,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
+    tooltip,
+    size,
+    labelSize,
+  } = options
 
   return (
     <WidgetWrapper id={id} options={options}>
@@ -37,7 +45,9 @@ const TimePickerWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
-            helptextHeader={helptextHeader}
+            helptextMarkdown={helptextMarkdown}
+            helptextFooter={helptextFooter}
+            helptextFooterMarkdown={helptextFooterMarkdown}
             tooltip={tooltip}
             value={wrapperValue ?? null}
             onChange={(value) => wrapperOnChange(value ?? undefined)}

@@ -1,9 +1,10 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import padStart from 'lodash/padStart'
 import React, { MouseEvent, useEffect, useRef } from 'react'
 import { useDidMount } from 'rooks'
+
+import cn from '../../../../frontend/cn'
 
 type TimeSelectorBase = {
   onReset?: () => void
@@ -99,8 +100,8 @@ const TimeSelector = ({
       <div className="flex w-full flex-col justify-between py-10">
         <div className="flex h-fit max-h-52 justify-between overflow-hidden px-4">
           <div className="flex flex-col items-center justify-start overflow-x-hidden">
-            <div ref={hourRef} className="flex flex-col overflow-y-auto scrollbar-hide">
-              <span className="pt-[84px] focus:outline-none" />
+            <div ref={hourRef} className="scrollbar-hide flex flex-col overflow-y-auto">
+              <span className="pt-[84px] focus:outline-hidden" />
               {hoursArray?.map((item) => (
                 <button
                   ref={(el: HTMLButtonElement) => {
@@ -112,7 +113,7 @@ const TimeSelector = ({
                   onClick={(e) => {
                     clickHandler(e, 'hour', `${item}`)
                   }}
-                  className={cx('cursor-pointer rounded-lg px-10 py-2 focus:outline-none', {
+                  className={cn('cursor-pointer rounded-lg px-10 py-2 focus:outline-hidden', {
                     'bg-gray-100': +timeFormatArray[0] === item,
                     'pointer-events-none opacity-50':
                       (minValueArray && item < minValueArray[0]) ||
@@ -131,15 +132,15 @@ const TimeSelector = ({
                   </span>
                 </button>
               ))}
-              <span className="pb-[84px] focus:outline-none" />
+              <span className="pb-[84px] focus:outline-hidden" />
             </div>
           </div>
           <div className="flex items-center">
-            <span className="text-20 flex size-6 items-center justify-center">:</span>
+            <span className="flex size-6 items-center justify-center text-20">:</span>
           </div>
           <div className="flex flex-col items-center justify-start overflow-x-hidden">
-            <div ref={minuteRef} className="flex flex-col overflow-y-auto scrollbar-hide">
-              <span className="pt-[84px] focus:outline-none" />
+            <div ref={minuteRef} className="scrollbar-hide flex flex-col overflow-y-auto">
+              <span className="pt-[84px] focus:outline-hidden" />
               {minutesArray?.map((item) => (
                 <button
                   ref={(el: HTMLButtonElement) => {
@@ -151,7 +152,7 @@ const TimeSelector = ({
                   onClick={(e) => {
                     clickHandler(e, 'minute', `${item}`)
                   }}
-                  className={cx('cursor-pointer rounded-lg px-10 py-2 focus:outline-none', {
+                  className={cn('cursor-pointer rounded-lg px-10 py-2 focus:outline-hidden', {
                     'bg-gray-100': +timeFormatArray[1] === item,
                     'pointer-events-auto cursor-pointer opacity-100':
                       (minValueArray && minValueArray[0] < timeFormatArray[0]) ||
@@ -166,7 +167,7 @@ const TimeSelector = ({
                   </span>
                 </button>
               ))}
-              <span className="pb-[84px] focus:outline-none" />
+              <span className="pb-[84px] focus:outline-hidden" />
             </div>
           </div>
         </div>

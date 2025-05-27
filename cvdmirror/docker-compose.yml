@@ -1,0 +1,29 @@
+services:
+  cvdmirror:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ['./entrypoint.sh']
+    command: ['serve']
+    ports:
+      - '8080:8080'
+    volumes:
+      - database:/mnt/cvdupdate
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8080']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      konto:
+        aliases:
+          - clamav-cvdmirror-database
+
+volumes:
+  database:
+    driver: local
+
+networks:
+  konto:
+    name: konto-network

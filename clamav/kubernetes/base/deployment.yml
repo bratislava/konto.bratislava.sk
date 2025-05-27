@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: ${NAMESPACE}
+  labels:
+    service: app
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      service: app
+  template:
+    metadata:
+      labels:
+        service: app
+    spec:
+      containers:
+        - image: ${IMAGE_TAG}
+          name: app
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: ${CPU_LIMITS}
+              memory: ${MEMORY_LIMITS}
+            requests:
+              cpu: ${CPU_REQUESTS}
+              memory: ${MEMORY_REQUESTS}
+          volumeMounts:
+            - name: data-vol
+              mountPath: /data
+            - name: host-fs
+              mountPath: /host-fs
+              readOnly: true
+            - name: logs
+              mountPath: /logs
+          envFrom:
+            - configMapRef:
+                name: env
+          ports:
+            - name: clamav
+              containerPort: 3310
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
+      volumes:
+        - name: data-vol
+          emptyDir: { }
+        - name: host-fs
+          hostPath:
+            path: /
+        - name: logs
+          hostPath:
+            path: /var/log/clamav
+      imagePullSecrets:
+        - name: ${IMAGE_PULL_SECRET}

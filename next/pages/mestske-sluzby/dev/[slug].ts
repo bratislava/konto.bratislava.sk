@@ -1,66 +1,70 @@
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
-import komunitneZahrady from '@schema-generator/definitions/komunitne-zahrady'
-import predzahradky from '@schema-generator/definitions/predzahradky'
-import priznanieKDaniZNehnutelnosti from '@schema-generator/definitions/priznanie-k-dani-z-nehnutelnosti'
-import stanoviskoKInvesticnemuZameru from '@schema-generator/definitions/stanovisko-k-investicnemu-zameru'
-import zavazneStanoviskoKInvesticnejCinnosti from '@schema-generator/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
+import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
 
-import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
+import { makeClientFormDefinition } from '../../../components/forms/clientFormDefinitions'
+import FormPageWrapper, { FormPageProps } from '../../../components/forms/FormPage'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { handleEmbeddedFormRequest } from '../../../frontend/utils/embeddedFormsHelpers'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
+import { getInitialSummaryJson } from '../../../frontend/utils/getInitialSummaryJson'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
+import type { GlobalAppProps } from '../../_app'
 
-const slugSchemasMap = {
-  'priznanie-k-dani-z-nehnutelnosti': priznanieKDaniZNehnutelnosti,
-  'stanovisko-k-investicnemu-zameru': stanoviskoKInvesticnemuZameru,
-  'zavazne-stanovisko-k-investicnej-cinnosti': zavazneStanoviskoKInvesticnejCinnosti,
-  'komunitne-zahrady': komunitneZahrady,
-  predzahradky,
+type Params = {
+  slug: string
 }
 
 /**
- * A route to preview forms in `schema-generator` folder. Backend functionality doesn't work. Works only in development.
+ * A route to preview forms in `forms-shared` folder. Backend functionality doesn't work. Works only in development.
  */
-export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps>(
+export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & GlobalAppProps, Params>(
   async ({ context }) => {
-    if (!environment.featureToggles.developmentForms) {
+    if (!environment.featureToggles.developmentForms || !context.params) {
       return { notFound: true }
     }
 
-    const slug = context.params?.slug as string
-    const schema = slugSchemasMap[slug]
-
-    if (!schema) {
+    const { slug } = context.params
+    const serverFormDefinition = getFormDefinitionBySlugDev(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
-    // To remove undefined values from the schema as they are not allowed by Next.js
-    const parsedSchema = JSON.parse(JSON.stringify(schema)) as {
-      schema: RJSFSchema
-      uiSchema: UiSchema
+    const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+      serverFormDefinition,
+      context,
+    )
+    if (!embeddedSuccess) {
+      return { notFound: true }
     }
 
-    const isTaxForm = slug === 'priznanie-k-dani-z-nehnutelnosti'
+    const initialFormDataJson = getDefaultFormDataForFormDefinition(serverFormDefinition)
 
     return {
       props: {
-        formContext: {
-          slug,
-          schema: parsedSchema.schema,
-          uiSchema: parsedSchema.uiSchema,
+        formServerContext: {
+          formDefinition: makeClientFormDefinition(serverFormDefinition),
           formId: '',
-          initialFormDataJson: {},
+          initialFormDataJson,
           initialServerFiles: [],
-          oldSchemaVersion: false,
-          formSent: false,
+          initialFormSent: false,
+          initialSummaryJson: getInitialSummaryJson(
+            context.query,
+            serverFormDefinition,
+            initialFormDataJson,
+          ),
           formMigrationRequired: false,
-          schemaVersionId: '',
-          isTaxForm,
-          isSigned: isTaxForm,
+          isEmbedded,
+          isDevRoute: true,
+          strapiForm: { slug },
+          versionCompareContinueAction: VersionCompareContinueAction.None,
+        },
+        appProps: {
+          externallyEmbedded: isEmbedded,
         },
         ...(await slovakServerSideTranslations()),
-      } satisfies FormPageWrapperProps,
+      },
     }
   },
 )

@@ -1,24 +1,22 @@
-import { formsApi } from '@clients/forms'
-import {
-  GetFileResponseDtoStatusEnum,
-  GetFileResponseReducedDto,
-  PostFileResponseDto,
-} from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
+import {
+  ClientFileInfo,
+  FileStatus,
+  FileStatusType,
+  UploadClientErrorReasonType,
+} from 'forms-shared/form-files/fileStatus'
 import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
-import prettyBytes from 'pretty-bytes'
+import {
+  GetFileResponseReducedDto,
+  GetFileResponseReducedDtoStatusEnum,
+  PostFileResponseDto,
+} from 'openapi-clients/forms'
 import { v4 as createUuid } from 'uuid'
 
 import { environment } from '../../environment'
-import {
-  FormFileUploadClientFileInfo,
-  FormFileUploadConstraints,
-  FormFileUploadFileInfo,
-  FormFileUploadFileStatus,
-  FormFileUploadStatusEnum,
-  UploadErrors,
-} from '../types/formFileUploadTypes'
+import { FormFileUploadConstraints } from '../types/formFileUploadTypes'
 import { isDefined } from './general'
 
 export const uploadFile = async ({
@@ -41,7 +39,7 @@ export const uploadFile = async ({
   ) => void
 }) => {
   try {
-    const response = await formsApi.filesControllerUploadFile(formId, file, file.name, id, {
+    const response = await formsClient.filesControllerUploadFile(formId, file, file.name, id, {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         if (progressEvent.total == null) {
           return
@@ -49,7 +47,7 @@ export const uploadFile = async ({
         onProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total))
       },
       signal: abortController.signal,
-      accessToken: 'onlyAuthenticated',
+      authStrategy: 'authOrGuestWithToken',
     })
     onSuccess(response)
   } catch (error: any) {
@@ -67,7 +65,7 @@ export const uploadFile = async ({
  */
 export const shouldPollServerFiles = (
   data: GetFileResponseReducedDto[] | undefined,
-  clientFiles: FormFileUploadClientFileInfo[],
+  clientFiles: ClientFileInfo[],
 ) => {
   if (!data) {
     return true
@@ -76,97 +74,20 @@ export const shouldPollServerFiles = (
   const fileNotYetFinishedScanning = data.some((file) =>
     (
       [
-        GetFileResponseDtoStatusEnum.Uploaded,
-        GetFileResponseDtoStatusEnum.Accepted,
-        GetFileResponseDtoStatusEnum.Scanning,
-      ] as GetFileResponseDtoStatusEnum[]
+        GetFileResponseReducedDtoStatusEnum.Uploaded,
+        GetFileResponseReducedDtoStatusEnum.Accepted,
+        GetFileResponseReducedDtoStatusEnum.Scanning,
+      ] as GetFileResponseReducedDtoStatusEnum[]
     ).includes(file.status),
   )
 
   const uploadedFileNotInScanner = clientFiles.some(
     (clientFile) =>
-      clientFile.status.type === FormFileUploadStatusEnum.UploadDone &&
+      clientFile.status.type === FileStatusType.WaitingForScan &&
       !data.some((serverFile) => serverFile.id === clientFile.id),
   )
 
   return fileNotYetFinishedScanning || uploadedFileNotInScanner
-}
-
-const serverResponseToStatusMap: Record<GetFileResponseDtoStatusEnum, FormFileUploadFileStatus> = {
-  [GetFileResponseDtoStatusEnum.Uploaded]: { type: FormFileUploadStatusEnum.Scanning as const },
-  [GetFileResponseDtoStatusEnum.Accepted]: { type: FormFileUploadStatusEnum.Scanning as const },
-  [GetFileResponseDtoStatusEnum.Queued]: { type: FormFileUploadStatusEnum.Scanning as const },
-  [GetFileResponseDtoStatusEnum.Scanning]: { type: FormFileUploadStatusEnum.Scanning as const },
-  [GetFileResponseDtoStatusEnum.Safe]: { type: FormFileUploadStatusEnum.ScanDone as const },
-  [GetFileResponseDtoStatusEnum.Infected]: {
-    type: FormFileUploadStatusEnum.ScanInfected as const,
-  },
-  [GetFileResponseDtoStatusEnum.NotFound]: {
-    type: FormFileUploadStatusEnum.ScanError as const,
-  },
-  [GetFileResponseDtoStatusEnum.MoveErrorSafe]: {
-    type: FormFileUploadStatusEnum.ScanError as const,
-  },
-  [GetFileResponseDtoStatusEnum.MoveErrorInfected]: {
-    type: FormFileUploadStatusEnum.ScanInfected as const,
-  },
-  [GetFileResponseDtoStatusEnum.ScanError]: {
-    type: FormFileUploadStatusEnum.ScanError as const,
-  },
-  [GetFileResponseDtoStatusEnum.ScanTimeout]: {
-    type: FormFileUploadStatusEnum.ScanError as const,
-  },
-  [GetFileResponseDtoStatusEnum.ScanNotSuccessful]: {
-    type: FormFileUploadStatusEnum.ScanError as const,
-  },
-  [GetFileResponseDtoStatusEnum.FormIdNotFound]: {
-    type: FormFileUploadStatusEnum.UnknownFile as const,
-  },
-}
-
-/**
- * Merges client and server files into a single object.
- *
- * The uploaded files are stored both in the `clientFiles` and `serverFiles`. However, the clientFiles don't hold the
- * necessary information so is overridden by the `serverFiles`.
- */
-export const mergeClientAndServerFiles = (
-  clientFiles: FormFileUploadClientFileInfo[],
-  serverFiles: GetFileResponseReducedDto[],
-) => {
-  const clientMapped = clientFiles.map(
-    (file) =>
-      [
-        file.id,
-        {
-          status: file.status,
-          fileName: file.file.name,
-          canDownload: false,
-          fileSize: file.file.size,
-        } satisfies FormFileUploadFileInfo,
-      ] as const,
-  )
-  const serverMapped = serverFiles.map((file) => {
-    const status = serverResponseToStatusMap[file.status]
-    return [
-      file.id,
-      {
-        status: serverResponseToStatusMap[file.status],
-        fileName: file.fileName,
-        canDownload: [
-          FormFileUploadStatusEnum.Scanning,
-          FormFileUploadStatusEnum.ScanDone,
-        ].includes(status.type),
-        fileSize: file.fileSize,
-      } satisfies FormFileUploadFileInfo,
-    ] as const
-  })
-
-  return Object.fromEntries<FormFileUploadFileInfo>([
-    ...clientMapped,
-    // If there's a conflict, the server file takes precedence which is an expected behaviour.
-    ...serverMapped,
-  ])
 }
 
 function getFileExtension(filename: string | null) {
@@ -260,15 +181,17 @@ export const getDisplayMaxFileSize = (fieldMaxFileSize?: number) => {
  * and cannot be enforced on the server. The service is not aware about these constraints, so they are needed to be
  * passed to the service by the widget directly in the upload function.
  */
-const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints) => {
+const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints): FileStatus => {
   const maxFileSize = getMaxFileSize(constraints.maxFileSize)
   if (file.size > maxFileSize) {
     return {
-      type: FormFileUploadStatusEnum.UploadError as const,
-      // TODO: Improve error message.
-      error: { translationKey: UploadErrors.LargeFile, additionalParam: prettyBytes(maxFileSize) },
+      type: FileStatusType.UploadClientError as const,
+      reason: {
+        type: UploadClientErrorReasonType.LargeFile,
+        maxFileSize,
+      },
       canRetry: false,
-    }
+    } as const
   }
 
   const fileExtension = getFileExtension(file.name)
@@ -276,17 +199,16 @@ const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints)
 
   if (fileExtension == null || !supported.includes(fileExtension.toLowerCase())) {
     return {
-      type: FormFileUploadStatusEnum.UploadError as const,
-      // TODO: Improve error message.
-      error: {
-        translationKey: UploadErrors.InvalidFileType,
-        additionalParam: supported.join(', '),
+      type: FileStatusType.UploadClientError as const,
+      reason: {
+        type: UploadClientErrorReasonType.InvalidFileType as const,
+        supportedFormats: supported,
       },
       canRetry: false,
-    }
+    } as const
   }
 
-  return { type: FormFileUploadStatusEnum.UploadQueued as const }
+  return { type: FileStatusType.UploadQueued as const }
 }
 
 export const getFileInfoForNewFiles = (files: File[], constraints: FormFileUploadConstraints) =>
@@ -295,5 +217,5 @@ export const getFileInfoForNewFiles = (files: File[], constraints: FormFileUploa
       id: createUuid(),
       file,
       status: getStatusForNewFile(file, constraints),
-    } satisfies FormFileUploadClientFileInfo
+    } satisfies ClientFileInfo
   })

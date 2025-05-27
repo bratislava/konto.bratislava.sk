@@ -3,10 +3,10 @@
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
-    "start:e2e": "cd ../next && yarn build:e2e && yarn start",
-    "cypress:open": "./cypress.sh open chrome all local",
-    "cypress:run": "./cypress.sh run chrome all local",
-    "cypress:ci": "./cypress.sh run chrome all ci",
+    "start:e2e": "cd ../next && npm run build:e2e && npm run start",
+    "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
+    "cypress:run": "node ./run-cypress.js run --browser chrome --device all --visualTesting local",
+    "cypress:ci": "node ./run-cypress.js run --browser chrome --device all --visualTesting ci",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -23,15 +23,15 @@
     "eslint-plugin-prettier": "^5.0.1",
     "path": "^0.12.7",
     "prettier": "3.1.0",
-    "typescript": "5.1.3"
+    "typescript": "5.1.3",
+    "yargs": "^17.7.2"
   },
   "engines": {
-    "node": "20.x.x",
-    "npm": ">=6.0.0",
-    "yarn": "1.22"
+    "node": ">=20.9.x",
+    "npm": ">=10.x.x"
   },
   "volta": {
-    "node": "20.10.0",
-    "yarn": "1.22.19"
+    "node": "20.9.0",
+    "npm": "10.8.1"
   }
 }

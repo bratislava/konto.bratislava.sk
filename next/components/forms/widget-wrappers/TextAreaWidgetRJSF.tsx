@@ -1,9 +1,9 @@
 import { WidgetProps } from '@rjsf/utils'
-import { TextAreaUiOptions } from '@schema-generator/generator/uiOptionsTypes'
-import cx from 'classnames'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
+import cn from '../../../frontend/cn'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
@@ -25,7 +25,16 @@ const TextAreaWidgetRJSF = ({
   onChange,
   readonly,
 }: TextAreaWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, className, size, labelSize } = options
+  const {
+    helptext,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
+    tooltip,
+    className,
+    size,
+    labelSize,
+  } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -46,9 +55,11 @@ const TextAreaWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
-            helptextHeader={helptextHeader}
+            helptextMarkdown={helptextMarkdown}
+            helptextFooter={helptextFooter}
+            helptextFooterMarkdown={helptextFooterMarkdown}
             tooltip={tooltip}
-            className={cx('h-[196px]', className)}
+            className={cn('h-[196px]', className)}
             onChange={wrapperOnChange}
             onBlur={onBlur}
             errorMessage={rawErrors}

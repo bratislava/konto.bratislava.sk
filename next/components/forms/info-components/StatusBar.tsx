@@ -2,11 +2,12 @@
  * which shows a red status bar with white text on top of the page
  */
 import { CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, forwardRef, ReactNode, useContext, useState } from 'react'
 import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
 
+import { environment } from '../../../environment'
+import cn from '../../../frontend/cn'
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
@@ -47,7 +48,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
     setStatusBarConfiguration({
       // If translation is empty, status bar will be hidden
       content: t('common:statusBarContent'),
-      variant: 'info',
+      variant: 'warning',
     })
   })
 
@@ -73,16 +74,23 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
   )
 
   const { statusBarConfiguration } = useStatusBarContext()
-  return statusBarTextDissmissed !== statusBarConfiguration.content &&
-    statusBarConfiguration.content ? (
+
+  const displayStatusBar =
+    statusBarConfiguration.content &&
+    statusBarTextDissmissed !== statusBarConfiguration.content &&
+    !environment.featureToggles.hideStatusbar
+  if (!displayStatusBar) {
+    return null
+  }
+
+  return (
     <div
       ref={forwardedRef}
-      className={cx('w-full text-white', {
+      className={cn('w-full text-white', {
         'bg-negative-700': statusBarConfiguration.variant === 'error',
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
         'bg-gray-700': statusBarConfiguration.variant === 'info',
       })}
-      data-cy="info-bar"
     >
       <SectionContainer>
         <div className="flex justify-between py-4">
@@ -104,5 +112,5 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
         </div>
       </SectionContainer>
     </div>
-  ) : null
+  )
 })

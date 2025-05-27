@@ -1,5 +1,5 @@
 import { Castle48PxIcon } from '@assets/ui-icons'
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
 import React from 'react'
 
 import ButtonNew from '../../../simple-components/ButtonNew'
@@ -13,6 +13,10 @@ const TaxesFeesDeliveryMethodCard = ({
   onDeliveryMethodChange,
 }: TaxesFeesDeliveryMethodCardProps) => {
   const { channel, canChangeChannel } = useTaxChannel()
+
+  if (!channel) {
+    return null
+  }
 
   // TODO: Translations
   const type = {

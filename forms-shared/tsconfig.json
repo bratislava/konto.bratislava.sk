@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "lib": ["es2023"],
+    "module": "node16",
+    "target": "es2022",
+    "baseUrl": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16",
+    "jsx": "react",
+    "declaration": true,
+    "outDir": "./dist"
+  },
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./test-utils/**/*"]
+}

@@ -12,11 +12,7 @@ import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
-type IntroSectionProps = {
-  displayTaxToPayBanner: boolean
-}
-
-const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
+const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
@@ -26,8 +22,8 @@ const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [43, 34, 35, 1]
-  const poMunicipalServicesSection = [43, 34, 35, 4]
+  const foMunicipalServicesSection = [1, 44, 9, 34]
+  const poMunicipalServicesSection = [34, 35, 43, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
 
@@ -49,21 +45,21 @@ const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
           text={t('account_section_intro.header_text')}
           titleAsParagraph
         />
-        <div className="m-auto w-full max-w-screen-lg">
-          <Announcements displayTaxToPayBanner={displayTaxToPayBanner} />
+        <div className="m-auto w-full max-w-(--breakpoint-lg)">
+          <Announcements />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full items-center justify-between px-4 lg:px-0">
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
               <Button
                 size="sm"
-                className="hidden pl-4 pt-4 sm:flex"
+                className="hidden pt-4 pl-4 sm:flex"
                 label={t('account_section_intro.all_services')}
                 variant="link-category"
                 href={ROUTES.MUNICIPAL_SERVICES}
               />
             </div>
-            <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
+            <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
               {filteredServiceCards.map((card) => (
                 <ServiceCard
                   key={card.id}
@@ -80,7 +76,7 @@ const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
             </div>
             <Button
               size="sm"
-              className="flex pl-4 pt-4 sm:hidden"
+              className="flex pt-4 pl-4 sm:hidden"
               label={t('account_section_intro.all_services')}
               variant="link-category"
               href={ROUTES.MUNICIPAL_SERVICES}

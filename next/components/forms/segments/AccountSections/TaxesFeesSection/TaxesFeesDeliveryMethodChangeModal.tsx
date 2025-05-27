@@ -1,4 +1,4 @@
-import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from 'openapi-clients/city-account'
 import React, { useEffect, useRef } from 'react'
 import { Heading } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
@@ -7,8 +7,9 @@ import { useEffectOnce } from 'usehooks-ts'
 import useHookForm from '../../../../../frontend/hooks/useHookForm'
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
+import logger from '../../../../../frontend/utils/logger'
 import ButtonNew from '../../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../../simple-components/Modal'
 import Radio from '../../../widget-components/RadioButton/Radio'
 import RadioGroup from '../../../widget-components/RadioButton/RadioGroup'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
@@ -146,10 +147,13 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           name="scrolledToBottom"
           control={control}
           render={({ field }) => (
-            <Agreement
-              onScrollToBottom={() => field.onChange(true)}
-              agreementContent={agreementContent}
-            />
+            <div className="flex flex-col gap-4">
+              <Agreement
+                onScrollToBottom={() => field.onChange(true)}
+                agreementContent={agreementContent}
+              />
+              <p className="text-p2">Pre pokračovanie je nutné prečítať celý text súhlasu.</p>
+            </div>
           )}
         />
       )}
@@ -167,7 +171,7 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
   )
 }
 
-type TaxesFeesDeliveryMethodChangeModalProps = ModalV2Props & {
+type TaxesFeesDeliveryMethodChangeModalProps = ModalProps & {
   agreementContent: string
 }
 
@@ -187,21 +191,22 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       onSuccess: () => {
         onOpenChange?.(false)
       },
-      onError: () => {
+      onError: (error) => {
+        logger.error(error)
         openSnackbarError('Nepodarilo sa zmeniť spôsob doručovania.')
       },
     })
   }
 
   return (
-    <ModalV2
+    <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       modalOverlayClassname="md:py-4"
       modalClassname="md:max-w-[800px] md:my-4 md:py-12 md:px-14"
       mobileFullScreen
     >
-      <Heading slot="title" className="text-h3 mb-2">
+      <Heading slot="title" className="mb-2 text-h3">
         {/* TODO: Translation */}
         Spôsob doručovania miestnych daní a poplatkov
       </Heading>
@@ -213,7 +218,7 @@ const TaxesFeesDeliveryMethodChangeModal = ({
         onSubmit={handleSubmit}
         agreementContent={agreementContent}
       />
-    </ModalV2>
+    </Modal>
   )
 }
 

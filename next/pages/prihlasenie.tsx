@@ -1,4 +1,4 @@
-import { AuthError, resendSignUpCode, signIn } from 'aws-amplify/auth'
+import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
@@ -10,21 +10,12 @@ import { useRef, useState } from 'react'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
+import {
+  removeAllCookiesAndClearLocalStorage,
+  removeAmplifyGuestIdentityIdCookies,
+} from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-
-// Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
-function removeAllCookiesAndClearLocalStorage() {
-  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
-  cookies.forEach((cookie) => {
-    const cookieName = cookie.split('=')[0]
-    if (cookieName !== 'gdpr-consents') {
-      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-    }
-  })
-  localStorage.clear()
-}
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {
@@ -59,6 +50,8 @@ const LoginPage = () => {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
+        // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
+        removeAmplifyGuestIdentityIdCookies()
         await redirect()
         return
       }
@@ -91,6 +84,20 @@ const LoginPage = () => {
       if (error instanceof AuthError && error.name === 'UnexpectedSignInInterruptionException') {
         removeAllCookiesAndClearLocalStorage()
         logger.info(`[AUTH] Removed all cookies and cleared local storage for email ${email}`)
+      }
+
+      // Handles a bug in Amplify after update. Server context doesn't detect users signed in in previous versions of
+      // the library. The client does, and in attempt to sign in it throws this error.
+      if (error instanceof AuthError && error.name === 'UserAlreadyAuthenticatedException') {
+        const currentUser = await getCurrentUser()
+        if (currentUser.signInDetails?.loginId === email) {
+          logger.info(`[AUTH] Special case, user already authenticated for email ${email}`)
+          await redirect()
+          return
+        }
+        logger.error(
+          `[AUTH] Special case, user already authenticated, but not for email ${email}, signed in as ${currentUser.signInDetails?.loginId}.`,
+        )
       }
 
       if (isError(error)) {

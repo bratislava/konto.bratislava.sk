@@ -1,9 +1,9 @@
-import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
+import cn from '../../../../frontend/cn'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
@@ -47,13 +47,13 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
 
   return (
     <div
-      className={cx('flex flex-col bg-white pt-3', 'md:static md:z-0', {
+      className={cn('flex flex-col bg-white pt-3 md:static md:z-0', {
         'fixed inset-0 z-50': isEditing,
       })}
     >
       {!tierStatus.isIdentityVerified && (
         <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
-          <div className="md:max-w-screen-lg">
+          <div className="md:max-w-(--breakpoint-lg)">
             <Alert
               title={t('verification_status_required')}
               message={t('verification_status_required_alert')}
@@ -97,9 +97,9 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             </div>
           )}
           <div
-            className={cx('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
+            className={cn('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >
-            <div className={cx({ 'hidden md:block': isEditing })}>
+            <div className={cn({ 'hidden md:block': isEditing })}>
               <UserProfilePhoto userAttributes={userAttributes ?? {}} />
             </div>
             {isEditing ? (

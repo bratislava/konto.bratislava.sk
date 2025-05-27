@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -9,14 +9,14 @@ import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirec
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
+import { useFormData } from './useFormData'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
-import { useFormState } from './useFormState'
 
 const useGetContext = () => {
   const router = useRouter()
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { formId } = useFormContext()
-  const { formData } = useFormState()
+  const { formData } = useFormData()
   const { t } = useTranslation('forms')
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -25,14 +25,14 @@ const useGetContext = () => {
 
   const { mutate: saveConceptMutate } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerUpdateForm(
+      formsClient.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
-          formDataBase64: signature?.signature ?? null,
+          formSignature: signature ?? null,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {

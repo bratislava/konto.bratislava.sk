@@ -1,0 +1,12 @@
+{
+  "name": "eslint-custom-rules",
+  "version": "1.0.0",
+  "description": "Custom rules for nest-forms-backend project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

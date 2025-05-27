@@ -1,8 +1,8 @@
-import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
+import { ResponseTaxDetailsDto } from 'openapi-clients/tax'
 import React, { useRef } from 'react'
 
+import cn from '../../../frontend/cn'
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import { useHorizontalScrollFade } from '../../../frontend/utils/useHorizontalScrollFade'
 import AccordionV2 from './AccordionV2'
@@ -14,26 +14,28 @@ const tableHeaderData = {
       Výmera pozemku v m<sup>2</sup>
     </span>
   ),
-  base: (
+  baseMetric: (
     <span>
       Základ dane m<sup>2</sup>
     </span>
   ),
+  baseMonetary: <span>Základ dane v EUR</span>,
   total: <span>Daň v EUR</span>,
 }
 
 const matchHeader = {
-  GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
-  CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
-  APARTMENT: [tableHeaderData.base, tableHeaderData.total],
+  GROUND: [tableHeaderData.area, tableHeaderData.baseMonetary, tableHeaderData.total],
+  CONSTRUCTION: [tableHeaderData.baseMetric, tableHeaderData.total],
+  APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
 }
 
-export type AccordionBase = {
+type AccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
   data: ResponseTaxDetailsDto[]
 }
+
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   // TODO types can be better if validated as they come from API
   const headerData = [
@@ -54,7 +56,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         {headerData.map((header, index) => (
           <th
             key={index}
-            className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
+            className="border-spacing-0 border-b-2 p-4 text-left text-16 not-first:text-center first:rounded-tl last:rounded-tr lg:p-0 lg:py-4"
           >
             {header}
           </th>
@@ -71,7 +73,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
       {data.map((taxDetail) => {
         return (
           <tr key={taxDetail.id}>
-            <td className="[&:not(:first-child)]:text-20-semibold h-max border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
+            <td className="h-max border-r-2 p-4 not-first:text-center not-first:text-20-semibold last:border-r-0 lg:p-0 lg:py-4">
               <div className="inline h-0 font-semibold">
                 {t(
                   `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
@@ -83,18 +85,18 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
               )}
             </td>
             {dataType === 'GROUND' && (
-              <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
+              <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
                 {taxDetail.area}
               </td>
             )}
-            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
+            <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
             {/* Buggy detection */}
             {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
+            <td className="w-[15%] border-r-2 p-4 not-first:text-center not-first:text-16-semibold last:border-r-0 lg:p-0 lg:py-4 lg:not-first:text-20-semibold">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
@@ -110,7 +112,7 @@ const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsD
 
   return (
     <div className="relative w-full">
-      <div className={cx('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
+      <div className={cn('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
         <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
           <TableHeaderRow dataType={dataType} />
           <TableRow dataType={dataType} data={data} />
@@ -119,11 +121,16 @@ const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsD
     </div>
   )
 }
-const AccordionTableTaxContent = ({ title, secondTitle, dataType, data }: AccordionBase) => {
+const AccordionTableTaxContent = ({
+  title,
+  secondTitle,
+  dataType,
+  data,
+}: AccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={
-        <div className="text-h4 flex min-w-0 grow justify-between font-semibold">
+        <div className="flex min-w-0 grow justify-between text-h4 font-semibold">
           <h3>{title}</h3>
           <span>{secondTitle}</span>
         </div>
@@ -133,8 +140,8 @@ const AccordionTableTaxContent = ({ title, secondTitle, dataType, data }: Accord
       <div className="flex size-full flex-col gap-6">
         <Table dataType={dataType} data={data} />
         <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
-          <div className="text-h4-bold grow">Celkom</div>
-          <div className="text-h4-bold">{secondTitle}</div>
+          <div className="grow text-h4-semibold">Celkom</div>
+          <div className="text-h4-semibold">{secondTitle}</div>
         </div>
       </div>
     </AccordionV2>

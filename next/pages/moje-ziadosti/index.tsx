@@ -1,8 +1,10 @@
-import { GetFormsResponseDto } from '@clients/openapi-forms'
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { formDefinitions } from 'forms-shared/definitions/formDefinitions'
+import { GetFormsResponseDto } from 'openapi-clients/forms'
 
+import { getEmailFormSlugs } from '../../components/forms/segments/AccountSections/MyApplicationsSection/patchApplicationFormIfNeededServer'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
@@ -10,6 +12,8 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 type AccountMyApplicationsPageProps = {
   applications: GetFormsResponseDto
   selectedSection: ApplicationsListVariant
+  formDefinitionSlugTitleMap: Record<string, string>
+  emailFormSlugs: string[]
 }
 export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 
@@ -21,17 +25,30 @@ const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
   koncepty: 'DRAFT',
 }
 
+const getFormDefinitionSlugTitleMap = () =>
+  Object.fromEntries(
+    formDefinitions.map((formDefinition) => [formDefinition.slug, formDefinition.title]),
+  )
+
 export const getServerSideProps = amplifyGetServerSideProps(
-  async ({ context, getAccessToken }) => {
+  async ({ context, fetchAuthSession }) => {
     const selectedSection = context.query.sekcia
       ? slovakToEnglishSectionNames[context.query.sekcia as ApplicationsListVariant]
       : 'SENT'
     const currentPage = parseInt(context.query.strana as string, 10) || 1
+    const emailFormSlugs = getEmailFormSlugs()
 
     return {
       props: {
-        applications: await getDraftApplications(selectedSection, currentPage, getAccessToken),
+        applications: await getDraftApplications(
+          selectedSection,
+          currentPage,
+          emailFormSlugs,
+          fetchAuthSession,
+        ),
         selectedSection,
+        formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
+        emailFormSlugs: getEmailFormSlugs(),
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -42,10 +59,17 @@ export const getServerSideProps = amplifyGetServerSideProps(
 const AccountMyApplicationsPage = ({
   selectedSection,
   applications,
+  formDefinitionSlugTitleMap,
+  emailFormSlugs,
 }: AccountMyApplicationsPageProps) => {
   return (
     <AccountPageLayout>
-      <MyApplicationsSection selectedSection={selectedSection} applications={applications} />
+      <MyApplicationsSection
+        selectedSection={selectedSection}
+        applications={applications}
+        formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+        emailFormSlugs={emailFormSlugs}
+      />
     </AccountPageLayout>
   )
 }

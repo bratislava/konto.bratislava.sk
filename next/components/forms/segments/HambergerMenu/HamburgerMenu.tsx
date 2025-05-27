@@ -1,5 +1,4 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
-import cx from 'classnames'
 import { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
@@ -11,6 +10,7 @@ import { ComponentProps, forwardRef } from 'react'
 import { useEventListener, useLockedBody } from 'usehooks-ts'
 
 import { ROUTES } from '../../../../frontend/api/constants'
+import cn from '../../../../frontend/cn'
 import { useNavMenuContext } from '../NavBar/navMenuContext'
 
 interface IProps {
@@ -41,13 +41,13 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
         // without ...rest, you can't navigate using arrow keys
         {...rest}
         onClick={onClick}
-        className={cx(
-          'text-p2-semibold flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
+        className={cn(
+          'flex cursor-pointer items-center gap-3 rounded-lg border-b-2 border-transparent p-4 text-p2-semibold transition-all hover:bg-main-100 hover:text-main-700',
           {
             'bg-main-100 text-main-700': isSelected,
           },
         )}
-        data-cy={`${menuItem.url.replaceAll("/", "")}-menu-item`}
+        data-cy={`${menuItem.url.replaceAll('/', '')}-menu-item`}
       >
         <div aria-hidden>{menuItem.icon}</div>
         <span>{t(menuItem?.title)}</span>
@@ -73,8 +73,8 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
 
   return (
     <div
-      className={cx(
-        'fixed left-0 top-16 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
+      className={cn(
+        'fixed top-16 left-0 flex w-screen flex-col overflow-y-scroll bg-white p-4 lg:hidden',
       )}
       style={{ height: 'calc(100vh - 60px)' }}
     >
@@ -108,10 +108,10 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
               return (
                 <NavigationMenu.Item key={sectionItem.id}>
                   <NavigationMenu.Trigger
-                    className={cx(
-                      'text-p2-semibold flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
+                    className={cn(
+                      'flex w-full cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 text-p2-semibold transition-all hover:bg-main-100 hover:text-main-700',
                     )}
-                    data-cy={`${(sectionItem.url ? sectionItem.url.replaceAll("/", "") : sectionItem.title.replaceAll(" ", "-"))}-menu-item`}
+                    data-cy={`${sectionItem.url ? sectionItem.url.replaceAll('/', '') : sectionItem.title.replaceAll(' ', '-')}-menu-item`}
                     onClick={() => {
                       if (sectionItem.onPress) {
                         sectionItem.onPress()?.catch((error) => logger.error(error))
@@ -129,7 +129,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) =>
               )
             }
             return sectionItem.url ? (
-              <NavigationMenu.Item key={sectionItem.id} >
+              <NavigationMenu.Item key={sectionItem.id}>
                 <NavigationMenu.Link asChild onClick={closeMenu}>
                   <ItemLink menuItem={sectionItem} onClick={closeMenu} />
                 </NavigationMenu.Link>

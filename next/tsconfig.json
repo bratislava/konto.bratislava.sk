@@ -1,23 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "inlineSourceMap": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "jsx": "preserve",
     "incremental": true,
-    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": "./",
     "noImplicitAny": false,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
@@ -26,12 +28,10 @@
       "@assets/images/*": ["./assets/images/*"],
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
-      "@clients/*": ["./clients/*"],
-      // TODO: Remove to separate package
-      "@schema-generator/*": ["./schema-generator/src/*"],
-      "@form-utils/*": ["./schema-generator/src/form-utils/*"]
-    }
+      "@clients/*": ["./clients/*"]
+    },
+    "target": "ES2017"
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
-  "exclude": ["node_modules", "schema-generator"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -1,5 +1,4 @@
 {
-  "form_title_fallback": "Podanie",
   "submit": "Odoslať",
   "success": "Úspešne odoslané",
   "errors": {
@@ -7,6 +6,7 @@
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
+    "xml_import_incompatible_version": "Import XML súboru nie je možný. Formulár prešiel výraznými zmenami a táto verzia už nie je podporovaná.",
     "json_import": "JSON sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť.",
     "concept_save": "Koncept sa nepodarilo uložiť.",
@@ -80,12 +80,20 @@
     "upload_json": "Nahrať JSON"
   },
   "registration_modal": {
-    "header_initial_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
-    "header_initial_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_initial_title_with_eid": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
+    "header_initial_title_without_eid": "Žiadosť je možné odoslať cez Bratislavské konto",
+    "header_initial_subtitle_with_eid_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukaz cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_initial_subtitle_with_eid_not_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto alebo použiť elektronický občiansky preukaz cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_initial_subtitle_without_eid_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_initial_subtitle_without_eid_not_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
     "header_not_authenticated_concept_save_title": "Uložiť koncept je možné len cez Bratislavské konto",
     "header_not_authenticated_concept_save_subtitle": "Na to, aby ste si mohli koncept uložiť, potrebujete mať vytvorené Bratislavské konto. Bez toho viete tento formulár iba vyplniť a stiahnuť.",
-    "header_not_verified_submit_form_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
-    "header_not_verified_submit_form_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
+    "header_not_authenticated_submit_title_with_eid": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
+    "header_not_authenticated_submit_title_without_eid": "Žiadosť je možné odoslať cez Bratislavské konto",
+    "header_not_authenticated_submit_subtitle_with_eid_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukaz cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
+    "header_not_authenticated_submit_subtitle_with_eid_not_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto alebo použiť elektronický občiansky preukaz cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
+    "header_not_authenticated_submit_subtitle_without_eid_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
+    "header_not_authenticated_submit_subtitle_without_eid_not_verified": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
     "body_title": "Vytvorte si Bratislavské konto",
     "body_list": [
       "Nájdite všetky služby mesta na jednom mieste",
@@ -109,32 +117,28 @@
     "title": "Sumár",
     "form_has_errors": "Pre odoslanie opravte vyznačené chyby.",
     "form_has_errors_signed": "Pre podpísanie a odoslanie opravte vyznačené chyby.",
-    "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
-    "vop_agreement_content": "Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
-    "vop_agreement_content_tax": "Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.",
     "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
+    "additional_info": "Doplňujúce informácie",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
-    "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
+    "uploading_files": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania. Nahrávané súbory: {{files}}",
     "button_back": "Späť",
     "button_send": "Odoslať žiadosť",
     "button_send_eid": "Odoslať s eID",
     "contains_errors": "Obsahuje chyby",
+    "invalid_value": "Neznáma hodnota",
+    "none_value": "-",
     "export_pdf": "Stiahnuť ako PDF"
   },
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
-  "modals_back_button_title": "Späť",
+  "modals_close_button_title": "Zavrieť",
   "migration_required_modal": {
     "title": "Pokračovať vo vypĺňaní?",
     "content": "Túto žiadosť ste začali vypĺňať ešte ako neprihlásený používateľ/ka. Na to, aby ste mohli pokračovať v jej vypĺňaní, kliknite na Pokračovať vo vypĺňaní. V opačnom prípade budú údaje, ktoré ste doteraz vyplnili stratené.",
     "button_discard": "Začať odznova",
     "button_title": "Pokračovať vo vypĺňaní",
     "button_title_loading": "Prebieha migrácia"
-  },
-  "old_schema_version_modal": {
-    "title": "Koncept nie je možné upravovať",
-    "content": "Ľutujeme, v dôsledku aktualizácie Bratislavského konta, už nie je možné pokračovať v úpravách tejto žiadosti. Koncept si viete pozrieť, ale nie upraviť."
   },
   "concept_save_error_modal": {
     "title": "Žiadosť sa nepodarilo uložiť",
@@ -144,15 +148,7 @@
   },
   "send_files_scanning_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. Nájdete ju Mojich žiadostiach, v časti Odosiela sa.\n\nV prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
-    "button_title": "Odoslať žiadosť",
-    "button_title_loading": "Odosiela sa"
-  },
-  "send_files_scanning_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Odoslať cez Bratislavské konto",
-    "button_title_loading": "Odosiela sa"
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Na odoslanie žiadosti je potrebné počkať na jej ukončenie."
   },
   "send_confirmation_modal": {
     "title": "Odoslať žiadosť",
@@ -160,27 +156,10 @@
     "button_title": "Odoslať žiadosť",
     "button_title_loading": "Odosiela sa"
   },
-  "send_files_scanning_not_verified_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Overiť identitu"
-  },
-  "send_files_scanning_not_verified": {
-    "title": "Overenie identity",
-    "content": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.\n\n",
-    "content_small": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť a odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
-    "button_title": "Overiť identitu",
-    "button_title_eid": "Odoslať s eID"
-  },
   "send_identity_missing_modal": {
     "title": "Overenie identity",
     "content": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.",
     "button_title": "Overiť identitu"
-  },
-  "send_files_scanning_non_authenticated_eid_modal": {
-    "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak si vytvoríte Bratislavské konto a následne overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Vytvoriť Bratislavské konto"
   },
   "send_files_uploading_modal": {
     "title": "Nahrávajú sa prílohy",
@@ -217,12 +196,11 @@
   },
   "concept_delete_modal": {
     "title": "Vymazať koncept",
-    "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
+    "content": "Naozaj si želáte vymazať koncept? Táto akcia je nevratná.",
+    "content_with_name": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
     "button_title": "Vymazať"
   },
-  "tax_form_landing_page": {
-    "title": "Priznanie k dani z nehnuteľností",
-    "instructions": "## Budete potrebovať:\n- **listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napríklad, byt a aj garážové státie, máte pravdepodobne viaceré listy vlastníctva),\n- **kúpnu zmluvu na nehnuteľnosť**,\n- v prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom či manželkou a podávate priznanie za vás oboch, **rodné číslo manžela alebo manželky**,\n- v prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov a spoluvlastníčky, [dohodu o určení zástupcu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf),\n- v prípade, že priznanie nepodávate vo vlastnom mene, **splnomocnenie na podanie daňového priznania**.",
+  "form_landing_page": {
     "redirect_info": "Presmerovávam na formulár.",
     "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
   },
@@ -251,5 +229,21 @@
   "signer_deploying_modal": {
     "title": "Spúšťa sa podpisovacia aplikácia",
     "content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>."
+  },
+  "xml_import_version_confirmation_modal": {
+    "title": "Upozornenie na zmenu formulára",
+    "content": "Od vytvorenia tohto XML súboru prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Chcete pokračovať s importom?",
+    "button_title": "Importovať",
+    "button_cancel": "Zrušiť"
+  },
+  "form_version_compare_action": {
+    "title_requires_bump": "Formulár bol aktualizovaný",
+    "title_cannot_continue": "Formulár prešiel výraznými zmenami",
+    "content_requires_bump": "Od vašej poslednej návštevy prešiel formulár zmenami. Niektoré údaje sa môžu zobraziť inak alebo môžu chýbať. Prajete si pokračovať?",
+    "content_cannot_continue": "Formulár prešiel zásadnými zmenami a nie je možné pokračovať v rozpracovanej verzii. Pre podanie žiadosti je potrebné vytvoriť novú žiadosť s aktuálnou verziou formulára.",
+    "button_back": "Späť na Moje žiadosti",
+    "button_confirm": "Pokračovať v úpravách",
+    "button_create_new": "Vytvoriť novú žiadosť",
+    "error_version_update": "Nie je možné pokračovať. Skúste to prosím znova."
   }
 }

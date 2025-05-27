@@ -1,0 +1,249 @@
+name: Workflow which determines, what should be built on konto.bratislava.sk projects
+on:
+  workflow_call:
+    outputs:
+      forms-shared:
+        description: "Returns true if forms-shared should be built"
+        value: ${{ jobs.conditions.outputs.forms-shared }}
+      openapi-clients:
+        description: "Returns true if openapi-clients can be built"
+        value: ${{ jobs.conditions.outputs.openapi-clients }}
+      strapi:
+        description: "Returns true if strapi should be built"
+        value: ${{ jobs.conditions.outputs.strapi }}
+      next:
+        description: "Returns true if next should be built"
+        value: ${{ jobs.conditions.outputs.next }}
+      nest-forms-backend:
+        description: "Returns true if nest-forms-backend should be built"
+        value: ${{ jobs.conditions.outputs.nest-forms-backend }}
+      nest-clamav-scanner:
+        description: "Returns true if nest-clamav-scanner should be built"
+        value: ${{ jobs.conditions.outputs.nest-clamav-scanner }}
+      nest-tax-backend:
+        description: "Returns true if nest-tax-backend can be built"
+        value: ${{ jobs.conditions.outputs.nest-tax-backend }}
+      nest-city-account:
+        description: "Returns true if nest-city-account can be built"
+        value: ${{ jobs.conditions.outputs.nest-city-account }}
+jobs:
+  changes:
+    name: Checking for directory changes in repository
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    outputs:
+      forms-shared: ${{ steps.filter.outputs.forms-shared }}
+      openapi-clients: ${{ steps.filter.outputs.openapi-clients }}
+      next: ${{ steps.filter.outputs.next }}
+      strapi: ${{ steps.filter.outputs.strapi }}
+      nest-forms-backend: ${{ steps.filter.outputs.nest-forms-backend }}
+      nest-clamav-scanner: ${{ steps.filter.outputs.nest-clamav-scanner }}
+      nest-tax-backend: ${{ steps.filter.outputs.nest-tax-backend }}
+      nest-city-account: ${{ steps.filter.outputs.nest-city-account }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.2.1"
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            forms-shared:
+              - 'forms-shared/**'
+            openapi-clients:
+              - 'openapi-clients/**'
+            next:
+              - 'next/**'
+            strapi:
+              - 'strapi/**'
+            nest-forms-backend:
+              - 'nest-forms-backend/**'
+            nest-clamav-scanner:
+              - 'nest-clamav-scanner/**'
+            nest-tax-backend:
+              - 'nest-tax-backend/**'
+            nest-city-account:
+              - 'nest-city-account/**'
+  conditions:
+    name: Checking build conditions
+    needs: changes
+    runs-on: ["self-hosted", "Linux", "X64", "bratislava"]
+    env:
+      COUNT: 0
+    outputs:
+      forms-shared: ${{ steps.forms-shared.outputs.condition }}
+      openapi-clients: ${{steps.openapi-clients.outputs.condition}}
+      next: ${{ steps.next.outputs.condition }}
+      strapi: ${{ steps.strapi.outputs.condition }}
+      nest-forms-backend: ${{ steps.nest-forms-backend.outputs.condition }}
+      nest-clamav-scanner: ${{ steps.nest-clamav-scanner.outputs.condition }}
+      nest-tax-backend: ${{ steps.nest-tax-backend.outputs.condition }}
+      nest-city-account: ${{steps.nest-city-account.outputs.condition}}
+    steps:
+      - name: Print pipeline comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          recreate: true
+          message: |
+            <b> Test build pipeline info :rocket: </b><br/>
+            Changes in the code and tag info: <br/>
+            :arrow_right: Changes in forms-shared: <b>${{ needs.changes.outputs.forms-shared }}</b><br/>
+            :arrow_right: Changes in openapi-clients: <b>${{ needs.changes.outputs.openapi-clients }}</b><br/>
+            :arrow_right: Changes in next: <b>${{ needs.changes.outputs.next }}</b><br/>
+            :arrow_right: Changes in strapi: <b>${{ needs.changes.outputs.strapi }}</b><br/>
+            :arrow_right: Changes in nest-forms-backend: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
+            :arrow_right: Changes in nest-clamav-scanner: <b>${{ needs.changes.outputs.nest-clamav-scanner }}</b><br/>
+            :arrow_right: Changes in nest-tax-backend: <b>${{ needs.changes.outputs.nest-tax-backend }}</b><br/>
+            :arrow_right: Changes in nest-city-account: <b>${{ needs.changes.outputs.nest-city-account }}</b><br/>
+            We are going to build :ship:
+
+      - id: forms-shared
+        name: Check for build forms-shared
+        if: needs.changes.outputs.forms-shared == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.forms-shared == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>forms-shared together with nest-forms-backend and next as those needs to be rebuild when forms-shared are changed<b><br/>
+
+      - id: openapi-clients
+        name: Check for build openapi-clients
+        if: needs.changes.outputs.openapi-clients == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.openapi-clients == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>openapi-clients together with all services as those need to be rebuild when openapi-clients are changed<b><br/>
+
+      - id: next
+        name: Check for build next
+        if: needs.changes.outputs.next == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.next == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>next<b><br/>
+
+      - id: strapi
+        name: Check for build strapi
+        if: needs.changes.outputs.strapi == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.strapi == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>strapi<b><br/>
+
+      - id: nest-forms-backend
+        name: Check for build nest-forms-backend
+        if: needs.changes.outputs.nest-forms-backend == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-forms-backend == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-forms-backend<b><br/>
+
+      - id: nest-clamav-scanner
+        name: Check for build nest-clamav-scanner
+        if: needs.changes.outputs.nest-clamav-scanner == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-clamav-scanner == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-clamav-scanner<b><br/>
+
+      - id: nest-tax-backend
+        name: Check for build nest-tax-backend
+        if: needs.changes.outputs.nest-tax-backend == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-tax-backend == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-tax-backend<b><br/>
+
+      - id: nest-city-account
+        name: Check for build nest-city-account
+        if: needs.changes.outputs.nest-city-account == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-city-account == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-city-account<b><br/>
+
+      - name: Print pipeline comment
+        if: env.COUNT == 0
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          recreate: true
+          message: |
+            :heavy_exclamation_mark: We have zero builds based on conditions. Exiting pipeline.
+
+      - id: conditions-count-zero
+        name: Checking if there is only zero condition true
+        if: env.COUNT == 0
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.notice(':heavy_exclamation_mark: We have zero builds based on conditions. Exiting pipeline.')

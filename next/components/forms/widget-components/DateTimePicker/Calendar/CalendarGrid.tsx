@@ -26,13 +26,13 @@ const CalendarGrid = ({ state, offset = {}, ...rest }: CalendarGridBase) => {
 
   const weekDaysCustom = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne']
   const weekDaysCustomEn = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
-  const weekDays = locale === 'sk' ? weekDaysCustom : weekDaysCustomEn
+  const weekDays = locale === 'sk-SK' ? weekDaysCustom : weekDaysCustomEn
 
   return (
     <div {...gridProps} className="flex flex-col items-center">
       <div
         {...headerProps}
-        className="text-p3-medium flex w-full justify-between border-y-2 border-gray-700 bg-gray-50 p-3"
+        className="flex w-full justify-between border-y-2 border-gray-700 bg-gray-50 p-3 text-p3-medium"
       >
         {weekDays.map((day, index) => (
           <span className="flex h-5 w-10 items-center justify-center" key={index}>
@@ -49,8 +49,8 @@ const CalendarGrid = ({ state, offset = {}, ...rest }: CalendarGridBase) => {
                 date ? (
                   <CalendarCell
                     isDisabled={
-                      (state.minValue && date < state.minValue) ||
-                      (state.maxValue && date > state.maxValue)
+                      (state.minValue ? date < state.minValue : false) ||
+                      (state.maxValue ? date > state.maxValue : false)
                     }
                     key={i}
                     state={state}

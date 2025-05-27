@@ -1,10 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
-import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
-/* eslint-enable import/no-extraneous-dependencies */
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import axios from 'axios'
 
 import { environment } from '../../environment'
+import { AmplifyServerContextSpec } from '../../frontend/utils/amplifyTypes'
 
 const axiosInstance = axios.create()
 
@@ -84,7 +82,7 @@ function findTaxAdministratorBySurname(
   )
 }
 
-export const getTaxAdministratorForUser = async (contextSpec: AmplifyServer.ContextSpec) => {
+export const getTaxAdministratorForUser = async (contextSpec: AmplifyServerContextSpec) => {
   try {
     const [userAttributes, taxAdministratorsResponse] = await Promise.all([
       fetchUserAttributes(contextSpec),

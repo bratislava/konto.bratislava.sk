@@ -1,6 +1,7 @@
 # Add files here to ignore them from prettier formatting
 
 yarn.lock
+package-lock.json
 .next
 
 backend/forms/*/form.*.sef.json

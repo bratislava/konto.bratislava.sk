@@ -1,8 +1,8 @@
-import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
+import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
@@ -11,10 +11,10 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
-  strapiTax: TaxFragment
+  taxAdministrator: StrapiTaxAdministrator | null
 }
 
-const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -24,8 +24,8 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
 
   const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
     mutationFn: () =>
-      taxApi.paymentControllerPayment(String(taxData.year), {
-        accessToken: 'always',
+      taxClient.paymentControllerPayment(String(taxData.year), {
+        authStrategy: 'authOnly',
       }),
     networkMode: 'always',
     onSuccess: async (response) => {
@@ -44,13 +44,14 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
   })
 
   const downloadQrCode = async () => {
+    if (!taxData.qrCodeWeb) return
     const arrayBuffer = base64ToArrayBuffer(taxData.qrCodeWeb)
     downloadBlob(new Blob([arrayBuffer], { type: 'image/png' }), 'QR-dan-z-nehnutelnosti.png')
   }
 
   const downloadPdf = async () => {
-    const { data } = await taxApi.taxControllerGetTaxByYearPdf(taxData.year, {
-      accessToken: 'always',
+    const { data } = await taxClient.taxControllerGetTaxByYearPdf(taxData.year, {
+      authStrategy: 'authOnly',
       responseType: 'blob',
     })
     // @ts-expect-error `taxControllerGetTaxByYearPdf` returns wrong type
@@ -59,13 +60,13 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
 
   return {
     taxData,
-    strapiTax,
     redirectToPayment,
     redirectToPaymentIsPending,
     downloadQrCode,
     downloadPdf,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
+    taxAdministrator,
   }
 }
 

@@ -1,19 +1,59 @@
 # konto.bratislava.sk
 
-This project is led by the [Department of Innovation and Technology of the City of Bratislava](https://inovacie.bratislava.sk). We’re making it entirely open-source as we believe this promotes [savings, collaboration, auditability and innovation](https://publiccode.eu) in the public sector.
+Monorepo of services, shared libraries and frontend for [konto.bratislava.sk](https://konto.bratislava.sk).
 
-Our goal is to be transparent about services we’re developing and providing, as well as to invite other cities and municipalities to build on top of the same or similar open-source technologies we’ve already tested and used - to foster an ecosystem of collaboration between teams facing similar challenges. We’ll be happy to [get in touch.](mailto:innovationteam@bratislava.sk)
+> If you are an individual or a company who'd like to take part in these efforts, collaborate closely on development, or report an issue, we'd love to hear from you! 🙌 Contact us using this repository or at [innovationteam@bratislava.sk](mailto:innovationteam@bratislava.sk)
 
-> If you are an individual or a company who’d like to take part in these efforts, collaborate closely on development or report an issue, we’d love to hear from you! 🙌 Contact us using this repository or at [innovationteam@bratislava.sk](mailto:innovationteam@bratislava.sk)
+## Product specification
+
+[Product specification for city account (internal)](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)
 
 ## What's here
 
-Each sub-project contains README which should get you up and running. More documentation can be (eventually) found [here](https://bratislava.github.io)
+Each sub-project contains a README which should get you up and running. More documentation can be (eventually) found [here](https://bratislava.github.io)
+
+⚙️️ `/clamav` Instance of clamav https://www.clamav.net
+
+⚙️️ `/cvdmirror` Local mirror of cvd database used for clamav scanner
+
+📟 `/forms-shared` Shared components and utils for frontend and backend
+
+🗄️ `/nest-city-account` Service which is handling user related logic for konto
+
+🗄️ `/nest-clamav-scanner` This service is responsible for handling files which were sent to the clamav scanner.
+
+🗄️ `/nest-forms-backend` Service which is handling incoming and outgoing forms created by users
+
+🗄️ `/nest-tax-backend` This service is responsible for digital tax payment.
 
 🏡 `/next` Next.js web app
 
-👀 `tests/cypress` Automated cypress tests
-
 🗄️ `/strapi` Strapi CMS server
 
-🐳 `docker-compose.yml` - if you need to quickly setup postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
+👀 `/tests/cypress` Automated cypress tests
+
+📦 `/openapi-clients` Auto-generated OpenAPI TypeScript clients
+
+## Deployment
+
+### Full Project Deployment
+
+Deploy all services by creating a tag in format: `<environment><version>`
+
+> Note: Backend services deploy first, followed by frontend.
+
+- Examples: `dev1.0.0`, `staging1.0.0`, `prod1.0.0`
+
+### Single Service Deployment
+
+Deploy specific service by creating a tag in format: `<environment>-<service-name><version>`
+
+- Examples: `dev-next1.0.0`, `staging-nest-forms-backend1.0.0`
+
+### Validation and build pipelines
+
+By creating a PR, GitHub actions will run validation pipelines and build pipelines with `bratiska-cli`.
+
+## Acknowledgments
+
+This project utilizes the [iframe-resizer](https://github.com/davidjbradshaw/iframe-resizer) library, which is an open-source project developed by [David J. Bradshaw](https://github.com/davidjbradshaw). We are grateful for the work that has been put into this library and its contribution to the open-source community.

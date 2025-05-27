@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import type { AuthUserAttributes } from '@aws-amplify/auth/dist/esm/types'
+import { FetchUserAttributesOutput } from 'aws-amplify/auth'
 
 export enum Tier {
   NEW = 'NEW',
@@ -25,7 +24,7 @@ export enum AccountType {
   FyzickaOsobaPodnikatel = 'fo-p',
 }
 
-export type UserAttributes = AuthUserAttributes & {
+export type UserAttributes = FetchUserAttributesOutput & {
   'custom:ifo'?: string
   'custom:tier'?: Tier
   'custom:account_type'?: AccountType

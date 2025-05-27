@@ -1,0 +1,16 @@
+services:
+  clamav-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3310:3310'
+    environment:
+      - CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
+    restart: always
+    networks:
+      - konto
+
+networks:
+  konto:
+    name: konto-network

@@ -4,12 +4,25 @@ This readme should get you up & running. For more detailed documentation, check 
 
 ## First-time setup
 
-You need `node` and `yarn` installed locally.
+You need `node` and `npm` installed locally.
 
-To install dependencies run:
+To install dependencies and build required packages:
 
-```
-yarn
+```bash
+# Build required shared packages
+cd ../forms-shared/
+npm install
+npm run build
+cd ../openapi-clients/
+npm install
+npm run build
+
+# Install dependencies
+cd ../next/
+npm install
+
+# Build the project
+npm run dev
 ```
 
 ### VSCode support
@@ -21,7 +34,7 @@ VSCode supports this plugin out of the box. However, sometimes it can use its ow
 ## Run project locally
 
 ```
-yarn dev
+npm run dev
 ```
 
 ## Run project for e2e testing
@@ -30,9 +43,9 @@ Tests need captcha disabled, are run against staging backend & staging cognito, 
 
 ```bash
 # only if you need to rebuild - this rewrites local .env.production.local
-yarn build:e2e
+npm run build:e2e
 # start the same way as you would start the app in production
-yarn start
+npm run start
 ```
 
 ## FOP
@@ -47,7 +60,7 @@ We are using [openapi-generator-cli](https://openapi-generator.tech/) to generat
 
 We are using [graphql-codegen](https://the-guild.dev/graphql/codegen) to generate GraphQL client from our Strapi (CMS) schema.
 
-To generate API clients run `yarn generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
+To generate API clients run `npm run generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
 
 Forms:
 
@@ -67,3 +80,56 @@ Tax:
 City account Strapi:
 
 - [GraphQL playground](https://city-account-strapi.staging.bratislava.sk/graphql)
+
+## TODOs
+
+After removing a snackbar plugin, these overrides can be safely removed from package.json:
+
+```json
+"overrides": {
+"react": "18.3.1",
+"react-dom": "18.3.1"
+}
+```
+
+## `react-simple-snackbar` patched package
+
+Unfortunately, `react-transition-group` which is used by `react-simple-snackbar` uses `findDOMNode` that was removed in React 19.
+
+It allows bypassing this feature by providing [`nodeRef`](https://github.com/reactjs/react-transition-group/issues/559). However, the snackbar package doesn't implement it so we need to patch it.
+
+The patch is built version of `react-simple-snackbar` with the following changes:
+
+```
+diff --git a/src/Snackbar.js b/src/Snackbar.js
+--- a/src/Snackbar.js	(revision f1ea5e49cf59e6cdf834f6e8015f016ba6918f68)
++++ b/src/Snackbar.js	(date 1738591704284)
+@@ -1,4 +1,4 @@
+-import React, { createContext, useState } from 'react'
++import React, { createContext, useState, useRef } from 'react'
+ import { CSSTransition } from 'react-transition-group'
+ import styles from './Snackbar.css'
+
+@@ -61,6 +61,8 @@
+     setOpen(false)
+   }
+
++  const nodeRef = useRef(null)
++
+   // Returns the Provider that must wrap the application
+   return (
+     <SnackbarContext.Provider value={{ openSnackbar, closeSnackbar }}>
+@@ -90,9 +92,10 @@
+             styles[`snackbar-exit-active-${position}`]
+           }`,
+         }}
++        nodeRef={nodeRef}
+       >
+         {/* This div will be rendered with CSSTransition classNames */}
+-        <div>
++        <div ref={nodeRef}>
+           <div className={styles.snackbar} style={customStyles}>
+             {/* Snackbar's text */}
+             <div className={styles.snackbar__text}>{text}</div>
+
+```

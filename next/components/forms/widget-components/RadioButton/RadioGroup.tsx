@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Orientation, useRadioGroup } from 'react-aria'
@@ -8,6 +7,7 @@ import {
   useRadioGroupState,
 } from 'react-stately'
 
+import cn from '../../../../frontend/cn'
 import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
@@ -36,7 +36,9 @@ const RadioGroup = (props: RadioGroupProps) => {
     disabled,
     errorMessage,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     tooltip,
     value,
     size,
@@ -74,7 +76,9 @@ const RadioGroup = (props: RadioGroupProps) => {
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         required={required}
         disabled={disabled}
@@ -88,7 +92,7 @@ const RadioGroup = (props: RadioGroupProps) => {
         <RadioContext.Provider value={state}>
           <div className="flex flex-col gap-2">
             <div
-              className={cx({
+              className={cn({
                 'flex flex-col gap-3': orientation === 'vertical',
                 // Acts as vertical on xs
                 'flex flex-col gap-3 sm:flex-row sm:gap-4 md:gap-6': orientation === 'horizontal',

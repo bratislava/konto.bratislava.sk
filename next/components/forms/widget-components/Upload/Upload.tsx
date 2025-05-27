@@ -1,7 +1,7 @@
-import cx from 'classnames'
+import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import React, { forwardRef } from 'react'
 
-import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
+import cn from '../../../../frontend/cn'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
@@ -13,7 +13,7 @@ type UploadProps = FieldWrapperProps & {
   value?: string | string[] | null
   sizeLimit?: number
   supportedFormats?: string[]
-  getFileInfoById: (id: string) => FormFileUploadFileInfo
+  getFileInfoById: (id: string) => FileInfo
   onUpload?: (files: File[]) => void
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
@@ -30,7 +30,9 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       multiple,
       value,
       helptext,
-      helptextHeader,
+      helptextMarkdown,
+      helptextFooter,
+      helptextFooterMarkdown,
       disabled,
       sizeLimit,
       supportedFormats,
@@ -48,12 +50,14 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
     ref,
   ) => {
     return (
-      <div className={cx('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
+      <div className={cn('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
         <FieldWrapper
           label={label}
           required={required}
           helptext={helptext}
-          helptextHeader={helptextHeader}
+          helptextMarkdown={helptextMarkdown}
+          helptextFooter={helptextFooter}
+          helptextFooterMarkdown={helptextFooterMarkdown}
           disabled={disabled}
           errorMessage={errorMessage}
           size={size}

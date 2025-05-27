@@ -1,7 +1,7 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { DatePickerUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { DatePickerUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
@@ -24,7 +24,15 @@ const DatePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const { helptext, helptextHeader, tooltip, size, labelSize } = options
+  const {
+    helptext,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
+    tooltip,
+    size,
+    labelSize,
+  } = options
 
   return (
     <WidgetWrapper id={id} options={options}>
@@ -34,7 +42,9 @@ const DatePickerWidgetRJSF = ({
         required={required}
         disabled={disabled || readonly}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         tooltip={tooltip}
         value={value ?? null}
         onChange={(value) => onChange(value ?? undefined)}

@@ -653,6 +653,28 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   }
 }
 
+export interface ApiFormForm extends Schema.CollectionType {
+  collectionName: 'forms'
+  info: {
+    singularName: 'form'
+    pluralName: 'forms'
+    displayName: 'Form'
+    description: ''
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    slug: Attribute.UID & Attribute.Required
+    moreInformationUrl: Attribute.String
+    landingPage: Attribute.Component<'blocks.form-landing-page'>
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::form.form', 'oneToOne', 'admin::user'> & Attribute.Private
+    updatedBy: Attribute.Relation<'api::form.form', 'oneToOne', 'admin::user'> & Attribute.Private
+  }
+}
+
 export interface ApiGeneralGeneral extends Schema.SingleType {
   collectionName: 'generals'
   info: {
@@ -714,6 +736,11 @@ export interface ApiTaxTax extends Schema.SingleType {
       Attribute.DefaultTo<false>
     currentYearTaxInPreparationTitle: Attribute.String
     currentYearTaxInPreparationText: Attribute.RichText
+    channelChangeEffectiveNextYearTitle: Attribute.String
+    channelChangeEffectiveNextYearText: Attribute.RichText
+    paymentSuccessFeedbackLink: Attribute.String
+    paymentSuccessPrivacyPolicyLink: Attribute.String
+    paymentSuccessFaqLink: Attribute.String
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
@@ -739,6 +766,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission
       'plugin::users-permissions.role': PluginUsersPermissionsRole
       'plugin::users-permissions.user': PluginUsersPermissionsUser
+      'api::form.form': ApiFormForm
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage
       'api::tax.tax': ApiTaxTax

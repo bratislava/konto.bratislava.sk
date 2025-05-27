@@ -1,46 +1,93 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
+import { strapiClient } from '@clients/graphql-strapi'
+import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
+import { makeClientLandingPageFormDefinition } from '../../../components/forms/clientFormDefinitions'
+import FormLandingPage, {
+  FormLandingPageProps,
+  FormWithLandingPageRequiredFragment,
+} from '../../../components/forms/FormLandingPage'
+import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import {
+  EMBEDDED_FORM_QUERY_PARAM,
+  EMBEDDED_FORM_QUERY_PARAM_TRUE_VALUE,
+  handleEmbeddedFormRequest,
+} from '../../../frontend/utils/embeddedFormsHelpers'
+import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
   slug: string
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
-  async ({ context, getAccessToken }) => {
-    if (!context.params) return { notFound: true }
+const fetchStrapiForm = async (
+  slug: string,
+): Promise<FormWithLandingPageFragment | null | undefined> => {
+  const result = await strapiClient.FormWithLandingPageBySlug({ slug })
+
+  return result.forms?.data?.[0]?.attributes
+}
+
+export const formHasLandingPage = (
+  form: FormWithLandingPageFragment | null | undefined,
+): form is FormWithLandingPageRequiredFragment => {
+  return Boolean(form?.landingPage)
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps, Params>(
+  async ({ context, fetchAuthSession }) => {
+    if (!context.params) {
+      return { notFound: true }
+    }
 
     const { slug } = context.params
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
+      return { notFound: true }
+    }
 
-    try {
-      const schema = await formsApi.schemasControllerGetSchema(slug, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
-      })
-      const { latestVersionId, latestVersion } = schema.data
-      if (!latestVersionId || !latestVersion) {
-        return {
-          notFound: true,
-        }
-      }
-
-      const { data: form } = await formsApi.nasesControllerCreateForm(
-        {
-          schemaVersionId: latestVersionId,
+    const strapiForm = await fetchStrapiForm(slug)
+    if (formHasLandingPage(strapiForm)) {
+      return {
+        props: {
+          formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
+          strapiForm,
+          ...(await slovakServerSideTranslations()),
         },
-        { accessToken: 'onlyAuthenticated', accessTokenSsrGetFn: getAccessToken },
+      }
+    }
+
+    // If Strapi form does not have a landing page, create a new form instance and redirect to it directly.
+    try {
+      const { data: form } = await formsClient.nasesControllerCreateForm(
+        {
+          formDefinitionSlug: slug,
+        },
+        { authStrategy: 'authOrGuestWithToken', getSsrAuthSession: fetchAuthSession },
       )
 
       if (!form) {
         return { notFound: true }
       }
 
+      const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
+        serverFormDefinition,
+        context,
+      )
+      if (!embeddedSuccess) {
+        return { notFound: true }
+      }
+
+      // The query param needs to be carried on to the new form instance page.
+      const isEmbeddedPostfix = isEmbedded
+        ? `?${EMBEDDED_FORM_QUERY_PARAM}=${EMBEDDED_FORM_QUERY_PARAM_TRUE_VALUE}`
+        : ''
       return {
         redirect: {
-          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
+          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.formId}${isEmbeddedPostfix}`,
           permanent: false,
         },
       }
@@ -52,8 +99,7 @@ export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
       throw error
     }
   },
-  { skipSsrAuthContext: true },
+  {},
 )
 
-const EmptyComponent = () => {}
-export default EmptyComponent
+export default SsrAuthProviderHOC(FormLandingPage)

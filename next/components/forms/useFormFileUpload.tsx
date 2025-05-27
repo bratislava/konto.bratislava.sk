@@ -1,6 +1,13 @@
-import { formsApi } from '@clients/forms'
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  ClientFileInfo,
+  FileInfo,
+  FileStatus,
+  FileStatusType,
+} from 'forms-shared/form-files/fileStatus'
+import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import React, {
   createContext,
   PropsWithChildren,
@@ -14,17 +21,9 @@ import React, {
 import { useIsMounted } from 'usehooks-ts'
 
 import { environment } from '../../environment'
-import {
-  FormFileUploadClientFileInfo,
-  FormFileUploadClientFileStatus,
-  FormFileUploadConstraints,
-  FormFileUploadFileInfo,
-  FormFileUploadResponseFileStatus,
-  FormFileUploadStatusEnum,
-} from '../../frontend/types/formFileUploadTypes'
+import { FormFileUploadConstraints } from '../../frontend/types/formFileUploadTypes'
 import {
   getFileInfoForNewFiles,
-  mergeClientAndServerFiles,
   shouldPollServerFiles,
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
@@ -57,7 +56,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = () => {
-  const { formId, initialServerFiles, initialClientFiles } = useFormContext()
+  const { formId, initialServerFiles } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -68,13 +67,9 @@ export const useGetContext = () => {
   // the current value of the client files is needed immediately. Also, the `uploadFile` callback would not have access
   // to the current value of the client files if it was stored only in the state.
   // The state should be only modified by the `updateClientFiles` function.
-  const [clientFiles, setClientFiles] = useState<FormFileUploadClientFileInfo[]>(
-    initialClientFiles ?? [],
-  )
+  const [clientFiles, setClientFiles] = useState<ClientFileInfo[]>([])
   const clientFilesRef = useRef(clientFiles)
   const getClientFiles = useCallback(() => clientFilesRef.current, [])
-
-  const abortControllersRef = useRef<Record<string, AbortController>>({})
 
   const refetchInterval = useMemo(() => {
     return (query: Query<GetFileResponseReducedDto[]>) =>
@@ -85,8 +80,8 @@ export const useGetContext = () => {
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
-      const response = await formsApi.filesControllerGetFilesStatusByForm(formId, {
-        accessToken: 'onlyAuthenticated',
+      const response = await formsClient.filesControllerGetFilesStatusByForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
       })
       return response.data
     },
@@ -102,7 +97,7 @@ export const useGetContext = () => {
    * Updates client files and handles side effects of the change if needed. This is the only place that should trigger
    * `setClientFiles` and/or modify `clientFilesRef.current`.
    */
-  const updateClientFiles = (newClientFiles: FormFileUploadClientFileInfo[]) => {
+  const updateClientFiles = (newClientFiles: ClientFileInfo[]) => {
     if (!isMounted()) {
       return
     }
@@ -116,19 +111,17 @@ export const useGetContext = () => {
     const scheduleUploadIfNeeded = async () => {
       // eslint-disable-next-line unicorn/consistent-function-scoping
       const isAlreadyUploadingFile = newClientFiles.some(
-        (item) => item.status.type === FormFileUploadStatusEnum.Uploading,
+        (item) => item.status.type === FileStatusType.Uploading,
       )
       const firstQueuedFile = newClientFiles.find(
-        (file) => file.status.type === FormFileUploadStatusEnum.UploadQueued,
+        (file) => file.status.type === FileStatusType.UploadQueued,
       )
 
       if (isAlreadyUploadingFile || !firstQueuedFile) {
         return
       }
 
-      const updateFileStatus = (
-        status: FormFileUploadClientFileStatus | FormFileUploadResponseFileStatus,
-      ) => {
+      const updateFileStatus = (status: FileStatus) => {
         const clientFilesWithUpdatedStatus = clientFilesRef.current.map((file) => {
           if (file.id === firstQueuedFile.id) {
             return { ...file, status }
@@ -140,11 +133,11 @@ export const useGetContext = () => {
       }
 
       const abortController = new AbortController()
-      abortControllersRef.current[firstQueuedFile.id] = abortController
 
       updateFileStatus({
-        type: FormFileUploadStatusEnum.Uploading,
+        type: FileStatusType.Uploading,
         progress: 0,
+        abortController,
       })
 
       await uploadFile({
@@ -153,7 +146,7 @@ export const useGetContext = () => {
         id: firstQueuedFile.id,
         abortController,
         onSuccess: () => {
-          updateFileStatus({ type: FormFileUploadStatusEnum.UploadDone })
+          updateFileStatus({ type: FileStatusType.WaitingForScan })
 
           // This forces server files to be refetched and get scanning status for the uploaded file.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -161,20 +154,16 @@ export const useGetContext = () => {
         },
         onError: (error) => {
           updateFileStatus({
-            type: FormFileUploadStatusEnum.UploadServerError,
-            error: {
-              // eslint-disable-next-line @typescript-eslint/no-base-to-string
-              rawError: error.toString(),
-              errorCode: error?.response?.data?.statusCode,
-              errorName: error?.response?.data?.errorName,
-            },
+            type: FileStatusType.UploadServerError,
+            error,
             canRetry: true,
           })
         },
         onProgress: (progress) => {
           updateFileStatus({
-            type: FormFileUploadStatusEnum.Uploading,
+            type: FileStatusType.Uploading,
             progress,
+            abortController,
           })
         },
       })
@@ -197,8 +186,8 @@ export const useGetContext = () => {
     getClientFiles()
       .filter((file) => ids.includes(file.id))
       .forEach((file) => {
-        if (file.status.type === FormFileUploadStatusEnum.Uploading) {
-          abortControllersRef.current[file.id]?.abort()
+        if (file.status.type === FileStatusType.Uploading) {
+          file.status.abortController.abort()
         }
       })
 
@@ -222,11 +211,12 @@ export const useGetContext = () => {
    */
   const retryFile = (id: string, constraints: FormFileUploadConstraints) => {
     const fileToRetry = getClientFiles().find((file) => file.id === id)
-    if (
-      !fileToRetry ||
-      fileToRetry.status.type !== FormFileUploadStatusEnum.UploadError ||
-      !fileToRetry.status.canRetry
-    ) {
+    if (!fileToRetry) {
+      return null
+    }
+
+    const canRetry = 'canRetry' in fileToRetry.status && fileToRetry.status.canRetry
+    if (!canRetry) {
       return null
     }
 
@@ -239,8 +229,8 @@ export const useGetContext = () => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const downloadFile = async (id: string) => {
     try {
-      const response = await formsApi.filesControllerDownloadToken(id, {
-        accessToken: 'onlyAuthenticated',
+      const response = await formsClient.filesControllerDownloadToken(id, {
+        authStrategy: 'authOrGuestWithToken',
       })
       const { jwt } = response.data
       window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')
@@ -266,9 +256,7 @@ export const useGetContext = () => {
   }
 
   const mergedFiles = useMemo(() => {
-    const serverFiles = serverFilesQuery.data ?? []
-
-    return mergeClientAndServerFiles(clientFiles, serverFiles)
+    return mergeClientAndServerFiles(clientFiles, serverFilesQuery.data)
   }, [clientFiles, serverFilesQuery.data])
 
   const getFileInfoById = useCallback(
@@ -282,16 +270,15 @@ export const useGetContext = () => {
               ? // The special case when info about the file is not available yet, e.g. when the user imports the data and
                 // the server files are not fetched yet, or when they are being fetched.
                 {
-                  type: FormFileUploadStatusEnum.UnknownStatus as const,
+                  type: FileStatusType.UnknownStatus as const,
                   offline: serverFilesQuery.fetchStatus === 'paused',
                 }
               : // The special case when the file is stored in the form data, but not in client nor server files, it can happen
                 // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
-                { type: FormFileUploadStatusEnum.UnknownFile as const },
+                { type: FileStatusType.UnknownFile as const },
           fileName: fileId,
-          canDownload: false,
           fileSize: null,
-        } satisfies FormFileUploadFileInfo
+        } satisfies FileInfo
       }
 
       return file
@@ -308,9 +295,8 @@ export const useGetContext = () => {
   useEffect(() => {
     return () => {
       clientFilesRef.current.forEach((file) => {
-        if (file.status.type === FormFileUploadStatusEnum.Uploading) {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          abortControllersRef.current[file.id]?.abort()
+        if (file.status.type === FileStatusType.Uploading) {
+          file.status.abortController.abort()
         }
       })
       // Don't persist the data between page navigations.
@@ -332,7 +318,9 @@ export const useGetContext = () => {
   }
 }
 
-const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormFileUploadProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

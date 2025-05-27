@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: database
+  namespace: ${NAMESPACE}
+  labels:
+    service: database
+  annotations:
+    repositoryUrl: ${BUILD_REPOSITORY_URI}
+    commit: ${COMMIT}
+    tag: ${TAG}
+    image: ${IMAGE}
+spec:
+  serviceName: database
+  selector:
+    matchLabels:
+      service: database
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: database
+    spec:
+      containers:
+        - image: ${IMAGE_TAG}
+          name: cvdmirror
+          imagePullPolicy: IfNotPresent
+          command: ["./entrypoint.sh"]
+          args: ["serve"]
+          resources:
+            limits:
+              cpu: ${CPU_LIMITS}
+              memory: ${MEMORY_LIMITS}
+            requests:
+              cpu: ${CPU_REQUESTS}
+              memory: ${MEMORY_REQUESTS}
+          volumeMounts:
+            - name: database
+              mountPath: /mnt/cvdupdate
+              subPath: database
+          envFrom:
+            - configMapRef:
+                name: env
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            httpGet:
+              path: /
+              port: 8080
+      imagePullSecrets:
+        - name: ${IMAGE_PULL_SECRET}
+
+  # Volume Claim
+  volumeClaimTemplates:
+    - metadata:
+        name: database
+        labels:
+          service: database
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 10Gi

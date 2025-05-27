@@ -1,13 +1,13 @@
+import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
 import { isDefined } from '../../../../frontend/utils/general'
 import UploadFileCard from './UploadFileCard'
 
 interface UploadedFilesListProps {
   value?: string | string[] | null
-  getFileInfoById: (id: string) => FormFileUploadFileInfo
+  getFileInfoById: (id: string) => FileInfo
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
   onFileDownload?: (id: string) => void

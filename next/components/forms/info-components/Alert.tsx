@@ -1,7 +1,8 @@
 import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
+
+import cn from '../../../frontend/cn'
 
 type AlertButtonBase = {
   title: string
@@ -16,17 +17,21 @@ type AlertButtonsBase = {
 
 const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
   return buttons && buttons?.length > 0 ? (
-    <div className={cx('flex w-max items-start gap-5', className)}>
+    <div className={cn('flex w-max items-start gap-5', className)}>
       {buttons?.map((button, i) => (
         <React.Fragment key={i}>
           {button.link ? (
-            <Link className="text-16-medium w-max underline underline-offset-4" href={button.link} data-cy="alert-container-button">
+            <Link
+              className="w-max text-16-medium underline underline-offset-4"
+              href={button.link}
+              data-cy="alert-container-button"
+            >
               {button.title}
             </Link>
           ) : (
             <button
               type="button"
-              className="text-16-medium w-max underline underline-offset-4"
+              className="w-max text-16-medium underline underline-offset-4"
               onClick={button.handler}
             >
               {button.title}
@@ -71,7 +76,7 @@ const Alert = ({
     warning: <AlertIcon className="size-6" />,
   }
 
-  const alertContainer = cx(
+  const alertContainer = cn(
     'flex flex-col items-start gap-2 rounded-lg px-3 py-3 lg:px-5 lg:py-4',
     className,
     {
@@ -89,7 +94,7 @@ const Alert = ({
     { 'max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cx('w-full', {
+  const contentStyle = cn('w-full', {
     'text-16-semibold': title,
     'text-16': !title,
     'text-white': solid,
@@ -101,7 +106,9 @@ const Alert = ({
       <div className="flex w-full justify-between">
         <div className="flex w-full gap-[14px]">
           {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
-          <div className={contentStyle} data-cy="alert-container-title">{title || message}</div>
+          <div className={contentStyle} data-cy="alert-container-title">
+            {title || message}
+          </div>
         </div>
         {close && (
           <span className="flex size-6 cursor-pointer items-center justify-center">
@@ -111,7 +118,7 @@ const Alert = ({
       </div>
       {message && title && (
         <div
-          className={cx('text-p2 w-full pl-9 font-normal', {
+          className={cn('w-full pl-9 text-p2 font-normal', {
             'text-gray-0': solid,
             'text-gray-700': !solid,
           })}

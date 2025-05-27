@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import NextLink from 'next/link'
 import { usePlausible } from 'next-plausible'
 import { ComponentProps, forwardRef } from 'react'
-import { twMerge } from 'tailwind-merge'
+
+import cn from '../../../frontend/cn'
 
 export type LinkPlausibleProps = { id: string }
 
@@ -27,15 +27,16 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
   ) => {
     const plausible = usePlausible()
 
-    const styles = twMerge(
-      cx('underline-offset-2 transition', {
+    const styles = cn(
+      'underline-offset-2 transition',
+      {
         'max-lg:underline lg:hover:underline': variant === 'standard',
         'underline hover:opacity-80': variant === 'underlined' || variant === 'underlined-medium',
         'font-medium': variant === 'underlined-medium',
 
         // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
         'after:absolute after:inset-0': stretched,
-      }),
+      },
       className,
     )
 

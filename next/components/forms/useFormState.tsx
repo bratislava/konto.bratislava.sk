@@ -1,6 +1,8 @@
-import { getFileUuidsNaive } from '@form-utils/fileUtils'
 import { GenericObjectType } from '@rjsf/utils'
-import { useTranslation } from 'next-i18next'
+import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
+import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
 import React, {
   createContext,
   PropsWithChildren,
@@ -9,13 +11,10 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
-import { validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
-  getFirstNonEmptyStepIndex,
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
@@ -24,35 +23,40 @@ import {
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
 import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
+import { useFormData } from './useFormData'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
+import { useFormValidatorRegistry } from './useFormValidatorRegistry'
 
 const useGetContext = () => {
-  const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
-  const { t } = useTranslation('forms')
-  const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
+  const {
+    formDefinition: { schema },
+    formMigrationRequired,
+    isReadonly,
+  } = useFormContext()
+  const { formData, setFormData } = useFormData()
+  const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
+  const validatorRegistry = useFormValidatorRegistry()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
-  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
-
-  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepsSchemas)
-  const { setMigrationRequiredModal } = useFormModals()
-  const scrollToFieldIdRef = useRef<string | null>(null)
+  const stepsSchemas = useMemo(
+    () => getEvaluatedStepsSchemas(schema, formData, validatorRegistry),
+    [schema, formData, validatorRegistry],
+  )
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
    * A condition in different step might invalidate the step, but it is not easily detectable.
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
+  const stepperData = useMemo(() => getStepperData(stepsSchemas), [stepsSchemas])
 
-  const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
-    [stepsSchemas, submittedStepsIndexes, t],
-  )
+  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
+  const { setMigrationRequiredModal } = useFormModals()
+  const scrollToFieldIdRef = useRef<string | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!
@@ -104,7 +108,11 @@ const useGetContext = () => {
     // existing data, as each step contains only one root property with the data this object spread
     // will overwrite the existing step data with the new ones, which is an expected behaviour.
     const newData = { ...formData, ...stepFormData }
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, newData)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(
+      schema,
+      newData,
+      validatorRegistry,
+    )
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     keepFiles(fileUuids)
@@ -117,31 +125,32 @@ const useGetContext = () => {
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
+    const sanitizedFormData = omitExtraData(schema, importedFormData, validatorRegistry)
 
-    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-    if (
-      currentStepIndex !== 'summary' &&
-      /* If the current step is empty after the import */
-      evaluatedSchemas[currentStepIndex] == null
-    ) {
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, sanitizedFormData, validatorRegistry)
+    const afterImportStepperData = getStepperData(evaluatedSchemas)
+
+    if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
+      setCurrentStepIndex(afterImportStepperData[0].index)
     }
 
-    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
+    const fileUuids = getFileUuidsNaive(sanitizedFormData)
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     refetchAfterImportIfNeeded(fileUuids)
 
     setSubmittedStepsIndexes(new Set())
-    setFormData(pickedPropertiesData)
+    setFormData(sanitizedFormData)
     turnOnLeaveProtection()
 
     // the next section sets the correct state of the form stepper after import
     // validateSummary validates the entire form and returns errors by sections
     // missing step in errorSummary === no error on the step
     // we treat errorless steps as "complete"
-    const { errorSchema } = validateSummary(schema, pickedPropertiesData, getFileInfoById)
+    const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
+    const {
+      validationData: { errorSchema },
+    } = validateSummary({ schema, formData: sanitizedFormData, fileInfos, validatorRegistry })
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {
@@ -180,7 +189,7 @@ const useGetContext = () => {
       return
     }
 
-    setSubmittedStepsIndexes((prev) => new Set([...prev, currentStepIndex]))
+    setSubmittedStepsIndexes((prev) => new Set([...Array.from(prev), currentStepIndex]))
     setStepFormData(newFormData)
     goToNextStep()
   }
@@ -202,9 +211,8 @@ const useGetContext = () => {
   }
 
   return {
-    formData,
-    formDataRef,
     currentStepIndex,
+    submittedStepsIndexes,
     stepperData,
     currentStepperStep,
     currentStepSchema,
@@ -221,7 +229,9 @@ const useGetContext = () => {
   }
 }
 
-const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+export const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
 
 export const FormStateProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()

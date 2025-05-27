@@ -9,23 +9,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { isBrowser, isProductionDeployment } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
-interface CookieOptions {
-  expires?: number | Date
-  path?: string
-  domain?: string
-  secure?: boolean
-  httpOnly?: boolean
-  sameSite?: 'strict' | 'lax' | 'none'
-}
-
-interface CookiesHandler {
-  get(name: string): string | undefined
-  set(name: string, value: string, options?: CookieOptions): void
-  remove(name: string, options?: CookieOptions): void
-}
-
-const cookiesHandler: CookiesHandler = Cookies as unknown as CookiesHandler
-
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)
 
@@ -39,7 +22,7 @@ export const CookiesAndTracking = () => {
 
   const refresh = useCallback(async () => {
     try {
-      const consentValue = cookiesHandler.get('gdpr-consents')
+      const consentValue = Cookies.get('gdpr-consents')
       if (!consentValue || typeof consentValue !== 'string') {
         setBannerDismissed(false)
         return
@@ -65,7 +48,7 @@ export const CookiesAndTracking = () => {
       if (typeof value !== 'object') return
       const consentValue = pickConsents(value)
       const mergedConsents = { ...consents, ...consentValue }
-      cookiesHandler.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
+      Cookies.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
       setConsentsState(mergedConsents)
     },
     [consents],
@@ -73,13 +56,16 @@ export const CookiesAndTracking = () => {
 
   const { t } = useTranslation(['common'])
 
+  const thirdPartyScriptsAllowed = isProductionDeployment()
+  const hotjarAllowed = thirdPartyScriptsAllowed && consents?.statistics
+
   return (
     <>
       {/* all 3rd party scrips loading here */}
       {/* don't use any of the analytics/tracking in staging/dev - change this if you need testing */}
-      {isProductionDeployment() ? (
+      {thirdPartyScriptsAllowed ? (
         <>
-          {consents?.statistics ? (
+          {hotjarAllowed ? (
             <Script
               id="hotjar"
               strategy="afterInteractive"
@@ -100,14 +86,16 @@ export const CookiesAndTracking = () => {
 
       {shouldShowBanner ? (
         <div className="fixed inset-x-0 bottom-6 z-50 px-6">
-          <div className="mx-auto max-w-[1110px] rounded-lg bg-white px-6 py-8 shadow md:px-10">
-            <h6 className="text-20-semibold mb-4"> {t('cookie_consent_modal_content_title')} </h6>
-            <p className="text-p2 mb-8">
+          <div className="mx-auto max-w-[1110px] rounded-lg bg-white px-6 py-8 shadow-default md:px-10">
+            <h6 className="mb-4 text-20-semibold"> {t('cookie_consent_modal_content_title')} </h6>
+            <p className="mb-8 text-p2">
               {' '}
               {t('cookie_consent_body')}{' '}
               <a
                 href={t('cookie_consent_privacy_policy_link')}
                 className="cursor-pointer font-semibold underline"
+                target="_blank"
+                rel="noreferrer"
               >
                 {' '}
                 {t('cookie_consent_privacy_policy')}{' '}
@@ -115,13 +103,13 @@ export const CookiesAndTracking = () => {
             </p>
             <div className="flex flex-col gap-2 md:flex-row">
               <Button
-                className="text-16-medium h-12 px-6"
+                className="h-12 px-6 text-16-medium"
                 variant="category"
                 onPress={() => setConsents({ statistics: true })}
                 text={t('cookie_consent_accept')}
               />
               <Button
-                className="text-16-medium h-12 px-6"
+                className="h-12 px-6 text-16-medium"
                 variant="category-outline"
                 onPress={() => setConsents({ statistics: false })}
                 text={t('cookie_consent_reject')}

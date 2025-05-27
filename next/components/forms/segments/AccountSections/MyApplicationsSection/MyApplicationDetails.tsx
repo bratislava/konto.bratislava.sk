@@ -1,21 +1,30 @@
-import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 type MyApplicationsDetailsBase = {
+  formDefinitionTitle: string
   detailsData: GetFormResponseDto
   ginisData: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsBase) => {
+const MyApplicationDetails = ({
+  formDefinitionTitle,
+  detailsData,
+  ginisData,
+}: MyApplicationsDetailsBase) => {
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col">
-      <MyApplicationDetailsHeader data={detailsData} ginisData={ginisData} />
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-16 py-12">
+      <MyApplicationDetailsHeader
+        formDefinitionTitle={formDefinitionTitle}
+        data={detailsData}
+        ginisData={ginisData}
+      />
+      <div className="mx-auto flex w-full max-w-(--breakpoint-lg) flex-col gap-16 py-12">
         <div className="flex flex-col gap-2 px-4 lg:px-0">
           <h3 className="text-h3">
             {t('account_section_applications.details.application_details.title')}

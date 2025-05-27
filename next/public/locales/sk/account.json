@@ -20,7 +20,8 @@
     "DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk.",
-    "unsuccessful-identity-verification": "Overenie bolo neúspešné. Skontrolujte správnosť údajov."
+    "unsuccessful-identity-verification": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
+    "InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, avšak e-mail nebol overený. Zaregistujte sa s iným e-mailom, ktorý vzápätí overíte alebo nám napíšte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a> so žiadosťou o zmazanie existujúceho konta. Následne sa s pôvodným e-mailom budete môcť registrovať a overiť nanovo."
   },
   "bratislava_account": "Bratislavské konto",
   "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
@@ -170,8 +171,15 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text_first": "Informácie o dani z nehnuteľností budú v kontách pribúdať postupne <strong>od 29. apríla 2024</strong>. Ak sa platba dane týka aj vás, <strong>dostanete notifikačný e-mail</strong>, keď bude pripravená na úhradu.",
+    "announcement_card_title_first": "Platba dane z nehnuteľností online",
+    "announcement_card_text_first": "Ušetrite si cestu na poštu. Zaregistrujte sa (alebo prihláste) do Bratislavského konta. Overte svoju identitu, ak ste tak už nespravili a nastavte do 31. 03. 2025 spôsob doručenia oznámením.",
+    "announcement_card_button_first": "Chcem zmeniť doručenie",
+    "announcement_card_title_second": "Služby Technických sietí Bratislava v Bratislavskom konte",
+    "announcement_card_text_second": "Požiadajte o stanovisko k projektovej dokumentácii, umiestnite zariadenie na stožiar verejného osvetlenia, objednajte si informatívny zákres sietí či vytýčenie podzemných vedení a nahláste poruchu v správe Technických sietí Bratislava – všetko jednoducho a online.",
+    "announcement_card_button_second": "Prejsť na mestské služby",
+    "announcement_card_title_third": "Založte si komunitnú záhradu",
+    "announcement_card_text_third": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
+    "announcement_card_button_third": "Viac informácií",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
     "banner_button_text": "Prejsť na otázky"
@@ -225,7 +233,8 @@
       "9": {
         "title": "Komunitné záhrady",
         "description": "Možnosť založenia komunitnej záhrady na mestskom pozemku a vytvorenia miesta pre aktívny susedský život.",
-        "buttonText": "Vytvoriť si záhradu"
+        "buttonText": "Vytvoriť si záhradu",
+        "tag": "Nová služba"
       },
       "10": {
         "title": "Lístky na divadelné predstavenia",
@@ -275,7 +284,8 @@
       "19": {
         "title": "Predzáhradky",
         "description": "Vytvorenie alebo registrácia predzáhradky na mestskom pozemku. Odporúčania, ktoré rastliny je možné a dobré vysádzať.",
-        "buttonText": "Vytvoriť predzáhradku"
+        "buttonText": "Vytvoriť predzáhradku",
+        "tag": "Nová služba"
       },
       "20": {
         "title": "Evidencia neodvezeného odpadu",
@@ -348,16 +358,14 @@
         "buttonText": "Kúpiť lístok do GMB"
       },
       "34": {
-        "title": "Záväzné stanovisko k investičnej činnosti",
+        "title": "Záväzné stanovisko hlavného mesta SR Bratislavy",
         "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
-        "buttonText": "Požiadať",
-        "tag": "Nová služba"
+        "buttonText": "Požiadať"
       },
       "35": {
         "title": "Stanovisko k investičnému zámeru",
         "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
-        "buttonText": "Požiadať",
-        "tag": "Nová služba"
+        "buttonText": "Požiadať"
       },
       "36": {
         "title": "Mimoriadny odvoz a likvidácia komunálneho odpadu",
@@ -398,6 +406,53 @@
         "title": "Priznanie k dani z nehnuteľností",
         "description": "Vyplňte jednoducho priznanie s návodom a pomocnými kalkulačkami.",
         "buttonText": "Prejsť na priznanie",
+        "tag": "Nová služba"
+      },
+      "44": {
+        "title": "Žiadosť o nájom bytu",
+        "description": "Možnosť podať si žiadosť o mestský nájomný byt, pri ktorej sa bude posudzovať splnenie stanovených podmienok pre pridelenie nájomného bytu.",
+        "buttonText": "Mám záujem",
+        "tag": "Nová služba"
+      },
+      "45": {
+        "title": "Oznámenie za komunálne odpady",
+        "description": "Vyplňte jednoducho oznámenie o vzniku, zmene a zániku poplatkovej povinnosti za komunálny odpad.",
+        "buttonText": "Prejsť na oznámenie",
+        "tag": "Nová služba"
+      },
+      "46": {
+        "title": "Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z.",
+        "description": "Podajte žiadosť o sprístupnenie informácií jednoducho. Mesto Bratislava má 12 pracovných dní na spracovanie žiadosti a sprístupnenie informácií.",
+        "buttonText": "Prejsť na žiadosť"
+      },
+      "47": {
+        "title": "Objednávka informatívneho zákresu sietí",
+        "description": "Informatívny zákres sietí slúži na zistenie polohy metropolitnej optickej siete a verejného osvetlenia voči záujmovému územiu objednávateľa. Služba je spoplatnená.",
+        "buttonText": "Prejsť na objednávku",
+        "tag": "Nová služba"
+      },
+      "48": {
+        "title": "Žiadosť o stanovisko k projektovej dokumentácií",
+        "description": "Stanovisko k projektovej dokumentácii slúži ako podklad na stavebné a územné konanie alebo pri ohlásení stavby v rámci plánovanej stavebnej činnosti v Bratislave.",
+        "buttonText": "Prejsť na žiadosť",
+        "tag": "Nová služba"
+      },
+      "49": {
+        "title": "Objednávka vytýčenia podzemných vedení verejného osvetlenia",
+        "description": "Pred realizáciou stavebných prác je potrebné vytýčenie sietí verejného osvetlenia. Služba je spoplatnená.",
+        "buttonText": "Prejsť na objednávku",
+        "tag": "Nová služba"
+      },
+      "50": {
+        "title": "Žiadosť o umiestnenie iného zariadenia na stožiar verejného osvetlenia",
+        "description": "Pre umiestnenie zariadenia na stožiar verejného osvetlenia je potrebné súhlasné stanovisko Technických sietí Bratislava, pričom každá žiadosť sa posudzuje individuálne.",
+        "buttonText": "Prejsť na žiadosť",
+        "tag": "Nová služba"
+      },
+      "51": {
+        "title": "Nahlásiť poruchu verejného osvetlenia",
+        "description": "Nefunguje verejné osvetlenie vo vašom okolí? Nahláste jednoduchým spôsobom poruchu verejného osvetlenia v správe Technických sietí Bratislava.",
+        "buttonText": "Nahlásiť poruchu",
         "tag": "Nová služba"
       }
     }
@@ -555,14 +610,11 @@
   "permanent_address": "Adresa trvalého pobytu",
   "correspondence_address": "Korešpondenčná adresa",
   "taxpayer_id": "Osobný identifikátor daňovníka",
-  "equips": "Vybavuje",
   "contact": "Kontakt",
   "tax_liability_breakdown": "Rozpis daňovej povinnosti",
   "land_tax": "Daň z pozemkov",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné metódy a spôsob oznámenia výšky dane",
-  "constant_symbol": "Konštantný symbol",
-  "constant_symbol_number": "8148",
   "variable_symbol": "Variabilný symbol",
   "tax_due": "Splatnosť dane",
   "card_payment": "Platba kartou",
@@ -575,27 +627,29 @@
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
-    "footer_text": "© 2023 Hlavné mesto Bratislava",
+    "footer_text": "© {{currentYear}} Hlavné mesto Bratislava",
     "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
     "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
     "result": {
-      "failed-to-verify": {
+      "failed_to_verify": {
         "title": "Nepodarilo sa overiť platbu",
-        "content": "<span className='text-p2'>Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne.</span>"
+        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
-      "payment-failed": {
+      "payment_failed": {
         "title": "Platba bola zamietnutá",
-        "content": "<span className='text-p2'>Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne.</span>"
+        "content": "Prosím, skúste platbu opakovať.<br />Uistite sa, že zadávate všetky platobné údaje správne."
       },
-      "payment-success": {
+      "payment_success": {
         "title": "Platba prebehla úspešne",
-        "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.<br />Ohodnoťte službu a pomôžte mestu Bratislava zlepšovať sa.</span>"
+        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
+        "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
       },
-      "payment-already-paid": {
+      "payment_already_paid": {
         "title": "Platba už bola vykonaná",
-        "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.<br />Ohodnoťte službu a pomôžte mestu Bratislava zlepšovať sa.</span>"
+        "content": "Ďakujeme za zaplatenie dane z nehnuteľností.",
+        "feedback_title": "Pomôžte nám zlepšiť službu digitálnej platby dane z nehnuteľností vyplnením dotazníka."
       }
     },
     "button_to_formular_text": "Vyplniť dotazník",
@@ -605,11 +659,15 @@
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.  Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content_generic": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.",
+      "content_signed_in": "Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti).",
+      "content_feedback": "Prosíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby.",
+      "content_embedded": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať."
     },
     "form_submit_tax": {
       "title": "Ďakujeme za odoslanie priznania",
-      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
+      "content": "### Čo bude nasledovať?\n1. Priznanie skontroluje [váš správca dane](https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom alebo telefonicky. \n2. Následne do apríla prebieha spracovávanie priznaní. Kedže ich každý rok príde približne 25 000, trvá to niekoľko mesiacov.\n3. Vaša daň bude vyrubená a rozhodnutie doručené do elektronickej schránky v mesiaci máj. Tiež ho nájdete v Bratislavskom konte v časti dane a poplatky. V prípade, že ste práve podali priznanie na zánik, daň vám vyrubená nebude.\n4. Daň platíte až po doručení rozhodnutia.",
+      "feedbackTitle": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka."
     }
   },
   "bank_info": {
@@ -619,9 +677,9 @@
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
   "tax_due_multiple_installments": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
-  "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní.</strong>",
+  "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>.",
   "tax_due_standard": "Daň je splatná v termíne do 15 dní <strong>odo dňa právoplatnosti rozhodnutia.</strong>",
-  "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností, sprístupníme platobné metódy.",
+  "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností Vám sprístupníme platobné metódy.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "redirect_to_payment_loading": "Presmerovávam…",
   "account_activator": {
@@ -638,8 +696,9 @@
     "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
     "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
     "first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
-    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. 2024</strong>",
-    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. 2024</strong>"
+    "first_installment_email_channel": "Prvá splátka v termíne do <strong>15 dní od doručenia notifikačného emailu o dani z nehnuteľností</strong>",
+    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. {{year}}</strong>",
+    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. {{year}}</strong>"
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",
@@ -766,24 +825,18 @@
     "uploadFile": "Nahrať súbor",
     "uploadFiles": "Nahrať súbory",
     "uploadingList": "Nahrávané súbory",
-    "errors": {
-      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}.",
-      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty: {{additionalParam}}.",
-      "formNotFound": "Systém nenašiel formulár, ku ktorému sa snažíte nahrať súbor. Formulár mohol byť vymazaný alebo došlo k chybe. Prosím, skúste obnoviť stránku a ak problém pretrváva, kontaktujte nás na podporu.",
-      "fileSizeZero": "Nemôžete nahrať tento súbor, pretože má nulovú veľkosť. Skontrolujte, či súbor nie je prázdny, a skúste to znova."
+    "messages": {
+      "upload_queued": "Čaká sa na nahratie",
+      "uploading": "Nahráva sa",
+      "waiting_for_scan": "Čaká na antivírovú kontrolu",
+      "scanning": "Prebieha antivírová kontrola"
     },
-    "fileUploadStatus": {
-      "UploadQueued": "Nahráva sa",
-      "Uploading": "Nahráva sa",
-      "UploadError": "Súbor sa nepodarilo nahrať. Skúste to znova.",
-      "UploadDone": "Čaká na antivírovú kontrolu",
-      "Scanning": "Prebieha antivírová kontrola",
-      "ScanError": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
-      "ScanDone": "",
-      "ScanInfected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
-      "UnknownFile": "Nastala nečakaná chyba. Skúste to znova.",
-      "UnknownStatus": "Zisťuje sa stav náhrávania súboru.",
-      "UploadServerError": ""
+    "errors": {
+      "large_file": "Súbor je príliš veľký, maximálna veľkosť {{maxFileSize}}.",
+      "invalid_file_type": "Nepodporovaný formát súboru, podporované formáty: {{supportedFormats}}.",
+      "scan_error": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
+      "scan_infected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
+      "unknown_error": "Súbor sa nepodarilo nahrať. Skúste to znova."
     }
   },
   "DatePicker": {

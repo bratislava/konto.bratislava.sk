@@ -6,14 +6,17 @@ import { useFormSummary } from './Summary/useFormSummary'
 
 const SummaryHeader = () => {
   const { isSigned } = useFormContext()
-  const { infectedFiles, uploadingFiles, hasErrors } = useFormSummary()
+  const { getValidatedSummary, getInfectedFiles, getUploadFiles } = useFormSummary()
+  const { hasErrors } = getValidatedSummary()
+  const infectedFiles = getInfectedFiles()
+  const uploadFiles = getUploadFiles()
   const { t } = useTranslation('forms')
 
   const infectedFilesFilenames = infectedFiles.map((file) => file.fileName)
 
   return (
     <>
-      <h1 className="text-h1-medium font-semibold">{t('summary.title')}</h1>
+      <h2 className="text-h2">{t('summary.title')}</h2>
       {hasErrors && (
         <Alert
           type="error"
@@ -42,11 +45,11 @@ const SummaryHeader = () => {
           className="mt-4"
         />
       )}
-      {uploadingFiles.length > 0 && (
+      {uploadFiles.length > 0 && (
         <Alert
           type="warning"
           message={t('summary.uploading_files', {
-            files: uploadingFiles.map((file) => file.fileName).join(', '),
+            files: uploadFiles.map((file) => file.fileName).join(', '),
           })}
           fullWidth
           className="mt-4"

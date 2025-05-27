@@ -3,6 +3,11 @@ fragment Tax on Tax {
   currentYearTaxInPreparationText
   currentYearTaxInPreparationTitle
   displayCurrentYearTaxInPreparation
+  channelChangeEffectiveNextYearText
+  channelChangeEffectiveNextYearTitle
+  paymentSuccessFeedbackLink
+  paymentSuccessPrivacyPolicyLink
+  paymentSuccessFaqLink
 }
 
 query Tax {

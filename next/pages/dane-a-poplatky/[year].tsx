@@ -1,12 +1,17 @@
+import {
+  getTaxAdministratorForUser,
+  StrapiTaxAdministrator,
+} from '@backend/utils/tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
@@ -15,6 +20,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto
+  taxAdministrator: StrapiTaxAdministrator | null
   strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
@@ -32,7 +38,7 @@ function convertYearToNumber(input: string | undefined) {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
-  async ({ context, getAccessToken }) => {
+  async ({ amplifyContextSpec, context, fetchAuthSession }) => {
     const year = context.params?.year
     const yearNumber = convertYearToNumber(year)
     if (!yearNumber) {
@@ -42,13 +48,14 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }, strapiTax] = await Promise.all([
-        taxApi.taxControllerGetActualTaxes(yearNumber, {
-          accessToken: 'always',
-          accessTokenSsrGetFn: getAccessToken,
+      const [{ data: taxData }, strapiTax, taxAdministrator] = await Promise.all([
+        taxClient.taxControllerGetActualTaxes(yearNumber, {
+          authStrategy: 'authOnly',
+          getSsrAuthSession: fetchAuthSession,
         }),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-        prefetchUserQuery(queryClient, getAccessToken),
+        getTaxAdministratorForUser(amplifyContextSpec),
+        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
 
       if (!strapiTax) {
@@ -59,6 +66,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
         props: {
           taxData,
           strapiTax,
+          taxAdministrator: taxAdministrator ?? null,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
@@ -88,13 +96,16 @@ const AccountTaxesFeesPage = ({
   taxData,
   strapiTax,
   dehydratedState,
+  taxAdministrator,
 }: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSectionProvider taxData={taxData} strapiTax={strapiTax}>
-          <TaxFeeSection />
-        </TaxFeeSectionProvider>
+        <StrapiTaxProvider strapiTax={strapiTax}>
+          <TaxFeeSectionProvider taxData={taxData} taxAdministrator={taxAdministrator}>
+            <TaxFeeSection />
+          </TaxFeeSectionProvider>
+        </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

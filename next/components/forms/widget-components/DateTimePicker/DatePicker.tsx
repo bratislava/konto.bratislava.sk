@@ -4,14 +4,14 @@ import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, useMemo } from 'react'
-import { OverlayProvider, useDatePicker } from 'react-aria'
+import { useDatePicker } from 'react-aria'
+import { Dialog, Popover } from 'react-aria-components'
 import { useDatePickerState } from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import { FieldWrapperProps } from '../FieldWrapper'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
-import Popover from './Popover'
 
 export type DatePickerProps = FieldWrapperProps & {
   value?: string | null
@@ -29,7 +29,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       required,
       tooltip,
       helptext,
-      helptextHeader,
+      helptextMarkdown,
+      helptextFooter,
+      helptextFooterMarkdown,
       value,
       minValue,
       maxValue,
@@ -43,6 +45,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     forwardedRef,
   ) => {
     const ref = useObjectRef(forwardedRef)
+    const dateFieldRef = useObjectRef<HTMLDivElement>(null)
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
     const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
 
@@ -102,7 +105,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           {...fieldProps}
           label={label}
           helptext={helptext}
-          helptextHeader={helptextHeader}
+          helptextMarkdown={helptextMarkdown}
+          helptextFooter={helptextFooter}
+          helptextFooterMarkdown={helptextFooterMarkdown}
           required={required}
           disabled={disabled}
           tooltip={tooltip}
@@ -112,17 +117,24 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           popover={
             <>
               {state?.isOpen && (
-                <OverlayProvider>
-                  <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
+                <Popover
+                  isOpen={state.isOpen}
+                  onOpenChange={state.setOpen}
+                  triggerRef={dateFieldRef}
+                  placement="bottom start"
+                  shouldCloseOnInteractOutside={() => true}
+                >
+                  <Dialog {...dialogProps}>
                     <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
-                  </Popover>
-                </OverlayProvider>
+                  </Dialog>
+                </Popover>
               )}
             </>
           }
           size={size}
           labelSize={labelSize}
           displayOptionalLabel={displayOptionalLabel}
+          ref={dateFieldRef}
         >
           <ButtonNew
             variant="icon-wrapped-negative-margin"

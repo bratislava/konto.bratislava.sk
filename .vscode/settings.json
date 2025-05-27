@@ -1,4 +1,11 @@
 {
-  "eslint.workingDirectories": ["./next"],
+  "eslint.workingDirectories": [
+    "./next",
+    "./nest-forms-backend",
+    "./nest-city-account",
+    "./nest-tax-backend",
+    "./nest-clamav-scanner",
+    "./forms-shared"
+  ],
   "typescript.tsdk": "./next/node_modules/typescript/lib"
 }

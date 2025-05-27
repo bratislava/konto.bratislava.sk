@@ -1,6 +1,6 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { CheckboxUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { CheckboxUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
@@ -29,7 +29,9 @@ const CheckboxWidgetRJSF = ({
     size,
     labelSize,
     helptext,
-    helptextHeader,
+    helptextMarkdown,
+    helptextFooter,
+    helptextFooterMarkdown,
     checkboxLabel,
   } = options
 
@@ -52,7 +54,9 @@ const CheckboxWidgetRJSF = ({
         size={size}
         labelSize={labelSize}
         helptext={helptext}
-        helptextHeader={helptextHeader}
+        helptextMarkdown={helptextMarkdown}
+        helptextFooter={helptextFooter}
+        helptextFooterMarkdown={helptextFooterMarkdown}
         displayOptionalLabel
       >
         <Checkbox value="true" variant={variant} isDisabled={readonly}>

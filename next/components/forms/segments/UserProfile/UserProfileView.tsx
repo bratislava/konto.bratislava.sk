@@ -2,6 +2,7 @@ import { updateUserAttributes } from 'aws-amplify/auth'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import useSnackbar from 'frontend/hooks/useSnackbar'
+import { useUserUpdateBloomreachData } from 'frontend/hooks/useUser'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import identity from 'lodash/identity'
@@ -29,6 +30,8 @@ const UserProfileView = () => {
   const { refreshData } = useRefreshServerSideProps(userAttributes)
   const { push } = useRouter()
 
+  const { updateBloomreachData } = useUserUpdateBloomreachData()
+
   useEffect(() => {
     setAlertType(updateUserDataError ? 'error' : 'success')
   }, [updateUserDataError])
@@ -53,6 +56,9 @@ const UserProfileView = () => {
 
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+      // at time of coding cognito is not providing user attributes change event, this is next best thing i come up with
+      // this doesn't affect FE, therfore we don't need to wait for result
+      updateBloomreachData()
       await refreshData()
       setIsEditing(false)
     } catch (error) {
@@ -90,7 +96,7 @@ const UserProfileView = () => {
           <AccountMarkdown
             content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
             variant="sm"
-            className="mx-auto w-full max-w-screen-lg px-4 pb-5 pt-3 md:px-8 md:pb-6 md:pt-4 lg:px-0"
+            className="mx-auto w-full max-w-(--breakpoint-lg) px-4 pt-3 pb-5 md:px-8 md:pt-4 md:pb-6 lg:px-0"
           />
         </div>
       </div>

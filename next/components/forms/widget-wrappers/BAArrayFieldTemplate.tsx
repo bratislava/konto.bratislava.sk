@@ -8,14 +8,16 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
-import cx from 'classnames'
+import { getObjectFieldInfo } from 'forms-shared/form-utils/getObjectFieldInfo'
+import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType } from 'react'
 
+import cn from '../../../frontend/cn'
 import Alert from '../info-components/Alert'
+import ConditionalFormMarkdown from '../info-components/ConditionalFormMarkdown'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import FormMarkdown from '../info-components/FormMarkdown'
 import ButtonNew from '../simple-components/ButtonNew'
+import type { BAArrayFieldItemTemplateAdditionalProps } from './BAArrayFieldItemTemplate'
 import WidgetWrapper from './WidgetWrapper'
 
 /**
@@ -38,14 +40,22 @@ const BAArrayFieldTemplate = <
   rawErrors,
 }: ArrayFieldTemplateProps<T, S, F>) => {
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiOptions
+  const {
+    variant,
+    description,
+    descriptionMarkdown,
+    addButtonLabel,
+    hideTitle,
+    cannotAddItemMessage,
+  } = uiOptions
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
     uiOptions,
-  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & { parentUiOptions: ArrayFieldUiOptions }>
+  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & BAArrayFieldItemTemplateAdditionalProps>
+  const { selfId } = getObjectFieldInfo(idSchema)
 
-  const containerStyle = cx('flex flex-col', {
+  const containerStyle = cn('flex flex-col', {
     'gap-6': variant === 'topLevel',
     'gap-4': variant === 'nested',
   })
@@ -58,35 +68,51 @@ const BAArrayFieldTemplate = <
 
   const hasErrors = rawErrors && rawErrors?.length > 0
 
-  const defaultSpacing = {
-    topLevel: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
-    nested: undefined,
-  }[variant]
-
   return (
-    <WidgetWrapper id={idSchema.$id} options={uiOptions} defaultSpacing={defaultSpacing}>
+    <WidgetWrapper id={idSchema.$id} options={uiOptions}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}
-          {title && variant === 'topLevel' && <h3 className="text-h3 mb-6">{title}</h3>}
-          {title && variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+          {title && variant === 'topLevel' && (
+            <h3 className={cn('text-h3', { 'mb-2': description, 'mb-6': !description })}>
+              {title}
+            </h3>
+          )}
+          {title && variant === 'nested' && <h4 className="mb-4 text-h4">{title}</h4>}
         </>
       )}
       {/* ArrayFieldDescriptionTemplate is not used */}
+      {/* TODO: Unified implementation of description. */}
       {description && variant === 'nested' && (
         <Alert
           type="info"
           hasIcon={false}
-          message={<FormMarkdown>{description}</FormMarkdown>}
+          message={
+            <ConditionalFormMarkdown isMarkdown={descriptionMarkdown}>
+              {description}
+            </ConditionalFormMarkdown>
+          }
           fullWidth
           className="mb-6 whitespace-pre-wrap"
         />
+      )}
+      {description && variant === 'topLevel' && (
+        <div className="mb-6">
+          <ConditionalFormMarkdown isMarkdown={descriptionMarkdown}>
+            {description}
+          </ConditionalFormMarkdown>
+        </div>
       )}
       <div className={containerStyle}>
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
           {items &&
             items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-              <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
+              <ArrayFieldItemTemplate
+                key={key}
+                {...itemProps}
+                parentUiOptions={uiOptions}
+                parentSelfId={selfId}
+              />
             ))}
         </div>
         <div>

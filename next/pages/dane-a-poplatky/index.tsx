@@ -4,14 +4,18 @@ import {
 } from '@backend/utils/tax-administrator'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseGetTaxesDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { AuthSession } from 'aws-amplify/auth'
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
-import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { AccountType } from 'frontend/dtos/accountDto'
+import { ResponseGetTaxesDto } from 'openapi-clients/tax'
 
+import TaxesFeesSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
+import { StrapiTaxProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useStrapiTax'
 import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeesSection'
+import AccountPageLayout from '../../components/layouts/AccountPageLayout'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -27,11 +31,11 @@ type AccountTaxesFeesPageProps = {
 /**
  * BE returns 403 if users identity is not verified, it should return a flag instead
  */
-const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
+const getTaxes = async (getSsrAuthSession: () => Promise<AuthSession>) => {
   try {
-    const { data } = await taxApi.taxControllerGetArchivedTaxes({
-      accessToken: 'always',
-      accessTokenSsrGetFn: getAccessToken,
+    const { data } = await taxClient.taxControllerGetArchivedTaxes({
+      authStrategy: 'authOnly',
+      getSsrAuthSession,
     })
     return data
   } catch (error) {
@@ -48,16 +52,26 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
-  async ({ amplifyContextSpec, getAccessToken }) => {
+  async ({ amplifyContextSpec, fetchAuthSession }) => {
     const queryClient = new QueryClient()
 
     try {
-      const [taxesData, taxAdministrator, strapiTax] = await Promise.all([
-        getTaxes(getAccessToken),
+      const [taxesData, taxAdministrator, strapiTax, accountType] = await Promise.all([
+        getTaxes(fetchAuthSession),
         getTaxAdministratorForUser(amplifyContextSpec),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-        prefetchUserQuery(queryClient, getAccessToken),
+        fetchUserAttributes(amplifyContextSpec).then(
+          (response) => response?.['custom:account_type'],
+        ),
+        prefetchUserQuery(queryClient, fetchAuthSession),
       ])
+
+      // Hide taxes and fees section for legal entities
+      if (
+        accountType === AccountType.FyzickaOsobaPodnikatel ||
+        accountType === AccountType.PravnickaOsoba
+      )
+        return { notFound: true }
 
       if (!strapiTax) {
         return { notFound: true }
@@ -93,13 +107,11 @@ const AccountTaxesFeesPage = ({
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeesSectionProvider
-          taxesData={taxesData}
-          taxAdministrator={taxAdministrator}
-          strapiTax={strapiTax}
-        >
-          <TaxesFeesSection />
-        </TaxFeesSectionProvider>
+        <StrapiTaxProvider strapiTax={strapiTax}>
+          <TaxFeesSectionProvider taxesData={taxesData} taxAdministrator={taxAdministrator}>
+            <TaxesFeesSection />
+          </TaxFeesSectionProvider>
+        </StrapiTaxProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

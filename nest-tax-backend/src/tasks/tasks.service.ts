@@ -4,9 +4,9 @@ import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
 import dayjs from 'dayjs'
 
 import { AdminService } from '../admin/admin.service'
-import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
@@ -114,7 +114,7 @@ export class TasksService {
         'Failed to update payments from Noris',
         undefined,
         undefined,
-        error
+        error,
       )
     }
 

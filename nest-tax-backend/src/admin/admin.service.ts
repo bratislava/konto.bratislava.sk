@@ -307,7 +307,7 @@ export class AdminService {
         'Failed to get taxes from Noris',
         undefined,
         undefined,
-        error
+        error,
       )
     }
     let count = 0

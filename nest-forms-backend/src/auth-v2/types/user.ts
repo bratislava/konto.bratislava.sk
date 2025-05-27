@@ -1,6 +1,6 @@
 import { CognitoAccessTokenPayload } from 'aws-jwt-verify/jwt-model'
-import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
 
+import { CityAccountUser } from '../services/city-account-user.service'
 import { CognitoUser } from '../services/cognito-user.service'
 
 export enum UserType {
@@ -17,7 +17,7 @@ export type AuthUser = {
   type: UserType.Auth
   cognitoJwtPayload: CognitoAccessTokenPayload
   cognitoUser: CognitoUser
-  cityAccountUser: UserControllerGetOrCreateUser200Response
+  cityAccountUser: CityAccountUser
 }
 
 export type User = GuestUser | AuthUser

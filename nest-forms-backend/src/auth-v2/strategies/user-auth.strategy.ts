@@ -25,7 +25,9 @@ export class UserAuthStrategy extends PassportStrategy(
     super()
   }
 
-  private async authenticateWithBearerToken(bearerToken: string) {
+  private async authenticateWithBearerToken(
+    bearerToken: string,
+  ): Promise<AuthUser> {
     const cognitoJwtPayload =
       await this.cognitoJwtVerifyService.verify(bearerToken)
     const [cognitoAttributes, cityAccountUser] = await Promise.all([
@@ -38,10 +40,12 @@ export class UserAuthStrategy extends PassportStrategy(
       cognitoJwtPayload,
       cognitoUser: cognitoAttributes,
       cityAccountUser,
-    } as AuthUser
+    }
   }
 
-  private async identifyWithGuestId(guestIdentityId: string) {
+  private async identifyWithGuestId(
+    guestIdentityId: string,
+  ): Promise<GuestUser> {
     const isValidGuest =
       await this.cognitoGuestIdentityService.verifyGuestIdentityId(
         guestIdentityId,
@@ -51,7 +55,7 @@ export class UserAuthStrategy extends PassportStrategy(
       return {
         type: UserType.Guest,
         cognitoIdentityId: guestIdentityId,
-      } as GuestUser
+      }
     }
 
     throw new UnauthorizedException('Invalid guest session identifier')

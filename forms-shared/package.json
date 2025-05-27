@@ -29,7 +29,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@internationalized/date": "3.8.0",
+    "@internationalized/date": "3.8.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "@react-email/components": "0.0.41",
     "@rjsf/core": "5.24.9",

@@ -164,6 +164,7 @@ describe('NasesService', () => {
           id: '1',
         },
         data: {
+          cognitoGuestIdentityId: null,
           userExternalId: 'sub',
           ico: 'ico1',
         },

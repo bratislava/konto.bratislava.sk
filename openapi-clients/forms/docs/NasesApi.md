@@ -44,7 +44,7 @@ const { status, data } = await apiInstance.nasesControllerCreateForm(createFormR
 
 ### Authorization
 
-[bearer](../README.md#bearer)
+[cognitoGuestIdentityId](../README.md#cognitoGuestIdentityId), [bearer](../README.md#bearer)
 
 ### HTTP request headers
 

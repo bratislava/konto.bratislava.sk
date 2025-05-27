@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { FormError, FormOwnerType, Forms, FormState } from '@prisma/client'
+import {
+  FormError,
+  FormOwnerType,
+  Forms,
+  FormState,
+  Prisma,
+} from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -22,6 +28,8 @@ import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
+import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
 import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
@@ -103,8 +111,7 @@ export default class NasesService {
 
   async createForm(
     requestData: CreateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<CreateFormResponseDto> {
     const formDefinition = getFormDefinitionBySlug(
       requestData.formDefinitionSlug,
@@ -116,18 +123,13 @@ export default class NasesService {
       )
     }
 
-    const data = {
-      userExternalId: user ? user.sub : null,
+    const data: Prisma.FormsUncheckedCreateInput = {
+      userExternalId: isAuthUser(user) ? user.cognitoJwtPayload.sub : null,
+      cognitoGuestIdentityId: isGuestUser(user) ? user.cognitoIdentityId : null,
       formDefinitionSlug: requestData.formDefinitionSlug,
       jsonVersion: formDefinition.jsonVersion,
-      ico,
-      ownerType:
-        user?.['custom:account_type'] === 'po' ||
-        user?.['custom:account_type'] === 'fo-p'
-          ? FormOwnerType.PO
-          : user?.['custom:account_type']
-            ? FormOwnerType.FO
-            : undefined,
+      ico: getUserIco(user),
+      ownerType: userToFormOwnerType(user),
     }
     const result = await this.formsService.createForm(data)
 
@@ -167,6 +169,7 @@ export default class NasesService {
       },
       data: {
         userExternalId: user.sub,
+        cognitoGuestIdentityId: null,
         ico,
         ownerType:
           user?.['custom:account_type'] === 'po' ||

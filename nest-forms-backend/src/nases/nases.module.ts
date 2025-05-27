@@ -16,11 +16,11 @@ import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
-import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Module({
   imports: [

@@ -24,9 +24,9 @@ import PrismaService from '../../../prisma/prisma.service'
 import MailgunService from '../../../utils/global-services/mailer/mailgun.service'
 import OloMailerService from '../../../utils/global-services/mailer/olo-mailer.service'
 import ThrowerErrorGuard from '../../../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 import { EmailFormsErrorsResponseEnum } from '../dtos/email-forms.errors.enum'
 import EmailFormsSubservice from '../email-forms.subservice'
-import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 jest.mock('forms-shared/definitions/getFormDefinitionBySlug')
 jest.mock('forms-shared/summary-email/renderSummaryEmail')
@@ -130,7 +130,6 @@ describe('EmailFormsSubservice', () => {
   let service: EmailFormsSubservice
   let mailgunService: jest.Mocked<MailgunService>
   let oloMailerService: jest.Mocked<OloMailerService>
-  let throwerErrorGuard: jest.Mocked<ThrowerErrorGuard>
   let configService: jest.Mocked<ConfigService>
 
   beforeEach(async () => {
@@ -170,9 +169,6 @@ describe('EmailFormsSubservice', () => {
     oloMailerService = module.get(
       OloMailerService,
     ) as jest.Mocked<OloMailerService>
-    throwerErrorGuard = module.get(
-      ThrowerErrorGuard,
-    ) as jest.Mocked<ThrowerErrorGuard>
     configService = module.get(ConfigService) as jest.Mocked<ConfigService>
 
     jest.spyOn(configService, 'get').mockReturnValue('production')

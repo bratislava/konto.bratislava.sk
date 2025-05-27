@@ -14,7 +14,7 @@ import { PrepareMigrationInput } from './inputs/prepare-migration.input'
 import { PrepareMigrationOutput } from './outputs/prepare-migration.output copy'
 
 describe('Form Migration', () => {
-  let e2eApp: TestingApp
+  let testingApp: TestingApp
 
   beforeAll(async () => {
     const moduleRef = await withMockAuth(
@@ -23,22 +23,22 @@ describe('Form Migration', () => {
       }),
     ).compile()
 
-    e2eApp = await initializeTestingApp(moduleRef)
+    testingApp = await initializeTestingApp(moduleRef)
   })
 
   afterEach(async () => {
-    await e2eApp.clean()
+    await testingApp.clean()
   })
 
   afterAll(async () => {
-    await e2eApp.close()
+    await testingApp.close()
   })
 
   it('should migrate forms', async () => {
     const body: PrepareMigrationInput = {
       guestIdentityId: fixtureGuestUser1.identityId,
     }
-    const response = await e2eApp.axiosClient.post<PrepareMigrationOutput>(
+    const response = await testingApp.axiosClient.post<PrepareMigrationOutput>(
       '/forms/migrations/prepare',
       body,
       { headers: fixtureAuthUserFo.headers },
@@ -51,7 +51,7 @@ describe('Form Migration', () => {
   })
 
   it('should xx forms', async () => {
-    const response = await e2eApp.axiosClient.post(
+    const response = await testingApp.axiosClient.post(
       '/forms/migrations/prepare',
       {
         guestIdentityId: fixtureGuestUser1.identityId,

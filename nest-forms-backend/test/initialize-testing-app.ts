@@ -9,7 +9,7 @@ export type TestingApp = {
   app: NestExpressApplication
   axiosClient: AxiosInstance
   close: () => Promise<void>
-  clean: () => Promise<void>
+  clean: () => void
 }
 
 export async function initializeTestingApp(
@@ -39,7 +39,7 @@ export async function initializeTestingApp(
     nock.enableNetConnect()
   }
 
-  const clean = async () => {
+  const clean = () => {
     nock.cleanAll()
   }
 

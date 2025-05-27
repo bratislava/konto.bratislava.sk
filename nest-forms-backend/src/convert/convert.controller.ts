@@ -7,32 +7,20 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
-import { HttpStatusCode } from 'axios'
 import { Response } from 'express'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  EmptyFormDataErrorDto,
-  FormDefinitionNotFoundErrorDto,
-  FormDefinitionNotSupportedTypeErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import ConvertService from './convert.service'
 import {
@@ -41,13 +29,6 @@ import {
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
-import {
-  InvalidJsonErrorDto,
-  InvalidXmlErrorDto,
-  PdfGenerationFailedErrorDto,
-  WrongPospIdErrorDto,
-  XmlDoesntMatchSchemaErrorDto,
-} from './errors/convert.errors.dto'
 
 @ApiTags('convert')
 @ApiBearerAuth()
@@ -64,46 +45,16 @@ export default class ConvertController {
     description:
       'Generates XML form from given JSON data or form data stored in the database. If jsonData is not provided, the form data from the database will be used.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return XML form',
     type: String,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description:
-      'Got wrong type of form definition for its slug or empty form data.',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormDefinitionNotSupportedTypeErrorDto) },
-        { $ref: getSchemaPath(EmptyFormDataErrorDto) },
-      ],
-    },
   })
   @UseGuards(new CognitoGuard(true))
   @Post('json-to-xml-v2')
   async convertJsonToXmlV2(
     @Body() data: JsonToXmlV2RequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<string> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {
@@ -124,53 +75,16 @@ export default class ConvertController {
     summary: 'Convert XML to JSON',
     description: 'Generates JSON form from given XML data and form ID',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
-  })
-  @ApiExtraModels(InvalidXmlErrorDto)
-  @ApiExtraModels(XmlDoesntMatchSchemaErrorDto)
-  @ApiExtraModels(WrongPospIdErrorDto)
-  @ApiExtraModels(InvalidJsonErrorDto)
-  @ApiBadRequestResponse({
-    status: 400,
-    description: 'There was an error during converting to json.',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(InvalidXmlErrorDto) },
-        { $ref: getSchemaPath(XmlDoesntMatchSchemaErrorDto) },
-        { $ref: getSchemaPath(WrongPospIdErrorDto) },
-        { $ref: getSchemaPath(InvalidJsonErrorDto) },
-      ],
-    },
-  })
-  @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
-  })
-  @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('xml-to-json')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<XmlToJsonResponseDto> {
     return this.convertService.convertXmlToJson(
       data,
@@ -183,38 +97,7 @@ export default class ConvertController {
     summary: '',
     description: 'Generates PDF for given form data.',
   })
-  @ApiExtraModels(EmptyFormDataErrorDto)
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Form or form definition not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
-    description: 'Form is owned by someone else, the access is not granted.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'Empty form data.',
-    type: EmptyFormDataErrorDto,
-  })
-  @ApiInternalServerErrorResponse({
-    status: HttpStatusCode.InternalServerError,
-    description: 'There was an error during generating tax pdf.',
-  })
-  @ApiInternalServerErrorResponse({
-    status: HttpStatusCode.InternalServerError,
-    description: 'There was an error during generating pdf.',
-    type: PdfGenerationFailedErrorDto,
-  })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return pdf file stream.',
     type: StreamableFile,
   })
@@ -223,8 +106,8 @@ export default class ConvertController {
   async convertToPdf(
     @Res({ passthrough: true }) res: Response,
     @Body() data: ConvertToPdfRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<StreamableFile> {
     return this.convertService.convertToPdf(
       data,

@@ -1,24 +1,25 @@
-import cx from 'classnames'
 import React from 'react'
 
+import cn from '../../../../../frontend/cn'
 import { AccountType } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
 import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesCards = () => {
   const { accountType } = useSsrAuth()
-  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen, strapiTax } =
-    useTaxFeesSection()
+  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
+  const strapiTax = useStrapiTax()
   const displayTaxAdministratorCard =
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
   const { showEmailCommunicationBanner, channelChangeEffectiveNextYear } = useTaxChannel()
 
-  const wrapperStyle = cx('flex flex-col gap-4', {
+  const wrapperStyle = cn('flex flex-col gap-4', {
     'lg:flex-row': !showEmailCommunicationBanner,
   })
 

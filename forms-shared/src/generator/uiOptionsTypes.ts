@@ -100,7 +100,9 @@ export type InputUiOptions = {
   placeholder?: string
 } & WidgetUiOptions
 
-export type NumberUiOptions = Omit<InputUiOptions, 'inputType'>
+export type NumberUiOptions = Omit<InputUiOptions, 'inputType'> & {
+  formatOptions?: Intl.NumberFormatOptions
+}
 
 export type RadioGroupUiOptions = {
   enumMetadata: EnumMetadata<string | boolean>[]
@@ -156,12 +158,7 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
 export type StepUiOptions = {
   stepQueryParam?: string
   stepperTitle?: string
-}
-
-export type SchemaUiOptions = {
-  titlePath?: string
-  titleFallback?: string
-}
+} & Pick<ObjectFieldUiOptions, 'description' | 'descriptionMarkdown'>
 
 /**
  * Unique prefix for Markdown text.

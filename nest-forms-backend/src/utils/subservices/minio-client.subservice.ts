@@ -1,7 +1,7 @@
 import { Readable, Stream } from 'node:stream'
 
 import { Injectable } from '@nestjs/common'
-import { BucketItemStat, UploadedObjectInfo } from 'minio'
+import { BucketItemStat } from 'minio'
 import { MinioClient, MinioService } from 'nestjs-minio-client'
 
 import { BufferedFileDto } from '../../files/files.dto'
@@ -11,6 +11,11 @@ import {
 } from '../../files/files.errors.enum'
 import ThrowerErrorGuard from '../guards/thrower-error.guard'
 import alertError, { LineLoggerSubservice } from './line-logger.subservice'
+
+interface UploadedObjectInfo {
+  etag: string
+  versionId: string | null
+}
 
 @Injectable()
 export default class MinioClientSubservice {
@@ -156,9 +161,9 @@ export default class MinioClientSubservice {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        `${
-          FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR
-        } Error: ${<string>error}`,
+        FilesErrorsResponseEnum.FILE_UPLOAD_TO_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -185,9 +190,9 @@ export default class MinioClientSubservice {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
-        `${
-          FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR
-        } Error: ${<string>error}`,
+        FilesErrorsResponseEnum.FILE_DOWNLOAD_FROM_MINIO_WAS_NOT_SUCCESSFUL_ERROR,
+        undefined,
+        error,
       )
     }
   }

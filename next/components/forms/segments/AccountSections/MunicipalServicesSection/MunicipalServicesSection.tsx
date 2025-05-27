@@ -7,13 +7,16 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { environment } from '../../../../../environment'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
 const enumOptions: SelectOption[] = [
   { value: 'ALL_CATEGORY', label: MunicipalServicesCategories.ALL_CATEGORY, description: '' },
-  { value: 'TAXES_CATEGORY', label: MunicipalServicesCategories.TAXES_CATEGORY, description: '' },
+  {
+    value: 'TAXES_FEES_CATEGORY',
+    label: MunicipalServicesCategories.TAXES_FEES_CATEGORY,
+    description: '',
+  },
   {
     value: 'CULTURE_CATEGORY',
     label: MunicipalServicesCategories.CULTURE_CATEGORY,
@@ -60,71 +63,13 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
-  environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
-  44,
-  9,
-  19,
-  34,
-  35,
-  43,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  10,
-  11,
-  12,
-  13,
-  14,
-  33,
-  17,
-  20,
-  21,
-  22,
-  23,
-  24,
-  25,
-  29,
-  26,
-  27,
-  28,
-  32,
-  18,
-].filter(isDefined)
+  1, 45, 44, 9, 19, 34, 35, 43, 47, 48, 49, 50, 51, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 33, 17,
+  20, 21, 22, 23, 24, 25, 29, 26, 27, 28, 32, 18, 46,
+]
 const poMunicipalServicesSection = [
-  environment.featureToggles.komunalnyOdpadFormServicesList ? 45 : null,
-  34,
-  35,
-  44,
-  3,
-  4,
-  6,
-  43,
-  1,
-  42,
-  8,
-  10,
-  11,
-  12,
-  13,
-  33,
-  17,
-  7,
-  36,
-  37,
-  38,
-  39,
-  28,
-  14,
-  40,
-  41,
-  32,
-  18,
-].filter(isDefined)
+  45, 34, 35, 44, 3, 4, 6, 43, 47, 48, 49, 50, 51, 42, 8, 10, 11, 12, 13, 33, 17, 7, 36, 37, 38, 39,
+  28, 14, 40, 41, 32, 18, 46,
+]
 
 const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
@@ -156,9 +101,9 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="mx-auto w-full max-w-screen-lg pt-4 lg:pt-8">
+      <div className="mx-auto w-full max-w-(--breakpoint-lg) pt-4 lg:pt-8">
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
-        <div className="grid grid-cols-1 gap-3 px-4 sm:gap-6 min-[615px]:grid-cols-2 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:px-0">
+        <div className="grid grid-cols-1 gap-3 px-4 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 sm:gap-6 md:gap-8 lg:grid-cols-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>

@@ -16,45 +16,46 @@ datasource db {
 }
 
 model Forms {
-  id                 String         @id @default(uuid())
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  id                     String         @id @default(uuid())
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
   // dotecie z ginisu neskor
-  externalId         String?
+  externalId             String?
   // z ba konta ale nemusi
-  userExternalId     String?        @db.Uuid
+  // TODO: Rename to cognitoAuthSub
+  userExternalId         String?        @db.Uuid
+  cognitoGuestIdentityId String?
   // same as above
-  email              String?
+  email                  String?
   // nases id
-  mainUri            String?
-  actorUri           String?
-  ownerType          FormOwnerType?
-  ico                String?
-  state              FormState      @default(DRAFT)
-  error              FormError      @default(NONE)
+  mainUri                String?
+  actorUri               String?
+  ownerType              FormOwnerType?
+  ico                    String?
+  state                  FormState      @default(DRAFT)
+  error                  FormError      @default(NONE)
   // either the version taken from schema at the time of form creation, or at the time of successful send where applicable (TODO: change when implementing versioning)
-  jsonVersion        String
+  jsonVersion            String
   /// [FormDataJson]
-  formDataJson       Json?
-  formDataGinis      String?
-  formDataBase64     String?
+  formDataJson           Json?
+  formDataGinis          String?
   /// [FormSignature]
-  formSignature      Json?
+  formSignature          Json?
   // ID from Ginis, which is generated after registering the submission
-  ginisDocumentId    String?        @unique
+  ginisDocumentId        String?        @unique
   // nases id FO, PO, alebo mesto cez tech. ucet
-  senderId           String?
+  senderId               String?
   // always BA
-  recipientId        String?
+  recipientId            String?
   // kedy to bolo podane
-  finishSubmission   DateTime?
-  formDefinitionSlug String
+  finishSubmission       DateTime?
+  formDefinitionSlug     String
   /// [FormSummary]
-  formSummary        Json?
+  formSummary            Json?
   // relation to files
-  files              Files[]
-  archived           Boolean        @default(false)
-  ginisState         GinisState     @default(CREATED)
+  files                  Files[]
+  archived               Boolean        @default(false)
+  ginisState             GinisState     @default(CREATED)
 }
 
 enum GinisState {

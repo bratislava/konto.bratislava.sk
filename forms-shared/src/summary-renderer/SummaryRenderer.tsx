@@ -8,48 +8,49 @@ import {
   SummaryJsonStep,
   SummaryJsonType,
 } from '../summary-json/summaryJsonTypes'
-import { ValidatedSummary } from './validateSummary'
 import { FileInfoSummary } from '../form-files/fileStatus'
 import {
   SummaryDisplayValue,
   SummaryDisplayValueType,
 } from '../summary-json/getSummaryDisplayValue'
+import { GenericObjectType, ValidationData } from '@rjsf/utils'
+import { checkPathForErrors } from './checkPathForErrors'
 
-type RendererPropsBase = {
+type ComponentPropsBase = {
   hasError: boolean
   index: number
   isFirst: boolean
   isLast: boolean
 }
 
-export type SummaryFormRendererProps = PropsWithChildren<
+export type SummaryFormComponentProps = PropsWithChildren<
   {
     form: SummaryJsonForm
-  } & RendererPropsBase
+  } & ComponentPropsBase
 >
 
-export type SummaryStepRendererProps = PropsWithChildren<
+export type SummaryStepComponentProps = PropsWithChildren<
   {
     step: SummaryJsonStep
-  } & RendererPropsBase
+  } & ComponentPropsBase
 >
 
-export type SummaryArrayRendererProps = PropsWithChildren<
+export type SummaryArrayComponentProps = PropsWithChildren<
   {
     array: SummaryJsonArray
-  } & RendererPropsBase
+  } & ComponentPropsBase
 >
 
-export type SummaryFieldRendererProps = PropsWithChildren<
+export type SummaryFieldComponentProps = PropsWithChildren<
   {
     field: SummaryJsonField
-  } & RendererPropsBase
+  } & ComponentPropsBase
 >
 
-export type SummaryArrayItemRendererProps = PropsWithChildren<
+export type SummaryArrayItemComponentProps = PropsWithChildren<
   {
     arrayItem: SummaryJsonArrayItem
-  } & RendererPropsBase
+  } & ComponentPropsBase
 >
 
 type ValueRendererBase = {
@@ -58,75 +59,196 @@ type ValueRendererBase = {
   isLast: boolean
 }
 
-export type SummaryStringValueRendererProps = {
+export type SummaryStringValueComponentProps = {
   value: string
 } & ValueRendererBase
 
-export type SummaryFileValueRendererProps = {
+export type SummaryFileValueComponentProps = {
   id: string
   fileInfo: FileInfoSummary
 } & ValueRendererBase
 
-export type SummaryNoneValueRendererProps = ValueRendererBase
+export type SummaryNoneValueComponentProps = ValueRendererBase
 
-export type SummaryInvalidValueRendererProps = ValueRendererBase
+export type SummaryInvalidValueComponentProps = ValueRendererBase
 
-type DisplayValueRendererProps = {
-  displayValue: SummaryDisplayValue
-  validatedSummary: ValidatedSummary
-  renderStringValue: (props: SummaryStringValueRendererProps) => ReactNode
-  renderFileValue: (props: SummaryFileValueRendererProps) => ReactNode
-  renderNoneValue: (props: SummaryNoneValueRendererProps) => ReactNode
-  renderInvalidValue: (props: SummaryInvalidValueRendererProps) => ReactNode
-} & ValueRendererBase
+export type SummaryRendererComponents = {
+  FormComponent: (props: SummaryFormComponentProps) => ReactNode
+  StepComponent: (props: SummaryStepComponentProps) => ReactNode
+  FieldComponent: (props: SummaryFieldComponentProps) => ReactNode
+  ArrayComponent: (props: SummaryArrayComponentProps) => ReactNode
+  ArrayItemComponent: (props: SummaryArrayItemComponentProps) => ReactNode
+  StringValueComponent: (props: SummaryStringValueComponentProps) => ReactNode
+  FileValueComponent: (props: SummaryFileValueComponentProps) => ReactNode
+  NoneValueComponent: (props: SummaryNoneValueComponentProps) => ReactNode
+  InvalidValueComponent: (props: SummaryInvalidValueComponentProps) => ReactNode
+}
 
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
-  renderForm: (props: SummaryFormRendererProps) => ReactNode
-  renderStep: (props: SummaryStepRendererProps) => ReactNode
-  renderField: (props: SummaryFieldRendererProps) => ReactNode
-  renderArray: (props: SummaryArrayRendererProps) => ReactNode
-  renderArrayItem: (props: SummaryArrayItemRendererProps) => ReactNode
-} & Pick<
-  DisplayValueRendererProps,
-  'renderStringValue' | 'renderFileValue' | 'renderNoneValue' | 'renderInvalidValue'
->
+  fileInfos: Record<string, FileInfoSummary>
+  /**
+   * Required only for summaries that display validation errors (FE app, PDF).
+   *
+   * Must be explicitly set to `null` for summaries that do not display validation errors (e.g. PDF) to
+   * express that the validation errors are not needed.
+   */
+  validationData: ValidationData<GenericObjectType> | null
+  components: SummaryRendererComponents
+}
 
 const DisplayValueRenderer = ({
-  validatedSummary,
   displayValue,
-  renderStringValue,
-  renderFileValue,
-  renderNoneValue,
-  renderInvalidValue,
+  fileInfos,
+  components,
   index,
   isFirst,
   isLast,
-}: DisplayValueRendererProps) => {
+}: {
+  displayValue: SummaryDisplayValue
+} & Pick<SummaryRendererProps, 'fileInfos' | 'components'> &
+  ValueRendererBase) => {
   const childPropsBase = {
     index,
     isFirst,
     isLast,
   }
+  const { StringValueComponent, FileValueComponent, NoneValueComponent, InvalidValueComponent } =
+    components
 
   switch (displayValue.type) {
     case SummaryDisplayValueType.String:
-      return <>{renderStringValue({ value: displayValue.value, ...childPropsBase })}</>
+      return <StringValueComponent value={displayValue.value} {...childPropsBase} />
     case SummaryDisplayValueType.File:
-      const fileInfo = validatedSummary?.getFileById(displayValue.id)
+      const fileInfo = fileInfos[displayValue.id]
       if (!fileInfo) {
-        return <>{renderInvalidValue(childPropsBase)}</>
+        return <InvalidValueComponent {...childPropsBase} />
       }
 
-      return <>{renderFileValue({ id: displayValue.id, fileInfo, ...childPropsBase })}</>
+      return <FileValueComponent id={displayValue.id} fileInfo={fileInfo} {...childPropsBase} />
     case SummaryDisplayValueType.None:
-      return <>{renderNoneValue(childPropsBase)}</>
+      return <NoneValueComponent {...childPropsBase} />
     case SummaryDisplayValueType.Invalid:
-      return <>{renderInvalidValue(childPropsBase)}</>
+      return <InvalidValueComponent {...childPropsBase} />
     default:
       return null
   }
+}
+
+function ChildrenRenderer({
+  childrenElements,
+  components,
+  fileInfos,
+  validationData,
+}: {
+  childrenElements: SummaryJsonElement[]
+} & Pick<SummaryRendererProps, 'fileInfos' | 'components' | 'validationData'>) {
+  return (
+    <Fragment>
+      {childrenElements.map((child, index) => {
+        const isLast = index === childrenElements.length - 1
+
+        return (
+          <ElementRenderer
+            key={child.id}
+            element={child}
+            index={index}
+            isLast={isLast}
+            components={components}
+            fileInfos={fileInfos}
+            validationData={validationData}
+          />
+        )
+      })}
+    </Fragment>
+  )
+}
+
+function ElementRenderer({
+  element,
+  index,
+  isLast,
+  components,
+  validationData,
+  fileInfos,
+}: {
+  element: SummaryJsonElement
+  index: number
+  isLast: boolean
+} & Pick<SummaryRendererProps, 'fileInfos' | 'components' | 'validationData'>) {
+  const { FormComponent, StepComponent, FieldComponent, ArrayComponent, ArrayItemComponent } =
+    components
+
+  const base: ComponentPropsBase = {
+    hasError: validationData ? checkPathForErrors(element.id, validationData.errorSchema) : false,
+    index,
+    isFirst: index === 0,
+    isLast,
+  }
+
+  if (element.type === SummaryJsonType.Form) {
+    return (
+      <FormComponent form={element} {...base}>
+        <ChildrenRenderer
+          childrenElements={element.steps}
+          components={components}
+          fileInfos={fileInfos}
+          validationData={validationData}
+        />
+      </FormComponent>
+    )
+  } else if (element.type === SummaryJsonType.Step) {
+    return (
+      <StepComponent step={element} {...base}>
+        <ChildrenRenderer
+          childrenElements={element.children}
+          components={components}
+          fileInfos={fileInfos}
+          validationData={validationData}
+        />
+      </StepComponent>
+    )
+  } else if (element.type === SummaryJsonType.Field) {
+    return (
+      <FieldComponent field={element} {...base}>
+        {element.displayValues.map((displayValue, index) => (
+          <DisplayValueRenderer
+            key={index}
+            index={index}
+            isFirst={index === 0}
+            isLast={index === element.displayValues.length - 1}
+            displayValue={displayValue}
+            components={components}
+            fileInfos={fileInfos}
+          />
+        ))}
+      </FieldComponent>
+    )
+  } else if (element.type === SummaryJsonType.Array) {
+    return (
+      <ArrayComponent array={element} {...base}>
+        <ChildrenRenderer
+          childrenElements={element.items}
+          components={components}
+          fileInfos={fileInfos}
+          validationData={validationData}
+        />
+      </ArrayComponent>
+    )
+  } else if (element.type === SummaryJsonType.ArrayItem) {
+    return (
+      <ArrayItemComponent arrayItem={element} {...base}>
+        <ChildrenRenderer
+          childrenElements={element.children}
+          components={components}
+          fileInfos={fileInfos}
+          validationData={validationData}
+        />
+      </ArrayItemComponent>
+    )
+  }
+
+  throw new Error(`Invalid element type`)
 }
 
 /**
@@ -134,85 +256,20 @@ const DisplayValueRenderer = ({
  *
  * This encapsulates the common logic of rendering the summary JSON into a React component. See usage for more details.
  */
-export const SummaryRenderer = ({
+export function SummaryRenderer({
   summaryJson,
-  validatedSummary,
-  renderForm,
-  renderStep,
-  renderField,
-  renderArray,
-  renderArrayItem,
-  renderStringValue,
-  renderFileValue,
-  renderNoneValue,
-  renderInvalidValue,
-}: SummaryRendererProps) => {
-  const renderElement = (
-    element: SummaryJsonElement,
-    index: number,
-    isLast: boolean,
-  ): ReactNode => {
-    const renderChildren = (children: SummaryJsonElement[]) =>
-      children.map((child, childIndex) => {
-        const isLastChild = childIndex === children.length - 1
-
-        return <Fragment key={child.id}>{renderElement(child, childIndex, isLastChild)}</Fragment>
-      })
-    const base = {
-      hasError: validatedSummary?.pathHasError(element.id) ?? false,
-      index,
-      isFirst: index === 0,
-      isLast,
-    }
-
-    switch (element.type) {
-      case SummaryJsonType.Form:
-        return renderForm({
-          form: element,
-          children: renderChildren(element.steps),
-          ...base,
-        })
-      case SummaryJsonType.Step:
-        return renderStep({
-          step: element,
-          children: renderChildren(element.children),
-          ...base,
-        })
-      case SummaryJsonType.Field:
-        return renderField({
-          field: element,
-          children: element.displayValues.map((displayValue, index) => (
-            <DisplayValueRenderer
-              key={index}
-              validatedSummary={validatedSummary}
-              displayValue={displayValue}
-              renderStringValue={renderStringValue}
-              renderFileValue={renderFileValue}
-              renderNoneValue={renderNoneValue}
-              renderInvalidValue={renderInvalidValue}
-              index={index}
-              isFirst={index === 0}
-              isLast={index === element.displayValues.length - 1}
-            ></DisplayValueRenderer>
-          )),
-          ...base,
-        })
-      case SummaryJsonType.Array:
-        return renderArray({
-          array: element,
-          children: renderChildren(element.items),
-          ...base,
-        })
-      case SummaryJsonType.ArrayItem:
-        return renderArrayItem({
-          arrayItem: element,
-          children: renderChildren(element.children),
-          ...base,
-        })
-      default:
-        throw new Error(`Invalid element type`)
-    }
-  }
-
-  return renderElement(summaryJson, 0, true)
+  components,
+  fileInfos,
+  validationData,
+}: SummaryRendererProps) {
+  return (
+    <ElementRenderer
+      element={summaryJson}
+      index={0}
+      isLast={true}
+      components={components}
+      fileInfos={fileInfos}
+      validationData={validationData}
+    />
+  )
 }

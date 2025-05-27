@@ -20,5 +20,5 @@ export const getInitialSummaryJson = (
     return null
   }
 
-  return getSummaryJsonNode(formDefinition.schema, formData, validatorRegistry)
+  return getSummaryJsonNode({ schema: formDefinition.schema, formData, validatorRegistry })
 }

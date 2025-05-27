@@ -22,7 +22,7 @@ const IntroSection = () => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [44, 9, 34, 35]
+  const foMunicipalServicesSection = [1, 44, 9, 34]
   const poMunicipalServicesSection = [34, 35, 43, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
@@ -45,7 +45,7 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
           titleAsParagraph
         />
-        <div className="m-auto w-full max-w-screen-lg">
+        <div className="m-auto w-full max-w-(--breakpoint-lg)">
           <Announcements />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
@@ -53,13 +53,13 @@ const IntroSection = () => {
               <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
               <Button
                 size="sm"
-                className="hidden pl-4 pt-4 sm:flex"
+                className="hidden pt-4 pl-4 sm:flex"
                 label={t('account_section_intro.all_services')}
                 variant="link-category"
                 href={ROUTES.MUNICIPAL_SERVICES}
               />
             </div>
-            <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
+            <div className="scrollbar-hide flex gap-3 overflow-x-scroll px-4 lg:gap-8 lg:px-0">
               {filteredServiceCards.map((card) => (
                 <ServiceCard
                   key={card.id}
@@ -76,7 +76,7 @@ const IntroSection = () => {
             </div>
             <Button
               size="sm"
-              className="flex pl-4 pt-4 sm:hidden"
+              className="flex pt-4 pl-4 sm:hidden"
               label={t('account_section_intro.all_services')}
               variant="link-category"
               href={ROUTES.MUNICIPAL_SERVICES}

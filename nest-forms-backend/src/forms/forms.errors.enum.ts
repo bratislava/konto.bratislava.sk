@@ -8,6 +8,8 @@ export enum FormsErrorsEnum {
   FORM_DEFINITION_NOT_FOUND = 'FORM_DEFINITION_NOT_FOUND',
   FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'FORM_DEFINITION_NOT_SUPPORTED_TYPE',
   EMPTY_FORM_DATA = 'EMPTY_FORM_DATA',
+  EMPTY_FORM_SUMMARY = 'EMPTY_FORM_SUMMARY',
+  FORM_VERSION_BUMP_NOT_POSSIBLE = 'FORM_VERSION_BUMP_NOT_POSSIBLE',
 }
 
 export enum FormsErrorsResponseEnum {
@@ -20,4 +22,6 @@ export enum FormsErrorsResponseEnum {
   FORM_DEFINITION_NOT_FOUND = 'Form definition was not found for given slug.',
   FORM_DEFINITION_NOT_SUPPORTED_TYPE = 'Got unsupported type of FormDefinition.',
   EMPTY_FORM_DATA = 'Form data is empty.',
+  EMPTY_FORM_SUMMARY = 'Form summary is empty.',
+  FORM_VERSION_BUMP_NOT_POSSIBLE = 'Form version bump is not possible.',
 }

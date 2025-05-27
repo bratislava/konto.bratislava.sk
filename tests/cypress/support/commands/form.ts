@@ -98,6 +98,8 @@ declare namespace Cypress {
       form: object,
       shareOfSpace: string,
       jointShare: string,
+      cisloNebytovehoPriestoruVBytovomDome?: string,
+      ucelVyuzitiaNebytovehoPriestoruVBytovomDome?: string,
     ): Chainable<any>
 
     /**
@@ -201,12 +203,11 @@ Cypress.Commands.add('checkFormValidation', (device, form, required, fields) => 
 
 Cypress.Commands.add('selectState', (form, esbsNationalityCiselnik, state) => {
   if (state !== '703') {
-    let foundState = esbsNationalityCiselnik.find((stateFromCiselnik) => {
+    const foundState = esbsNationalityCiselnik.find((stateFromCiselnik) => {
       return stateFromCiselnik.Code == state
     })
 
-    cy.wrap(Cypress.$('[data-cy=select-štát]', form)).click()
-    cy.wrap(Cypress.$('[data-cy=select-štát]', form)).type(foundState.Name + '{enter}{enter}')
+    cy.selectFromDropdown(form, 'select-štát', foundState.Name)
   }
 })
 
@@ -243,23 +244,40 @@ Cypress.Commands.add('selectLegalRelationship', (form, index, relationship) => {
   }
 })
 
-Cypress.Commands.add('fillInApartmentInformation', (form, shareOfSpace, jointShare) => {
-  cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form))
-    .eq(0)
-    .type(shareOfSpace)
+Cypress.Commands.add(
+  'fillInApartmentInformation',
+  (
+    form,
+    shareOfSpace,
+    jointShare,
+    cisloNebytovehoPriestoruVBytovomDome,
+    ucelVyuzitiaNebytovehoPriestoruVBytovomDome,
+  ) => {
+    cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form))
+      .eq(0)
+      .type(shareOfSpace)
 
-  cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(jointShare)
-})
+    cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(jointShare)
+
+    if (cisloNebytovehoPriestoruVBytovomDome) {
+      cy.wrap(Cypress.$('[data-cy=input-cisloNebytovehoPriestoruVBytovomDome]', form))
+        .eq(0)
+        .type(cisloNebytovehoPriestoruVBytovomDome)
+    }
+    if (ucelVyuzitiaNebytovehoPriestoruVBytovomDome) {
+      cy.wrap(Cypress.$('[data-cy=input-ucelVyuzitiaNebytovehoPriestoruVBytovomDome]', form))
+        .eq(0)
+        .type(ucelVyuzitiaNebytovehoPriestoruVBytovomDome)
+    }
+  },
+)
 
 Cypress.Commands.add(
   'fillHouseInformation',
   (form, index, streetHouseNumber, referenceNumber, landRegistry, parcelNumber) => {
     cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', form)).type(streetHouseNumber)
-    cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(referenceNumber)
-    cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).click()
-    cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).type(
-      landRegistry + '{enter}{enter}',
-    )
+    cy.wrap(Cypress.$('[data-cy=number-supisneCislo]', form)).type(referenceNumber)
+    cy.selectFromDropdown(form, 'select-názov-katastrálneho-územia', landRegistry)
     cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', form)).type(parcelNumber)
   },
 )
@@ -281,7 +299,7 @@ Cypress.Commands.add('fillOwner', (form, coownership) => {
 })
 
 Cypress.Commands.add('fillTypeOfTaxReturn', (form, typeOfReturn) => {
-  let radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
+  const radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
   if (typeOfReturn === 'priznanie') {
     radioGroup.find(`[data-cy=radio-priznanie]`).click()
   } else if (typeOfReturn === 'ciastkovePriznanie') {
@@ -309,8 +327,11 @@ Cypress.Commands.add('clickNoAndContinue', (form, device) => {
 })
 
 Cypress.Commands.add('selectFromDropdown', (form, select, data) => {
-  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).click()
-  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).type(data + '{enter}{enter}')
+  cy.wrap(form).find(`[data-cy=${select}]`).as('selectElement')
+  cy.get('@selectElement').click()
+  cy.get('@selectElement').type(data)
+
+  cy.get('@selectElement').find('div[role=option]').contains(data).should('be.visible').click()
 })
 
 Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfInputs, inputs) => {
@@ -330,7 +351,7 @@ Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfI
 })
 
 Cypress.Commands.add('clickRadio', (form, radioGroup, condition) => {
-  let radioGroupEl = cy.wrap(Cypress.$(`[data-cy=radio-group-${radioGroup}]`, form))
+  const radioGroupEl = cy.wrap(Cypress.$(`[data-cy=radio-group-${radioGroup}]`, form))
   if (condition) {
     radioGroupEl.find(`[data-cy=radio-áno]`).click()
   } else {

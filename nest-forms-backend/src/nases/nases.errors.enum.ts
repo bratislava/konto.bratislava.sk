@@ -6,11 +6,13 @@ export enum NasesErrorsEnum {
   INFECTED_FILE = 'INFECTED_FILE',
   FILE_NOT_SCANNED = 'FILE_NOT_SCANNED',
   SEND_TO_NASES_ERROR = 'SEND_TO_NASES_ERROR',
-  SEND_UNVERIFIED = 'SEND_UNVERIFIED',
   FORM_SUMMARY_GENERATION_ERROR = 'FORM_SUMMARY_GENERATION_ERROR',
   SIGNATURE_MISSING = 'SIGNATURE_MISSING',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'SIGNATURE_FORM_DEFINITION_MISMATCH',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'SIGNATURE_FORM_DATA_HASH_MISMATCH',
+  FORM_VERSION_NOT_COMPATIBLE = 'FORM_VERSION_NOT_COMPATIBLE',
+  SEND_POLICY_NOT_POSSIBLE = 'SEND_POLICY_NOT_POSSIBLE',
+  SEND_POLICY_NOT_ALLOWED_FOR_USER = 'SEND_POLICY_NOT_ALLOWED_FOR_USER',
 }
 
 export enum NasesErrorsResponseEnum {
@@ -21,11 +23,13 @@ export enum NasesErrorsResponseEnum {
   INFECTED_FILE = 'This form contains an infected file.',
   FILE_NOT_SCANNED = "This form contains a file that hasn't been scanned.",
   SEND_TO_NASES_ERROR = 'There was an error when sending to NASES.',
-  SEND_UNVERIFIED = 'Sending is allowed only for verified users.',
   FORM_SUMMARY_GENERATION_ERROR = 'Error while generating form summary.',
   SIGNATURE_MISSING = 'Signature is missing.',
   SIGNATURE_FORM_DEFINITION_MISMATCH = 'Signature form definition mismatch.',
   SIGNATURE_FORM_DATA_HASH_MISMATCH = 'Signature form data hash mismatch.',
+  FORM_VERSION_NOT_COMPATIBLE = 'Form version is not compatible for sending.',
+  SEND_POLICY_NOT_POSSIBLE = 'Sending is not possible for this form.',
+  SEND_POLICY_NOT_ALLOWED_FOR_USER = 'Sending is not allowed for this user.',
 }
 
 export enum NasesErrorCodesEnum {

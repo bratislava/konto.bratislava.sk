@@ -10,7 +10,12 @@ import {
   BloomreachEventNameEnum,
   ConsentBloomreachDataDto,
 } from './bloomreach.dto'
-import { LineLoggerSubservice } from "../utils/subservices/line-logger.subservice";
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { CognitoUserAttributesEnum } from '../utils/global-dtos/cognito.dto'
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import { CognitoSubservice } from '../utils/subservices/cognito.subservice'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class BloomreachService {
@@ -21,14 +26,18 @@ export class BloomreachService {
     'binary'
   ).toString('base64')
 
-  constructor() {
+  constructor(
+    private readonly cognitoSubservice: CognitoSubservice,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
+  ) {
     if (
       !process.env.BLOOMREACH_API_URL ||
       !process.env.BLOOMREACH_API_KEY ||
       !process.env.BLOOMREACH_API_SECRET ||
       !process.env.BLOOMREACH_PROJECT_TOKEN
     ) {
-      throw new Error(
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Missing one of pricing api envs: BLOOMREACH_API_URL, BLOOMREACH_API_KEY, BLOOMREACH_API_SECRET, BLOOMREACH_PROJECT_TOKEN.'
       )
     }
@@ -58,6 +67,57 @@ export class BloomreachService {
       result.category = BloomreachConsentCategoryEnum.TAX_COMMUNICATION
     }
     return result
+  }
+
+  // TODO: This looks like it can use https://docs.nestjs.com/techniques/events
+  async trackCustomer(cognitoId: string): Promise<boolean | undefined> {
+    if (process.env.BLOOMREACH_INTEGRATION_STATE !== 'ACTIVE') {
+      return undefined
+    }
+    try {
+      const user = await this.cognitoSubservice.getDataFromCognito(cognitoId)
+      const {
+        given_name: firstName,
+        family_name: lastName,
+        name,
+        UserCreateDate: registrationDate,
+        'custom:account_type': accountType,
+        email,
+      } = user
+
+      const isIdentityVerified =
+        user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.IDENTITY_CARD ||
+        user[CognitoUserAttributesEnum.TIER] === CognitoUserAttributesTierEnum.EID
+
+      const data = {
+        customer_ids: {
+          city_account_id: cognitoId,
+        },
+        properties: {
+          ...(firstName && { first_name: firstName }),
+          ...(lastName && { last_name: lastName }),
+          ...(name && { name: name }),
+          ...(accountType && { person_type: accountType }),
+          ...(registrationDate && { registration_date: registrationDate }),
+          ...(email && { email: email }),
+          ...(isIdentityVerified && { is_identity_verified: isIdentityVerified }),
+        },
+      }
+      await axios.post(
+        `${process.env.BLOOMREACH_API_URL}/track/v2/projects/${process.env.BLOOMREACH_PROJECT_TOKEN}/customers`,
+        JSON.stringify(data),
+        {
+          headers: {
+            Authorization: `Basic ${this.bloomreachCredentials}`,
+          },
+        }
+      )
+      return true
+    } catch (error) {
+      this.logger.warn(`Customer create/edit in bloomreach error for user: ${cognitoId}`)
+      this.logger.warn(`Error: ${JSON.stringify(error)}`)
+      return false
+    }
   }
 
   private async trackEvent(

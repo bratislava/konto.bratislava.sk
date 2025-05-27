@@ -11,12 +11,22 @@ export interface FormSummary {
   termsAndConditions: string
 }
 
-export const getFormSummary = (
-  formDefinition: FormDefinition,
-  formDataJson: GenericObjectType,
-  validatorRegistry: BaRjsfValidatorRegistry,
-): FormSummary => {
-  const summaryJson = getSummaryJsonNode(formDefinition.schema, formDataJson, validatorRegistry)
+type GetFormSummaryParams = {
+  formDefinition: FormDefinition
+  formDataJson: GenericObjectType
+  validatorRegistry: BaRjsfValidatorRegistry
+}
+
+export const getFormSummary = ({
+  formDefinition,
+  formDataJson,
+  validatorRegistry,
+}: GetFormSummaryParams): FormSummary => {
+  const summaryJson = getSummaryJsonNode({
+    schema: formDefinition.schema,
+    formData: formDataJson,
+    validatorRegistry,
+  })
   const additionalInfo = renderFormAdditionalInfo(formDefinition, formDataJson)
   const termsAndConditions = formDefinition.termsAndConditions
 

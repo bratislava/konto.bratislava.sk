@@ -60,8 +60,6 @@ export class ErrorSymbols {
 
   static readonly stack: unique symbol = Symbol('stack')
 
-  static readonly field: unique symbol = Symbol('field')
-
   static readonly errorCause = Symbol('errorCause')
 
   static readonly causedByMessage = Symbol('causedByMessage')
@@ -72,7 +70,6 @@ export const errorTypeKeys: Record<string, string> = {
   console: `$Symbol-console`,
   errorType: `$Symbol-errorType`,
   stack: `$Symbol-stack`,
-  field: `$Symbol-field`,
   errorCause: `$Symbol-errorCause`,
   causedByMessage: `$Symbol-causedByMessage`,
 }

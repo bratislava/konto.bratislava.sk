@@ -1,9 +1,8 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import { TaxFragment } from '@clients/graphql-strapi/api'
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { taxApi } from '@clients/tax'
+import { taxClient } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
+import { ResponseTaxDto } from 'openapi-clients/tax'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
@@ -13,10 +12,9 @@ import logger from '../../../../../frontend/utils/logger'
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
   taxAdministrator: StrapiTaxAdministrator | null
-  strapiTax: TaxFragment
 }
 
-const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, taxAdministrator }: TaxFeeSectionProviderProps) => {
   const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
     useState(false)
 
@@ -26,8 +24,8 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
 
   const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
     mutationFn: () =>
-      taxApi.paymentControllerPayment(String(taxData.year), {
-        accessToken: 'always',
+      taxClient.paymentControllerPayment(String(taxData.year), {
+        authStrategy: 'authOnly',
       }),
     networkMode: 'always',
     onSuccess: async (response) => {
@@ -52,8 +50,8 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
   }
 
   const downloadPdf = async () => {
-    const { data } = await taxApi.taxControllerGetTaxByYearPdf(taxData.year, {
-      accessToken: 'always',
+    const { data } = await taxClient.taxControllerGetTaxByYearPdf(taxData.year, {
+      authStrategy: 'authOnly',
       responseType: 'blob',
     })
     // @ts-expect-error `taxControllerGetTaxByYearPdf` returns wrong type
@@ -62,7 +60,6 @@ const useGetContext = ({ taxData, strapiTax, taxAdministrator }: TaxFeeSectionPr
 
   return {
     taxData,
-    strapiTax,
     redirectToPayment,
     redirectToPaymentIsPending,
     downloadQrCode,

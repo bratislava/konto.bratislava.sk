@@ -51,7 +51,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
   number(
     'celkovaVymeraSpecialCase',
     {
-      type: 'number',
+      type: 'integer',
       title:
         typ === Typ.Byt
           ? 'Celková výmera podlahovej plochy vášho bytu'
@@ -150,7 +150,6 @@ const innerArray = (kalkulacka: boolean) =>
       ...stavbyBase(StepEnum.DanZBytovANebytovychPriestorov),
       object(
         'priznanieZaByt',
-        {},
         {
           objectDisplay: 'boxed',
         },
@@ -199,7 +198,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
               },
             ),
-            object('datumy', {}, {}, [
+            object('datumy', {}, [
               datePicker(
                 'datumVznikuDanovejPovinnosti',
                 { title: 'Dátum vzniku daňovej povinnosti' },
@@ -224,7 +223,6 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       object(
         'priznanieZaNebytovyPriestor',
-        {},
         {
           objectDisplay: 'boxed',
         },
@@ -260,7 +258,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'Dosiahli ste maximálny počet nebytových pozemkov (15) na jedno priznanie. Pridajte ďalšie priznanie.',
               },
               [
-                object('riadok', {}, {}, [
+                object('riadok', {}, [
                   input(
                     'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
                     {
@@ -298,7 +296,7 @@ const innerArray = (kalkulacka: boolean) =>
                       vymeraKalkulacka,
                     ]
                   : [vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome]),
-                object('datumy', {}, {}, [
+                object('datumy', {}, [
                   datePicker(
                     'datumVznikuDanovejPovinnosti',
                     { title: 'Dátum vzniku daňovej povinnosti' },

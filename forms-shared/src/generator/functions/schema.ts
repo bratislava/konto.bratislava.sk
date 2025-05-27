@@ -1,4 +1,3 @@
-import { SchemaUiOptions } from '../uiOptionsTypes'
 import { step } from './step'
 import { conditionalStep } from './conditionalStep'
 import { removeUndefinedValues } from '../helpers'
@@ -9,7 +8,6 @@ export const schema = (
     title: string
     description?: string
   },
-  uiOptions: SchemaUiOptions,
   steps: (ReturnType<typeof step | typeof conditionalStep> | null)[],
 ) => {
   const filteredSteps = steps.filter((stepInner) => stepInner != null) as ReturnType<
@@ -19,8 +17,5 @@ export const schema = (
   return removeUndefinedValues({
     ...options,
     allOf: filteredSteps.map((stepInner) => stepInner.schema),
-    baUiSchema: {
-      'ui:options': uiOptions,
-    },
   }) as RJSFSchema
 }

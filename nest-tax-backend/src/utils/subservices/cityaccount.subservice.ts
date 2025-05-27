@@ -1,26 +1,20 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common'
 import { AxiosError } from 'axios'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
-import {
-  ADMINApi as AdminApi,
-  Configuration,
-  ResponseUserByBirthNumberDto,
-} from '../../generated-clients/nest-city-account'
+import ClientsService from '../../clients/clients.service'
 import { addSlashToBirthNumber } from '../functions/birthNumber'
 import { ErrorsEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 
 @Injectable()
 export class CityAccountSubservice {
-  private readonly cityAccountApi: AdminApi
-
   private readonly logger: Logger
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    this.cityAccountApi = new AdminApi(
-      new Configuration({}),
-      process.env.CITY_ACCOUNT_API_URL,
-    )
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly clientsService: ClientsService,
+  ) {
     this.logger = new Logger('CityAccountSubservice')
   }
 
@@ -30,7 +24,7 @@ export class CityAccountSubservice {
     const birthNumberWithoutSlash = birthNumber.replace('/', '')
     try {
       const user =
-        await this.cityAccountApi.adminControllerGetUserDataByBirthNumber(
+        await this.clientsService.cityAccountApi.adminControllerGetUserDataByBirthNumber(
           birthNumberWithoutSlash,
           {
             headers: {
@@ -56,8 +50,8 @@ export class CityAccountSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Failed to get birthnumber:`,
           undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
+          undefined,
+          error,
         ),
       )
       return null
@@ -71,7 +65,7 @@ export class CityAccountSubservice {
       birthNumber.replaceAll('/', ''),
     )
     const userDataResult =
-      await this.cityAccountApi.adminControllerGetUserDataByBirthNumbersBatch(
+      await this.clientsService.cityAccountApi.adminControllerGetUserDataByBirthNumbersBatch(
         { birthNumbers: birthNumbersWithoutSlash },
         {
           headers: {

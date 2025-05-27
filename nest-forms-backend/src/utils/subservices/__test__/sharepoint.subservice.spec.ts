@@ -21,9 +21,11 @@ import FormValidatorRegistryService from '../../../form-validator-registry/form-
 import { FormsErrorsResponseEnum } from '../../../forms/forms.errors.enum'
 import PrismaService from '../../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../guards/thrower-error.guard'
-import * as textHandler from '../../handlers/text.handler'
 import SharepointSubservice from '../sharepoint.subservice'
 
+jest.mock('forms-shared/form-utils/formDataExtractors', () => ({
+  extractFormSubjectPlain: jest.fn(),
+}))
 describe('SharepointSubservice', () => {
   let service: SharepointSubservice
 
@@ -63,32 +65,6 @@ describe('SharepointSubservice', () => {
         formId: string
       }>)
       expect(spy).toHaveBeenCalledWith('formIdValue')
-    })
-  })
-
-  describe('getTitle', () => {
-    it('should return fallback if frontend title is null', () => {
-      jest
-        .spyOn(textHandler, 'getSubjectTextFromForm')
-        .mockReturnValue('subject')
-      jest
-        .spyOn(textHandler, 'getFrontendFormTitleFromForm')
-        .mockReturnValue(null)
-
-      const result = service['getTitle']({} as Forms, {} as FormDefinition)
-      expect(result).toBe('subject')
-    })
-
-    it('should return frontend title', () => {
-      jest
-        .spyOn(textHandler, 'getSubjectTextFromForm')
-        .mockReturnValue('subject')
-      jest
-        .spyOn(textHandler, 'getFrontendFormTitleFromForm')
-        .mockReturnValue('frontend')
-
-      const result = service['getTitle']({} as Forms, {} as FormDefinition)
-      expect(result).toBe('frontend')
     })
   })
 
@@ -376,7 +352,6 @@ describe('SharepointSubservice', () => {
       service['getAccessToken'] = jest
         .fn()
         .mockResolvedValue('accessTokenValue')
-      service['getTitle'] = jest.fn().mockReturnValue('titleVal')
       service['mapColumnsToFields'] = jest.fn(
         async (columns: string[]): Promise<Record<string, string>> => {
           const result: Record<string, string> = {}

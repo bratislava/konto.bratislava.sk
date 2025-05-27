@@ -1,30 +1,19 @@
 import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common'
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiTags,
-  ApiUnprocessableEntityResponse,
-  getSchemaPath,
 } from '@nestjs/swagger'
-import { HttpStatusCode } from 'axios'
 
+import {
+  UserInfo,
+  UserInfoResponse,
+} from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
-import {
-  FormDefinitionNotFoundErrorDto,
-  FormDefinitionNotSupportedTypeErrorDto,
-  FormIsOwnedBySomeoneElseErrorDto,
-  FormNotFoundErrorDto,
-} from '../forms/forms.errors.dto'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { User, UserInfo } from '../utils/decorators/request.decorator'
+import { User } from '../utils/decorators/request.decorator'
 import { SignerDataRequestDto, SignerDataResponseDto } from './signer.dto'
-import { XmlValidationErrorDto } from './signer.errors.dto'
 import SignerService from './signer.service'
 
 @ApiTags('Signer')
@@ -42,45 +31,16 @@ export default class SignerController {
     description:
       'Generates signer data including XML and metadata for form signing',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Return signer data',
     type: SignerDataResponseDto,
-  })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
-  @ApiExtraModels(XmlValidationErrorDto)
-  @ApiNotFoundResponse({
-    status: HttpStatusCode.NotFound,
-    description: 'Form or form definition was not found',
-    schema: {
-      oneOf: [
-        { $ref: getSchemaPath(FormNotFoundErrorDto) },
-        { $ref: getSchemaPath(FormDefinitionNotFoundErrorDto) },
-      ],
-    },
-  })
-  @ApiForbiddenResponse({
-    status: HttpStatusCode.Forbidden,
-    description: 'Form is owned by someone else.',
-    type: FormIsOwnedBySomeoneElseErrorDto,
-  })
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto,
-  })
-  @ApiBadRequestResponse({
-    status: HttpStatusCode.BadRequest,
-    description: 'XML validation failed against XSD schema.',
-    type: XmlValidationErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('get-signer-data')
   async getSignerData(
     @Body() data: SignerDataRequestDto,
-    @User() user?: CognitoGetUserData,
-    @UserInfo() userInfo?: ResponseGdprDataDto,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<SignerDataResponseDto> {
     // TODO remove try-catch & extra logging once we start logging requests
     try {

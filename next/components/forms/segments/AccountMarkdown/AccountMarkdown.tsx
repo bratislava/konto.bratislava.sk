@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -7,6 +6,7 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
+import cn from '../../../../frontend/cn'
 import { isDefined } from '../../../../frontend/utils/general'
 // eslint-disable-next-line import/no-cycle
 import BATooltip from '../../info-components/Tooltip/BATooltip'
@@ -41,7 +41,7 @@ const AccountMarkdown = ({
     disableRemarkDirective ? null : remarkDirective,
     disableRemarkDirectiveRehype ? null : remarkDirectiveRehype,
   ].filter(isDefined)
-  const textStyle = cx({
+  const textStyle = cn({
     'text-p3 lg:text-p2': variant === 'sm',
     'text-p2': variant === 'statusBar',
     'text-p1': variant === 'normal',
@@ -73,7 +73,7 @@ const AccountMarkdown = ({
     a: ({ href, children }: ChildrenParent) => (
       <Link
         href={href ?? '#'}
-        className={cx('break-words font-semibold underline underline-offset-4', {
+        className={cn('font-semibold break-words underline underline-offset-4', {
           'text-white hover:text-category-600': uLinkVariant === 'primary',
           'text-font hover:text-category-600': uLinkVariant === 'default',
           'text-white hover:text-white': uLinkVariant === 'error',
@@ -90,14 +90,15 @@ const AccountMarkdown = ({
   }
 
   return (
-    <ReactMarkdown
-      className={cx('flex flex-col gap-3', className)}
-      remarkPlugins={remarkPlugins}
-      rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
-      components={componentsGroup}
-    >
-      {content ?? ''}
-    </ReactMarkdown>
+    <div className={cn('flex flex-col gap-3', className)}>
+      <ReactMarkdown
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
+        components={componentsGroup}
+      >
+        {content ?? ''}
+      </ReactMarkdown>
+    </div>
   )
 }
 

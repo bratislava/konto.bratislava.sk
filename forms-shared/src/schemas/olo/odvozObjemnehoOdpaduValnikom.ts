@@ -1,7 +1,5 @@
 import { createCondition, createStringItems } from '../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
 import { checkbox } from '../../generator/functions/checkbox'
@@ -11,8 +9,9 @@ import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { conditionalFields } from '../../generator/functions/conditionalFields'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
-export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
+export default schema({ title: 'Odvoz objemného odpadu valníkom' }, [
   step('ziadatel', { title: 'Žiadateľ' }, [
     radioGroup(
       'ziadatelTyp',
@@ -55,7 +54,7 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
     input('kontaktnaOsoba', { type: 'text', title: 'Meno kontaktnej osoby', required: true }, {}),
     sharedPhoneNumberField('telefon', true),
     input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-    object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+    object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
       input('iban', { type: 'ba-iban', title: 'IBAN', required: true }, {}),
       checkbox(
         'elektronickaFaktura',
@@ -134,8 +133,21 @@ export default schema({ title: 'Odvoz objemného odpadu valníkom' }, {}, [
   ]),
 ])
 
-export const odvozObjemnehoOdpaduValnikomExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel: {
+    email: string
+    nazov: string
+  }
+}
 
-export const odvozObjemnehoOdpaduValnikomExtractName = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.nazov)
+export const odvozObjemnehoOdpaduValnikomExtractEmail: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.email,
+  }
+
+export const odvozObjemnehoOdpaduValnikomExtractName: SchemalessFormDataExtractor<ExtractFormData> =
+  {
+    type: 'schemaless',
+    extractFn: (formData) => formData.ziadatel.nazov,
+  }

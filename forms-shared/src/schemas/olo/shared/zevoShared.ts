@@ -1,7 +1,5 @@
 import { createCondition, createStringItems, createStringItemsV2 } from '../../../generator/helpers'
 import { sharedAddressField, sharedPhoneNumberField } from '../../shared/fields'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../../form-utils/safeData'
 import { select } from '../../../generator/functions/select'
 import { selectMultiple } from '../../../generator/functions/selectMultiple'
 import { input } from '../../../generator/functions/input'
@@ -14,6 +12,7 @@ import { object } from '../../../generator/object'
 import { step } from '../../../generator/functions/step'
 import { conditionalFields } from '../../../generator/functions/conditionalFields'
 import { fileUploadMultiple } from '../../../generator/functions/fileUploadMultiple'
+import { SchemalessFormDataExtractor } from '../../../form-utils/evaluateFormDataExtractor'
 
 export enum ZevoType {
   EnergetickeZhodnotenieOdpaduVZevo,
@@ -37,7 +36,7 @@ export const getZevoSchema = (type: ZevoType) => [
       { variant: 'boxed', orientations: 'column' },
     ),
     conditionalFields(createCondition([[['ziadatelTyp'], { const: 'Fyzická osoba' }]]), [
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -258,7 +257,7 @@ export const getZevoSchema = (type: ZevoType) => [
         ],
       ]),
       [
-        object('fakturacia', { required: true }, { objectDisplay: 'boxed', title: 'Fakturácia' }, [
+        object('fakturacia', { objectDisplay: 'boxed', title: 'Fakturácia' }, [
           radioGroup(
             'sposobPlatby',
             {
@@ -997,6 +996,7 @@ export const getZevoSchema = (type: ZevoType) => [
         number(
           'predpokladaneMnozstvo',
           {
+            type: 'integer',
             title: 'Predpokladané množstvo dovezeného odpadu (kg)',
             required: true,
             minimum: 0,
@@ -1022,6 +1022,7 @@ export const getZevoSchema = (type: ZevoType) => [
         number(
           'predpokladaneMnozstvo',
           {
+            type: 'integer',
             title: 'Prosím uveďte predpokladané množstvo odpadu za obdobie / rok (kg)',
             required: true,
             minimum: 0,
@@ -1115,17 +1116,41 @@ export const getZevoSchema = (type: ZevoType) => [
   ]),
 ]
 
-export const zevoExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel: {
+    email: string
+  } & (
+    | {
+        ziadatelTyp: 'Fyzická osoba'
+        menoPriezvisko: {
+          meno: string
+        }
+      }
+    | {
+        ziadatelTyp: 'Právnická osoba' | 'Právnická osoba s povolením na vstup do ZEVO'
+        nazov: string
+      }
+  )
+}
 
-export const zevoExtractName = (formData: GenericObjectType) => {
-  if (formData.ziadatel?.ziadatelTyp === 'Fyzická osoba') {
-    return safeString(formData.ziadatel?.menoPriezvisko?.meno)
-  }
-  if (
-    formData.ziadatel?.ziadatelTyp === 'Právnická osoba' ||
-    formData.ziadatel?.ziadatelTyp === 'Právnická osoba s povolením na vstup do ZEVO'
-  ) {
-    return safeString(formData.ziadatel?.nazov)
-  }
+export const zevoExtractEmail: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.ziadatel.email,
+}
+
+export const zevoExtractName: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => {
+    if (formData.ziadatel.ziadatelTyp === 'Fyzická osoba') {
+      return formData.ziadatel.menoPriezvisko.meno
+    } else if (
+      formData.ziadatel.ziadatelTyp === 'Právnická osoba' ||
+      formData.ziadatel.ziadatelTyp === 'Právnická osoba s povolením na vstup do ZEVO'
+    ) {
+      return formData.ziadatel.nazov
+    }
+
+    // Unreachable code, provided for type-safety to return `string` as required.
+    throw new Error('Failed to extract the name.')
+  },
 }

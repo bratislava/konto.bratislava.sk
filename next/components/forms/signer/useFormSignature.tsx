@@ -1,19 +1,19 @@
-import { formsApi } from '@clients/forms'
-import { SignerDataResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
-import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import {
   createFormSignature,
   FormSignature,
   verifyFormSignature,
 } from 'forms-shared/signer/signature'
 import isEqual from 'lodash/isEqual'
+import { SignerDataResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import { isClientSlovenskoSkFormDefinition } from '../clientFormDefinitions'
 import { useFormContext } from '../useFormContext'
 import { useFormData } from '../useFormData'
 import { useFormLeaveProtection } from '../useFormLeaveProtection'
@@ -65,7 +65,7 @@ const useGetContext = () => {
       handleSignatureChange(null)
       return
     }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
 
@@ -74,13 +74,13 @@ const useGetContext = () => {
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({
     mutationFn: (formDataRequest: GenericObjectType) =>
-      formsApi.signerControllerGetSignerData(
+      formsClient.signerControllerGetSignerData(
         {
           formId,
           formDataJson: formDataRequest,
         },
         {
-          accessToken: 'onlyAuthenticated',
+          authStrategy: 'authOrGuestWithToken',
         },
       ),
     networkMode: 'always',
@@ -123,7 +123,7 @@ const useGetContext = () => {
       return false
     }
 
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    if (!isClientSlovenskoSkFormDefinition(formDefinition)) {
       throw new Error('Unsupported form definition')
     }
 

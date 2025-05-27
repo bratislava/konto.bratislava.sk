@@ -6,19 +6,22 @@ import { Stream } from 'node:stream'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Forms } from '@prisma/client'
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError } from 'axios'
 import {
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubjectTechnical } from 'forms-shared/form-utils/formDataExtractors'
 import { buildSlovenskoSkXml } from 'forms-shared/slovensko-sk/xmlBuilder'
 import jwt from 'jsonwebtoken'
 import mime from 'mime-types'
+import { UserControllerGetOrCreateUser200Response } from 'openapi-clients/city-account'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import {
   FormsErrorsEnum,
@@ -32,11 +35,7 @@ import alertError, {
   LineLoggerSubservice,
 } from '../../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
-import {
-  NasesIsMessageDeliveredDto,
-  NasesSendResponse,
-  ResponseGdprDataDto,
-} from '../dtos/responses.dto'
+import { NasesSendResponse } from '../dtos/responses.dto'
 import { NasesAttachmentXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
@@ -44,6 +43,10 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../types/send-message-nases-sender.type'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -56,6 +59,7 @@ export default class NasesUtilsService {
     private minioClientSubservice: MinioClientSubservice,
     private taxService: TaxService,
     private configService: ConfigService,
+    private readonly clientsService: ClientsService,
   ) {
     this.logger = new LineLoggerSubservice('NasesUtilsService')
   }
@@ -250,24 +254,22 @@ export default class NasesUtilsService {
     )
   }
 
-  async getUserInfo(bearerToken: string): Promise<ResponseGdprDataDto> {
-    return axios
-      .post(
-        `${this.configService.getOrThrow<string>('USER_ACCOUNT_API')}/user/get-or-create`,
-        undefined,
-        {
-          headers: {
-            Authorization: bearerToken,
-          },
+  async getUserInfo(
+    bearerToken: string,
+  ): Promise<UserControllerGetOrCreateUser200Response> {
+    return this.clientsService.cityAccountApi
+      .userControllerGetOrCreateUser({
+        headers: {
+          Authorization: bearerToken,
         },
-      )
-      .then((response: AxiosResponse<ResponseGdprDataDto>) => response.data)
+      })
+      .then((response) => response.data)
       .catch((error) => {
         throw this.throwerErrorGuard.NotFoundException(
           NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-          `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${<
-            string
-          >error}`,
+          NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR,
+          undefined,
+          error,
         )
       })
   }
@@ -355,7 +357,9 @@ export default class NasesUtilsService {
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `There was an error during converting json form data to xml: ${<string>error}`,
+          'There was an error during converting json form data to xml.',
+          undefined,
+          error,
         )
       }
     }
@@ -363,11 +367,22 @@ export default class NasesUtilsService {
     if (!message) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Message of body is not defined. There is no base64 nor schema`,
+        'Message of body is not defined. There is no base64 nor schema',
       )
     }
 
     return message
+  }
+
+  private getSenderId(sender: SendMessageNasesSender): string {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return sender.senderUri
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.configService.getOrThrow<string>('NASES_SENDER_URI')
+    }
+
+    throw new Error('Invalid sender type')
   }
 
   /**
@@ -387,7 +402,7 @@ export default class NasesUtilsService {
    */
   private async createEnvelopeSendMessage(
     form: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
@@ -406,10 +421,18 @@ export default class NasesUtilsService {
 
     const message = await this.getFormMessage(formDefinition, form, isSigned)
 
-    const senderId =
-      senderUri ?? this.configService.get<string>('NASES_SENDER_URI') ?? ''
+    if (form.formDataJson == null) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.EMPTY_FORM_DATA,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.EMPTY_FORM_DATA}`,
+      )
+    }
+    const subject = extractFormSubjectTechnical(
+      formDefinition,
+      form.formDataJson,
+    )
+    const senderId = this.getSenderId(sender)
     const correlationId = uuidv4()
-    let subject: string = form.id
     const mimeType = isSigned
       ? 'application/vnd.etsi.asic-e+zip'
       : 'application/x-eform-xml'
@@ -417,7 +440,6 @@ export default class NasesUtilsService {
     let attachments: NasesAttachmentXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
-      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 
@@ -483,9 +505,12 @@ export default class NasesUtilsService {
     return buildSlovenskoSkXml(template, { headless: false, pretty: false })
   }
 
-  private getNasesError(code: number): string {
-    const codeString = `0${code.toString()}`
-    if (!Object.keys(NasesErrorCodesEnum).includes(codeString)) {
+  private getNasesError(code: number | null): string {
+    const codeString = code ? `0${code.toString()}` : null
+    if (
+      codeString == null ||
+      !Object.keys(NasesErrorCodesEnum).includes(codeString)
+    ) {
       return `${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} Code: ${code} (unknown code)`
     }
 
@@ -500,15 +525,31 @@ export default class NasesUtilsService {
     }`
   }
 
+  private getSendMessageNasesEndpoint = (
+    sender: SendMessageNasesSender,
+  ):
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceiveAndSaveToOutboxPost
+    | typeof this.clientsService.slovenskoSkApi.apiSktalkReceivePost => {
+    if (sender.type === SendMessageNasesSenderType.Eid) {
+      return this.clientsService.slovenskoSkApi
+        .apiSktalkReceiveAndSaveToOutboxPost
+    }
+    if (sender.type === SendMessageNasesSenderType.Self) {
+      return this.clientsService.slovenskoSkApi.apiSktalkReceivePost
+    }
+
+    throw new Error('Invalid sender type')
+  }
+
   // TODO nicer error handling, for now it is assumed this function never throws and a lot of code relies on that
   async sendMessageNases(
     jwtToken: string,
     data: Forms,
-    senderUri?: string,
+    sender: SendMessageNasesSender,
   ): Promise<NasesSendResponse> {
     let message
     try {
-      message = await this.createEnvelopeSendMessage(data, senderUri)
+      message = await this.createEnvelopeSendMessage(data, sender)
     } catch (error) {
       return {
         status: 500,
@@ -518,10 +559,7 @@ export default class NasesUtilsService {
       }
     }
     try {
-      const response = await axios.post(
-        `${this.configService.getOrThrow<string>(
-          'SLOVENSKO_SK_CONTAINER_URI',
-        )}/api/sktalk/receive_and_save_to_outbox`,
+      const response = await this.getSendMessageNasesEndpoint(sender)(
         {
           message,
         },
@@ -585,21 +623,13 @@ export default class NasesUtilsService {
 
   async isNasesMessageDelivered(formId: string): Promise<boolean> {
     const jwtToken = this.createTechnicalAccountJwtToken()
-    const result = await axios
-      .get(
-        `${this.configService.getOrThrow<string>(
-          'SLOVENSKO_SK_CONTAINER_URI',
-        )}/api/edesk/messages/search?correlation_id=${formId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
+    const result = await this.clientsService.slovenskoSkApi
+      .apiEdeskMessagesSearchGet(formId, undefined, undefined, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
         },
-      )
-      .then(
-        (response: AxiosResponse<NasesIsMessageDeliveredDto[]>) =>
-          response.data.length > 0,
-      )
+      })
+      .then((response) => response.data.length > 0)
       .catch((error) => {
         alertError(
           'Error when checking if message is in eDesk',

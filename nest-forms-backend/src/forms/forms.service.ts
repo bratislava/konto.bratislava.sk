@@ -1,9 +1,13 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { extractFormSubjectPlain } from 'forms-shared/form-utils/formDataExtractors'
+import { omitExtraData } from 'forms-shared/form-utils/omitExtraData'
+import { versionCompareRequiresBumpToContinue } from 'forms-shared/versioning/version-compare'
 
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'
+import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   GetFormResponseSimpleDto,
   GetFormsRequestDto,
@@ -20,10 +24,6 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import {
-  getFrontendFormTitleFromForm,
-  getSubjectTextFromForm,
-} from '../utils/handlers/text.handler'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
@@ -39,6 +39,7 @@ export default class FormsService {
     private throwerErrorGuard: ThrowerErrorGuard,
     @Inject(forwardRef(() => FilesService))
     private filesService: FilesService,
+    private readonly formValidatorRegistryService: FormValidatorRegistryService,
   ) {
     this.logger = new LineLoggerSubservice('FormsService')
   }
@@ -51,7 +52,9 @@ export default class FormsService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error when creating form: ${<string>error}`,
+        'There was an error when creating form.',
+        undefined,
+        error,
       )
     }
   }
@@ -81,6 +84,8 @@ export default class FormsService {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} Received form id: ${id}`,
+        undefined,
+        error,
       )
     }
     return formsResult
@@ -112,6 +117,8 @@ export default class FormsService {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.DATABASE_ERROR,
         ErrorsResponseEnum.DATABASE_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -127,12 +134,11 @@ export default class FormsService {
     return form
   }
 
-  // we can't get the frontend title unless we ask to include schema - without it we always return frontendTitle: null
   async getForm(
     id: string,
     ico: string | null,
     userExternalId?: string,
-  ): Promise<Forms & { frontendTitle: string | null }> {
+  ): Promise<Forms> {
     let form: Forms
     try {
       form = await this.prisma.forms.findUniqueOrThrow({
@@ -145,6 +151,7 @@ export default class FormsService {
           userExternalId
         )}`,
         `Form ${id} does not exist for the user: ${<string>userExternalId}`,
+        error,
       )
     }
 
@@ -169,12 +176,8 @@ export default class FormsService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    const frontendTitle = getFrontendFormTitleFromForm(form, formDefinition)
 
-    return {
-      ...form,
-      frontendTitle,
-    }
+    return form
   }
 
   async getForms(
@@ -271,14 +274,9 @@ export default class FormsService {
         )
       }
 
-      const messageSubject = getSubjectTextFromForm(form, formDefinition)
-      // fallback to messageSubject if title can't be parsed
-      const frontendTitle =
-        getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
       dataWithLatestFlag.push({
         ...form,
-        messageSubject,
-        frontendTitle,
+        formSubject: extractFormSubjectPlain(formDefinition, form.formDataJson),
         formDefinitionSlug: formDefinition.slug,
       })
     })
@@ -363,5 +361,45 @@ export default class FormsService {
     }
 
     return form
+  }
+
+  async bumpJsonVersion(form: Forms): Promise<void> {
+    if (!FormsHelper.isEditable(form)) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
+        FormsErrorsResponseEnum.FORM_NOT_EDITABLE_ERROR,
+      )
+    }
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const requiresBump = versionCompareRequiresBumpToContinue({
+      currentVersion: form.jsonVersion,
+      latestVersion: formDefinition.jsonVersion,
+    })
+    if (!requiresBump) {
+      throw this.throwerErrorGuard.BadRequestException(
+        FormsErrorsEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+        FormsErrorsResponseEnum.FORM_VERSION_BUMP_NOT_POSSIBLE,
+      )
+    }
+
+    await this.prisma.forms.update({
+      where: { id: form.id },
+      data: {
+        jsonVersion: formDefinition.jsonVersion,
+        formDataJson: omitExtraData(
+          formDefinition.schema,
+          form.formDataJson ?? {},
+          this.formValidatorRegistryService.getRegistry(),
+        ),
+      },
+    })
   }
 }

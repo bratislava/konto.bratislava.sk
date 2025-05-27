@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 
+import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
+import ClientsModule from '../clients/clients.module'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesHelper from '../files/files.helper'
@@ -14,6 +16,7 @@ import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import NasesController from './nases.controller'
 import NasesService from './nases.service'
@@ -30,6 +33,8 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     TaxModule,
     ConvertPdfModule,
     FormValidatorRegistryModule,
+    ClientsModule,
+    UserInfoPipeModule,
   ],
   providers: [
     NasesService,
@@ -40,6 +45,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FilesHelper,
     ScannerClientService,
     MinioClientSubservice,
+    LineLoggerSubservice,
   ],
   exports: [NasesService, NasesUtilsService],
   controllers: [NasesController],

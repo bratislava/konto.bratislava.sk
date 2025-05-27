@@ -1,11 +1,16 @@
-import { Ginis } from '@bratislava/ginis-sdk'
-import { Injectable } from '@nestjs/common'
+import path from 'node:path'
+import { Readable } from 'node:stream'
 
 import {
-  DetailDokumentu,
-  DetailReferenta,
-} from '../../utils/ginis/ginis-api-helper'
-import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
+  GinDetailFunkcnihoMistaResponse,
+  GinDetailReferentaResponse,
+  Ginis,
+  SslDetailDokumentuResponse,
+  SslPridatSouborPridatSoubor,
+} from '@bratislava/ginis-sdk'
+import { Injectable } from '@nestjs/common'
+
+import BaConfigService from '../../config/ba-config.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
 
@@ -17,49 +22,95 @@ export default class GinisAPIService {
 
   private readonly ginis: Ginis
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
+  constructor(
+    private readonly baConfigService: BaConfigService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+  ) {
     this.logger = new LineLoggerSubservice('GinisAPIService')
-    if (
-      !(
-        process.env.GINIS_USERNAME &&
-        process.env.GINIS_PASSWORD &&
-        process.env.GINIS_SSL_HOST &&
-        process.env.GINIS_GIN_HOST
-      ) &&
-      process.env.JEST_WORKER_ID === undefined
-    ) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Some of these env values are not set: GINIS_USERNAME, GINIS_PASSWORD, GINIS_SSL_HOST',
-      )
-    }
     this.ginis = new Ginis({
       // connect to any subset of services needed, all the urls are optional but requests to services missing urls will fail
       urls: {
-        ssl: process.env.GINIS_SSL_HOST,
-        gin: process.env.GINIS_GIN_HOST,
+        ssl: this.baConfigService.ginisApi.sslHost,
+        ssl_mtom: this.baConfigService.ginisApi.sslMtomHost,
+        gin: this.baConfigService.ginisApi.ginHost,
       },
-      username: process.env.GINIS_USERNAME ?? '',
-      password: process.env.GINIS_PASSWORD ?? '',
+      username: this.baConfigService.ginisApi.username,
+      password: this.baConfigService.ginisApi.password,
       debug: false,
     })
   }
 
-  async getDocumentDetail(documentId: string): Promise<DetailDokumentu> {
-    return this.ginis.json.ssl.detailDokumentu({ 'Id-dokumentu': documentId })
+  async getDocumentDetail(
+    documentId: string,
+  ): Promise<SslDetailDokumentuResponse> {
+    return this.ginis.ssl.detailDokumentu({ 'Id-dokumentu': documentId })
   }
 
-  async getOwnerDetail(functionId: string): Promise<DetailReferenta> {
-    const functionDetail = await this.ginis.json.gin.detailFunkcnihoMista({
-      'Id-funkce': functionId,
-    })
+  async getOwnerDetail(
+    functionId: string,
+  ): Promise<GinDetailReferentaResponse> {
+    const functionDetail: GinDetailFunkcnihoMistaResponse =
+      await this.ginis.gin.detailFunkcnihoMista({
+        'Id-funkce': functionId,
+      })
     // if the latter call fails because of missing IdReferenta, we'll get a log of previous result to debug
     this.logger.log(
       'Using the following data in getting GINIS owner: ',
       JSON.stringify(functionDetail),
     )
-    return this.ginis.json.gin.detailReferenta({
-      'Id-osoby': functionDetail.DetailFunkcnihoMista[0]?.IdReferenta,
+    return this.ginis.gin.detailReferenta({
+      'Id-osoby': functionDetail['Detail-funkcniho-mista']['Id-referenta'],
     })
+  }
+
+  async uploadFile(
+    documentId: string,
+    fileName: string,
+    contentStream: Readable,
+  ): Promise<SslPridatSouborPridatSoubor> {
+    const baseName = path.parse(fileName).name
+
+    const fileUpload = await this.ginis.ssl.pridatSouborMtom({
+      'Id-dokumentu': documentId,
+      'Jmeno-souboru': fileName.slice(-254), // filenames usually differ at the end
+      'Typ-vazby': 'elektronicka-priloha',
+      'Popis-souboru': baseName.slice(0, 50),
+      'Podrobny-popis-souboru': baseName.slice(0, 254),
+      Obsah: contentStream,
+    })
+
+    return fileUpload['Pridat-soubor']
+  }
+
+  async findDocumentId(formId: string): Promise<string | null> {
+    // formId mapping to this attribute was implemented on Ginis side on '2025-05-02'
+    const documentList = await this.ginis.ssl.prehledDokumentu(
+      {
+        'Datum-podani-od': '2025-05-02',
+        'Datum-podani-do': new Date().toISOString().slice(0, 10),
+        'Priznak-spisu': 'neurceno',
+        'Id-vlastnosti': this.baConfigService.ginisApi.formIdPropertyId,
+        'Hodnota-vlastnosti-raw': formId,
+      },
+      {
+        'Priznak-generovani': 'generovat',
+        'Radek-od': '1',
+        'Radek-do': '10',
+        'Priznak-zachovani': 'nezachovavat',
+        'Rozsah-prehledu': 'standardni',
+      },
+    )
+
+    if (documentList['Prehled-dokumentu'].length === 0) {
+      return null
+    }
+
+    if (documentList['Prehled-dokumentu'].length > 1) {
+      throw new Error(
+        `More than one GINIS document found for formId ${formId}. ${JSON.stringify(documentList)}`,
+      )
+    }
+
+    return documentList['Prehled-dokumentu'][0]['Id-dokumentu']
   }
 }

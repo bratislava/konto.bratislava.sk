@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import React, { ReactNode } from 'react'
 import { useCheckboxGroup } from 'react-aria'
 import { CheckboxGroupState, useCheckboxGroupState } from 'react-stately'
 
+import cn from '../../../../frontend/cn'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const CheckboxGroupContext = React.createContext({} as CheckboxGroupState)
@@ -54,7 +54,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         customHeaderBottomMargin="mb-4"
         displayOptionalLabel={displayOptionalLabel}
       >
-        <div className={cx('flex flex-col gap-3', className)}>
+        <div className={cn('flex flex-col gap-3', className)}>
           <CheckboxGroupContext.Provider value={state}>{children}</CheckboxGroupContext.Provider>
         </div>
       </FieldWrapper>

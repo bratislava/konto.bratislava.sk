@@ -1,6 +1,5 @@
 import { HttpException } from '@nestjs/common'
 
-import { RequiredError } from '../generated-clients/nest-city-account/base'
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
 /**
@@ -114,19 +113,6 @@ function httpExceptionToObj(
   }
 }
 
-function requiredErrorToObj(
-  error: RequiredError,
-  methodName?: string | symbol,
-): object {
-  return {
-    errorType: 'RequiredError',
-    message: error.message,
-    field: error.field,
-    method: methodName,
-    stack: error.stack,
-  }
-}
-
 function genericErrorToObj(error: Error, methodName?: string | symbol): object {
   return {
     errorType: error.name,
@@ -143,15 +129,12 @@ export function errorToLogfmt(
   if (error instanceof HttpException) {
     return objToLogfmt(httpExceptionToObj(error, methodName))
   }
-  if (error instanceof RequiredError) {
-    return objToLogfmt(requiredErrorToObj(error, methodName))
-  }
   if (error instanceof Error) {
     return objToLogfmt(genericErrorToObj(error, methodName))
   }
   return objToLogfmt({
-    errorType: 'UnknownError',
-    message: 'Unknown error was thrown. This should not happen',
+    errorType: `UnexpectedErrorType: ${typeof error}`,
+    message: 'Unexpected type was thrown as error. This should not happen',
     method: methodName,
     alert: 1,
   })

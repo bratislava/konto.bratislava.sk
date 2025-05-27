@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
+import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import { AdminService } from '../admin.service'
 import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
 
@@ -66,39 +67,35 @@ describe('TasksService', () => {
 
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledTimes(4)
+      ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['123456/789', '234567/890'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['345678/901', '345678/902'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.POSTAL,
-        date: null,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['456789/0123'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: mockDate1,
-      })
-      expect(
-        service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['456789/0103'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-        date: mockDate2,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['123456/789', '234567/890'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+        {
+          birthNumbers: ['345678/901', '345678/902'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.POSTAL,
+          date: null,
+        },
+        {
+          birthNumbers: ['456789/0123'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: mockDate1,
+        },
+        {
+          birthNumbers: ['456789/0103'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+          date: mockDate2,
+        },
+      ])
     })
 
     it('should skip empty groups', async () => {
@@ -116,12 +113,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['001234/567', '000123/890'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['001234/567', '000123/890'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+      ])
     })
 
     it('should handle empty input data', async () => {
@@ -147,12 +146,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: ['123456/789'],
-        inCityAccount: IsInCityAccount.YES,
-        deliveryMethod: DeliveryMethod.EDESK,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: ['123456/789'],
+          inCityAccount: IsInCityAccount.YES,
+          deliveryMethod: DeliveryMethod.EDESK,
+          date: null,
+        },
+      ])
     })
 
     it('should propagate errors from norisService', async () => {
@@ -210,12 +211,14 @@ describe('TasksService', () => {
       ).toHaveBeenCalledTimes(1)
       expect(
         service['norisService'].updateDeliveryMethods,
-      ).toHaveBeenCalledWith({
-        birthNumbers: [birthNumber],
-        inCityAccount: IsInCityAccount.NO,
-        deliveryMethod: null,
-        date: null,
-      })
+      ).toHaveBeenCalledWith([
+        {
+          birthNumbers: [birthNumber],
+          inCityAccount: IsInCityAccount.NO,
+          deliveryMethod: null,
+          date: null,
+        },
+      ])
     })
 
     it('should propagate errors from norisService', async () => {
@@ -229,6 +232,103 @@ describe('TasksService', () => {
       await expect(
         service.removeDeliveryMethodsFromNoris(birthNumber),
       ).rejects.toThrow(mockError)
+    })
+  })
+
+  describe('updateTaxesFromNoris', () => {
+    it('should update taxes with valid data', async () => {
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2025 },
+      ]
+      const mockData = [
+        { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
+        { variabilny_symbol: 'VS2', datum_platnosti: '2024-01-02' },
+      ]
+
+      jest
+        .spyOn(service['norisService'], 'getDataForUpdate')
+        .mockResolvedValueOnce(mockData)
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockResolvedValueOnce(
+          mockTaxes.map((tax) => ({
+            ...tax,
+            dateTaxRuling: mockData.find(
+              (item) => item.variabilny_symbol === tax.variableSymbol,
+            )?.datum_platnosti,
+          })),
+        )
+
+      await service.updateTaxesFromNoris(mockTaxes)
+
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024, 2025],
+      )
+      expect(service['prismaService'].$transaction).toHaveBeenCalledWith([
+        expect.any(Function),
+        expect.any(Function),
+      ])
+    })
+
+    it('should not update taxes if datum_platnosti is null', async () => {
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+        { id: 2, variableSymbol: 'VS2', year: 2024 },
+      ]
+      const mockData = [
+        { variabilny_symbol: 'VS1', datum_platnosti: null },
+        { variabilny_symbol: 'VS2', datum_platnosti: null },
+      ]
+
+      jest
+        .spyOn(service['norisService'], 'getDataForUpdate')
+        .mockResolvedValueOnce(mockData)
+
+      await service.updateTaxesFromNoris(mockTaxes)
+
+      expect(service['norisService'].getDataForUpdate).toHaveBeenCalledWith(
+        ['VS1', 'VS2'],
+        [2024],
+      )
+      expect(service['prismaService'].$transaction).toHaveBeenCalledWith([])
+    })
+
+    it('should propagate errors from norisService', async () => {
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+      ]
+      const mockError = new Error('Update failed')
+
+      jest
+        .spyOn(service['norisService'], 'getDataForUpdate')
+        .mockRejectedValueOnce(mockError)
+
+      await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
+        mockError,
+      )
+    })
+
+    it('should propagate errors from prismaService', async () => {
+      const mockTaxes: TaxIdVariableSymbolYear[] = [
+        { id: 1, variableSymbol: 'VS1', year: 2024 },
+      ]
+      const mockData = [
+        { variabilny_symbol: 'VS1', datum_platnosti: '2024-01-01' },
+      ]
+      const mockError = new Error('Transaction failed')
+
+      jest
+        .spyOn(service['norisService'], 'getDataForUpdate')
+        .mockResolvedValueOnce(mockData)
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockRejectedValueOnce(mockError)
+
+      await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
+        mockError,
+      )
     })
   })
 })

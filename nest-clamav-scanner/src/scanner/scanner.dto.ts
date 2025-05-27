@@ -1,6 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { FileStatus } from '@prisma/client'; //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { FileStatus } from '@prisma/client' //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
+import { Type } from 'class-transformer'
+import {
+  IsDefined,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator'
 
 //dto for bucket file with file id and bucket id as optional. Add swagger documentation.
 export class ScanFileDto {
@@ -9,16 +16,16 @@ export class ScanFileDto {
     example: 'ffsdfsd89796.pdf',
   })
   @IsString()
-  fileUid: string;
+  fileUid: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'uid/name of the bucket. If not set, default bucket will be used',
     example: 'super-bucket',
   })
   @IsString()
   @IsOptional()
-  bucketUid?: string;
+  bucketUid?: string
 }
 
 //dto for scan result with file id, bucket id, user id as optional and scan result. Add swagger documentation.
@@ -28,28 +35,28 @@ export class ScanStatusDto {
     example: 'ffsdfsd89796',
   })
   @IsString()
-  fileUid: string;
+  fileUid: string
 
   @ApiProperty({
     description: 'uid of the bucket',
     example: 'ffsdfsd89796',
   })
   @IsString()
-  bucketUid: string;
+  bucketUid: string
 
   @ApiProperty({
     description: 'File size in bytes',
     example: '123131',
   })
   @IsNumber()
-  fileSize: number;
+  fileSize: number
 
   @ApiProperty({
     description: 'File mime type of file',
     example: 'application/pdf',
   })
   @IsString()
-  fileMimeType: string;
+  fileMimeType: string
 
   @ApiProperty({
     description: 'scan result',
@@ -79,28 +86,32 @@ export class ScanStatusDto {
     'SCAN ERROR',
     'SCAN TIMEOUT',
   ])
-  status: string;
+  status: string
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'other meta data',
     example: '{ "type": "TIE Fighter"}',
   })
   @IsOptional()
-  meta?: any;
+  meta?: unknown
 
   //api property for created at
   @ApiProperty({
     description: 'created at',
     example: '2021-05-05T12:00:00.000Z',
   })
-  createdAt: Date;
+  @IsDefined()
+  @Type(() => Date)
+  createdAt: Date
 
   //api property for updated at
   @ApiProperty({
     description: 'updated at',
     example: '2021-05-05T12:00:00.000Z',
   })
-  updatedAt: Date;
+  @IsDefined()
+  @Type(() => Date)
+  updatedAt: Date
 }
 
 export class ScanFileResponseDto {
@@ -110,7 +121,7 @@ export class ScanFileResponseDto {
     example: 'ACCEPTED',
   })
   @IsEnum(['ACCEPTED', 'ERROR'])
-  status: FileStatus;
+  status: FileStatus
 
   //id of the record in db
   @ApiProperty({
@@ -119,19 +130,19 @@ export class ScanFileResponseDto {
   })
   @IsString()
   @IsOptional()
-  id: string;
+  id: string
 
   @ApiProperty({
     description: 'File Uid',
     example: 'file name or file uid.pdf',
   })
   @IsString()
-  fileUid: string;
+  fileUid: string
 
   @ApiProperty({
     description: 'more info',
     example: 'file is queued for scanning',
   })
   @IsString()
-  message: string;
+  message: string
 }

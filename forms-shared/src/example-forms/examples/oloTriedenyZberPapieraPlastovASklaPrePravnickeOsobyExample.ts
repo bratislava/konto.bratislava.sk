@@ -34,7 +34,7 @@ const exampleForm: ExampleForm = {
         {
           miestoDodania: 'Landererova 10',
           druhOdpadu: 'Papier (Pravidelný odvoz odpadových obalov kat. číslo 15)',
-          pocetNadob: -1,
+          pocetNadob: 1,
           objemNadobyPapier: '3000 l polopodzemný kontajner',
           frekvenciaOdvozov: '1 x do týždňa',
         },
@@ -46,7 +46,7 @@ const exampleForm: ExampleForm = {
           frekvenciaOdvozov: '1 x do týždňa',
         },
       ],
-      emailPotvrdenie: 'milan@odpad.sk',
+      emailPotvrdeniePouzitIny: false,
     },
     suhlasy: {
       suhlasSVop: true,

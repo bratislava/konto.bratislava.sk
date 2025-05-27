@@ -12,7 +12,7 @@ export const stavbyBase = (step: StepEnum) => [
     { type: 'text', title: 'Číslo listu vlastníctva' },
     { size: 'medium', placeholder: 'Napr. 4567' },
   ),
-  object('riadok1', { required: true }, {}, [
+  object('riadok1', {}, [
     input(
       'ulicaACisloDomu',
       { type: 'text', title: 'Ulica a číslo domu', required: true },
@@ -21,10 +21,10 @@ export const stavbyBase = (step: StepEnum) => [
     number(
       'supisneCislo',
       { title: 'Súpisné číslo', required: true, type: 'integer', minimum: 1 },
-      { selfColumn: '1/4' },
+      { selfColumn: '1/4', formatOptions: { useGrouping: false } },
     ),
   ]),
-  object('riadok2', { required: true }, {}, [
+  object('riadok2', {}, [
     select(
       'kataster',
       {

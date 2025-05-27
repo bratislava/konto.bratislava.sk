@@ -1,22 +1,9 @@
+import { createFormsClient, FormsClient } from 'openapi-clients/forms'
+
 import { environment } from '../environment'
-import { axiosInstance } from './axios-instance'
-import {
-  Configuration,
-  ConvertApiFactory,
-  FilesApiFactory,
-  GinisApiFactory,
-  NasesApiFactory,
-  SignerApiFactory,
-  StatusesApiFactory,
-} from './openapi-forms'
+import { axiosInstance, ClientWithCustomConfig } from './axios-instance'
 
-const args = [{} as Configuration, environment.formsUrl, axiosInstance] as const
-
-export const formsApi = {
-  ...ConvertApiFactory(...args),
-  ...FilesApiFactory(...args),
-  ...StatusesApiFactory(...args),
-  ...NasesApiFactory(...args),
-  ...GinisApiFactory(...args),
-  ...SignerApiFactory(...args),
-}
+export const formsClient = createFormsClient({
+  basePath: environment.formsUrl,
+  axios: axiosInstance,
+}) as ClientWithCustomConfig<FormsClient>

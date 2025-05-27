@@ -1,18 +1,15 @@
 import { IncomingHttpHeaders } from 'node:http'
 
-import { Controller, Get, Headers, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, Get, Headers, UseGuards } from '@nestjs/common'
 import {
-  ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
-  ApiResponse,
   ApiSecurity,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger'
 
 import AdminGuard from '../auth/guards/admin.guard'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
-import { UnauthorizedErrorDto } from '../utils/global-dtos/errors.dto'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 
@@ -31,8 +28,7 @@ export default class AdminController {
     summary: '',
     description: 'Return technical account JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
   })
@@ -46,8 +42,7 @@ export default class AdminController {
     summary: '',
     description: 'Return administration account JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
   })
@@ -61,22 +56,9 @@ export default class AdminController {
     summary: '',
     description: 'Return eid user JWT token',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Generated JWT token',
     type: 'string',
-  })
-  @ApiExtraModels(UnauthorizedErrorDto)
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Unauthorized.',
-    schema: {
-      anyOf: [
-        {
-          $ref: getSchemaPath(UnauthorizedErrorDto),
-        },
-      ],
-    },
   })
   @UseGuards(AdminGuard)
   @Get('eid-jwt')

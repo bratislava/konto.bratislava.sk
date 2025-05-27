@@ -1,4 +1,4 @@
-import { GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import { GinisDocumentDetailResponseDto } from 'openapi-clients/forms'
 
 // TODO the whole detail page needs rethinking, currently we barely show anything relevant
 // any filtering or changes to GINIS data that happen before we "reveal" them to browser
@@ -23,8 +23,13 @@ export const modifyGinisDataForSchemaSlug = (
       ownerPhone: '',
     }
   }
-  // taxes want to share the contact for referents (as far as we know)
-  if (schemaSlug === 'priznanie-k-dani-z-nehnutelnosti') {
+  // taxes want to share the contact for referents
+  if (
+    [
+      'priznanie-k-dani-z-nehnutelnosti',
+      'oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady',
+    ].includes(schemaSlug)
+  ) {
     return prefilteredData
   }
   // we don't have any direction for other schemas, but we have a few complaints, so playing it safe until the details page is fixed

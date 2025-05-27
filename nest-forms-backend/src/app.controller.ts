@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import AppService from './app.service'
 
@@ -13,8 +13,7 @@ export default class AppController {
     description: 'See if nest is working!',
   })
   @Get('healthcheck')
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: '',
     type: 'string',
   })

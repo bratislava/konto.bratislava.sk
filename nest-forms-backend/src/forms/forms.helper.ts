@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Forms, FormState } from '@prisma/client'
 
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
+import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { EDITABLE_ERRORS } from '../utils/constants'
 
 @Injectable()
@@ -55,8 +55,7 @@ export default class FormsHelper {
 
   userCanSendForm(
     form: Forms,
-    allowSendingUnauthenticatedUsers: boolean,
-    userInfo?: ResponseGdprDataDto,
+    userInfo?: UserInfoResponse,
     userSub?: string,
   ): boolean {
     // If owned by company, it must have the same ICO
@@ -69,9 +68,7 @@ export default class FormsHelper {
       return form.userExternalId === userSub
     }
 
-    // If not owned, return allowSendingUnauthenticatedUsers
-    // (If the form is only for authenticated users, you must be owner of the form before sending it - you automatically become owner of form you are filling in as a logged in user)
-    return allowSendingUnauthenticatedUsers
+    return true
   }
 
   userCanSendFormEid(

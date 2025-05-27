@@ -15,9 +15,9 @@ export const sharedPhoneNumberField = (property: string, required: boolean, help
  * Create address input fields.
  */
 export const sharedAddressField = (property: string, title: string, required: boolean) =>
-  object(property, { required }, { objectDisplay: 'boxed', title }, [
+  object(property, { objectDisplay: 'boxed', title }, [
     input('ulicaACislo', { title: 'Ulica a číslo', required, type: 'text' }, {}),
-    object('mestoPsc', { required: true }, {}, [
+    object('mestoPsc', {}, [
       input('mesto', { type: 'text', title: 'Mesto', required: true }, { selfColumn: '3/4' }),
       input('psc', { type: 'ba-slovak-zip', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
     ]),

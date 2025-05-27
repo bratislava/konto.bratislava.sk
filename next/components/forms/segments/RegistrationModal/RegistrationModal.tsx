@@ -1,10 +1,12 @@
 import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import Modal, { ModalProps } from '../../simple-components/Modal'
+import { useFormContext } from '../../useFormContext'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 export enum RegistrationModalType {
@@ -43,26 +45,88 @@ type RegistrationModalBase = {
   // register and log in action may depend upon context - when called from inside the form it involves saving work in progress
   register: () => void
   login: () => void
-} & ModalV2Props
+} & ModalProps
 
 const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
+  const {
+    evaluatedSendPolicy: { sendAllowedForUserResult, eidSendPossible },
+  } = useFormContext()
+
+  const getTitleKey = () => {
+    if (
+      type === RegistrationModalType.Initial ||
+      type === RegistrationModalType.NotAuthenticatedSubmitForm
+    ) {
+      if (eidSendPossible) {
+        return 'registration_modal.header_initial_title_with_eid'
+      }
+
+      return 'registration_modal.header_initial_title_without_eid'
+    }
+
+    if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
+      return 'registration_modal.header_not_authenticated_concept_save_title'
+    }
+
+    return ''
+  }
+
+  const getSubtitleKey = () => {
+    const verificationMissingType =
+      sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing ||
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+    const onlyAuthenticationMissingType =
+      sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing
+
+    if (type === RegistrationModalType.Initial) {
+      if (eidSendPossible) {
+        if (verificationMissingType) {
+          return 'registration_modal.header_initial_subtitle_with_eid_verified'
+        }
+        if (onlyAuthenticationMissingType) {
+          return 'registration_modal.header_initial_subtitle_with_eid_not_verified'
+        }
+      } else {
+        if (verificationMissingType) {
+          return 'registration_modal.header_initial_subtitle_without_eid_verified'
+        }
+        if (onlyAuthenticationMissingType) {
+          return 'registration_modal.header_initial_subtitle_without_eid_not_verified'
+        }
+      }
+    }
+
+    if (type === RegistrationModalType.NotAuthenticatedSubmitForm) {
+      if (eidSendPossible) {
+        if (verificationMissingType) {
+          return 'registration_modal.header_not_authenticated_submit_subtitle_with_eid_verified'
+        }
+        if (onlyAuthenticationMissingType) {
+          return 'registration_modal.header_not_authenticated_submit_subtitle_with_eid_not_verified'
+        }
+      } else {
+        if (verificationMissingType) {
+          return 'registration_modal.header_not_authenticated_submit_subtitle_without_eid_verified'
+        }
+        if (onlyAuthenticationMissingType) {
+          return 'registration_modal.header_not_authenticated_submit_subtitle_without_eid_not_verified'
+        }
+      }
+    }
+
+    if (type === RegistrationModalType.NotAuthenticatedConceptSave) {
+      return 'registration_modal.header_not_authenticated_concept_save_subtitle'
+    }
+
+    return ''
+  }
 
   const { title, subtitle } = type
     ? {
-        [RegistrationModalType.Initial]: {
-          title: t('registration_modal.header_initial_title'),
-          subtitle: t('registration_modal.header_initial_subtitle'),
-        },
-        [RegistrationModalType.NotAuthenticatedConceptSave]: {
-          title: t('registration_modal.header_not_authenticated_concept_save_title'),
-          subtitle: t('registration_modal.header_not_authenticated_concept_save_subtitle'),
-        },
-        [RegistrationModalType.NotAuthenticatedSubmitForm]: {
-          title: t('registration_modal.header_not_verified_submit_form_title'),
-          subtitle: t('registration_modal.header_not_verified_submit_form_subtitle'),
-        },
-      }[type]
+        title: t(getTitleKey()),
+        subtitle: t(getSubtitleKey()),
+      }
     : { title: null, subtitle: null }
 
   const bodyListTranslation = t('registration_modal.body_list', { returnObjects: true })
@@ -73,7 +137,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2
+    <Modal
       modalClassname="md:max-w-[796px] md:pt-8"
       mobileFullScreen
       {...rest}
@@ -102,7 +166,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => register()}
-            className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600  md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+            className="flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center text-p1-semibold leading-6 text-gray-0 hover:bg-main-600 md:rounded-t-none md:rounded-b-lg md:px-0 md:py-6"
             data-cy="registration-modal-button"
           >
             {t('registration_modal.body_action')}
@@ -114,7 +178,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => login()}
-            className="text-p1-underline text-left text-main-700 hover:text-main-600 md:text-center"
+            className="text-left text-p1 text-main-700 underline hover:text-main-600 md:text-center"
           >
             {t('registration_modal.body_login_link')}
           </AriaButton>
@@ -125,17 +189,19 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
-            <span className="text-p1 px-6">{t('registration_modal.footer_choice')}</span>
+            <span className="px-6 text-p1">{t('registration_modal.footer_choice')}</span>
             <span className="h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
             {type === RegistrationModalType.Initial && (
               <>
-                <ButtonWithSubtext
-                  text={t('registration_modal.buttons_initial_continue_eid_title')}
-                  subtext={t('registration_modal.buttons_initial_continue_eid')}
-                  onPress={close}
-                />
+                {eidSendPossible ? (
+                  <ButtonWithSubtext
+                    text={t('registration_modal.buttons_initial_continue_eid_title')}
+                    subtext={t('registration_modal.buttons_initial_continue_eid')}
+                    onPress={close}
+                  />
+                ) : null}
                 <ButtonWithSubtext
                   text={t('registration_modal.buttons_initial_skip_title')}
                   subtext={t('registration_modal.buttons_initial_skip')}
@@ -161,7 +227,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           </div>
         </div>
       )}
-    </ModalV2>
+    </Modal>
   )
 }
 

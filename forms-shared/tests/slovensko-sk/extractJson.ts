@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import {
   extractJsonFromSlovenskoSkXml,
   ExtractJsonFromSlovenskoSkXmlErrorType,
@@ -9,7 +9,8 @@ describe('extractJsonFromSlovenskoSkXml', () => {
   const validXmlString = `
     <?xml version="1.0" encoding="UTF-8"?>
     <eform xmlns="http://schemas.gov.sk/form/App.GeneralAgenda/1.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <JsonVersion>1.0</JsonVersion>
+      <FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>
+      <JsonVersion>1.0.0</JsonVersion>
       <Json>{"key":"value"}</Json>
     </eform>
   `
@@ -21,16 +22,31 @@ describe('extractJsonFromSlovenskoSkXml', () => {
 
   test('should successfully extract JSON from valid XML', async () => {
     const result = await extractJsonFromSlovenskoSkXml(formDefinition, validXmlString)
-    expect(result).toEqual({ key: 'value' })
+    expect(result).toEqual({
+      formDataJson: { key: 'value' },
+      jsonVersion: '1.0.0',
+    })
   })
 
-  test('should successfully extract JSON from valid XML without version (backwards compatibility)', async () => {
-    const xmlWithoutVersion = validXmlString
-      .split('\n')
-      .filter((line) => !line.includes('<JsonVersion>1.0</JsonVersion>'))
-      .join('\n')
+  test('should handle legacy version 1.0 (converts to 1.0.0)', async () => {
+    const xmlWithLegacyVersion = validXmlString.replace(
+      '<JsonVersion>1.0.0</JsonVersion>',
+      '<JsonVersion>1.0</JsonVersion>',
+    )
+    const result = await extractJsonFromSlovenskoSkXml(formDefinition, xmlWithLegacyVersion)
+    expect(result).toEqual({
+      formDataJson: { key: 'value' },
+      jsonVersion: '1.0.0',
+    })
+  })
+
+  test('should handle missing version (defaults to 1.0.0)', async () => {
+    const xmlWithoutVersion = validXmlString.replace('<JsonVersion>1.0.0</JsonVersion>\n      ', '')
     const result = await extractJsonFromSlovenskoSkXml(formDefinition, xmlWithoutVersion)
-    expect(result).toEqual({ key: 'value' })
+    expect(result).toEqual({
+      formDataJson: { key: 'value' },
+      jsonVersion: '1.0.0',
+    })
   })
 
   test('should throw InvalidXml error for malformed XML', async () => {
@@ -97,5 +113,33 @@ describe('extractJsonFromSlovenskoSkXml', () => {
         type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidJson,
       }),
     )
+  })
+
+  test('should throw InvalidXml error for invalid version format', async () => {
+    const xmlWithInvalidVersion = validXmlString.replace(
+      '<JsonVersion>1.0.0</JsonVersion>',
+      '<JsonVersion>invalid.version</JsonVersion>',
+    )
+    await expect(
+      extractJsonFromSlovenskoSkXml(formDefinition, xmlWithInvalidVersion),
+    ).rejects.toThrow(
+      expect.objectContaining({
+        name: 'ExtractJsonFromSlovenskoSkXmlError',
+        type: ExtractJsonFromSlovenskoSkXmlErrorType.InvalidXml,
+      }),
+    )
+  })
+
+  test('should handle missing FormId element', async () => {
+    const xmlWithoutFormId = validXmlString.replace(
+      '<FormId>f47ac10b-58cc-4372-a567-0e02b2c3d479</FormId>',
+      '',
+    )
+
+    const result = await extractJsonFromSlovenskoSkXml(formDefinition, xmlWithoutFormId)
+    expect(result).toEqual({
+      formDataJson: { key: 'value' },
+      jsonVersion: '1.0.0',
+    })
   })
 })

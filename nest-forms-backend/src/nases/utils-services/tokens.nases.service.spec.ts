@@ -1,8 +1,6 @@
-/* eslint-disable pii/no-phone-number */
-/* eslint-disable pii/no-email */
 import { Readable } from 'node:stream'
 
-import { getQueueToken } from '@nestjs/bull'
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigModule } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FileStatus } from '@prisma/client'
@@ -11,12 +9,14 @@ import { Builder, Parser } from 'xml2js'
 
 import prismaMock from '../../../test/singleton'
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
+import ClientsService from '../../clients/clients.service'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
 import { NasesErrorsResponseEnum } from '../nases.errors.enum'
+import { SendMessageNasesSenderType } from '../types/send-message-nases-sender.type'
 import NasesUtilsService from './tokens.nases.service'
 
 jest.mock('axios')
@@ -56,11 +56,8 @@ describe('NasesUtilsService', () => {
         ThrowerErrorGuard,
         { provide: PrismaService, useValue: prismaMock },
         MinioClientSubservice,
-        TaxService,
-        {
-          provide: getQueueToken('tax'),
-          useValue: {},
-        },
+        { provide: TaxService, useValue: createMock<TaxService>() },
+        { provide: ClientsService, useValue: createMock<ClientsService>() },
       ],
     }).compile()
 
@@ -165,40 +162,43 @@ describe('NasesUtilsService', () => {
           createMockReadableStream('Summary PDF content with form details'),
         )
 
-      let returnXmlString = await service['createEnvelopeSendMessage']({
-        id: '123456678901234567890',
-        formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        externalId: null,
-        userExternalId: null,
-        email: null,
-        finishSubmission: new Date(),
-        mainUri: null,
-        actorUri: null,
-        ownerType: 'FO',
-        ico: '12345678',
-        state: 'QUEUED',
-        error: 'NONE',
-        jsonVersion: '1.0',
-        formDataJson: {},
-        formDataGinis: null,
-        formSignature: {
-          pospID: 'esmao.eforms.bratislava.obec_024',
-          pospVersion: '1.0',
+      let returnXmlString = await service['createEnvelopeSendMessage'](
+        {
+          id: '123456678901234567890',
+          formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          externalId: null,
+          userExternalId: null,
+          cognitoGuestIdentityId: null,
+          email: null,
+          finishSubmission: new Date(),
+          mainUri: null,
+          actorUri: null,
+          ownerType: 'FO',
+          ico: '12345678',
+          state: 'QUEUED',
+          error: 'NONE',
           jsonVersion: '1.0',
-          // eslint-disable-next-line xss/no-mixed-html
-          signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
-          formDataHash: '',
+          formDataJson: {},
+          formDataGinis: null,
+          formSignature: {
+            pospID: 'esmao.eforms.bratislava.obec_024',
+            pospVersion: '1.0',
+            jsonVersion: '1.0',
+            // eslint-disable-next-line xss/no-mixed-html
+            signatureBase64: String.raw`L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====`,
+            formDataHash: '',
+          },
+          formSummary: null,
+          ginisDocumentId: null,
+          senderId: null,
+          recipientId: null,
+          archived: false,
+          ginisState: 'CREATED',
         },
-        formDataBase64: null,
-        formSummary: null,
-        ginisDocumentId: null,
-        senderId: null,
-        recipientId: null,
-        archived: false,
-        ginisState: 'CREATED',
-      })
+        { type: SendMessageNasesSenderType.Self },
+      )
 
       const parser = new Parser()
       const builder = new Builder({
@@ -230,7 +230,7 @@ describe('NasesUtilsService', () => {
             `          <SenderId>example_sender</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>esmao.eforms.bratislava.obec_024</MessageType>\n` +
-            `          <MessageSubject>Podávanie daňového priznanie k dani z nehnuteľností</MessageSubject>\n` +
+            `          <MessageSubject>Podávanie daňového priznania k dani z nehnuteľností</MessageSubject>\n` +
             `          <Object Id="id-file0001" IsSigned="false" Name="file0001.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">dGVzdCBzdHJpbmcgZm9yIGlucHV0OiBwb3NwMDAwMS8xMjM0NTY2Nzg5MDEyMzQ1Njc4OTAvbWluaW9maWxlMDAwMQ==</Object>\n` +
             `          <Object Id="id-file0002" IsSigned="false" Name="file0002.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">dGVzdCBzdHJpbmcgZm9yIGlucHV0OiBwb3NwMDAwMi8xMjM0NTY2Nzg5MDEyMzQ1Njc4OTAvbWluaW9maWxlMDAwMg==</Object>\n` +
             `          <Object Id="12345678-1234-1234-1234-123456789012" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">AWUKDHLAIUWDHU=====</Object>\n` +
@@ -245,33 +245,43 @@ describe('NasesUtilsService', () => {
 
       expect(returnXmlString).toBe(xmlExample)
 
-      returnXmlString = await service['createEnvelopeSendMessage']({
-        id: '123456678901234567890',
-        formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        externalId: null,
-        userExternalId: null,
-        email: null,
-        finishSubmission: new Date(),
-        mainUri: null,
-        actorUri: null,
-        ownerType: 'FO',
-        ico: '12345678',
-        state: 'QUEUED',
-        error: 'NONE',
-        jsonVersion: '1.0',
-        formDataJson: {},
-        formDataGinis: null,
-        formSignature: null,
-        formDataBase64: null,
-        formSummary: null,
-        ginisDocumentId: null,
-        senderId: null,
-        recipientId: null,
-        archived: false,
-        ginisState: 'CREATED',
-      })
+      returnXmlString = await service['createEnvelopeSendMessage'](
+        {
+          id: '123456678901234567890',
+          formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          externalId: null,
+          userExternalId: null,
+          cognitoGuestIdentityId: null,
+          email: null,
+          finishSubmission: new Date(),
+          mainUri: null,
+          actorUri: null,
+          ownerType: 'FO',
+          ico: '12345678',
+          state: 'QUEUED',
+          error: 'NONE',
+          jsonVersion: '1.0',
+          formDataJson: {
+            stavba: {
+              ulica: 'Ulica1',
+              nazov: 'StavbaA',
+              parcelneCisla: '1234/56',
+              katastralneUzemia: ['805556', '805343'], // Ružinov, Trnávka
+            },
+          },
+          formDataGinis: null,
+          formSignature: null,
+          formSummary: null,
+          ginisDocumentId: null,
+          senderId: null,
+          recipientId: null,
+          archived: false,
+          ginisState: 'CREATED',
+        },
+        { type: SendMessageNasesSenderType.Self },
+      )
 
       /* eslint-disable no-secrets/no-secrets */
       xmlExample = builder.buildObject(
@@ -284,7 +294,7 @@ describe('NasesUtilsService', () => {
             `        <MessageInfo>\n` +
             `          <Class>EGOV_APPLICATION</Class>\n` +
             `          <PospID>00603481.stanoviskoKInvesticnemuZameru</PospID>\n` +
-            `          <PospVersion>0.9</PospVersion>\n` +
+            `          <PospVersion>1.3</PospVersion>\n` +
             `          <MessageID>123456678901234567890</MessageID>\n` +
             `          <CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID>\n` +
             `        </MessageInfo>\n` +
@@ -295,7 +305,7 @@ describe('NasesUtilsService', () => {
             `          <SenderId>example_sender</SenderId>\n` +
             `          <RecipientId>example_recipient</RecipientId>\n` +
             `          <MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType>\n` +
-            `          <MessageSubject>123456678901234567890</MessageSubject>\n` +
+            `          <MessageSubject>e-SIZ Ulica1 StavbaA, p.č. 1234/56 kú Ružinov, Trnávka</MessageSubject>\n` +
             `          <Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">\n` +
             `            <eform>\n` +
             `              <tag1 attribute="value1"/>\n` +
@@ -315,5 +325,3 @@ describe('NasesUtilsService', () => {
     })
   })
 })
-/* eslint-enable pii/no-phone-number */
-/* eslint-enable pii/no-email */

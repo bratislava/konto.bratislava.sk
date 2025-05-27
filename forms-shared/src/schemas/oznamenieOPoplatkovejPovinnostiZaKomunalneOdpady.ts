@@ -479,7 +479,7 @@ const getZmenaKomunalnyOdpadFields = (
       'zmena',
       {
         type: 'boolean',
-        title: 'Chcete zmeniť parametre svojich nádob?',
+        title: 'Chcete zmeniť parametre existujúcich nádob?',
         required: true,
         items: [
           { value: true, label: 'Áno' },
@@ -500,7 +500,7 @@ const getZmenaKomunalnyOdpadFields = (
           addButtonLabel: 'Pridať ďalšiu nádobu',
           itemTitle: 'Nádoba na zmenu č. {index}',
           description:
-            'Zmena bude posudená sekciou životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
+            'Pri znížení počtu odvozov/počtu zberných nádob bude zmena posúdená oddelením životného prostredia podľa [VZN 18/2023](https://bratislava.sk/vzn/18-2023).',
           descriptionMarkdown: true,
         },
         getKomunalnyOdpadNadoby('zmena', oznamovatelTyp),
@@ -697,7 +697,6 @@ export default schema(
   {
     title: 'Oznámenie o poplatkovej povinnosti za komunálne odpady',
   },
-  {},
   [
     step('typOznamenia', { title: 'Typ oznámenia' }, [
       radioGroup(
@@ -712,7 +711,7 @@ export default schema(
               value: 'zmena',
               label: 'Zmena poplatkovej povinnosti',
               description:
-                'Použite túto možnosť, ak potrebujete upraviť parametre ako typ a počet nádob, frekvenciu odvozu odpadu alebo počet osôb.',
+                'Použite túto možnosť, ak potrebujete upraviť parametre zapojenia do zberného systému, ako sú typ a počet nádob, frekvencia odvozu odpadu alebo počet osôb.',
             },
             { value: 'zanik', label: 'Zánik poplatkovej povinnosti' },
           ],
@@ -743,7 +742,6 @@ export default schema(
       conditionalFields(createCondition([[['voSvojomMene'], { const: false }]]), [
         object(
           'opravnenaOsoba',
-          { required: true },
           {
             objectDisplay: 'boxed',
             title: 'Údaje o oprávnenej osobe na podanie oznámenia',
@@ -806,6 +804,33 @@ export default schema(
           orientations: 'column',
         },
       ),
+      conditionalFields(
+        createCondition([
+          [
+            ['oznamovatelTyp'],
+            { enum: ['fyzickaOsoba', 'fyzickaOsobaPodnikatel', 'pravnickaOsoba'] },
+          ],
+        ]),
+        [
+          radioGroup(
+            'vztahKNehnutelnosti',
+            {
+              type: 'string',
+              title: 'Označte vzťah k nehnuteľnosti',
+              required: true,
+              items: [
+                { value: 'vlastnik', label: 'Vlastník', isDefault: true },
+                { value: 'najomca', label: 'Nájomca' },
+                { value: 'ine', label: 'Iné' },
+              ],
+            },
+            {
+              variant: 'boxed',
+              orientations: 'column',
+            },
+          ),
+        ],
+      ),
       ...(
         [
           'fyzickaOsoba',
@@ -827,7 +852,6 @@ export default schema(
         [
           object(
             'opravnenaOsoba',
-            { required: false },
             {
               objectDisplay: 'boxed',
               title: 'Údaje o oprávnenej osobe na podanie oznámenia',
@@ -967,19 +991,31 @@ export default schema(
                 required: true,
               },
               {
-                helptext: match(typOznamenia)
+                helptext: match({ typOznamenia, oznamovatelTyp })
                   .with(
-                    'vznik',
+                    { typOznamenia: 'vznik', oznamovatelTyp: 'spravcaSpolocenstvoVlastnikov' },
+                    () =>
+                      'Poplatková povinnosť vzniká dňom nadobudnutia platnosti zmluvy o výkone správy a dátume vzniku spoločenstva.',
+                  )
+                  .with(
+                    {
+                      typOznamenia: 'vznik',
+                      oznamovatelTyp: P.union(
+                        'fyzickaOsoba',
+                        'fyzickaOsobaPodnikatel',
+                        'pravnickaOsoba',
+                      ),
+                    },
                     () =>
                       'Poplatková povinnosť vzniká dňom nadobudnutia práva užívať nehnuteľnosť (napr. kúpa alebo nájom nehnuteľnosti).',
                   )
                   .with(
-                    'zmena',
+                    { typOznamenia: 'zmena' },
                     () =>
                       'Uveďte požadovaný dátum, od ktorého chcete, aby zmena nadobudla účinnosť.',
                   )
                   .with(
-                    'zanik',
+                    { typOznamenia: 'zanik' },
                     () =>
                       'Poplatková povinnosť za komunálny odpad zaniká dňom, keď prestanete užívať nehnuteľnosť (napr. odsťahovanie, predaj nehnuteľnosti, úmrtie, zmena správcu bytového domu).',
                   )
@@ -1063,7 +1099,7 @@ export default schema(
               { type: 'text', title: 'Stanovište' },
               {
                 helptext:
-                  'Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou nehnuteľnosti.',
+                  'Vypíšte v prípade, že sa umiestnenie zberných nádob nezhoduje s adresou odvozného miesta.',
               },
             ),
             match(oznamovatelTyp)
@@ -1292,32 +1328,47 @@ export default schema(
                 () => 'Biologicky rozložiteľný odpad z kuchyne',
               )
               .exhaustive(),
+            description: match(typOdpadu)
+              .with(
+                'biologickyRozlozitelnyOdpadZoZahrad',
+                () =>
+                  'Biologicky rozložiteľný odpad je zložkou komunálneho odpadu (KO) v rámci triedeného zberu ([VZN č. 18/2023](https://bratislava.sk/vzn/18-2023)); je súčasťou poplatku za KO, za nádobu sa poplatok nevyčísľuje, je zohľadnený v sadzbe poplatku za nevážený množstvový zber KO ([VZN č. 17/2023](https://bratislava.sk/vzn/17-2023)).',
+              )
+              .otherwise(() => undefined),
+            descriptionMarkdown: match(typOdpadu)
+              .with('biologickyRozlozitelnyOdpadZoZahrad', () => true)
+              .otherwise(() => undefined),
           },
           [
             object(
               'nadoba',
-              { required: true },
               {
                 objectDisplay: 'boxed',
                 title: 'Nádoba',
-                description: match([typOdpadu, oznamovatelTyp])
+                description: match({ typOdpadu, oznamovatelTyp })
                   .with(
-                    [
-                      'biologickyRozlozitelnyOdpadZoZahrad',
-                      P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
-                    ],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZoZahrad',
+                      oznamovatelTyp: P.union('fyzickaOsoba', 'spravcaSpolocenstvoVlastnikov'),
+                    },
                     () =>
-                      'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
+                      'Pre biologicky rozložiteľný odpad zo záhrad si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
-                    ['biologickyRozlozitelnyOdpadZKuchyne', 'fyzickaOsoba'],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZKuchyne',
+                      oznamovatelTyp: 'fyzickaOsoba',
+                    },
                     () =>
-                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby, frekvencia odvozu aj počet nádob (1 nádoba) pevne stanovená. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
+                      'Pre biologicky rozložiteľný odpad z kuchyne je objem nádoby stanovený. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .with(
-                    ['biologickyRozlozitelnyOdpadZKuchyne', 'spravcaSpolocenstvoVlastnikov'],
+                    {
+                      typOdpadu: 'biologickyRozlozitelnyOdpadZKuchyne',
+                      oznamovatelTyp: 'spravcaSpolocenstvoVlastnikov',
+                    },
                     () =>
-                      'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Frekvencia odvozu aj počet nádob (1 nádoba) sú pevne stanovené. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
+                      'Pre biologicky rozložiteľný odpad z kuchyne si môžete vybrať iba objem nádoby. Informácie o frekvencii odvozu nájdete na [webstránke OLO](https://www.olo.sk/odpad/zistite-si-svoj-odvozovy-den).',
                   )
                   .exhaustive(),
                 descriptionMarkdown: true,
@@ -1496,7 +1547,7 @@ export default schema(
         [
           fileUploadMultiple(
             'prilohy',
-            { title: 'Prílohy', required: true },
+            { title: 'Prílohy' },
             {
               type: 'dragAndDrop',
               helptext: match(osobaTypy)
@@ -1519,7 +1570,7 @@ V prípade potreby ďalších informácií vás bude kontaktovať správca daní
                   () => `Na overenie vami zadaných informácií nahrajte aspoň jednu z príloh, ktorá preukazuje váš vzťah k nehnuteľnosti, napríklad:
 - list vlastníctva
 - zmluva o výkone správy
-- zmluva o spoločenstve
+- zmluva o spoločenstve, registrácia spoločenstva
 - iná príloha, ktorá preukazuje vzťah k nehnuteľnosti
 
 V prípade potreby ďalších informácií vás bude kontaktovať správca daní.`,

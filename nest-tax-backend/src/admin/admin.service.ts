@@ -6,7 +6,11 @@ import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
-import { DeliveryMethod, IsInCityAccount } from '../noris/noris.types'
+import {
+  DeliveryMethod,
+  IsInCityAccount,
+  UpdateNorisDeliveryMethods,
+} from '../noris/noris.types'
 import { PrismaService } from '../prisma/prisma.service'
 import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
@@ -14,12 +18,19 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
+  TaxIdVariableSymbolYear,
+  transformDeliveryMethodToDatabaseType,
+} from '../utils/types/types.prisma'
+import {
   NorisRequestGeneral,
+  RequestAdminCreateTestingTaxDto,
+  RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import { taxDetail } from './utils/tax-detail.helper'
+import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
 export class AdminService {
@@ -109,6 +120,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,
@@ -118,6 +130,7 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
         },
         create: {
           amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
@@ -126,6 +139,7 @@ export class AdminService {
           taxPayerId: taxPayer.id,
           variableSymbol: dataFromNoris.variabilny_symbol,
           dateCreateTax: dataFromNoris.akt_datum,
+          dateTaxRuling: dataFromNoris.datum_platnosti,
           taxId: dataFromNoris.cislo_konania,
           taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
             .intValue,
@@ -135,6 +149,9 @@ export class AdminService {
           taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
           qrCodeEmail,
           qrCodeWeb,
+          deliveryMethod: transformDeliveryMethodToDatabaseType(
+            dataFromNoris.delivery_method,
+          ),
         },
       })
       const taxInstallments =
@@ -178,27 +195,13 @@ export class AdminService {
       return taxPayer
     })
 
-    return { userData, dataFromNoris }
+    return userData
   }
 
-  async loadDataFromNoris(
-    data: RequestPostNorisLoadDataDto,
-  ): Promise<CreateBirthNumbersResponseDto> {
-    this.logger.log('Start Loading data from noris')
-    let norisData: NorisTaxPayersDto[]
-    try {
-      norisData = (await this.norisService.getDataFromNoris(
-        data,
-      )) as NorisTaxPayersDto[]
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
-        'Failed to get taxes from Noris',
-        undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
-      )
-    }
+  async processNorisTaxData(
+    norisData: NorisTaxPayersDto[],
+    year: number,
+  ): Promise<string[]> {
     const birthNumbersResult: string[] = []
 
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
@@ -208,43 +211,85 @@ export class AdminService {
         norisData.map((norisRecord) => norisRecord.ICO_RC),
       )
 
-    await Promise.all(
-      norisData.map(async (elem) => {
-        birthNumbersResult.push(elem.ICO_RC)
-        const taxExists = await this.prismaService.tax.findFirst({
-          where: {
-            year: +data.year,
-            taxPayer: {
-              birthNumber: elem.ICO_RC,
-            },
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: {
+        taxPayer: {
+          select: {
+            birthNumber: true,
           },
-        })
-        if (!taxExists) {
-          const { userData, dataFromNoris } =
-            await this.insertTaxPayerDataToDatabase(elem, data.year)
-          const userFromCityAccount =
-            userDataFromCityAccount[userData.birthNumber] || null
-          if (userFromCityAccount !== null) {
-            const bloomreachTracker =
-              await this.bloomreachService.trackEventTax(
-                {
-                  amount: currency(dataFromNoris.dan_spolu.replace(',', '.'))
-                    .intValue,
-                  year: +data.year,
-                },
-                userFromCityAccount.externalId ?? undefined,
-              )
-            if (!bloomreachTracker) {
-              this.logger.error(
-                this.throwerErrorGuard.InternalServerErrorException(
-                  ErrorsEnum.INTERNAL_SERVER_ERROR,
-                  `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${data.year}`,
-                ),
-              )
-            }
-          }
+        },
+      },
+      where: {
+        year: +year,
+        taxPayer: {
+          birthNumber: {
+            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+          },
+        },
+      },
+    })
+    const birthNumbersWithExistingTax = new Set(
+      taxesExist.map((tax) => tax.taxPayer.birthNumber),
+    )
+
+    await Promise.all(
+      norisData.map(async (norisItem) => {
+        birthNumbersResult.push(norisItem.ICO_RC)
+
+        const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
+        if (taxExists) {
+          return
+        }
+
+        const userData = await this.insertTaxPayerDataToDatabase(
+          norisItem,
+          year,
+        )
+
+        const userFromCityAccount =
+          userDataFromCityAccount[userData.birthNumber] || null
+        if (userFromCityAccount === null) {
+          return
+        }
+
+        const bloomreachTracker = await this.bloomreachService.trackEventTax(
+          {
+            amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+            year,
+            delivery_method: transformDeliveryMethodToDatabaseType(
+              norisItem.delivery_method,
+            ),
+          },
+          userFromCityAccount.externalId ?? undefined,
+        )
+        if (!bloomreachTracker) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+            ),
+          )
         }
       }),
+    )
+
+    // Add the payments for these added taxes to database
+    await this.updatePaymentsFromNorisWithData(norisData)
+
+    return birthNumbersResult
+  }
+
+  async loadDataFromNoris(
+    data: RequestPostNorisLoadDataDto,
+  ): Promise<CreateBirthNumbersResponseDto> {
+    this.logger.log('Start Loading data from noris')
+    const norisData = (await this.norisService.getDataFromNoris(
+      data,
+    )) as NorisTaxPayersDto[]
+
+    const birthNumbersResult: string[] = await this.processNorisTaxData(
+      norisData,
+      data.year,
     )
 
     return { birthNumbers: birthNumbersResult }
@@ -261,21 +306,37 @@ export class AdminService {
         CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
         'Failed to get taxes from Noris',
         undefined,
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error
       )
     }
     let count = 0
-    await Promise.all(
-      norisData.map(async (elem) => {
-        const taxExists = await this.prismaService.tax.findFirst({
-          where: {
-            year: +data.year,
-            taxPayer: {
-              birthNumber: elem.ICO_RC,
-            },
+
+    const taxesExist = await this.prismaService.tax.findMany({
+      select: {
+        id: true,
+        taxPayer: {
+          select: {
+            birthNumber: true,
           },
-        })
+        },
+      },
+      where: {
+        year: data.year,
+        taxPayer: {
+          birthNumber: {
+            in: norisData.map((norisRecord) => norisRecord.ICO_RC),
+          },
+        },
+      },
+    })
+    const birthNumberToTax = new Map(
+      taxesExist.map((tax) => [tax.taxPayer.birthNumber, tax]),
+    )
+
+    await Promise.all(
+      norisData.map(async (norisItem) => {
+        const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
         if (taxExists) {
           await this.prismaService.taxInstallment.deleteMany({
             where: {
@@ -288,7 +349,7 @@ export class AdminService {
             },
           })
           const userData = await this.insertTaxPayerDataToDatabase(
-            elem,
+            norisItem,
             data.year,
           )
           if (userData) {
@@ -371,14 +432,20 @@ export class AdminService {
   }
 
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {
-    let created = 0
-    let alreadyCreated = 0
     const norisPaymentData: Partial<NorisPaymentsDto>[] =
       norisRequest.type === 'fromToDate'
         ? await this.norisService.getPaymentDataFromNoris(norisRequest.data)
         : await this.norisService.getPaymentDataFromNorisByVariableSymbols(
             norisRequest.data,
           )
+    return this.updatePaymentsFromNorisWithData(norisPaymentData)
+  }
+
+  async updatePaymentsFromNorisWithData(
+    norisPaymentData: Partial<NorisPaymentsDto>[],
+  ) {
+    let created = 0
+    let alreadyCreated = 0
     const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
 
     // Get all tax IDs from taxesDataMap
@@ -533,41 +600,176 @@ export class AdminService {
       }
     })
 
-    const updates = Object.entries(deliveryGroups)
+    const updates: UpdateNorisDeliveryMethods[] = Object.entries(deliveryGroups)
       .filter(
         ([deliveryMethod, birthNumbers]) =>
           birthNumbers.length > 0 &&
           deliveryMethod !== DeliveryMethod.CITY_ACCOUNT,
       )
-      .map(([deliveryMethod, birthNumbers]) =>
-        this.norisService.updateDeliveryMethods({
+      .map(([deliveryMethod, birthNumbers]) => {
+        return {
           birthNumbers: birthNumbers.map((item) => item.birthNumber),
           inCityAccount: IsInCityAccount.YES,
           deliveryMethod: deliveryMethod as DeliveryMethod,
           date: null, // date of confirmation of delivery method should be set only for city account notification
-        }),
-      )
+        }
+      })
 
     deliveryGroups[DeliveryMethod.CITY_ACCOUNT].forEach((item) => {
-      updates.push(
-        this.norisService.updateDeliveryMethods({
-          birthNumbers: [item.birthNumber],
-          inCityAccount: IsInCityAccount.YES,
-          deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-          date: item.date,
-        }),
-      )
+      updates.push({
+        birthNumbers: [item.birthNumber],
+        inCityAccount: IsInCityAccount.YES,
+        deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
+        date: item.date,
+      })
     })
 
-    await Promise.all(updates)
+    if (updates.length > 0) {
+      await this.norisService.updateDeliveryMethods(updates)
+    }
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {
-    await this.norisService.updateDeliveryMethods({
-      birthNumbers: [addSlashToBirthNumber(birthNumber)],
-      inCityAccount: IsInCityAccount.NO,
-      deliveryMethod: null,
-      date: null,
+    await this.norisService.updateDeliveryMethods([
+      {
+        birthNumbers: [addSlashToBirthNumber(birthNumber)],
+        inCityAccount: IsInCityAccount.NO,
+        deliveryMethod: null,
+        date: null,
+      },
+    ])
+  }
+
+  async updateTaxesFromNoris(taxes: TaxIdVariableSymbolYear[]): Promise<void> {
+    const variableSymbolToId = new Map(
+      taxes.map((tax) => [tax.variableSymbol, tax.id]),
+    )
+    const variableSymbols = [...variableSymbolToId.keys()]
+    const years = [...new Set(taxes.map((tax) => tax.year))]
+    const data = await this.norisService.getDataForUpdate(
+      variableSymbols,
+      years,
+    )
+    const variableSymbolsToNonNullDateFromNoris: Map<string, string> = new Map(
+      data
+        .filter((item) => item.datum_platnosti !== null)
+        .map((item) => [
+          item.variabilny_symbol,
+          item.datum_platnosti as string,
+        ]),
+    )
+
+    await this.prismaService.$transaction(
+      [...variableSymbolsToNonNullDateFromNoris.entries()].map(
+        ([variableSymbol, dateTaxRuling]) =>
+          this.prismaService.tax.update({
+            where: { id: variableSymbolToId.get(variableSymbol) },
+            data: { dateTaxRuling },
+          }),
+      ),
+    )
+  }
+
+  /**
+   * Creates a testing tax record with specified details for development and testing purposes.
+   * WARNING! This tax should be removed after testing, with the endpoint `delete-testing-tax`.
+   */
+  async createTestingTax({
+    year,
+    norisData,
+  }: RequestAdminCreateTestingTaxDto): Promise<void> {
+    const taxEmployee = await this.prismaService.taxEmployee.findFirst({})
+    if (!taxEmployee) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'No tax employee found in the database',
+      )
+    }
+
+    // Generate the mock tax record
+    const mockTaxRecord = createTestingTaxMock(norisData, taxEmployee, year)
+
+    // Process the mock data to create the testing tax
+    await this.processNorisTaxData([mockTaxRecord], year)
+  }
+
+  async deleteTax({
+    year,
+    birthNumber,
+  }: RequestAdminDeleteTaxDto): Promise<void> {
+    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
+    const taxPayer = await this.prismaService.taxPayer.findUnique({
+      where: {
+        birthNumber: birthNumberWithSlash,
+      },
     })
+    if (!taxPayer) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax payer not found',
+      )
+    }
+
+    const tax = await this.prismaService.tax.findUnique({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
+        },
+      },
+    })
+    if (!tax) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Tax not found',
+      )
+    }
+
+    await this.prismaService.$transaction([
+      this.prismaService.taxPayment.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.taxInstallment.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.taxDetail.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.tax.delete({
+        where: {
+          taxPayerId_year: {
+            taxPayerId: taxPayer.id,
+            year,
+          },
+        },
+      }),
+    ])
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+    if (userDataFromCityAccount) {
+      const bloomreachResponse = await this.bloomreachService.trackEventTax(
+        {
+          year,
+          amount: 0,
+          delivery_method: null,
+        },
+        userDataFromCityAccount.externalId ?? undefined,
+      )
+      if (!bloomreachResponse) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+          ),
+        )
+      }
+    }
   }
 }

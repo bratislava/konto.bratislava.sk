@@ -9,7 +9,9 @@ import {
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { NorisUpdateDto } from './noris.dto'
 import {
+  getNorisDataForUpdate,
   queryPayersFromNoris,
   queryPaymentsFromNoris,
   setDeliveryMethodsForUser,
@@ -168,7 +170,69 @@ export class NorisService {
     return norisData.recordset
   }
 
-  async updateDeliveryMethods(data: UpdateNorisDeliveryMethods): Promise<void> {
+  async updateDeliveryMethods(
+    data: UpdateNorisDeliveryMethods[],
+  ): Promise<void> {
+    const connection = await connect({
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      port: 1433,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    try {
+      await Promise.all(
+        data.map(async (dataItem) => {
+          const request = new Request(connection)
+
+          // Set parameters for the query
+          request.input('dkba_stav', dataItem.inCityAccount)
+          request.input(
+            'dkba_datum_suhlasu',
+            dataItem.date ? new Date(dataItem.date) : null,
+          )
+          request.input('dkba_sposob_dorucovania', dataItem.deliveryMethod)
+
+          const birthNumberPlaceholders = dataItem.birthNumbers
+            .map((_, index) => `@birthnumber${index}`)
+            .join(',')
+          dataItem.birthNumbers.forEach((birthNumber, index) => {
+            request.input(`birthnumber${index}`, birthNumber)
+          })
+          const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
+            '@birth_numbers',
+            birthNumberPlaceholders,
+          )
+
+          // Execute the query
+          return request.query(queryWithPlaceholders)
+        }),
+      )
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Failed to update delivery methods',
+        undefined,
+        undefined,
+        error,
+      )
+    } finally {
+      // Always close the connection
+      await connection.close()
+    }
+  }
+
+  async getDataForUpdate(
+    variableSymbols: string[],
+    years: number[],
+  ): Promise<NorisUpdateDto[]> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
@@ -186,31 +250,30 @@ export class NorisService {
     try {
       const request = new Request(connection)
 
-      // Set parameters for the query
-      request.input('dkba_stav', data.inCityAccount)
-      request.input(
-        'dkba_datum_suhlasu',
-        data.date ? new Date(data.date) : null,
-      )
-      request.input('dkba_sposob_dorucovania', data.deliveryMethod)
-
-      const birthNumberPlaceholders = data.birthNumbers
-        .map((_, index) => `@birthnumber${index}`)
+      const variableSymbolsPlaceholders = variableSymbols
+        .map((_, index) => `@variablesymbol${index}`)
         .join(',')
-      data.birthNumbers.forEach((birthNumber, index) => {
-        request.input(`birthnumber${index}`, birthNumber)
+      variableSymbols.forEach((variableSymbol, index) => {
+        request.input(`variablesymbol${index}`, variableSymbol)
       })
-      const queryWithPlaceholders = setDeliveryMethodsForUser.replaceAll(
-        '@birth_numbers',
-        birthNumberPlaceholders,
-      )
 
-      // Execute the query
-      await request.query(queryWithPlaceholders)
+      const yearsPlaceholders = years
+        .map((_, index) => `@year${index}`)
+        .join(',')
+      years.forEach((year, index) => {
+        request.input(`year${index}`, year)
+      })
+
+      const queryWithPlaceholders = getNorisDataForUpdate
+        .replaceAll('@variable_symbols', variableSymbolsPlaceholders)
+        .replaceAll('@years', yearsPlaceholders)
+
+      const norisData = await request.query(queryWithPlaceholders)
+      return norisData.recordset
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `Failed to update delivery methods`,
+        `Failed to get data from Noris during tax update`,
         undefined,
         error instanceof Error ? undefined : <string>error,
         error instanceof Error ? error : undefined,

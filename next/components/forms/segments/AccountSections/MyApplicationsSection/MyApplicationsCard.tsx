@@ -7,8 +7,7 @@ import {
   EyeIcon,
   PdfIcon,
 } from '@assets/ui-icons'
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -21,6 +20,7 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from 'openapi-clients/forms'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
@@ -74,7 +74,7 @@ const MyApplicationsCard = ({
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  const title = form?.frontendTitle || ft('form_title_fallback')
+  const subject = form?.formSubject
   const formSlug = form?.formDefinitionSlug
   const category = formSlug ? formDefinitionSlugTitleMap[formSlug] : undefined
   const createdAt = form?.createdAt
@@ -98,11 +98,11 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
       if (!formId) throw new Error('No form id provided for exportXml')
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
@@ -122,11 +122,11 @@ const MyApplicationsCard = ({
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
-      const response = await formsApi.convertControllerConvertToPdf(
+      const response = await formsClient.convertControllerConvertToPdf(
         {
           formId,
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        { authStrategy: 'authOrGuestWithToken', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
@@ -142,8 +142,8 @@ const MyApplicationsCard = ({
     openSnackbarInfo(ft('info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
-      await formsApi.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+      await formsClient.nasesControllerDeleteForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.concept_delete'))
@@ -209,7 +209,7 @@ const MyApplicationsCard = ({
                   {isLoading ? <Skeleton width="25%" /> : category}
                 </div>
               )}
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
+              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : subject}</h3>
               {(createdAt || isLoading) && (
                 <div className="text-p3">
                   {isLoading ? (
@@ -300,13 +300,13 @@ const MyApplicationsCard = ({
                 )}
                 {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
-              <h3 className="text-20-semibold pb-3">
-                {isLoading ? <Skeleton width="75%" /> : title}
+              <h3 className="pb-3 text-20-semibold">
+                {isLoading ? <Skeleton width="75%" /> : subject}
               </h3>
 
               <span className="flex flex-row justify-between">
                 {(createdAt || isLoading) && (
-                  <span className="text-p3 flex items-center ">
+                  <span className="flex items-center text-p3">
                     {isLoading ? (
                       <Skeleton width="50%" />
                     ) : (
@@ -328,7 +328,7 @@ const MyApplicationsCard = ({
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
-            {ft('modals_back_button_title')}
+            {ft('modals_close_button_title')}
           </Button>,
           <Button
             variant="negative-solid"
@@ -341,7 +341,7 @@ const MyApplicationsCard = ({
           </Button>,
         ]}
       >
-        {ft('concept_delete_modal.content', { conceptName: title })}
+        {ft('concept_delete_modal.content_with_name', { conceptName: subject })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

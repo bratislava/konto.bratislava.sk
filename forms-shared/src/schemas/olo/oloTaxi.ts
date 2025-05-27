@@ -1,7 +1,5 @@
 import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 import { createStringItems } from '../../generator/helpers'
-import { GenericObjectType } from '@rjsf/utils'
-import { safeString } from '../../form-utils/safeData'
 import { select } from '../../generator/functions/select'
 import { input } from '../../generator/functions/input'
 import { radioGroup } from '../../generator/functions/radioGroup'
@@ -12,12 +10,12 @@ import { customComponentsField } from '../../generator/functions/customComponent
 import { object } from '../../generator/object'
 import { step } from '../../generator/functions/step'
 import { schema } from '../../generator/functions/schema'
+import { SchemalessFormDataExtractor } from '../../form-utils/evaluateFormDataExtractor'
 
 export default schema(
   {
     title: 'OLO Taxi',
   },
-  {},
   [
     step('ziadatel', { title: 'Žiadateľ' }, [
       radioGroup(
@@ -30,7 +28,7 @@ export default schema(
         },
         { variant: 'boxed', orientations: 'column' },
       ),
-      object('menoPriezvisko', { required: true }, {}, [
+      object('menoPriezvisko', {}, [
         input('meno', { title: 'Meno', required: true, type: 'text' }, { selfColumn: '2/4' }),
         input(
           'priezvisko',
@@ -75,8 +73,8 @@ export default schema(
             [
               '07:00 (pondelok - sobota)',
               '09:00 (pondelok - sobota)',
-              '11:00 (pondelok - sobota)',
-              '13:00 (pondelok - piatok)',
+              '10:30 (pondelok - sobota)',
+              '12:30 (pondelok - piatok)',
             ],
             false,
           ),
@@ -138,8 +136,21 @@ export default schema(
   ],
 )
 
-export const oloTaxiExtractEmail = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.email)
+type ExtractFormData = {
+  ziadatel: {
+    menoPriezvisko: {
+      meno: string
+    }
+    email: string
+  }
+}
 
-export const oloTaxiExtractName = (formData: GenericObjectType) =>
-  safeString(formData.ziadatel?.menoPriezvisko?.meno)
+export const oloTaxiExtractEmail: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.ziadatel.email,
+}
+
+export const oloTaxiExtractName: SchemalessFormDataExtractor<ExtractFormData> = {
+  type: 'schemaless',
+  extractFn: (formData) => formData.ziadatel.menoPriezvisko.meno,
+}

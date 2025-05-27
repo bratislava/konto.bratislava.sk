@@ -1,9 +1,10 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { strapiClient } from '@clients/graphql-strapi'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
+import { makeClientLandingPageFormDefinition } from '../../../components/forms/clientFormDefinitions'
 import FormLandingPage, {
   FormLandingPageProps,
   FormWithLandingPageRequiredFragment,
@@ -37,14 +38,14 @@ export const formHasLandingPage = (
 }
 
 export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps, Params>(
-  async ({ context, getAccessToken }) => {
+  async ({ context, fetchAuthSession }) => {
     if (!context.params) {
       return { notFound: true }
     }
 
     const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
-    if (!formDefinition) {
+    const serverFormDefinition = getFormDefinitionBySlug(slug)
+    if (!serverFormDefinition) {
       return { notFound: true }
     }
 
@@ -52,7 +53,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
     if (formHasLandingPage(strapiForm)) {
       return {
         props: {
-          formDefinition,
+          formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
           strapiForm,
           ...(await slovakServerSideTranslations()),
         },
@@ -61,11 +62,11 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
 
     // If Strapi form does not have a landing page, create a new form instance and redirect to it directly.
     try {
-      const { data: form } = await formsApi.nasesControllerCreateForm(
+      const { data: form } = await formsClient.nasesControllerCreateForm(
         {
           formDefinitionSlug: slug,
         },
-        { accessToken: 'onlyAuthenticated', accessTokenSsrGetFn: getAccessToken },
+        { authStrategy: 'authOrGuestWithToken', getSsrAuthSession: fetchAuthSession },
       )
 
       if (!form) {
@@ -73,7 +74,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
       }
 
       const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
-        formDefinition,
+        serverFormDefinition,
         context,
       )
       if (!embeddedSuccess) {
@@ -86,7 +87,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
         : ''
       return {
         redirect: {
-          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}${isEmbeddedPostfix}`,
+          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.formId}${isEmbeddedPostfix}`,
           permanent: false,
         },
       }

@@ -1,3 +1,4 @@
+import { SendAllowedForUserResult } from 'forms-shared/send-policy/sendPolicy'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
@@ -6,13 +7,13 @@ import { RegistrationModalType } from './segments/RegistrationModal/Registration
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 import { useFormContext } from './useFormContext'
 
-type ModalWithSendCallback =
+type ModalWithConfirmCallback =
   | {
       isOpen: false
     }
   | {
       isOpen: true
-      sendCallback: (() => void) | (() => Promise<void>)
+      confirmCallback: (() => void) | (() => Promise<void>)
     }
 
 enum InitialModal {
@@ -22,7 +23,10 @@ enum InitialModal {
 }
 
 const useInitialModal = () => {
-  const { formMigrationRequired, signInMissing, verificationMissing } = useFormContext()
+  const {
+    formMigrationRequired,
+    evaluatedSendPolicy: { sendAllowedForUserResult },
+  } = useFormContext()
   const router = useRouter()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
@@ -35,11 +39,14 @@ const useInitialModal = () => {
     return InitialModal.MigrationRequired
   }
 
-  if (signInMissing) {
+  if (
+    sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationMissing ||
+    sendAllowedForUserResult === SendAllowedForUserResult.AuthenticationAndVerificationMissing
+  ) {
     return InitialModal.Registration
   }
 
-  if (verificationMissing) {
+  if (sendAllowedForUserResult === SendAllowedForUserResult.VerificationMissing) {
     return InitialModal.IdentityVerification
   }
 
@@ -61,22 +68,23 @@ const useGetContext = () => {
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
   const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
-  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithSendCallback>({
+  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
-  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState<ModalWithSendCallback>({
-    isOpen: false,
-  })
+  const [sendConfirmationEidModal, setSendConfirmationEidModal] =
+    useState<ModalWithConfirmCallback>({
+      isOpen: false,
+    })
   const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
   const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
+    useState<ModalWithConfirmCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
-    useState<ModalWithSendCallback>({ isOpen: false })
-  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
+    useState<ModalWithConfirmCallback>({ isOpen: false })
+  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [eidSendingModal, setEidSendingModal] = useState(false)
-  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
+  const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithConfirmCallback>({
     isOpen: false,
   })
   const [sendPending, setSendPending] = useState(false)
@@ -94,6 +102,9 @@ const useGetContext = () => {
 
   const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
     useState<TaxFormPdfExportModalState | null>(null)
+
+  const [xmlImportVersionConfirmationModal, setXmlImportVersionConfirmationModal] =
+    useState<ModalWithConfirmCallback>({ isOpen: false })
 
   return {
     migrationRequiredModal,
@@ -135,6 +146,8 @@ const useGetContext = () => {
     setTaxFormPdfExportModal,
     signerIsDeploying,
     setSignerIsDeploying,
+    xmlImportVersionConfirmationModal,
+    setXmlImportVersionConfirmationModal,
   }
 }
 

@@ -16,3 +16,17 @@ export default class FormDeleteResponseDto {
   @IsUUID()
   formId: string
 }
+
+export class BumpJsonVersionResponseDto {
+  @ApiProperty({
+    description: 'UUID of the form.',
+    example: 'e5c84a71-5985-40c7-bb19-e4ad22eda41c',
+  })
+  formId: string
+
+  @ApiProperty({
+    description: 'True if the form was successfully bumped.',
+    example: true,
+  })
+  success: boolean
+}

@@ -2,31 +2,44 @@ import { GeneratorBaseOptions, GeneratorField } from '../generatorTypes'
 import { BaWidgetType, NumberUiOptions } from '../uiOptionsTypes'
 import { removeUndefinedValues } from '../helpers'
 
+/**
+ * Creates a number field generator
+ * @param property - The property name
+ * @param options - Configuration options:
+ *   - type: 'number' for decimal/float numbers (requires step)
+ *   - type: 'integer' for whole numbers (step defaults to 1)
+ *   - step: Required (we don't want to have infinite decimal places) for 'number' type to control decimal precision
+ *   - default: Default value
+ *   - minimum: Minimum allowed value
+ *   - maximum: Maximum allowed value
+ */
 export const number = (
   property: string,
-  options: GeneratorBaseOptions & {
-    type?: 'number' | 'integer'
-    default?: number
-    minimum?: number
-    exclusiveMinimum?: number
-    maximum?: number
-    exclusiveMaximum?: number
-  },
+  options: GeneratorBaseOptions &
+    (
+      | {
+          type: 'number'
+          step: number
+        }
+      | { type: 'integer'; step?: number }
+    ) & {
+      default?: number
+      minimum?: number
+      maximum?: number
+    },
   uiOptions: NumberUiOptions,
 ): GeneratorField => {
   return {
     property,
     schema: removeUndefinedValues({
-      type: options.type ?? 'number',
+      type: options.type,
       title: options.title,
       default: options.default,
       minimum: options.minimum,
-      exclusiveMinimum: options.exclusiveMinimum,
       maximum: options.maximum,
-      exclusiveMaximum: options.exclusiveMaximum,
+      multipleOf: options.step,
       baUiSchema: {
         'ui:widget': BaWidgetType.Number,
-        'ui:label': false,
         'ui:options': { ...uiOptions },
       },
     }),

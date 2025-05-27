@@ -1,6 +1,7 @@
-import cx from 'classnames'
 import { useId } from 'react'
 import { useProgressBar } from 'react-aria'
+
+import cn from '../../../frontend/cn'
 
 type ProgressBarBase = {
   type?: 'success' | 'default'
@@ -30,7 +31,7 @@ const ProgressBar = ({
   const percentage = (value - minValue) / (maxValue - minValue)
   const barWidth = `${Math.round(percentage * 100)}%`
 
-  const progressBarStyleContainer = cx(
+  const progressBarStyleContainer = cn(
     'flex h-6 w-full flex-row items-center gap-4 p-0',
     className,
     {},
@@ -39,10 +40,10 @@ const ProgressBar = ({
     <div className="flex w-full flex-col">
       {label && <span {...labelProps}>{label}</span>}
       <div {...progressBarProps} className={progressBarStyleContainer}>
-        <div className={cx('flex-column flex h-2 w-full items-center rounded-full bg-gray-200')}>
+        <div className={cn('flex-column flex h-2 w-full items-center rounded-full bg-gray-200')}>
           <div
             style={{ width: barWidth }}
-            className={cx('h-2 rounded-full', {
+            className={cn('h-2 rounded-full', {
               'bg-gray-700': type === 'default',
               'bg-success-700': type === 'success',
             })}
@@ -50,7 +51,7 @@ const ProgressBar = ({
         </div>
 
         {/* "before" creates space for percentage value, so the progressbar doesn't change width */}
-        <div className='text-p2 text-right before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
+        <div className='text-right text-p2 before:invisible before:block before:h-0 before:overflow-hidden before:content-["100%"]'>{`${value}%`}</div>
       </div>
     </div>
   )

@@ -119,7 +119,7 @@ export class CognitoSubservice {
     }
   }
 
-  async changeCognitoTierAndInDatabase(
+  async changeTier(
     userId: string,
     newTier: CognitoUserAttributesTierEnum,
     accountType: CognitoUserAccountTypesEnum
@@ -130,6 +130,9 @@ export class CognitoSubservice {
         Value: newTier,
       },
     ])
+
+    // i don't think this (cognito.subservice) is the right place for
+    // calling bloomreach service as well as database update
 
     if (accountType === CognitoUserAccountTypesEnum.PHYSICAL_ENTITY) {
       const user = await this.prisma.user.findUnique({
@@ -185,7 +188,8 @@ export class CognitoSubservice {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
           SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

@@ -1,12 +1,12 @@
-import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
+import { AxiosResponse, isAxiosError } from 'axios'
 import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { usePlausible } from 'next-plausible'
+import { GetFormResponseDto } from 'openapi-clients/forms'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
@@ -17,6 +17,7 @@ import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
+import { environment } from '../../environment'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
@@ -31,7 +32,8 @@ export const useGetContext = () => {
   } = useFormContext()
   const { setImportedFormData } = useFormState()
   const { formData } = useFormData()
-  const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
+  const { setRegistrationModal, setTaxFormPdfExportModal, setXmlImportVersionConfirmationModal } =
+    useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
@@ -55,14 +57,14 @@ export const useGetContext = () => {
     { fromModal?: boolean }
   >({
     mutationFn: () =>
-      formsApi.nasesControllerUpdateForm(
+      formsClient.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
           formSignature: signature ?? null,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onMutate: ({ fromModal }) => {
@@ -83,8 +85,7 @@ export const useGetContext = () => {
   })
 
   const { mutate: migrateFormMutate, isPending: migrateFormIsPending } = useMutation({
-    mutationFn: () =>
-      formsApi.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
+    mutationFn: () => formsClient.nasesControllerMigrateForm(formId, { authStrategy: 'authOnly' }),
     networkMode: 'always',
     onSuccess: () => {
       turnOffLeaveProtection()
@@ -109,12 +110,12 @@ export const useGetContext = () => {
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const response = await formsApi.convertControllerConvertJsonToXmlV2(
+      const response = await formsClient.convertControllerConvertJsonToXmlV2(
         {
           formId,
           jsonData: formData,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
       const fileName = `${slug}_output.xml`
       downloadBlob(new Blob([response.data]), fileName)
@@ -149,19 +150,38 @@ export const useGetContext = () => {
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
       const xmlForm = await file.text()
-      const response = await formsApi.convertControllerConvertXmlToJson(
+      const { data } = await formsClient.convertControllerConvertXmlToJson(
         {
           formId,
           xmlForm,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       )
-      setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_import'))
+
+      const importData = () => {
+        setImportedFormData(data.formDataJson)
+        openSnackbarSuccess(t('success_messages.xml_import'))
+      }
+
+      if (environment.featureToggles.versioning && data.requiresVersionConfirmation) {
+        setXmlImportVersionConfirmationModal({
+          isOpen: true,
+          confirmCallback: () => {
+            importData()
+            setXmlImportVersionConfirmationModal({ isOpen: false })
+          },
+        })
+      } else {
+        importData()
+      }
       plausible(`${slug}#import-xml`)
     } catch (error) {
-      openSnackbarError(t('errors.xml_import'))
+      if (isAxiosError(error) && error.response?.data?.errorName === 'INCOMPATIBLE_JSON_VERSION') {
+        openSnackbarError(t('errors.xml_import_incompatible_version'))
+      } else {
+        openSnackbarError(t('errors.xml_import'))
+      }
     }
   }
 
@@ -183,7 +203,7 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdf(
+    const response = await formsClient.convertControllerConvertToPdf(
       {
         formId,
         jsonData: formData,
@@ -193,7 +213,7 @@ export const useGetContext = () => {
         })),
       },
       {
-        accessToken: 'onlyAuthenticated',
+        authStrategy: 'authOrGuestWithToken',
         responseType: 'arraybuffer',
         signal: abortController?.signal,
       },
@@ -251,8 +271,8 @@ export const useGetContext = () => {
   const deleteConcept = async () => {
     openSnackbarInfo(t('info_messages.concept_delete'))
     try {
-      await formsApi.nasesControllerDeleteForm(formId, {
-        accessToken: 'onlyAuthenticated',
+      await formsClient.nasesControllerDeleteForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
       })
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.concept_delete'))

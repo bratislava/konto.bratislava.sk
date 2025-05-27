@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/dot-notation */
+import { GinisError } from '@bratislava/ginis-sdk'
+import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import { AxiosError } from 'axios'
 
 import { mockGinisDocumentData } from '../__tests__/ginisContants'
+import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
-import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import GinisController from './ginis.controller'
+import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
 
 jest.mock('./subservices/ginis-api.service')
@@ -20,7 +24,13 @@ describe('GinisController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GinisController],
-      providers: [ThrowerErrorGuard, GinisAPIService, FormsService],
+      providers: [
+        ThrowerErrorGuard,
+        GinisAPIService,
+        GinisHelper,
+        FormsService,
+        { provide: ClientsService, useValue: createMock<ClientsService>() },
+      ],
     }).compile()
     controller = module.get<GinisController>(GinisController)
 
@@ -40,9 +50,13 @@ describe('GinisController', () => {
 
       try {
         // because it will fail after this function
-        await controller.getGinisDocumentByFormId('123', {
-          sub: 'sub',
-        } as CognitoGetUserData)
+        await controller.getGinisDocumentByFormId(
+          '123',
+          {
+            sub: 'sub',
+          } as CognitoGetUserData,
+          null,
+        )
       } catch (error) {
         expect(spy).toHaveBeenLastCalledWith('123', 'sub', null)
       }
@@ -50,7 +64,7 @@ describe('GinisController', () => {
       try {
         await controller.getGinisDocumentByFormId('123', undefined, {
           ico: 'ico1',
-        } as ResponseGdprDataDto)
+        } as UserInfoResponse)
       } catch (error) {
         expect(spy).toHaveBeenLastCalledWith('123', null, 'ico1')
       }
@@ -60,14 +74,18 @@ describe('GinisController', () => {
       controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockRejectedValue(new Error('Error'))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', undefined, null),
+      ).rejects.toThrow()
     })
 
     it('should throw error if the form has no ginis ID', async () => {
       controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({} as Forms)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', undefined, null),
+      ).rejects.toThrow()
     })
 
     it('should throw error if there is some error in the ginis api', async () => {
@@ -82,21 +100,26 @@ describe('GinisController', () => {
 
       const axiosError = new AxiosError('Error')
       axiosError.status = 404
+      const ginisError = new GinisError('Error', axiosError)
 
       controller['formsService'].getFormWithAccessCheck = jest
         .fn()
         .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
-        .mockRejectedValue(axiosError)
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+        .mockRejectedValue(ginisError)
+      await expect(
+        controller.getGinisDocumentByFormId('123', undefined, null),
+      ).rejects.toThrow()
       expect(notFoundSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getDocumentDetail = jest.fn()
       controller['ginisAPIService'].getOwnerDetail = jest
         .fn()
-        .mockRejectedValue(new Error('Error'))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+        .mockRejectedValue(new GinisError('Error'))
+      await expect(
+        controller.getGinisDocumentByFormId('123', undefined, null),
+      ).rejects.toThrow()
       expect(internalServerErrorSpy).toHaveBeenCalled()
 
       controller['ginisAPIService'].getOwnerDetail = jest.fn()
@@ -105,7 +128,9 @@ describe('GinisController', () => {
           throw new Error('Error')
         }),
       }))
-      await expect(controller.getGinisDocumentByFormId('123')).rejects.toThrow()
+      await expect(
+        controller.getGinisDocumentByFormId('123', undefined, null),
+      ).rejects.toThrow()
 
       // If th
     })
@@ -117,15 +142,53 @@ describe('GinisController', () => {
       controller['ginisAPIService'].getDocumentDetail = jest
         .fn()
         .mockResolvedValue(mockGinisDocumentData)
-      controller['ginisAPIService'].getOwnerDetail = jest.fn()
+      controller['ginisAPIService'].getOwnerDetail = jest
+        .fn()
+        .mockResolvedValue({
+          'Detail-referenta': {
+            Jmeno: 'Jack',
+            Prijmeni: 'Brown',
+          },
+        })
       jest.mock('../utils/ginis/ginis-api-helper', () => ({
         mapGinisHistory: jest.fn(),
       }))
 
-      const result = await controller.getGinisDocumentByFormId('123')
+      const result = await controller.getGinisDocumentByFormId(
+        '123',
+        undefined,
+        null,
+      )
       expect(result.id).toBe('MAG0X03RZDEB')
-      expect(result.ownerName).toBe(' ') // getOwnerDetail returns nothing
-      expect(result.ownerEmail).toBe('')
+      expect(result.ownerName).toBe('Jack Brown')
+      expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
+    })
+
+    it('should sanitize ginis owner name', async () => {
+      controller['formsService'].getFormWithAccessCheck = jest
+        .fn()
+        .mockResolvedValue({ ginisDocumentId: 'id' } as Forms)
+      controller['ginisAPIService'].getDocumentDetail = jest
+        .fn()
+        .mockResolvedValue(mockGinisDocumentData)
+      controller['ginisAPIService'].getOwnerDetail = jest
+        .fn()
+        .mockResolvedValue({
+          'Detail-referenta': {
+            Jmeno: 'Jill Mary-47',
+            Prijmeni: '42-Black-Smith',
+          },
+        })
+      jest.mock('../utils/ginis/ginis-api-helper', () => ({
+        mapGinisHistory: jest.fn(),
+      }))
+
+      const result = await controller.getGinisDocumentByFormId(
+        '123',
+        undefined,
+        null,
+      )
+      expect(result.ownerName).toBe('Jill Mary Black-Smith')
     })
   })
 })

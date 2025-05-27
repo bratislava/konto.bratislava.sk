@@ -1,13 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
-import axios, { AxiosResponse } from 'axios'
 import { Transform, TransformFnParams } from 'class-transformer'
-import express from 'express'
-
-import {
-  NasesErrorsEnum,
-  NasesErrorsResponseEnum,
-} from '../../nases/nases.errors.enum'
-import ThrowerErrorGuard from '../guards/thrower-error.guard'
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 export const User = createParamDecorator(
@@ -20,48 +12,6 @@ export const User = createParamDecorator(
   },
 )
 /* eslint-enable @typescript-eslint/no-unsafe-assignment */
-
-export const UserInfo = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<express.Request>()
-    const token = request.headers.authorization
-
-    // eslint-disable-next-line security/detect-possible-timing-attacks
-    if (token === undefined) return token
-
-    return (
-      axios
-        .post(
-          `${process.env.USER_ACCOUNT_API ?? ''}/user/get-or-create`,
-          undefined,
-          {
-            headers: {
-              Authorization: token,
-            },
-          },
-        )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        .then((response: AxiosResponse) => response.data)
-        .catch((error) => {
-          const thrower = new ThrowerErrorGuard()
-
-          throw thrower.NotFoundException(
-            NasesErrorsEnum.CITY_ACCOUNT_USER_GET_ERROR,
-            `${NasesErrorsResponseEnum.CITY_ACCOUNT_USER_GET_ERROR} error: ${<
-              string
-            >error}`,
-          )
-        })
-    )
-  },
-)
-
-export const BearerToken = createParamDecorator(
-  (data: string, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<express.Request>()
-    return request.headers.authorization
-  },
-)
 
 export function ToBoolean(): PropertyDecorator {
   return Transform(({ value }: TransformFnParams) =>

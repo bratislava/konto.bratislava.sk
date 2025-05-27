@@ -12,10 +12,14 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
 import FormsService from '../forms/forms.service'
+import {
+  SendMessageNasesSender,
+  SendMessageNasesSenderType,
+} from '../nases/types/send-message-nases-sender.type'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import MailgunService from '../utils/global-services/mailgun/mailgun.service'
+import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import { FormWithFiles } from '../utils/types/prisma'
 import NasesConsumerService from './nases-consumer.service'
@@ -118,7 +122,7 @@ describe('NasesConsumerService', () => {
           },
         },
         {} as FormDefinitionSlovenskoSk,
-        '',
+        { type: SendMessageNasesSenderType.Self },
       )
 
       expect(spyLog).toHaveBeenCalled()
@@ -155,7 +159,7 @@ describe('NasesConsumerService', () => {
         {
           type: FormDefinitionType.SlovenskoSkGeneric,
         } as FormDefinitionSlovenskoSk,
-        '',
+        { type: SendMessageNasesSenderType.Self },
       )
 
       expect(spyLog).not.toHaveBeenCalled()
@@ -196,7 +200,7 @@ describe('NasesConsumerService', () => {
         {
           type: FormDefinitionType.SlovenskoSkGeneric,
         } as FormDefinitionSlovenskoSk,
-        undefined,
+        { type: SendMessageNasesSenderType.Self },
         additionalFormUpdates,
       )
 
@@ -250,6 +254,10 @@ describe('NasesConsumerService', () => {
       type: FormDefinitionType.SlovenskoSkGeneric,
       schema: {},
     } as FormDefinitionSlovenskoSk
+
+    const mockSender: SendMessageNasesSender = {
+      type: SendMessageNasesSenderType.Self,
+    }
 
     beforeEach(() => {
       jest.resetAllMocks()
@@ -353,6 +361,7 @@ describe('NasesConsumerService', () => {
         mockForm,
         mockRabbitPayloadDto,
         mockFormDefinition,
+        mockSender,
       )
       expect(service['mailgunService'].sendEmail).toHaveBeenCalled()
     })

@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react'
-import ReactMarkdown from 'react-markdown'
+import React, { ComponentType, type ReactElement, ReactNode } from 'react'
+import _ReactMarkdown, { ExtraProps, Options } from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
@@ -15,6 +15,22 @@ function getTaxYear() {
 
   return today < februaryFirst ? currentYear - 1 : currentYear
 }
+
+type GenericReactMarkdownComponent = ComponentType<
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & ExtraProps
+>
+
+const ReactMarkdown = _ReactMarkdown as (
+  options: Readonly<
+    Options & {
+      components: {
+        'form-image-preview': GenericReactMarkdownComponent
+        'tax-year': GenericReactMarkdownComponent
+        'tax-year-next': GenericReactMarkdownComponent
+      }
+    }
+  >,
+) => ReactElement
 
 export type FormMarkdownProps = {
   children: string
@@ -58,11 +74,11 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
         ],
       ]}
       components={{
-        // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
         'form-image-preview': ({ children: childrenInner, node }) => {
           return (
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
+            <FormLightboxModal
+              imageUrl={(node?.properties?.src as string | null | undefined) ?? ''}
+            >
               {childrenInner}
             </FormLightboxModal>
           )
@@ -77,10 +93,10 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
           </MLinkNew>
         ),
         ul: ({ children: childrenInner }) => (
-          <ul className="list-disc whitespace-normal pl-8">{childrenInner as ReactNode}</ul>
+          <ul className="list-disc pl-8 whitespace-normal">{childrenInner as ReactNode}</ul>
         ),
         ol: ({ children: childrenInner }) => (
-          <ol className="list-decimal  whitespace-normal pl-8">{childrenInner as ReactNode}</ol>
+          <ol className="list-decimal pl-8 whitespace-normal">{childrenInner as ReactNode}</ol>
         ),
         'tax-year': () => <>{getTaxYear()}</>,
         'tax-year-next': () => <>{getTaxYear() + 1}</>,

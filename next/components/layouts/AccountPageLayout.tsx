@@ -8,7 +8,6 @@ import {
   ServicesIcon,
 } from '@assets/ui-icons'
 import { useResizeObserver } from '@react-aria/utils'
-import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
@@ -17,6 +16,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import cn from '../../frontend/cn'
 import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { useSignOut } from '../../frontend/utils/amplifyClient'
@@ -154,7 +154,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
       ]
 
   return (
-    <div className={cx('flex min-h-screen flex-col', className)}>
+    <div className={cn('flex min-h-screen flex-col', className)}>
       {/* `contents` is here for sticky elements inside to work */}
       <header className="relative z-30 contents">
         <NavBar
@@ -174,7 +174,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
         style={{
           '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
         }}
-        className="relative z-0 [&_*]:scroll-mt-[--main-scroll-top-margin]"
+        className="relative z-0 **:scroll-mt-(--main-scroll-top-margin)"
       >
         <div className="bg-gray-0">{children}</div>
       </main>

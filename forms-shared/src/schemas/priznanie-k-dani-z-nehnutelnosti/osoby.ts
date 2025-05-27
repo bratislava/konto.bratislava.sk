@@ -30,13 +30,13 @@ const priezviskoField = input(
   {},
 )
 
-const menoTitulField = object('menoTitul', { required: true }, {}, [
+const menoTitulField = object('menoTitul', {}, [
   input('meno', { type: 'text', title: 'Meno', required: true }, { selfColumn: '3/4' }),
   input('titul', { type: 'text', title: 'Titul' }, { selfColumn: '1/4' }),
 ])
 
 const ulicaCisloFields = (type: UlicaCisloTyp) =>
-  object(`ulicaCislo${type}`, { required: true }, {}, [
+  object(`ulicaCislo${type}`, {}, [
     input(
       'ulica',
       { type: 'text', title: 'Ulica', required: true },
@@ -56,7 +56,7 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
     input('cislo', { type: 'text', title: 'Čislo', required: true }, { selfColumn: '1/4' }),
   ])
 
-const obecPscField = object('obecPsc', { required: true }, {}, [
+const obecPscField = object('obecPsc', {}, [
   input('obec', { type: 'text', title: 'Obec', required: true }, { selfColumn: '3/4' }),
   input('psc', { type: 'text', title: 'PSČ', required: true }, { selfColumn: '1/4' }),
 ])
@@ -75,17 +75,17 @@ const statField = select(
   {},
 )
 
-const emailField = (required = true) =>
+const emailField = () =>
   input(
     'email',
-    { title: 'E-mail', type: 'email', required },
+    { title: 'E-mail', type: 'email', required: false },
     { helptextFooter: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   )
 
-const telefonField = (required = true) =>
+const telefonField = () =>
   sharedPhoneNumberField(
     'telefon',
-    required,
+    false,
     'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
   )
 
@@ -232,7 +232,6 @@ const pravnyVztahKPOField = select(
 
 export const udajeOOpravnenejOsobeNaPodaniePriznania = object(
   'udajeOOpravnenejOsobeNaPodaniePriznania',
-  { required: true },
   {
     objectDisplay: 'boxed',
     title: 'Údaje o oprávnenej osobe na podanie priznania',
@@ -308,7 +307,7 @@ export const danovnik = [
     [udajeOOpravnenejOsobeNaPodaniePriznania],
   ),
   conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsoba' }]]), [
-    object('korespondencnaAdresa', { required: true }, { objectDisplay: 'boxed' }, [
+    object('korespondencnaAdresa', { objectDisplay: 'boxed' }, [
       korespondencnaAdresaField,
       conditionalFields(createCondition([[['korespondencnaAdresaRovnaka'], { const: false }]]), [
         ulicaCisloFields(UlicaCisloTyp.KorespondencnaAdresa),
@@ -364,6 +363,6 @@ export const bezpodieloveSpoluvlastnictvoManzelov = [
     obecPscField,
     statField,
   ]),
-  emailField(false),
-  telefonField(false),
+  emailField(),
+  telefonField(),
 ]

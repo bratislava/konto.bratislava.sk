@@ -1,5 +1,4 @@
-import { customizeValidator } from '@rjsf/validator-ajv8'
-import type { CustomValidatorOptionsType } from '@rjsf/validator-ajv8/src/types'
+import { customizeValidator, CustomValidatorOptionsType } from '@rjsf/validator-ajv8'
 import { SchemaValidateFunction, Vocabulary } from 'ajv'
 
 import { baAjvFormats } from './ajvFormats'

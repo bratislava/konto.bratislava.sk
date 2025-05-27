@@ -16,8 +16,8 @@ model TaxPayer {
   uuid                        String   @default(uuid()) @db.Uuid
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @default(now()) @updatedAt
-  active                      Boolean //if it is active tax payer or is only past tax pay
-  birthNumber                 String //with slash
+  active                      Boolean // if it is active tax payer or is only past tax pay
+  birthNumber                 String // with slash
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
@@ -34,28 +34,32 @@ model TaxPayer {
 }
 
 model Tax {
-  id                  Int              @id @default(autoincrement())
-  uuid                String           @default(uuid()) @db.Uuid
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @default(now()) @updatedAt
-  year                Int
-  taxPayerId          Int
-  taxPayer            TaxPayer         @relation(fields: [taxPayerId], references: [id])
-  amount              Int
-  variableSymbol      String
-  taxEmployeeId       Int
-  qrCodeWeb           String?
-  qrCodeEmail         String?
-  taxId               String?
-  dateCreateTax       String?
-  taxLand             Int?
-  taxConstructions    Int?
-  taxFlat             Int?
-  taxPayments         TaxPayment[]
-  taxInstallments     TaxInstallment[]
-  taxDetails          TaxDetail[]
-  taxEmployees        TaxEmployee      @relation(fields: [taxEmployeeId], references: [id])
-  lastCheckedPayments DateTime         @default(now())
+  id                              Int                  @id @default(autoincrement())
+  uuid                            String               @default(uuid()) @db.Uuid
+  createdAt                       DateTime             @default(now())
+  updatedAt                       DateTime             @default(now()) @updatedAt
+  year                            Int
+  taxPayerId                      Int
+  taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id])
+  amount                          Int
+  variableSymbol                  String
+  taxEmployeeId                   Int
+  qrCodeWeb                       String?
+  qrCodeEmail                     String?
+  taxId                           String?
+  dateCreateTax                   String?
+  dateTaxRuling                   DateTime? // "dátum právoplatnosti rozhodnutia"
+  taxLand                         Int?
+  taxConstructions                Int?
+  taxFlat                         Int?
+  taxPayments                     TaxPayment[]
+  taxInstallments                 TaxInstallment[]
+  taxDetails                      TaxDetail[]
+  taxEmployees                    TaxEmployee          @relation(fields: [taxEmployeeId], references: [id])
+  lastCheckedPayments             DateTime             @default(now())
+  lastCheckedUpdates              DateTime             @default(now())
+  deliveryMethod                  DeliveryMethodNamed?
+  bloomreachUnpaidTaxReminderSent Boolean              @default(false)
 
   @@unique([taxPayerId, year])
   @@unique([uuid])
@@ -113,6 +117,22 @@ model TaxEmployee {
   email       String
 }
 
+model CsvFile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  name      String   @unique
+}
+
+model Config {
+  id         Int      @id @default(autoincrement())
+  key        String
+  value      String
+  validSince DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
 enum TaxDetailType {
   APARTMENT
   CONSTRUCTION
@@ -148,4 +168,10 @@ enum PaymentStatus {
   NEW
   FAIL
   SUCCESS
+}
+
+enum DeliveryMethodNamed {
+  EDESK
+  POSTAL
+  CITY_ACCOUNT
 }

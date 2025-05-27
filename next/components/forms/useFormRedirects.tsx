@@ -1,4 +1,4 @@
-import { formsApi } from '@clients/forms'
+import { formsClient } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -25,14 +25,14 @@ const useGetContext = () => {
 
   const { mutate: saveConceptMutate } = useMutation({
     mutationFn: () =>
-      formsApi.nasesControllerUpdateForm(
+      formsClient.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
           // `null` must be set explicitly, otherwise the signature would not be removed if needed
           formSignature: signature ?? null,
         },
-        { accessToken: 'onlyAuthenticated' },
+        { authStrategy: 'authOrGuestWithToken' },
       ),
     networkMode: 'always',
     onSuccess: () => {

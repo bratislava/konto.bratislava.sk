@@ -1,7 +1,7 @@
 import { DownloadIcon } from '@assets/ui-icons'
-import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { Trans, useTranslation } from 'next-i18next'
+import { UserOfficialCorrespondenceChannelEnum } from 'openapi-clients/city-account'
+import { TaxPaidStatusEnum } from 'openapi-clients/tax'
 import React from 'react'
 
 import Alert from '../../../info-components/Alert'
@@ -11,12 +11,14 @@ import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxesChannelChangeEffectiveNextYearAlert from './TaxesChannelChangeEffectiveNextYearAlert'
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
+import { useStrapiTax } from './useStrapiTax'
 import { useTaxChannel } from './useTaxChannel'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const Details = () => {
-  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode, strapiTax } =
+  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode } =
     useTaxFeeSection()
+  const strapiTax = useStrapiTax()
   const { channelCurrentYearEffective } = useTaxChannel()
 
   const { t } = useTranslation('account')
@@ -44,7 +46,7 @@ const Details = () => {
         <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 md:w-[488px] lg:px-6">
           <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
           {taxData.paidStatus === TaxPaidStatusEnum.Paid ? null : (
-            <div className="text-p2 rounded-5 bg-warning-100 p-3">
+            <div className="rounded-[5px] bg-warning-100 p-3 text-p2">
               {t('tax_bank_transfer_slow_info')}
             </div>
           )}
@@ -52,7 +54,7 @@ const Details = () => {
             <div className="isolate flex flex-col items-start gap-1 self-stretch">
               <div className="text-p2">{t('bank_info.slovak_sporitelna')}</div>
               <div className="flex w-full">
-                <div className="text-16-semibold grow">{t('bank_info.slovak_sporitelna_iban')}</div>
+                <div className="grow text-16-semibold">{t('bank_info.slovak_sporitelna_iban')}</div>
                 <div className="hidden size-6 cursor-pointer sm:block">
                   <ClipboardCopy copyText={t('bank_info.slovak_sporitelna_iban')} />
                 </div>
@@ -61,7 +63,7 @@ const Details = () => {
             <div className="isolate flex flex-col items-start gap-1 self-stretch">
               <div className="text-p2">{t('bank_info.csob')}</div>
               <div className="flex w-full">
-                <div className="text-16-semibold grow">{t('bank_info.csob_iban')}</div>
+                <div className="grow text-16-semibold">{t('bank_info.csob_iban')}</div>
                 <div className="hidden size-6 cursor-pointer sm:block">
                   <ClipboardCopy copyText={t('bank_info.csob_iban')} />
                 </div>
@@ -71,7 +73,7 @@ const Details = () => {
             <div className="isolate flex flex-col items-start gap-1 self-stretch">
               <div className="text-p2">{t('variable_symbol')}</div>
               <div className="flex w-full">
-                <div className="text-16-semibold grow">{taxData?.variableSymbol}</div>
+                <div className="grow text-16-semibold">{taxData?.variableSymbol}</div>
                 <div className="hidden size-6 cursor-pointer sm:block">
                   <ClipboardCopy copyText={taxData?.variableSymbol} />
                 </div>

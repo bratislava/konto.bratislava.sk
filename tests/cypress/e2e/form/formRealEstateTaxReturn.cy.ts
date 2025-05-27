@@ -46,14 +46,14 @@ describe('F05 -', { testIsolation: false }, () => {
             it('2. Checking "Type of tax return" step validation.', () => {
               cy.checkActiveStep(1)
               cy.dataCy('form-container').then((form) => {
-                cy.checkFormValidation(device, form, 2, '[data-cy=input-rok]')
+                cy.checkFormValidation(device, form, 2, '[data-cy=number-rok]')
               })
             })
 
             it('3. Filling out "Type of tax return" step.', () => {
               cy.dataCy('form-container').then((form) => {
                 cy.fillTypeOfTaxReturn(form, this.fileData.druhPriznania.druh)
-                cy.wrap(Cypress.$('[data-cy=input-rok]', form)).type(
+                cy.wrap(Cypress.$('[data-cy=number-rok]', form)).type(
                   this.fileData.druhPriznania.rok,
                 )
                 cy.focused().blur()
@@ -66,7 +66,7 @@ describe('F05 -', { testIsolation: false }, () => {
             it('4. Checking "Taxpayer data" step validation.', () => {
               cy.checkActiveStep(2)
               cy.dataCy('form-container').then((form) => {
-                cy.checkFormValidation(device, form, 13, this.inputData.taxpayerBorderFields)
+                cy.checkFormValidation(device, form, 11, this.inputData.taxpayerBorderFields)
               })
             })
 
@@ -193,7 +193,7 @@ describe('F05 -', { testIsolation: false }, () => {
                                 ' – ',
                             )
                             cy.wrap(
-                              Cypress.$('[data-cy=input-celkovaVymeraPozemku]', pozemky),
+                              Cypress.$('[data-cy=number-celkovaVymeraPozemku]', pozemky),
                             ).type(
                               landTax.priznania[indexPriznania].pozemky[indexPozemky]
                                 .celkovaVymeraPozemku,
@@ -296,7 +296,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         'select-predmet-dane',
                         onePurposeTax.priznania[indexPriznania].predmetDane + ') ',
                       )
-                      cy.wrap(Cypress.$('[data-cy=input-celkovaZastavanaPlocha]', priznania)).type(
+                      cy.wrap(Cypress.$('[data-cy=number-celkovaZastavanaPlocha]', priznania)).type(
                         onePurposeTax.priznania[indexPriznania].celkovaZastavanaPlocha,
                       )
                       cy.focused().blur()
@@ -306,7 +306,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.focused().blur()
                       cy.wrap(
                         Cypress.$(
-                          '[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
+                          '[data-cy=number-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
                           priznania,
                         ),
                       ).type(
@@ -334,7 +334,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         onePurposeTax.priznania[indexPriznania].spoluvlastnictvo ===
                         'podieloveSpoluvlastnictvo'
                       ) {
-                        cy.wrap(Cypress.$('[data-cy=input-pocetSpoluvlastnikov]', priznania)).type(
+                        cy.wrap(Cypress.$('[data-cy=number-pocetSpoluvlastnikov]', priznania)).type(
                           onePurposeTax.priznania[indexPriznania].pocetSpoluvlastnikov + '{enter}',
                         )
                         cy.focused().blur()
@@ -350,7 +350,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       ) {
                         cy.wrap(
                           Cypress.$(
-                            '[data-cy=input-celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby]',
+                            '[data-cy=number-celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby]',
                             priznania,
                           ),
                         ).type(
@@ -360,7 +360,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.focused().blur()
                         cy.wrap(
                           Cypress.$(
-                            '[data-cy=input-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
+                            '[data-cy=number-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
                             priznania,
                           ),
                         ).type(
@@ -437,7 +437,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         multiPurposeTax.priznania[indexPriznania].spoluvlastnictvo ===
                         'podieloveSpoluvlastnictvo'
                       ) {
-                        cy.wrap(Cypress.$('[data-cy=input-pocetSpoluvlastnikov]', priznania)).type(
+                        cy.wrap(Cypress.$('[data-cy=number-pocetSpoluvlastnikov]', priznania)).type(
                           multiPurposeTax.priznania[indexPriznania].pocetSpoluvlastnikov,
                         )
                         cy.focused().blur()
@@ -463,13 +463,13 @@ describe('F05 -', { testIsolation: false }, () => {
                         multiPurposeTax.priznania[indexPriznania].popisStavby,
                       )
                       cy.focused().blur()
-                      cy.wrap(Cypress.$('[data-cy=input-celkovaVymera]', priznania)).type(
+                      cy.wrap(Cypress.$('[data-cy=number-celkovaVymera]', priznania)).type(
                         multiPurposeTax.priznania[indexPriznania].celkovaVymera,
                       )
                       cy.focused().blur()
                       cy.wrap(
                         Cypress.$(
-                          '[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
+                          '[data-cy=number-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
                           priznania,
                         ),
                       ).type(
@@ -498,7 +498,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       ) {
                         cy.wrap(
                           Cypress.$(
-                            '[data-cy=input-celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby]',
+                            '[data-cy=number-celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby]',
                             priznania,
                           ),
                         ).type(
@@ -508,7 +508,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.focused().blur()
                         cy.wrap(
                           Cypress.$(
-                            '[data-cy=input-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
+                            '[data-cy=number-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
                             priznania,
                           ),
                         ).type(
@@ -642,7 +642,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         flatAndNonResTax.priznania[indexPriznania].spoluvlastnictvo ===
                         'podieloveSpoluvlastnictvo'
                       ) {
-                        cy.wrap(Cypress.$('[data-cy=input-pocetSpoluvlastnikov]', priznania)).type(
+                        cy.wrap(Cypress.$('[data-cy=number-pocetSpoluvlastnikov]', priznania)).type(
                           flatAndNonResTax.priznania[indexPriznania].pocetSpoluvlastnikov +
                             '{enter}',
                         )
@@ -708,6 +708,12 @@ describe('F05 -', { testIsolation: false }, () => {
                                 flatAndNonResTax.priznania[indexPriznania]
                                   .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
                                   .spoluvlastnickyPodiel,
+                                flatAndNonResTax.priznania[indexPriznania]
+                                  .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
+                                  .riadok.cisloNebytovehoPriestoruVBytovomDome,
+                                flatAndNonResTax.priznania[indexPriznania]
+                                  .priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory]
+                                  .riadok.ucelVyuzitiaNebytovehoPriestoruVBytovomDome,
                               )
                             },
                           )
@@ -838,7 +844,7 @@ describe('F05 -', { testIsolation: false }, () => {
                   'not.have.class',
                   'border-red-500',
                 )
-                cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form))
+                cy.wrap(Cypress.$(`[data-cy=download-pdf-button]`, form))
               })
             })
 

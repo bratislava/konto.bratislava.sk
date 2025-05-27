@@ -1,25 +1,26 @@
-import { cityAccountApi } from '@clients/city-account'
+import { cityAccountClient } from '@clients/city-account'
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AuthSession } from 'aws-amplify/auth'
+import { AxiosError, AxiosResponse } from 'axios'
 import {
   GdprDataDto,
   ResponseGdprUserDataDtoSubTypeEnum,
-  ResponseUserDataDto,
-} from '@clients/openapi-city-account'
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError, AxiosResponse } from 'axios'
+  UserControllerGetOrCreateUser200Response,
+} from 'openapi-clients/city-account'
 
 const userQueryKey = ['user']
 
 export const prefetchUserQuery = async (
   queryClient: QueryClient,
-  accessTokenSsrGetFn: () => Promise<string | null>,
+  getSsrAuthSession: () => Promise<AuthSession>,
 ) =>
   // https://github.com/TanStack/query/discussions/3306#discussioncomment-2205514
   queryClient.fetchQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
-        .userControllerGetOrCreateUser({ accessToken: 'always', accessTokenSsrGetFn })
+      cityAccountClient
+        .userControllerGetOrCreateUser({ authStrategy: 'authOnly', getSsrAuthSession })
         .then((response) => response.data),
   })
 
@@ -29,8 +30,8 @@ export const useUser = () => {
   const { data: userData } = useQuery({
     queryKey: userQueryKey,
     queryFn: () =>
-      cityAccountApi
-        .userControllerGetOrCreateUser({ accessToken: 'always' })
+      cityAccountClient
+        .userControllerGetOrCreateUser({ authStrategy: 'authOnly' })
         .then((response) => response.data),
     staleTime: Infinity,
   })
@@ -58,21 +59,21 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe
 
   const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
-    AxiosResponse<ResponseUserDataDto>,
+    AxiosResponse<UserControllerGetOrCreateUser200Response>,
     AxiosError,
     boolean
   >({
     mutationFn: (subscribe) => {
       const endpoint = subscribe
-        ? cityAccountApi.userControllerSubscribeLoggedUser
-        : cityAccountApi.userControllerUnsubscribeLoggedUser
+        ? cityAccountClient.userControllerSubscribeLoggedUser
+        : cityAccountClient.userControllerUnsubscribeLoggedUser
 
       return endpoint(
         {
           gdprData: [gdprData],
         },
         {
-          accessToken: 'always',
+          authStrategy: 'authOnly',
         },
       )
     },
@@ -85,4 +86,20 @@ export const useUserSubscription = (gdprData: GdprDataDto) => {
   })
 
   return { subType, isSubscribed, changeSubscription, subscriptionChangePending }
+}
+
+export const useUserUpdateBloomreachData = () => {
+  const { mutateAsync: updateBloomreachData, isPending: updateBloomreachDataPending } = useMutation(
+    {
+      mutationFn: () =>
+        cityAccountClient.userControllerUpdateOrCreateBloomreachCustomer({
+          authStrategy: 'authOnly',
+        }),
+      networkMode: 'always',
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  )
+
+  return { updateBloomreachData, updateBloomreachDataPending }
 }

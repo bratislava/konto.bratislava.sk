@@ -1,6 +1,9 @@
-import { describe, test, expect, beforeEach, afterAll, vi } from 'vitest'
+import { afterAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
-import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSk,
+  isSlovenskoSkFormDefinition,
+} from '../../src/definitions/formDefinitionTypes'
 import { getSignerData } from '../../src/signer/signerData'
 import { testValidatorRegistry } from '../../test-utils/validatorRegistry'
 
@@ -13,21 +16,23 @@ describe('signerData', () => {
     vi.useRealTimers()
   })
 
-  getExampleFormPairs({ formDefinitionFilterFn: isSlovenskoSkFormDefinition }).forEach(
-    ({ formDefinition, exampleForm }) => {
-      describe(`${exampleForm.name}`, () => {
-        test('should generate correct signer data', async () => {
-          const signerData = await getSignerData({
-            formDefinition,
-            formId: '123e4567-e89b-12d3-a456-426614174000',
-            formData: exampleForm.formData,
-            validatorRegistry: testValidatorRegistry,
-            serverFiles: exampleForm.serverFiles,
-          })
-
-          expect(signerData).toMatchSnapshot()
+  getExampleFormPairs({
+    formDefinitionFilterFn: (formDefinition): formDefinition is FormDefinitionSlovenskoSk =>
+      isSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned,
+  }).forEach(({ formDefinition, exampleForm }) => {
+    describe(`${exampleForm.name}`, () => {
+      test('should generate correct signer data', async () => {
+        const signerData = await getSignerData({
+          formDefinition,
+          formId: '123e4567-e89b-12d3-a456-426614174000',
+          jsonVersion: formDefinition.jsonVersion,
+          formData: exampleForm.formData,
+          validatorRegistry: testValidatorRegistry,
+          serverFiles: exampleForm.serverFiles,
         })
+
+        expect(signerData).toMatchSnapshot()
       })
-    },
-  )
+    })
+  })
 })

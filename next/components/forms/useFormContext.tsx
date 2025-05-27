@@ -1,18 +1,19 @@
 import { FormBaseFragment } from '@clients/graphql-strapi/api'
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
-import {
-  isSlovenskoSkFormDefinition,
-  isSlovenskoSkTaxFormDefinition,
-} from 'forms-shared/definitions/formDefinitionTypes'
-import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
+import { evaluateFormSendPolicy, SendPolicyAccountType } from 'forms-shared/send-policy/sendPolicy'
 import { FormSignature } from 'forms-shared/signer/signature'
 import { SummaryJsonForm } from 'forms-shared/summary-json/summaryJsonTypes'
+import { VersionCompareContinueAction } from 'forms-shared/versioning/version-compare'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useIsSSR } from 'react-aria'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { SerializableFormDefinition } from './serializableFormDefinition'
+import {
+  ClientFormDefinition,
+  isClientSlovenskoSkFormDefinition,
+  isClientSlovenskoSkTaxFormDefinition,
+} from './clientFormDefinitions'
 
 declare global {
   interface Window {
@@ -21,50 +22,52 @@ declare global {
 }
 
 export type FormServerContext = {
-  formDefinition: SerializableFormDefinition
+  formDefinition: ClientFormDefinition
   formId: string
   initialFormDataJson: GenericObjectType
-  initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
   initialSummaryJson?: SummaryJsonForm | null
-  formSent: boolean
+  initialFormSent: boolean
   formMigrationRequired: boolean
   isEmbedded: boolean
   isDevRoute?: boolean
   strapiForm: FormBaseFragment | null
+  versionCompareContinueAction: VersionCompareContinueAction
 }
 
 const useGetContext = (formServerContext: FormServerContext) => {
   const isSSR = useIsSSR()
   const { isSignedIn, tierStatus } = useSsrAuth()
 
-  const { formDefinition, formMigrationRequired, formSent, isEmbedded } = formServerContext
+  const { formDefinition, formMigrationRequired, initialFormSent, isEmbedded } = formServerContext
 
-  // TODO: Revisit this logic
-  const requiresVerification =
-    !formDefinition.allowSendingUnauthenticatedUsers &&
-    !isSlovenskoSkTaxFormDefinition(formDefinition)
-  const verificationMissing = requiresVerification && !tierStatus.isIdentityVerified
+  const getSendPolicyAccountType = () => {
+    if (!isSignedIn) {
+      return SendPolicyAccountType.NotAuthenticated
+    }
 
-  // TODO: Revisit this logic
-  const requiresSignIn =
-    !formDefinition.allowSendingUnauthenticatedUsers &&
-    !isSlovenskoSkTaxFormDefinition(formDefinition)
-  const signInMissing = requiresSignIn && !isSignedIn
+    if (tierStatus.isIdentityVerified) {
+      return SendPolicyAccountType.AuthenticatedVerified
+    }
 
-  // TODO: Revisit this logic
-  const sendWithEidAllowed = isSlovenskoSkFormDefinition(formDefinition)
+    return SendPolicyAccountType.AuthenticatedNotVerified
+  }
+
+  const evaluatedSendPolicy = evaluateFormSendPolicy(
+    formDefinition.sendPolicy,
+    getSendPolicyAccountType(),
+  )
 
   const displayHeaderAndMenu = !isEmbedded
 
-  const xmlImportExportAllowed = isSlovenskoSkFormDefinition(formDefinition)
+  const xmlImportExportAllowed = isClientSlovenskoSkFormDefinition(formDefinition)
   const [jsonImportExportAllowed, setJsonImportExportAllowed] = useState(
-    !isSlovenskoSkFormDefinition(formDefinition),
+    !isClientSlovenskoSkFormDefinition(formDefinition),
   )
 
   // Until terms and conditions are in landing page we cannot allow PDF download from menu as tax PDF with PII is stored
-  const pdfDownloadInMenuAllowed = !isSlovenskoSkTaxFormDefinition(formDefinition)
+  const pdfDownloadInMenuAllowed = !isClientSlovenskoSkTaxFormDefinition(formDefinition)
 
   useEffect(() => {
     // Dev only debugging feature
@@ -74,18 +77,16 @@ const useGetContext = (formServerContext: FormServerContext) => {
     }
   }, [isSSR, setJsonImportExportAllowed])
 
-  const isReadonly = formMigrationRequired || formSent
-  const isDeletable = formMigrationRequired && !formSent
+  const isReadonly = formMigrationRequired
+  const isDeletable = formMigrationRequired && !initialFormSent
 
-  const isTaxForm = isSlovenskoSkTaxFormDefinition(formDefinition)
+  const isTaxForm = isClientSlovenskoSkTaxFormDefinition(formDefinition)
 
-  const isSigned = isSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned
+  const isSigned = isClientSlovenskoSkFormDefinition(formDefinition) && formDefinition.isSigned
 
   return {
     ...formServerContext,
-    verificationMissing,
-    signInMissing,
-    sendWithEidAllowed,
+    evaluatedSendPolicy,
     displayHeaderAndMenu,
     xmlImportExportAllowed,
     jsonImportExportAllowed,

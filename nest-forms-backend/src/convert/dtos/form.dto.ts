@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { RJSFSchema } from '@rjsf/utils'
 import {
   IsNotEmpty,
   IsObject,
@@ -9,24 +8,6 @@ import {
 } from 'class-validator'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
-
-export class GetSignerDataRequestDto {
-  @ApiProperty({
-    description: 'Form id',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  formId: string
-
-  @IsObject()
-  @ApiProperty({
-    description: 'Form values in JSON',
-    example: JSON_FORM_EXAMPLE,
-  })
-  @IsNotEmpty()
-  @IsOptional()
-  jsonForm!: PrismaJson.FormDataJson
-}
 
 export class JsonToXmlV2RequestDto {
   @ApiProperty({
@@ -70,7 +51,14 @@ export class XmlToJsonResponseDto {
     example: JSON_FORM_EXAMPLE,
   })
   @IsNotEmpty()
-  jsonForm!: RJSFSchema
+  formDataJson: PrismaJson.FormDataJson
+
+  @ApiProperty({
+    description: 'Indicates if version confirmation is required',
+    example: true,
+  })
+  @IsNotEmpty()
+  requiresVersionConfirmation: boolean
 }
 
 /**

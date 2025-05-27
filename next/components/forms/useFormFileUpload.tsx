@@ -1,5 +1,4 @@
-import { formsApi } from '@clients/forms'
-import { GetFileResponseReducedDto } from '@clients/openapi-forms'
+import { formsClient } from '@clients/forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   ClientFileInfo,
@@ -8,6 +7,7 @@ import {
   FileStatusType,
 } from 'forms-shared/form-files/fileStatus'
 import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
+import { GetFileResponseReducedDto } from 'openapi-clients/forms'
 import React, {
   createContext,
   PropsWithChildren,
@@ -56,7 +56,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = () => {
-  const { formId, initialServerFiles, initialClientFiles } = useFormContext()
+  const { formId, initialServerFiles } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -67,7 +67,7 @@ export const useGetContext = () => {
   // the current value of the client files is needed immediately. Also, the `uploadFile` callback would not have access
   // to the current value of the client files if it was stored only in the state.
   // The state should be only modified by the `updateClientFiles` function.
-  const [clientFiles, setClientFiles] = useState<ClientFileInfo[]>(initialClientFiles ?? [])
+  const [clientFiles, setClientFiles] = useState<ClientFileInfo[]>([])
   const clientFilesRef = useRef(clientFiles)
   const getClientFiles = useCallback(() => clientFilesRef.current, [])
 
@@ -80,8 +80,8 @@ export const useGetContext = () => {
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
-      const response = await formsApi.filesControllerGetFilesStatusByForm(formId, {
-        accessToken: 'onlyAuthenticated',
+      const response = await formsClient.filesControllerGetFilesStatusByForm(formId, {
+        authStrategy: 'authOrGuestWithToken',
       })
       return response.data
     },
@@ -229,8 +229,8 @@ export const useGetContext = () => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const downloadFile = async (id: string) => {
     try {
-      const response = await formsApi.filesControllerDownloadToken(id, {
-        accessToken: 'onlyAuthenticated',
+      const response = await formsClient.filesControllerDownloadToken(id, {
+        authStrategy: 'authOrGuestWithToken',
       })
       const { jwt } = response.data
       window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')

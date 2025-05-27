@@ -4,7 +4,7 @@ import { renderSlovenskoXmlSummary } from './renderXmlSummary'
 import removeMarkdown from 'remove-markdown'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { getSlovenskoSkXmlns } from './urls'
-import { BaRjsfValidatorRegistry } from '../form-utils/validatorRegistry'
+import { FormSummary } from '../summary/summary'
 
 function getSlovenskoSkXmlObjectBase(
   formDefinition: FormDefinitionSlovenskoSk,
@@ -26,6 +26,7 @@ function getSlovenskoSkXmlObjectBase(
  */
 export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlovenskoSk) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
+    FormId: '',
     JsonVersion: '',
     Json: JSON.stringify({}),
     Summary: {
@@ -39,24 +40,34 @@ export function getEmptySlovenskoSkXmlObject(formDefinition: FormDefinitionSlove
   })
 }
 
+type GenerateSlovenskoSkXmlObjectParams = {
+  formDefinition: FormDefinitionSlovenskoSk
+  formId: string
+  formSummary: FormSummary
+  formData: GenericObjectType
+  jsonVersion: string
+  serverFiles?: FormsBackendFile[]
+}
+
 /**
  * Generates a Slovensko SK XML object that can be built with "xml2js" to create a valid XML.
  */
-export async function generateSlovenskoSkXmlObject(
-  formDefinition: FormDefinitionSlovenskoSk,
-  formData: GenericObjectType,
-  validatorRegistry: BaRjsfValidatorRegistry,
-  serverFiles?: FormsBackendFile[],
-) {
+export async function generateSlovenskoSkXmlObject({
+  formDefinition,
+  formSummary,
+  formId,
+  formData,
+  jsonVersion,
+  serverFiles,
+}: GenerateSlovenskoSkXmlObjectParams) {
   return getSlovenskoSkXmlObjectBase(formDefinition, {
-    JsonVersion: formDefinition.jsonVersion,
+    FormId: formId,
+    JsonVersion: jsonVersion,
     Json: JSON.stringify(formData),
-    Summary: await renderSlovenskoXmlSummary(
-      formDefinition,
-      formData,
-      validatorRegistry,
+    Summary: await renderSlovenskoXmlSummary({
+      formSummary,
       serverFiles,
-    ),
-    TermsAndConditions: removeMarkdown(formDefinition.termsAndConditions),
+    }),
+    TermsAndConditions: removeMarkdown(formSummary.termsAndConditions),
   })
 }

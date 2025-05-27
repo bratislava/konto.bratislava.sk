@@ -174,11 +174,12 @@ const innerArray = (kalkulacka: boolean) =>
         },
       ),
       conditionalFields(createCondition([[['castStavbyOslobodenaOdDane'], { const: true }]]), [
-        object('castStavbyOslobodenaOdDaneDetaily', {}, {}, [
+        object('castStavbyOslobodenaOdDaneDetaily', {}, [
           number(
             'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
             {
               title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+              type: 'integer',
               required: true,
               minimum: 0,
             },
@@ -191,6 +192,7 @@ const innerArray = (kalkulacka: boolean) =>
           number(
             'vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
             {
+              type: 'integer',
               title:
                 'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
               required: true,
@@ -203,7 +205,7 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         ]),
       ]),
-      object('datumy', {}, {}, [
+      object('datumy', {}, [
         datePicker(
           'datumVznikuDanovejPovinnosti',
           { title: 'Dátum vzniku daňovej povinnosti' },

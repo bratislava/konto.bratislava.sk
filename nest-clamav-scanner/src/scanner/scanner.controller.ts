@@ -9,7 +9,7 @@ import {
   Param,
   Post,
   UseGuards,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBasicAuth,
@@ -20,10 +20,11 @@ import {
   ApiPayloadTooLargeResponse,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { ScannerService } from './scanner.service';
-import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto';
-import { BasicGuard } from '../auth/guards/auth-basic.guard';
+} from '@nestjs/swagger'
+
+import { BasicGuard } from '../auth/guards/auth-basic.guard'
+import { ScanFileDto, ScanFileResponseDto, ScanStatusDto } from './scanner.dto'
+import { ScannerService } from './scanner.service'
 
 /*
   Endpoints
@@ -31,10 +32,10 @@ import { BasicGuard } from '../auth/guards/auth-basic.guard';
 @ApiTags('Scanner')
 @Controller('api/scan')
 export class ScannerController {
-  private readonly logger: Logger;
+  private readonly logger: Logger
 
   constructor(private readonly scannerService: ScannerService) {
-    this.logger = new Logger('ScannerController');
+    this.logger = new Logger('ScannerController')
   }
 
   //post controller which accepts bucket file dto and starts clamav scan. Add swagger documentation.
@@ -109,17 +110,16 @@ export class ScannerController {
     type: ScanFileResponseDto,
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Wrong parameters provided.',
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
   @HttpCode(HttpStatus.ACCEPTED)
-  scanFiles(
+  async scanFiles(
     @Body() bucketFiles: ScanFileDto[],
   ): Promise<ScanFileResponseDto[]> {
-    this.logger.debug(`Scan files request: ${JSON.stringify(bucketFiles)}`);
-    return this.scannerService.scanFiles(bucketFiles);
+    this.logger.debug(`Scan files request: ${JSON.stringify(bucketFiles)}`)
+    return await this.scannerService.scanFiles(bucketFiles)
   }
 
   @Post('file')
@@ -134,31 +134,28 @@ export class ScannerController {
     type: ScanFileResponseDto,
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'Wrong parameters provided.',
   })
   @ApiGoneResponse({
-    status: 410,
     description: 'File has already been processed.',
   })
   @ApiPayloadTooLargeResponse({
-    status: 413,
     description: 'File for scanning is too large.',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File or bucket not found.',
   })
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  scanFile(@Body() bucketFile: ScanFileDto): Promise<ScanFileResponseDto> {
-    this.logger.debug(`Scan file request: ${JSON.stringify(bucketFile)}`);
-    return this.scannerService.scanFile(bucketFile);
+  async scanFile(
+    @Body() bucketFile: ScanFileDto,
+  ): Promise<ScanFileResponseDto> {
+    this.logger.debug(`Scan file request: ${JSON.stringify(bucketFile)}`)
+    return await this.scannerService.scanFile(bucketFile)
   }
 
   //get controller which returns status of scanned file. Add swagger documentation.
@@ -169,20 +166,18 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File or bucket not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  getStatus(
+  async getStatus(
     @Param('bucketUid64') bucketId64: string,
     @Param('fileUid64') fileId64: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.getStatus(bucketId64, fileId64);
+    return await this.scannerService.getStatus(bucketId64, fileId64)
   }
 
   //get controller which returns status of scanned file by record id or by name in
@@ -194,19 +189,17 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  getStatusById(
+  async getStatusById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.getStatusByResourceId(resourceId);
+    return await this.scannerService.getStatusByResourceId(resourceId)
   }
 
   @Delete('file/:resourceId')
@@ -216,18 +209,16 @@ export class ScannerController {
     type: ScanStatusDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'File not found',
   })
   @ApiBadRequestResponse({
-    status: 400,
     description: 'File did or bucket uid contains invalid parameters.',
   })
   @ApiBasicAuth()
   @UseGuards(BasicGuard)
-  deleteFileById(
+  async deleteFileById(
     @Param('resourceId') resourceId: string,
   ): Promise<ScanStatusDto> {
-    return this.scannerService.deleteFile(resourceId);
+    return await this.scannerService.deleteFile(resourceId)
   }
 }

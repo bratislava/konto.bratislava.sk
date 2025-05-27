@@ -1,7 +1,6 @@
 import { DiscIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
@@ -22,13 +21,13 @@ const FormHeader = () => {
 
   return (
     <div className="relative flex flex-col">
-      <div className="min-h-none size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
-        <div className="mx-auto flex max-w-screen-lg justify-between">
+      <div className="min-h-none size-full bg-gray-50 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
+        <div className="mx-auto flex max-w-(--breakpoint-lg) justify-between">
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
             {strapiForm?.moreInformationUrl ? (
               <Link
-                className="text-p1-underline w-max"
+                className="w-max text-p1 underline"
                 href={strapiForm.moreInformationUrl}
                 target="_blank"
               >
@@ -40,10 +39,11 @@ const FormHeader = () => {
             {!isReadonly && (
               <ButtonNew
                 size="small"
-                variant="category-outline"
+                variant="black-outline"
                 startIcon={<DiscIcon className="size-5" />}
                 onPress={() => saveConcept()}
                 data-cy="save-concept-desktop"
+                className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when ButtonNew is updated according to DS
               >
                 {t('menu_list.save_concept')}
               </ButtonNew>
@@ -51,10 +51,11 @@ const FormHeader = () => {
             <MenuDropdown
               buttonTrigger={
                 <ButtonNew
-                  variant="category-outline"
+                  variant="black-outline"
                   size="small"
                   icon={<EllipsisVerticalIcon />}
                   aria-label="Menu"
+                  className="border-gray-700 data-hovered:border-gray-600 data-pressed:border-gray-800" // TODO remove when ButtonNew is updated according to DS
                 />
               }
               items={menuItems}
@@ -62,11 +63,6 @@ const FormHeader = () => {
           </div>
         </div>
       </div>
-      <Waves
-        className="hidden lg:block"
-        waveColor="rgb(var(--color-main-200))"
-        wavePosition="bottom"
-      />
     </div>
   )
 }

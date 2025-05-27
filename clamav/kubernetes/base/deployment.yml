@@ -42,18 +42,33 @@ spec:
           envFrom:
             - configMapRef:
                 name: env
+          ports:
+            - name: clamav
+              containerPort: 3310
+              protocol: TCP
           livenessProbe:
-            initialDelaySeconds: 60
-            periodSeconds: 60
             exec:
               command:
-                - /health.sh
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
           readinessProbe:
             exec:
               command:
-                - /readiness.sh
-            initialDelaySeconds: 120
-      terminationGracePeriodSeconds: 30
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
+          startupProbe:
+            failureThreshold: 30
+            periodSeconds: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo 'PING' | nc 127.0.0.1 3310 | grep -i PONG
       volumes:
         - name: data-vol
           emptyDir: { }

@@ -1,24 +1,24 @@
 import React, { createContext } from 'react'
 import { Body, Container, Html, Link, Section, Text } from '@react-email/components'
 import {
-  SummaryArrayItemRendererProps,
-  SummaryArrayRendererProps,
-  SummaryFieldRendererProps,
-  SummaryFileValueRendererProps,
-  SummaryFormRendererProps,
-  SummaryInvalidValueRendererProps,
-  SummaryNoneValueRendererProps,
+  SummaryArrayComponentProps,
+  SummaryArrayItemComponentProps,
+  SummaryFieldComponentProps,
+  SummaryFileValueComponentProps,
+  SummaryFormComponentProps,
+  SummaryInvalidValueComponentProps,
+  SummaryNoneValueComponentProps,
   SummaryRenderer,
-  SummaryStepRendererProps,
-  SummaryStringValueRendererProps,
+  SummaryStepComponentProps,
+  SummaryStringValueComponentProps,
 } from '../summary-renderer/SummaryRenderer'
-import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
-import { ValidatedSummary } from '../summary-renderer/validateSummary'
 import { FileIdInfoMap } from './renderSummaryEmail'
+import { FileInfoSummary } from '../form-files/fileStatus'
+import { FormSummary } from '../summary/summary'
 
 type SummaryEmailProps = {
-  summaryJson: SummaryJsonForm
-  validatedSummary: ValidatedSummary
+  formSummary: FormSummary
+  fileInfos: Record<string, FileInfoSummary>
   fileIdInfoMap: FileIdInfoMap
   withHtmlBodyTags: boolean
 }
@@ -34,11 +34,9 @@ const useFileIdInfoMap = () => {
   return fileIdInfoMap
 }
 
-const FormRenderer = ({ form, children }: SummaryFormRendererProps) => (
-  <Container>{children}</Container>
-)
+const FormComponent = ({ children }: SummaryFormComponentProps) => <Container>{children}</Container>
 
-const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => (
+const StepComponent = ({ step, children, isFirst }: SummaryStepComponentProps) => (
   <Section>
     <Text
       style={{
@@ -54,7 +52,7 @@ const StepRenderer = ({ step, children, isFirst }: SummaryStepRendererProps) => 
   </Section>
 )
 
-const FieldRenderer = ({ field, children }: SummaryFieldRendererProps) => (
+const FieldComponent = ({ field, children }: SummaryFieldComponentProps) => (
   <Section
     style={{
       borderBottom: '2px solid #e5e7eb',
@@ -67,7 +65,7 @@ const FieldRenderer = ({ field, children }: SummaryFieldRendererProps) => (
   </Section>
 )
 
-const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps) => (
+const StringValueComponent = ({ value, isLast }: SummaryStringValueComponentProps) => (
   <Text
     style={{
       margin: '0',
@@ -79,7 +77,7 @@ const StringValueRenderer = ({ value, isLast }: SummaryStringValueRendererProps)
   </Text>
 )
 
-const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) => {
+const FileValueComponent = ({ fileInfo, isLast }: SummaryFileValueComponentProps) => {
   const fileIdInfoMap = useFileIdInfoMap()
   const fileUrl = fileIdInfoMap[fileInfo.id].url
   return (
@@ -89,11 +87,11 @@ const FileValueRenderer = ({ fileInfo, isLast }: SummaryFileValueRendererProps) 
   )
 }
 
-const NoneValueRenderer = ({ isLast }: SummaryNoneValueRendererProps) => (
+const NoneValueComponent = ({ isLast }: SummaryNoneValueComponentProps) => (
   <Text style={{ margin: '0', paddingBottom: isLast ? '0' : '8px' }}>-</Text>
 )
 
-const InvalidValueRenderer = ({ isLast }: SummaryInvalidValueRendererProps) => (
+const InvalidValueComponent = ({ isLast }: SummaryInvalidValueComponentProps) => (
   <Text
     style={{
       margin: '0',
@@ -105,14 +103,14 @@ const InvalidValueRenderer = ({ isLast }: SummaryInvalidValueRendererProps) => (
   </Text>
 )
 
-const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
+const ArrayComponent = ({ array, children }: SummaryArrayComponentProps) => (
   <Section>
     <Text style={{ fontWeight: 'bold', margin: '0 0 16px 0' }}>{array.title}</Text>
     {children}
   </Section>
 )
 
-const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRendererProps) => (
+const ArrayItemComponent = ({ arrayItem, children, isLast }: SummaryArrayItemComponentProps) => (
   <Section
     style={{
       borderLeft: '2px solid #e5e7eb',
@@ -138,8 +136,8 @@ const ArrayItemRenderer = ({ arrayItem, children, isLast }: SummaryArrayItemRend
 )
 
 export const SummaryEmail = ({
-  summaryJson,
-  validatedSummary,
+  formSummary: { summaryJson },
+  fileInfos,
   fileIdInfoMap,
   withHtmlBodyTags,
 }: SummaryEmailProps) => {
@@ -147,16 +145,19 @@ export const SummaryEmail = ({
     <FileIdInfoMapContext.Provider value={fileIdInfoMap}>
       <SummaryRenderer
         summaryJson={summaryJson}
-        validatedSummary={validatedSummary}
-        renderForm={FormRenderer}
-        renderStep={StepRenderer}
-        renderField={FieldRenderer}
-        renderArray={ArrayRenderer}
-        renderArrayItem={ArrayItemRenderer}
-        renderStringValue={StringValueRenderer}
-        renderFileValue={FileValueRenderer}
-        renderNoneValue={NoneValueRenderer}
-        renderInvalidValue={InvalidValueRenderer}
+        fileInfos={fileInfos}
+        components={{
+          FormComponent,
+          StepComponent,
+          FieldComponent,
+          ArrayComponent,
+          ArrayItemComponent,
+          StringValueComponent,
+          FileValueComponent,
+          NoneValueComponent,
+          InvalidValueComponent,
+        }}
+        validationData={null}
       />
     </FileIdInfoMapContext.Provider>
   )

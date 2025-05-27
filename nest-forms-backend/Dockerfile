@@ -1,13 +1,14 @@
-ARG FORMS_SHARED_TAG=latest
-FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
+ARG SHARED_PACKAGE_TAG
+FROM harbor.bratislava.sk/standalone/forms-shared:${SHARED_PACKAGE_TAG} as forms-shared
+FROM harbor.bratislava.sk/standalone/openapi-clients:${SHARED_PACKAGE_TAG} as openapi-clients
 FROM node:20.9 AS base
 
 RUN npx playwright install-deps chromium
 
 # build
 FROM base AS build
-WORKDIR /root/forms-shared
-COPY --from=shared /app/ ./
+COPY --from=forms-shared /app/ /root/forms-shared
+COPY --from=openapi-clients /app/ /root/openapi-clients
 
 WORKDIR /root/nest-forms-backend
 COPY package*.json ./
@@ -18,11 +19,7 @@ COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
-RUN npx prisma migrate
-
 RUN npm run build
-
-RUN npm run build-migrate-add-form-signature
 
 # development
 FROM base AS dev
@@ -43,14 +40,27 @@ FROM base AS prod
 
 USER node
 
-# When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
-# to be present.
-# TODO: Find a way how to use --install-links flag in npm install to avoid this.
-RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
-WORKDIR /home/node/forms-shared
-COPY --chown=node:node --from=shared /app/ ./
+# When copying node_modules from the build stage, symlinks to external dependencies
+# (like ../../forms-shared and ../../openapi-clients) are preserved. These symlinks expect the target directories
+# to exist at specific paths in the production container. We create these directories and
+# populate them with the actual content so the symlinks work correctly.
+#
+# Note: Using --install-links with npm ci fails because it requires the package-lock.json
+# to be perfectly in sync with package.json. When dependencies have complex version
+# requirements or when using local file dependencies, this synchronization often breaks,
+# causing npm ci to fail with "Missing: X from lock file" or "Invalid: lock file's X does
+# not satisfy Y" errors.
+RUN mkdir -p /home/node/forms-shared \
+    && chown -R node:node /home/node/forms-shared
+RUN mkdir -p /home/node/openapi-clients \
+    && chown -R node:node /home/node/openapi-clients
 
-RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
+WORKDIR /home/node/forms-shared
+COPY --chown=node:node --from=forms-shared /app/ ./
+
+WORKDIR /home/node/openapi-clients
+COPY --chown=node:node --from=openapi-clients /app/ ./
+
 WORKDIR /home/node/app
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
@@ -60,8 +70,7 @@ RUN npx playwright install chromium
 RUN npm prune --production
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
-COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res
 COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 
-ENTRYPOINT npx prisma migrate deploy && npm run migrate-add-form-signature && npm run start:prod
+ENTRYPOINT npx prisma migrate deploy && npm run start:prod

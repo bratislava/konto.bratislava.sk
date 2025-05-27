@@ -27,7 +27,7 @@ describe('Form Migration', () => {
   })
 
   afterEach(async () => {
-    await testingApp.clean()
+    testingApp.clean()
   })
 
   afterAll(async () => {

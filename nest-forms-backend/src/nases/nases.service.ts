@@ -168,6 +168,7 @@ export default class NasesService {
       },
       data: {
         userExternalId: user.sub,
+        cognitoGuestIdentityId: null,
         ico,
         ownerType:
           user?.['custom:account_type'] === 'po' ||

@@ -55,15 +55,16 @@ export class CityAccountSubservice {
             error,
           ),
         )
+      } else {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Failed to get birthnumber:`,
+            undefined,
+            <string>error,
+          ),
+        )
       }
-      this.logger.error(
-        this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `Failed to get birthnumber:`,
-          undefined,
-          <string>error,
-        ),
-      )
       return null
     }
   }

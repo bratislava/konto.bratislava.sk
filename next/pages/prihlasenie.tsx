@@ -4,6 +4,7 @@ import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
+import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useRef, useState } from 'react'
 
@@ -35,6 +36,7 @@ const LoginPage = () => {
   const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   const accountContainerRef = useRef<HTMLDivElement>(null)
+  const { prepareFormMigration } = usePrepareFormMigration('sign-in')
 
   const handleErrorChange = (error: Error | null) => {
     setLoginError(error)
@@ -52,6 +54,7 @@ const LoginPage = () => {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
         // Temporary fix for: https://github.com/aws-amplify/amplify-js/issues/14378
         removeAmplifyGuestIdentityIdCookies()
+        await prepareFormMigration()
         await redirect()
         return
       }

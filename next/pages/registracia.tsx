@@ -9,6 +9,7 @@ import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
+import { usePrepareFormMigration } from 'frontend/utils/usePrepareFormMigration'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -78,6 +79,7 @@ const getInitialState = (query: ParsedUrlQuery) => {
 const RegisterPage = () => {
   const router = useRouter()
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
+  const { prepareFormMigration } = usePrepareFormMigration('sign-up')
 
   const { t } = useTranslation('account')
   const [initialState] = useState(getInitialState(router.query))
@@ -111,6 +113,7 @@ const RegisterPage = () => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
+        await prepareFormMigration()
         setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(
@@ -158,6 +161,7 @@ const RegisterPage = () => {
         logger.info(
           `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
         )
+        await prepareFormMigration()
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)

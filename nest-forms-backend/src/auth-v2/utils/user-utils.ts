@@ -20,6 +20,10 @@ export function isUserVerified(user: User) {
   }
 
   const tier = user.cognitoUser.userAttributes['custom:tier']
+  if (!tier) {
+    return false
+  }
+
   return tierVerifiedMap[tier]
 }
 

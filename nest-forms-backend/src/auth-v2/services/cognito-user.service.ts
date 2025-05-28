@@ -7,6 +7,7 @@ import { Expose, plainToInstance } from 'class-transformer'
 import {
   IsEmail,
   IsEnum,
+  IsOptional,
   IsString,
   IsUUID,
   validateOrReject,
@@ -30,7 +31,8 @@ class CognitoUserAttributesDto {
 
   @Expose()
   @IsEnum(UserVerifyStateCognitoTierEnum)
-  'custom:tier': UserVerifyStateCognitoTierEnum
+  @IsOptional() // Newly signed-up users might not have this attribute
+  'custom:tier'?: UserVerifyStateCognitoTierEnum
 
   @Expose()
   @IsString()

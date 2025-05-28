@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
+import { CustomErrorNorisTypesEnum } from '../../../noris/noris.errors'
 import {
   CustomErrorPaymentResponseTypesEnum,
   CustomErrorPaymentTypesEnum,
@@ -119,3 +120,4 @@ export type CustomErrorEnums =
   | CustomErrorPaymentTypesEnum
   | CustomErrorPaymentResponseTypesEnum
   | CustomErrorPdfCreateTypesEnum
+  | CustomErrorNorisTypesEnum

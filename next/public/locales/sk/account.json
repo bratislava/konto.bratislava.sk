@@ -20,6 +20,7 @@
     "DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk.",
+    "unsuccessful-identity-verification": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "InvalidParameterException Cannot reset password for the user as there is no registered/verified email or phone_number": "Konto s týmto e-mailom už existuje, avšak e-mail nebol overený. Zaregistujte sa s iným e-mailom, ktorý vzápätí overíte alebo nám napíšte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a> so žiadosťou o zmazanie existujúceho konta. Následne sa s pôvodným e-mailom budete môcť registrovať a overiť nanovo."
   },
   "bratislava_account": "Bratislavské konto",
@@ -127,7 +128,7 @@
   "id_card_placeholder": "Číslo dokladu",
   "id_card_description": "Zadávajte bez medzier.",
   "id_card_tooltip": "**Číslo tohto dokladu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
-  "id_card_required": "Pole je povinné",
+  "id_card_required": "Číslo je povinné",
   "id_card_format": "Číslo nie je validné",
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",

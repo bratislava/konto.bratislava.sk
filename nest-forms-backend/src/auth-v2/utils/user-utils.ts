@@ -26,7 +26,7 @@ export function isUserVerified(user: User) {
 const userFormOwnerTypeMap = {
   [UserVerifyStateTypeEnum.Fo]: FormOwnerType.FO,
   [UserVerifyStateTypeEnum.Po]: FormOwnerType.PO,
-  [UserVerifyStateTypeEnum.FoP]: FormOwnerType.FO,
+  [UserVerifyStateTypeEnum.FoP]: FormOwnerType.PO,
 } satisfies Record<UserVerifyStateTypeEnum, FormOwnerType>
 
 export function userToFormOwnerType(user: User) {

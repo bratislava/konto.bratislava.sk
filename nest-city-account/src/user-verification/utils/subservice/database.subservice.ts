@@ -38,7 +38,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -66,7 +67,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -153,7 +155,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -246,7 +249,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -278,7 +282,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }
@@ -308,7 +313,8 @@ export class DatabaseSubserviceUser {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.DATABASE_ERROR,
         VerificationErrorsResponseEnum.DATABASE_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
   }

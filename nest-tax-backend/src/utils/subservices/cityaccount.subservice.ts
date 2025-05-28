@@ -50,8 +50,8 @@ export class CityAccountSubservice {
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           `Failed to get birthnumber:`,
           undefined,
-          error instanceof Error ? undefined : <string>error,
-          error instanceof Error ? error : undefined,
+          undefined,
+          error,
         ),
       )
       return null

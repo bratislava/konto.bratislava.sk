@@ -1,10 +1,10 @@
 import stanoviskoKInvesticnemuZameru, {
-  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
   stanoviskoKInvesticnemuZameruExtractPlainSubject,
+  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
 } from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky, {
-  predzahradkyExtractTechnicalSubject,
   predzahradkyExtractPlainSubject,
+  predzahradkyExtractTechnicalSubject,
 } from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti, {
   priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
@@ -17,12 +17,12 @@ import {
   ziadostONajomBytuTermsAndConditions,
 } from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti, {
-  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
   zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
 } from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady, {
-  komunitneZahradyExtractTechnicalSubject,
   komunitneZahradyExtractPlainSubject,
+  komunitneZahradyExtractTechnicalSubject,
 } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
@@ -439,7 +439,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-informativneho-zakresu-sieti',
     title: 'Objednávka informatívneho zákresu sietí',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     termsAndConditions: generalTermsAndConditions,
@@ -489,7 +489,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     title: 'Žiadosť o stanovisko k projektovej dokumentácii',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     termsAndConditions: generalTermsAndConditions,

@@ -67,9 +67,9 @@ export default class FilesService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while checking if file exists in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while checking if file exists in the database.',
+        undefined,
+        error,
       )
     }
 
@@ -99,11 +99,17 @@ export default class FilesService {
         },
       })
     } catch (error) {
+      if (error instanceof Error)
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.DATABASE_ERROR,
+          'Error while checking if file exists in the database.',
+          undefined,
+          error,
+        )
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while checking if file exists in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while checking if file exists in the database.',
+        <string>error,
       )
     }
     if (!file) {
@@ -157,9 +163,9 @@ export default class FilesService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while checking if file exists in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while checking if file exists in the database.',
+        undefined,
+        error,
       )
     }
 
@@ -182,9 +188,9 @@ export default class FilesService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while checking if file exists in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while checking if file exists in the database.',
+        undefined,
+        error,
       )
     }
 
@@ -235,9 +241,9 @@ export default class FilesService {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while updating file status in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while updating file status in the database.',
+        undefined,
+        error,
       )
     }
 
@@ -379,6 +385,8 @@ export default class FilesService {
       throw this.throwerErrorGuard.UnauthorizedException(
         FilesErrorsEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
         FilesErrorsResponseEnum.INVALID_OR_EXPIRED_JWT_TOKEN_ERROR,
+        undefined,
+        error,
       )
     }
 
@@ -543,7 +551,9 @@ export default class FilesService {
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.DATABASE_ERROR,
-          `Error while deleting file in the database. Error: ${<string>error}`,
+          'Error while deleting file in the database.',
+          undefined,
+          error,
         )
       }
 

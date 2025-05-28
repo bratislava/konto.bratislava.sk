@@ -6,6 +6,7 @@ import AppService from './app.service'
 import { AppSharedModule } from './app-shared.module'
 import { AppV2Module } from './app-v2.module'
 import AuthModule from './auth/auth.module'
+import { AuthV2Module } from './auth-v2/auth-v2.module'
 import ConvertModule from './convert/convert.module'
 import ConvertPdfModule from './convert-pdf/convert-pdf.module'
 import FilesModule from './files/files.module'
@@ -26,6 +27,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
     AppSharedModule,
     AppV2Module,
     AuthModule,
+    AuthV2Module,
     AdminModule,
     FormsModule,
     FilesModule,

@@ -85,6 +85,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const schema = isLegalEntity ? poSchema : foSchema
+  const defaultValues = isLegalEntity ? { ico: '', rc: '', idCard: '' } : { rc: '', idCard: '' }
   const {
     handleSubmit,
     control,
@@ -92,10 +93,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
     formState: { isSubmitting },
   } = useHookForm<VerificationFormData>({
     schema,
-    defaultValues: {
-      rc: '',
-      idCard: '',
-    },
+    defaultValues,
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 

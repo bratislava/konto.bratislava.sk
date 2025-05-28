@@ -11,21 +11,26 @@ import {
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { ResponseErrorDto } from '../../../utils/guards/dtos/error.dto'
+import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { RfoDataDto } from './types/verification-types.dto'
-import { VerificationErrorsEnum } from "../../verification.errors.enum";
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class VerificationSubservice {
+  private logger: LineLoggerSubservice
+
   constructor(
     private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,
     private magproxyService: MagproxyService,
     private databaseSubservice: DatabaseSubserviceUser,
     private physicalEntityService: PhysicalEntityService
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(VerificationSubservice.name)
+  }
 
   private checkIdentityCard(
     rfoData: RfoIdentityListElement,
@@ -65,7 +70,7 @@ export class VerificationSubservice {
     return this.errorMessengerGuard.birthNumberICInconsistency()
   }
 
-  private verifyRpoStatutary(
+  private verifyRpoStatutory(
     legalEntity: ResponseRpoLegalPersonDto,
     birthNumber: string
   ): ResponseVerificationIdentityCardDto {
@@ -88,6 +93,11 @@ export class VerificationSubservice {
         }
       }
     }
+    this.logger.warn({
+      message: 'Could not match birthnumber with statutory organ from RPO',
+      ico: legalEntity.ico,
+      birthNumber: birthNumber,
+    })
     return this.errorMessengerGuard.birthNumberNotExists()
   }
 
@@ -133,7 +143,7 @@ export class VerificationSubservice {
           rfoData = {
             statusCode: error.getStatus(),
             data: null,
-            errorData: error.getResponse() as ResponseErrorDto,
+            errorData: error.getResponse() as ResponseErrorInternalDto,
           }
         } else {
           throw error
@@ -280,7 +290,7 @@ export class VerificationSubservice {
     if (!rpoData || !rpoData.data) {
       return this.errorMessengerGuard.rpoFieldNotExists('ico')
     }
-    const verifyStatutory = this.verifyRpoStatutary(rpoData.data, data.birthNumber)
+    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
     if (verifyStatutory.statusCode !== 200) {
       return verifyStatutory
     }

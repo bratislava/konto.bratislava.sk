@@ -4,17 +4,16 @@ import { LoggerService } from '@nestjs/common'
 
 import { escapeForLogfmt, isLogfmt, ToLogfmt } from '../logging'
 
+// ANSI color escape codes
+const ANSI_RESET = '\u001B[0m'
+const ANSI_GREEN = '\u001B[32m'
+const ANSI_BOLD = '\u001B[1m'
+const ANSI_RED = '\u001B[31m'
+const ANSI_YELLOW = '\u001B[33m'
+const ANSI_MAGENTA = '\u001B[35m'
+
 function getCurrentDateTime(): string {
-  const now = new Date()
-  return now.toLocaleString('en-GB', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  })
+  return new Date().toISOString()
 }
 
 export class LineLoggerSubservice implements LoggerService {
@@ -25,6 +24,13 @@ export class LineLoggerSubservice implements LoggerService {
   constructor(context?: string, color = true) {
     this.context = context
     this.color = color
+  }
+
+  private formatStringMessage(messages: string): string {
+    if (messages.length === 0) return ''
+    return isLogfmt(messages)
+      ? ' '.concat(messages)
+      : `message="${escapeForLogfmt(messages)}"`
   }
 
   private printLog(
@@ -43,12 +49,7 @@ export class LineLoggerSubservice implements LoggerService {
       (item): item is string => typeof item !== 'string',
     )
 
-    const formattedStringMessages =
-      stringMessages.length > 0
-        ? isLogfmt(stringMessages)
-          ? ' '.concat(stringMessages)
-          : `message="${escapeForLogfmt(stringMessages)}"`
-        : ''
+    const formattedStringMessages = this.formatStringMessage(stringMessages)
 
     const formattedOtherItems = otherItems
       .map((item) => ToLogfmt(item))
@@ -57,7 +58,7 @@ export class LineLoggerSubservice implements LoggerService {
     const formattedContext = this.context ? `context="${this.context}"` : ''
 
     const colorStart = this.color ? colorCode : ''
-    const colorEnd = this.color ? '\u001B[0m' : ''
+    const colorEnd = this.color ? ANSI_RESET : ''
 
     // eslint-disable-next-line no-console
     console.log(
@@ -82,23 +83,23 @@ export class LineLoggerSubservice implements LoggerService {
   }
 
   log(message: unknown, ...optionalParams: unknown[]): void {
-    this.printLog('LOG', message, optionalParams, '\u001B[32m')
+    this.printLog('LOG', message, optionalParams, ANSI_GREEN)
   }
 
   fatal(message: unknown, ...optionalParams: unknown[]): void {
-    this.printLog('FATAL', message, optionalParams, '\u001B[1m')
+    this.printLog('FATAL', message, optionalParams, ANSI_BOLD)
   }
 
   error(message: unknown, ...optionalParams: unknown[]): void {
-    this.printLog('ERROR', message, optionalParams, '\u001B[31m')
+    this.printLog('ERROR', message, optionalParams, ANSI_RED)
   }
 
   warn(message: unknown, ...optionalParams: unknown[]): void {
-    this.printLog('WARN', message, optionalParams, '\u001B[33m')
+    this.printLog('WARN', message, optionalParams, ANSI_YELLOW)
   }
 
   debug(message: unknown, ...optionalParams: unknown[]): void {
-    this.printLog('DEBUG', message, optionalParams, '\u001B[35m')
+    this.printLog('DEBUG', message, optionalParams, ANSI_MAGENTA)
   }
 
   verbose(message: unknown, ...optionalParams: unknown[]): void {

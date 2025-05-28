@@ -37,6 +37,7 @@ import { DatabaseSubserviceUser } from './utils/subservice/database.subservice'
 import { VerificationSubservice } from './utils/subservice/verification.subservice'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
+import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 
 @Injectable()
 export class VerificationService {
@@ -55,7 +56,10 @@ export class VerificationService {
     private readonly bloomreachService: BloomreachService
   ) {
     if (!process.env.CRYPTO_SECRET_KEY) {
-      throw new Error('Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'Secret key for crypto must be set in env! (CRYPTO_SECRET_KEY)'
+      )
     }
     this.logger = new LineLoggerSubservice(VerificationService.name)
   }
@@ -85,7 +89,9 @@ export class VerificationService {
       } catch (error) {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
-          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR
+          SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
+          undefined,
+          error
         )
       }
 
@@ -100,7 +106,8 @@ export class VerificationService {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.RABBIT_PUSH_DATA_ERROR,
           SendToQueueErrorsResponseEnum.RABBIT_PUSH_DATA_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       }
 
@@ -129,7 +136,7 @@ export class VerificationService {
           data.msg.type
         )
 
-        const bloomreachService = new BloomreachService(cognitoSubservice)
+        const bloomreachService = new BloomreachService(cognitoSubservice, throwerErrorGuard)
 
         await bloomreachService.trackCustomer(data.msg.user.idUser)
       } catch (errorCatch) {
@@ -298,7 +305,8 @@ export class VerificationService {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         VerificationErrorsEnum.VERIFY_EID_ERROR,
         VerificationErrorsResponseEnum.VERIFY_EID_ERROR,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
 

@@ -30,7 +30,7 @@ import TowIcon from '../../assets/icons/transport-and-maps/towing.svg'
 
 export const MunicipalServicesCategories = {
   ALL_CATEGORY: 'Všetky kategórie',
-  TAXES_CATEGORY: 'Dane',
+  TAXES_FEES_CATEGORY: 'Dane a poplatky',
   CULTURE_CATEGORY: 'Kultúra a voľný čas',
   TRANSPORT_CATEGORY: 'Doprava',
   SOCIAL_SERVICES_CATEGORY: 'Sociálne služby a bývanie',
@@ -63,7 +63,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.1.description',
     buttonText: 'account_section_services.cards.1.buttonText',
     icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
-    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
     href: ROUTES.TAXES_AND_FEES,
   },
 
@@ -453,7 +453,7 @@ export const serviceCards: ServiceCardBase[] = [
     icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
     tag: 'account_section_services.cards.43.tag',
     tagStyle: 'text-main-700 bg-main-100',
-    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
   },
   {
@@ -475,7 +475,7 @@ export const serviceCards: ServiceCardBase[] = [
     icon: <TaxesIcon className="size-10 text-main-600 lg:size-12" />,
     tag: 'account_section_services.cards.45.tag',
     tagStyle: 'text-main-700 bg-main-100',
-    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    category: [MunicipalServicesCategories.TAXES_FEES_CATEGORY],
     href: ROUTES.MUNICIPAL_SERVICES_FORM('oznamenie-o-poplatkovej-povinnosti-za-komunalne-odpady'),
   },
   {

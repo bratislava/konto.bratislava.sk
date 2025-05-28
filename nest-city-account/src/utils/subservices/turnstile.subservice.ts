@@ -33,7 +33,8 @@ export class TurnstileSubservice {
       throw this.throwerErrorGuard.BadRequestException(
         VerificationErrorsEnum.INVALID_CAPTCHA,
         VerificationErrorsResponseEnum.INVALID_CAPTCHA,
-        JSON.stringify(error)
+        undefined,
+        error
       )
     }
     if (!result || !result?.success) {

@@ -96,13 +96,14 @@ export default class NasesService {
       })
       .then((response) => response.data)
       .catch((error) => {
-        console.error(
+        this.logger.error(
           this.throwerErrorGuard.InternalServerErrorException(
             ErrorsEnum.INTERNAL_SERVER_ERROR,
             'Failed to get nases identity, verify if this is because of invalid token or a server issue',
+            undefined,
+            error,
           ),
         )
-        console.error(error)
         return null
       })
     return result
@@ -168,6 +169,7 @@ export default class NasesService {
       },
       data: {
         userExternalId: user.sub,
+        cognitoGuestIdentityId: null,
         ico,
         ownerType:
           user?.['custom:account_type'] === 'po' ||
@@ -292,11 +294,14 @@ export default class NasesService {
       })
     } catch (error) {
       this.logger.error(
-        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}, error: ${error}`,
+        `Error while generating form summary for form definition ${formDefinition.slug}, formId: ${form.id}`,
+        error,
       )
       throw this.throwerErrorGuard.InternalServerErrorException(
         NasesErrorsEnum.FORM_SUMMARY_GENERATION_ERROR,
         NasesErrorsResponseEnum.FORM_SUMMARY_GENERATION_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -396,7 +401,9 @@ export default class NasesService {
         NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT,
         `${NasesErrorsEnum.UNABLE_ADD_FORM_TO_RABBIT} Received form id: ${
           form.id
-        } Error: ${error as string}`,
+        }`,
+        undefined,
+        error,
       )
     }
 
@@ -593,7 +600,7 @@ export default class NasesService {
         },
       )
     } catch (error) {
-      this.logger.error(`Error sending form to nases: ${error}`)
+      this.logger.error(`Error sending form to nases.`, error)
     }
 
     if (!isSent) {
@@ -604,7 +611,7 @@ export default class NasesService {
       })
 
       // TODO temp SEND_TO_NASES_ERROR log, remove
-      console.log(
+      this.logger.log(
         `SEND_TO_NASES_ERROR: ${NasesErrorsResponseEnum.SEND_TO_NASES_ERROR} additional info - formId: ${form.id}, formSignature from db: ${JSON.stringify(
           form.formSignature,
           null,

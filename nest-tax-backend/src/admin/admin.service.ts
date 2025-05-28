@@ -4,6 +4,7 @@ import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import {
   DeliveryMethod,
@@ -295,7 +296,20 @@ export class AdminService {
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    const norisData = await this.norisService.getDataFromNoris(data)
+    let norisData: NorisTaxPayersDto[]
+    try {
+      norisData = (await this.norisService.getDataFromNoris(
+        data,
+      )) as NorisTaxPayersDto[]
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
     let count = 0
 
     const taxesExist = await this.prismaService.tax.findMany({

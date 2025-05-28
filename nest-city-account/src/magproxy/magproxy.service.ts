@@ -55,7 +55,10 @@ export class MagproxyService {
       !process.env.MAGPROXY_AZURE_SCOPE ||
       !process.env.MAGPROXY_URL
     ) {
-      throw new Error('MagproxyService ENV vars are not set ')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'MagproxyService ENV vars are not set '
+      )
     }
 
     /** Config */
@@ -104,7 +107,8 @@ export class MagproxyService {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-            JSON.stringify(error.response.data)
+            JSON.stringify(error.response.data),
+            error
           )
         })
       return result.access_token
@@ -160,19 +164,25 @@ export class MagproxyService {
         magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
         throw this.throwerErrorGuard.UnauthorizedException(
           MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR
+          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+          undefined,
+          error
         )
       }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
         throw this.throwerErrorGuard.NotFoundException(
           MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS
+          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+          undefined,
+          error
         )
       }
       // RFO responded but with unexpected data
       throw this.throwerErrorGuard.UnprocessableEntityException(
         MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
-        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE
+        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
+        undefined,
+        error
       )
     }
   }

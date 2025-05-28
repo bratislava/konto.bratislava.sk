@@ -67,20 +67,12 @@ export default class EmailSubservice {
         `Report email sent successfully to ${to.join(', ')}: ${info.messageId}`,
       )
     } catch (error) {
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          'Failed to send daily payment email report.',
-          undefined,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         'Failed to send daily payment email report.',
         undefined,
-        <string>error,
+        undefined,
+        error,
       )
     }
   }

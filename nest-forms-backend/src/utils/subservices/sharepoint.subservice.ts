@@ -394,9 +394,9 @@ export default class SharepointSubservice {
       .catch((error) => {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
-          `${
-            SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR
-          } Error: ${<string>error} when sending to database: ${dbName}, posted data: ${JSON.stringify(fieldValues)} .`,
+          SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR,
+          `Error when sending to database: ${dbName}, posted data: ${JSON.stringify(fieldValues)} .`,
+          error instanceof Error ? error : undefined,
         )
       })
       .then(
@@ -434,9 +434,9 @@ export default class SharepointSubservice {
       .catch((error) => {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.ACCESS_TOKEN_ERROR,
-          `${SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR} Error: ${<string>(
-            error
-          )}`,
+          SharepointErrorsResponseEnum.ACCESS_TOKEN_ERROR,
+          undefined,
+          error,
         )
       })
 

@@ -189,7 +189,8 @@ export class TasksService {
     )
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+  @Cron(CronExpression.EVERY_10_MINUTES)
   @HandleErrors('Cron Error')
   async sendUnpaidTaxReminders() {
     const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate()
@@ -233,6 +234,9 @@ export class TasksService {
           },
         ],
       },
+      // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+      // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
+      take: 50,
     })
 
     if (taxes.length === 0) {

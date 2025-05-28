@@ -16,6 +16,7 @@ import ConvertPdfModule from './convert-pdf/convert-pdf.module'
 import FilesModule from './files/files.module'
 import FormValidatorRegistryModule from './form-validator-registry/form-validator-registry.module'
 import FormsModule from './forms/forms.module'
+import { FormsV2Module } from './forms-v2/forms-v2.module'
 import GinisModule from './ginis/ginis.module'
 import NasesModule from './nases/nases.module'
 import NasesConsumerModule from './nases-consumer/nases-consumer.module'
@@ -60,6 +61,7 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
     TaxModule,
     FormValidatorRegistryModule,
     SignerModule,
+    FormsV2Module,
     // BEWARE: If Bull doesn't connect to Redis successfully, it will silently fail!
     // https://github.com/nestjs/bull/issues/1076
     BullModule.forRootAsync({

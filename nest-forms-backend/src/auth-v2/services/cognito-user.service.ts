@@ -36,11 +36,18 @@ class CognitoUserAttributesDto {
 
   @Expose()
   @IsString()
-  given_name: string
+  @IsOptional()
+  name?: string
 
   @Expose()
   @IsString()
-  family_name: string
+  @IsOptional()
+  given_name?: string
+
+  @Expose()
+  @IsString()
+  @IsOptional()
+  family_name?: string
 
   @Expose()
   @IsEmail()

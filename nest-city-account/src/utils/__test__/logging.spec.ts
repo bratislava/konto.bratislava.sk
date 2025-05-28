@@ -126,7 +126,7 @@ describe('Testing logging:', () => {
       )
       const logfmt = errorToLogfmt(error, 'testMethod')
 
-      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="0" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
+      const expected = String.raw`errorType="HttpException" statusCode="500" status="Internal server error" errorName="INTERNAL_SERVER_ERROR" message="Test message" alert="1" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
 
       expect(logfmt).toContain(expected)
     })

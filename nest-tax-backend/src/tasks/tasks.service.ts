@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { AdminService } from '../admin/admin.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { PrismaService } from '../prisma/prisma.service'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
@@ -98,10 +99,24 @@ export class TasksService {
       `TasksService: Updating payments from Noris with data: ${JSON.stringify(data)}`,
     )
 
-    const result = await this.adminService.updatePaymentsFromNoris({
-      type: 'variableSymbols',
-      data,
-    })
+    let result: {
+      created: number
+      alreadyCreated: number
+    }
+    try {
+      result = await this.adminService.updatePaymentsFromNoris({
+        type: 'variableSymbols',
+        data,
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
+        'Failed to update payments from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
 
     await this.prismaService.tax.updateMany({
       where: {

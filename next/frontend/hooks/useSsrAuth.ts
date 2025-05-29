@@ -1,12 +1,14 @@
 import { AccountType, Tier } from 'frontend/dtos/accountDto'
 import { useContext } from 'react'
 
-import { SsrAuthContext, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
+import { SsrAuthContext } from '../../components/logic/SsrAuthContext'
 
 export const useSsrAuth = () => {
-  const ssrAuthContext =
-    useContext(SsrAuthContext) ??
-    ({ userAttributes: null, isSignedIn: false } satisfies SsrAuthContextType)
+  const ssrAuthContext = useContext(SsrAuthContext)
+  if (!ssrAuthContext) {
+    throw new Error('useSsrAuth must be used within a SsrAuthProviderHOC')
+  }
+
   const { userAttributes } = ssrAuthContext
   const tier = userAttributes?.['custom:tier']
   const accountType = userAttributes?.['custom:account_type']

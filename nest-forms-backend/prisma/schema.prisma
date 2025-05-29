@@ -166,3 +166,11 @@ enum FileStatus {
   // when file id is not found in forms
   FORM_ID_NOT_FOUND
 }
+
+model FormMigration {
+  id                     String   @id @default(uuid())
+  cognitoAuthSub         String   @db.Uuid
+  cognitoGuestIdentityId String
+  expiresAt              DateTime
+  createdAt              DateTime @default(now())
+}

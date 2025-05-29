@@ -7,6 +7,8 @@ common.ts
 configuration.ts
 docs/ADMINApi.md
 docs/BumpJsonVersionResponseDto.md
+docs/ClaimMigrationInput.md
+docs/ClaimMigrationOutput.md
 docs/ConvertApi.md
 docs/ConvertToPdfRequestDto.md
 docs/CreateFormRequestDto.md
@@ -14,6 +16,7 @@ docs/CreateFormResponseDto.md
 docs/DownloadTokenResponseDataDto.md
 docs/EidUpdateSendFormRequestDto.md
 docs/FilesApi.md
+docs/FormMigrationsApi.md
 docs/FormSignatureDto.md
 docs/FormState.md
 docs/FormUserInformationDto.md
@@ -31,6 +34,8 @@ docs/JsonToXmlV2RequestDto.md
 docs/MigrateFormResponseDto.md
 docs/NasesApi.md
 docs/PostFileResponseDto.md
+docs/PrepareMigrationInput.md
+docs/PrepareMigrationOutput.md
 docs/SendFormResponseDto.md
 docs/ServiceRunningDto.md
 docs/SignerApi.md

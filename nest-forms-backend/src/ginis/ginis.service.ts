@@ -18,11 +18,7 @@ import {
 } from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import {
-  RABBIT_GINIS_AUTOMATION,
-  RABBIT_MQ,
-  RABBIT_NASES,
-} from '../utils/constants'
+import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -31,17 +27,9 @@ import alertError, {
 } from '../utils/subservices/line-logger.subservice'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
-import {
-  GinisAssignSubmissionResponseInfo,
-  GinisAutomationResponse,
-  GinisCheckNasesPayloadDto,
-} from './dtos/ginis.response.dto'
+import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
-
-const ASSIGN_QUEUE = 'submission.assign'
-
-const GINIS_AUTOMATION_ASSIGN_QUEUE = 'ginis-automation.assign'
 
 @Injectable()
 export default class GinisService {
@@ -71,57 +59,6 @@ export default class GinisService {
         `.env value NODE_ENV must be set to 'production', 'development' or 'staging'`,
       )
     }
-  }
-
-  @RabbitRPC({
-    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
-    routingKey: ASSIGN_QUEUE,
-    queue: ASSIGN_QUEUE,
-    errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
-      alertError(
-        `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
-        new LineLoggerSubservice('GinisService'),
-      )
-      channel.reject(message, false)
-    },
-  })
-  public async consumeAssignSubmission(
-    content: GinisAutomationResponse<
-      Record<string, never>,
-      GinisAssignSubmissionResponseInfo
-    >,
-  ): Promise<Nack> {
-    this.logger.log(
-      `Consuming assign ginis submission message, content: ${JSON.stringify(content)}`,
-    )
-    if (content.status === 'failure') {
-      await this.prismaService.forms.update({
-        where: {
-          ginisDocumentId: content.info.doc_id,
-        },
-        data: {
-          state: FormState.ERROR,
-          error: FormError.GINIS_SEND_ERROR,
-          ginisState: GinisState.ERROR_ASSIGN_SUBMISSION,
-        },
-      })
-      alertError(
-        `ERROR - Ginis consumer - error to assign document - response from Ginis automation. Document id: ${content.info.doc_id}`,
-        this.logger,
-        content.message,
-      )
-    } else {
-      await this.prismaService.forms.update({
-        where: { ginisDocumentId: content.info.doc_id },
-        data: {
-          ginisState: GinisState.SUBMISSION_ASSIGNED,
-          error: FormError.NONE,
-          state: FormState.PROCESSING,
-        },
-      })
-      this.logger.debug('---- assigned to ginis ----')
-    }
-    return new Nack()
   }
 
   private async updateFailedRegistration(formId: string): Promise<void> {
@@ -263,30 +200,65 @@ export default class GinisService {
     }
   }
 
+  private async updateFailedAssignment(ginisDocumentId: string): Promise<void> {
+    await this.prismaService.forms.update({
+      where: {
+        ginisDocumentId,
+      },
+      data: {
+        state: FormState.ERROR,
+        error: FormError.GINIS_SEND_ERROR,
+        ginisState: GinisState.ERROR_ASSIGN_SUBMISSION,
+      },
+    })
+  }
+
+  private async updateSuccessfulAssignment(
+    ginisDocumentId: string,
+  ): Promise<void> {
+    await this.prismaService.forms.update({
+      where: { ginisDocumentId },
+      data: {
+        ginisState: GinisState.SUBMISSION_ASSIGNED,
+        error: FormError.NONE,
+        state: FormState.PROCESSING,
+      },
+    })
+  }
+
   async assignSubmission(
-    documentId: string,
-    organization: string,
-    person?: string,
+    ginisDocumentId: string,
+    ginisNodeId: string,
+    ginisFunctionId?: string,
   ): Promise<void> {
     this.logger.debug('---- start to assign submission ----')
     await this.prismaService.forms.update({
       where: {
-        ginisDocumentId: documentId,
+        ginisDocumentId,
       },
       data: {
         ginisState: GinisState.RUNNING_ASSIGN_SUBMISSION,
       },
     })
 
-    await this.rabbitMqClientService.publishMessageToGinisAutomation(
-      GINIS_AUTOMATION_ASSIGN_QUEUE,
-      {
-        doc_id: documentId,
-        organization,
-        ...(person ? { person } : {}),
-      },
-      ASSIGN_QUEUE,
-    )
+    try {
+      await this.ginisHelper.retryWithDelay(async () =>
+        this.ginisApiService.assignDocument(
+          ginisDocumentId,
+          ginisNodeId,
+          ginisFunctionId,
+        ),
+      )
+      await this.updateSuccessfulAssignment(ginisDocumentId)
+      this.logger.debug('---- assigned in ginis ----')
+    } catch (error) {
+      alertError(
+        `ERROR assignSubmission - error assigning document in ginis. Ginis id: ${ginisDocumentId}`,
+        this.logger,
+        error,
+      )
+      await this.updateFailedAssignment(ginisDocumentId)
+    }
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {

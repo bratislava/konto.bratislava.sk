@@ -148,7 +148,6 @@ export default class GinisService {
         ginisState: GinisState.REGISTERED,
       },
     })
-    this.logger.debug('---- registered to ginis ----')
   }
 
   async registerGinisDocument(formId: string): Promise<boolean> {
@@ -233,7 +232,6 @@ export default class GinisService {
   }
 
   async uploadAttachments(form: FormWithFiles, pospID: string): Promise<void> {
-    this.logger.debug('---- start to upload attachments ----')
     await this.prismaService.forms.update({
       where: {
         id: form.id,
@@ -371,6 +369,7 @@ export default class GinisService {
 
     if (form.ginisState === GinisState.RUNNING_REGISTER) {
       if (await this.registerGinisDocument(form.id)) {
+        this.logger.debug('---- registered to ginis ----')
         return this.nackTrueWithWait(20_000)
       }
       return this.nackTrueWithWait(600_000)
@@ -385,6 +384,7 @@ export default class GinisService {
         )
         return this.nackTrueWithWait(20_000)
       }
+      this.logger.debug('---- start to upload attachments ----')
       await this.uploadAttachments(form, formDefinition.pospID)
       return this.nackTrueWithWait(20_000)
     }

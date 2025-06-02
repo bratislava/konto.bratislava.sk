@@ -16,8 +16,8 @@ export const devFormDefinitions: FormDefinition[] = [
     publisher: '',
     termsAndConditions: generalTermsAndConditions,
     ginisAssignment: {
-      ginisOrganizationName: '',
-      ginisPersonName: '',
+      ginisNodeId: '',
+      ginisFunctionId: '',
     },
     isSigned: false,
   },

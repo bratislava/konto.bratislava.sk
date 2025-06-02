@@ -437,8 +437,8 @@ describe('GinisService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
         ginisAssignment: {
-          ginisOrganizationName: 'orgName',
-          ginisPersonName: 'personName',
+          ginisNodeId: 'nodeId',
+          ginisFunctionId: 'functionId',
         },
       })
 
@@ -463,7 +463,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
+      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
 
       // The same should happen if the state is ERROR_ASSIGN_SUBMISSION
 
@@ -486,7 +486,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
+      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
     })
 
     it('should mark as ready for processing if there is no sharepoint', async () => {
@@ -759,7 +759,7 @@ describe('GinisService', () => {
 
   describe('assignSubmission', () => {
     it('should update file to RUNNING_ASSIGN_SUBMISSION', async () => {
-      await service.assignSubmission('docId', 'orgId', 'person')
+      await service.assignSubmission('docId', 'nodeId', 'functionId')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {

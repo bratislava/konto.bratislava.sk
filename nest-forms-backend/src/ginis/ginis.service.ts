@@ -429,8 +429,8 @@ export default class GinisService {
       }
       await this.assignSubmission(
         form.ginisDocumentId,
-        formDefinition.ginisAssignment.ginisOrganizationName,
-        formDefinition.ginisAssignment.ginisPersonName,
+        formDefinition.ginisAssignment.ginisNodeId,
+        formDefinition.ginisAssignment.ginisFunctionId,
       )
       return this.nackTrueWithWait(20_000)
     }

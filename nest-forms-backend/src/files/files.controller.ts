@@ -21,6 +21,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
+import contentDisposition from 'content-disposition'
 import { Response } from 'express'
 import { contentType } from 'mime-types'
 
@@ -179,7 +180,7 @@ export default class FilesController {
     res.set({
       'Content-Type': contentType(file.fileName),
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': `attachment; filename="${file.fileName}"`,
+      'Content-Disposition': contentDisposition(file.fileName),
     })
     return new StreamableFile(fileStream)
   }

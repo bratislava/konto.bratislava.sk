@@ -505,9 +505,9 @@ export class AdminService {
               const forPayment = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
 
               if (payerData.sum === null || payerData.sum < paidFromNoris) {
-                created += 1
-                const createdTaxPayment =
-                  await this.prismaService.taxPayment.create({
+                await this.prismaService.$transaction(async (tx) => {
+                  created += 1
+                  const createdTaxPayment = await tx.taxPayment.create({
                     data: {
                       amount: paidFromNoris - (payerData.sum ?? 0),
                       source: 'BANK_ACCOUNT',
@@ -516,25 +516,34 @@ export class AdminService {
                       status: PaymentStatus.SUCCESS,
                     },
                   })
-                const userFromCityAccount =
-                  userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
-                if (userFromCityAccount && userFromCityAccount.externalId) {
-                  await this.bloomreachService.trackEventTaxPayment(
-                    {
-                      amount: createdTaxPayment.amount,
-                      payment_source: 'BANK_ACCOUNT',
-                      year: taxData.year,
-                    },
-                    userFromCityAccount.externalId,
-                  )
-                }
+                  const userFromCityAccount =
+                    userDataFromCityAccount[taxData.taxPayer.birthNumber] ||
+                    null
+                  if (userFromCityAccount && userFromCityAccount.externalId) {
+                    const bloomreachTracker =
+                      await this.bloomreachService.trackEventTaxPayment(
+                        {
+                          amount: createdTaxPayment.amount,
+                          payment_source: 'BANK_ACCOUNT',
+                          year: taxData.year,
+                        },
+                        userFromCityAccount.externalId,
+                      )
+                    if (!bloomreachTracker) {
+                      throw this.throwerErrorGuard.InternalServerErrorException(
+                        ErrorsEnum.INTERNAL_SERVER_ERROR,
+                        `Error in send Tax Payment data to Bloomreach for tax with ID ${taxData.id}`,
+                      )
+                    }
+                  }
 
-                this.handlePaymentsErrors(
-                  paidFromNoris,
-                  taxData,
-                  forPayment,
-                  payerData.count,
-                )
+                  this.handlePaymentsErrors(
+                    paidFromNoris,
+                    taxData,
+                    forPayment,
+                    payerData.count,
+                  )
+                })
               } else {
                 alreadyCreated += 1
               }

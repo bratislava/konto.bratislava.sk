@@ -1,3 +1,7 @@
+import * as crypto from 'node:crypto'
+import * as https from 'node:https'
+import * as tls from 'node:tls'
+
 import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
@@ -37,13 +41,41 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
       isGlobal: true,
       imports: [BaConfigModule],
       inject: [BaConfigService],
-      useFactory: (baConfigService: BaConfigService) => ({
-        endPoint: baConfigService.minio.endpoint,
-        port: baConfigService.minio.port,
-        useSSL: baConfigService.minio.useSSL,
-        accessKey: baConfigService.minio.accessKey,
-        secretKey: baConfigService.minio.secretKey,
-      }),
+      useFactory: (baConfigService: BaConfigService) => {
+        const httpsAgent = new https.Agent({
+          checkServerIdentity: (
+            hostname: string,
+            cert: tls.PeerCertificate,
+          ) => {
+            const certFingerprint = crypto
+              .createHash('sha256')
+              .update(cert.raw)
+              .digest('hex')
+              .toLowerCase()
+
+            const allowedInvalidCert =
+              'eb7a46361947152582f618e85a28c79ba7e1fdfdb9b2ca272d5a8a7d9d8636ae'
+
+            if (certFingerprint === allowedInvalidCert.toLowerCase()) {
+              return // undefined means accept the certificate
+            }
+
+            // For all other certificates, use default Node.js validation
+            // This will accept all valid certificates from trusted CAs
+            // eslint-disable-next-line consistent-return
+            return tls.checkServerIdentity(hostname, cert)
+          },
+        })
+
+        return {
+          endPoint: baConfigService.minio.endpoint,
+          port: baConfigService.minio.port,
+          useSSL: baConfigService.minio.useSSL,
+          accessKey: baConfigService.minio.accessKey,
+          secretKey: baConfigService.minio.secretKey,
+          transportAgent: httpsAgent,
+        }
+      },
     }),
     PrismaModule,
     AuthModule,

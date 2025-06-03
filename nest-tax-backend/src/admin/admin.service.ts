@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PaymentStatus, Tax } from '@prisma/client'
+import { PaymentStatus, Prisma, Tax } from '@prisma/client'
 import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
@@ -50,152 +50,144 @@ export class AdminService {
   private async insertTaxPayerDataToDatabase(
     dataFromNoris: NorisTaxPayersDto,
     year: number,
+    transaction: Prisma.TransactionClient,
   ) {
-    const userData = await this.prismaService.$transaction(async (tx) => {
-      const taxPayer = await tx.taxPayer.upsert({
-        where: {
-          birthNumber: dataFromNoris.ICO_RC,
-        },
-        create: {
-          active: true,
-          birthNumber: dataFromNoris.ICO_RC,
-          permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
-          externalId: dataFromNoris.subjekt_refer,
-          name: dataFromNoris.subjekt_nazev,
-          permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
-          permanentResidenceZip: dataFromNoris.psc_ref_tb,
-          permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
-          permanentResidenceCity: dataFromNoris.obec_nazev_tb,
-          nameTxt: dataFromNoris.TXT_MENO,
-        },
-        update: {
-          active: true,
-          birthNumber: dataFromNoris.ICO_RC,
-          permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
-          externalId: dataFromNoris.subjekt_refer,
-          name: dataFromNoris.subjekt_nazev,
-          permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
-          permanentResidenceZip: dataFromNoris.psc_ref_tb,
-          permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
-          permanentResidenceCity: dataFromNoris.obec_nazev_tb,
-          nameTxt: dataFromNoris.TXT_MENO,
-        },
-      })
-
-      const taxEmployee = await tx.taxEmployee.upsert({
-        where: {
-          id: dataFromNoris.vyb_id,
-        },
-        create: {
-          email: dataFromNoris.vyb_email,
-          externalId: dataFromNoris.cislo_poradace.toString(),
-          id: dataFromNoris.vyb_id,
-          name: dataFromNoris.vyb_nazov,
-          phoneNumber: dataFromNoris.vyb_telefon_prace,
-        },
-        update: {},
-      })
-      const qrCodeEmail = await this.qrCodeSubservice.createQrCode({
-        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      })
-      const qrCodeWeb = await this.qrCodeSubservice.createQrCode({
-        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      })
-
-      const tax = await tx.tax.upsert({
-        where: {
-          taxPayerId_year: {
-            taxPayerId: taxPayer.id,
-            year,
-          },
-        },
-        update: {
-          amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-          year,
-          taxEmployeeId: taxEmployee.id,
-          taxPayerId: taxPayer.id,
-          variableSymbol: dataFromNoris.variabilny_symbol,
-          dateCreateTax: dataFromNoris.akt_datum,
-          dateTaxRuling: dataFromNoris.datum_platnosti,
-          taxId: dataFromNoris.cislo_konania,
-          taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
-            .intValue,
-          taxConstructions: currency(
-            dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
-          ).intValue,
-          taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
-          qrCodeEmail,
-          qrCodeWeb,
-          // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
-        },
-        create: {
-          amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-          year,
-          taxEmployeeId: taxEmployee.id,
-          taxPayerId: taxPayer.id,
-          variableSymbol: dataFromNoris.variabilny_symbol,
-          dateCreateTax: dataFromNoris.akt_datum,
-          dateTaxRuling: dataFromNoris.datum_platnosti,
-          taxId: dataFromNoris.cislo_konania,
-          taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
-            .intValue,
-          taxConstructions: currency(
-            dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
-          ).intValue,
-          taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
-          qrCodeEmail,
-          qrCodeWeb,
-          deliveryMethod: transformDeliveryMethodToDatabaseType(
-            dataFromNoris.delivery_method,
-          ),
-        },
-      })
-      const taxInstallments =
-        dataFromNoris.SPL4_2 === ''
-          ? [
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL1.replace(',', '.')).intValue,
-                text: dataFromNoris.TXTSPL1,
-              },
-            ]
-          : [
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_1.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_1,
-              },
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_2.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_2,
-              },
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_3.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_3,
-              },
-            ]
-      await tx.taxInstallment.createMany({
-        data: taxInstallments,
-      })
-
-      const taxDetailData = taxDetail(dataFromNoris, tax.id)
-
-      await tx.taxDetail.createMany({
-        data: taxDetailData,
-      })
-      return taxPayer
+    const taxPayer = await transaction.taxPayer.upsert({
+      where: {
+        birthNumber: dataFromNoris.ICO_RC,
+      },
+      create: {
+        active: true,
+        birthNumber: dataFromNoris.ICO_RC,
+        permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
+        externalId: dataFromNoris.subjekt_refer,
+        name: dataFromNoris.subjekt_nazev,
+        permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
+        permanentResidenceZip: dataFromNoris.psc_ref_tb,
+        permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
+        permanentResidenceCity: dataFromNoris.obec_nazev_tb,
+        nameTxt: dataFromNoris.TXT_MENO,
+      },
+      update: {
+        active: true,
+        birthNumber: dataFromNoris.ICO_RC,
+        permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
+        externalId: dataFromNoris.subjekt_refer,
+        name: dataFromNoris.subjekt_nazev,
+        permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
+        permanentResidenceZip: dataFromNoris.psc_ref_tb,
+        permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
+        permanentResidenceCity: dataFromNoris.obec_nazev_tb,
+        nameTxt: dataFromNoris.TXT_MENO,
+      },
     })
 
-    return userData
+    const taxEmployee = await transaction.taxEmployee.upsert({
+      where: {
+        id: dataFromNoris.vyb_id,
+      },
+      create: {
+        email: dataFromNoris.vyb_email,
+        externalId: dataFromNoris.cislo_poradace.toString(),
+        id: dataFromNoris.vyb_id,
+        name: dataFromNoris.vyb_nazov,
+        phoneNumber: dataFromNoris.vyb_telefon_prace,
+      },
+      update: {},
+    })
+    const qrCodeEmail = await this.qrCodeSubservice.createQrCode({
+      amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
+      variableSymbol: dataFromNoris.variabilny_symbol,
+      specificSymbol: '2024100000',
+    })
+    const qrCodeWeb = await this.qrCodeSubservice.createQrCode({
+      amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
+      variableSymbol: dataFromNoris.variabilny_symbol,
+      specificSymbol: '2024200000',
+    })
+
+    const tax = await transaction.tax.upsert({
+      where: {
+        taxPayerId_year: {
+          taxPayerId: taxPayer.id,
+          year,
+        },
+      },
+      update: {
+        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
+        year,
+        taxEmployeeId: taxEmployee.id,
+        taxPayerId: taxPayer.id,
+        variableSymbol: dataFromNoris.variabilny_symbol,
+        dateCreateTax: dataFromNoris.akt_datum,
+        dateTaxRuling: dataFromNoris.datum_platnosti,
+        taxId: dataFromNoris.cislo_konania,
+        taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.')).intValue,
+        taxConstructions: currency(
+          dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
+        ).intValue,
+        taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
+        qrCodeEmail,
+        qrCodeWeb,
+        // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
+      },
+      create: {
+        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
+        year,
+        taxEmployeeId: taxEmployee.id,
+        taxPayerId: taxPayer.id,
+        variableSymbol: dataFromNoris.variabilny_symbol,
+        dateCreateTax: dataFromNoris.akt_datum,
+        dateTaxRuling: dataFromNoris.datum_platnosti,
+        taxId: dataFromNoris.cislo_konania,
+        taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.')).intValue,
+        taxConstructions: currency(
+          dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
+        ).intValue,
+        taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
+        qrCodeEmail,
+        qrCodeWeb,
+        deliveryMethod: transformDeliveryMethodToDatabaseType(
+          dataFromNoris.delivery_method,
+        ),
+      },
+    })
+    const taxInstallments =
+      dataFromNoris.SPL4_2 === ''
+        ? [
+            {
+              taxId: tax.id,
+              amount: currency(dataFromNoris.SPL1.replace(',', '.')).intValue,
+              text: dataFromNoris.TXTSPL1,
+            },
+          ]
+        : [
+            {
+              taxId: tax.id,
+              amount: currency(dataFromNoris.SPL4_1.replace(',', '.')).intValue,
+              text: dataFromNoris.TXTSPL4_1,
+            },
+            {
+              taxId: tax.id,
+              amount: currency(dataFromNoris.SPL4_2.replace(',', '.')).intValue,
+              text: dataFromNoris.TXTSPL4_2,
+            },
+            {
+              taxId: tax.id,
+              amount: currency(dataFromNoris.SPL4_3.replace(',', '.')).intValue,
+              text: dataFromNoris.TXTSPL4_3,
+            },
+          ]
+    await transaction.taxInstallment.createMany({
+      data: taxInstallments,
+    })
+
+    const taxDetailData = taxDetail(dataFromNoris, tax.id)
+
+    await transaction.taxDetail.createMany({
+      data: taxDetailData,
+    })
+    return taxPayer
   }
 
   async processNorisTaxData(
@@ -241,35 +233,36 @@ export class AdminService {
           return
         }
 
-        const userData = await this.insertTaxPayerDataToDatabase(
-          norisItem,
-          year,
-        )
-
-        const userFromCityAccount =
-          userDataFromCityAccount[userData.birthNumber] || null
-        if (userFromCityAccount === null) {
-          return
-        }
-
-        const bloomreachTracker = await this.bloomreachService.trackEventTax(
-          {
-            amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+        await this.prismaService.$transaction(async (tx) => {
+          const userData = await this.insertTaxPayerDataToDatabase(
+            norisItem,
             year,
-            delivery_method: transformDeliveryMethodToDatabaseType(
-              norisItem.delivery_method,
-            ),
-          },
-          userFromCityAccount.externalId ?? undefined,
-        )
-        if (!bloomreachTracker) {
-          this.logger.error(
-            this.throwerErrorGuard.InternalServerErrorException(
+            tx,
+          )
+
+          const userFromCityAccount =
+            userDataFromCityAccount[userData.birthNumber] || null
+          if (userFromCityAccount === null) {
+            return
+          }
+
+          const bloomreachTracker = await this.bloomreachService.trackEventTax(
+            {
+              amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+              year,
+              delivery_method: transformDeliveryMethodToDatabaseType(
+                norisItem.delivery_method,
+              ),
+            },
+            userFromCityAccount.externalId ?? undefined,
+          )
+          if (!bloomreachTracker) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
               ErrorsEnum.INTERNAL_SERVER_ERROR,
               `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
-            ),
-          )
-        }
+            )
+          }
+        })
       }),
     )
 
@@ -338,23 +331,26 @@ export class AdminService {
       norisData.map(async (norisItem) => {
         const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
         if (taxExists) {
-          await this.prismaService.taxInstallment.deleteMany({
-            where: {
-              taxId: taxExists.id,
-            },
+          await this.prismaService.$transaction(async (tx) => {
+            await this.prismaService.taxInstallment.deleteMany({
+              where: {
+                taxId: taxExists.id,
+              },
+            })
+            await this.prismaService.taxDetail.deleteMany({
+              where: {
+                taxId: taxExists.id,
+              },
+            })
+            const userData = await this.insertTaxPayerDataToDatabase(
+              norisItem,
+              data.year,
+              tx,
+            )
+            if (userData) {
+              count += 1
+            }
           })
-          await this.prismaService.taxDetail.deleteMany({
-            where: {
-              taxId: taxExists.id,
-            },
-          })
-          const userData = await this.insertTaxPayerDataToDatabase(
-            norisItem,
-            data.year,
-          )
-          if (userData) {
-            count += 1
-          }
         }
       }),
     )

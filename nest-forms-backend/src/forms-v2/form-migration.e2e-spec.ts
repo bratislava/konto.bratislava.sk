@@ -12,6 +12,7 @@ import {
 import { AppV2Module } from '../app-v2.module'
 import { PrepareMigrationInput } from './inputs/prepare-migration.input'
 import { PrepareMigrationOutput } from './outputs/prepare-migration.output'
+import { CreateFormService } from './services/create-form.service'
 
 describe('Form migration', () => {
   let testingApp: TestingApp
@@ -19,6 +20,7 @@ describe('Form migration', () => {
 
   let authUser: AuthFixtureUser
   let guestUser: GuestFixtureUser
+  let createFormService: CreateFormService
 
   beforeAll(async () => {
     userFactory = new UserFixtureFactory()
@@ -35,6 +37,7 @@ describe('Form migration', () => {
       .compile()
 
     testingApp = await initializeTestingApp(moduleRef)
+    createFormService = testingApp.app.get(CreateFormService)
   })
 
   afterEach(() => {

@@ -64,11 +64,12 @@ export class FormMigrationsService {
 
   async claimMigration(user: AuthUser, formId: string) {
     return this.prismaService.$transaction(async (tx) => {
+      const now = new Date()
       const migrations = await tx.formMigration.findMany({
         where: {
           cognitoAuthSub: user.cognitoJwtPayload.sub,
           expiresAt: {
-            gt: new Date(),
+            gt: now,
           },
         },
       })

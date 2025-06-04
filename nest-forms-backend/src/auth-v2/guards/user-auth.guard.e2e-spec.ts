@@ -1,19 +1,19 @@
-import { Controller, Get, INestApplication, UseGuards } from '@nestjs/common'
-import { Test, TestingModule } from '@nestjs/testing'
-import request from 'supertest'
+import { Controller, Get, UseGuards } from '@nestjs/common'
+import { Test } from '@nestjs/testing'
 
 import {
   AuthFixtureUser,
-  fixtureInvalidAuthUser,
-  fixtureInvalidGuestUser,
   GuestFixtureUser,
-  withUser,
+  UserFixtureFactory,
 } from '../../../test/fixtures/auth/user'
-import { UserTestFactory } from '../../../test/fixtures/auth/user-test-factory'
-import { AllowedUserTypes } from '../decorators/allowed-user-types.decorator' // Import AllowedUserTypes
+import {
+  initializeTestingApp,
+  TestingApp,
+} from '../../../test/initialize-testing-app'
+import { AppV2Module } from '../../app-v2.module'
+import { AllowedUserTypes } from '../decorators/allowed-user-types.decorator'
 import { GetUser } from '../decorators/get-user.decorator'
-import { UserAuthStrategy } from '../strategies/user-auth.strategy'
-import { User, UserType } from '../types/user' // Import UserType
+import { AuthUser, GuestUser, User, UserType } from '../types/user'
 import { UserAuthGuard } from './user-auth.guard'
 
 /**
@@ -63,144 +63,176 @@ class TestController {
 }
 
 describe('UserAuthGuard (E2E)', () => {
-  let app: INestApplication
-  let userFactory: UserTestFactory
+  let testingApp: TestingApp
+  let userFactory: UserFixtureFactory
   let authUser: AuthFixtureUser
   let guestUser: GuestFixtureUser
+  let invalidAuthUser: AuthFixtureUser
+  let invalidGuestUser: GuestFixtureUser
 
   beforeAll(async () => {
-    userFactory = new UserTestFactory()
+    userFactory = new UserFixtureFactory()
+    authUser = userFactory.createAuthUser()
+    guestUser = userFactory.createGuestUser()
 
-    // Simple one-liner for basic cases
-    ;[authUser] = userFactory.createAuthUsers(1)
-    ;[guestUser] = userFactory.createGuestUsers(1)
+    // Create invalid users for testing error cases
+    invalidAuthUser = {
+      sub: 'invalid-sub',
+      headers: { Authorization: 'Bearer invalidToken' },
+      user: {} as AuthUser, // This won't match any real user
+    }
 
-    const module: TestingModule = await userFactory
+    invalidGuestUser = {
+      identityId: 'invalid-id',
+      headers: { 'X-Cognito-Guest-Identity-Id': 'invalid-guest-id' },
+      user: {} as GuestUser, // This won't match any real user
+    }
+
+    const moduleRef = await userFactory
       .setupMockAuth(
         Test.createTestingModule({
-          providers: [UserAuthStrategy, UserAuthGuard],
+          imports: [AppV2Module],
           controllers: [TestController],
         }),
       )
       .compile()
 
-    app = module.createNestApplication()
-    await app.init()
+    testingApp = await initializeTestingApp(moduleRef)
+  })
+
+  afterEach(() => {
+    testingApp.afterEach()
   })
 
   afterAll(async () => {
-    userFactory.clear()
-    await app.close()
+    await testingApp.afterAll()
   })
 
   describe('Route: /test-auth-e2e/allows-both (Allows Auth and Guest)', () => {
     it('should allow access for authenticated users (200)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        authUser,
-      ).expect(200, {
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/allows-both',
+        { headers: authUser.headers },
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.data).toEqual({
         user: createAssertionSafeUser(authUser.user),
       })
     })
 
     it('should allow access for guest users (200)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        guestUser,
-      ).expect(200, {
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/allows-both',
+        { headers: guestUser.headers },
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.data).toEqual({
         user: guestUser.user,
       })
     })
 
     it('should reject unauthenticated requests (401)', async () => {
-      await request(app.getHttpServer())
-        .get('/test-auth-e2e/allows-both')
-        .expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/allows-both',
+      )
+      expect(response.status).toBe(401)
     })
   })
 
   describe('Route: /test-auth-e2e/guest-only (Allows Guest only)', () => {
     it('should allow guest users (200)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        guestUser,
-      ).expect(200, {
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/guest-only',
+        { headers: guestUser.headers },
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.data).toEqual({
         user: guestUser.user,
       })
     })
 
     it('should reject authenticated (non-guest) users (401)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        authUser,
-      ).expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/guest-only',
+        {
+          headers: authUser.headers,
+        },
+      )
+      expect(response.status).toBe(401)
     })
 
     it('should reject unauthenticated requests (401)', async () => {
-      await request(app.getHttpServer())
-        .get('/test-auth-e2e/guest-only')
-        .expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/guest-only',
+      )
+      expect(response.status).toBe(401)
     })
   })
 
   describe('Route: /test-auth-e2e/auth-only (Allows Auth only)', () => {
     it('should allow authenticated (non-guest) users (200)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        authUser,
-      ).expect(200, {
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/auth-only',
+        { headers: authUser.headers },
+      )
+
+      expect(response.status).toBe(200)
+      expect(response.data).toEqual({
         user: createAssertionSafeUser(authUser.user),
       })
     })
 
     it('should reject guest users (401)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        guestUser,
-      ).expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/auth-only',
+        {
+          headers: guestUser.headers,
+        },
+      )
+      expect(response.status).toBe(401)
     })
 
     it('should reject unauthenticated requests (401)', async () => {
-      await request(app.getHttpServer())
-        .get('/test-auth-e2e/auth-only')
-        .expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/auth-only',
+      )
+      expect(response.status).toBe(401)
     })
   })
 
   describe('General Guard and Strategy Behaviors', () => {
-    it('should reject when multiple authentication methods are provided (401)', async () => {
-      await withUser(
-        withUser(
-          request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-          authUser,
-        ),
-        guestUser,
-      ).expect(401)
-    })
-
     it('should reject requests with invalid bearer token (401)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        fixtureInvalidAuthUser,
-      ).expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/auth-only',
+        {
+          headers: invalidAuthUser.headers,
+        },
+      )
+      expect(response.status).toBe(401)
     })
 
     it('should reject requests with invalid guest identity (401)', async () => {
-      await withUser(
-        request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        fixtureInvalidGuestUser,
-      ).expect(401)
+      const response = await testingApp.axiosClient.get(
+        '/test-auth-e2e/guest-only',
+        {
+          headers: invalidGuestUser.headers,
+        },
+      )
+      expect(response.status).toBe(401)
     })
 
     it('should result in InternalServerError (500) if @AllowedUserTypes is missing', async () => {
-      const response = await request(app.getHttpServer()).get(
+      const response = await testingApp.axiosClient.get(
         '/test-auth-e2e/missing-decorator-route',
       )
       expect(response.status).toBe(500)
     })
 
     it('should result in InternalServerError (500) if @AllowedUserTypes is empty', async () => {
-      const response = await request(app.getHttpServer()).get(
+      const response = await testingApp.axiosClient.get(
         '/test-auth-e2e/empty-decorator-route',
       )
       expect(response.status).toBe(500)

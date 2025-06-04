@@ -1,3 +1,4 @@
+import { TestingModuleBuilder } from '@nestjs/testing'
 import jwt from 'jsonwebtoken'
 import {
   UserOfficialCorrespondenceChannelEnum,
@@ -6,6 +7,10 @@ import {
 } from 'openapi-clients/city-account'
 import { v4 as uuidv4 } from 'uuid'
 
+import { CityAccountUserService } from '../../../src/auth-v2/services/city-account-user.service'
+import { CognitoGuestIdentityService } from '../../../src/auth-v2/services/cognito-guest-identity.service'
+import { CognitoJwtVerifyService } from '../../../src/auth-v2/services/cognito-jwt-verify.service'
+import { CognitoUserService } from '../../../src/auth-v2/services/cognito-user.service'
 import { AuthUser, GuestUser, UserType } from '../../../src/auth-v2/types/user'
 
 export type GuestFixtureUser = {
@@ -30,10 +35,14 @@ const getRandomGuestIdentityId = () => `eu-central-1:${uuidv4()}`
 export class UserFixtureFactory {
   private readonly mockJwtSignSecret = 'secret'
 
+  private authUsers: AuthFixtureUser[] = []
+
+  private guestUsers: GuestFixtureUser[] = []
+
   createGuestUser(): GuestFixtureUser {
     const randomGuestIdentityId = getRandomGuestIdentityId()
 
-    return {
+    const user: GuestFixtureUser = {
       identityId: randomGuestIdentityId,
       headers: {
         'X-Cognito-Guest-Identity-Id': randomGuestIdentityId,
@@ -43,6 +52,9 @@ export class UserFixtureFactory {
         cognitoIdentityId: randomGuestIdentityId,
       },
     }
+
+    this.guestUsers.push(user)
+    return user
   }
 
   createAuthUser({
@@ -119,7 +131,7 @@ export class UserFixtureFactory {
     }
 
     /* eslint-disable pii/no-email */
-    return {
+    const user: AuthFixtureUser = {
       sub: randomSub,
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -148,6 +160,9 @@ export class UserFixtureFactory {
       },
     }
     /* eslint-enable pii/no-email */
+
+    this.authUsers.push(user)
+    return user
   }
 
   // Convenience methods for common scenarios
@@ -165,18 +180,50 @@ export class UserFixtureFactory {
     })
   }
 
-  // Create multiple users at once
-  createAuthUsers(
-    count: number,
-    options?: Parameters<typeof this.createAuthUser>[0][],
-  ): AuthFixtureUser[] {
-    return Array.from({ length: count }, (_, index) => {
-      const userOptions = options?.[index] || {}
-      return this.createAuthUser(userOptions)
-    })
-  }
+  setupMockAuth(module: TestingModuleBuilder): TestingModuleBuilder {
+    module
+      .overrideProvider(CognitoJwtVerifyService)
+      .useValue({
+        verify: async (bearerToken: string) => {
+          const userFixture = this.authUsers.find(
+            (fixture) =>
+              fixture.headers.Authorization === `Bearer ${bearerToken}`,
+          )
+          if (userFixture) return userFixture.user.cognitoJwtPayload
+          throw new Error('Invalid bearer token')
+        },
+      })
+      .overrideProvider(CognitoUserService)
+      .useValue({
+        getUserAttributes: async (sub: string) => {
+          const userFixture = this.authUsers.find(
+            (fixture) => fixture.sub === sub,
+          )
+          if (userFixture) return userFixture.user.cognitoUser
+          throw new Error('Invalid sub')
+        },
+      })
+      .overrideProvider(CityAccountUserService)
+      .useValue({
+        getUser: async (bearerToken: string) => {
+          const userFixture = this.authUsers.find(
+            (fixture) =>
+              fixture.headers.Authorization === `Bearer ${bearerToken}`,
+          )
+          if (userFixture) return userFixture.user.cityAccountUser
+          throw new Error('Invalid bearer token')
+        },
+      })
+      .overrideProvider(CognitoGuestIdentityService)
+      .useValue({
+        verifyGuestIdentityId: async (guestIdentityId: string) =>
+          this.guestUsers.some(
+            (fixture) =>
+              fixture.headers['X-Cognito-Guest-Identity-Id'] ===
+              guestIdentityId,
+          ),
+      })
 
-  createGuestUsers(count: number): GuestFixtureUser[] {
-    return Array.from({ length: count }, () => this.createGuestUser())
+    return module
   }
 }

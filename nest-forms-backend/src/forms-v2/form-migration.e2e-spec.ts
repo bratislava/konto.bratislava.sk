@@ -4,8 +4,8 @@ import { UserVerifyStateTypeEnum } from 'openapi-clients/city-account'
 import {
   AuthFixtureUser,
   GuestFixtureUser,
+  UserFixtureFactory,
 } from '../../test/fixtures/auth/user'
-import { UserTestFactory } from '../../test/fixtures/auth/user-test-factory'
 import {
   initializeTestingApp,
   TestingApp,
@@ -16,27 +16,26 @@ import { PrepareMigrationOutput } from './outputs/prepare-migration.output'
 
 describe('Form Migration', () => {
   let testingApp: TestingApp
-  let userFactory: UserTestFactory
+  let userFactory: UserFixtureFactory
 
   // Create users with clean destructuring syntax
   let foUser: AuthFixtureUser
-  let poUser: AuthFixtureUser
   let guestUser: GuestFixtureUser
 
   beforeAll(async () => {
-    userFactory = new UserTestFactory()
+    userFactory = new UserFixtureFactory()
 
     // This is the syntax you wanted!
     const { authUsers, guestUsers } = userFactory.createUsers({
       authUsers: [
         { accountType: UserVerifyStateTypeEnum.Fo }, // foUser
-        { accountType: UserVerifyStateTypeEnum.Po }, // poUser
+        { accountType: UserVerifyStateTypeEnum.Po }, // extra user (not used but available)
       ],
       guestUsers: 1, // guestUser
     })
 
-    // Destructure for convenience
-    ;[foUser, poUser] = authUsers
+    // Destructure for convenience - only take what we need
+    ;[foUser] = authUsers
     ;[guestUser] = guestUsers
 
     const moduleRef = await userFactory

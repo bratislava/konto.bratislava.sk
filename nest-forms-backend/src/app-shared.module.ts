@@ -1,5 +1,5 @@
 import { BullModule } from '@nestjs/bull'
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { MinioModule } from 'nestjs-minio-client'
@@ -8,6 +8,7 @@ import BaConfigModule from './config/ba-config.module'
 import BaConfigService from './config/ba-config.service'
 import FormValidatorRegistryModule from './form-validator-registry/form-validator-registry.module'
 import PrismaModule from './prisma/prisma.module'
+import AppLoggerMiddleware from './utils/middlewares/logger.service'
 
 @Module({
   imports: [
@@ -43,4 +44,8 @@ import PrismaModule from './prisma/prisma.module'
   ],
   exports: [BaConfigModule, PrismaModule, FormValidatorRegistryModule],
 })
-export class AppSharedModule {}
+export class AppSharedModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*')
+  }
+}

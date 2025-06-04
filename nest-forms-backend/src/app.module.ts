@@ -44,8 +44,4 @@ import SharepointSubservice from './utils/subservices/sharepoint.subservice'
   controllers: [AppController],
   providers: [AppService, SharepointSubservice, ThrowerErrorGuard],
 })
-export default class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*')
-  }
-}
+export default class AppModule {}

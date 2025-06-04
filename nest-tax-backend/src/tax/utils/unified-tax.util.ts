@@ -227,7 +227,7 @@ const calculateInstallmentPaymentDetails = (
     installmentAmounts[0].status === InstallmentPaidStatusEnum.PAID ||
     installmentAmounts[0].status === InstallmentPaidStatusEnum.OVER_PAID ||
     dueDate > dayjs(today)
-      ? // !dueDate || dueDate > dayjs(today)
+      ?
         [
           {
             installmentNumber: 1,
@@ -301,7 +301,7 @@ const calculateInstallmentPaymentDetails = (
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
-      specificSymbol: '2025200000', // TODO
+      specificSymbol: '2025200000',
       paymentNote,
     },
   }
@@ -359,19 +359,7 @@ export const getTaxDetailPure = (
   taxConstructions: number,
   taxFlat: number,
   taxLand: number,
-): Omit<
-  // TODO use generated types. This is just verbose version while this code is still WIP
-  ResponseTaxSummaryDetailDto,
-  'oneTimePayment' | 'installmentPayment' | 'taxEmployee'
-> & {
-  oneTimePayment: ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto>
-  installmentPayment: Omit<
-    ResponseInstallmentPaymentDetailDto,
-    'activeInstallment'
-  > & {
-    activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
-  }
-} => {
+) => {
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
   const dueDate = calculateDueDate(dateOfValidity)

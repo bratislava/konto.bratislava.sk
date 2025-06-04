@@ -237,13 +237,13 @@ const calculateInstallmentPaymentDetails = (
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs.tz(`${taxYear}-09-01`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs.tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[1].status,
             remainingAmount: installmentAmounts[1].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs.tz(`${taxYear}-11-01`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs.tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },
@@ -257,14 +257,14 @@ const calculateInstallmentPaymentDetails = (
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs.tz(`${taxYear}-09-01`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs.tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[0].status,
             remainingAmount:
               installmentAmounts[1].toPay + installmentAmounts[0].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs.tz(`${taxYear}-11-01`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs.tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone).toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },

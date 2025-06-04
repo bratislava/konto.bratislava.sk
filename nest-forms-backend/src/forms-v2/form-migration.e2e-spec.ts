@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing'
-import { UserVerifyStateTypeEnum } from 'openapi-clients/city-account'
 
 import {
   AuthFixtureUser,
@@ -14,18 +13,17 @@ import { AppV2Module } from '../app-v2.module'
 import { PrepareMigrationInput } from './inputs/prepare-migration.input'
 import { PrepareMigrationOutput } from './outputs/prepare-migration.output'
 
-describe('Form Migration', () => {
+describe('Form migration', () => {
   let testingApp: TestingApp
   let userFactory: UserFixtureFactory
 
-  // Create users with clean destructuring syntax
-  let foUser: AuthFixtureUser
+  let authUser: AuthFixtureUser
   let guestUser: GuestFixtureUser
 
   beforeAll(async () => {
     userFactory = new UserFixtureFactory()
 
-    foUser = userFactory.createFoAuthUser()
+    authUser = userFactory.createFoAuthUser()
     guestUser = userFactory.createGuestUser()
 
     const moduleRef = await userFactory
@@ -54,7 +52,7 @@ describe('Form Migration', () => {
     const response = await testingApp.axiosClient.post<PrepareMigrationOutput>(
       '/forms/migrations/prepare',
       body,
-      { headers: foUser.headers },
+      { headers: authUser.headers },
     )
 
     expect(response.status).toBe(201)

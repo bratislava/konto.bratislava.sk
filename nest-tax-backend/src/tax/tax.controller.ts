@@ -129,8 +129,8 @@ export class TaxController {
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
         'Error to create pdf',
         'Error to create pdf',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
   }

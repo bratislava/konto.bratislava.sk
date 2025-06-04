@@ -1,7 +1,10 @@
 import { AuthSession, fetchAuthSession } from 'aws-amplify/auth'
 import axios, { AxiosRequestConfig } from 'axios'
+import axiosRetry from 'axios-retry'
 
 export const axiosInstance = axios.create()
+
+axiosRetry(axiosInstance, { retries: 0 })
 
 declare module 'axios' {
   interface AxiosRequestConfig {

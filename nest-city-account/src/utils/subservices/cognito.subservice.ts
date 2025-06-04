@@ -188,7 +188,8 @@ export class CognitoSubservice {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
           SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

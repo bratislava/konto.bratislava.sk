@@ -143,7 +143,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while saving file to database. Error: ${<string>error}`,
+        'Error while saving file to database.',
+        undefined,
+        error,
       )
     }
   }
@@ -158,7 +160,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Unable to obtain file by fileId: ${fileId}  Error: ${<string>error}`,
+        `Unable to obtain file by fileId: ${fileId}`,
+        undefined,
+        error,
       )
     }
   }
@@ -185,7 +189,9 @@ export default class FilesHelper {
         ErrorsEnum.DATABASE_ERROR,
         `Unable to obtain files for formId: ${
           formInfo.formId
-        } with minioFileName: ${minioFileName}  Error: ${<string>error}`,
+        } with minioFileName: ${minioFileName}`,
+        undefined,
+        error,
       )
     }
   }
@@ -208,9 +214,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Unable to obtain files for formId: ${formId} with fileId: ${fileId}  Error: ${<
-          string
-        >error}`,
+        `Unable to obtain files for formId: ${formId} with fileId: ${fileId}.`,
+        undefined,
+        error,
       )
     }
   }
@@ -261,7 +267,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `${ErrorsResponseEnum.DATABASE_ERROR}. Error: ${<string>error}`,
+        ErrorsResponseEnum.DATABASE_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -281,9 +289,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         FilesErrorsEnum.FILE_MINIO_CHECK_ERROR,
-        `${FilesErrorsResponseEnum.FILE_MINIO_CHECK_ERROR} Error: ${<string>(
-          error
-        )}`,
+        FilesErrorsResponseEnum.FILE_MINIO_CHECK_ERROR,
+        undefined,
+        error,
       )
     }
   }
@@ -351,9 +359,9 @@ export default class FilesHelper {
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.DATABASE_ERROR,
-        `Error while checking if file exists in the database. Error: ${<string>(
-          error
-        )}`,
+        'Error while checking if file exists in the database.',
+        undefined,
+        error,
       )
     }
     const uuids: string[] = []

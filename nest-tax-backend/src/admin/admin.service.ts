@@ -4,6 +4,7 @@ import currency from 'currency.js'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { NorisService } from '../noris/noris.service'
 import {
   DeliveryMethod,
@@ -295,7 +296,20 @@ export class AdminService {
   }
 
   async updateDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    const norisData = await this.norisService.getDataFromNoris(data)
+    let norisData: NorisTaxPayersDto[]
+    try {
+      norisData = (await this.norisService.getDataFromNoris(
+        data,
+      )) as NorisTaxPayersDto[]
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.GET_TAXES_FROM_NORIS_ERROR,
+        'Failed to get taxes from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
     let count = 0
 
     const taxesExist = await this.prismaService.tax.findMany({
@@ -679,13 +693,14 @@ export class AdminService {
     await this.processNorisTaxData([mockTaxRecord], year)
   }
 
-  async deleteTestingTax({
+  async deleteTax({
     year,
     birthNumber,
   }: RequestAdminDeleteTaxDto): Promise<void> {
+    const birthNumberWithSlash = addSlashToBirthNumber(birthNumber)
     const taxPayer = await this.prismaService.taxPayer.findUnique({
       where: {
-        birthNumber,
+        birthNumber: birthNumberWithSlash,
       },
     })
     if (!taxPayer) {
@@ -710,28 +725,51 @@ export class AdminService {
       )
     }
 
-    await this.prismaService.taxPayment.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.taxInstallment.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.taxDetail.deleteMany({
-      where: {
-        taxId: tax.id,
-      },
-    })
-    await this.prismaService.tax.delete({
-      where: {
-        taxPayerId_year: {
-          taxPayerId: taxPayer.id,
-          year,
+    await this.prismaService.$transaction([
+      this.prismaService.taxPayment.deleteMany({
+        where: {
+          taxId: tax.id,
         },
-      },
-    })
+      }),
+      this.prismaService.taxInstallment.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.taxDetail.deleteMany({
+        where: {
+          taxId: tax.id,
+        },
+      }),
+      this.prismaService.tax.delete({
+        where: {
+          taxPayerId_year: {
+            taxPayerId: taxPayer.id,
+            year,
+          },
+        },
+      }),
+    ])
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
+    if (userDataFromCityAccount) {
+      const bloomreachResponse = await this.bloomreachService.trackEventTax(
+        {
+          year,
+          amount: 0,
+          delivery_method: null,
+        },
+        userDataFromCityAccount.externalId ?? undefined,
+      )
+      if (!bloomreachResponse) {
+        this.logger.error(
+          this.throwerErrorGuard.InternalServerErrorException(
+            ErrorsEnum.INTERNAL_SERVER_ERROR,
+            `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+          ),
+        )
+      }
+    }
   }
 }

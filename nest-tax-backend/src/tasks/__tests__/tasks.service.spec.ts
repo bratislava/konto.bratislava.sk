@@ -14,7 +14,6 @@ describe('TasksService', () => {
   let service: TasksService
 
   beforeEach(async () => {
-    process.env.FEATURE_TOGGLE_REMINDER_UNPAID_TAX = 'true'
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TasksService,

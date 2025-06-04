@@ -44,64 +44,64 @@ exports[`formDataExtractors > extractEmailFormName > oloTriedenyZberPapieraPlast
 
 exports[`formDataExtractors > extractEmailFormName > oloUzatvorenieZmluvyONakladaniSOdpadom name should match snapshot 1`] = `"Test"`;
 
-exports[`formDataExtractors > extractFormSubject > komunitneZahradyExample form subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
+exports[`formDataExtractors > extractFormSubjectPlain > komunitneZahradyExample form subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
 
-exports[`formDataExtractors > extractFormSubject > oloDocistenieStanovistaZbernychNadobExample form subject should match snapshot 1`] = `"Dočistenie stanovišťa zberných nádob"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloDocistenieStanovistaZbernychNadobExample form subject should match snapshot 1`] = `"Dočistenie stanovišťa zberných nádob"`;
 
-exports[`formDataExtractors > extractFormSubject > oloEnergetickeZhodnotenieOdpaduVZevoExample form subject should match snapshot 1`] = `"Energetické zhodnotenie odpadu v ZEVO"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloEnergetickeZhodnotenieOdpaduVZevoExample form subject should match snapshot 1`] = `"Energetické zhodnotenie odpadu v ZEVO"`;
 
-exports[`formDataExtractors > extractFormSubject > oloKoloTaxiExample form subject should match snapshot 1`] = `"KOLO Taxi"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloKoloTaxiExample form subject should match snapshot 1`] = `"KOLO Taxi"`;
 
-exports[`formDataExtractors > extractFormSubject > oloMimoriadnyOdvozAZhodnotenieOdpaduExample form subject should match snapshot 1`] = `"Mimoriadny odvoz a zhodnotenie odpadu"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloMimoriadnyOdvozAZhodnotenieOdpaduExample form subject should match snapshot 1`] = `"Mimoriadny odvoz a zhodnotenie odpadu"`;
 
-exports[`formDataExtractors > extractFormSubject > oloOdvozObjemnehoOdpaduValnikomExample form subject should match snapshot 1`] = `"Odvoz objemného odpadu valníkom"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloOdvozObjemnehoOdpaduValnikomExample form subject should match snapshot 1`] = `"Odvoz objemného odpadu valníkom"`;
 
-exports[`formDataExtractors > extractFormSubject > oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample form subject should match snapshot 1`] = `"Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloOdvozOdpaduVelkokapacitnymAleboLisovacimKontajneromExample form subject should match snapshot 1`] = `"Odvoz odpadu veľkokapacitným alebo lisovacím kontajnerom"`;
 
-exports[`formDataExtractors > extractFormSubject > oloOloTaxiExample form subject should match snapshot 1`] = `"OLO Taxi"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloOloTaxiExample form subject should match snapshot 1`] = `"OLO Taxi"`;
 
-exports[`formDataExtractors > extractFormSubject > oloPodnetyAPochvalyObcanovExample form subject should match snapshot 1`] = `"Podnety a pochvaly občanov"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloPodnetyAPochvalyObcanovExample form subject should match snapshot 1`] = `"Podnety a pochvaly občanov"`;
 
-exports[`formDataExtractors > extractFormSubject > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample form subject should match snapshot 1`] = `"Triedený zber papiera, plastov a skla pre právnické osoby"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloTriedenyZberPapieraPlastovASklaPrePravnickeOsobyExample form subject should match snapshot 1`] = `"Triedený zber papiera, plastov a skla pre právnické osoby"`;
 
-exports[`formDataExtractors > extractFormSubject > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample form subject should match snapshot 1`] = `"Triedený zber papiera, plastov a skla pre správcovské spoločnosti"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloTriedenyZberPapieraPlastovASklaPreSpravcovskeSpolocnostiExample form subject should match snapshot 1`] = `"Triedený zber papiera, plastov a skla pre správcovské spoločnosti"`;
 
-exports[`formDataExtractors > extractFormSubject > oloUzatvorenieZmluvyONakladaniSOdpadom form subject should match snapshot 1`] = `"Uzatvorenie zmluvy o nakladaní s odpadom"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oloUzatvorenieZmluvyONakladaniSOdpadom form subject should match snapshot 1`] = `"Uzatvorenie zmluvy o nakladaní s odpadom"`;
 
-exports[`formDataExtractors > extractFormSubject > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample form subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
+exports[`formDataExtractors > extractFormSubjectPlain > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample form subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
 
-exports[`formDataExtractors > extractFormSubject > predzahradkyExample form subject should match snapshot 1`] = `"Registrácia novej predzáhradky"`;
+exports[`formDataExtractors > extractFormSubjectPlain > predzahradkyExample form subject should match snapshot 1`] = `"Registrácia novej predzáhradky"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample1 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample1 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample2 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample2 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample3 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample3 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample4 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample4 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample5 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample5 form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > priznanieKDaniZNehnutelnostiExample5NoCalculators form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
+exports[`formDataExtractors > extractFormSubjectPlain > priznanieKDaniZNehnutelnostiExample5NoCalculators form subject should match snapshot 1`] = `"Priznanie k dani z nehnuteľností"`;
 
-exports[`formDataExtractors > extractFormSubject > stanoviskoKInvesticnemuZameruExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;
+exports[`formDataExtractors > extractFormSubjectPlain > stanoviskoKInvesticnemuZameruExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;
 
-exports[`formDataExtractors > extractFormSubject > zavazneStanoviskoKInvesticnejCinnostiExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;
+exports[`formDataExtractors > extractFormSubjectPlain > zavazneStanoviskoKInvesticnejCinnostiExample form subject should match snapshot 1`] = `"Nový Bytový Dom"`;
 
-exports[`formDataExtractors > extractFormSubject > ziadostONajomBytuExample form subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
+exports[`formDataExtractors > extractFormSubjectPlain > ziadostONajomBytuExample form subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
 
-exports[`formDataExtractors > extractFormSubject > ziadostOSlobodnyPristupKInformaciamExample form subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;
+exports[`formDataExtractors > extractFormSubjectPlain > ziadostOSlobodnyPristupKInformaciamExample form subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;
 
-exports[`formDataExtractors > extractGinisSubject > komunitneZahradyExample GINIS subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > komunitneZahradyExample GINIS subject should match snapshot 1`] = `"Žiadosť o komunitnú záhradu - odporúčaný mestský pozemok"`;
 
-exports[`formDataExtractors > extractGinisSubject > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample GINIS subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > oznamenieOPoplatkovejPovinnostiZaKomunalneOdpadyExample GINIS subject should match snapshot 1`] = `"Oznámenie o poplatkovej povinnosti za komunálne odpady"`;
 
-exports[`formDataExtractors > extractGinisSubject > predzahradkyExample GINIS subject should match snapshot 1`] = `"Registrácia novej predzáhradky"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > predzahradkyExample GINIS subject should match snapshot 1`] = `"Registrácia novej predzáhradky"`;
 
-exports[`formDataExtractors > extractGinisSubject > stanoviskoKInvesticnemuZameruExample GINIS subject should match snapshot 1`] = `"e-SIZ Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > stanoviskoKInvesticnemuZameruExample GINIS subject should match snapshot 1`] = `"e-SIZ Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
 
-exports[`formDataExtractors > extractGinisSubject > zavazneStanoviskoKInvesticnejCinnostiExample GINIS subject should match snapshot 1`] = `"e-ZST Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > zavazneStanoviskoKInvesticnejCinnostiExample GINIS subject should match snapshot 1`] = `"e-ZST Dunajská Nový Bytový Dom, p.č. 56789 kú Karlova Ves, Dúbravka"`;
 
-exports[`formDataExtractors > extractGinisSubject > ziadostONajomBytuExample GINIS subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
+exports[`formDataExtractors > extractFormSubjectTechnical > ziadostONajomBytuExample GINIS subject should match snapshot 1`] = `"Žiadosť o nájom bytu"`;
 
-exports[`formDataExtractors > extractGinisSubject > ziadostOSlobodnyPristupKInformaciamExample GINIS subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;
+exports[`formDataExtractors > extractFormSubjectTechnical > ziadostOSlobodnyPristupKInformaciamExample GINIS subject should match snapshot 1`] = `"Žiadosť o sprístupnenie informácií podľa zákona č. 211/2000 Z.z."`;

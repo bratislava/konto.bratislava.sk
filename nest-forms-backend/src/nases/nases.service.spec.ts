@@ -164,6 +164,7 @@ describe('NasesService', () => {
           id: '1',
         },
         data: {
+          cognitoGuestIdentityId: null,
           userExternalId: 'sub',
           ico: 'ico1',
         },
@@ -315,7 +316,7 @@ describe('NasesService', () => {
         isSigned: false,
         sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
         ginisAssignment: {
-          ginisOrganizationName: '',
+          ginisNodeId: '',
         },
       }
 

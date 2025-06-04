@@ -23,6 +23,11 @@ import {
 } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
+import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { User as UserV2, UserType } from '../auth-v2/types/user'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
 import { User } from '../utils/decorators/request.decorator'
@@ -31,6 +36,7 @@ import {
   ErrorsResponseEnum,
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   CreateFormRequestDto,
   EidUpdateSendFormRequestDto,
@@ -58,6 +64,7 @@ export default class NasesController {
     private readonly nasesUtilsService: NasesUtilsService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly formsService: FormsService,
+    private readonly logger: LineLoggerSubservice,
   ) {}
 
   // WORK ENDPOINTS
@@ -142,18 +149,16 @@ export default class NasesController {
     description: 'Create form in db',
     type: CreateFormResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Post('create-form')
   async createForm(
     @Body() data: CreateFormRequestDto,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @GetUser() user: UserV2,
   ): Promise<CreateFormResponseDto> {
-    const returnData = await this.nasesService.createForm(
-      data,
-      userInfo?.ico ?? null,
-      user,
-    )
+    const returnData = await this.nasesService.createForm(data, user)
     return returnData
   }
 
@@ -242,7 +247,7 @@ export default class NasesController {
     const updateData = { ...data, eidToken: undefined }
 
     // TODO temp SEND_TO_NASES_ERROR log, remove
-    console.log(
+    this.logger.log(
       `Signed data from request for formId ${id} before send:`,
       updateData.formSignature,
     )

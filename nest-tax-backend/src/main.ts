@@ -13,8 +13,9 @@ import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice
 async function bootstrap() {
   const port = process.env.PORT || 3000
   const logger = new LineLoggerSubservice('Nest')
-  const app = await NestFactory.create(AppModule)
-  app.useLogger(logger)
+  const app = await NestFactory.create(AppModule, {
+    logger,
+  })
   app.enableVersioning({
     type: VersioningType.URI,
   })

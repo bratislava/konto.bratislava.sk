@@ -5,14 +5,16 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import express, { json } from 'express'
 
 import AppModule from './app.module'
+import { cognitoGuestIdentityIdHeaderKey } from './auth-v2/utils/extract-cognito-guest-identity-id-from-request'
 import BaConfigService from './config/ba-config.service'
 import { INNOVATION_MAIL } from './utils/constants'
 import { ErrorFilter, HttpExceptionFilter } from './utils/filters/error.filter'
 import { LineLoggerSubservice } from './utils/subservices/line-logger.subservice'
 
 async function bootstrap(): Promise<void> {
+  const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
-    logger: new LineLoggerSubservice('Nest'),
+    logger,
   })
   const corsOptions = {
     origin: [
@@ -29,8 +31,7 @@ async function bootstrap(): Promise<void> {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: false,
     credentials: true,
-    allowedHeaders:
-      'Content-Type, Accept, Authorization, X-Cognito-Guest-Identity-Id',
+    allowedHeaders: `Content-Type, Accept, Authorization, ${cognitoGuestIdentityIdHeaderKey}`,
   }
   app.enableCors(corsOptions)
   app.useGlobalPipes(
@@ -69,6 +70,12 @@ async function bootstrap(): Promise<void> {
       description: 'Basic auth for communication with scanner backend',
     })
     .addApiKey({ type: 'apiKey', name: 'apiKey', in: 'header' }, 'apiKey')
+    .addSecurity('cognitoGuestIdentityId', {
+      type: 'apiKey',
+      in: 'header',
+      name: cognitoGuestIdentityIdHeaderKey,
+      description: 'Cognito Guest Identity ID for unauthenticated user access',
+    })
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
@@ -80,8 +87,8 @@ async function bootstrap(): Promise<void> {
     )
 
   await app.listen(baConfigService.self.port)
-  console.log(`Nest is running on port: ${baConfigService.self.port}`)
-  console.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
+  logger.log(`Nest is running on port: ${baConfigService.self.port}`)
+  logger.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises
 bootstrap()

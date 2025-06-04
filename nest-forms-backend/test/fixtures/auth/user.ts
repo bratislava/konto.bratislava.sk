@@ -192,7 +192,7 @@ export class UserFixtureFactory {
           if (userFixture) return userFixture.user.cognitoJwtPayload
           throw new Error('Invalid bearer token')
         },
-      })
+      } satisfies Partial<CognitoJwtVerifyService>)
       .overrideProvider(CognitoUserService)
       .useValue({
         getUserAttributes: async (sub: string) => {
@@ -202,7 +202,7 @@ export class UserFixtureFactory {
           if (userFixture) return userFixture.user.cognitoUser
           throw new Error('Invalid sub')
         },
-      })
+      } satisfies Partial<CognitoUserService>)
       .overrideProvider(CityAccountUserService)
       .useValue({
         getUser: async (bearerToken: string) => {
@@ -213,7 +213,7 @@ export class UserFixtureFactory {
           if (userFixture) return userFixture.user.cityAccountUser
           throw new Error('Invalid bearer token')
         },
-      })
+      } satisfies Partial<CityAccountUserService>)
       .overrideProvider(CognitoGuestIdentityService)
       .useValue({
         verifyGuestIdentityId: async (guestIdentityId: string) =>
@@ -222,7 +222,7 @@ export class UserFixtureFactory {
               fixture.headers['X-Cognito-Guest-Identity-Id'] ===
               guestIdentityId,
           ),
-      })
+      } satisfies Partial<CognitoGuestIdentityService>)
 
     return module
   }

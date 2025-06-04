@@ -316,7 +316,7 @@ describe('NasesService', () => {
         isSigned: false,
         sendPolicy: FormSendPolicy.EidOrAuthenticatedVerified,
         ginisAssignment: {
-          ginisOrganizationName: '',
+          ginisNodeId: '',
         },
       }
 

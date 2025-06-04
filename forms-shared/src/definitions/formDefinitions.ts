@@ -100,8 +100,8 @@ export const formDefinitions: FormDefinition[] = [
       extractTechnical: stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
     },
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisNodeId: 'MAG0SS00A0ZV',
+      ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -122,8 +122,8 @@ export const formDefinitions: FormDefinition[] = [
       extractTechnical: zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
     },
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
+      ginisNodeId: 'MAG0SS00A0ZV',
+      ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
@@ -145,8 +145,8 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OTMZ',
-      ginisPersonName: 'Vacek Dušan',
+      ginisNodeId: 'MAG0SS00A381',
+      ginisFunctionId: 'MAG0SF00AG9O',
     },
   },
   {
@@ -166,8 +166,8 @@ export const formDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'SSN',
-      ginisPersonName: 'Viziová Alexandra',
+      ginisNodeId: 'MAG0SS00A0Q4',
+      ginisFunctionId: 'MAG0SF00A93V',
     },
   },
   {
@@ -221,7 +221,7 @@ export const formDefinitions: FormDefinition[] = [
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisAssignment: {
-      ginisOrganizationName: 'SNB',
+      ginisNodeId: 'MAG0SS00A3NY',
     },
     isSigned: false,
     additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
@@ -548,7 +548,7 @@ export const formDefinitions: FormDefinition[] = [
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
     ginisAssignment: {
-      ginisOrganizationName: 'OMDP',
+      ginisNodeId: 'MAG0SS00A129',
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
@@ -565,7 +565,7 @@ export const formDefinitions: FormDefinition[] = [
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
     ginisAssignment: {
-      ginisOrganizationName: 'OVPP',
+      ginisNodeId: 'MAG0SS00A3M3',
     },
     isSigned: false,
   },

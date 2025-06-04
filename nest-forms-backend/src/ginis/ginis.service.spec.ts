@@ -18,11 +18,7 @@ import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
-import {
-  GinisAssignSubmissionResponseInfo,
-  GinisAutomationResponse,
-  GinisCheckNasesPayloadDto,
-} from './dtos/ginis.response.dto'
+import { GinisCheckNasesPayloadDto } from './dtos/ginis.response.dto'
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 import GinisAPIService from './subservices/ginis-api.service'
@@ -113,50 +109,6 @@ describe('GinisService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('consumeAssignSubmission', () => {
-    it('should process failure', async () => {
-      const msg: GinisAutomationResponse<
-        Record<string, never>,
-        GinisAssignSubmissionResponseInfo
-      > = { status: 'failure', info: { doc_id: 'doc1', msg_id: 'id1' } }
-
-      const spy = jest.spyOn(prismaMock.forms, 'update')
-      await service.consumeAssignSubmission(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            state: FormState.ERROR,
-            error: FormError.GINIS_SEND_ERROR,
-            ginisState: GinisState.ERROR_ASSIGN_SUBMISSION,
-          },
-        }),
-      )
-    })
-
-    it('should process success', async () => {
-      const msg: GinisAutomationResponse<
-        Record<string, never>,
-        GinisAssignSubmissionResponseInfo
-      > = {
-        status: 'success',
-        info: { doc_id: 'doc1', msg_id: 'id1' },
-        result: {},
-      }
-
-      const spy = jest.spyOn(prismaMock.forms, 'update')
-      await service.consumeAssignSubmission(msg)
-      expect(spy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: {
-            ginisState: GinisState.SUBMISSION_ASSIGNED,
-            error: FormError.NONE,
-            state: FormState.PROCESSING,
-          },
-        }),
-      )
-    })
   })
 
   describe('onQueueConsumption', () => {
@@ -437,8 +389,8 @@ describe('GinisService', () => {
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
         ginisAssignment: {
-          ginisOrganizationName: 'orgName',
-          ginisPersonName: 'personName',
+          ginisNodeId: 'nodeId',
+          ginisFunctionId: 'functionId',
         },
       })
 
@@ -463,7 +415,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
+      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
 
       // The same should happen if the state is ERROR_ASSIGN_SUBMISSION
 
@@ -486,7 +438,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
+      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
     })
 
     it('should mark as ready for processing if there is no sharepoint', async () => {
@@ -635,7 +587,7 @@ describe('GinisService', () => {
         .mockResolvedValue('gid1')
     })
 
-    it('should update form with error after error is thrown', async () => {
+    it('should update form with error after ginis error', async () => {
       jest
         .spyOn(service['ginisApiService'], 'findDocumentId')
         .mockRejectedValueOnce(new Error('Ginis find failed'))
@@ -758,12 +710,56 @@ describe('GinisService', () => {
   })
 
   describe('assignSubmission', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service['ginisHelper'], 'retryWithDelay')
+        .mockImplementation(async (fn) => fn())
+
+      jest
+        .spyOn(service['ginisApiService'], 'assignDocument')
+        .mockResolvedValue({
+          'Datum-zmeny': '2025-06-02T19:06:00',
+        })
+    })
+
     it('should update file to RUNNING_ASSIGN_SUBMISSION', async () => {
-      await service.assignSubmission('docId', 'orgId', 'person')
+      await service.assignSubmission('docId', 'nodeId', 'functionId')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {
             ginisState: GinisState.RUNNING_ASSIGN_SUBMISSION,
+          },
+        }),
+      )
+    })
+
+    it('should update form with error after ginis error', async () => {
+      jest
+        .spyOn(service['ginisApiService'], 'assignDocument')
+        .mockRejectedValueOnce(new Error('Ginis assign failed'))
+
+      await service.assignSubmission('docId', 'nodeId', 'functionId')
+
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            state: FormState.ERROR,
+            error: FormError.GINIS_SEND_ERROR,
+            ginisState: GinisState.ERROR_ASSIGN_SUBMISSION,
+          },
+        }),
+      )
+    })
+
+    it('should update form state after success', async () => {
+      await service.assignSubmission('docId', 'nodeId', 'functionId')
+
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            ginisState: GinisState.SUBMISSION_ASSIGNED,
+            error: FormError.NONE,
+            state: FormState.PROCESSING,
           },
         }),
       )

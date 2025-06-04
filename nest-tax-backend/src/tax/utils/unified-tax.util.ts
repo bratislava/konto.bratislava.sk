@@ -22,7 +22,6 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDetailItemizedDto,
-  ResponseTaxSummaryDetailDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedTaxDetail } from './helpers/tax.helper'
 
@@ -227,8 +226,7 @@ const calculateInstallmentPaymentDetails = (
     installmentAmounts[0].status === InstallmentPaidStatusEnum.PAID ||
     installmentAmounts[0].status === InstallmentPaidStatusEnum.OVER_PAID ||
     dueDate > dayjs(today)
-      ?
-        [
+      ? [
           {
             installmentNumber: 1,
             dueDate: dueDate?.toDate(),
@@ -237,13 +235,17 @@ const calculateInstallmentPaymentDetails = (
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs.tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs
+              .tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone)
+              .toDate(),
             status: installmentAmounts[1].status,
             remainingAmount: installmentAmounts[1].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs.tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs
+              .tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone)
+              .toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },
@@ -257,14 +259,18 @@ const calculateInstallmentPaymentDetails = (
           },
           {
             installmentNumber: 2,
-            dueDate: dayjs.tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs
+              .tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone)
+              .toDate(),
             status: installmentAmounts[0].status,
             remainingAmount:
               installmentAmounts[1].toPay + installmentAmounts[0].toPay,
           },
           {
             installmentNumber: 3,
-            dueDate: dayjs.tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone).toDate(),
+            dueDate: dayjs
+              .tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone)
+              .toDate(),
             status: installmentAmounts[2].status,
             remainingAmount: installmentAmounts[2].toPay,
           },

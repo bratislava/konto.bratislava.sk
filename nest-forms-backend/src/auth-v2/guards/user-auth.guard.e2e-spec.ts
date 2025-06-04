@@ -3,13 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
 
 import {
-  fixtureAuthUserFo,
-  fixtureGuestUser1,
+  AuthFixtureUser,
   fixtureInvalidAuthUser,
   fixtureInvalidGuestUser,
+  GuestFixtureUser,
   withUser,
 } from '../../../test/fixtures/auth/user'
-import { mockAuthProviders } from '../../../test/mocks/auth/mock-auth-providers'
+import { UserTestFactory } from '../../../test/fixtures/auth/user-test-factory'
 import { AllowedUserTypes } from '../decorators/allowed-user-types.decorator' // Import AllowedUserTypes
 import { GetUser } from '../decorators/get-user.decorator'
 import { UserAuthStrategy } from '../strategies/user-auth.strategy'
@@ -64,18 +64,32 @@ class TestController {
 
 describe('UserAuthGuard (E2E)', () => {
   let app: INestApplication
+  let userFactory: UserTestFactory
+  let authUser: AuthFixtureUser
+  let guestUser: GuestFixtureUser
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [...mockAuthProviders, UserAuthStrategy, UserAuthGuard],
-      controllers: [TestController],
-    }).compile()
+    userFactory = new UserTestFactory()
+
+    // Simple one-liner for basic cases
+    ;[authUser] = userFactory.createAuthUsers(1)
+    ;[guestUser] = userFactory.createGuestUsers(1)
+
+    const module: TestingModule = await userFactory
+      .setupMockAuth(
+        Test.createTestingModule({
+          providers: [UserAuthStrategy, UserAuthGuard],
+          controllers: [TestController],
+        }),
+      )
+      .compile()
 
     app = module.createNestApplication()
     await app.init()
   })
 
   afterAll(async () => {
+    userFactory.clear()
     await app.close()
   })
 
@@ -83,18 +97,18 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow access for authenticated users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        fixtureAuthUserFo,
+        authUser,
       ).expect(200, {
-        user: createAssertionSafeUser(fixtureAuthUserFo.user),
+        user: createAssertionSafeUser(authUser.user),
       })
     })
 
     it('should allow access for guest users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-        fixtureGuestUser1,
+        guestUser,
       ).expect(200, {
-        user: fixtureGuestUser1.user,
+        user: guestUser.user,
       })
     })
 
@@ -109,16 +123,16 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow guest users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        fixtureGuestUser1,
+        guestUser,
       ).expect(200, {
-        user: fixtureGuestUser1.user,
+        user: guestUser.user,
       })
     })
 
     it('should reject authenticated (non-guest) users (401)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/guest-only'),
-        fixtureAuthUserFo,
+        authUser,
       ).expect(401)
     })
 
@@ -133,16 +147,16 @@ describe('UserAuthGuard (E2E)', () => {
     it('should allow authenticated (non-guest) users (200)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        fixtureAuthUserFo,
+        authUser,
       ).expect(200, {
-        user: createAssertionSafeUser(fixtureAuthUserFo.user),
+        user: createAssertionSafeUser(authUser.user),
       })
     })
 
     it('should reject guest users (401)', async () => {
       await withUser(
         request(app.getHttpServer()).get('/test-auth-e2e/auth-only'),
-        fixtureGuestUser1,
+        guestUser,
       ).expect(401)
     })
 
@@ -158,9 +172,9 @@ describe('UserAuthGuard (E2E)', () => {
       await withUser(
         withUser(
           request(app.getHttpServer()).get('/test-auth-e2e/allows-both'),
-          fixtureAuthUserFo,
+          authUser,
         ),
-        fixtureGuestUser1,
+        guestUser,
       ).expect(401)
     })
 

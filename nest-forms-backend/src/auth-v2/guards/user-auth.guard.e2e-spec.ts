@@ -72,7 +72,7 @@ describe('UserAuthGuard (E2E)', () => {
 
   beforeAll(async () => {
     userFactory = new UserFixtureFactory()
-    authUser = userFactory.createAuthUser()
+    authUser = userFactory.createFoAuthUser()
     guestUser = userFactory.createGuestUser()
 
     // Create invalid users for testing error cases

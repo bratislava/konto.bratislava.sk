@@ -25,18 +25,8 @@ describe('Form Migration', () => {
   beforeAll(async () => {
     userFactory = new UserFixtureFactory()
 
-    // This is the syntax you wanted!
-    const { authUsers, guestUsers } = userFactory.createUsers({
-      authUsers: [
-        { accountType: UserVerifyStateTypeEnum.Fo }, // foUser
-        { accountType: UserVerifyStateTypeEnum.Po }, // extra user (not used but available)
-      ],
-      guestUsers: 1, // guestUser
-    })
-
-    // Destructure for convenience - only take what we need
-    ;[foUser] = authUsers
-    ;[guestUser] = guestUsers
+    foUser = userFactory.createFoAuthUser()
+    guestUser = userFactory.createGuestUser()
 
     const moduleRef = await userFactory
       .setupMockAuth(
@@ -54,7 +44,6 @@ describe('Form Migration', () => {
   })
 
   afterAll(async () => {
-    userFactory.clear()
     await testingApp.afterAll()
   })
 

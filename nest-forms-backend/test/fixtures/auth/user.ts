@@ -1,4 +1,10 @@
 import { TestingModuleBuilder } from '@nestjs/testing'
+import {
+  randCompanyName,
+  randEmail,
+  randFirstName,
+  randLastName,
+} from '@ngneat/falso'
 import jwt from 'jsonwebtoken'
 import {
   UserOfficialCorrespondenceChannelEnum,
@@ -39,6 +45,8 @@ export class UserFixtureFactory {
 
   private guestUsers: GuestFixtureUser[] = []
 
+  private generatedIcos = new Set<string>()
+
   createGuestUser(): GuestFixtureUser {
     const randomGuestIdentityId = getRandomGuestIdentityId()
 
@@ -57,21 +65,20 @@ export class UserFixtureFactory {
     return user
   }
 
-  createAuthUser({
-    accountType = UserVerifyStateTypeEnum.Fo,
-    tier = UserVerifyStateCognitoTierEnum.IdentityCard,
-    givenName = 'John',
-    familyName = 'Doe',
-    email = 'user@example.com',
-    ico = 'ico://sk/1234567890',
-  }: {
-    accountType?: UserVerifyStateTypeEnum
-    tier?: UserVerifyStateCognitoTierEnum
-    givenName?: string
-    familyName?: string
-    email?: string
-    ico?: string
-  } = {}): AuthFixtureUser {
+  private createAuthUser(
+    params:
+      | {
+          accountType: typeof UserVerifyStateTypeEnum.Fo
+          tier?: UserVerifyStateCognitoTierEnum
+        }
+      | {
+          accountType:
+            | typeof UserVerifyStateTypeEnum.FoP
+            | typeof UserVerifyStateTypeEnum.Po
+          ico: string
+          tier?: UserVerifyStateCognitoTierEnum
+        },
+  ): AuthFixtureUser {
     const randomSub = uuidv4()
     const nowInSeconds = Math.floor(Date.now() / 1000)
     const cognitoPayloadRaw = {
@@ -96,6 +103,7 @@ export class UserFixtureFactory {
       exp: number
       jti: string
     } & typeof cognitoPayloadRaw
+    const email = randEmail()
 
     const getCityAccountUser = () => {
       const base = {
@@ -107,7 +115,7 @@ export class UserFixtureFactory {
         birthNumber: null,
         gdprData: [],
       }
-      if (accountType === UserVerifyStateTypeEnum.Fo) {
+      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
         return {
           ...base,
           wasVerifiedBeforeTaxDeadline: false,
@@ -118,19 +126,59 @@ export class UserFixtureFactory {
       }
 
       if (
-        accountType === UserVerifyStateTypeEnum.FoP ||
-        accountType === UserVerifyStateTypeEnum.Po
+        params.accountType === UserVerifyStateTypeEnum.FoP ||
+        params.accountType === UserVerifyStateTypeEnum.Po
       ) {
         return {
           ...base,
-          ico: ico ?? null,
+          ico: params.ico,
         }
       }
 
       throw new Error('Invalid account type')
     }
 
-    /* eslint-disable pii/no-email */
+    const getUserAttributes = () => {
+      const base = {
+        sub: randomSub,
+        'custom:account_type': params.accountType,
+        'custom:tier': params.tier ?? UserVerifyStateCognitoTierEnum.New,
+        email,
+      }
+      if (params.accountType === UserVerifyStateTypeEnum.Fo) {
+        const givenName = randFirstName()
+        const familyName = randLastName()
+
+        return {
+          ...base,
+          given_name: givenName,
+          family_name: familyName,
+        }
+      }
+
+      if (params.accountType === UserVerifyStateTypeEnum.FoP) {
+        const givenName = randFirstName()
+        const familyName = randLastName()
+
+        return {
+          ...base,
+          given_name: givenName,
+          family_name: familyName,
+        }
+      }
+
+      if (params.accountType === UserVerifyStateTypeEnum.Po) {
+        const name = randCompanyName()
+
+        return {
+          ...base,
+          name,
+        }
+      }
+
+      throw new Error('Invalid account type')
+    }
+
     const user: AuthFixtureUser = {
       sub: randomSub,
       headers: {
@@ -143,14 +191,7 @@ export class UserFixtureFactory {
           ...decodedCognitoPayload,
         },
         cognitoUser: {
-          userAttributes: {
-            sub: randomSub,
-            'custom:account_type': accountType,
-            'custom:tier': tier,
-            given_name: givenName,
-            family_name: familyName,
-            email,
-          },
+          userAttributes: getUserAttributes(),
           userCreateDate: new Date('2024-01-01T00:00:00.000Z'),
           userLastModifiedDate: new Date('2024-01-02T00:00:00.000Z'),
           userStatus: 'CONFIRMED',
@@ -159,25 +200,59 @@ export class UserFixtureFactory {
         cityAccountUser: getCityAccountUser(),
       },
     }
-    /* eslint-enable pii/no-email */
-
     this.authUsers.push(user)
     return user
   }
 
-  // Convenience methods for common scenarios
-  createFoUser(overrides?: Partial<Parameters<typeof this.createAuthUser>[0]>) {
+  createFoAuthUser({
+    tier,
+  }: {
+    tier?: UserVerifyStateCognitoTierEnum
+  } = {}) {
     return this.createAuthUser({
       accountType: UserVerifyStateTypeEnum.Fo,
-      ...overrides,
+      tier,
     })
   }
 
-  createPoUser(overrides?: Partial<Parameters<typeof this.createAuthUser>[0]>) {
+  createFopAuthUser({
+    tier,
+    ico,
+  }: {
+    tier?: UserVerifyStateCognitoTierEnum
+    ico: string
+  }) {
+    return this.createAuthUser({
+      accountType: UserVerifyStateTypeEnum.FoP,
+      tier,
+      ico,
+    })
+  }
+
+  createPoAuthUser({
+    tier,
+    ico,
+  }: {
+    tier?: UserVerifyStateCognitoTierEnum
+    ico: string
+  }) {
     return this.createAuthUser({
       accountType: UserVerifyStateTypeEnum.Po,
-      ...overrides,
+      tier,
+      ico,
     })
+  }
+
+  generateRandomIco() {
+    let ico: string
+    do {
+      const randomNumber =
+        Math.floor(Math.random() * 9_000_000_000) + 1_000_000_000
+      ico = `ico://sk/${randomNumber}`
+    } while (this.generatedIcos.has(ico))
+
+    this.generatedIcos.add(ico)
+    return ico
   }
 
   setupMockAuth(module: TestingModuleBuilder): TestingModuleBuilder {

@@ -112,20 +112,20 @@ const isStateHoliday = (date: Dayjs): boolean => {
   return stateHolidays.some((holiday) => holiday.isSame(date, 'day'))
 }
 
-const getNextWorkingDay = (date: Dayjs): Dayjs => {
-  const nextDay = date
+const ensureWorkingDay = (date: Dayjs): Dayjs => {
+  let workingDay = date
 
   while (
     // Check if it's a weekend or a state holiday
-    nextDay.day() === 6 || // Saturday
-    nextDay.day() === 0 || // Sunday
-    isStateHoliday(nextDay) // Holiday
+    workingDay.day() === 6 || // Saturday
+    workingDay.day() === 0 || // Sunday
+    isStateHoliday(workingDay) // Holiday
   ) {
     // Move to the next day
-    nextDay.add(1, 'day')
+    workingDay = workingDay.add(1, 'day')
   }
 
-  return nextDay
+  return workingDay
 }
 
 const calculateDueDate = (dateOfValidity: Date | null): Dayjs | null => {
@@ -137,7 +137,7 @@ const calculateDueDate = (dateOfValidity: Date | null): Dayjs | null => {
     .tz(dateOfValidity, bratislavaTimeZone)
     .startOf('day')
     .add(21, 'day')
-  return getNextWorkingDay(dueDateBase)
+  return ensureWorkingDay(dueDateBase)
 }
 
 const calculateInstallmentAmounts = (

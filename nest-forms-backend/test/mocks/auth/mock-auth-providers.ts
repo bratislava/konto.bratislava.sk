@@ -1,4 +1,5 @@
 import { Provider, UnauthorizedException } from '@nestjs/common'
+import { TestingModuleBuilder } from '@nestjs/testing'
 
 import { CityAccountUserService } from '../../../src/auth-v2/services/city-account-user.service'
 import { CognitoGuestIdentityService } from '../../../src/auth-v2/services/cognito-guest-identity.service'
@@ -63,7 +64,7 @@ const CognitoGuestIdentityServiceMock = {
   },
 } as CognitoGuestIdentityService
 
-export const mockAuthProviders: Provider[] = [
+export const mockAuthProviders = [
   {
     provide: CognitoJwtVerifyService,
     useValue: CognitoJwtVerifyServiceMock,
@@ -80,4 +81,11 @@ export const mockAuthProviders: Provider[] = [
     provide: CognitoGuestIdentityService,
     useValue: CognitoGuestIdentityServiceMock,
   },
-]
+] as const satisfies Provider[]
+
+export const withMockAuth = (module: TestingModuleBuilder) => {
+  mockAuthProviders.forEach((provider) => {
+    module.overrideProvider(provider.provide).useValue(provider.useValue)
+  })
+  return module
+}

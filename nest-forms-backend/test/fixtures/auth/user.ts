@@ -4,7 +4,6 @@ import {
   UserVerifyStateCognitoTierEnum,
   UserVerifyStateTypeEnum,
 } from 'openapi-clients/city-account'
-import supertest from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 
 import { AuthUser, GuestUser, UserType } from '../../../src/auth-v2/types/user'
@@ -174,16 +173,4 @@ export const fixtureInvalidAuthUser = {
   },
 }
 
-export function withUser<Request extends supertest.Test>(
-  req: Request,
-  user:
-    | FixtureUser
-    | typeof fixtureInvalidGuestUser
-    | typeof fixtureInvalidAuthUser,
-) {
-  let newReq = req
-  Object.entries(user.headers).forEach(([key, value]) => {
-    newReq = newReq.set(key, value)
-  })
-  return newReq
-}
+export const withFixtureUser = (user: FixtureUser) => user.headers

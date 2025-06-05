@@ -45,6 +45,26 @@ class TestFormAccessController {
   getFormAccessWithMigration(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
+
+  @Get('access-no-param')
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard, FormAccessGuard)
+  getFormAccessNoParam(@GetFormAccessType() accessType: FormAccessType) {
+    return { accessType }
+  }
+
+  @Get('access-no-guard/:formId')
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
+  getFormAccessNoGuard(@GetFormAccessType() accessType: FormAccessType) {
+    return { accessType }
+  }
+
+  @Get('access-no-auth/:formId')
+  @UseGuards(FormAccessGuard)
+  getFormAccessNoAuth(@GetFormAccessType() accessType: FormAccessType) {
+    return { accessType }
+  }
 }
 
 describe('Form access', () => {
@@ -143,7 +163,6 @@ describe('Form access', () => {
       cognitoGuestIdentityId: guestUser1.identityId,
     })
 
-    // Migration for authUser2 and guestUser2 (will be expired in a test)
     await formMigrationsService.prepareMigration(
       authUser2.user,
       guestUser2.identityId,
@@ -152,6 +171,10 @@ describe('Form access', () => {
       cognitoAuthSub: authUser2.sub,
       cognitoGuestIdentityId: guestUser2.identityId,
     })
+    await formMigrationsFixtureRepository.expireMigration(
+      authUser2.sub,
+      guestUser2.identityId,
+    )
   })
 
   afterEach(() => {
@@ -167,11 +190,33 @@ describe('Form access', () => {
   describe('Error Handling & Invalid Requests', () => {
     it('should return 400 if formId path parameter is missing', async () => {
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access/`, // No formId param
+        `/test-form-access-e2e/access-no-param`,
         { headers: authUser1.headers },
       )
-      console.log(response)
-      expect(response.status).toBe(404) // Should be 404 for missing path parameter
+      expect(response.status).toBe(400)
+      expect(response.data.message).toContain(
+        'formId path parameter is required',
+      )
+    })
+
+    it('should throw InternalServerErrorException when GetFormAccessType is used without FormAccessGuard', async () => {
+      const response = await testingApp.axiosClient.get(
+        `/test-form-access-e2e/access-no-guard/${formForAuthUser1.id}`,
+        { headers: authUser1.headers },
+      )
+      expect(response.status).toBe(500)
+      expect(response.data.message).toContain(
+        'Form access type not found. Make sure to use FormAccessGuard before accessing this parameter.',
+      )
+    })
+
+    it('should throw BadRequestException when FormAccessGuard is used without UserAuthGuard', async () => {
+      const response = await testingApp.axiosClient.get(
+        `/test-form-access-e2e/access-no-auth/${formForAuthUser1.id}`,
+        { headers: authUser1.headers },
+      )
+      expect(response.status).toBe(400)
+      expect(response.data.message).toContain('User not found')
     })
 
     it('should throw NotFoundException for non-existent formId', async () => {
@@ -416,12 +461,6 @@ describe('Form access', () => {
     })
 
     it('should deny auth user access to guest form if migration is expired (Service & Guard)', async () => {
-      // Expire the migration for authUser2 and guestUser2
-      await formMigrationsFixtureRepository.expireMigration(
-        authUser2.sub,
-        guestUser2.identityId,
-      )
-
       // Service
       const serviceAccess = await formAccessService.hasAccess(
         formForGuestUser2.id,

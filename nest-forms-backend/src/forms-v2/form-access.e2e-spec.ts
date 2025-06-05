@@ -31,14 +31,14 @@ import { FormMigrationsService } from './services/form-migrations.service'
 
 @Controller('test-form-access-e2e')
 class TestFormAccessController {
-  @Get('access')
+  @Get('access/:formId')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   getFormAccessDefault(@GetFormAccessType() accessType: FormAccessType) {
     return { accessType }
   }
 
-  @Get('access-with-migration')
+  @Get('access-with-migration/:formId')
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @UseGuards(UserAuthGuard, FormAccessGuard)
   @FormAccessAllowMigrations()
@@ -165,15 +165,13 @@ describe('Form access', () => {
   })
 
   describe('Error Handling & Invalid Requests', () => {
-    it('should return 400 if formId query parameter is missing', async () => {
+    it('should return 400 if formId path parameter is missing', async () => {
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access`, // No formId query
+        `/test-form-access-e2e/access/`, // No formId param
         { headers: authUser1.headers },
       )
-      expect(response.status).toBe(400)
-      expect(response.data.message).toContain(
-        'formId query parameter is required',
-      )
+      console.log(response)
+      expect(response.status).toBe(404) // Should be 404 for missing path parameter
     })
 
     it('should throw NotFoundException for non-existent formId', async () => {
@@ -186,7 +184,7 @@ describe('Form access', () => {
 
       // Guard should propagate the error
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${nonExistentFormId}`,
+        `/test-form-access-e2e/access/${nonExistentFormId}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(404)
@@ -204,7 +202,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUser1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUser1.id}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(200)
@@ -221,7 +219,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUser1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUser1.id}`,
         { headers: authUser2.headers },
       )
       expect(response.status).toBe(403)
@@ -237,7 +235,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUser1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUser1.id}`,
         { headers: guestUser1.headers },
       )
       expect(response.status).toBe(403)
@@ -255,7 +253,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: guestUser1.headers },
       )
       expect(response.status).toBe(200)
@@ -272,7 +270,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: guestUser2.headers },
       )
       expect(response.status).toBe(403)
@@ -289,7 +287,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(403)
@@ -307,7 +305,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUserWithIcoCommon1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUserWithIcoCommon1.headers },
       )
       expect(response.status).toBe(200)
@@ -324,7 +322,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUserWithIcoCommon1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUserWithIcoCommon2.headers },
       )
       expect(response.status).toBe(200)
@@ -341,7 +339,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUserWithIcoCommon1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUserWithIcoUnique.headers },
       )
       expect(response.status).toBe(403)
@@ -357,7 +355,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForAuthUserWithIcoCommon1.id}`,
+        `/test-form-access-e2e/access/${formForAuthUserWithIcoCommon1.id}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(403)
@@ -376,7 +374,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access-with-migration?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access-with-migration/${formForGuestUser1.id}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(200)
@@ -394,7 +392,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access/${formForGuestUser1.id}`,
         { headers: authUser1.headers },
       )
       expect(response.status).toBe(403)
@@ -411,7 +409,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access-with-migration?formId=${formForGuestUser1.id}`,
+        `/test-form-access-e2e/access-with-migration/${formForGuestUser1.id}`,
         { headers: authUser2.headers },
       )
       expect(response.status).toBe(403)
@@ -434,7 +432,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access-with-migration?formId=${formForGuestUser2.id}`,
+        `/test-form-access-e2e/access-with-migration/${formForGuestUser2.id}`,
         { headers: authUser2.headers },
       )
       expect(response.status).toBe(403)
@@ -462,7 +460,7 @@ describe('Form access', () => {
 
       // Guard
       const response = await testingApp.axiosClient.get(
-        `/test-form-access-e2e/access-with-migration?formId=${formForAuthUser1.id}`,
+        `/test-form-access-e2e/access-with-migration/${formForAuthUser1.id}`,
         { headers: guestUser1.headers },
       )
       expect(response.status).toBe(403)

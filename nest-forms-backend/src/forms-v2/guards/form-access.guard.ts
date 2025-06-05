@@ -55,10 +55,10 @@ export class FormAccessGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithUser>()
-    const { formId } = request.query
+    const { formId } = request.params
 
     if (!formId || typeof formId !== 'string') {
-      throw new BadRequestException('formId query parameter is required')
+      throw new BadRequestException('formId path parameter is required')
     }
 
     const { user } = request

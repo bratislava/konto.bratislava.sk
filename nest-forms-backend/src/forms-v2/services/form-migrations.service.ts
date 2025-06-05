@@ -110,6 +110,32 @@ export class FormMigrationsService {
     })
   }
 
+  /**
+   * Checks if there's a valid (non-expired) migration for the given user and guest identity pair.
+   *
+   * @param cognitoAuthSub The authenticated user's Cognito sub
+   * @param cognitoGuestIdentityId The guest identity ID
+   * @returns true if a valid migration exists, false otherwise
+   */
+  async hasValidMigration(
+    cognitoAuthSub: string,
+    cognitoGuestIdentityId: string,
+  ): Promise<boolean> {
+    const now = new Date()
+
+    const migrationsCount = await this.prismaService.formMigration.count({
+      where: {
+        cognitoAuthSub,
+        cognitoGuestIdentityId,
+        expiresAt: {
+          gt: now,
+        },
+      },
+    })
+
+    return migrationsCount > 0
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleExpiredMigrations() {
     this.logger.log('Running cron job to remove expired form migrations...')

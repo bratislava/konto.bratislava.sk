@@ -428,7 +428,9 @@ export class AdminService {
               count: 0,
             }
             const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
-            const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
+            const toPayFromNoris = this.formatAmount(
+              norisPayment.zbyva_uhradit!,
+            ) // we know it's not undefined from filter
 
             if (payerData.sum === null || payerData.sum < paidFromNoris) {
               created += 1
@@ -613,7 +615,7 @@ export class AdminService {
     )
 
     await this.prismaService.$transaction(
-      [...variableSymbolsToNonNullDateFromNoris.entries()].map(
+      Array.from(variableSymbolsToNonNullDateFromNoris.entries()).map(
         ([variableSymbol, dateTaxRuling]) =>
           this.prismaService.tax.update({
             where: { id: variableSymbolToId.get(variableSymbol) },
@@ -706,23 +708,25 @@ export class AdminService {
 
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdmin(birthNumber)
-    if (userDataFromCityAccount) {
-      const bloomreachResponse = await this.bloomreachService.trackEventTax(
-        {
-          year,
-          amount: 0,
-          delivery_method: null,
-        },
-        userDataFromCityAccount.externalId ?? undefined,
+    if (!userDataFromCityAccount) {
+      return
+    }
+
+    const bloomreachResponse = await this.bloomreachService.trackEventTax(
+      {
+        year,
+        amount: 0,
+        delivery_method: null,
+      },
+      userDataFromCityAccount.externalId ?? undefined,
+    )
+    if (!bloomreachResponse) {
+      this.logger.error(
+        this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
+        ),
       )
-      if (!bloomreachResponse) {
-        this.logger.error(
-          this.throwerErrorGuard.InternalServerErrorException(
-            ErrorsEnum.INTERNAL_SERVER_ERROR,
-            `Error in send Tax data to Bloomreach for tax payer with ID ${taxPayer.id} and year ${year}`,
-          ),
-        )
-      }
     }
   }
 }

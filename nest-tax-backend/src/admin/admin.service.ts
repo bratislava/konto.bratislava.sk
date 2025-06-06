@@ -299,7 +299,9 @@ export class AdminService {
     return { updated: count }
   }
 
-  private async getTaxesDataMap(norisPaymentData: Partial<NorisPaymentsDto>[]) {
+  private async createTaxMapByVariableSymbol(
+    norisPaymentData: Partial<NorisPaymentsDto>[],
+  ) {
     const taxesData = await this.prismaService.tax.findMany({
       where: {
         variableSymbol: {
@@ -383,50 +385,27 @@ export class AdminService {
   ) {
     let created = 0
     let alreadyCreated = 0
-    const taxesDataMap = await this.getTaxesDataMap(norisPaymentData)
+    const taxesDataByVsMap =
+      await this.createTaxMapByVariableSymbol(norisPaymentData)
 
-    // Get all tax IDs from taxesDataMap
-    const taxIds = [...taxesDataMap.values()].map((tax) => tax.id)
+    // Get all tax IDs from taxesDataByVsMap
+    const taxIds = Array.from(taxesDataByVsMap.values(), (tax) => tax.id)
 
-    // Get aggregate data for all taxes at once
-    const aggregateData = await this.prismaService.taxPayment.groupBy({
-      by: ['taxId'],
-      _sum: {
-        amount: true,
-      },
-      _count: {
-        _all: true,
-      },
-      where: {
-        taxId: {
-          in: taxIds,
-        },
-        status: PaymentStatus.SUCCESS,
-      },
-    })
-
-    // Create a map of aggregated data for easy lookup
-    const aggregateDataMap = new Map(
-      aggregateData.map((data) => [
-        data.taxId,
-        {
-          sum: data._sum.amount || 0,
-          count: data._count._all,
-        },
-      ]),
-    )
+    // Get aggregate payment data for all taxes at once
+    const taxPaymentDataMap = await this.fetchTaxPaymentAggregateMap(taxIds)
 
     // Get batch data from city account
     const userDataFromCityAccount =
       await this.cityAccountSubservice.getUserDataAdminBatch(
-        [...taxesDataMap.values()].map(
+        Array.from(
+          taxesDataByVsMap.values(),
           (taxData) => taxData.taxPayer.birthNumber,
         ),
       )
 
-    // despite the retype, do not trust the data from Noris & approach as if they were all optional
     await Promise.all(
       norisPaymentData
+        // despite the retype, do not trust the data from Noris & approach as if they were all optional
         .filter((norisPayment) => {
           return (
             norisPayment.variabilny_symbol !== undefined &&
@@ -436,49 +415,54 @@ export class AdminService {
         })
         .map(async (norisPayment) => {
           try {
-            const taxData = taxesDataMap.get(norisPayment.variabilny_symbol!) // we know it's not undefined from filter
-            if (taxData) {
-              const payerData = aggregateDataMap.get(taxData.id) || {
-                sum: 0,
-                count: 0,
-              }
-              const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
-              const forPayment = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
+            const taxData = taxesDataByVsMap.get(
+              norisPayment.variabilny_symbol!,
+            ) // we know it's not undefined from filter
 
-              if (payerData.sum === null || payerData.sum < paidFromNoris) {
-                created += 1
-                const createdTaxPayment =
-                  await this.prismaService.taxPayment.create({
-                    data: {
-                      amount: paidFromNoris - (payerData.sum ?? 0),
-                      source: 'BANK_ACCOUNT',
-                      specificSymbol: norisPayment.specificky_symbol,
-                      taxId: taxData.id,
-                      status: PaymentStatus.SUCCESS,
-                    },
-                  })
-                const userFromCityAccount =
-                  userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
-                if (userFromCityAccount && userFromCityAccount.externalId) {
-                  await this.bloomreachService.trackEventTaxPayment(
-                    {
-                      amount: createdTaxPayment.amount,
-                      payment_source: 'BANK_ACCOUNT',
-                      year: taxData.year,
-                    },
-                    userFromCityAccount.externalId,
-                  )
-                }
+            if (!taxData) {
+              return
+            }
 
-                this.handlePaymentsErrors(
-                  paidFromNoris,
-                  taxData,
-                  forPayment,
-                  payerData.count,
+            const payerData = taxPaymentDataMap.get(taxData.id) || {
+              sum: 0,
+              count: 0,
+            }
+            const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
+            const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!) // we know it's not undefined from filter
+
+            if (payerData.sum === null || payerData.sum < paidFromNoris) {
+              created += 1
+              const createdTaxPayment =
+                await this.prismaService.taxPayment.create({
+                  data: {
+                    amount: paidFromNoris - (payerData.sum ?? 0),
+                    source: 'BANK_ACCOUNT',
+                    specificSymbol: norisPayment.specificky_symbol,
+                    taxId: taxData.id,
+                    status: PaymentStatus.SUCCESS,
+                  },
+                })
+              const userFromCityAccount =
+                userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
+              if (userFromCityAccount && userFromCityAccount.externalId) {
+                await this.bloomreachService.trackEventTaxPayment(
+                  {
+                    amount: createdTaxPayment.amount,
+                    payment_source: 'BANK_ACCOUNT',
+                    year: taxData.year,
+                  },
+                  userFromCityAccount.externalId,
                 )
-              } else {
-                alreadyCreated += 1
               }
+
+              this.handlePaymentsErrors(
+                paidFromNoris,
+                taxData,
+                toPayFromNoris,
+                payerData.count,
+              )
+            } else {
+              alreadyCreated += 1
             }
           } catch (error) {
             this.logger.error(
@@ -498,6 +482,35 @@ export class AdminService {
       created,
       alreadyCreated,
     }
+  }
+
+  private async fetchTaxPaymentAggregateMap(taxIds: number[]) {
+    const aggregateData = await this.prismaService.taxPayment.groupBy({
+      by: ['taxId'],
+      _sum: {
+        amount: true,
+      },
+      _count: {
+        _all: true,
+      },
+      where: {
+        taxId: {
+          in: taxIds,
+        },
+        status: PaymentStatus.SUCCESS,
+      },
+    })
+
+    // Create a map of aggregated data for easy lookup
+    return new Map(
+      aggregateData.map((data) => [
+        data.taxId,
+        {
+          sum: data._sum.amount || 0,
+          count: data._count._all,
+        },
+      ]),
+    )
   }
 
   async updateDeliveryMethodsInNoris({

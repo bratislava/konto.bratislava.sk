@@ -1,5 +1,5 @@
 import { NorisTaxPayersDto } from '../../../noris/noris.dto'
-import { AreaTypesEnum, taxDetail } from '../tax-detail.helper'
+import { AreaTypesEnum, mapNorisToTaxDetailData } from '../tax-detail.helper'
 
 describe('taxDetail', () => {
   const mockTaxId = 123
@@ -61,7 +61,7 @@ describe('taxDetail', () => {
   }
 
   it('should process apartment (byt) tax details correctly', () => {
-    const result = taxDetail(
+    const result = mapNorisToTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -92,7 +92,7 @@ describe('taxDetail', () => {
   })
 
   it('should process ground (pozemky) tax details correctly', () => {
-    const result = taxDetail(
+    const result = mapNorisToTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -131,7 +131,7 @@ describe('taxDetail', () => {
   })
 
   it('should process construction (stavba) tax details correctly', () => {
-    const result = taxDetail(
+    const result = mapNorisToTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )
@@ -176,12 +176,12 @@ describe('taxDetail', () => {
       det_dan_byty_byt: '10.50', // Using dot instead of comma
     }
 
-    const result = taxDetail(invalidData as NorisTaxPayersDto, mockTaxId)
+    const result = mapNorisToTaxDetailData(invalidData as NorisTaxPayersDto, mockTaxId)
     expect(() => result).not.toThrow()
   })
 
   it('should process all configured types for each category', () => {
-    const result = taxDetail(
+    const result = mapNorisToTaxDetailData(
       mockNorisTaxPayersData as NorisTaxPayersDto,
       mockTaxId,
     )

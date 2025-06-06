@@ -29,8 +29,15 @@ import {
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
-import { taxDetail } from './utils/tax-detail.helper'
+import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
 import { createTestingTaxMock } from './utils/testing-tax-mock'
+import {
+  convertCurrencyToInt,
+  mapNorisToTaxData,
+  mapNorisToTaxEmployeeData,
+  mapNorisToTaxInstallmentsData,
+  mapNorisToTaxPayerData,
+} from './utils/admin.helper'
 
 @Injectable()
 export class AdminService {
@@ -52,60 +59,45 @@ export class AdminService {
     year: number,
   ) {
     const userData = await this.prismaService.$transaction(async (tx) => {
+      const taxPayerData = mapNorisToTaxPayerData(dataFromNoris)
       const taxPayer = await tx.taxPayer.upsert({
         where: {
           birthNumber: dataFromNoris.ICO_RC,
         },
-        create: {
-          active: true,
-          birthNumber: dataFromNoris.ICO_RC,
-          permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
-          externalId: dataFromNoris.subjekt_refer,
-          name: dataFromNoris.subjekt_nazev,
-          permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
-          permanentResidenceZip: dataFromNoris.psc_ref_tb,
-          permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
-          permanentResidenceCity: dataFromNoris.obec_nazev_tb,
-          nameTxt: dataFromNoris.TXT_MENO,
-        },
-        update: {
-          active: true,
-          birthNumber: dataFromNoris.ICO_RC,
-          permanentResidenceAddress: dataFromNoris.adresa_tp_sidlo,
-          externalId: dataFromNoris.subjekt_refer,
-          name: dataFromNoris.subjekt_nazev,
-          permanentResidenceStreet: dataFromNoris.ulica_tb_cislo,
-          permanentResidenceZip: dataFromNoris.psc_ref_tb,
-          permanentResidenceStreetTxt: dataFromNoris.TXT_UL,
-          permanentResidenceCity: dataFromNoris.obec_nazev_tb,
-          nameTxt: dataFromNoris.TXT_MENO,
-        },
+        create: taxPayerData,
+        update: taxPayerData,
       })
 
+      const taxEmployeeData = mapNorisToTaxEmployeeData(dataFromNoris)
       const taxEmployee = await tx.taxEmployee.upsert({
         where: {
           id: dataFromNoris.vyb_id,
         },
-        create: {
-          email: dataFromNoris.vyb_email,
-          externalId: dataFromNoris.cislo_poradace.toString(),
-          id: dataFromNoris.vyb_id,
-          name: dataFromNoris.vyb_nazov,
-          phoneNumber: dataFromNoris.vyb_telefon_prace,
-        },
+        create: taxEmployeeData,
         update: {},
       })
-      const qrCodeEmail = await this.qrCodeSubservice.createQrCode({
-        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024100000',
-      })
-      const qrCodeWeb = await this.qrCodeSubservice.createQrCode({
-        amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-        variableSymbol: dataFromNoris.variabilny_symbol,
-        specificSymbol: '2024200000',
-      })
 
+      const [qrCodeEmail, qrCodeWeb] = await Promise.all([
+        this.qrCodeSubservice.createQrCode({
+          amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
+          variableSymbol: dataFromNoris.variabilny_symbol,
+          specificSymbol: '2024100000',
+        }),
+        this.qrCodeSubservice.createQrCode({
+          amount: convertCurrencyToInt(dataFromNoris.dan_spolu),
+          variableSymbol: dataFromNoris.variabilny_symbol,
+          specificSymbol: '2024200000',
+        }),
+      ])
+
+      const taxData = mapNorisToTaxData(
+        dataFromNoris,
+        year,
+        taxPayer.id,
+        taxEmployee.id,
+        qrCodeEmail,
+        qrCodeWeb,
+      )
       const tax = await tx.tax.upsert({
         where: {
           taxPayerId_year: {
@@ -113,81 +105,26 @@ export class AdminService {
             year,
           },
         },
-        update: {
-          amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-          year,
-          taxEmployeeId: taxEmployee.id,
-          taxPayerId: taxPayer.id,
-          variableSymbol: dataFromNoris.variabilny_symbol,
-          dateCreateTax: dataFromNoris.akt_datum,
-          dateTaxRuling: dataFromNoris.datum_platnosti,
-          taxId: dataFromNoris.cislo_konania,
-          taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
-            .intValue,
-          taxConstructions: currency(
-            dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
-          ).intValue,
-          taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
-          qrCodeEmail,
-          qrCodeWeb,
-          // deliveryMethod is missing here, since we do not want to update historical taxes with currect delivery method in Noris
-        },
+        update: taxData,
+        // deliveryMethod is missing here, since we do not want to update
+        // historical taxes with currect delivery method in Noris
         create: {
-          amount: currency(dataFromNoris.dan_spolu.replace(',', '.')).intValue,
-          year,
-          taxEmployeeId: taxEmployee.id,
-          taxPayerId: taxPayer.id,
-          variableSymbol: dataFromNoris.variabilny_symbol,
-          dateCreateTax: dataFromNoris.akt_datum,
-          dateTaxRuling: dataFromNoris.datum_platnosti,
-          taxId: dataFromNoris.cislo_konania,
-          taxLand: currency(dataFromNoris.dan_pozemky.replace(',', '.'))
-            .intValue,
-          taxConstructions: currency(
-            dataFromNoris.dan_stavby_SPOLU.replace(',', '.'),
-          ).intValue,
-          taxFlat: currency(dataFromNoris.dan_byty.replace(',', '.')).intValue,
-          qrCodeEmail,
-          qrCodeWeb,
+          ...taxData,
           deliveryMethod: transformDeliveryMethodToDatabaseType(
             dataFromNoris.delivery_method,
           ),
         },
       })
-      const taxInstallments =
-        dataFromNoris.SPL4_2 === ''
-          ? [
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL1.replace(',', '.')).intValue,
-                text: dataFromNoris.TXTSPL1,
-              },
-            ]
-          : [
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_1.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_1,
-              },
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_2.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_2,
-              },
-              {
-                taxId: tax.id,
-                amount: currency(dataFromNoris.SPL4_3.replace(',', '.'))
-                  .intValue,
-                text: dataFromNoris.TXTSPL4_3,
-              },
-            ]
+
+      const taxInstallments = mapNorisToTaxInstallmentsData(
+        dataFromNoris,
+        tax.id,
+      )
       await tx.taxInstallment.createMany({
         data: taxInstallments,
       })
 
-      const taxDetailData = taxDetail(dataFromNoris, tax.id)
+      const taxDetailData = mapNorisToTaxDetailData(dataFromNoris, tax.id)
 
       await tx.taxDetail.createMany({
         data: taxDetailData,
@@ -254,7 +191,7 @@ export class AdminService {
 
         const bloomreachTracker = await this.bloomreachService.trackEventTax(
           {
-            amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+            amount: convertCurrencyToInt(norisItem.dan_spolu),
             year,
             delivery_method: transformDeliveryMethodToDatabaseType(
               norisItem.delivery_method,
@@ -428,7 +365,7 @@ export class AdminService {
   private formatAmount(amount: number | string) {
     return typeof amount === 'number'
       ? currency(amount).intValue
-      : currency(amount.replace(',', '.')).intValue
+      : convertCurrencyToInt(amount)
   }
 
   async updatePaymentsFromNoris(norisRequest: NorisRequestGeneral) {

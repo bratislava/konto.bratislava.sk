@@ -348,26 +348,38 @@ export class AdminService {
       norisData.map(async (norisItem) => {
         const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
         if (taxExists) {
-          await this.prismaService.$transaction(async (tx) => {
-            await tx.taxInstallment.deleteMany({
-              where: {
-                taxId: taxExists.id,
-              },
+          try {
+            await this.prismaService.$transaction(async (tx) => {
+              await tx.taxInstallment.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+              await tx.taxDetail.deleteMany({
+                where: {
+                  taxId: taxExists.id,
+                },
+              })
+              const userData = await this.insertTaxPayerDataToDatabase(
+                norisItem,
+                data.year,
+                tx,
+              )
+              if (userData) {
+                count += 1
+              }
             })
-            await tx.taxDetail.deleteMany({
-              where: {
-                taxId: taxExists.id,
-              },
-            })
-            const userData = await this.insertTaxPayerDataToDatabase(
-              norisItem,
-              data.year,
-              tx,
+          } catch (error) {
+            this.logger.error(
+              this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                'Failed to update tax in database.',
+                undefined,
+                undefined,
+                error as Error,
+              ),
             )
-            if (userData) {
-              count += 1
-            }
-          })
+          }
         }
       }),
     )

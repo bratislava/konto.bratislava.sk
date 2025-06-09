@@ -194,7 +194,7 @@ export class AdminService {
     norisData: NorisTaxPayersDto[],
     year: number,
   ): Promise<string[]> {
-    const birthNumbersResult: string[] = []
+    const birthNumbersResult: Set<string> = new Set()
 
     this.logger.log(`Data loaded from noris - count ${norisData.length}`)
 
@@ -226,50 +226,67 @@ export class AdminService {
 
     await Promise.all(
       norisData.map(async (norisItem) => {
-        birthNumbersResult.push(norisItem.ICO_RC)
+        birthNumbersResult.add(norisItem.ICO_RC)
 
         const taxExists = birthNumbersWithExistingTax.has(norisItem.ICO_RC)
         if (taxExists) {
           return
         }
 
-        await this.prismaService.$transaction(async (tx) => {
-          const userData = await this.insertTaxPayerDataToDatabase(
-            norisItem,
-            year,
-            tx,
-          )
-
-          const userFromCityAccount =
-            userDataFromCityAccount[userData.birthNumber] || null
-          if (userFromCityAccount === null) {
-            return
-          }
-
-          const bloomreachTracker = await this.bloomreachService.trackEventTax(
-            {
-              amount: currency(norisItem.dan_spolu.replace(',', '.')).intValue,
+        try {
+          await this.prismaService.$transaction(async (tx) => {
+            const userData = await this.insertTaxPayerDataToDatabase(
+              norisItem,
               year,
-              delivery_method: transformDeliveryMethodToDatabaseType(
-                norisItem.delivery_method,
-              ),
-            },
-            userFromCityAccount.externalId ?? undefined,
-          )
-          if (!bloomreachTracker) {
-            throw this.throwerErrorGuard.InternalServerErrorException(
-              ErrorsEnum.INTERNAL_SERVER_ERROR,
-              `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+              tx,
             )
-          }
-        })
+
+            const userFromCityAccount =
+              userDataFromCityAccount[userData.birthNumber] || null
+            if (userFromCityAccount === null) {
+              return
+            }
+
+            const bloomreachTracker =
+              await this.bloomreachService.trackEventTax(
+                {
+                  amount: currency(norisItem.dan_spolu.replace(',', '.'))
+                    .intValue,
+                  year,
+                  delivery_method: transformDeliveryMethodToDatabaseType(
+                    norisItem.delivery_method,
+                  ),
+                },
+                userFromCityAccount.externalId ?? undefined,
+              )
+            if (!bloomreachTracker) {
+              throw this.throwerErrorGuard.InternalServerErrorException(
+                ErrorsEnum.INTERNAL_SERVER_ERROR,
+                `Error in send Tax data to Bloomreach for tax payer with ID ${userData.id} and year ${year}`,
+              )
+            }
+          })
+        } catch (error) {
+          this.logger.error(
+            this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              'Failed to insert tax to database.',
+              undefined,
+              undefined,
+              error as Error,
+            ),
+          )
+
+          // Remove the birth number from the result set if insertion fails
+          birthNumbersResult.delete(norisItem.ICO_RC)
+        }
       }),
     )
 
     // Add the payments for these added taxes to database
     await this.updatePaymentsFromNorisWithData(norisData)
 
-    return birthNumbersResult
+    return [...birthNumbersResult]
   }
 
   async loadDataFromNoris(
@@ -332,12 +349,12 @@ export class AdminService {
         const taxExists = birthNumberToTax.get(norisItem.ICO_RC)
         if (taxExists) {
           await this.prismaService.$transaction(async (tx) => {
-            await this.prismaService.taxInstallment.deleteMany({
+            await tx.taxInstallment.deleteMany({
               where: {
                 taxId: taxExists.id,
               },
             })
-            await this.prismaService.taxDetail.deleteMany({
+            await tx.taxDetail.deleteMany({
               where: {
                 taxId: taxExists.id,
               },

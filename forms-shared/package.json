@@ -54,7 +54,7 @@
     "pdf-lib": "^1.17.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-email": "4.0.15",
+    "react-email": "4.0.16",
     "react-markdown": "6.0.3",
     "remove-markdown": "^0.6.2",
     "rodnecislo": "^1.6.0",

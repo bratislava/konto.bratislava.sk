@@ -11,6 +11,8 @@ docs/ClaimMigrationInput.md
 docs/ClaimMigrationOutput.md
 docs/ConvertApi.md
 docs/ConvertToPdfRequestDto.md
+docs/CreateFormInput.md
+docs/CreateFormOutput.md
 docs/CreateFormRequestDto.md
 docs/CreateFormResponseDto.md
 docs/DownloadTokenResponseDataDto.md
@@ -21,6 +23,7 @@ docs/FormSignatureDto.md
 docs/FormState.md
 docs/FormUserInformationDto.md
 docs/FormsApi.md
+docs/FormsV2Api.md
 docs/GetFileResponseReducedDto.md
 docs/GetFormMetaDto.md
 docs/GetFormResponseDto.md

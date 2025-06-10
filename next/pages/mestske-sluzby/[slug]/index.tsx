@@ -62,7 +62,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
 
     // If Strapi form does not have a landing page, create a new form instance and redirect to it directly.
     try {
-      const { data: form } = await formsClient.nasesControllerCreateForm(
+      const { data: form } = await formsClient.formsV2ControllerCreateForm(
         {
           formDefinitionSlug: slug,
         },

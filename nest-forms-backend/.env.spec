@@ -1,4 +1,6 @@
 # Basic configuration
+PORT=3000
+SELF_URL=https://nest-forms-backend.dev.bratislava.sk
 CLUSTER_ENV=dev
 
 # Authentication

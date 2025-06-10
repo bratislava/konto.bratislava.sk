@@ -45,14 +45,18 @@ export class FormMigrationsController {
   @ApiOkResponse({
     type: ClaimMigrationOutput,
   })
+  @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard)
   async claimMigration(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Body() claimMigrationInput: ClaimMigrationInput,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @GetUser() user: AuthUser,
   ): Promise<ClaimMigrationOutput> {
-    throw new NotImplementedException()
+    const success = await this.formMigrationService.claimMigration(
+      user,
+      claimMigrationInput.formId,
+    )
+
+    return { success }
   }
 }

@@ -54,7 +54,7 @@ const reformatWithPrettier = async (code: string) => {
     throw new Error('Prettier options not found')
   }
 
-  return await prettier.format(code, { ...options, parser: 'typescript' })
+  return prettier.format(code, { ...options, parser: 'typescript' })
 }
 
 const renderBase64Content = async (base64String: string) => {
@@ -62,7 +62,7 @@ const renderBase64Content = async (base64String: string) => {
 
 export default Buffer.from(${JSON.stringify(base64String)}, 'base64')\n`
 
-  return await reformatWithPrettier(code)
+  return reformatWithPrettier(code)
 }
 
 const renderStringContent = async (cssString: string) => {
@@ -72,7 +72,7 @@ const renderStringContent = async (cssString: string) => {
 
 export default ${stringToTemplateLiteral(cssString)}\n`
 
-  return await reformatWithPrettier(code)
+  return reformatWithPrettier(code)
 }
 
 const srcAssetsDir = path.join(rootDir, './src/generated-assets')

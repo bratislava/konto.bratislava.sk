@@ -41,7 +41,7 @@ jobs:
 
   conditions:
     name: Check for conditions
-    needs: [test-forms-shared, build-forms-shared, build-openapi-clients]
+    needs: [build-forms-shared, build-openapi-clients]
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@stable
     permissions: write-all
 

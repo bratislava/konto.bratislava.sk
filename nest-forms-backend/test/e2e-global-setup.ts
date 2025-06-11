@@ -5,7 +5,7 @@ import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { e2eGlobalShared } from './e2e-global-shared'
 
 export default async function e2eGlobalSetup(): Promise<void> {
-  const container = await new PostgreSqlContainer()
+  const container = await new PostgreSqlContainer('postgres:alpine')
     .withUsername('forms')
     .withPassword('password')
     .withDatabase('forms')

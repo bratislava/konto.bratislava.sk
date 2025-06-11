@@ -10,12 +10,17 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
-    # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
-    # These packages must be updated synchronously across all packages
     ignore:
+      # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
+      # These packages must be updated synchronously across all packages
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
+      # `npm run generate-assets` must be executed after Tailwind update
+      - dependency-name: '@tailwindcss/postcss'
+      - dependency-name: 'tailwindcss'
+      # Playwright must be updated in nest-forms-backend at the same time
+      - dependency-name: 'playwright'
     groups:
       react-email-dependencies:
         patterns:
@@ -38,12 +43,14 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
-    # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
-    # These packages must be updated synchronously across all packages
     ignore:
+      # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
+      # These packages must be updated synchronously across all packages
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
+      # Playwright must be updated in forms-shared at the same time
+      - dependency-name: 'playwright'
     groups:
       nestjs-dependencies:
         patterns:

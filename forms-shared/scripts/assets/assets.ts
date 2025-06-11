@@ -19,11 +19,6 @@ import { get as getAppRootDir } from 'app-root-dir'
  * Next.js/Nest) or built/directly imported version of the library consistently and is as performant as other solutions.
  */
 
-function convertStringToBase64(str: string) {
-  const normalizedStr = str.replace(/\r\n/g, '\n')
-  return Buffer.from(normalizedStr).toString('base64')
-}
-
 const rootDir = getAppRootDir()
 
 const assetsList = [
@@ -48,9 +43,7 @@ const assetsList = [
     type: 'string' as const,
     getStringContent: async () => {
       const cssArray = await Promise.all([getInterCss(), getTailwindCss()])
-      const joinedStrings = cssArray.join('\n')
-
-      return joinedStrings
+      return cssArray.join('\n')
     },
   },
 ]

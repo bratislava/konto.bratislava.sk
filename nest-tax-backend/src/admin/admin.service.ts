@@ -16,6 +16,7 @@ import { addSlashToBirthNumber } from '../utils/functions/birthNumber'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   TaxIdVariableSymbolYear,
@@ -90,6 +91,8 @@ export class AdminService {
         }),
       ])
 
+      // deliveryMethod is missing here, since we do not want to update
+      // historical taxes with currect delivery method in Noris
       const taxData = mapNorisToTaxData(
         dataFromNoris,
         year,
@@ -106,8 +109,6 @@ export class AdminService {
           },
         },
         update: taxData,
-        // deliveryMethod is missing here, since we do not want to update
-        // historical taxes with currect delivery method in Noris
         create: {
           ...taxData,
           deliveryMethod: transformDeliveryMethodToDatabaseType(
@@ -663,7 +664,7 @@ export class AdminService {
     )
 
     await this.prismaService.$transaction(
-      Array.from(variableSymbolsToNonNullDateFromNoris.entries()).map(
+      [...variableSymbolsToNonNullDateFromNoris.entries()].map(
         ([variableSymbol, dateTaxRuling]) =>
           this.prismaService.tax.update({
             where: { id: variableSymbolToId.get(variableSymbol) },

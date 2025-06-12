@@ -225,12 +225,6 @@ const calculateInstallmentPaymentDetails = (
 ): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
-  // Midnight start of the next day
-  const secondPaymentDueDatetime = dayjs
-    .tz(new Date(`${taxYear}-08-31`), bratislavaTimeZone)
-    .startOf('day')
-    .add(1, 'day')
-
   if (overallAmount - overallPaid <= 0) {
     return {
       isPossible: false,
@@ -238,7 +232,17 @@ const calculateInstallmentPaymentDetails = (
     }
   }
 
-  if (dayjs(today) > secondPaymentDueDatetime) {
+  // Midnight start of the next day
+  const dueDateSecondPayment = dayjs.tz(
+    `${taxYear}-${secondPaymentDueDate}`,
+    bratislavaTimeZone,
+  )
+  const dueDateThirdsPayment = dayjs.tz(
+    `${taxYear}-${thirdPaymentDueDate}`,
+    bratislavaTimeZone,
+  )
+
+  if (dayjs(today) > dueDateSecondPayment) {
     return {
       isPossible: false,
       reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.AFTER_DUE_DATE,
@@ -258,60 +262,38 @@ const calculateInstallmentPaymentDetails = (
     overallPaid,
   )
 
-  const installmentDetails: ResponseInstallmentItemDto[] =
-    !dueDate ||
-    installmentAmounts[0].status === InstallmentPaidStatusEnum.PAID ||
-    installmentAmounts[0].status === InstallmentPaidStatusEnum.OVER_PAID ||
-    dueDate > dayjs(today)
-      ? [
-          {
-            installmentNumber: 1,
-            dueDate: dueDate?.toDate(),
-            status: installmentAmounts[0].status,
-            remainingAmount: installmentAmounts[0].toPay,
-          },
-          {
-            installmentNumber: 2,
-            dueDate: dayjs
-              .tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone)
-              .toDate(),
-            status: installmentAmounts[1].status,
-            remainingAmount: installmentAmounts[1].toPay,
-          },
-          {
-            installmentNumber: 3,
-            dueDate: dayjs
-              .tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone)
-              .toDate(),
-            status: installmentAmounts[2].status,
-            remainingAmount: installmentAmounts[2].toPay,
-          },
-        ]
-      : [
-          {
-            installmentNumber: 1,
-            dueDate: dueDate?.toDate(),
-            status: InstallmentPaidStatusEnum.AFTER_DUE_DATE,
-            remainingAmount: 0,
-          },
-          {
-            installmentNumber: 2,
-            dueDate: dayjs
-              .tz(`${taxYear}-${secondPaymentDueDate}`, bratislavaTimeZone)
-              .toDate(),
-            status: installmentAmounts[0].status,
-            remainingAmount:
-              installmentAmounts[1].toPay + installmentAmounts[0].toPay,
-          },
-          {
-            installmentNumber: 3,
-            dueDate: dayjs
-              .tz(`${taxYear}-${thirdPaymentDueDate}`, bratislavaTimeZone)
-              .toDate(),
-            status: installmentAmounts[2].status,
-            remainingAmount: installmentAmounts[2].toPay,
-          },
-        ]
+  const dueDateInFuture = !dueDate || dueDate > dayjs(today)
+  const isFirstInstallmentLate =
+    !dueDateInFuture &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.PAID &&
+    installmentAmounts[0].status !== InstallmentPaidStatusEnum.OVER_PAID
+
+  const installmentDetails: ResponseInstallmentItemDto[] = [
+    {
+      installmentNumber: 1,
+      dueDate: dueDate?.toDate(),
+      status: isFirstInstallmentLate
+        ? InstallmentPaidStatusEnum.AFTER_DUE_DATE
+        : installmentAmounts[0].status,
+      remainingAmount: isFirstInstallmentLate ? 0 : installmentAmounts[0].toPay,
+    },
+    {
+      installmentNumber: 2,
+      dueDate: dueDateSecondPayment.toDate(),
+      status: isFirstInstallmentLate
+        ? installmentAmounts[0].status
+        : installmentAmounts[1].status,
+      remainingAmount: isFirstInstallmentLate
+        ? installmentAmounts[1].toPay + installmentAmounts[0].toPay
+        : installmentAmounts[1].toPay,
+    },
+    {
+      installmentNumber: 3,
+      dueDate: dueDateThirdsPayment.toDate(),
+      status: installmentAmounts[2].status,
+      remainingAmount: installmentAmounts[2].toPay,
+    },
+  ]
 
   const active = installmentDetails.find(
     (installment) =>

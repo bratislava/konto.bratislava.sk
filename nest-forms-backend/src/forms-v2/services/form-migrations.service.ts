@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 
 import { AuthUser } from '../../auth-v2/types/user'
 import PrismaService from '../../prisma/prisma.service'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import { getUserFormFields } from '../utils/get-user-form-fields'
 
 const MIGRATION_EXPIRATION_TIME = 24 * 60 * 60 * 1000 // 24 hours
 
@@ -57,7 +62,81 @@ export class FormMigrationsService {
     return true
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  async claimMigration(user: AuthUser, formId: string) {
+    return this.prismaService.$transaction(async (tx) => {
+      const now = new Date()
+      const migrations = await tx.formMigration.findMany({
+        where: {
+          cognitoAuthSub: user.cognitoJwtPayload.sub,
+          expiresAt: {
+            gt: now,
+          },
+        },
+      })
+
+      if (migrations.length === 0) {
+        throw new BadRequestException(
+          `No migrations found for user ${user.cognitoJwtPayload.sub}`,
+        )
+      }
+
+      const form = await tx.forms.findUnique({
+        where: {
+          id: formId,
+          cognitoGuestIdentityId: {
+            in: migrations.map((migration) => migration.cognitoGuestIdentityId),
+          },
+        },
+      })
+
+      if (!form) {
+        throw new NotFoundException(
+          `Form with id ${formId} not found for user ${user.cognitoJwtPayload.sub}`,
+        )
+      }
+
+      await tx.forms.update({
+        where: {
+          id: formId,
+        },
+        data: getUserFormFields(user),
+      })
+
+      this.logger.log(
+        `Successfully migrated forms from guest identity ${form.cognitoGuestIdentityId} to user ${user.cognitoJwtPayload.sub}`,
+      )
+
+      return true
+    })
+  }
+
+  /**
+   * Checks if there's a valid (non-expired) migration for the given user and guest identity pair.
+   *
+   * @param cognitoAuthSub The authenticated user's Cognito sub
+   * @param cognitoGuestIdentityId The guest identity ID
+   * @returns true if a valid migration exists, false otherwise
+   */
+  async hasValidMigration(
+    cognitoAuthSub: string,
+    cognitoGuestIdentityId: string,
+  ) {
+    const now = new Date()
+
+    const migrationsCount = await this.prismaService.formMigration.count({
+      where: {
+        cognitoAuthSub,
+        cognitoGuestIdentityId,
+        expiresAt: {
+          gt: now,
+        },
+      },
+    })
+
+    return migrationsCount > 0
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleExpiredMigrations() {
     this.logger.log('Running cron job to remove expired form migrations...')
     const now = new Date()

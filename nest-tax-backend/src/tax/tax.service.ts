@@ -218,20 +218,19 @@ export class TaxService {
 
     const tax = await this.fetchTaxData(birthNumber, year)
 
-    const detailWithoutQrCode = getTaxDetailPure(
-      +year,
-      today.toDate(),
-      tax.amount,
-      6600,
-      tax.variableSymbol,
-      tax.dateTaxRuling,
-      tax.taxInstallments,
-      tax.taxDetails,
-      tax.taxConstructions ?? 0,
-      tax.taxFlat ?? 0,
-      tax.taxLand ?? 0,
-    )
+    const detailWithoutQrCode = getTaxDetailPure({
+      taxYear: +year,
+      today: today.toDate(),
+      overallAmount: tax.amount,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      taxDetails: tax.taxDetails,
+      taxConstructions: tax.taxConstructions ?? 0,
+      taxFlat: tax.taxFlat ?? 0,
+      taxLand: tax.taxLand ?? 0,
       taxPayments: tax.taxPayments,
+    })
 
     const paymentGatewayLink =
       detailWithoutQrCode.oneTimePayment.isPossible &&

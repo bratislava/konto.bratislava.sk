@@ -374,23 +374,39 @@ const calculateOneTimePaymentDetails = (
   }
 }
 
-export const getTaxDetailPure = (
-  taxYear: number, // daňový rok
-  today: Date, // aktuálny dátum
-  overallAmount: number, // suma na zaplatenie
-  payment_calendar_threshold: number, // splátková hranica (66 Eur)
-  variableSymbol: string,
-  dateOfValidity: Date | null, // dátum právoplatnosti
-  installments: { order: string | null; amount: number }[],
-  taxDetails: TaxDetail[],
-  taxConstructions: number,
-  taxFlat: number,
-  taxLand: number,
-) => {
+export const getTaxDetailPure = (options: {
+  taxYear: number // daňový rok
+  today: Date // aktuálny dátum
+  overallAmount: number // suma na zaplatenie
+  paymentCalendarThreshold: number // splátková hranica (66 Eur)
+  variableSymbol: string
+  dateOfValidity: Date | null // dátum právoplatnosti
+  installments: { order: string | null; amount: number }[]
+  taxDetails: TaxDetail[]
+  taxConstructions: number
+  taxFlat: number
+  taxLand: number
+  specificSymbol: string
   taxPayments: {
     amount: number
     status: PaymentStatus
-  }[],
+  }[]
+}) => {
+  const {
+    taxYear,
+    today,
+    overallAmount,
+    paymentCalendarThreshold,
+    variableSymbol,
+    dateOfValidity,
+    installments,
+    taxDetails,
+    taxConstructions,
+    taxFlat,
+    taxLand,
+    specificSymbol,
+    taxPayments,
+  } = options
 
   let overallPaid = 0
   taxPayments.forEach((payment) => {
@@ -398,6 +414,7 @@ export const getTaxDetailPure = (
       overallPaid += payment.amount
     }
   })
+
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null

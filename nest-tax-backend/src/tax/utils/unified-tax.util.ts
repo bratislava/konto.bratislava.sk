@@ -207,6 +207,7 @@ const calculateInstallmentPaymentDetails = (
   dueDate: Dayjs | undefined,
   installments: { order: string | null; amount: number }[],
   variableSymbol: string,
+  specificSymbol: any,
 ): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
@@ -329,7 +330,7 @@ const calculateInstallmentPaymentDetails = (
     qrCode: {
       amount: active.remainingAmount,
       variableSymbol,
-      specificSymbol: '2025200000',
+      specificSymbol,
       paymentNote,
     },
   }
@@ -346,6 +347,7 @@ const calculateOneTimePaymentDetails = (
   overallBalance: number,
   dueDate: Date | undefined,
   variableSymbol: string,
+  specificSymbol: string,
 ): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
   if (overallBalance === 0) {
     return {
@@ -364,7 +366,7 @@ const calculateOneTimePaymentDetails = (
     qrCode: {
       amount: overallBalance,
       variableSymbol,
-      specificSymbol: '2025200000',
+      specificSymbol,
       paymentNote:
         overallPaid > 0
           ? QrPaymentNoteEnum.QR_remainingAmount
@@ -425,6 +427,7 @@ export const getTaxDetailPure = (options: {
     overallBalance,
     dueDate?.toDate(),
     variableSymbol,
+    specificSymbol,
   )
 
   const installmentPayment = calculateInstallmentPaymentDetails(
@@ -436,6 +439,7 @@ export const getTaxDetailPure = (options: {
     dueDate,
     installments,
     variableSymbol,
+    specificSymbol,
   )
 
   const itemizedDetail: ResponseTaxDetailItemizedDto = {

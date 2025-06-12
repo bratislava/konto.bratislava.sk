@@ -29,6 +29,10 @@ import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import { getTaxDetailPure } from './utils/unified-tax.util'
 
+const paymentCalendarThreshold = 6600
+
+const specificSymbol = '2025200000'
+
 @Injectable()
 export class TaxService {
   constructor(
@@ -222,6 +226,7 @@ export class TaxService {
       taxYear: +year,
       today: today.toDate(),
       overallAmount: tax.amount,
+      paymentCalendarThreshold,
       variableSymbol: tax.variableSymbol,
       dateOfValidity: tax.dateTaxRuling,
       installments: tax.taxInstallments,
@@ -229,6 +234,7 @@ export class TaxService {
       taxConstructions: tax.taxConstructions ?? 0,
       taxFlat: tax.taxFlat ?? 0,
       taxLand: tax.taxLand ?? 0,
+      specificSymbol,
       taxPayments: tax.taxPayments,
     })
 

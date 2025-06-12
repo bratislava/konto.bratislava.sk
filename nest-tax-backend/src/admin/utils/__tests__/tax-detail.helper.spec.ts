@@ -176,7 +176,10 @@ describe('taxDetail', () => {
       det_dan_byty_byt: '10.50', // Using dot instead of comma
     }
 
-    const result = mapNorisToTaxDetailData(invalidData as NorisTaxPayersDto, mockTaxId)
+    const result = mapNorisToTaxDetailData(
+      invalidData as NorisTaxPayersDto,
+      mockTaxId,
+    )
     expect(() => result).not.toThrow()
   })
 

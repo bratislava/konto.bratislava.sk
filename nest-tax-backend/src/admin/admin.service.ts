@@ -29,8 +29,6 @@ import {
   RequestUpdateNorisDeliveryMethodsDto,
 } from './dtos/requests.dto'
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
-import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
-import { createTestingTaxMock } from './utils/testing-tax-mock'
 import {
   convertCurrencyToInt,
   mapNorisToTaxData,
@@ -38,6 +36,8 @@ import {
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from './utils/admin.helper'
+import { mapNorisToTaxDetailData } from './utils/tax-detail.helper'
+import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
 export class AdminService {

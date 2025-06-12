@@ -1,4 +1,5 @@
 import currency from 'currency.js'
+
 import { NorisTaxPayersDto } from '../../noris/noris.dto'
 
 export const convertCurrencyToInt = (value: string): number => {

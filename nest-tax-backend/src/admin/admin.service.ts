@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
 import { PaymentStatus, Tax } from '@prisma/client'
 import currency from 'currency.js'
 
@@ -41,7 +41,7 @@ import { createTestingTaxMock } from './utils/testing-tax-mock'
 
 @Injectable()
 export class AdminService {
-  private readonly logger: Logger
+  private readonly logger: LineLoggerSubservice
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -51,7 +51,7 @@ export class AdminService {
     private readonly norisService: NorisService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
   ) {
-    this.logger = new Logger(AdminService.name)
+    this.logger = new LineLoggerSubservice(AdminService.name)
   }
 
   private async insertTaxPayerDataToDatabase(

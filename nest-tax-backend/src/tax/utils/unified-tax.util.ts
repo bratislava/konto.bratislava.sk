@@ -34,81 +34,101 @@ type ReplaceQrCodeWithGeneratorDto<T extends object> = {
 
 const bratislavaTimeZone = 'Europe/Bratislava'
 
-const stateHolidays: Dayjs[] = [
-  // 2025
-  dayjs.tz('2025-01-01', bratislavaTimeZone),
-  dayjs.tz('2025-01-06', bratislavaTimeZone),
-  dayjs.tz('2025-04-18', bratislavaTimeZone),
-  dayjs.tz('2025-04-21', bratislavaTimeZone),
-  dayjs.tz('2025-05-01', bratislavaTimeZone),
-  dayjs.tz('2025-05-08', bratislavaTimeZone),
-  dayjs.tz('2025-07-05', bratislavaTimeZone),
-  dayjs.tz('2025-08-29', bratislavaTimeZone),
-  dayjs.tz('2025-09-01', bratislavaTimeZone),
-  dayjs.tz('2025-09-15', bratislavaTimeZone),
-  dayjs.tz('2025-11-01', bratislavaTimeZone),
-  dayjs.tz('2025-11-17', bratislavaTimeZone),
-  dayjs.tz('2025-12-24', bratislavaTimeZone),
-  dayjs.tz('2025-12-25', bratislavaTimeZone),
-  dayjs.tz('2025-12-26', bratislavaTimeZone),
-
-  // 2026
-  dayjs.tz('2026-01-01', bratislavaTimeZone),
-  dayjs.tz('2026-01-06', bratislavaTimeZone),
-  dayjs.tz('2026-04-02', bratislavaTimeZone),
-  dayjs.tz('2026-04-06', bratislavaTimeZone),
-  dayjs.tz('2026-05-01', bratislavaTimeZone),
-  dayjs.tz('2026-05-08', bratislavaTimeZone),
-  dayjs.tz('2026-07-05', bratislavaTimeZone),
-  dayjs.tz('2026-08-29', bratislavaTimeZone),
-  dayjs.tz('2026-09-01', bratislavaTimeZone),
-  dayjs.tz('2026-09-15', bratislavaTimeZone),
-  dayjs.tz('2026-11-01', bratislavaTimeZone),
-  dayjs.tz('2026-11-17', bratislavaTimeZone),
-  dayjs.tz('2026-12-24', bratislavaTimeZone),
-  dayjs.tz('2026-12-25', bratislavaTimeZone),
-  dayjs.tz('2026-12-26', bratislavaTimeZone),
-
-  // 2027
-  dayjs.tz('2027-01-01', bratislavaTimeZone),
-  dayjs.tz('2027-01-06', bratislavaTimeZone),
-  dayjs.tz('2027-04-26', bratislavaTimeZone),
-  dayjs.tz('2027-04-29', bratislavaTimeZone),
-  dayjs.tz('2027-05-01', bratislavaTimeZone),
-  dayjs.tz('2027-05-08', bratislavaTimeZone),
-  dayjs.tz('2027-07-05', bratislavaTimeZone),
-  dayjs.tz('2027-08-29', bratislavaTimeZone),
-  dayjs.tz('2027-09-01', bratislavaTimeZone),
-  dayjs.tz('2027-09-15', bratislavaTimeZone),
-  dayjs.tz('2027-11-01', bratislavaTimeZone),
-  dayjs.tz('2027-11-17', bratislavaTimeZone),
-  dayjs.tz('2027-12-24', bratislavaTimeZone),
-  dayjs.tz('2027-12-25', bratislavaTimeZone),
-  dayjs.tz('2027-12-26', bratislavaTimeZone),
-
-  // 2028
-  dayjs.tz('2028-01-01', bratislavaTimeZone),
-  dayjs.tz('2028-01-06', bratislavaTimeZone),
-  dayjs.tz('2028-04-14', bratislavaTimeZone),
-  dayjs.tz('2028-04-17', bratislavaTimeZone),
-  dayjs.tz('2028-05-01', bratislavaTimeZone),
-  dayjs.tz('2028-05-08', bratislavaTimeZone),
-  dayjs.tz('2028-07-05', bratislavaTimeZone),
-  dayjs.tz('2028-08-29', bratislavaTimeZone),
-  dayjs.tz('2028-09-01', bratislavaTimeZone),
-  dayjs.tz('2028-09-15', bratislavaTimeZone),
-  dayjs.tz('2028-11-01', bratislavaTimeZone),
-  dayjs.tz('2028-11-17', bratislavaTimeZone),
-  dayjs.tz('2028-12-24', bratislavaTimeZone),
-  dayjs.tz('2028-12-25', bratislavaTimeZone),
-  dayjs.tz('2028-12-26', bratislavaTimeZone),
+export const stateHolidays = [
+  {
+    year: 2025,
+    dates: [
+      dayjs.tz('2025-01-01', bratislavaTimeZone),
+      dayjs.tz('2025-01-06', bratislavaTimeZone),
+      dayjs.tz('2025-04-18', bratislavaTimeZone),
+      dayjs.tz('2025-04-21', bratislavaTimeZone),
+      dayjs.tz('2025-05-01', bratislavaTimeZone),
+      dayjs.tz('2025-05-08', bratislavaTimeZone),
+      dayjs.tz('2025-07-05', bratislavaTimeZone),
+      dayjs.tz('2025-08-29', bratislavaTimeZone),
+      dayjs.tz('2025-09-15', bratislavaTimeZone),
+      dayjs.tz('2025-11-01', bratislavaTimeZone),
+      dayjs.tz('2025-11-17', bratislavaTimeZone),
+      dayjs.tz('2025-12-24', bratislavaTimeZone),
+      dayjs.tz('2025-12-25', bratislavaTimeZone),
+      dayjs.tz('2025-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
+    year: 2026,
+    dates: [
+      dayjs.tz('2026-01-01', bratislavaTimeZone),
+      dayjs.tz('2026-01-06', bratislavaTimeZone),
+      dayjs.tz('2026-04-02', bratislavaTimeZone),
+      dayjs.tz('2026-04-06', bratislavaTimeZone),
+      dayjs.tz('2026-05-01', bratislavaTimeZone),
+      dayjs.tz('2026-05-08', bratislavaTimeZone),
+      dayjs.tz('2026-07-05', bratislavaTimeZone),
+      dayjs.tz('2026-08-29', bratislavaTimeZone),
+      dayjs.tz('2026-09-15', bratislavaTimeZone),
+      dayjs.tz('2026-11-01', bratislavaTimeZone),
+      dayjs.tz('2026-11-17', bratislavaTimeZone),
+      dayjs.tz('2026-12-24', bratislavaTimeZone),
+      dayjs.tz('2026-12-25', bratislavaTimeZone),
+      dayjs.tz('2026-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
+    year: 2027,
+    dates: [
+      dayjs.tz('2027-01-01', bratislavaTimeZone),
+      dayjs.tz('2027-01-06', bratislavaTimeZone),
+      dayjs.tz('2027-04-26', bratislavaTimeZone),
+      dayjs.tz('2027-04-29', bratislavaTimeZone),
+      dayjs.tz('2027-05-01', bratislavaTimeZone),
+      dayjs.tz('2027-05-08', bratislavaTimeZone),
+      dayjs.tz('2027-07-05', bratislavaTimeZone),
+      dayjs.tz('2027-08-29', bratislavaTimeZone),
+      dayjs.tz('2027-09-15', bratislavaTimeZone),
+      dayjs.tz('2027-11-01', bratislavaTimeZone),
+      dayjs.tz('2027-11-17', bratislavaTimeZone),
+      dayjs.tz('2027-12-24', bratislavaTimeZone),
+      dayjs.tz('2027-12-25', bratislavaTimeZone),
+      dayjs.tz('2027-12-26', bratislavaTimeZone),
+    ],
+  },
+  {
+    year: 2028,
+    dates: [
+      dayjs.tz('2028-01-01', bratislavaTimeZone),
+      dayjs.tz('2028-01-06', bratislavaTimeZone),
+      dayjs.tz('2028-04-14', bratislavaTimeZone),
+      dayjs.tz('2028-04-17', bratislavaTimeZone),
+      dayjs.tz('2028-05-01', bratislavaTimeZone),
+      dayjs.tz('2028-05-08', bratislavaTimeZone),
+      dayjs.tz('2028-07-05', bratislavaTimeZone),
+      dayjs.tz('2028-08-29', bratislavaTimeZone),
+      dayjs.tz('2028-09-15', bratislavaTimeZone),
+      dayjs.tz('2028-11-01', bratislavaTimeZone),
+      dayjs.tz('2028-11-17', bratislavaTimeZone),
+      dayjs.tz('2028-12-24', bratislavaTimeZone),
+      dayjs.tz('2028-12-25', bratislavaTimeZone),
+      dayjs.tz('2028-12-26', bratislavaTimeZone),
+    ],
+  },
 ]
 
 const secondPaymentDueDate = '09-01'
 const thirdPaymentDueDate = '11-01'
+const dueDateOffset = 21
 
 const isStateHoliday = (date: Dayjs): boolean => {
-  return stateHolidays.some((holiday) => holiday.isSame(date, 'day'))
+  const year = date.year()
+  const yearHolidays = stateHolidays.find((holiday) => holiday.year === year)
+
+  if (!yearHolidays) {
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+      CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+    )
+  }
+
+  return yearHolidays.dates.some((holiday) => holiday.isSame(date, 'day'))
 }
 
 const ensureWorkingDay = (date: Dayjs): Dayjs => {
@@ -127,15 +147,17 @@ const ensureWorkingDay = (date: Dayjs): Dayjs => {
   return workingDay
 }
 
-const calculateDueDate = (dateOfValidity: Date | null): Dayjs | null => {
+const calculateDueDate = (dateOfValidity: Dayjs | null): Dayjs | undefined => {
   // We will not provide due date if date of validity for the first payment is not set.
-  if (!dateOfValidity) return null
+  if (!dateOfValidity) {
+    return undefined
+  }
 
   // We add one more day to get midnight - start of the next day
-  const dueDateBase = dayjs
-    .tz(dateOfValidity, bratislavaTimeZone)
+  const dueDateBase = dateOfValidity
+    .tz(bratislavaTimeZone)
     .startOf('day')
-    .add(21, 'day')
+    .add(dueDateOffset, 'day')
   return ensureWorkingDay(dueDateBase)
 }
 
@@ -182,7 +204,7 @@ const calculateInstallmentPaymentDetails = (
   today: Date,
   taxYear: number,
   payment_calendar_threshold: number,
-  dueDate: Dayjs | null,
+  dueDate: Dayjs | undefined,
   installments: { order: string | null; amount: number }[],
   variableSymbol: string,
 ): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
@@ -368,7 +390,8 @@ export const getTaxDetailPure = (
 ) => {
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
-  const dueDate = calculateDueDate(dateOfValidity)
+  const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
+  const dueDate = calculateDueDate(dateOfValidityDayjs)
 
   const oneTimePayment = calculateOneTimePaymentDetails(
     overallPaid,

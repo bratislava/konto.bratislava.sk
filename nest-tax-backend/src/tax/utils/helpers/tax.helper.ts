@@ -1,9 +1,4 @@
-import {
-  TaxDetail,
-  TaxDetailareaType,
-  TaxDetailType,
-  TaxInstallment,
-} from '@prisma/client'
+import { TaxDetail, TaxDetailType, TaxInstallment } from '@prisma/client'
 
 import { TaxPaidStatusEnum } from '../../dtos/response.tax.dto'
 

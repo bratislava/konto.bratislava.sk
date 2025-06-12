@@ -1,4 +1,4 @@
-import { TaxDetail } from '@prisma/client'
+import { PaymentStatus, TaxDetail } from '@prisma/client'
 import dayjs, { Dayjs } from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -323,7 +323,7 @@ const calculateInstallmentPaymentDetails = (
   }
 
   const activeInstallment = {
-    remainingAmount: active?.remainingAmount,
+    remainingAmount: active.remainingAmount,
     variableSymbol,
     qrCode: {
       amount: active.remainingAmount,
@@ -347,7 +347,7 @@ const calculateOneTimePaymentDetails = (
   variableSymbol: string,
   specificSymbol: string,
 ): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
-  if (overallBalance === 0) {
+  if (overallBalance <= 0) {
     return {
       isPossible: false,
       reasonNotPossible: OneTimePaymentReasonNotPossibleEnum.ALREADY_PAID,
@@ -433,7 +433,7 @@ export const getTaxDetailPure = (options: {
     overallPaid,
     today,
     taxYear,
-    payment_calendar_threshold,
+    paymentCalendarThreshold,
     dueDate,
     installments,
     variableSymbol,

@@ -375,7 +375,6 @@ const calculateOneTimePaymentDetails = (
 }
 
 export const getTaxDetailPure = (
-  overallPaid: number, // zaplatená suma
   taxYear: number, // daňový rok
   today: Date, // aktuálny dátum
   overallAmount: number, // suma na zaplatenie
@@ -388,6 +387,17 @@ export const getTaxDetailPure = (
   taxFlat: number,
   taxLand: number,
 ) => {
+  taxPayments: {
+    amount: number
+    status: PaymentStatus
+  }[],
+
+  let overallPaid = 0
+  taxPayments.forEach((payment) => {
+    if (payment.status === PaymentStatus.SUCCESS) {
+      overallPaid += payment.amount
+    }
+  })
   const overallBalance = Math.max(overallAmount - overallPaid, 0)
 
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null

@@ -51,6 +51,7 @@ export class TaxService {
         taxPayer: true,
         taxDetails: true,
         taxEmployees: true,
+        taxPayments: true,
       },
     })
 
@@ -217,10 +218,7 @@ export class TaxService {
 
     const tax = await this.fetchTaxData(birthNumber, year)
 
-    const overallPaidTax = await this.getAmountAlreadyPaidByTaxId(tax.id)
-
     const detailWithoutQrCode = getTaxDetailPure(
-      overallPaidTax,
       +year,
       today.toDate(),
       tax.amount,
@@ -233,6 +231,7 @@ export class TaxService {
       tax.taxFlat ?? 0,
       tax.taxLand ?? 0,
     )
+      taxPayments: tax.taxPayments,
 
     const paymentGatewayLink =
       detailWithoutQrCode.oneTimePayment.isPossible &&

@@ -76,32 +76,30 @@ async function main() {
     selectedFormDefinition: FormDefinitionSlovenskoSk
     validFrom: string
     unzip: boolean
-  } = await inquirer.prompt(
-    [
-      {
-        type: 'list',
-        name: 'selectedFormDefinition',
-        message: 'Select a form definition:',
-        choices: allFormDefinitions.map((formDefinition) => ({
-          name: formDefinition.title,
-          value: formDefinition,
-        })),
-      },
-      {
-        type: 'input',
-        name: 'validFrom',
-        message: 'Valid from (YYYY-MM-DD):',
-        default: getTomorrowDate(),
-        validate: isValidDate,
-      },
-      {
-        type: 'confirm',
-        name: 'unzip',
-        message: 'Do you want to unzip the container.zip file?',
-        default: false,
-      },
-    ],
-  )
+  } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'selectedFormDefinition',
+      message: 'Select a form definition:',
+      choices: allFormDefinitions.map((formDefinition) => ({
+        name: formDefinition.title,
+        value: formDefinition,
+      })),
+    },
+    {
+      type: 'input',
+      name: 'validFrom',
+      message: 'Valid from (YYYY-MM-DD):',
+      default: getTomorrowDate(),
+      validate: isValidDate,
+    },
+    {
+      type: 'confirm',
+      name: 'unzip',
+      message: 'Do you want to unzip the container.zip file?',
+      default: false,
+    },
+  ])
 
   const outputDir = await generateFiles(selectedFormDefinition, validFrom)
   console.log(`Generated schemas for ${selectedFormDefinition.title} in ${outputDir}`)

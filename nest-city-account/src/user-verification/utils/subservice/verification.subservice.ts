@@ -62,7 +62,7 @@ export class VerificationSubservice {
         const identityCardMagproxy = document.jednoznacnyIdentifikator.trim().split(' ')
 
         if (
-          identityCardMagproxy.length !== 2 &&
+          identityCardMagproxy.length === 2 &&
           identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
         ) {
           return {

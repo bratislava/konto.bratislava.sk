@@ -165,25 +165,36 @@ const calculateInstallmentAmounts = (
   installments: { order: string | null; amount: number }[],
   overallPaid: number,
 ): { toPay: number; paid: number; status: InstallmentPaidStatusEnum }[] => {
-  const amounts = [1, 2, 3].map(
-    (order) =>
-      installments.find((installment) => installment.order === order.toString())
-        ?.amount,
-  )
-
-  if (!amounts.every((amount) => amount !== undefined)) {
+  if (installments.length !== 3) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
-      CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
-      CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+      CustomErrorTaxTypesEnum.INSTALLMENT_INCORRECT_COUNT,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_INCORRECT_COUNT,
     )
   }
 
+  const amounts = [1, 2, 3].map((order) => {
+    const installment = installments.find(
+      (item) => item.order === order.toString(),
+    )
+    if (!installment) {
+      throw new ThrowerErrorGuard().InternalServerErrorException(
+        CustomErrorTaxTypesEnum.MISSING_INSTALLMENT_AMOUNTS,
+        CustomErrorTaxTypesResponseEnum.MISSING_INSTALLMENT_AMOUNTS,
+      )
+    }
+    return installment.amount
+  })
+
+  const result: {
+    toPay: number
+    paid: number
+    status: InstallmentPaidStatusEnum
+  }[] = []
   let remainingPaid = overallPaid
-  return amounts.map((amount) => {
+
+  amounts.forEach((amount) => {
     const paid = Math.min(amount, remainingPaid)
     const toPay = amount - paid
-
-    remainingPaid -= paid
 
     let status
     if (toPay === 0) {
@@ -194,8 +205,11 @@ const calculateInstallmentAmounts = (
       status = InstallmentPaidStatusEnum.PARTIALLY_PAID
     }
 
-    return { toPay, paid, status }
+    result.push({ toPay, paid, status })
+    remainingPaid -= paid
   })
+
+  return result
 }
 
 const calculateInstallmentPaymentDetails = (

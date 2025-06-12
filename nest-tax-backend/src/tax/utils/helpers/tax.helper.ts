@@ -48,7 +48,7 @@ export const generateItemizedTaxDetail = (taxDetails: TaxDetail[]) => {
     .filter((detail) => detail.type === TaxDetailType.GROUND)
     .map((detail) => {
       return {
-        type: detail.areaType as TaxDetailareaType,
+        type: detail.areaType,
         area: detail.area ?? undefined,
         base: detail.base,
         amount: detail.amount,

@@ -380,11 +380,115 @@ export class AdminService {
     return this.updatePaymentsFromNorisWithData(norisPaymentData)
   }
 
+  private async processNorisPaymentData(
+    norisPaymentData: Partial<NorisPaymentsDto>[],
+    taxesDataByVsMap: Map<string, any>,
+    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
+    userDataFromCityAccount: Record<string, any> = {},
+  ) {
+    const validPayments = norisPaymentData.filter(
+      (norisPayment) =>
+        norisPayment.variabilny_symbol !== undefined &&
+        norisPayment.uhrazeno !== undefined &&
+        norisPayment.zbyva_uhradit !== undefined,
+    )
+
+    // Step 2: Process each payment separately
+    const paymentProcesses = validPayments.map((norisPayment) =>
+      this.processIndividualPayment(
+        norisPayment,
+        taxesDataByVsMap,
+        taxPaymentDataMap,
+        userDataFromCityAccount,
+      ),
+    )
+
+    // Step 3: Execute all payment processes concurrently
+    return Promise.all(paymentProcesses)
+  }
+
+  private async processIndividualPayment(
+    norisPayment: Partial<NorisPaymentsDto>,
+    taxesDataByVsMap: Map<string, any>,
+    taxPaymentDataMap: Map<number, { sum: number; count: number }>,
+    userDataFromCityAccount: Record<string, any> = {},
+  ) {
+    try {
+      const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol!)
+
+      if (!taxData) {
+        return 'NOT_EXIST'
+      }
+
+      const payerData = taxPaymentDataMap.get(taxData.id) || {
+        sum: 0,
+        count: 0,
+      }
+      const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!)
+      const toPayFromNoris = this.formatAmount(norisPayment.zbyva_uhradit!)
+
+      // Early return if payment already recorded
+      if (payerData.sum !== null && payerData.sum >= paidFromNoris) {
+        return 'ALREADY_CREATED'
+      }
+
+      const createdTaxPayment = await this.prismaService.taxPayment.create({
+        data: {
+          amount: paidFromNoris - (payerData.sum ?? 0),
+          source: 'BANK_ACCOUNT',
+          specificSymbol: norisPayment.specificky_symbol,
+          taxId: taxData.id,
+          status: PaymentStatus.SUCCESS,
+        },
+      })
+
+      await this.trackPaymentIfNeeded(
+        taxData,
+        createdTaxPayment,
+        userDataFromCityAccount,
+      )
+
+      this.handlePaymentsErrors(
+        paidFromNoris,
+        taxData,
+        toPayFromNoris,
+        payerData.count,
+      )
+      return 'CREATED'
+    } catch (error) {
+      return this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        undefined,
+        undefined,
+        error as Error,
+      )
+    }
+  }
+
+  private async trackPaymentIfNeeded(
+    taxData: any,
+    createdTaxPayment: any,
+    userDataFromCityAccount: Record<string, any>,
+  ) {
+    const userFromCityAccount =
+      userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
+
+    if (userFromCityAccount && userFromCityAccount.externalId) {
+      await this.bloomreachService.trackEventTaxPayment(
+        {
+          amount: createdTaxPayment.amount,
+          payment_source: 'BANK_ACCOUNT',
+          year: taxData.year,
+        },
+        userFromCityAccount.externalId,
+      )
+    }
+  }
+
   async updatePaymentsFromNorisWithData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
   ) {
-    let created = 0
-    let alreadyCreated = 0
     const taxesDataByVsMap =
       await this.createTaxMapByVariableSymbol(norisPaymentData)
 
@@ -403,82 +507,26 @@ export class AdminService {
         ),
       )
 
-    await Promise.all(
-      norisPaymentData
-        // despite the retype, do not trust the data from Noris & approach as if they were all optional
-        .filter((norisPayment) => {
-          return (
-            norisPayment.variabilny_symbol !== undefined &&
-            norisPayment.uhrazeno !== undefined &&
-            norisPayment.zbyva_uhradit !== undefined
-          )
-        })
-        .map(async (norisPayment) => {
-          try {
-            const taxData = taxesDataByVsMap.get(
-              norisPayment.variabilny_symbol!,
-            ) // we know it's not undefined from filter
-
-            if (!taxData) {
-              return
-            }
-
-            const payerData = taxPaymentDataMap.get(taxData.id) || {
-              sum: 0,
-              count: 0,
-            }
-            const paidFromNoris = this.formatAmount(norisPayment.uhrazeno!) // we know it's not undefined from filter
-            const toPayFromNoris = this.formatAmount(
-              norisPayment.zbyva_uhradit!,
-            ) // we know it's not undefined from filter
-
-            if (payerData.sum === null || payerData.sum < paidFromNoris) {
-              created += 1
-              const createdTaxPayment =
-                await this.prismaService.taxPayment.create({
-                  data: {
-                    amount: paidFromNoris - (payerData.sum ?? 0),
-                    source: 'BANK_ACCOUNT',
-                    specificSymbol: norisPayment.specificky_symbol,
-                    taxId: taxData.id,
-                    status: PaymentStatus.SUCCESS,
-                  },
-                })
-              const userFromCityAccount =
-                userDataFromCityAccount[taxData.taxPayer.birthNumber] || null
-              if (userFromCityAccount && userFromCityAccount.externalId) {
-                await this.bloomreachService.trackEventTaxPayment(
-                  {
-                    amount: createdTaxPayment.amount,
-                    payment_source: 'BANK_ACCOUNT',
-                    year: taxData.year,
-                  },
-                  userFromCityAccount.externalId,
-                )
-              }
-
-              this.handlePaymentsErrors(
-                paidFromNoris,
-                taxData,
-                toPayFromNoris,
-                payerData.count,
-              )
-            } else {
-              alreadyCreated += 1
-            }
-          } catch (error) {
-            this.logger.error(
-              this.throwerErrorGuard.InternalServerErrorException(
-                ErrorsEnum.INTERNAL_SERVER_ERROR,
-                ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-                undefined,
-                undefined,
-                error as Error,
-              ),
-            )
-          }
-        }),
+    const successList = await this.processNorisPaymentData(
+      norisPaymentData,
+      taxesDataByVsMap,
+      taxPaymentDataMap,
+      userDataFromCityAccount,
     )
+    const created = successList.filter((item) => item === 'CREATED').length
+    const alreadyCreated = successList.filter(
+      (item) => item === 'ALREADY_CREATED',
+    ).length
+    const errors: HttpException[] = successList.filter(
+      (item) => item instanceof Error,
+    )
+
+    if (errors.length > 0) {
+      this.logger.error(
+        'Encountered errors while batch processing Noris payments:',
+        errors,
+      )
+    }
 
     return {
       created,

@@ -301,11 +301,13 @@ const calculateInstallmentPaymentDetails = (
       installment.status === InstallmentPaidStatusEnum.PARTIALLY_PAID,
   )
 
+  // All valid reasons for no active payment should have been caught before
+  // `calculateInstallmentAmounts` call
   if (!active) {
-    return {
-      isPossible: false,
-      reasonNotPossible: InstallmentPaymentReasonNotPossibleEnum.ALREADY_PAID,
-    }
+    throw new ThrowerErrorGuard().InternalServerErrorException(
+      CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,
+      CustomErrorTaxTypesResponseEnum.INSTALLMENT_UNEXPECTED_ERROR,
+    )
   }
 
   let paymentNote

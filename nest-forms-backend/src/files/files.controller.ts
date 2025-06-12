@@ -25,14 +25,12 @@ import contentDisposition from 'content-disposition'
 import { Response } from 'express'
 import { contentType } from 'mime-types'
 
-import {
-  UserInfo,
-  UserInfoResponse,
-} from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import BasicGuard from '../auth/guards/auth-basic.guard'
-import CognitoGuard from '../auth/guards/cognito.guard'
-import { User } from '../utils/decorators/request.decorator'
+import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decorator'
+import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
+import { GetUser } from '../auth-v2/decorators/get-user.decorator'
+import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
+import { User as UserV2, UserType } from '../auth-v2/types/user'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import {
   BufferedFileDto,
@@ -65,14 +63,16 @@ export default class FilesController {
     type: GetFileResponseReducedDto,
     isArray: true,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Get('forms/:formId')
   getFilesStatusByForm(
     @Param('formId') formId: string,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @GetUser() user: UserV2,
   ): Promise<GetFileResponseReducedDto[]> {
-    return this.filesService.getFilesByForm(formId, userInfo?.ico ?? null, user)
+    return this.filesService.getFilesByForm(formId, user)
   }
 
   // patch controller which accepts status updates for file. Add swagger documentation.
@@ -123,23 +123,19 @@ export default class FilesController {
       },
     },
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Post('upload/:formId')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: BufferedFileDto,
     @Param('formId') formId: string,
     @Body() body: FormDataFileDto,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @GetUser() user: UserV2,
   ): Promise<PostFileResponseDto> {
-    return this.filesService.uploadFile(
-      formId,
-      file,
-      body,
-      userInfo?.ico ?? null,
-      user,
-    )
+    return this.filesService.uploadFile(formId, file, body, user)
   }
 
   @ApiOperation({
@@ -149,14 +145,16 @@ export default class FilesController {
   @ApiOkResponse({
     type: DownloadTokenResponseDataDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Get('download/jwt/:fileId')
   async downloadToken(
     @Param('fileId') fileId: string,
-    @UserInfo() userInfo: UserInfoResponse,
-    @User() user?: CognitoGetUserData,
+    @GetUser() user: UserV2,
   ): Promise<DownloadTokenResponseDataDto> {
-    return this.filesService.downloadToken(fileId, userInfo?.ico ?? null, user)
+    return this.filesService.downloadToken(fileId, user)
   }
 
   @ApiOperation({

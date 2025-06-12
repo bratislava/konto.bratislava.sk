@@ -6,8 +6,8 @@ import {
   formatValidateXmlResultErrors,
   validateXml,
 } from 'forms-shared/slovensko-sk/validateXml'
+import { User } from 'src/auth-v2/types/user'
 
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
 import {
   FormsErrorsEnum,
@@ -51,13 +51,11 @@ export default class SignerService {
 
   async getSignerData(
     data: SignerDataRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<SignerDataResponseDto> {
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
-      user?.sub ?? null,
-      ico,
+      user,
     )
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)

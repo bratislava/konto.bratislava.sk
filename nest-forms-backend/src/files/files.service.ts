@@ -5,8 +5,9 @@ import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
+import { FormAccessService } from 'src/forms-v2/services/form-access.service'
 
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
+import { User } from '../auth-v2/types/user'
 import {
   isValidScanStatus,
   processingScanStatuses,
@@ -51,6 +52,7 @@ export default class FilesService {
     private formsHelper: FormsHelper,
     private throwerErrorGuard: ThrowerErrorGuard,
     private readonly nasesConsumerHelper: NasesConsumerHelper,
+    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('FilesService')
     this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
@@ -84,8 +86,7 @@ export default class FilesService {
 
   async getFileWithUserVerify(
     fileId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<GetFileResponseDto> {
     // get file from database
     let file
@@ -119,13 +120,11 @@ export default class FilesService {
       )
     }
 
-    if (
-      !this.formsHelper.isFormAccessGranted(
-        file.forms,
-        user ? user.sub : null,
-        ico,
-      )
-    ) {
+    const hasAccess = await this.formAccessService.hasAccess(
+      file.forms.id,
+      user,
+    )
+    if (!hasAccess) {
       throw this.throwerErrorGuard.ForbiddenException(
         FilesErrorsEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
         FilesErrorsResponseEnum.FILE_IS_OWNED_BY_SOMEONE_ELSE_ERROR,
@@ -136,14 +135,9 @@ export default class FilesService {
 
   async getFilesByForm(
     formId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<GetFileResponseReducedDto[]> {
-    await this.formsService.getFormWithAccessCheck(
-      formId,
-      user ? user.sub : null,
-      ico,
-    )
+    await this.formsService.getFormWithAccessCheck(formId, user)
 
     let files
     try {
@@ -260,10 +254,8 @@ export default class FilesService {
     formId: string,
     bufferedFile: BufferedFileDto,
     data: FormDataFileDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<PostFileResponseDto> {
-    const userId = user ? user.sub : null
     const fileName = data.filename
     const fileId = data.id
     this.logger.log(
@@ -297,11 +289,7 @@ export default class FilesService {
       )
     }
 
-    const form = await this.formsService.getFormWithAccessCheck(
-      formId,
-      userId,
-      ico,
-    )
+    const form = await this.formsService.getFormWithAccessCheck(formId, user)
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {
       throw this.throwerErrorGuard.NotAcceptableException(
@@ -428,11 +416,10 @@ export default class FilesService {
 
   async downloadToken(
     fileId: string,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<DownloadTokenResponseDataDto> {
     this.logger.log(`Received token download request for fileId ${fileId}.`)
-    await this.getFileWithUserVerify(fileId, ico, user)
+    await this.getFileWithUserVerify(fileId, user)
     const payload = { fileId }
     const token = jwt.sign(payload, this.jwtSecret, { expiresIn: '30s' })
     return {

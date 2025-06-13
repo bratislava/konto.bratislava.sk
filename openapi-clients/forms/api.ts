@@ -106,6 +106,32 @@ export interface ConvertToPdfRequestDto {
 /**
  *
  * @export
+ * @interface CreateFormInput
+ */
+export interface CreateFormInput {
+  /**
+   *
+   * @type {string}
+   * @memberof CreateFormInput
+   */
+  formDefinitionSlug: string
+}
+/**
+ *
+ * @export
+ * @interface CreateFormOutput
+ */
+export interface CreateFormOutput {
+  /**
+   *
+   * @type {string}
+   * @memberof CreateFormOutput
+   */
+  formId: string
+}
+/**
+ *
+ * @export
  * @interface CreateFormRequestDto
  */
 export interface CreateFormRequestDto {
@@ -3049,6 +3075,158 @@ export class FormsApi extends BaseAPI {
   public formsControllerBumpJsonVersion(id: string, options?: RawAxiosRequestConfig) {
     return FormsApiFp(this.configuration)
       .formsControllerBumpJsonVersion(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * FormsV2Api - axios parameter creator
+ * @export
+ */
+export const FormsV2ApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary
+     * @param {CreateFormInput} createFormInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsV2ControllerCreateForm: async (
+      createFormInput: CreateFormInput,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createFormInput' is not null or undefined
+      assertParamExists('formsV2ControllerCreateForm', 'createFormInput', createFormInput)
+      const localVarPath = `/forms-v2`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createFormInput,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * FormsV2Api - functional programming interface
+ * @export
+ */
+export const FormsV2ApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = FormsV2ApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary
+     * @param {CreateFormInput} createFormInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async formsV2ControllerCreateForm(
+      createFormInput: CreateFormInput,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateFormOutput>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.formsV2ControllerCreateForm(
+        createFormInput,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FormsV2Api.formsV2ControllerCreateForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * FormsV2Api - factory interface
+ * @export
+ */
+export const FormsV2ApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = FormsV2ApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary
+     * @param {CreateFormInput} createFormInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    formsV2ControllerCreateForm(
+      createFormInput: CreateFormInput,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<CreateFormOutput> {
+      return localVarFp
+        .formsV2ControllerCreateForm(createFormInput, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * FormsV2Api - object-oriented interface
+ * @export
+ * @class FormsV2Api
+ * @extends {BaseAPI}
+ */
+export class FormsV2Api extends BaseAPI {
+  /**
+   *
+   * @summary
+   * @param {CreateFormInput} createFormInput
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FormsV2Api
+   */
+  public formsV2ControllerCreateForm(
+    createFormInput: CreateFormInput,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return FormsV2ApiFp(this.configuration)
+      .formsV2ControllerCreateForm(createFormInput, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

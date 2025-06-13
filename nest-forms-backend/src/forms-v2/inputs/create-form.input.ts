@@ -5,5 +5,5 @@ export class CreateFormInput {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  declare formDefinitionSlug: string
+  formDefinitionSlug!: string
 }

@@ -51,7 +51,7 @@ type TaxDetail = {
   area: string | null
 }
 
-export const taxDetail = (
+export const mapNorisToTaxDetailData = (
   data: NorisTaxPayersDto,
   taxId: number,
 ): TaxDetail[] => {

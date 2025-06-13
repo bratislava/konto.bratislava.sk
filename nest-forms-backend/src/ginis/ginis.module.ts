@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
+import BaConfigModule from '../config/ba-config.module'
+import BaConfigService from '../config/ba-config.service'
 import ConvertModule from '../convert/convert.module'
 import ConvertPdfModule from '../convert-pdf/convert-pdf.module'
 import FilesModule from '../files/files.module'
@@ -27,8 +29,18 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     RabbitmqClientModule,
     ConvertPdfModule,
     TaxModule,
-    BullModule.registerQueue({
-      name: 'sharepoint',
+    BullModule.registerQueueAsync({
+      imports: [BaConfigModule],
+      inject: [BaConfigService],
+      useFactory: async (baConfigService: BaConfigService) => ({
+        redis: {
+          host: baConfigService.redis.service,
+          port: baConfigService.redis.port,
+          username: baConfigService.redis.username,
+          password: baConfigService.redis.password,
+        },
+        name: 'sharepoint',
+      }),
     }),
     ClientsModule,
     UserInfoPipeModule,

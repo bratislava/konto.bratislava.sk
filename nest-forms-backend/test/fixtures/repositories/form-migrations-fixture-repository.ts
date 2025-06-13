@@ -21,8 +21,6 @@ export class FormMigrationsFixtureRepository {
   async deleteMany(
     migrations: { cognitoAuthSub: string; cognitoGuestIdentityId: string }[],
   ) {
-    if (migrations.length === 0) return
-
     this.prismaService.formMigration.deleteMany({
       where: {
         OR: migrations.map((migration) => ({

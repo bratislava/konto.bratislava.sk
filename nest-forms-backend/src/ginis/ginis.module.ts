@@ -30,6 +30,7 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
     ConvertPdfModule,
     TaxModule,
     BullModule.registerQueueAsync({
+      name: 'sharepoint',
       imports: [BaConfigModule],
       inject: [BaConfigService],
       useFactory: async (baConfigService: BaConfigService) => ({
@@ -39,7 +40,6 @@ import GinisTasksSubservice from './subservices/ginis-tasks.subservice'
           username: baConfigService.redis.username,
           password: baConfigService.redis.password,
         },
-        name: 'sharepoint',
       }),
     }),
     ClientsModule,

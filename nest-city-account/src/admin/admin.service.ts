@@ -516,7 +516,7 @@ export class AdminService {
         UserErrorsResponseEnum.USER_NOT_FOUND
       )
     }
-    
+
     await this.prismaService.user.update({
       where: { birthNumber: data.birthNumber },
       data: {

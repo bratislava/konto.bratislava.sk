@@ -35,7 +35,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
         redis: {
           host: baConfigService.redis.service,
           port: baConfigService.redis.port,
-          username: baConfigService.redis.username,
+          username: 'default',
           password: baConfigService.redis.password,
         },
       }),

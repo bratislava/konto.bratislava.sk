@@ -10,6 +10,7 @@ import FilesService from '../files/files.service'
 import FormValidatorRegistryModule from '../form-validator-registry/form-validator-registry.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
+import { FormsV2Module } from '../forms-v2/forms-v2.module'
 import NasesConsumerModule from '../nases-consumer/nases-consumer.module'
 import PrismaModule from '../prisma/prisma.module'
 import RabbitmqClientModule from '../rabbitmq-client/rabbitmq-client.module'
@@ -35,6 +36,7 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
     FormValidatorRegistryModule,
     ClientsModule,
     UserInfoPipeModule,
+    FormsV2Module,
   ],
   providers: [
     NasesService,

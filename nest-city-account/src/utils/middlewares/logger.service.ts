@@ -7,8 +7,7 @@ import { LineLoggerSubservice } from '../subservices/line-logger.subservice'
 @Injectable()
 export default class AppLoggerMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: NextFunction): void {
-    const { method, originalUrl, body, ip, userAgent, userId } =
-      this.extractRequestData(request)
+    const { method, originalUrl, body, ip, userAgent, userId } = this.extractRequestData(request)
     const startAt = process.hrtime()
     response.locals.middlewareUsed = 'true'
 
@@ -17,10 +16,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
     response.send = (exitData: string | object | Buffer | Array<any>) => {
       response.locals.middlewareUsed = undefined
 
-      const { responseData, logData, returnExitData } = this.parseExitData(
-        response,
-        exitData,
-      )
+      const { responseData, logData, returnExitData } = this.parseExitData(response, exitData)
 
       const logger = new LineLoggerSubservice(response.statusMessage)
 
@@ -83,18 +79,13 @@ export default class AppLoggerMiddleware implements NestMiddleware {
   private parseExitData(
     response: Response,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    exitData: string | object | Buffer | Array<any>,
+    exitData: string | object | Buffer | Array<any>
   ): {
     returnExitData: typeof exitData
     responseData: string
     logData: Record<string, unknown>
   } {
-    if (
-      !response
-        ?.getHeader('content-type')
-        ?.toString()
-        .includes('application/json')
-    ) {
+    if (!response?.getHeader('content-type')?.toString().includes('application/json')) {
       return {
         responseData: <string>exitData,
         returnExitData: exitData,
@@ -129,7 +120,7 @@ export default class AppLoggerMiddleware implements NestMiddleware {
 
     // Filter out keys starting with `$`. We will log them later
     const { responseLog, responseMessage } = separateLogFromResponseObj(
-      typeof exitData === 'string' ? JSON.parse(exitData) : exitData,
+      typeof exitData === 'string' ? JSON.parse(exitData) : exitData
     )
     const returnExitData = JSON.stringify(responseMessage)
 

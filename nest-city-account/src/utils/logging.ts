@@ -14,9 +14,7 @@ import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
  * need for a query.
  */
 export function escapeForLogfmt(value: string): string {
-  return value
-    .replaceAll(/["\\]/g, String.raw`\$&`)
-    .replaceAll('\n', String.raw`\n`)
+  return value.replaceAll(/["\\]/g, String.raw`\$&`).replaceAll('\n', String.raw`\n`)
 }
 
 /**
@@ -27,17 +25,13 @@ export function escapeForLogfmt(value: string): string {
  * a key will be replaced by their descriptions.
  */
 export function separateLogFromResponseObj<T extends object>(
-  obj: T,
+  obj: T
 ): {
   responseLog: { [K: string]: T[keyof T] }
   responseMessage: { [K: string]: T[keyof T] }
 } {
-  const responseLog: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
-  const responseMessage: ReturnType<
-    typeof separateLogFromResponseObj
-  >['responseLog'] = {}
+  const responseLog: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
+  const responseMessage: ReturnType<typeof separateLogFromResponseObj>['responseLog'] = {}
 
   Object.getOwnPropertyNames(obj).forEach((objKey) => {
     if (errorTypeStrings.includes(objKey)) {
@@ -89,14 +83,11 @@ export function objToLogfmt(obj: object): string {
     .join(' ')
 }
 
-function httpExceptionToObj(
-  error: HttpException,
-  methodName?: string | symbol,
-): object {
+function httpExceptionToObj(error: HttpException, methodName?: string | symbol): object {
   const response = error.getResponse()
   try {
     const { responseLog, responseMessage } = separateLogFromResponseObj(
-      typeof response === 'string' ? JSON.parse(response) : response,
+      typeof response === 'string' ? JSON.parse(response) : response
     )
     return {
       errorType: error.name,
@@ -115,10 +106,7 @@ function httpExceptionToObj(
   }
 }
 
-function requiredErrorToObj(
-  error: RequiredError,
-  methodName?: string | symbol,
-): object {
+function requiredErrorToObj(error: RequiredError, methodName?: string | symbol): object {
   return {
     errorType: 'RequiredError',
     message: error.message,
@@ -137,10 +125,7 @@ function genericErrorToObj(error: Error, methodName?: string | symbol): object {
   }
 }
 
-export function errorToLogfmt(
-  error: unknown,
-  methodName?: string | symbol,
-): string {
+export function errorToLogfmt(error: unknown, methodName?: string | symbol): string {
   if (error instanceof HttpException) {
     return objToLogfmt(httpExceptionToObj(error, methodName))
   }

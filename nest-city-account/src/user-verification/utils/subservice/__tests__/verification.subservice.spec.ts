@@ -5,9 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { MagproxyService } from '../../../../magproxy/magproxy.service'
 import { PhysicalEntityService } from '../../../../physical-entity/physical-entity.service'
 import { RfoIdentityListElement } from '../../../../rfo-by-birthnumber/dtos/rfoSchema'
-import ThrowerErrorGuard, {
-  ErrorMessengerGuard,
-} from '../../../../utils/guards/errors.guard'
+import ThrowerErrorGuard, { ErrorMessengerGuard } from '../../../../utils/guards/errors.guard'
 import { VerificationErrorsEnum } from '../../../verification.errors.enum'
 import { DatabaseSubserviceUser } from '../database.subservice'
 import { VerificationSubservice } from '../verification.subservice'
@@ -118,9 +116,8 @@ describe('VerificationSubservice', () => {
         expect.objectContaining({
           statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           status: 'CustomError',
-          errorName:
-            VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
-        }),
+          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        })
       )
     })
 
@@ -134,9 +131,8 @@ describe('VerificationSubservice', () => {
         expect.objectContaining({
           statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           status: 'CustomError',
-          errorName:
-            VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
-        }),
+          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        })
       )
     })
 
@@ -148,9 +144,8 @@ describe('VerificationSubservice', () => {
         expect.objectContaining({
           statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           status: 'CustomError',
-          errorName:
-            VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
-        }),
+          errorName: VerificationErrorsEnum.BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY,
+        })
       )
     })
 
@@ -179,7 +174,7 @@ describe('VerificationSubservice', () => {
           statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           status: 'CustomError',
           errorName: VerificationErrorsEnum.DEAD_PERSON,
-        }),
+        })
       )
     })
   })

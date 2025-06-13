@@ -76,9 +76,9 @@ export class AdminCronSubservice {
         `Attempt to set new offset: ${newOffset}, previous offset: ${currentOffset}, untestedEntitiesCount: ${physicalEntitiesWithoutUriVerificationAttemptsCount}`
       )
       await this.prismaService.$transaction(async (tx) => {
-        const { value } = await tx.config.findUnique({
+        const { value } = (await tx.config.findUnique({
           where: { key: this.edeskCognitoConfigDbkey },
-        }) as Config // Existence in db is checked at the start of the function
+        })) as Config // Existence in db is checked at the start of the function
         const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
         await tx.config.update({
           where: { key: this.edeskCognitoConfigDbkey },
@@ -144,9 +144,9 @@ export class AdminCronSubservice {
     const newOffset = config.offset + 1
     this.logger.log(`Attempt to set new offset: ${newOffset}`)
     await this.prismaService.$transaction(async (tx) => {
-      const { value } = await tx.config.findUnique({
+      const { value } = (await tx.config.findUnique({
         where: { key: this.edeskRfoConfigDbkey },
-      }) as Config // Existence in db is checked at the start of the function
+      })) as Config // Existence in db is checked at the start of the function
       const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
       // if offset was moved in between abort
       if (validatedValue.offset !== config.offset) {

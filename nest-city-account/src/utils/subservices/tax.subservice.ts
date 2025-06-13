@@ -74,13 +74,10 @@ export class TaxSubservice {
   }
 
   async deleteTax(data: RequestAdminDeleteTaxDto) {
-    return this.taxBackendAdminApi.adminControllerDeleteTax(
-      data,
-      {
-        headers: {
-          apiKey: this.config.taxBackendApiKey,
-        },
-      }
-    )
+    return this.taxBackendAdminApi.adminControllerDeleteTax(data, {
+      headers: {
+        apiKey: this.config.taxBackendApiKey,
+      },
+    })
   }
 }

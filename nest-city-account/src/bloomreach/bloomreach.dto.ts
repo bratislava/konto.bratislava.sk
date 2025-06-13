@@ -27,7 +27,7 @@ export enum AnonymizeResponse {
   NOT_FOUND = 'NOT_FOUND',
   NOT_ACTIVE = 'NOT_ACTIVE',
   ERROR = 'ERROR',
-  SUCCESS = 'SUCCESS'
+  SUCCESS = 'SUCCESS',
 }
 
 export class ConsentBloomreachDataDto {

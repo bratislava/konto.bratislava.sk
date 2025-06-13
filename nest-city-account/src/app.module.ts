@@ -14,7 +14,15 @@ import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule, VerificationModule, AdminModule, ScheduleModule.forRoot(), ConfigModule.forRoot({ isGlobal: true })],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UserModule,
+    VerificationModule,
+    AdminModule,
+    ScheduleModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
+  ],
   controllers: [AppController],
   providers: [TaxSubservice, TasksSubservice, ThrowerErrorGuard],
 })

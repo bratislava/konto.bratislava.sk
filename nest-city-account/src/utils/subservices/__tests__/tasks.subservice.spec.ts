@@ -12,19 +12,17 @@ import { TaxSubservice } from '../tax.subservice'
 
 jest.mock('../../decorators/errorHandler.decorators', () => {
   return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
-      const originalMethod = descriptor.value
+    const originalMethod = descriptor.value
 
-      descriptor.value = async function(...args: undefined[]) {
-        try {
-          const result = await originalMethod.apply(this, args)
-          return result
-        } catch (error) {
-        }
-        return null
-      }
-      return descriptor
-    },
-  )
+    descriptor.value = async function (...args: undefined[]) {
+      try {
+        const result = await originalMethod.apply(this, args)
+        return result
+      } catch (error) {}
+      return null
+    }
+    return descriptor
+  })
 })
 
 type UserWithRelations = Prisma.UserGetPayload<{

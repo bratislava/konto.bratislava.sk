@@ -2,34 +2,33 @@
 
 All URIs are relative to _http://localhost:3000_
 
-| Method                                                                                    | HTTP request                       | Description |
-| ----------------------------------------------------------------------------------------- | ---------------------------------- | ----------- |
-| [**formMigrationsControllerClaimMigration**](#formmigrationscontrollerclaimmigration)     | **POST** /forms/migrations/claim   |             |
-| [**formMigrationsControllerPrepareMigration**](#formmigrationscontrollerpreparemigration) | **POST** /forms/migrations/prepare |             |
+| Method                                                                                    | HTTP request                              | Description |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------- | ----------- |
+| [**formMigrationsControllerClaimMigration**](#formmigrationscontrollerclaimmigration)     | **POST** /forms/migrations/claim/{formId} |             |
+| [**formMigrationsControllerPrepareMigration**](#formmigrationscontrollerpreparemigration) | **POST** /forms/migrations/prepare        |             |
 
 # **formMigrationsControllerClaimMigration**
 
-> ClaimMigrationOutput formMigrationsControllerClaimMigration(claimMigrationInput)
+> ClaimMigrationOutput formMigrationsControllerClaimMigration()
 
 ### Example
 
 ```typescript
-import { FormMigrationsApi, Configuration, ClaimMigrationInput } from './api'
+import { FormMigrationsApi, Configuration } from './api'
 
 const configuration = new Configuration()
 const apiInstance = new FormMigrationsApi(configuration)
 
-let claimMigrationInput: ClaimMigrationInput //
+let formId: string // (default to undefined)
 
-const { status, data } =
-  await apiInstance.formMigrationsControllerClaimMigration(claimMigrationInput)
+const { status, data } = await apiInstance.formMigrationsControllerClaimMigration(formId)
 ```
 
 ### Parameters
 
-| Name                    | Type                    | Description | Notes |
-| ----------------------- | ----------------------- | ----------- | ----- |
-| **claimMigrationInput** | **ClaimMigrationInput** |             |       |
+| Name       | Type         | Description | Notes                 |
+| ---------- | ------------ | ----------- | --------------------- |
+| **formId** | [**string**] |             | defaults to undefined |
 
 ### Return type
 
@@ -37,11 +36,11 @@ const { status, data } =
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: Not defined
 - **Accept**: application/json
 
 ### HTTP response details

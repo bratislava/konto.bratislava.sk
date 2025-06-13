@@ -55,19 +55,6 @@ export interface BumpJsonVersionResponseDto {
 /**
  *
  * @export
- * @interface ClaimMigrationInput
- */
-export interface ClaimMigrationInput {
-  /**
-   *
-   * @type {string}
-   * @memberof ClaimMigrationInput
-   */
-  formId: string
-}
-/**
- *
- * @export
  * @interface ClaimMigrationOutput
  */
 export interface ClaimMigrationOutput {
@@ -508,6 +495,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   jsonVersion: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof GetFormResponseDto
+   */
+  requiresMigration: boolean
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -2685,21 +2678,20 @@ export const FormMigrationsApiAxiosParamCreator = function (configuration?: Conf
   return {
     /**
      *
-     * @param {ClaimMigrationInput} claimMigrationInput
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formMigrationsControllerClaimMigration: async (
-      claimMigrationInput: ClaimMigrationInput,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'claimMigrationInput' is not null or undefined
-      assertParamExists(
-        'formMigrationsControllerClaimMigration',
-        'claimMigrationInput',
-        claimMigrationInput,
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('formMigrationsControllerClaimMigration', 'formId', formId)
+      const localVarPath = `/forms/migrations/claim/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
-      const localVarPath = `/forms/migrations/claim`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2711,7 +2703,9 @@ export const FormMigrationsApiAxiosParamCreator = function (configuration?: Conf
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
-      localVarHeaderParameter['Content-Type'] = 'application/json'
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2720,11 +2714,6 @@ export const FormMigrationsApiAxiosParamCreator = function (configuration?: Conf
         ...headersFromBaseOptions,
         ...options.headers,
       }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        claimMigrationInput,
-        localVarRequestOptions,
-        configuration,
-      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -2795,19 +2784,16 @@ export const FormMigrationsApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @param {ClaimMigrationInput} claimMigrationInput
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async formMigrationsControllerClaimMigration(
-      claimMigrationInput: ClaimMigrationInput,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClaimMigrationOutput>> {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.formMigrationsControllerClaimMigration(
-          claimMigrationInput,
-          options,
-        )
+        await localVarAxiosParamCreator.formMigrationsControllerClaimMigration(formId, options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['FormMigrationsApi.formMigrationsControllerClaimMigration']?.[
@@ -2865,16 +2851,16 @@ export const FormMigrationsApiFactory = function (
   return {
     /**
      *
-     * @param {ClaimMigrationInput} claimMigrationInput
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     formMigrationsControllerClaimMigration(
-      claimMigrationInput: ClaimMigrationInput,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ClaimMigrationOutput> {
       return localVarFp
-        .formMigrationsControllerClaimMigration(claimMigrationInput, options)
+        .formMigrationsControllerClaimMigration(formId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2903,17 +2889,14 @@ export const FormMigrationsApiFactory = function (
 export class FormMigrationsApi extends BaseAPI {
   /**
    *
-   * @param {ClaimMigrationInput} claimMigrationInput
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof FormMigrationsApi
    */
-  public formMigrationsControllerClaimMigration(
-    claimMigrationInput: ClaimMigrationInput,
-    options?: RawAxiosRequestConfig,
-  ) {
+  public formMigrationsControllerClaimMigration(formId: string, options?: RawAxiosRequestConfig) {
     return FormMigrationsApiFp(this.configuration)
-      .formMigrationsControllerClaimMigration(claimMigrationInput, options)
+      .formMigrationsControllerClaimMigration(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -3615,6 +3598,9 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication cognitoGuestIdentityId required
+      await setApiKeyToObject(localVarHeaderParameter, 'X-Cognito-Guest-Identity-Id', configuration)
 
       // authentication bearer required
       // http bearer authentication required

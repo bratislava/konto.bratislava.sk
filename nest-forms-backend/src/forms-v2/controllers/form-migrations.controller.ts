@@ -1,17 +1,22 @@
 import {
   Body,
   Controller,
-  NotImplementedException,
+  Param,
+  ParseUUIDPipe,
   Post,
   UseGuards,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger'
 
 import { AllowedUserTypes } from '../../auth-v2/decorators/allowed-user-types.decorator'
 import { GetUser } from '../../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../../auth-v2/guards/user-auth.guard'
 import { AuthUser, UserType } from '../../auth-v2/types/user'
-import { ClaimMigrationInput } from '../inputs/claim-migration.input'
 import { PrepareMigrationInput } from '../inputs/prepare-migration.input'
 import { ClaimMigrationOutput } from '../outputs/claim-migration.output'
 import { PrepareMigrationOutput } from '../outputs/prepare-migration.output'
@@ -41,18 +46,24 @@ export class FormMigrationsController {
     return { success: true }
   }
 
-  @Post('claim')
+  @Post('claim/:formId')
   @ApiOkResponse({
     type: ClaimMigrationOutput,
   })
+  @ApiParam({
+    name: 'formId',
+    type: 'string',
+    format: 'uuid',
+  })
+  @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth])
   @UseGuards(UserAuthGuard)
   async claimMigration(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Body() claimMigrationInput: ClaimMigrationInput,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Param('formId', ParseUUIDPipe) formId: string,
     @GetUser() user: AuthUser,
   ): Promise<ClaimMigrationOutput> {
-    throw new NotImplementedException()
+    const success = await this.formMigrationService.claimMigration(user, formId)
+
+    return { success }
   }
 }

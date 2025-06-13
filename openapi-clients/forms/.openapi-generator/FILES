@@ -7,7 +7,6 @@ common.ts
 configuration.ts
 docs/ADMINApi.md
 docs/BumpJsonVersionResponseDto.md
-docs/ClaimMigrationInput.md
 docs/ClaimMigrationOutput.md
 docs/ConvertApi.md
 docs/ConvertToPdfRequestDto.md

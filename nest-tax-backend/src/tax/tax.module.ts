@@ -6,11 +6,13 @@ import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
+import { PaymentModule } from '../payment/payment.module'
 import { TaxController } from './tax.controller'
 import { TaxService } from './tax.service'
+import { TaxControllerV2 } from './tax.v2.controller'
 
 @Module({
-  imports: [PrismaModule, ClientsModule, UserInfoPipeModule],
+  imports: [PrismaModule, PaymentModule, ClientsModule, UserInfoPipeModule],
   providers: [
     TaxService,
     CognitoSubservice,
@@ -18,6 +20,6 @@ import { TaxService } from './tax.service'
     QrCodeSubservice,
   ],
   exports: [TaxService],
-  controllers: [TaxController],
+  controllers: [TaxController, TaxControllerV2],
 })
 export class TaxModule {}

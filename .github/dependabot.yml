@@ -64,6 +64,15 @@ updates:
         patterns:
           - '@aws-sdk/*'
           - 'aws-jwt-verify'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-clamav-scanner'
     schedule:
@@ -78,6 +87,15 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-tax-backend'
     schedule:
@@ -93,6 +111,15 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-city-account'
     schedule:
@@ -107,3 +134,12 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'

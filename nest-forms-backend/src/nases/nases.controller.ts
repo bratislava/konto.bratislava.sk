@@ -89,9 +89,9 @@ export default class NasesController {
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
   @UseGuards(UserAuthGuard, FormAccessGuard)
-  @Get('form/:id')
+  @Get('form/:formId')
   async getForm(
-    @Param('id') id: string,
+    @Param('formId') id: string,
     @GetUser() user: UserV2,
     @GetFormAccessType() accessType: FormAccessType,
   ): Promise<GetFormResponseDto> {

@@ -3577,17 +3577,20 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Return form by ID and by logged user
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForm: async (
-      id: string,
+      formId: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('nasesControllerGetForm', 'id', id)
-      const localVarPath = `/nases/form/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('nasesControllerGetForm', 'formId', formId)
+      const localVarPath = `/nases/form/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -3975,15 +3978,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
     /**
      * Return form by ID and by logged user
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetForm(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(id, options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(
+        formId,
+        options,
+      )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['NasesApi.nasesControllerGetForm']?.[localVarOperationServerIndex]?.url
@@ -4196,16 +4202,16 @@ export const NasesApiFactory = function (
     /**
      * Return form by ID and by logged user
      * @summary
-     * @param {string} id
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForm(
-      id: string,
+      formId: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
-        .nasesControllerGetForm(id, options)
+        .nasesControllerGetForm(formId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4348,14 +4354,14 @@ export class NasesApi extends BaseAPI {
   /**
    * Return form by ID and by logged user
    * @summary
-   * @param {string} id
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerGetForm(id: string, options?: RawAxiosRequestConfig) {
+  public nasesControllerGetForm(formId: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetForm(id, options)
+      .nasesControllerGetForm(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

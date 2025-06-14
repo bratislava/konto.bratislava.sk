@@ -6,7 +6,7 @@ All URIs are relative to _http://localhost:3000_
 | ------------------------------------------------------------------------------- | --------------------------------------------- | ------------------- |
 | [**nasesControllerCreateForm**](#nasescontrollercreateform)                     | **POST** /nases/create-form                   |                     |
 | [**nasesControllerDeleteForm**](#nasescontrollerdeleteform)                     | **DELETE** /nases/{id}                        |                     |
-| [**nasesControllerGetForm**](#nasescontrollergetform)                           | **GET** /nases/form/{id}                      |                     |
+| [**nasesControllerGetForm**](#nasescontrollergetform)                           | **GET** /nases/form/{formId}                  |                     |
 | [**nasesControllerGetForms**](#nasescontrollergetforms)                         | **GET** /nases/forms                          | Get paginated forms |
 | [**nasesControllerMigrateForm**](#nasescontrollermigrateform)                   | **POST** /nases/migrate-form/{id}             |                     |
 | [**nasesControllerSendAndUpdateForm**](#nasescontrollersendandupdateform)       | **POST** /nases/send-and-update-form/{id}     |                     |
@@ -120,16 +120,16 @@ import { NasesApi, Configuration } from './api'
 const configuration = new Configuration()
 const apiInstance = new NasesApi(configuration)
 
-let id: string // (default to undefined)
+let formId: string // (default to undefined)
 
-const { status, data } = await apiInstance.nasesControllerGetForm(id)
+const { status, data } = await apiInstance.nasesControllerGetForm(formId)
 ```
 
 ### Parameters
 
-| Name   | Type         | Description | Notes                 |
-| ------ | ------------ | ----------- | --------------------- |
-| **id** | [**string**] |             | defaults to undefined |
+| Name       | Type         | Description | Notes                 |
+| ---------- | ------------ | ----------- | --------------------- |
+| **formId** | [**string**] |             | defaults to undefined |
 
 ### Return type
 

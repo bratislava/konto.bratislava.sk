@@ -91,7 +91,7 @@
     "prettier": "^3.5.2",
     "prisma": "^6.9.0",
     "rimraf": "^6.0.1",
-    "supertest": "^7.1.0",
+    "supertest": "^7.1.1",
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
     "ts-unused-exports": "^11.0.1",

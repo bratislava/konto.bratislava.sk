@@ -27,8 +27,7 @@ import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decor
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { isAuthUser, User as UserV2, UserType } from '../auth-v2/types/user'
-import { getUserIco } from '../auth-v2/utils/user-utils'
+import { AuthUser, User as UserV2, UserType } from '../auth-v2/types/user'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
 import {
@@ -54,10 +53,7 @@ import {
   SendFormResponseDto,
   UpdateFormRequestDto,
 } from './dtos/requests.dto'
-import {
-  CreateFormResponseDto,
-  MigrateFormResponseDto,
-} from './dtos/responses.dto'
+import { CreateFormResponseDto } from './dtos/responses.dto'
 import { NasesErrorsEnum, NasesErrorsResponseEnum } from './nases.errors.enum'
 import NasesService from './nases.service'
 import NasesUtilsService from './utils-services/tokens.nases.service'
@@ -88,18 +84,14 @@ export default class NasesController {
   @ApiBearerAuth()
   @AllowedUserTypes([UserType.Auth, UserType.Guest])
   @FormAccessAllowMigrations()
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(UserAuthGuard)
   @Get('form/:formId')
   async getForm(
-    @Param('formId') id: string,
+    @Param('id') id: string,
     @GetUser() user: UserV2,
     @GetFormAccessType() accessType: FormAccessType,
   ): Promise<GetFormResponseDto> {
-    const data = await this.nasesService.getForm(
-      id,
-      getUserIco(user),
-      isAuthUser(user) ? user.cognitoJwtPayload.sub : undefined,
-    )
+    const data = await this.nasesService.getForm(id, user)
     return {
       ...data,
       requiresMigration: accessType === FormAccessType.Migration,
@@ -114,18 +106,15 @@ export default class NasesController {
     description: 'Return forms',
     type: GetFormsResponseDto,
   })
-  @UseGuards(CognitoGuard)
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth])
+  @UseGuards(UserAuthGuard)
   @Get('forms')
   async getForms(
-    @User() user: CognitoGetUserData,
-    @UserInfo() userInfo: UserInfoResponse,
     @Query() query: GetFormsRequestDto,
+    @GetUser() user: AuthUser,
   ): Promise<GetFormsResponseDto> {
-    const data = await this.nasesService.getForms(
-      query,
-      user.sub,
-      userInfo?.ico ?? null,
-    )
+    const data = await this.nasesService.getForms(query, user)
     return data
   }
 
@@ -136,18 +125,16 @@ export default class NasesController {
   @ApiOkResponse({
     description: 'Form successfully deleted',
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Delete(':id')
   async deleteForm(
     @Param('id') id: string,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @GetUser() user: UserV2,
   ): Promise<FormDeleteResponseDto> {
-    await this.formsService.archiveForm(
-      id,
-      user?.sub ?? null,
-      userInfo?.ico ?? null,
-    )
+    await this.formsService.archiveForm(id, user)
     return {
       archived: true,
       formId: id,
@@ -185,20 +172,17 @@ export default class NasesController {
       'Return charging details - price and used free minutes / hours.',
     type: GetFormResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Post('update-form/:id')
   async updateForm(
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @GetUser() user: UserV2,
   ): Promise<Forms> {
-    const returnData = await this.nasesService.updateForm(
-      id,
-      data,
-      userInfo?.ico ?? null,
-      user,
-    )
+    const returnData = await this.nasesService.updateForm(id, data, user)
     return returnData
   }
 
@@ -211,17 +195,20 @@ export default class NasesController {
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Post('send-and-update-form/:id')
   async sendAndUpdateForm(
     @Body() data: UpdateFormRequestDto,
     @Param('id') id: string,
-    @User() user: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @GetUser() user: UserV2,
   ): Promise<SendFormResponseDto> {
-    await this.nasesService.updateForm(id, data, userInfo?.ico ?? null, user)
+    await this.nasesService.updateForm(id, data, user)
 
-    const returnData = await this.nasesService.sendForm(id, userInfo, user)
+    // @ts-expect-error Breaking change, will be fixed in NASES service
+    const returnData = await this.nasesService.sendForm(id, user)
     return returnData
   }
 
@@ -234,13 +221,15 @@ export default class NasesController {
     description: 'Form was successfully send to rabbit, ant then to nases.',
     type: SendFormResponseDto,
   })
-  @UseGuards(new CognitoGuard(true))
+  @ApiCognitoGuestIdentityIdAuth()
+  @ApiBearerAuth()
+  @AllowedUserTypes([UserType.Auth, UserType.Guest])
+  @UseGuards(UserAuthGuard)
   @Post('eid/send-and-update-form/:id')
   async sendAndUpdateFormEid(
     @Body() data: EidUpdateSendFormRequestDto,
     @Param('id') id: string,
-    @User() cognitoUser: CognitoGetUserData | undefined,
-    @UserInfo() userInfo: UserInfoResponse,
+    @GetUser() user: UserV2,
   ): Promise<SendFormResponseDto> {
     const jwtTest = this.nasesUtilsService.createUserJwtToken(data.eidToken)
     if ((await this.nasesService.getNasesIdentity(jwtTest)) === null) {
@@ -249,9 +238,17 @@ export default class NasesController {
         ErrorsResponseEnum.UNAUTHORIZED_ERROR,
       )
     }
-    const user = jwt.decode(data.eidToken, { json: true }) as JwtNasesPayloadDto
+    const nasesUser = jwt.decode(data.eidToken, {
+      json: true,
+    }) as JwtNasesPayloadDto
 
-    if (!(await this.nasesService.canSendForm(id, user, cognitoUser?.sub))) {
+    if (
+      !(await this.nasesService.canSendForm(
+        id,
+        nasesUser,
+        user.type === UserType.Auth ? user.id : undefined,
+      ))
+    ) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.FORBIDDEN_SEND,
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
@@ -266,41 +263,15 @@ export default class NasesController {
       updateData.formSignature,
     )
 
-    await this.nasesService.updateFormEid(
-      id,
-      user,
-      updateData,
-      userInfo?.ico ?? null,
-      cognitoUser,
-    )
+    await this.nasesService.updateFormEid(id, nasesUser, updateData, user)
 
     const returnData = await this.nasesService.sendFormEid(
       id,
       data.eidToken,
+      nasesUser,
+      // @ts-expect-error Breaking change, will be fixed in NASES service
       user,
-      cognitoUser,
     )
     return returnData
-  }
-
-  @ApiOperation({
-    summary: '',
-    description: 'Assign form with no assigned user to the authenticated user',
-  })
-  @ApiOkResponse({
-    type: MigrateFormResponseDto,
-  })
-  @UseGuards(CognitoGuard)
-  @Post('migrate-form/:id')
-  async migrateForm(
-    @User() user: CognitoGetUserData,
-    @Param('id') id: string,
-    @UserInfo() userInfo: UserInfoResponse,
-  ): Promise<MigrateFormResponseDto> {
-    await this.nasesService.migrateForm(id, user, userInfo?.ico ?? null)
-    return {
-      formId: id,
-      success: true,
-    }
   }
 }

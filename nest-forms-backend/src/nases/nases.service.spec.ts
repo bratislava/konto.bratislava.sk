@@ -17,6 +17,10 @@ import {
 } from 'forms-shared/send-policy/sendPolicy'
 import { getFormSummary } from 'forms-shared/summary/summary'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import prismaMock from '../../test/singleton'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import ClientsService from '../clients/clients.service'
@@ -25,6 +29,7 @@ import FormValidatorRegistryService from '../form-validator-registry/form-valida
 import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -89,6 +94,10 @@ describe('NasesService', () => {
           provide: ClientsService,
           useValue: createMock<ClientsService>(),
         },
+        {
+          provide: FormAccessService,
+          useValue: createMock<FormAccessService>(),
+        },
       ],
     }).compile()
 
@@ -112,67 +121,15 @@ describe('NasesService', () => {
     })
   })
 
-  describe('migrateForm', () => {
-    it('should throw error', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue(null)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should throw error if the form is already assigned to another user', async () => {
-      prismaMock.forms.findFirst
-        .mockResolvedValueOnce({
-          mainUri: null,
-          actorUri: null,
-          userExternalId: 'external',
-        } as Forms)
-        .mockResolvedValueOnce({
-          mainUri: 'uri',
-          actorUri: 'uri',
-          userExternalId: null,
-        } as Forms)
-      prismaMock.forms.update.mockResolvedValue({} as Forms)
-
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-      await expect(
-        service.migrateForm('1', { sub: 'sub' } as CognitoGetUserData, 'ico1'),
-      ).rejects.toThrow()
-    })
-
-    it('should correctly update', async () => {
-      prismaMock.forms.findFirst.mockResolvedValue({
-        mainUri: null,
-        actorUri: null,
-        userExternalId: null,
-      } as Forms)
-      const spy = jest
-        .spyOn(prismaMock.forms, 'update')
-        .mockResolvedValue({} as Forms)
-
-      await service.migrateForm(
-        '1',
-        { sub: 'sub' } as CognitoGetUserData,
-        'ico1',
-      )
-      expect(spy).toHaveBeenCalled()
-      expect(spy).toHaveBeenCalledWith({
-        where: {
-          id: '1',
-        },
-        data: {
-          cognitoGuestIdentityId: null,
-          userExternalId: 'sub',
-          ico: 'ico1',
-        },
-      })
-    })
-  })
-
   describe('updateForm', () => {
+    let userFixtureFactory: UserFixtureFactory
+    let user: AuthFixtureUser
+
+    beforeAll(() => {
+      userFixtureFactory = new UserFixtureFactory()
+      user = userFixtureFactory.createFoAuthUser()
+    })
+
     it('should throw not found', async () => {
       prismaMock.forms.findFirst.mockResolvedValue(null)
 
@@ -180,8 +137,7 @@ describe('NasesService', () => {
         service.updateForm(
           '1',
           { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
+          user.user,
         ),
       ).rejects.toThrow()
     })
@@ -196,8 +152,7 @@ describe('NasesService', () => {
         service.updateForm(
           '1',
           { email: 'email' } as UpdateFormRequestDto,
-          'ico1',
-          { sub: 'subUser', email: 'emailUser' } as CognitoGetUserData,
+          user.user,
         ),
       ).rejects.toThrow()
     })
@@ -212,8 +167,7 @@ describe('NasesService', () => {
       await service.updateForm(
         '1',
         { email: 'emailOverride', formDataXml: 'xml' } as UpdateFormRequestDto,
-        'ico1',
-        { email: 'emailUser', sub: 'subUser' } as CognitoGetUserData,
+        user.user,
       )
       expect(spy).toHaveBeenCalledWith('1', {
         userExternalId: 'subUser',

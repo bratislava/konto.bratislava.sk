@@ -6,6 +6,7 @@ import { Files } from '@prisma/client'
 import prismaMock from '../../../test/singleton'
 import FormsHelper from '../../forms/forms.helper'
 import FormsService from '../../forms/forms.service'
+import { FormAccessService } from '../../forms-v2/services/form-access.service'
 import NasesConsumerHelper from '../../nases-consumer/nases-consumer.helper'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
@@ -35,6 +36,10 @@ describe('FilesService', () => {
         {
           provide: NasesConsumerHelper,
           useValue: createMock<NasesConsumerHelper>(),
+        },
+        {
+          provide: FormAccessService,
+          useValue: createMock<FormAccessService>(),
         },
       ],
     }).compile()

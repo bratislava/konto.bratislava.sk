@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
@@ -8,6 +9,7 @@ import prismaMock from '../../test/singleton'
 import FilesHelper from '../files/files.helper'
 import FilesService from '../files/files.service'
 import FormValidatorRegistryService from '../form-validator-registry/form-validator-registry.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
 import { GetFormsRequestDto } from '../nases/dtos/requests.dto'
 import NasesConsumerHelper from '../nases-consumer/nases-consumer.helper'
 import PrismaService from '../prisma/prisma.service'
@@ -50,6 +52,10 @@ describe('FormsService', () => {
         ConfigService,
         FormValidatorRegistryService,
         { provide: PrismaService, useValue: prismaMock },
+        {
+          provide: FormAccessService,
+          useValue: createMock<FormAccessService>(),
+        },
       ],
     }).compile()
 

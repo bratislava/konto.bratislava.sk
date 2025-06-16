@@ -5,9 +5,11 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 import { AxiosError } from 'axios'
 
+import {
+  AuthFixtureUser,
+  UserFixtureFactory,
+} from '../../test/fixtures/auth/user-fixture-factory'
 import { mockGinisDocumentData } from '../__tests__/ginisContants'
-import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
-import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import ClientsService from '../clients/clients.service'
 import FormsService from '../forms/forms.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
@@ -20,6 +22,8 @@ jest.mock('../forms/forms.service')
 
 describe('GinisController', () => {
   let controller: GinisController
+  let userFixtureFactory: UserFixtureFactory
+  let user: AuthFixtureUser
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +38,8 @@ describe('GinisController', () => {
     }).compile()
     controller = module.get<GinisController>(GinisController)
 
+    userFixtureFactory = new UserFixtureFactory()
+    user = userFixtureFactory.createFoAuthUser()
     Object.defineProperty(controller, 'logger', { value: { error: jest.fn() } })
   })
 
@@ -50,23 +56,15 @@ describe('GinisController', () => {
 
       try {
         // because it will fail after this function
-        await controller.getGinisDocumentByFormId(
-          '123',
-          {
-            sub: 'sub',
-          } as CognitoGetUserData,
-          null,
-        )
+        await controller.getGinisDocumentByFormId('123', user.user)
       } catch (error) {
-        expect(spy).toHaveBeenLastCalledWith('123', 'sub', null)
+        expect(spy).toHaveBeenLastCalledWith('123', user.user)
       }
 
       try {
-        await controller.getGinisDocumentByFormId('123', undefined, {
-          ico: 'ico1',
-        } as UserInfoResponse)
+        await controller.getGinisDocumentByFormId('123', user.user)
       } catch (error) {
-        expect(spy).toHaveBeenLastCalledWith('123', null, 'ico1')
+        expect(spy).toHaveBeenLastCalledWith('123', user.user)
       }
     })
 
@@ -75,7 +73,7 @@ describe('GinisController', () => {
         .fn()
         .mockRejectedValue(new Error('Error'))
       await expect(
-        controller.getGinisDocumentByFormId('123', undefined, null),
+        controller.getGinisDocumentByFormId('123', user.user),
       ).rejects.toThrow()
     })
 
@@ -84,7 +82,7 @@ describe('GinisController', () => {
         .fn()
         .mockResolvedValue({} as Forms)
       await expect(
-        controller.getGinisDocumentByFormId('123', undefined, null),
+        controller.getGinisDocumentByFormId('123', user.user),
       ).rejects.toThrow()
     })
 
@@ -109,7 +107,7 @@ describe('GinisController', () => {
         .fn()
         .mockRejectedValue(ginisError)
       await expect(
-        controller.getGinisDocumentByFormId('123', undefined, null),
+        controller.getGinisDocumentByFormId('123', user.user),
       ).rejects.toThrow()
       expect(notFoundSpy).toHaveBeenCalled()
 
@@ -118,7 +116,7 @@ describe('GinisController', () => {
         .fn()
         .mockRejectedValue(new GinisError('Error'))
       await expect(
-        controller.getGinisDocumentByFormId('123', undefined, null),
+        controller.getGinisDocumentByFormId('123', user.user),
       ).rejects.toThrow()
       expect(internalServerErrorSpy).toHaveBeenCalled()
 
@@ -129,7 +127,7 @@ describe('GinisController', () => {
         }),
       }))
       await expect(
-        controller.getGinisDocumentByFormId('123', undefined, null),
+        controller.getGinisDocumentByFormId('123', user.user),
       ).rejects.toThrow()
 
       // If th
@@ -154,11 +152,7 @@ describe('GinisController', () => {
         mapGinisHistory: jest.fn(),
       }))
 
-      const result = await controller.getGinisDocumentByFormId(
-        '123',
-        undefined,
-        null,
-      )
+      const result = await controller.getGinisDocumentByFormId('123', user.user)
       expect(result.id).toBe('MAG0X03RZDEB')
       expect(result.ownerName).toBe('Jack Brown')
       expect(result.ownerEmail).toBe('') // email is not mandatory, not returned in mock
@@ -183,11 +177,7 @@ describe('GinisController', () => {
         mapGinisHistory: jest.fn(),
       }))
 
-      const result = await controller.getGinisDocumentByFormId(
-        '123',
-        undefined,
-        null,
-      )
+      const result = await controller.getGinisDocumentByFormId('123', user.user)
       expect(result.ownerName).toBe('Jill Mary Black-Smith')
     })
   })

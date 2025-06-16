@@ -1,12 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import {
-  FormError,
-  FormOwnerType,
-  Forms,
-  FormState,
-  Prisma,
-} from '@prisma/client'
+import { FormError, Forms, FormState, Prisma } from '@prisma/client'
 import {
   FormDefinition,
   isSlovenskoSkFormDefinition,
@@ -28,7 +22,7 @@ import { FormFilesReadyResultDto } from 'src/files/files.dto'
 
 import { UserInfoResponse } from '../auth/decorators/user-info.decorator'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
-import { isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
+import { AuthUser, isAuthUser, isGuestUser, User } from '../auth-v2/types/user'
 import { getUserIco, userToFormOwnerType } from '../auth-v2/utils/user-utils'
 import ClientsService from '../clients/clients.service'
 import FilesService from '../files/files.service'
@@ -40,6 +34,8 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
+import { FormAccessService } from '../forms-v2/services/form-access.service'
+import { getUserFormFields } from '../forms-v2/utils/get-user-form-fields'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
@@ -82,6 +78,7 @@ export default class NasesService {
     private readonly formValidatorRegistryService: FormValidatorRegistryService,
     private readonly configService: ConfigService,
     private readonly clientsService: ClientsService,
+    private readonly formAccessService: FormAccessService,
   ) {
     this.logger = new LineLoggerSubservice('NasesService')
     this.versioningEnabled =
@@ -138,56 +135,11 @@ export default class NasesService {
     }
   }
 
-  async migrateForm(
-    id: string,
-    user: CognitoGetUserData,
-    ico: string | null,
-  ): Promise<void> {
-    const form = await this.prisma.forms.findFirst({
-      where: {
-        id,
-        archived: false,
-      },
-    })
-    if (form === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        ErrorsEnum.NOT_FOUND_ERROR,
-        `There is no such form with id ${id}`,
-      )
-    }
-
-    if (form.userExternalId || form.mainUri || form.actorUri) {
-      throw this.throwerErrorGuard.ForbiddenException(
-        NasesErrorsEnum.FORM_ASSIGNED_TO_OTHER_USER,
-        'This form is already assigned to another user',
-      )
-    }
-
-    await this.prisma.forms.update({
-      where: {
-        id,
-      },
-      data: {
-        userExternalId: user.sub,
-        cognitoGuestIdentityId: null,
-        ico,
-        ownerType:
-          user?.['custom:account_type'] === 'po' ||
-          user?.['custom:account_type'] === 'fo-p'
-            ? FormOwnerType.PO
-            : user?.['custom:account_type']
-              ? FormOwnerType.FO
-              : undefined,
-      },
-    })
-  }
-
   async getForm(
     id: string,
-    ico: string | null,
-    userExternalId?: string,
+    user: User,
   ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
-    const form = await this.formsService.getForm(id, ico, userExternalId)
+    const form = await this.formsService.getForm(id, user)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -204,10 +156,9 @@ export default class NasesService {
 
   async getForms(
     query: GetFormsRequestDto,
-    userExternalId: string,
-    ico: string | null,
+    user: AuthUser,
   ): Promise<GetFormsResponseDto> {
-    const result = await this.formsService.getForms(query, userExternalId, ico)
+    const result = await this.formsService.getForms(query, user)
     return result
   }
 
@@ -215,23 +166,21 @@ export default class NasesService {
     id: string,
     nasesUser: JwtNasesPayloadDto,
     requestData: UpdateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<Forms> {
     const data: FormUpdateBodyDto = {
       mainUri: nasesUser.sub,
       actorUri: nasesUser.actor.sub,
       ...requestData,
     }
-    const result = await this.updateForm(id, data, ico, user)
+    const result = await this.updateForm(id, data, user)
     return result
   }
 
   async updateForm(
     id: string,
     requestData: UpdateFormRequestDto,
-    ico: string | null,
-    user?: CognitoGetUserData,
+    user: User,
   ): Promise<Forms> {
     const form = await this.prisma.forms.findFirst({
       where: {
@@ -247,9 +196,11 @@ export default class NasesService {
       )
     }
 
-    if (
-      !this.formsHelper.isFormAccessGranted(form, user ? user.sub : null, ico)
-    ) {
+    const hasAccessResult = await this.formAccessService.checkAccessById(
+      form.id,
+      user,
+    )
+    if (!hasAccessResult.hasAccess) {
       throw this.throwerErrorGuard.UnauthorizedException(
         ErrorsEnum.UNAUTHORIZED_ERROR,
         'Unauthorized',
@@ -257,17 +208,8 @@ export default class NasesService {
     }
 
     const data = {
-      userExternalId: user ? user.sub : null,
-      email: user?.email,
+      ...getUserFormFields(user),
       ...requestData,
-      ownerType:
-        user?.['custom:account_type'] === 'po' ||
-        user?.['custom:account_type'] === 'fo-p'
-          ? FormOwnerType.PO
-          : user?.['custom:account_type']
-            ? FormOwnerType.FO
-            : undefined,
-      ico,
     }
 
     const result = await this.formsService.updateForm(id, data)

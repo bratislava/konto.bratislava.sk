@@ -6,8 +6,8 @@
 | ---------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | **email**              | **string**                                  | Change email, on which you can be contacted                                                        | [default to 'janko.mrkvicka@bratislava.sk']         |
 | **id**                 | **string**                                  | Id of record                                                                                       | [default to 'f69559da-5eca-4ed7-80fd-370d09dc3632'] |
-| **createdAt**          | **string**                                  | Create date of record                                                                              | [default to 2025-06-13T21:37:40.590Z]               |
-| **updatedAt**          | **string**                                  | Update date of record                                                                              | [default to 2025-06-13T21:37:40.590Z]               |
+| **createdAt**          | **string**                                  | Create date of record                                                                              | [default to 2025-06-16T10:18:20.052Z]               |
+| **updatedAt**          | **string**                                  | Update date of record                                                                              | [default to 2025-06-16T10:18:20.052Z]               |
 | **externalId**         | **string**                                  | Id of send form from other system, (probably ginis)                                                | [default to '12345']                                |
 | **userExternalId**     | **string**                                  | User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID | [default to 'e5c84a71-5985-40c7-bb19-e4ad22eda41c'] |
 | **mainUri**            | **string**                                  | Uri for defining electronic sendbox, if person has it                                              | [default to 'rc://sk/8808080000/jozko_mrkvicka']    |
@@ -24,7 +24,6 @@
 | **finishSubmission**   | **string**                                  | end of submition                                                                                   | [default to undefined]                              |
 | **formDefinitionSlug** | **string**                                  | Slug of the form definition                                                                        | [default to undefined]                              |
 | **jsonVersion**        | **string**                                  | JSON version                                                                                       | [default to undefined]                              |
-| **requiresMigration**  | **boolean**                                 |                                                                                                    | [default to undefined]                              |
 
 ## Example
 
@@ -52,7 +51,6 @@ const instance: GetFormResponseDto = {
   finishSubmission,
   formDefinitionSlug,
   jsonVersion,
-  requiresMigration,
 }
 ```
 

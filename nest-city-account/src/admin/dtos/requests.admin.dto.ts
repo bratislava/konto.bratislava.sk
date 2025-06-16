@@ -21,8 +21,7 @@ export class RequestQueryUserByBirthNumberDto {
 
 export class RequestBatchQueryUsersByBirthNumbersDto {
   @ApiProperty({
-    description:
-      'Birth numbers without slash which should be retrieved from user database.',
+    description: 'Birth numbers without slash which should be retrieved from user database.',
     default: ['0000000000', '0000001010'],
     type: String,
     isArray: true,

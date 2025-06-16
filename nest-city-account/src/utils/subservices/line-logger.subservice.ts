@@ -28,16 +28,14 @@ export class LineLoggerSubservice implements LoggerService {
 
   private formatStringMessage(messages: string): string {
     if (messages.length === 0) return ''
-    return isLogfmt(messages)
-      ? ' '.concat(messages)
-      : `message="${escapeForLogfmt(messages)}"`
+    return isLogfmt(messages) ? ' '.concat(messages) : `message="${escapeForLogfmt(messages)}"`
   }
 
   private printLog(
     severity: string,
     message: unknown,
     optionalParams: unknown[],
-    colorCode: string,
+    colorCode: string
   ): void {
     const completeArray = [message, ...optionalParams]
 
@@ -45,15 +43,11 @@ export class LineLoggerSubservice implements LoggerService {
       .filter((item): item is string => typeof item === 'string')
       .join(' ')
 
-    const otherItems = completeArray.filter(
-      (item): item is string => typeof item !== 'string',
-    )
+    const otherItems = completeArray.filter((item): item is string => typeof item !== 'string')
 
     const formattedStringMessages = this.formatStringMessage(stringMessages)
 
-    const formattedOtherItems = otherItems
-      .map((item) => ToLogfmt(item))
-      .join(' ')
+    const formattedOtherItems = otherItems.map((item) => ToLogfmt(item)).join(' ')
 
     const formattedContext = this.context ? `context="${this.context}"` : ''
 
@@ -78,7 +72,7 @@ export class LineLoggerSubservice implements LoggerService {
         colorEnd,
       ]
         .filter(Boolean)
-        .join(''),
+        .join('')
     )
   }
 

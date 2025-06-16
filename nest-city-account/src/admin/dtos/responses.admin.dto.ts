@@ -1,10 +1,22 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { CognitoUserAttributesTierEnum } from "@prisma/client"
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsString, IsUUID } from "class-validator"
-import { AnonymizeResponse } from "../../bloomreach/bloomreach.dto"
-import { UserAttributeEnum } from "../../user/dtos/gdpr.user.dto"
-import { IsBirthNumber } from "../../utils/decorators/validation.decorators"
-import { CognitoGetUserData, CognitoUserAccountTypesEnum } from "../../utils/global-dtos/cognito.dto"
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { CognitoUserAttributesTierEnum } from '@prisma/client'
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+  IsUUID,
+} from 'class-validator'
+import { AnonymizeResponse } from '../../bloomreach/bloomreach.dto'
+import { UserAttributeEnum } from '../../user/dtos/gdpr.user.dto'
+import { IsBirthNumber } from '../../utils/decorators/validation.decorators'
+import {
+  CognitoGetUserData,
+  CognitoUserAccountTypesEnum,
+} from '../../utils/global-dtos/cognito.dto'
 
 export class ResponseUserByBirthNumberDto {
   @ApiProperty({
@@ -132,7 +144,8 @@ export class DeactivateAccountResponseDto {
   bloomreachRemoved!: AnonymizeResponse
 
   @ApiProperty({
-    description: 'Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.',
+    description:
+      'Status of the removal of tax delivery methods in Noris. If false, there was an error. If true it was successful, or the user is not a tax payer in Noris.',
     example: true,
   })
   @IsBoolean()
@@ -197,7 +210,8 @@ export class VerificationDataForUserResponseDto {
 
   @ApiProperty({
     type: [VerificationDataForUser],
-    description: 'Verification data for the user in the last month. Ordered by start date descending.',
+    description:
+      'Verification data for the user in the last month. Ordered by start date descending.',
   })
   verificationDataLastMonth!: VerificationDataForUser[]
 }
@@ -249,12 +263,12 @@ export class ResponseValidatePhysicalEntityRfoDto {
   upvsResult: unknown
 }
 
-export class GetUserDataByBirthNumbersBatchResponseDto { 
+export class GetUserDataByBirthNumbersBatchResponseDto {
   @ApiProperty({
     description: 'A record of users keyed by their birth number',
     type: 'object',
-    additionalProperties: { type: 'ResponseUserByBirthNumberDto' }
+    additionalProperties: { type: 'ResponseUserByBirthNumberDto' },
   })
   @IsObject()
-  users: Record<string, ResponseUserByBirthNumberDto>;
+  users: Record<string, ResponseUserByBirthNumberDto>
 }

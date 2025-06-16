@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { PaymentStatus, Tax } from '@prisma/client'
 import currency from 'currency.js'
 
@@ -92,7 +92,7 @@ export class AdminService {
       ])
 
       // deliveryMethod is missing here, since we do not want to update
-      // historical taxes with currect delivery method in Noris
+      // historical taxes with the current delivery method in Noris
       const taxData = mapNorisToTaxData(
         dataFromNoris,
         year,
@@ -508,19 +508,17 @@ export class AdminService {
         ),
       )
 
-    const successList = await this.processNorisPaymentData(
+    const resultList = await this.processNorisPaymentData(
       norisPaymentData,
       taxesDataByVsMap,
       taxPaymentDataMap,
       userDataFromCityAccount,
     )
-    const created = successList.filter((item) => item === 'CREATED').length
-    const alreadyCreated = successList.filter(
+    const created = resultList.filter((item) => item === 'CREATED').length
+    const alreadyCreated = resultList.filter(
       (item) => item === 'ALREADY_CREATED',
     ).length
-    const errors: HttpException[] = successList.filter(
-      (item) => item instanceof Error,
-    )
+    const errors: Error[] = resultList.filter((item) => item instanceof Error)
 
     if (errors.length > 0) {
       this.logger.error(

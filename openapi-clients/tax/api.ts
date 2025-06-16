@@ -204,6 +204,25 @@ export interface RequestPostNorisPaymentDataLoadDto {
 /**
  *
  * @export
+ * @interface RequestPostReportingSendReport
+ */
+export interface RequestPostReportingSendReport {
+  /**
+   * Date since when reports should be generated
+   * @type {string}
+   * @memberof RequestPostReportingSendReport
+   */
+  date: string
+  /**
+   * Email the report will be sent to
+   * @type {string}
+   * @memberof RequestPostReportingSendReport
+   */
+  email: string
+}
+/**
+ *
+ * @export
  * @interface RequestUpdateNorisDeliveryMethodsDto
  */
 export interface RequestUpdateNorisDeliveryMethodsDto {
@@ -694,6 +713,12 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   deliveryMethod: DeliveryMethodNamed | null
+  /**
+   * Has the unpaid tax notification event been sent to Bloomreach for this tax
+   * @type {boolean}
+   * @memberof ResponseTaxDto
+   */
+  bloomreachUnpaidTaxReminderSent: boolean
 }
 
 /**
@@ -1706,6 +1731,160 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdatePaymentsFromNoris(requestPostNorisPaymentDataLoadDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * CardPaymentReportingApi - axios parameter creator
+ * @export
+ */
+export const CardPaymentReportingApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Send payment report to an email
+     * @param {RequestPostReportingSendReport} requestPostReportingSendReport
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    cardPaymentReportingControllerSendReport: async (
+      requestPostReportingSendReport: RequestPostReportingSendReport,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestPostReportingSendReport' is not null or undefined
+      assertParamExists(
+        'cardPaymentReportingControllerSendReport',
+        'requestPostReportingSendReport',
+        requestPostReportingSendReport,
+      )
+      const localVarPath = `/card-payment-reporting/send-report`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestPostReportingSendReport,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * CardPaymentReportingApi - functional programming interface
+ * @export
+ */
+export const CardPaymentReportingApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = CardPaymentReportingApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Send payment report to an email
+     * @param {RequestPostReportingSendReport} requestPostReportingSendReport
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async cardPaymentReportingControllerSendReport(
+      requestPostReportingSendReport: RequestPostReportingSendReport,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.cardPaymentReportingControllerSendReport(
+          requestPostReportingSendReport,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['CardPaymentReportingApi.cardPaymentReportingControllerSendReport']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * CardPaymentReportingApi - factory interface
+ * @export
+ */
+export const CardPaymentReportingApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = CardPaymentReportingApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Send payment report to an email
+     * @param {RequestPostReportingSendReport} requestPostReportingSendReport
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    cardPaymentReportingControllerSendReport(
+      requestPostReportingSendReport: RequestPostReportingSendReport,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .cardPaymentReportingControllerSendReport(requestPostReportingSendReport, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * CardPaymentReportingApi - object-oriented interface
+ * @export
+ * @class CardPaymentReportingApi
+ * @extends {BaseAPI}
+ */
+export class CardPaymentReportingApi extends BaseAPI {
+  /**
+   *
+   * @summary Send payment report to an email
+   * @param {RequestPostReportingSendReport} requestPostReportingSendReport
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof CardPaymentReportingApi
+   */
+  public cardPaymentReportingControllerSendReport(
+    requestPostReportingSendReport: RequestPostReportingSendReport,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return CardPaymentReportingApiFp(this.configuration)
+      .cardPaymentReportingControllerSendReport(requestPostReportingSendReport, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

@@ -27,16 +27,9 @@ import { AllowedUserTypes } from '../auth-v2/decorators/allowed-user-types.decor
 import { ApiCognitoGuestIdentityIdAuth } from '../auth-v2/decorators/api-cognito-guest-identity-id-auth.decorator'
 import { GetUser } from '../auth-v2/decorators/get-user.decorator'
 import { UserAuthGuard } from '../auth-v2/guards/user-auth.guard'
-import { isAuthUser, User as UserV2, UserType } from '../auth-v2/types/user'
-import { getUserIco } from '../auth-v2/utils/user-utils'
+import { User as UserV2, UserType } from '../auth-v2/types/user'
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import FormsService from '../forms/forms.service'
-import {
-  FormAccessAllowMigrations,
-  FormAccessGuard,
-  GetFormAccessType,
-} from '../forms-v2/guards/form-access.guard'
-import { FormAccessType } from '../forms-v2/services/form-access.service'
 import { User } from '../utils/decorators/request.decorator'
 import {
   ErrorsEnum,
@@ -84,26 +77,19 @@ export default class NasesController {
     description: 'Return form',
     type: GetFormResponseDto,
   })
-  @ApiCognitoGuestIdentityIdAuth()
-  @ApiBearerAuth()
-  @AllowedUserTypes([UserType.Auth, UserType.Guest])
-  @FormAccessAllowMigrations()
-  @UseGuards(UserAuthGuard, FormAccessGuard)
+  @UseGuards(new CognitoGuard(true))
   @Get('form/:formId')
   async getForm(
     @Param('formId') id: string,
-    @GetUser() user: UserV2,
-    @GetFormAccessType() accessType: FormAccessType,
+    @User() user: CognitoGetUserData | undefined,
+    @UserInfo() userInfo: UserInfoResponse,
   ): Promise<GetFormResponseDto> {
     const data = await this.nasesService.getForm(
       id,
-      getUserIco(user),
-      isAuthUser(user) ? user.cognitoJwtPayload.sub : undefined,
+      userInfo?.ico ?? null,
+      user?.sub,
     )
-    return {
-      ...data,
-      requiresMigration: accessType === FormAccessType.Migration,
-    }
+    return data
   }
 
   @ApiOperation({

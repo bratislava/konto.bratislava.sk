@@ -186,7 +186,7 @@ export default class NasesService {
     id: string,
     ico: string | null,
     userExternalId?: string,
-  ): Promise<Omit<GetFormResponseDto, 'requiresMigration'>> {
+  ): Promise<GetFormResponseDto> {
     const form = await this.formsService.getForm(id, ico, userExternalId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {

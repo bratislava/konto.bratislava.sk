@@ -137,7 +137,7 @@ const { status, data } = await apiInstance.nasesControllerGetForm(formId)
 
 ### Authorization
 
-[cognitoGuestIdentityId](../README.md#cognitoGuestIdentityId), [bearer](../README.md#bearer)
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

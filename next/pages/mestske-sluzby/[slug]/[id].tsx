@@ -68,6 +68,9 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
       ])
 
       const initialFormSent = form.state !== GetFormResponseDtoStateEnum.Draft
+      // If the form was created by an unauthenticated user, a migration modal is displayed and form is not editable.
+      const formMigrationRequired = Boolean(isSignedIn && !form.userExternalId)
+
       const { success: embeddedSuccess, isEmbedded } = handleEmbeddedFormRequest(
         serverFormDefinition,
         context,
@@ -92,7 +95,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageProps & Glob
               serverFormDefinition,
               initialFormDataJson,
             ),
-            formMigrationRequired: form.requiresMigration,
+            formMigrationRequired,
             isEmbedded,
             strapiForm: strapiForm ?? null,
             versionCompareContinueAction: environment.featureToggles.versioning

@@ -13,6 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
+    "generate-api-spec": "rimraf dist-generate-api-spec && nest build generate-api-spec && nest start generate-api-spec",
     "seed:prod": "node dist/prisma/seed.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",

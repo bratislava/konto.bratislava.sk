@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+dist-generate-api-spec
 
 # Logs
 logs
@@ -73,3 +74,6 @@ kubernetes/envs/Staging/secrets/bloomreach.yml
 kubernetes/envs/Staging/secrets/noris.yml
 kubernetes/envs/Prod/secrets/noris.yml
 kubernetes/envs/Dev/secrets/noris.yml
+
+# Generated Swagger API spec using `npm run generate-api-spec`
+api-spec.json

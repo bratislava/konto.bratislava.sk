@@ -1,1 +1,4 @@
 .env
+# Generated Swagger API spec using `npm run generate-api-spec`
+api-spec.json
+dist-generate-api-spec

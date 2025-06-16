@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+dist-generate-api-spec
 
 # Logs
 logs
@@ -42,3 +43,6 @@ eslint-report.json
 .env.test
 .env.local
 .scannerwork
+
+# Generated Swagger API spec using `npm run generate-api-spec`
+api-spec.json

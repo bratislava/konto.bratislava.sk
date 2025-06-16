@@ -71,7 +71,7 @@ If you want to run an application without installing it locally quickly, you can
    docker compose up
    ```
 
-   This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3200`.
+   This command will initially build the image and run the container with the app. You can access the app on `http://localhost:3000`.
 
 ## Local installation
 

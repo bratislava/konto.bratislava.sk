@@ -2,13 +2,13 @@ import { formsClient } from '@clients/forms'
 import { strapiClient } from '@clients/graphql-strapi'
 import { FormWithLandingPageFragment } from '@clients/graphql-strapi/api'
 import { isAxiosError } from 'axios'
+import FormCreatedSplitPage, {
+  FormCreatedSplitPageProps,
+} from 'components/forms/FormCreatedSplitPage'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import { makeClientLandingPageFormDefinition } from '../../../components/forms/clientFormDefinitions'
-import FormLandingPage, {
-  FormLandingPageProps,
-  FormWithLandingPageRequiredFragment,
-} from '../../../components/forms/FormLandingPage'
+import { FormWithLandingPageRequiredFragment } from '../../../components/forms/FormLandingPage'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
@@ -37,7 +37,7 @@ export const formHasLandingPage = (
   return Boolean(form?.landingPage)
 }
 
-export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps, Params>(
+export const getServerSideProps = amplifyGetServerSideProps<FormCreatedSplitPageProps, Params>(
   async ({ context, fetchAuthSession }) => {
     if (!context.params) {
       return { notFound: true }
@@ -53,6 +53,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
     if (formHasLandingPage(strapiForm)) {
       return {
         props: {
+          type: 'landingPage',
           formDefinition: makeClientLandingPageFormDefinition(serverFormDefinition),
           strapiForm,
           ...(await slovakServerSideTranslations()),
@@ -85,10 +86,13 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
       const isEmbeddedPostfix = isEmbedded
         ? `?${EMBEDDED_FORM_QUERY_PARAM}=${EMBEDDED_FORM_QUERY_PARAM_TRUE_VALUE}`
         : ''
+      // If user receives a new guest identity, the user must be redirected to the form client-side because redirect
+      // requests are not able to save new guest identity cookie.
       return {
-        redirect: {
-          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.formId}${isEmbeddedPostfix}`,
-          permanent: false,
+        props: {
+          type: 'redirect',
+          redirectUrl: `${ROUTES.MUNICIPAL_SERVICES_FORM_WITH_ID(slug, form.formId)}${isEmbeddedPostfix}`,
+          ...(await slovakServerSideTranslations()),
         },
       }
     } catch (error) {
@@ -102,4 +106,4 @@ export const getServerSideProps = amplifyGetServerSideProps<FormLandingPageProps
   {},
 )
 
-export default SsrAuthProviderHOC(FormLandingPage)
+export default SsrAuthProviderHOC(FormCreatedSplitPage)

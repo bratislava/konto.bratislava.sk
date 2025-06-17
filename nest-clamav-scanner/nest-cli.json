@@ -1,12 +1,25 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "compilerOptions": {
-    "plugins": [{
-      "name": "@nestjs/swagger",
-      "options": {
-        "introspectComments": true
+  "entryFile": "main",
+  "projects": {
+    "generate-api-spec": {
+      "type": "application",
+      "sourceRoot": "src",
+      "entryFile": "generate-api-spec",
+      "compilerOptions": {
+        "tsConfigPath": "tsconfig.build-generate-api-spec.json"
       }
-    }]
+    }
+  },
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true
+        }
+      }
+    ]
   }
 }

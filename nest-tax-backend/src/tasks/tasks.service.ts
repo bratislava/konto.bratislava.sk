@@ -288,10 +288,10 @@ export class TasksService {
   @Cron('0 9-17 1-23 12 1-5')
   @HandleErrors('Cron Error')
   async sendAlertsIfHolidaysAreNotSet() {
-    const thisYear = dayjs().year()
+    const nextYear = dayjs().year() + 1
 
-    const stateHolidaysForNextYear = stateHolidays.find(
-      (yearToCheck) => yearToCheck.year === thisYear + 1,
+    const stateHolidaysForNextYear = stateHolidays.some(
+      (entry) => entry.year === nextYear,
     )
 
     if (!stateHolidaysForNextYear) {

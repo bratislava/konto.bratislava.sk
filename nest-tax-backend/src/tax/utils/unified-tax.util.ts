@@ -313,7 +313,7 @@ const calculateInstallmentPaymentDetails = (options: {
   )
 
   // All valid reasons for no active payment should have been caught before
-  // `calculateInstallmentAmounts` call
+  //  the ` calculateInstallmentAmounts ` call
   if (!active) {
     throw new ThrowerErrorGuard().InternalServerErrorException(
       CustomErrorTaxTypesEnum.INSTALLMENT_UNEXPECTED_ERROR,

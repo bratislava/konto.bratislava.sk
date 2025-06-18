@@ -212,19 +212,30 @@ const calculateInstallmentAmounts = (
   return result
 }
 
-const calculateInstallmentPaymentDetails = (
-  overallAmount: number,
-  overallPaid: number,
-  today: Date,
-  taxYear: number,
-  payment_calendar_threshold: number,
-  dueDate: Dayjs | undefined,
-  installments: { order: string | null; amount: number }[],
-  variableSymbol: string,
-  specificSymbol: any,
-): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
+const calculateInstallmentPaymentDetails = (options: {
+  overallAmount: number
+  overallPaid: number
+  today: Date
+  taxYear: number
+  paymentCalendarThreshold: number
+  dueDate?: Dayjs
+  installments: { order: string | null; amount: number }[]
+  variableSymbol: string
+  specificSymbol: any
+}): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
 } => {
+  const {
+    overallAmount,
+    overallPaid,
+    today,
+    taxYear,
+    paymentCalendarThreshold,
+    dueDate,
+    installments,
+    variableSymbol,
+    specificSymbol,
+  } = options
   if (overallAmount - overallPaid <= 0) {
     return {
       isPossible: false,
@@ -237,7 +248,7 @@ const calculateInstallmentPaymentDetails = (
     `${taxYear}-${secondPaymentDueDate}`,
     bratislavaTimeZone,
   )
-  const dueDateThirdsPayment = dayjs.tz(
+  const dueDateThirdPayment = dayjs.tz(
     `${taxYear}-${thirdPaymentDueDate}`,
     bratislavaTimeZone,
   )
@@ -249,7 +260,7 @@ const calculateInstallmentPaymentDetails = (
     }
   }
 
-  if (overallAmount < payment_calendar_threshold) {
+  if (overallAmount < paymentCalendarThreshold) {
     return {
       isPossible: false,
       reasonNotPossible:
@@ -289,7 +300,7 @@ const calculateInstallmentPaymentDetails = (
     },
     {
       installmentNumber: 3,
-      dueDate: dueDateThirdsPayment.toDate(),
+      dueDate: dueDateThirdPayment.toDate(),
       status: installmentAmounts[2].status,
       remainingAmount: installmentAmounts[2].toPay,
     },
@@ -340,13 +351,20 @@ const calculateInstallmentPaymentDetails = (
   }
 }
 
-const calculateOneTimePaymentDetails = (
-  overallPaid: number,
-  overallBalance: number,
-  dueDate: Date | undefined,
-  variableSymbol: string,
-  specificSymbol: string,
-): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
+const calculateOneTimePaymentDetails = (options: {
+  overallPaid: number
+  overallBalance: number
+  dueDate?: Date
+  variableSymbol: string
+  specificSymbol: string
+}): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
+  const {
+    overallPaid,
+    overallBalance,
+    dueDate,
+    variableSymbol,
+    specificSymbol,
+  } = options
   if (overallBalance <= 0) {
     return {
       isPossible: false,
@@ -420,15 +438,16 @@ export const getTaxDetailPure = (options: {
   const dateOfValidityDayjs = dateOfValidity ? dayjs(dateOfValidity) : null
   const dueDate = calculateDueDate(dateOfValidityDayjs)
 
-  const oneTimePayment = calculateOneTimePaymentDetails(
-    overallPaid,
-    overallBalance,
-    dueDate?.toDate(),
+  const oneTimePayment = calculateOneTimePaymentDetails({
+      overallPaid,
+      overallBalance,
+      dueDate: dueDate?.toDate(),
     variableSymbol,
     specificSymbol,
+}
   )
 
-  const installmentPayment = calculateInstallmentPaymentDetails(
+  const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,
     overallPaid,
     today,
@@ -438,7 +457,7 @@ export const getTaxDetailPure = (options: {
     installments,
     variableSymbol,
     specificSymbol,
-  )
+  })
 
   const itemizedDetail: ResponseTaxDetailItemizedDto = {
     apartmentTotalAmount: taxFlat,

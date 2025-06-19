@@ -51,6 +51,15 @@ updates:
       - dependency-name: 'ajv-*'
       # Playwright must be updated in forms-shared at the same time
       - dependency-name: 'playwright'
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:
@@ -101,6 +110,16 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:
@@ -125,6 +144,16 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:

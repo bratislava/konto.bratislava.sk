@@ -178,6 +178,51 @@ export type ComponentBlocksHelpItemInput = {
   title?: InputMaybe<Scalars['String']['input']>
 }
 
+export type ComponentBlocksMunicipalService = {
+  __typename?: 'ComponentBlocksMunicipalService'
+  buttonText: Scalars['String']['output']
+  category?: Maybe<MunicipalServiceCategoryEntityResponse>
+  color: Enum_Componentblocksmunicipalservice_Color
+  description: Scalars['String']['output']
+  href: Scalars['String']['output']
+  icon: Enum_Componentblocksmunicipalservice_Icon
+  id: Scalars['ID']['output']
+  isVisibleForFo: Scalars['Boolean']['output']
+  isVisibleForPo: Scalars['Boolean']['output']
+  tag?: Maybe<Scalars['String']['output']>
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksMunicipalServiceFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceFiltersInput>>>
+  buttonText?: InputMaybe<StringFilterInput>
+  category?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  color?: InputMaybe<StringFilterInput>
+  description?: InputMaybe<StringFilterInput>
+  href?: InputMaybe<StringFilterInput>
+  icon?: InputMaybe<StringFilterInput>
+  isVisibleForFo?: InputMaybe<BooleanFilterInput>
+  isVisibleForPo?: InputMaybe<BooleanFilterInput>
+  not?: InputMaybe<ComponentBlocksMunicipalServiceFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceFiltersInput>>>
+  tag?: InputMaybe<StringFilterInput>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksMunicipalServiceInput = {
+  buttonText?: InputMaybe<Scalars['String']['input']>
+  category?: InputMaybe<Scalars['ID']['input']>
+  color?: InputMaybe<Enum_Componentblocksmunicipalservice_Color>
+  description?: InputMaybe<Scalars['String']['input']>
+  href?: InputMaybe<Scalars['String']['input']>
+  icon?: InputMaybe<Enum_Componentblocksmunicipalservice_Icon>
+  id?: InputMaybe<Scalars['ID']['input']>
+  isVisibleForFo?: InputMaybe<Scalars['Boolean']['input']>
+  isVisibleForPo?: InputMaybe<Scalars['Boolean']['input']>
+  tag?: InputMaybe<Scalars['String']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
 export type ComponentGeneralAlert = {
   __typename?: 'ComponentGeneralAlert'
   content: Scalars['String']['output']
@@ -336,6 +381,44 @@ export type DateTimeFilterInput = {
   startsWith?: InputMaybe<Scalars['DateTime']['input']>
 }
 
+export enum Enum_Componentblocksmunicipalservice_Color {
+  Culture = 'culture',
+  Education = 'education',
+  Environment = 'environment',
+  Main = 'main',
+  Social = 'social',
+  Transport = 'transport',
+}
+
+export enum Enum_Componentblocksmunicipalservice_Icon {
+  Administration = 'administration',
+  ChristmasTree = 'christmas_tree',
+  CommunityGardens = 'community_gardens',
+  Connector = 'connector',
+  CulturalOrganizations = 'cultural_organizations',
+  EventsSupport = 'events_support',
+  Excavations = 'excavations',
+  FrontGardens = 'front_gardens',
+  Greenery = 'greenery',
+  Housing = 'housing',
+  KidsTeenagers = 'kids_teenagers',
+  Lamp = 'lamp',
+  Library = 'library',
+  ManagementCommunications = 'management_communications',
+  Marianum = 'marianum',
+  Mosquito = 'mosquito',
+  Parking = 'parking',
+  PublicSpaceOccupation = 'public_space_occupation',
+  Security = 'security',
+  SpatialPlanning = 'spatial_planning',
+  SwimmingPool = 'swimming_pool',
+  Taxes = 'taxes',
+  Towing = 'towing',
+  Transport = 'transport',
+  Waste = 'waste',
+  Zoo = 'zoo',
+}
+
 export enum Enum_Contentreleasesreleaseaction_Type {
   Publish = 'publish',
   Unpublish = 'unpublish',
@@ -450,6 +533,7 @@ export type GenericMorph =
   | ComponentBlocksFormLandingPageLinkCta
   | ComponentBlocksHelpCategory
   | ComponentBlocksHelpItem
+  | ComponentBlocksMunicipalService
   | ComponentGeneralAlert
   | ContentReleasesRelease
   | ContentReleasesReleaseAction
@@ -457,6 +541,8 @@ export type GenericMorph =
   | General
   | HelpPage
   | I18NLocale
+  | MunicipalServiceCategory
+  | MunicipalServicesPage
   | Tax
   | UploadFile
   | UploadFolder
@@ -603,6 +689,75 @@ export type JsonFilterInput = {
   startsWith?: InputMaybe<Scalars['JSON']['input']>
 }
 
+export type MunicipalServiceCategory = {
+  __typename?: 'MunicipalServiceCategory'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  publishedAt?: Maybe<Scalars['DateTime']['output']>
+  title: Scalars['String']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServiceCategoryEntity = {
+  __typename?: 'MunicipalServiceCategoryEntity'
+  attributes?: Maybe<MunicipalServiceCategory>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServiceCategoryEntityResponse = {
+  __typename?: 'MunicipalServiceCategoryEntityResponse'
+  data?: Maybe<MunicipalServiceCategoryEntity>
+}
+
+export type MunicipalServiceCategoryEntityResponseCollection = {
+  __typename?: 'MunicipalServiceCategoryEntityResponseCollection'
+  data: Array<MunicipalServiceCategoryEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type MunicipalServiceCategoryFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<MunicipalServiceCategoryFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  not?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<MunicipalServiceCategoryFiltersInput>>>
+  publishedAt?: InputMaybe<DateTimeFilterInput>
+  title?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type MunicipalServiceCategoryInput = {
+  publishedAt?: InputMaybe<Scalars['DateTime']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type MunicipalServicesPage = {
+  __typename?: 'MunicipalServicesPage'
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  services: Array<Maybe<ComponentBlocksMunicipalService>>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type MunicipalServicesPageServicesArgs = {
+  filters?: InputMaybe<ComponentBlocksMunicipalServiceFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type MunicipalServicesPageEntity = {
+  __typename?: 'MunicipalServicesPageEntity'
+  attributes?: Maybe<MunicipalServicesPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type MunicipalServicesPageEntityResponse = {
+  __typename?: 'MunicipalServicesPageEntityResponse'
+  data?: Maybe<MunicipalServicesPageEntity>
+}
+
+export type MunicipalServicesPageInput = {
+  services?: InputMaybe<Array<InputMaybe<ComponentBlocksMunicipalServiceInput>>>
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   /** Change user password. Confirm with the current password. */
@@ -610,6 +765,7 @@ export type Mutation = {
   createContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
   createContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   createForm?: Maybe<FormEntityResponse>
+  createMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
   createUploadFile?: Maybe<UploadFileEntityResponse>
   createUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Create a new role */
@@ -621,6 +777,8 @@ export type Mutation = {
   deleteForm?: Maybe<FormEntityResponse>
   deleteGeneral?: Maybe<GeneralEntityResponse>
   deleteHelpPage?: Maybe<HelpPageEntityResponse>
+  deleteMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  deleteMunicipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   deleteTax?: Maybe<TaxEntityResponse>
   deleteUploadFile?: Maybe<UploadFileEntityResponse>
   deleteUploadFolder?: Maybe<UploadFolderEntityResponse>
@@ -645,6 +803,8 @@ export type Mutation = {
   updateForm?: Maybe<FormEntityResponse>
   updateGeneral?: Maybe<GeneralEntityResponse>
   updateHelpPage?: Maybe<HelpPageEntityResponse>
+  updateMunicipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  updateMunicipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   updateTax?: Maybe<TaxEntityResponse>
   updateUploadFile?: Maybe<UploadFileEntityResponse>
   updateUploadFolder?: Maybe<UploadFolderEntityResponse>
@@ -673,6 +833,10 @@ export type MutationCreateFormArgs = {
   data: FormInput
 }
 
+export type MutationCreateMunicipalServiceCategoryArgs = {
+  data: MunicipalServiceCategoryInput
+}
+
 export type MutationCreateUploadFileArgs = {
   data: UploadFileInput
 }
@@ -698,6 +862,10 @@ export type MutationDeleteContentReleasesReleaseActionArgs = {
 }
 
 export type MutationDeleteFormArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteMunicipalServiceCategoryArgs = {
   id: Scalars['ID']['input']
 }
 
@@ -778,6 +946,15 @@ export type MutationUpdateHelpPageArgs = {
   data: HelpPageInput
 }
 
+export type MutationUpdateMunicipalServiceCategoryArgs = {
+  data: MunicipalServiceCategoryInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateMunicipalServicesPageArgs = {
+  data: MunicipalServicesPageInput
+}
+
 export type MutationUpdateTaxArgs = {
   data: TaxInput
 }
@@ -825,6 +1002,11 @@ export type PaginationArg = {
   start?: InputMaybe<Scalars['Int']['input']>
 }
 
+export enum PublicationState {
+  Live = 'LIVE',
+  Preview = 'PREVIEW',
+}
+
 export type Query = {
   __typename?: 'Query'
   contentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
@@ -838,6 +1020,9 @@ export type Query = {
   i18NLocale?: Maybe<I18NLocaleEntityResponse>
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>
   me?: Maybe<UsersPermissionsMe>
+  municipalServiceCategories?: Maybe<MunicipalServiceCategoryEntityResponseCollection>
+  municipalServiceCategory?: Maybe<MunicipalServiceCategoryEntityResponse>
+  municipalServicesPage?: Maybe<MunicipalServicesPageEntityResponse>
   tax?: Maybe<TaxEntityResponse>
   uploadFile?: Maybe<UploadFileEntityResponse>
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>
@@ -887,6 +1072,17 @@ export type QueryI18NLocalesArgs = {
   filters?: InputMaybe<I18NLocaleFiltersInput>
   pagination?: InputMaybe<PaginationArg>
   sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryMunicipalServiceCategoriesArgs = {
+  filters?: InputMaybe<MunicipalServiceCategoryFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  publicationState?: InputMaybe<PublicationState>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryMunicipalServiceCategoryArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
 }
 
 export type QueryUploadFileArgs = {
@@ -1545,6 +1741,94 @@ export type HelpPageQuery = {
   } | null
 }
 
+export type MunicipalServiceCategoryFragment = {
+  __typename?: 'MunicipalServiceCategory'
+  title: string
+}
+
+export type MunicipalServiceFragment = {
+  __typename?: 'ComponentBlocksMunicipalService'
+  id: string
+  title: string
+  description: string
+  buttonText: string
+  href: string
+  color: Enum_Componentblocksmunicipalservice_Color
+  icon: Enum_Componentblocksmunicipalservice_Icon
+  tag?: string | null
+  isVisibleForFo: boolean
+  isVisibleForPo: boolean
+  category?: {
+    __typename?: 'MunicipalServiceCategoryEntityResponse'
+    data?: {
+      __typename?: 'MunicipalServiceCategoryEntity'
+      id?: string | null
+      attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+    } | null
+  } | null
+}
+
+export type MunicipalServicesPageFragment = {
+  __typename?: 'MunicipalServicesPage'
+  services: Array<{
+    __typename?: 'ComponentBlocksMunicipalService'
+    id: string
+    title: string
+    description: string
+    buttonText: string
+    href: string
+    color: Enum_Componentblocksmunicipalservice_Color
+    icon: Enum_Componentblocksmunicipalservice_Icon
+    tag?: string | null
+    isVisibleForFo: boolean
+    isVisibleForPo: boolean
+    category?: {
+      __typename?: 'MunicipalServiceCategoryEntityResponse'
+      data?: {
+        __typename?: 'MunicipalServiceCategoryEntity'
+        id?: string | null
+        attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+      } | null
+    } | null
+  } | null>
+}
+
+export type MunicipalServicesPageQueryVariables = Exact<{ [key: string]: never }>
+
+export type MunicipalServicesPageQuery = {
+  __typename?: 'Query'
+  municipalServicesPage?: {
+    __typename?: 'MunicipalServicesPageEntityResponse'
+    data?: {
+      __typename?: 'MunicipalServicesPageEntity'
+      attributes?: {
+        __typename?: 'MunicipalServicesPage'
+        services: Array<{
+          __typename?: 'ComponentBlocksMunicipalService'
+          id: string
+          title: string
+          description: string
+          buttonText: string
+          href: string
+          color: Enum_Componentblocksmunicipalservice_Color
+          icon: Enum_Componentblocksmunicipalservice_Icon
+          tag?: string | null
+          isVisibleForFo: boolean
+          isVisibleForPo: boolean
+          category?: {
+            __typename?: 'MunicipalServiceCategoryEntityResponse'
+            data?: {
+              __typename?: 'MunicipalServiceCategoryEntity'
+              id?: string | null
+              attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+            } | null
+          } | null
+        } | null>
+      } | null
+    } | null
+  } | null
+}
+
 export type TaxFragment = {
   __typename?: 'Tax'
   accountCommunicationConsentText: string
@@ -1654,6 +1938,42 @@ export const HelpPageFragmentDoc = gql`
   }
   ${HelpCategoryFragmentDoc}
 `
+export const MunicipalServiceCategoryFragmentDoc = gql`
+  fragment MunicipalServiceCategory on MunicipalServiceCategory {
+    title
+  }
+`
+export const MunicipalServiceFragmentDoc = gql`
+  fragment MunicipalService on ComponentBlocksMunicipalService {
+    id
+    title
+    description
+    buttonText
+    href
+    color
+    icon
+    tag
+    isVisibleForFo
+    isVisibleForPo
+    category {
+      data {
+        id
+        attributes {
+          ...MunicipalServiceCategory
+        }
+      }
+    }
+  }
+  ${MunicipalServiceCategoryFragmentDoc}
+`
+export const MunicipalServicesPageFragmentDoc = gql`
+  fragment MunicipalServicesPage on MunicipalServicesPage {
+    services {
+      ...MunicipalService
+    }
+  }
+  ${MunicipalServiceFragmentDoc}
+`
 export const TaxFragmentDoc = gql`
   fragment Tax on Tax {
     accountCommunicationConsentText
@@ -1705,6 +2025,18 @@ export const HelpPageDocument = gql`
   }
   ${HelpPageFragmentDoc}
 `
+export const MunicipalServicesPageDocument = gql`
+  query MunicipalServicesPage {
+    municipalServicesPage {
+      data {
+        attributes {
+          ...MunicipalServicesPage
+        }
+      }
+    }
+  }
+  ${MunicipalServicesPageFragmentDoc}
+`
 export const TaxDocument = gql`
   query Tax {
     tax {
@@ -1733,12 +2065,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FormBaseBySlug(
       variables: FormBaseBySlugQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<FormBaseBySlugQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<FormBaseBySlugQuery>(FormBaseBySlugDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<FormBaseBySlugQuery>({
+            document: FormBaseBySlugDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'FormBaseBySlug',
         'query',
@@ -1748,14 +2083,16 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FormWithLandingPageBySlug(
       variables: FormWithLandingPageBySlugQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<FormWithLandingPageBySlugQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<FormWithLandingPageBySlugQuery>(
-            FormWithLandingPageBySlugDocument,
+          client.request<FormWithLandingPageBySlugQuery>({
+            document: FormWithLandingPageBySlugDocument,
             variables,
-            { ...requestHeaders, ...wrappedRequestHeaders },
-          ),
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
         'FormWithLandingPageBySlug',
         'query',
         variables,
@@ -1764,14 +2101,35 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     HelpPage(
       variables?: HelpPageQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<HelpPageQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<HelpPageQuery>(HelpPageDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<HelpPageQuery>({
+            document: HelpPageDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'HelpPage',
+        'query',
+        variables,
+      )
+    },
+    MunicipalServicesPage(
+      variables?: MunicipalServicesPageQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<MunicipalServicesPageQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MunicipalServicesPageQuery>({
+            document: MunicipalServicesPageDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'MunicipalServicesPage',
         'query',
         variables,
       )
@@ -1779,12 +2137,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Tax(
       variables?: TaxQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
     ): Promise<TaxQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<TaxQuery>(TaxDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
+          client.request<TaxQuery>({
+            document: TaxDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
           }),
         'Tax',
         'query',

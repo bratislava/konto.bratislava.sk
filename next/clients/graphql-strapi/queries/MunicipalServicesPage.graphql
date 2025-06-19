@@ -1,0 +1,40 @@
+fragment MunicipalServiceCategory on MunicipalServiceCategory {
+  title
+}
+
+fragment MunicipalService on ComponentBlocksMunicipalService {
+  id
+  title
+  description
+  buttonText
+  href
+  color
+  icon
+  tag
+  isVisibleForFo
+  isVisibleForPo
+  category {
+    data {
+      id
+      attributes {
+        ...MunicipalServiceCategory
+      }
+    }
+  }
+}
+
+fragment MunicipalServicesPage on MunicipalServicesPage {
+  services {
+    ...MunicipalService
+  }
+}
+
+query MunicipalServicesPage {
+  municipalServicesPage {
+    data {
+      attributes {
+        ...MunicipalServicesPage
+      }
+    }
+  }
+}

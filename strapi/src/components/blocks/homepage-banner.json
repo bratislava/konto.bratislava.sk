@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_blocks_homepage_banners",
+  "info": {
+    "displayName": "Homepage banner",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "buttonText": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "dateFrom": {
+      "type": "datetime"
+    },
+    "dateTo": {
+      "type": "datetime"
+    }
+  }
+}

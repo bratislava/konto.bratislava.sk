@@ -4,7 +4,8 @@
   "info": {
     "singularName": "general",
     "pluralName": "generals",
-    "displayName": "General"
+    "displayName": "General",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -16,6 +17,11 @@
       "type": "component",
       "repeatable": true,
       "component": "general.alert"
+    },
+    "forms": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::form.form"
     }
   }
 }

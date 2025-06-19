@@ -734,20 +734,64 @@ export interface ApiHomepageHomepage extends Schema.SingleType {
   attributes: {
     services: Attribute.Relation<
       'api::homepage.homepage',
-      'oneToOne',
+      'oneToMany',
       'api::municipal-service.municipal-service'
     >
     servicesLegalPerson: Attribute.Relation<
       'api::homepage.homepage',
-      'oneToOne',
+      'oneToMany',
       'api::municipal-service.municipal-service'
     >
-    banners: Attribute.Component<'blocks.homepage-banner', true> & Attribute.Required
+    banners: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::homepage-banner.homepage-banner'
+    >
+    bannersLegalPerson: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::homepage-banner.homepage-banner'
+    >
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::homepage.homepage', 'oneToOne', 'admin::user'> &
       Attribute.Private
     updatedBy: Attribute.Relation<'api::homepage.homepage', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+  }
+}
+
+export interface ApiHomepageBannerHomepageBanner extends Schema.CollectionType {
+  collectionName: 'homepage_banners'
+  info: {
+    singularName: 'homepage-banner'
+    pluralName: 'homepage-banners'
+    displayName: 'Homepage banner'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    description: Attribute.Text & Attribute.Required
+    buttonText: Attribute.String & Attribute.Required
+    href: Attribute.String & Attribute.Required
+    image: Attribute.Media & Attribute.Required
+    dateFrom: Attribute.DateTime
+    dateTo: Attribute.DateTime
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::homepage-banner.homepage-banner',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::homepage-banner.homepage-banner',
+      'oneToOne',
+      'admin::user'
+    > &
       Attribute.Private
   }
 }
@@ -834,13 +878,12 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory extends Sch
     displayName: 'Municipal service category'
   }
   options: {
-    draftAndPublish: true
+    draftAndPublish: false
   }
   attributes: {
     title: Attribute.String & Attribute.Required
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
-    publishedAt: Attribute.DateTime
     createdBy: Attribute.Relation<
       'api::municipal-service-category.municipal-service-category',
       'oneToOne',
@@ -870,12 +913,12 @@ export interface ApiMunicipalServicesPageMunicipalServicesPage extends Schema.Si
   attributes: {
     services: Attribute.Relation<
       'api::municipal-services-page.municipal-services-page',
-      'oneToOne',
+      'oneToMany',
       'api::municipal-service.municipal-service'
     >
     servicesLegalPerson: Attribute.Relation<
       'api::municipal-services-page.municipal-services-page',
-      'oneToOne',
+      'oneToMany',
       'api::municipal-service.municipal-service'
     >
     createdAt: Attribute.DateTime
@@ -947,6 +990,7 @@ declare module '@strapi/types' {
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage
       'api::homepage.homepage': ApiHomepageHomepage
+      'api::homepage-banner.homepage-banner': ApiHomepageBannerHomepageBanner
       'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService
       'api::municipal-service-category.municipal-service-category': ApiMunicipalServiceCategoryMunicipalServiceCategory
       'api::municipal-services-page.municipal-services-page': ApiMunicipalServicesPageMunicipalServicesPage

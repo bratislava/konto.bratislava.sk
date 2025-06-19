@@ -517,7 +517,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksHomepageBanner | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentBlocksHomepageBanner | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageBanner | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -557,11 +557,67 @@ type HelpPageRelationResponseCollection {
 }
 
 type Homepage {
-  banners(filters: ComponentBlocksHomepageBannerFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHomepageBanner]!
+  banners(filters: HomepageBannerFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageBannerRelationResponseCollection
+  bannersLegalPerson(filters: HomepageBannerFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageBannerRelationResponseCollection
   createdAt: DateTime
-  services: MunicipalServiceEntityResponse
-  servicesLegalPerson: MunicipalServiceEntityResponse
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   updatedAt: DateTime
+}
+
+type HomepageBanner {
+  buttonText: String!
+  createdAt: DateTime
+  dateFrom: DateTime
+  dateTo: DateTime
+  description: String!
+  href: String!
+  image: UploadFileEntityResponse!
+  title: String!
+  updatedAt: DateTime
+}
+
+type HomepageBannerEntity {
+  attributes: HomepageBanner
+  id: ID
+}
+
+type HomepageBannerEntityResponse {
+  data: HomepageBannerEntity
+}
+
+type HomepageBannerEntityResponseCollection {
+  data: [HomepageBannerEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input HomepageBannerFiltersInput {
+  and: [HomepageBannerFiltersInput]
+  buttonText: StringFilterInput
+  createdAt: DateTimeFilterInput
+  dateFrom: DateTimeFilterInput
+  dateTo: DateTimeFilterInput
+  description: StringFilterInput
+  href: StringFilterInput
+  id: IDFilterInput
+  not: HomepageBannerFiltersInput
+  or: [HomepageBannerFiltersInput]
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input HomepageBannerInput {
+  buttonText: String
+  dateFrom: DateTime
+  dateTo: DateTime
+  description: String
+  href: String
+  image: ID
+  title: String
+}
+
+type HomepageBannerRelationResponseCollection {
+  data: [HomepageBannerEntity!]!
 }
 
 type HomepageEntity {
@@ -580,7 +636,8 @@ type HomepageEntityResponseCollection {
 
 input HomepageFiltersInput {
   and: [HomepageFiltersInput]
-  banners: ComponentBlocksHomepageBannerFiltersInput
+  banners: HomepageBannerFiltersInput
+  bannersLegalPerson: HomepageBannerFiltersInput
   createdAt: DateTimeFilterInput
   not: HomepageFiltersInput
   or: [HomepageFiltersInput]
@@ -590,9 +647,10 @@ input HomepageFiltersInput {
 }
 
 input HomepageInput {
-  banners: [ComponentBlocksHomepageBannerInput]
-  services: ID
-  servicesLegalPerson: ID
+  banners: [ID]
+  bannersLegalPerson: [ID]
+  services: [ID]
+  servicesLegalPerson: [ID]
 }
 
 type HomepageRelationResponseCollection {
@@ -768,7 +826,6 @@ type MunicipalService {
 
 type MunicipalServiceCategory {
   createdAt: DateTime
-  publishedAt: DateTime
   title: String!
   updatedAt: DateTime
 }
@@ -793,13 +850,11 @@ input MunicipalServiceCategoryFiltersInput {
   id: IDFilterInput
   not: MunicipalServiceCategoryFiltersInput
   or: [MunicipalServiceCategoryFiltersInput]
-  publishedAt: DateTimeFilterInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input MunicipalServiceCategoryInput {
-  publishedAt: DateTime
   title: String
 }
 
@@ -855,8 +910,8 @@ type MunicipalServiceRelationResponseCollection {
 
 type MunicipalServicesPage {
   createdAt: DateTime
-  services: MunicipalServiceEntityResponse
-  servicesLegalPerson: MunicipalServiceEntityResponse
+  services(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  servicesLegalPerson(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   updatedAt: DateTime
 }
 
@@ -885,8 +940,8 @@ input MunicipalServicesPageFiltersInput {
 }
 
 input MunicipalServicesPageInput {
-  services: ID
-  servicesLegalPerson: ID
+  services: [ID]
+  servicesLegalPerson: [ID]
 }
 
 type MunicipalServicesPageRelationResponseCollection {
@@ -899,6 +954,7 @@ type Mutation {
   createContentReleasesRelease(data: ContentReleasesReleaseInput!): ContentReleasesReleaseEntityResponse
   createContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!): ContentReleasesReleaseActionEntityResponse
   createForm(data: FormInput!): FormEntityResponse
+  createHomepageBanner(data: HomepageBannerInput!): HomepageBannerEntityResponse
   createMunicipalService(data: MunicipalServiceInput!): MunicipalServiceEntityResponse
   createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!): MunicipalServiceCategoryEntityResponse
   createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
@@ -915,6 +971,7 @@ type Mutation {
   deleteGeneral: GeneralEntityResponse
   deleteHelpPage: HelpPageEntityResponse
   deleteHomepage: HomepageEntityResponse
+  deleteHomepageBanner(id: ID!): HomepageBannerEntityResponse
   deleteMunicipalService(id: ID!): MunicipalServiceEntityResponse
   deleteMunicipalServiceCategory(id: ID!): MunicipalServiceCategoryEntityResponse
   deleteMunicipalServicesPage: MunicipalServicesPageEntityResponse
@@ -951,6 +1008,7 @@ type Mutation {
   updateGeneral(data: GeneralInput!): GeneralEntityResponse
   updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
   updateHomepage(data: HomepageInput!): HomepageEntityResponse
+  updateHomepageBanner(data: HomepageBannerInput!, id: ID!): HomepageBannerEntityResponse
   updateMunicipalService(data: MunicipalServiceInput!, id: ID!): MunicipalServiceEntityResponse
   updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, id: ID!): MunicipalServiceCategoryEntityResponse
   updateMunicipalServicesPage(data: MunicipalServicesPageInput!): MunicipalServicesPageEntityResponse
@@ -995,11 +1053,13 @@ type Query {
   general: GeneralEntityResponse
   helpPage: HelpPageEntityResponse
   homepage: HomepageEntityResponse
+  homepageBanner(id: ID): HomepageBannerEntityResponse
+  homepageBanners(filters: HomepageBannerFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): HomepageBannerEntityResponseCollection
   i18NLocale(id: ID): I18NLocaleEntityResponse
   i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
   municipalService(id: ID): MunicipalServiceEntityResponse
-  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, publicationState: PublicationState = LIVE, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
+  municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
   municipalServiceCategory(id: ID): MunicipalServiceCategoryEntityResponse
   municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
   municipalServicesPage: MunicipalServicesPageEntityResponse

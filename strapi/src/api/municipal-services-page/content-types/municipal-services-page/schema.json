@@ -14,12 +14,12 @@
   "attributes": {
     "services": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::municipal-service.municipal-service"
     },
     "servicesLegalPerson": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::municipal-service.municipal-service"
     }
   }

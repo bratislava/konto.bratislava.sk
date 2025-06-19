@@ -14,19 +14,23 @@
   "attributes": {
     "services": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::municipal-service.municipal-service"
     },
     "servicesLegalPerson": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "api::municipal-service.municipal-service"
     },
     "banners": {
-      "type": "component",
-      "repeatable": true,
-      "required": true,
-      "component": "blocks.homepage-banner"
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::homepage-banner.homepage-banner"
+    },
+    "bannersLegalPerson": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::homepage-banner.homepage-banner"
     }
   }
 }

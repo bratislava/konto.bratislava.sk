@@ -1,18 +1,17 @@
 import { strapiClient } from '@clients/graphql-strapi'
-import { MunicipalServicesPageFragment } from '@clients/graphql-strapi/api'
-import MunicipalServicesSection from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
+import { MunicipalServiceFragment } from '@clients/graphql-strapi/api'
+import MunicipalServicesSection, {
+  MunicipalServicesSectionProps,
+} from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import uniq from 'lodash/uniq'
+import { uniqBy } from 'lodash'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { isDefined } from '../frontend/utils/general'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-type AccountMunicipalServicesPageProps = {
-  municipalServicesPage: MunicipalServicesPageFragment
-  categories: string[]
-}
+type AccountMunicipalServicesPageProps = MunicipalServicesSectionProps
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServicesPageProps>(
   async () => {
@@ -26,20 +25,28 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServ
       }
     }
 
-    const collator = new Intl.Collator('sk')
-    const categoriesWithDuplicates = (
-      municipalServicesPage.services?.map(
-        (service) => service?.category?.data?.attributes?.title,
-      ) ?? []
-    )
-      .filter(isDefined)
-      .toSorted((a, b) => collator.compare(a, b))
-    const categories = uniq(categoriesWithDuplicates)
+    const x = (services: MunicipalServiceFragment[]) => {
+      const collator = new Intl.Collator('sk')
+      const categoriesWithDuplicates = (
+        services?.map((service) => service?.attributes?.category!.data) ?? []
+      )
+        .filter(isDefined)
+        .toSorted((a, b) => collator.compare(a.attributes!.title, b.attributes!.title))
+      const categories = uniqBy(categoriesWithDuplicates, (category) => category.id)
+
+      return {
+        services,
+        categories,
+      }
+    }
+
+    const services = x(municipalServicesPage.services?.data ?? [])
+    const servicesLegalPerson = x(municipalServicesPage.servicesLegalPerson?.data ?? [])
 
     return {
       props: {
-        municipalServicesPage,
-        categories,
+        services,
+        servicesLegalPerson,
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -47,15 +54,12 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMunicipalServ
 )
 
 const AccountMunicipalServicesPage = ({
-  municipalServicesPage,
-  categories,
+  services,
+  servicesLegalPerson,
 }: AccountMunicipalServicesPageProps) => {
   return (
     <AccountPageLayout>
-      <MunicipalServicesSection
-        municipalServicesPage={municipalServicesPage}
-        categories={categories}
-      />
+      <MunicipalServicesSection services={services} servicesLegalPerson={servicesLegalPerson} />
     </AccountPageLayout>
   )
 }

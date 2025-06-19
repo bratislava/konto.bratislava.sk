@@ -1,31 +1,25 @@
-fragment MunicipalServiceCategory on MunicipalServiceCategory {
-  title
-}
-
-fragment MunicipalService on ComponentBlocksMunicipalService {
+fragment MunicipalServiceCategory on MunicipalServiceCategoryEntity {
   id
-  title
-  description
-  buttonText
-  href
-  color
-  icon
-  tag
-  isVisibleForFo
-  isVisibleForPo
-  category {
-    data {
-      id
-      attributes {
-        ...MunicipalServiceCategory
-      }
-    }
+  attributes {
+    title
   }
 }
 
-fragment MunicipalServicesPage on MunicipalServicesPage {
-  services {
-    ...MunicipalService
+fragment MunicipalService on MunicipalServiceEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    color
+    icon
+    tag
+    category {
+      data {
+        ...MunicipalServiceCategory
+      }
+    }
   }
 }
 
@@ -33,7 +27,16 @@ query MunicipalServicesPage {
   municipalServicesPage {
     data {
       attributes {
-        ...MunicipalServicesPage
+        services {
+          data {
+            ...MunicipalService
+          }
+        }
+        servicesLegalPerson {
+          data {
+            ...MunicipalService
+          }
+        }
       }
     }
   }

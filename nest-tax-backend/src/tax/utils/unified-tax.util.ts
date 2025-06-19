@@ -439,13 +439,12 @@ export const getTaxDetailPure = (options: {
   const dueDate = calculateDueDate(dateOfValidityDayjs)
 
   const oneTimePayment = calculateOneTimePaymentDetails({
-      overallPaid,
-      overallBalance,
-      dueDate: dueDate?.toDate(),
+    overallPaid,
+    overallBalance,
+    dueDate: dueDate?.toDate(),
     variableSymbol,
     specificSymbol,
-}
-  )
+  })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
     overallAmount,

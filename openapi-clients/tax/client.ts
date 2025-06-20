@@ -1,4 +1,10 @@
-import { AdminApiFactory, DefaultApiFactory, PaymentApiFactory, TaxApiFactory } from './api'
+import {
+  AdminApiFactory,
+  CardPaymentReportingApiFactory,
+  DefaultApiFactory,
+  PaymentApiFactory,
+  TaxApiFactory,
+} from './api'
 import { Configuration, ConfigurationParameters } from './configuration'
 import type { AxiosInstance } from 'axios'
 
@@ -20,6 +26,7 @@ export const createTaxClient = ({
 
   return {
     ...AdminApiFactory(...args),
+    ...CardPaymentReportingApiFactory(...args),
     ...DefaultApiFactory(...args),
     ...PaymentApiFactory(...args),
     ...TaxApiFactory(...args),

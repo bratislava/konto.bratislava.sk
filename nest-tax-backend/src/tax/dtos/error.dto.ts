@@ -15,7 +15,7 @@ export enum CustomErrorTaxTypesResponseEnum {
   MISSING_INSTALLMENT_AMOUNTS = 'Missing one or more installment amount',
   INSTALLMENT_INCORRECT_COUNT = 'Number of installments does not equal 3.',
   INSTALLMENT_UNEXPECTED_ERROR = 'An unexpected error occurred while calculating installments.',
-  STATE_HOLIDAY_NOT_EXISTS = 'State holidays are not filled out for this or the next year.',
+  STATE_HOLIDAY_NOT_EXISTS = 'State holidays are not configured for this or the next year.',
 }
 
 export enum CustomErrorPdfCreateTypesEnum {

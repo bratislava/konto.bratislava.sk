@@ -1,0 +1,36 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "services": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::municipal-service.municipal-service"
+    },
+    "servicesLegalPerson": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::municipal-service.municipal-service"
+    },
+    "banners": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::homepage-banner.homepage-banner"
+    },
+    "bannersLegalPerson": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::homepage-banner.homepage-banner"
+    }
+  }
+}

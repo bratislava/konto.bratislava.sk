@@ -1,0 +1,43 @@
+fragment MunicipalServiceCategory on MunicipalServiceCategoryEntity {
+  id
+  attributes {
+    title
+  }
+}
+
+fragment MunicipalService on MunicipalServiceEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    color
+    icon
+    tag
+    category {
+      data {
+        ...MunicipalServiceCategory
+      }
+    }
+  }
+}
+
+query MunicipalServicesPage {
+  municipalServicesPage {
+    data {
+      attributes {
+        services {
+          data {
+            ...MunicipalService
+          }
+        }
+        servicesLegalPerson {
+          data {
+            ...MunicipalService
+          }
+        }
+      }
+    }
+  }
+}

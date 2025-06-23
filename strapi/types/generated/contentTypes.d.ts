@@ -681,12 +681,14 @@ export interface ApiGeneralGeneral extends Schema.SingleType {
     singularName: 'general'
     pluralName: 'generals'
     displayName: 'General'
+    description: ''
   }
   options: {
     draftAndPublish: false
   }
   attributes: {
     alerts: Attribute.Component<'general.alert', true>
+    forms: Attribute.Relation<'api::general.general', 'oneToMany', 'api::form.form'>
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<'api::general.general', 'oneToOne', 'admin::user'> &
@@ -714,6 +716,224 @@ export interface ApiHelpPageHelpPage extends Schema.SingleType {
     createdBy: Attribute.Relation<'api::help-page.help-page', 'oneToOne', 'admin::user'> &
       Attribute.Private
     updatedBy: Attribute.Relation<'api::help-page.help-page', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+  }
+}
+
+export interface ApiHomepageHomepage extends Schema.SingleType {
+  collectionName: 'homepages'
+  info: {
+    singularName: 'homepage'
+    pluralName: 'homepages'
+    displayName: 'Homepage'
+    description: ''
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    services: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::municipal-service.municipal-service'
+    >
+    servicesLegalPerson: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::municipal-service.municipal-service'
+    >
+    banners: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::homepage-banner.homepage-banner'
+    >
+    bannersLegalPerson: Attribute.Relation<
+      'api::homepage.homepage',
+      'oneToMany',
+      'api::homepage-banner.homepage-banner'
+    >
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::homepage.homepage', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+    updatedBy: Attribute.Relation<'api::homepage.homepage', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+  }
+}
+
+export interface ApiHomepageBannerHomepageBanner extends Schema.CollectionType {
+  collectionName: 'homepage_banners'
+  info: {
+    singularName: 'homepage-banner'
+    pluralName: 'homepage-banners'
+    displayName: 'Homepage banner'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    description: Attribute.Text & Attribute.Required
+    buttonText: Attribute.String & Attribute.Required
+    href: Attribute.String & Attribute.Required
+    image: Attribute.Media & Attribute.Required
+    dateFrom: Attribute.DateTime
+    dateTo: Attribute.DateTime
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::homepage-banner.homepage-banner',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::homepage-banner.homepage-banner',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+  }
+}
+
+export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionType {
+  collectionName: 'municipal_services'
+  info: {
+    singularName: 'municipal-service'
+    pluralName: 'municipal-services'
+    displayName: 'Municipal service'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    description: Attribute.Text & Attribute.Required
+    buttonText: Attribute.String & Attribute.Required
+    href: Attribute.String & Attribute.Required
+    tag: Attribute.String
+    icon: Attribute.Enumeration<
+      [
+        'administration',
+        'public-space-occupation',
+        'taxes',
+        'cultural-organizations',
+        'events-support',
+        'library',
+        'zoo',
+        'kids-teenagers',
+        'swimming-pool',
+        'community-gardens',
+        'connector',
+        'front-gardens',
+        'greenery',
+        'lamp',
+        'spatial-planning',
+        'waste',
+        'security',
+        'marianum',
+        'mosquito',
+        'christmas-tree',
+        'housing',
+        'transport',
+        'excavations',
+        'management-communications',
+        'parking',
+        'towing'
+      ]
+    > &
+      Attribute.Required
+    color: Attribute.Enumeration<
+      ['main', 'transport', 'environment', 'social', 'education', 'culture']
+    > &
+      Attribute.Required &
+      Attribute.DefaultTo<'main'>
+    category: Attribute.Relation<
+      'api::municipal-service.municipal-service',
+      'oneToOne',
+      'api::municipal-service-category.municipal-service-category'
+    >
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::municipal-service.municipal-service',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::municipal-service.municipal-service',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+  }
+}
+
+export interface ApiMunicipalServiceCategoryMunicipalServiceCategory extends Schema.CollectionType {
+  collectionName: 'municipal_service_categories'
+  info: {
+    singularName: 'municipal-service-category'
+    pluralName: 'municipal-service-categories'
+    displayName: 'Municipal service category'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::municipal-service-category.municipal-service-category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::municipal-service-category.municipal-service-category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+  }
+}
+
+export interface ApiMunicipalServicesPageMunicipalServicesPage extends Schema.SingleType {
+  collectionName: 'municipal_services_pages'
+  info: {
+    singularName: 'municipal-services-page'
+    pluralName: 'municipal-services-pages'
+    displayName: 'Municipal services page'
+    description: ''
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    services: Attribute.Relation<
+      'api::municipal-services-page.municipal-services-page',
+      'oneToMany',
+      'api::municipal-service.municipal-service'
+    >
+    servicesLegalPerson: Attribute.Relation<
+      'api::municipal-services-page.municipal-services-page',
+      'oneToMany',
+      'api::municipal-service.municipal-service'
+    >
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::municipal-services-page.municipal-services-page',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::municipal-services-page.municipal-services-page',
+      'oneToOne',
+      'admin::user'
+    > &
       Attribute.Private
   }
 }
@@ -769,6 +989,11 @@ declare module '@strapi/types' {
       'api::form.form': ApiFormForm
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage
+      'api::homepage.homepage': ApiHomepageHomepage
+      'api::homepage-banner.homepage-banner': ApiHomepageBannerHomepageBanner
+      'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService
+      'api::municipal-service-category.municipal-service-category': ApiMunicipalServiceCategoryMunicipalServiceCategory
+      'api::municipal-services-page.municipal-services-page': ApiMunicipalServicesPageMunicipalServicesPage
       'api::tax.tax': ApiTaxTax
     }
   }

@@ -1,0 +1,61 @@
+fragment MunicipalServiceHomepage on MunicipalServiceEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    color
+    icon
+    tag
+  }
+}
+
+fragment BannerHomepage on HomepageBannerEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    image {
+      data {
+        id
+        attributes {
+          url
+        }
+      }
+    }
+    dateFrom
+    dateTo
+  }
+}
+
+query Homepage {
+  homepage {
+    data {
+      attributes {
+        banners {
+          data {
+            ...BannerHomepage
+          }
+        }
+        bannersLegalPerson {
+          data {
+            ...BannerHomepage
+          }
+        }
+        services(pagination: { limit: 4 }) {
+          data {
+            ...MunicipalServiceHomepage
+          }
+        }
+        servicesLegalPerson(pagination: { limit: 4 }) {
+          data {
+            ...MunicipalServiceHomepage
+          }
+        }
+      }
+    }
+  }
+}

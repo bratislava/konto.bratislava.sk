@@ -61,6 +61,23 @@ export interface BlocksHelpItem extends Schema.Component {
   }
 }
 
+export interface BlocksHomepageBanner extends Schema.Component {
+  collectionName: 'components_blocks_homepage_banners'
+  info: {
+    displayName: 'Homepage banner'
+    description: ''
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    description: Attribute.Text & Attribute.Required
+    buttonText: Attribute.String & Attribute.Required
+    href: Attribute.String & Attribute.Required
+    image: Attribute.Media & Attribute.Required
+    dateFrom: Attribute.DateTime
+    dateTo: Attribute.DateTime
+  }
+}
+
 export interface GeneralAlert extends Schema.Component {
   collectionName: 'components_general_alerts'
   info: {
@@ -82,6 +99,7 @@ declare module '@strapi/types' {
       'blocks.form-landing-page': BlocksFormLandingPage
       'blocks.help-category': BlocksHelpCategory
       'blocks.help-item': BlocksHelpItem
+      'blocks.homepage-banner': BlocksHomepageBanner
       'general.alert': GeneralAlert
     }
   }

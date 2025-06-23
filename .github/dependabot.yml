@@ -19,6 +19,7 @@ updates:
       # `npm run generate-assets` must be executed after Tailwind update
       - dependency-name: '@tailwindcss/postcss'
       - dependency-name: 'tailwindcss'
+      - dependency-name: 'postcss'
       # Playwright must be updated in nest-forms-backend at the same time
       - dependency-name: 'playwright'
     groups:

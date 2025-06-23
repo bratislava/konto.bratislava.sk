@@ -37,7 +37,7 @@ export const renderSummaryPdf = async ({
     <SummaryPdf
       formSummary={formSummary}
       validationData={validationData}
-      cssToInject={summaryPdfCss.toString()}
+      cssToInject={summaryPdfCss}
       fileInfos={fileInfos}
     ></SummaryPdf>,
   )

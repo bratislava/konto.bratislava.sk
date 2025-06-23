@@ -178,7 +178,7 @@ export default class FilesController {
     const fileStream = await this.filesService.downloadFile(fileId)
     const file = await this.filesService.getFile(fileId)
     res.set({
-      'Content-Type': contentType(file.fileName),
+      'Content-Type': contentType(file.fileName) || 'application/octet-stream', // default needed as contentType returns false if not found
       'Access-Control-Expose-Headers': 'Content-Disposition',
       'Content-Disposition': contentDisposition(file.fileName),
     })

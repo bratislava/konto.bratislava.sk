@@ -129,7 +129,8 @@ export class AdminController {
   @HttpCode(200)
   @ApiOperation({
     summary: 'Mark accounts as deceased',
-    description: 'Deactivates user account in cognito and marks it as deceased.',
+    description:
+      'This endpoint is intended to be used manually when a person is reported as deceased. When called, it deactivates the user account in cognito and marks it as deceased.',
   })
   @UseGuards(AdminGuard)
   @Patch('mark-deceased')

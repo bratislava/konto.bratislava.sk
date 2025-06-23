@@ -28,6 +28,7 @@ import { AdminErrorsEnum, AdminErrorsResponseEnum } from './admin.errors.enum'
 import { ManuallyVerifyUserRequestDto } from './dtos/requests.admin.dto'
 import {
   DeactivateAccountResponseDto,
+  MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   UserVerifyState,
@@ -38,6 +39,7 @@ import {
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
+import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 
 @Injectable()
 export class AdminService {
@@ -253,6 +255,67 @@ export class AdminService {
         : true
 
     return { success: true, bloomreachRemoved, taxDeliveryMethodsRemoved }
+  }
+
+  async markAccountsAsDeceased(birthNumberList: string[]): Promise<MarkDeceasedAccountResponseDto> {
+    const users = await this.prismaService.user.updateManyAndReturn({
+      where: {
+        birthNumber: {
+          in: birthNumberList,
+        },
+      },
+      data: {
+        isDeceased: true,
+        markedDeceasedAt: new Date(),
+      },
+      select: {
+        externalId: true,
+        birthNumber: true,
+        email: true,
+      },
+    })
+
+    const foundResults: {
+      birthNumber: string
+      databaseMarked: boolean
+      cognitoArchived: boolean
+      bloomreachRemoved?: AnonymizeResponse
+    }[] = await Promise.all(
+      users.map(async (item) => {
+        if (!item.externalId || !item.email) {
+          return { birthNumber: item.birthNumber!, databaseMarked: true, cognitoArchived: false }
+        }
+
+        let cognitoSuccess = true
+        try {
+          await this.cognitoSubservice.cognitoDeactivateUser(item.externalId)
+        } catch (error) {
+          cognitoSuccess = false
+        }
+
+        const bloomreachRemoved = await this.bloomreachService.anonymizeCustomer(item.externalId)
+        return {
+          birthNumber: item.birthNumber!,
+          databaseMarked: true,
+          cognitoArchived: cognitoSuccess,
+          bloomreachRemoved,
+        }
+      })
+    )
+
+    const foundBirthNumbers = users.map((user) => user.birthNumber!)
+
+    const notFoundBirthNumbers = birthNumberList.filter(
+      (birthNumber) => !foundBirthNumbers.includes(birthNumber)
+    )
+
+    const notFoundResults = notFoundBirthNumbers.map((birthNumber) => ({
+      birthNumber,
+      databaseMarked: false,
+      cognitoArchived: false,
+    }))
+
+    return { results: [...foundResults, ...notFoundResults] }
   }
 
   async getVerificationDataForUser(email: string): Promise<VerificationDataForUserResponseDto> {

@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
@@ -15,6 +15,9 @@ async function bootstrap() {
   const logger = new LineLoggerSubservice('Nest')
   const app = await NestFactory.create(AppModule, {
     logger,
+  })
+  app.enableVersioning({
+    type: VersioningType.URI,
   })
   const corsOptions = {
     origin: true,

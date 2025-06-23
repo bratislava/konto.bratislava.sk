@@ -9,6 +9,11 @@ import { CardPaymentReportingService } from '../card-payment-reporting/card-paym
 import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { PrismaService } from '../prisma/prisma.service'
 import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../tax/dtos/error.dto'
+import { stateHolidays } from '../tax/utils/unified-tax.util'
+import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../utils/constants'
@@ -278,5 +283,24 @@ export class TasksService {
         bloomreachUnpaidTaxReminderSent: true,
       },
     })
+  }
+
+  @Cron('0 9-17 1-23 12 1-5')
+  @HandleErrors('Cron Error')
+  async sendAlertsIfHolidaysAreNotSet() {
+    const nextYear = dayjs().year() + 1
+
+    const stateHolidaysForNextYear = stateHolidays.some(
+      (entry) => entry.year === nextYear,
+    )
+
+    if (!stateHolidaysForNextYear) {
+      this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+        CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+        undefined,
+        'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
+      )
+    }
   }
 }

@@ -138,6 +138,7 @@ export class CognitoSubservice {
       const user = await this.prisma.user.findUnique({
         where: {
           externalId: userId,
+          isDeceased: { not: true },
         },
       })
       if (!user) {

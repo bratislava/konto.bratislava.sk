@@ -55,7 +55,7 @@ export class AdminService {
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber },
+      where: { birthNumber, isDeceased: { not: true } },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -91,6 +91,7 @@ export class AdminService {
         birthNumber: {
           in: birthNumbers,
         },
+        isDeceased: { not: true },
       },
     })
     const result: Record<string, ResponseUserByBirthNumberDto> = {}
@@ -139,6 +140,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
+        isDeceased: { not: true },
       },
     })
     if (user !== null) {
@@ -331,6 +333,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
+        isDeceased: { not: true },
       },
     })
 
@@ -404,6 +407,7 @@ export class AdminService {
       user = await this.prismaService.user.findUnique({
         where: {
           email,
+          isDeceased: { not: true },
         },
       })
     }
@@ -451,6 +455,7 @@ export class AdminService {
       await this.prismaService.user.update({
         where: {
           email,
+          isDeceased: { not: true },
         },
         data: {
           ifo: data.ifo,
@@ -510,6 +515,7 @@ export class AdminService {
         externalId: {
           not: null,
         },
+        isDeceased: { not: true },
       },
     })
 
@@ -571,7 +577,7 @@ export class AdminService {
 
   async deleteTax(data: RequestAdminDeleteTaxDto): Promise<OnlySuccessDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber: data.birthNumber },
+      where: { birthNumber: data.birthNumber, isDeceased: { not: true } },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(

@@ -196,7 +196,11 @@ export class AdminController {
   @Post('validated-users-to-physical-entities')
   async validatedUsersToPhysicalEntities() {
     const users = await this.prismaService.user.findMany({
-      where: { birthNumber: { not: null }, physicalEntity: null },
+      where: {
+        birthNumber: { not: null },
+        physicalEntity: null,
+        isDeceased: { not: true },
+      },
       take: 1000,
     })
 

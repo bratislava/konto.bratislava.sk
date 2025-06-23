@@ -65,6 +65,7 @@ export class TasksSubservice {
           not: null,
         },
         OR: [{ lastTaxYear: null }, { lastTaxYear: { not: year } }],
+        isDeceased: { not: true },
       },
       orderBy: {
         lastTaxBackendUploadTry: 'asc',
@@ -97,6 +98,7 @@ export class TasksSubservice {
         birthNumber: {
           in: addedBirthNumbers,
         },
+        isDeceased: { not: true },
       },
       data: {
         lastTaxYear: year,
@@ -141,6 +143,7 @@ export class TasksSubservice {
           not: null,
           lt: taxDeadlineDate,
         },
+        isDeceased: { not: true },
       },
       include: {
         userGdprData: {

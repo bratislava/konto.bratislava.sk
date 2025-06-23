@@ -24,12 +24,14 @@ export class DatabaseSubserviceUser {
       user = await this.prisma.user.findUnique({
         where: {
           email,
+          isDeceased: { not: true },
         },
       })
       if (!user) {
         user = await this.prisma.user.findUnique({
           where: {
             externalId,
+            isDeceased: { not: true },
           },
         })
       }
@@ -91,6 +93,7 @@ export class DatabaseSubserviceUser {
           await this.prisma.user.update({
             where: {
               id: user.id,
+              isDeceased: { not: true },
             },
             data: {
               lastVerificationIdentityCard: new Date(),
@@ -122,6 +125,7 @@ export class DatabaseSubserviceUser {
           await this.prisma.user.update({
             where: {
               id: user.id,
+              isDeceased: { not: true },
             },
             data: {
               ifo,
@@ -262,6 +266,7 @@ export class DatabaseSubserviceUser {
         return await this.prisma.user.update({
           where: {
             id: user.id,
+            isDeceased: { not: true },
           },
           data: {
             requeuedInVerification: {
@@ -295,6 +300,7 @@ export class DatabaseSubserviceUser {
         return await this.prisma.user.update({
           where: {
             id: user.id,
+            isDeceased: { not: true },
           },
           data: {
             requeuedInVerification: 0,

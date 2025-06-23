@@ -32,6 +32,7 @@ export class DatabaseSubserviceUser {
       user = await this.prisma.user.update({
         where: {
           email: email,
+          isDeceased: { not: true },
         },
         data: {
           externalId: externalId,
@@ -183,17 +184,24 @@ export class DatabaseSubserviceUser {
   }
 
   async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: id } })
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+        isDeceased: { not: true },
+      },
+    })
     return user
   }
 
   async getUserByExternalId(externalId: string) {
-    const user = await this.prisma.user.findUnique({ where: { externalId } })
+    const user = await this.prisma.user.findUnique({
+      where: { externalId, isDeceased: { not: true } },
+    })
     return user
   }
 
   async getLegalPersonById(id: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id: id } })
+    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
     return legalPerson
   }
 

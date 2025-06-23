@@ -23,7 +23,7 @@ import {
 import * as _ from 'lodash'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import { AdminGuard } from '../auth/guards/admin.guard'
-import { PrismaService } from '../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
@@ -200,7 +200,7 @@ export class AdminController {
       where: {
         birthNumber: { not: null },
         physicalEntity: null,
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
       take: 1000,
     })

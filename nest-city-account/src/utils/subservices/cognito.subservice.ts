@@ -3,7 +3,7 @@ import AWS from 'aws-sdk'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { fromPairs } from 'lodash'
-import { PrismaService } from '../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
@@ -138,7 +138,7 @@ export class CognitoSubservice {
       const user = await this.prisma.user.findUnique({
         where: {
           externalId: userId,
-          isDeceased: { not: true },
+          ...ACTIVE_USER_FILTER,
         },
       })
       if (!user) {

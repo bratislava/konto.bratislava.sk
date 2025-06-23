@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { PrismaService } from '../../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
 import {
   ResponseGdprLegalPersonDataDto,
@@ -32,7 +32,7 @@ export class DatabaseSubserviceUser {
       user = await this.prisma.user.update({
         where: {
           email: email,
-          isDeceased: { not: true },
+          ...ACTIVE_USER_FILTER,
         },
         data: {
           externalId: externalId,
@@ -187,7 +187,7 @@ export class DatabaseSubserviceUser {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
     })
     return user
@@ -195,7 +195,7 @@ export class DatabaseSubserviceUser {
 
   async getUserByExternalId(externalId: string) {
     const user = await this.prisma.user.findUnique({
-      where: { externalId, isDeceased: { not: true } },
+      where: { externalId, ...ACTIVE_USER_FILTER },
     })
     return user
   }

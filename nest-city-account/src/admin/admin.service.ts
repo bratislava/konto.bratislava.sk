@@ -9,7 +9,7 @@ import {
   UpvsIdentityByUriServiceCreateManyParam,
 } from 'src/upvs-identity-by-uri/upvs-identity-by-uri.service'
 import { BloomreachService } from '../bloomreach/bloomreach.service'
-import { PrismaService } from '../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
 import {
   VerificationErrorsEnum,
   VerificationErrorsResponseEnum,
@@ -55,7 +55,7 @@ export class AdminService {
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber, isDeceased: { not: true } },
+      where: { birthNumber, ...ACTIVE_USER_FILTER },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -91,7 +91,7 @@ export class AdminService {
         birthNumber: {
           in: birthNumbers,
         },
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
     })
     const result: Record<string, ResponseUserByBirthNumberDto> = {}
@@ -140,7 +140,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
     })
     if (user !== null) {
@@ -265,6 +265,7 @@ export class AdminService {
         birthNumber: {
           in: birthNumberList,
         },
+        ...ACTIVE_USER_FILTER,
       },
       data: {
         isDeceased: true,
@@ -333,7 +334,7 @@ export class AdminService {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
     })
 
@@ -407,7 +408,7 @@ export class AdminService {
       user = await this.prismaService.user.findUnique({
         where: {
           email,
-          isDeceased: { not: true },
+          ...ACTIVE_USER_FILTER,
         },
       })
     }
@@ -455,7 +456,7 @@ export class AdminService {
       await this.prismaService.user.update({
         where: {
           email,
-          isDeceased: { not: true },
+          ...ACTIVE_USER_FILTER,
         },
         data: {
           ifo: data.ifo,
@@ -515,7 +516,7 @@ export class AdminService {
         externalId: {
           not: null,
         },
-        isDeceased: { not: true },
+        ...ACTIVE_USER_FILTER,
       },
     })
 
@@ -577,7 +578,7 @@ export class AdminService {
 
   async deleteTax(data: RequestAdminDeleteTaxDto): Promise<OnlySuccessDto> {
     const user = await this.prismaService.user.findUnique({
-      where: { birthNumber: data.birthNumber, isDeceased: { not: true } },
+      where: { birthNumber: data.birthNumber, ...ACTIVE_USER_FILTER },
     })
     if (!user) {
       throw this.throwerErrorGuard.NotFoundException(

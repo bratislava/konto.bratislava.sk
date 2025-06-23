@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpException,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -27,6 +28,7 @@ import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { AdminService } from './admin.service'
 import {
   ManuallyVerifyUserRequestDto,
+  MarkDeceasedAccountRequestDto,
   RequestBatchQueryUsersByBirthNumbersDto,
   RequestBodyValidateEdeskForUserIdsDto,
   RequestDeleteTaxDto,
@@ -36,6 +38,7 @@ import {
 import {
   DeactivateAccountResponseDto,
   GetUserDataByBirthNumbersBatchResponseDto,
+  MarkDeceasedAccountResponseDto,
   OnlySuccessDto,
   ResponseUserByBirthNumberDto,
   ResponseValidatePhysicalEntityRfoDto,
@@ -120,6 +123,20 @@ export class AdminController {
     @Param('externalId') externalId: string
   ): Promise<DeactivateAccountResponseDto> {
     const response = await this.adminService.deactivateAccount(externalId)
+    return response
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Mark accounts as deceased',
+    description: 'Deactivates user account in cognito and marks it as deceased.',
+  })
+  @UseGuards(AdminGuard)
+  @Patch('mark-deceased')
+  async markAccountsAsDeceasedByBirthnumber(
+    @Body() data: MarkDeceasedAccountRequestDto
+  ): Promise<MarkDeceasedAccountResponseDto> {
+    const response = await this.adminService.markAccountsAsDeceased(data.birthNumbers)
     return response
   }
 

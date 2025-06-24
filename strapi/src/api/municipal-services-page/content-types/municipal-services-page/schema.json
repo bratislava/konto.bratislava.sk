@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "municipal_services_pages",
+  "info": {
+    "singularName": "municipal-services-page",
+    "pluralName": "municipal-services-pages",
+    "displayName": "Municipal services page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "services": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::municipal-service.municipal-service"
+    },
+    "servicesLegalPerson": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::municipal-service.municipal-service"
+    }
+  }
+}

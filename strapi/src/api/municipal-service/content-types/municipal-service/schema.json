@@ -1,0 +1,90 @@
+{
+  "kind": "collectionType",
+  "collectionName": "municipal_services",
+  "info": {
+    "singularName": "municipal-service",
+    "pluralName": "municipal-services",
+    "displayName": "Municipal service",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "buttonText": {
+      "type": "string",
+      "required": true
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "tag": {
+      "type": "string",
+      "required": false
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "administration",
+        "public-space-occupation",
+        "taxes",
+        "cultural-organizations",
+        "events-support",
+        "library",
+        "zoo",
+        "kids-teenagers",
+        "swimming-pool",
+        "community-gardens",
+        "connector",
+        "front-gardens",
+        "greenery",
+        "lamp",
+        "spatial-planning",
+        "waste",
+        "security",
+        "marianum",
+        "mosquito",
+        "christmas-tree",
+        "housing",
+        "transport",
+        "excavations",
+        "management-communications",
+        "parking",
+        "towing"
+      ],
+      "required": true
+    },
+    "color": {
+      "type": "enumeration",
+      "enum": [
+        "main",
+        "transport",
+        "environment",
+        "social",
+        "education",
+        "culture",
+        "marianum",
+        "olo",
+        "tsb"
+      ],
+      "default": "main",
+      "required": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::municipal-service-category.municipal-service-category",
+      "inversedBy": "municipalServices"
+    }
+  }
+}

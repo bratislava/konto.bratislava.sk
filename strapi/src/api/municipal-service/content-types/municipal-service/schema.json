@@ -4,7 +4,8 @@
   "info": {
     "singularName": "municipal-service",
     "pluralName": "municipal-services",
-    "displayName": "Municipal service"
+    "displayName": "Municipal service",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -81,8 +82,9 @@
     },
     "category": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::municipal-service-category.municipal-service-category"
+      "relation": "manyToOne",
+      "target": "api::municipal-service-category.municipal-service-category",
+      "inversedBy": "municipalServices"
     }
   }
 }

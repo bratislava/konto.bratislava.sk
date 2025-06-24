@@ -800,6 +800,7 @@ export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionTy
     singularName: 'municipal-service'
     pluralName: 'municipal-services'
     displayName: 'Municipal service'
+    description: ''
   }
   options: {
     draftAndPublish: false
@@ -858,7 +859,7 @@ export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionTy
       Attribute.DefaultTo<'main'>
     category: Attribute.Relation<
       'api::municipal-service.municipal-service',
-      'oneToOne',
+      'manyToOne',
       'api::municipal-service-category.municipal-service-category'
     >
     createdAt: Attribute.DateTime
@@ -890,6 +891,11 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory extends Sch
   }
   attributes: {
     title: Attribute.String & Attribute.Required
+    municipalServices: Attribute.Relation<
+      'api::municipal-service-category.municipal-service-category',
+      'oneToMany',
+      'api::municipal-service.municipal-service'
+    >
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime
     createdBy: Attribute.Relation<

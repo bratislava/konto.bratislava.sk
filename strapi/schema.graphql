@@ -792,6 +792,7 @@ type MunicipalService {
 
 type MunicipalServiceCategory {
   createdAt: DateTime
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
   title: String!
   updatedAt: DateTime
 }
@@ -814,6 +815,7 @@ input MunicipalServiceCategoryFiltersInput {
   and: [MunicipalServiceCategoryFiltersInput]
   createdAt: DateTimeFilterInput
   id: IDFilterInput
+  municipalServices: MunicipalServiceFiltersInput
   not: MunicipalServiceCategoryFiltersInput
   or: [MunicipalServiceCategoryFiltersInput]
   title: StringFilterInput
@@ -821,6 +823,7 @@ input MunicipalServiceCategoryFiltersInput {
 }
 
 input MunicipalServiceCategoryInput {
+  municipalServices: [ID]
   title: String
 }
 

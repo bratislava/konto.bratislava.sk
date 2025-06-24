@@ -92,19 +92,19 @@ Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedá
 3. Nájsť všetky súbory daného formulára v tabuľke `Files` podľa `formId` (pozor, použiť `id`, nie `ginisDocumentId`)
 4. Ak sú nejaké súbory s `true` flagom `ginisUploadedError`, tak treba [skontrolovať prílohy priamo v Ginise](#kontrola-formulára-v-ginise) a manuálne v DB nastaviť `ginisUploaded` na `true` pre všetky súbory, čo sú v Ginise, a na `false` pre ostatné. Potom nastaviť **všetky** `ginisUploadedError` na `false`.
 5. Vrátiť `ginisState` späť na `REGISTERED`.
-6. Ak sa odtiaľ nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+6. Ak sa odtiaľ nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 7. Ak sa pohne opäť do `RUNNING_UPLOAD_ATTACHMENTS`, ale súbory sa stále nenahrávajú, treba skontrolovať [errory v grafane](#kontrola-ginis-logov-z-nest-forms-backend).
 
 ### Zaseknutý formulár v `RUNNING_REGISTER`
 
 1. Skontrolovať, či sa [podanie nachádza v Ginise](#kontrola-podania-v-ginise) pre formulár s týmto `id`. Ak nie, čakať a skúsiť znova neskôr
-2. Ak áno, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
-3. Ak sa formulár pravidlene spracúva v rámci queue aj sa nachádza v ginise ale nevie sa spárovať, treba [skontrolovať vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise).
+2. Ak áno, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+3. Ak sa formulár pravidelne spracúva v rámci queue aj sa nachádza v ginise ale nevie sa spárovať, treba [skontrolovať vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise).
 
 ### Zaseknutý formulár v `ERROR_ASSIGN_SUBMISSION`
 
 1. [Skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend).
-2. Ak sa Ginis sťažuje niečo v zmysle, že:
+2. Ak sa Ginis sťažuje na niečo v zmysle, že:
 
    > Akci nelze realizovat. Nejste oprávněným vlastníkem.
 
@@ -115,7 +115,7 @@ Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedá
 Ak tlačidlo `Priradiť` po [kontrole priamo v Ginise](#kontrola-formulára-v-ginise) nie je dostupné, pomocou ginis API už nie je možné priradiť vlastníka dokumentu (lebo už je vlastníkom niekto iný). Vtedy treba:
 
 1. Zmeniť v DB `ginisState` na `SUBMISSION_ASSIGNED`, `error` na `NONE` a `state` na `DELIVERED_GINIS`.
-2. Ak sa zo `SUBMISSION_ASSIGNED` nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+2. Ak sa zo `SUBMISSION_ASSIGNED` nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 
 ### Zaseknutý formulár v `SHAREPOINT_ERROR`
 
@@ -183,7 +183,7 @@ Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains`
 > [!CAUTION]
 > V týchto logoch sa vyskytujú aj `debug` level logy o konzumovaní formulárov z rabbit queue obsahujúce `id` formuláru. **Ak sa takéto logy o konzumácii formuláru pravidelne vyskytujú, tak je formulár stále v rabbit queue** a je odtiaľ konzumovaný a pridávaný naspäť.
 
-Pri kontrole errorov je možné filtrovať len errory filtrovaním pomocou `Label filter expression` s hodnotami `severity` = `ERROR` alebo pridaním nasledovnej časti na koniec do predošlej Loki Query:
+Pri kontrole errorov je možné filtrovať len errory pomocou `Label filter expression` s hodnotami `severity` = `ERROR` alebo pridaním nasledovnej časti na koniec predošlej Loki Query:
 
 ```js
 | severity = `ERROR`
@@ -248,7 +248,7 @@ Potrebná len pri konkrétnych problémoch s formulármi, nie rutinne.
 1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567> - zmeniť ginis ID v URL.
 2. _(podľa potreby)_ Kliknúť na `Prílohy (komponenty)` a skontrolovať počet príloh a ich názvy.
 3. _(podľa potreby)_ Kliknúť na `Doručenie` a skontrolovať `Identifikátor správy`, ktorý má byť totožný s naším `id` pre formulár v DB.
-4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore - je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto inkonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).
+4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore - je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto ikonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).
 
 #### Kontrola vlastnosti `FormId` v Ginise
 

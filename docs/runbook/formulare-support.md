@@ -72,6 +72,7 @@ Stavy `RUNNING_*` boli potrebné z historických dôvodov, lebo všetky operáci
 - TSB: `FINISHED` (email)
 - Predzáhradky / Komunitné záhrady: `PROCESSING`
 - Oznámenie o poplatkovej povinnosti za komunálne odpady: `PROCESSING`, `FINISHED`, `REJECTED`
+- Žiadosť o slobodný prístup k informáciám: `PROCESSING`, `FINISHED`
 
 ## Identifikácia a riešenie zaseknutých formulárov
 

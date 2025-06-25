@@ -10,8 +10,9 @@
   - [Identifikácia a riešenie zaseknutých formulárov](#identifikácia-a-riešenie-zaseknutých-formulárov)
     - [Kontrola stavu](#kontrola-stavu)
     - [Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`](#zaseknutý-formulár-v-running_upload_attachments)
-      - [Preskočenie nahrávania príloh](#preskočenie-nahrávania-príloh)
     - [Zaseknutý formulár v `RUNNING_REGISTER`](#zaseknutý-formulár-v-running_register)
+    - [Zaseknutý formulár v `ERROR_ASSIGN_SUBMISSION`](#zaseknutý-formulár-v-error_assign_submission)
+      - [Preskočenie priradenia](#preskočenie-priradenia)
     - [Zaseknutý formulár v `SHAREPOINT_ERROR`](#zaseknutý-formulár-v-sharepoint_error)
       - [Postup pri zlom roku](#postup-pri-zlom-roku)
       - [Možnosti postupu pri inom probléme](#možnosti-postupu-pri-inom-probléme)
@@ -22,7 +23,7 @@
     - [Kontrola v Ginise](#kontrola-v-ginise)
       - [Kontrola podania v Ginise](#kontrola-podania-v-ginise)
       - [Kontrola formulára v Ginise](#kontrola-formulára-v-ginise)
-    - [Kontrola klikačky](#kontrola-klikačky)
+      - [Kontrola vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise)
 
 ## Stavy formulárov
 
@@ -47,7 +48,7 @@ Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PR
 1. vyberie id formulára, ktorý sa spracúva z queue
 2. pokúsi sa vykonať krok, ktorý formulár posunie do ďalšieho stavu
    - ak sa mu to podarí upraví stav
-   - ak nie, ostane v rovnakom stave
+   - ak nie, ostane v rovnakom stave alebo sa presunie do error stavu
 3. formulár opäť vloží do queue s oneskorením niekoľko sekúnd, príp. minút
 
 ### GINIS stavy
@@ -55,33 +56,34 @@ Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PR
 - `CREATED` - vytvorený v queue
 - `RUNNING_REGISTER` / `REGISTERED` - registrácia cez podateľňu
 - `RUNNING_UPLOAD_ATTACHMENTS` / `ATTACHMENTS_UPLOADED` - upload príloh
-- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - úprava podania
+- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - úprava podania - aktuálne sa nepoužíva, lebo nie je potrebná žiadna úprava podania v tejto chvíli (2025-06-24)
 - `RUNNING_ASSIGN_SUBMISSION` / `SUBMISSION_ASSIGNED` - priradenie oddeleniu
 - `FINISHED` - dokončené
 - `ERROR_*` - rôzne chybové stavy
 
-Ginis historicky nemal potrebné API pre naše potreby. Preto sa formulár zatiaľ posiela do ginisu cez [klikačku](https://github.com/bratislava/ginis-automation), ktorá využíva `selenium` a manuálne tam robí kroky, ako keby ich robil používateľ. Je to veľmi nespoľahlivé, a každý update Ginisu nám klikačku môže pokaziť (a často aj kazí). Z tohto dôvodu máme samostatnú RabbitMQ, ktorá slúži na manažment pridávania formulára do ginisu, pretože [ginis service](https://github.com/bratislava/konto.bratislava.sk/blob/master/nest-forms-backend/src/ginis/ginis.service.ts) musí čakať na kroky vykonané klikačkou.
-
-Tento prístup sa ale aktívne snažíme odstrániť po tom, ako nám Ginis v roku 2025 sprístupnil nové API spĺňajúce všetky naše potreby.
+Stavy `RUNNING_*` boli potrebné z historických dôvodov, lebo všetky operácie boli vykonávané asynchrónne. Teraz sú, s výnimkou `RUNNING_REGISTER`, takmer nepotrebné a pomáhajú najmä pri manuálnej kontrole a oprave zaseknutých formulárov v databáze. V rámci Q3 2025 sa plánuje prechod z RabbitMQ na BullMQ, čo by malo prispieť k väčšej spoľahlivosti spracovania formulárov. To by za následok malo takmer eliminovať potrebu formuláre kontrolovať a opravovať, a preto by malo byť možné tieto stavy zjednodušiť.
 
 ### Akceptovateľné koncové stavy
 
-- Stanovisko/záväzné stanovisko k investičnej činnosti: `PROCESSING`, `FINISHED`
+- Stanovisko k investičnému zámeru / Záväzné stanovisko k investičnej činnosti: `PROCESSING`, `FINISHED`
 - Nájom bytu: `PROCESSING`
 - Daňové priznanie: `DELIVERED_NASES`
 - OLO: `FINISHED` (email)
-- Predzáhradky: `PROCESSING`
+- TSB: `FINISHED` (email)
+- Predzáhradky / Komunitné záhrady: `PROCESSING`
+- Oznámenie o poplatkovej povinnosti za komunálne odpady: `PROCESSING`, `FINISHED`, `REJECTED`
+- Žiadosť o slobodný prístup k informáciám: `PROCESSING`, `FINISHED`
 
 ## Identifikácia a riešenie zaseknutých formulárov
 
 ### Kontrola stavu
 
-1. Kontrolovať [metabase Forms dashboarde](https://metabase.bratislava.sk/dashboard/11-forms-dashboard?date_filter=past7days) alebo v Slacku `#metabase-forms`
-2. Sledovať hlavné stavy `DELIVERED_GINIS`, `DELIVERED_NASES`, `SENDING_TO_SHAREPOINT`, v prípade daní `SENDING_TO_NASES`
-3. Sledovať Ginis stav `RUNNING_REGISTER` (najmä keď hlavný stav **nie je** `DELIVERED_GINIS`)
-4. Sledovať `ERROR` stavy, aj ak sú len `DRAFT` formuláre (najmä pri dani z nehnuteľnosti)
+1. Kontrolovať [metabase Forms dashboarde](https://metabase.bratislava.sk/dashboard/11-forms-dashboard?date_filter=past7days), `#metabase-forms` v Slacku, alebo priamo databázu.
+2. Sledovať hlavné stavy `DELIVERED_GINIS`, `SENDING_TO_SHAREPOINT`, v prípade daní `SENDING_TO_NASES`.
+3. Sledovať Ginis stav `RUNNING_REGISTER` (hlavný stav `DELIVERED_NASES`) - prípustné trvanie je cca do 3 hodín.
+4. Sledovať `ERROR` stavy, aj ak sú len `DRAFT` formuláre (najmä pri dani z nehnuteľnosti).
 
-Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedávno, tak sa budú nachádzať v týchto stavoch aj keď je všetko v poriadku, lebo je to súčasť procesu. Treba riešiť keď sú v danom stave zaseknuté aspoň hodinu.
+Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedávno, tak sa budú nachádzať v týchto stavoch aj keď je všetko v poriadku, lebo je to súčasť procesu. Treba riešiť, ak sa formulár nachádza v ľubovoľnom z vymenovaných stavov aspoň hodinu (ak nie je špecifikované inak).
 
 ### Zaseknutý formulár v `RUNNING_UPLOAD_ATTACHMENTS`
 
@@ -89,34 +91,31 @@ Treba brať ohľad na to, kedy boli formuláre odoslané. Ak sú odoslané nedá
 2. Nájsť formulár v tabuľke `Forms` podľa `id` (alebo `ginisDocumentId`)
 3. Nájsť všetky súbory daného formulára v tabuľke `Files` podľa `formId` (pozor, použiť `id`, nie `ginisDocumentId`)
 4. Ak sú nejaké súbory s `true` flagom `ginisUploadedError`, tak treba [skontrolovať prílohy priamo v Ginise](#kontrola-formulára-v-ginise) a manuálne v DB nastaviť `ginisUploaded` na `true` pre všetky súbory, čo sú v Ginise, a na `false` pre ostatné. Potom nastaviť **všetky** `ginisUploadedError` na `false`.
-   - Ak nie je dostupné tlačidlo `Nová elektronická príloha`, tak treba poslať prílohy manuálne emailom a [preskočiť nahrávanie príloh](#preskočenie-nahrávania-príloh).
 5. Vrátiť `ginisState` späť na `REGISTERED`.
-6. Ak sa odtiaľ nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
-7. Ak sa pohne opäť do `RUNNING_UPLOAD_ATTACHMENTS`, ale súbory nenapredujú (žiadne nové nahratia ani errory) alebo sú po zopakovaní od kroku 4 vždy len tie isté errory, treba [skontrolovať klikačku](#kontrola-klikačky).
-
-#### Preskočenie nahrávania príloh
-
-Ak tlačidlo `Nová elektronická príloha` po [kontrole priamo v Ginise](#kontrola-formulára-v-ginise) nie je dostupné, klikačka už nedokáže nahrať prílohy. Vtedy treba:
-
-1. Isť do [S3 bucketu](https://console.s3.bratislava.sk/browser).
-2. Vybrať `forms-prod-safe`.
-3. Zvoliť si typ formulára podľa DB hodnoty v `formDefinitionSlug`.
-4. Hore vyhľadať `id` formulára a kliknúť na priečinok s tým ID.
-5. Vybrať všetky súbory (poprípade všetky v Ginise chýbajúce súbory), kliknúť na `Download` a uložiť si `.zip`.
-6. Podľa toho, aký je to typ formuláru alebo kto je v ginise priradený ako vlastník, poslať správu, kde bude `id`, `ginisDocumentId`, `.zip` s prílohami a vysvetlenie/ospravedlnenie.
-   - Ak ide o záväzné stanoviská / stanoviská k inv. činnosti tak máme Teams chat `ÚHA x Inovácie - standup`.
-   - V iných prípadoch väčšinou emailom osobe, ktorá má dokument v Ginise priradený ako vlastník.
-   - Vždy sa dá aj spýtať product ownerov (kolegov z OI), že komu to adresovať - podľa toho, kto má čo na starosti.
-7. Zmeniť `ginisState` na `SUBMISSION_ASSIGNED`.
-8. Manuálne v DB nastaviť `ginisUploadedError` na `false` pre **všetky** súbory daného formulára.
-9. Ak sa zo `SUBMISSION_ASSIGNED` nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+6. Ak sa odtiaľ nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+7. Ak sa pohne opäť do `RUNNING_UPLOAD_ATTACHMENTS`, ale súbory sa stále nenahrávajú, treba skontrolovať [errory v grafane](#kontrola-ginis-logov-z-nest-forms-backend).
 
 ### Zaseknutý formulár v `RUNNING_REGISTER`
 
 1. Skontrolovať, či sa [podanie nachádza v Ginise](#kontrola-podania-v-ginise) pre formulár s týmto `id`. Ak nie, čakať a skúsiť znova neskôr
-2. Ak áno, zmeniť `ginisState` na `CREATED`.
-3. Ak zostane v `CREATED`, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenáchadza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
-4. Ak sa pohne, ale zasekne opäť v `RUNNING_REGISTER`, tak [skontrolovať klikačku](#kontrola-klikačky).
+2. Ak áno, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
+3. Ak sa formulár pravidelne spracúva v rámci queue aj sa nachádza v ginise ale nevie sa spárovať, treba [skontrolovať vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise).
+
+### Zaseknutý formulár v `ERROR_ASSIGN_SUBMISSION`
+
+1. [Skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend).
+2. Ak sa Ginis sťažuje na niečo v zmysle, že:
+
+   > Akci nelze realizovat. Nejste oprávněným vlastníkem.
+
+   tak treba [preskočiť priradenie](#preskočenie-priradenia).
+
+#### Preskočenie priradenia
+
+Ak tlačidlo `Priradiť` po [kontrole priamo v Ginise](#kontrola-formulára-v-ginise) nie je dostupné, pomocou ginis API už nie je možné priradiť vlastníka dokumentu (lebo už je vlastníkom niekto iný). Vtedy treba:
+
+1. Zmeniť v DB `ginisState` na `SUBMISSION_ASSIGNED`, `error` na `NONE` a `state` na `DELIVERED_GINIS`.
+2. Ak sa zo `SUBMISSION_ASSIGNED` nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 
 ### Zaseknutý formulár v `SHAREPOINT_ERROR`
 
@@ -124,7 +123,7 @@ Najčastejšie kvôli dátam, kde je dátum s rokom menej ako 1900. Sharepoint t
 
 #### Postup pri zlom roku
 
-1. Otvoriť si daný formulár v databáze, a vo `formDataJson` upraviť rok tak, aby nebol menej ako 1900. Vo väčšine prípadov stačí zmeniť `18xx` -> `19xx` alebo `9xx` -> `19xx`.
+1. Otvoriť si daný formulár v databáze, a vo `formDataJson` upraviť rok tak, aby nebol menej ako 1900. Vo väčšine prípadov stačí zmeniť `18xx` -> `19xx` alebo `xx` -> `19xx`.
 2. Nastaviť `ginisState` na `SUBMISSION_ASSIGNED`.
 3. Otvoriť [sharepoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejsť si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do sharepointu dostali. Do sharepointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v sharepointe. Treba v každej tabuľke vyhľadať záznamy podľa Ginis ID a odstrániť ich.
 4. Pridať formulár manuálne do rabbita, viď [Pridanie do RabbitMQ](#pridanie-do-rabbitmq).
@@ -184,6 +183,15 @@ Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains`
 > [!CAUTION]
 > V týchto logoch sa vyskytujú aj `debug` level logy o konzumovaní formulárov z rabbit queue obsahujúce `id` formuláru. **Ak sa takéto logy o konzumácii formuláru pravidelne vyskytujú, tak je formulár stále v rabbit queue** a je odtiaľ konzumovaný a pridávaný naspäť.
 
+Pri kontrole errorov je možné filtrovať len errory pomocou `Label filter expression` s hodnotami `severity` = `ERROR` alebo pridaním nasledovnej časti na koniec predošlej Loki Query:
+
+```js
+| severity = `ERROR`
+```
+
+> [!TIP]
+> Ak je z erroru zjavné, že problém nie je na našej strane, a pri opakovanom spracúvaní sa ten istý error opakuje, tak treba kontaktovať správcu Ginisu, čo je vedúci Referátu registratúry.
+
 ### Pridanie do RabbitMQ
 
 1. Port-forward RabbitMQ (`nest-forms-backend-rabbitmq-server` port 15672)
@@ -239,15 +247,13 @@ Potrebná len pri konkrétnych problémoch s formulármi, nie rutinne.
 
 1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567> - zmeniť ginis ID v URL.
 2. _(podľa potreby)_ Kliknúť na `Prílohy (komponenty)` a skontrolovať počet príloh a ich názvy.
-   - ak sa opakovane nenahrávajú súbory automaticky cez klikačku, skontrolovať, či po kliknutí na `Pridať` je dostupné tlačidlo `Nová elektronická príloha` (teda nie je celé šedivé)
 3. _(podľa potreby)_ Kliknúť na `Doručenie` a skontrolovať `Identifikátor správy`, ktorý má byť totožný s naším `id` pre formulár v DB.
+4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore - je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto ikonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).
 
-### Kontrola klikačky
+#### Kontrola vlastnosti `FormId` v Ginise
 
-Logy sú dostupné [v grafane ako `ginis-automation`](https://grafana.bratislava.sk/explore?schemaVersion=1&panes=%7B%224jm%22:%7B%22datasource%22:%22ae2xijssitedce%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7Bcluster%3D%5C%22tkg-innov-prod%5C%22,%20app%3D%5C%22ginis-automation%5C%22%7D%20%7C%3D%20%60%60%22,%22queryType%22:%22range%22,%22datasource%22:%7B%22type%22:%22loki%22,%22uid%22:%22ae2xijssitedce%22%7D,%22editorMode%22:%22builder%22%7D%5D,%22range%22:%7B%22from%22:%22now-24h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1).
-Z nich sa dá zistiť, či klikačka beží, a či nenastáva nejaká plošná chyba, kvôli ktorej sú v logoch samé errory.
-
-Pre kontrolu konkrétneho formulára stačí zadať jeho `id` do `Line contains` / `Text to find` a zvoliť adekvátny časový interval.
-
-> [!TIP]
-> Pri akýchkoľvek problémoch s klikačkou alebo konkrétnych otázok pri analýze formulárového problému treba kontaktovať maintainera <https://github.com/bratislava/ginis-automation>.
+1. Otvoriť dokument v ginise:
+   - nájsť riadok s podaním podľa postupu [kontroly podania v Ginise](#kontrola-podania-v-ginise) a dvojklikom naň ho otvoriť alebo
+   - otvoriť pomocou [kontroly formulára v Ginise](#kontrola-formulára-v-ginise)
+2. Kliknúť na `Popisné vlastnosti` (cca uprostred obrazovky, vpravo v tom istom riadku ako `Dokument - registratúrny záznam` a `Prílohy (komponenty)`).
+3. Overiť, či sa tam nachádza vlastnosť `FormId` a či je jej hodnota totožná s `id` formulára.

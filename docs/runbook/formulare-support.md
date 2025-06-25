@@ -1,7 +1,6 @@
 # Formuláre Support
 
 <!-- TOC -->
-
 - [Formuláre Support](#formuláre-support)
   - [Stavy formulárov](#stavy-formulárov)
     - [Hlavné stavy](#hlavné-stavy)
@@ -13,7 +12,7 @@
     - [Zaseknutý formulár v `RUNNING_REGISTER`](#zaseknutý-formulár-v-running_register)
     - [Zaseknutý formulár v `ERROR_ASSIGN_SUBMISSION`](#zaseknutý-formulár-v-error_assign_submission)
       - [Preskočenie priradenia](#preskočenie-priradenia)
-    - [Zaseknutý formulár v `SHAREPOINT_ERROR`](#zaseknutý-formulár-v-sharepoint_error)
+    - [Zaseknutý formulár v `SHAREPOINT_SEND_ERROR`](#zaseknutý-formulár-v-sharepoint_send_error)
       - [Postup pri zlom roku](#postup-pri-zlom-roku)
       - [Možnosti postupu pri inom probléme](#možnosti-postupu-pri-inom-probléme)
   - [Pomocné úkony pri riešení problémov](#pomocné-úkony-pri-riešení-problémov)
@@ -24,6 +23,7 @@
       - [Kontrola podania v Ginise](#kontrola-podania-v-ginise)
       - [Kontrola formulára v Ginise](#kontrola-formulára-v-ginise)
       - [Kontrola vlastnosti `FormId` v Ginise](#kontrola-vlastnosti-formid-v-ginise)
+<!-- TOC -->
 
 ## Stavy formulárov
 
@@ -56,7 +56,7 @@ Formulár sa spracúva cez RabbitMQ od stavu `QUEUED` až po koncové stavy (`PR
 - `CREATED` - vytvorený v queue
 - `RUNNING_REGISTER` / `REGISTERED` - registrácia cez podateľňu
 - `RUNNING_UPLOAD_ATTACHMENTS` / `ATTACHMENTS_UPLOADED` - upload príloh
-- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - úprava podania - aktuálne sa nepoužíva, lebo nie je potrebná žiadna úprava podania v tejto chvíli (2025-06-24)
+- `RUNNING_EDIT_SUBMISSION` / `SUBMISSION_EDITED` - úprava podania – aktuálne sa nepoužíva, lebo nie je potrebná žiadna úprava podania v tejto chvíli (2025-06-24)
 - `RUNNING_ASSIGN_SUBMISSION` / `SUBMISSION_ASSIGNED` - priradenie oddeleniu
 - `FINISHED` - dokončené
 - `ERROR_*` - rôzne chybové stavy
@@ -117,7 +117,7 @@ Ak tlačidlo `Priradiť` po [kontrole priamo v Ginise](#kontrola-formulára-v-gi
 1. Zmeniť v DB `ginisState` na `SUBMISSION_ASSIGNED`, `error` na `NONE` a `state` na `DELIVERED_GINIS`.
 2. Ak sa zo `SUBMISSION_ASSIGNED` nepohne, [skontrolovať logy](#kontrola-ginis-logov-z-nest-forms-backend), a ak sa nenachádza v queue, [pridať ho manuálne do RabbitMQ queue](#pridanie-do-rabbitmq).
 
-### Zaseknutý formulár v `SHAREPOINT_ERROR`
+### Zaseknutý formulár v `SHAREPOINT_SEND_ERROR`
 
 Najčastejšie kvôli dátam, kde je dátum s rokom menej ako 1900. Sharepoint toto neakceptuje ako validný rok, preto ho treba upraviť a zopakovať odoslanie. Treba si pozrieť log toho erroru, ak je tam v dátach naozaj dátum s rokom menej ako 1900, tak je to jasné. V opačnom prípade je treba zreprodukovať odosielanie, čo je popísané nižšie.
 
@@ -125,21 +125,21 @@ Najčastejšie kvôli dátam, kde je dátum s rokom menej ako 1900. Sharepoint t
 
 1. Otvoriť si daný formulár v databáze, a vo `formDataJson` upraviť rok tak, aby nebol menej ako 1900. Vo väčšine prípadov stačí zmeniť `18xx` -> `19xx` alebo `xx` -> `19xx`.
 2. Nastaviť `ginisState` na `SUBMISSION_ASSIGNED`.
-3. Otvoriť [sharepoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejsť si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do sharepointu dostali. Do sharepointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v sharepointe. Treba v každej tabuľke vyhľadať záznamy podľa Ginis ID a odstrániť ich.
+3. Otvoriť [sharepoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejsť si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do SharePointu dostali. Do SharePointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v SharePointe. Treba v každej tabuľke vyhľadať záznamy podľa Ginis ID a odstrániť ich.
 4. Pridať formulár manuálne do rabbita, viď [Pridanie do RabbitMQ](#pridanie-do-rabbitmq).
 
 Následne prebehne pokus o odoslanie, ak je všetko v poriadku tak sa dostane do stavu `PROCESSING`.
 
 #### Možnosti postupu pri inom probléme
 
-Niekedy sa môže stať, že Sharepoint timeoutne - v tom prípade treba vykonať [Postup pri zlom roku](#postup-pri-zlom-roku) od kroku 2 (teda netreba upravovať dáta).
+Niekedy sa môže stať, že Sharepoint timeoutne – v tom prípade treba vykonať [Postup pri zlom roku](#postup-pri-zlom-roku) od kroku 2 (teda netreba upravovať dáta).
 
-Párkrát sa stalo, že nesedel dátový typ, ktorý bol odoslaný s tým, ktorý bol v sharepointe pre daný stĺpec. Všetky problémy s týmto boli, že bol nastavený príliš malý limit na dĺžku textov. V tom prípade treba zmeniť stĺpec v sharepointe z "jedného riadku textu" na "viac riadkov textu" a znova zopakovať odoslanie.
+Párkrát sa stalo, že nesedel dátový typ, ktorý bol odoslaný s tým, ktorý bol v SharePointe pre daný stĺpec. Všetky problémy s týmto boli, že bol nastavený príliš malý limit na dĺžku textov. V tom prípade treba zmeniť stĺpec v SharePointe z "jedného riadku textu" na "viac riadkov textu" a znova zopakovať odoslanie.
 
 Ak stále nič nefunguje, tak sa dá zreprodukovať odosielanie aj lokálne. Sharepoint vráti nejaký error log, ktorý je nie vždy veľa hovoriaci, ale vie niekedy pomôcť. Na toto treba mať nejaký tool na posielanie requestov, napríklad postman.
 
-1. Na toto treba získať bearer token. Treba si nastaviť env hodnoty `SHAREPOINT_TENANT_ID`, `SHAREPOINT_CLIENT_ID`, `SHAREPOINT_CLIENT_SECRET`, `SHAREPOINT_DOMAIN`, `SHAREPOINT_URL` na produkčné hodnoty a lokálne zavolať `getAccessToken` v `sharepoint.subservice`. Funkcia vráti bearer token, s ktorým možno simulovať posielanie do sharepointu.
-2. V logoch vidieť, do akej tabuľky/zoznamu zlyhalo odoslanie - má to tvar `dtb_NajomneByvanie...` - aj aké dáta sa tam poslali.
+1. Na toto treba získať bearer token. Treba si nastaviť env hodnoty `SHAREPOINT_TENANT_ID`, `SHAREPOINT_CLIENT_ID`, `SHAREPOINT_CLIENT_SECRET`, `SHAREPOINT_DOMAIN`, `SHAREPOINT_URL` na produkčné hodnoty a lokálne zavolať `getAccessToken` v `sharepoint.subservice`. Funkcia vráti bearer token, s ktorým možno simulovať posielanie do SharePointu.
+2. V logoch vidieť, do akej tabuľky/zoznamu zlyhalo odoslanie – má to tvar `dtb_NajomneByvanie...` - aj aké dáta sa tam poslali.
 3. Ak je napr. tabuľka `dtb_NajomneByvanieZiadatel`, tak treba posielať POST request na `https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_api/web/lists/getbytitle('dtb_NajomneByvanieZiadatel')/items`. Pre iný zoznam treba zmeniť hodnotu v url v `getbytitle`.
 4. Autorizovať sa bearer tokenom z prvého kroku.
 5. Do body vložiť posielané dáta z logov v JSON formáte:
@@ -153,15 +153,15 @@ Ak stále nič nefunguje, tak sa dá zreprodukovať odosielanie aj lokálne. Sha
    }
    ```
 
-6. Odoslať tento request. Odpoveď bude buď `success`, alebo `error` s _nejakým_ popisom - bohužiaľ, sharepoint nevracia detailné errory.
+6. Odoslať tento request. Odpoveď bude buď `success`, alebo `error` s _nejakým_ popisom – bohužiaľ, sharepoint nevracia detailné errory.
 
 Podľa tohto sa dá zistiť kde bola chyba:
 
-- nie všetky polia musia byť vyplnené - možno poslať aj len podmnožinu dát
+- nie všetky polia musia byť vyplnené – možno poslať aj len podmnožinu dát
 - request sa dá poslať viackrát (treba pregenerovať token keď vyprší) s rôznymi dátami
 - ak sú nejaké hodnoty vynechané a request prejde úspešne, tak je problém zrejme v jednej z týchto vynechaných hodnôt
 
-Na konci treba všetky tieto záznamy vymazať, a až potom zopakovať odoslanie celej žiadosti cez ginis queue - rovnako ako pri [postupe pri zlom roku](#postup-pri-zlom-roku) od kroku 2.
+Na konci treba všetky tieto záznamy vymazať, a až potom zopakovať odoslanie celej žiadosti cez ginis queue – rovnako ako pri [postupe pri zlom roku](#postup-pri-zlom-roku) od kroku 2.
 
 > [!IMPORTANT]
 > Pri akejkoľvek oprave finálnych dát však nemožno meniť dáta, ktoré majú vplyv na bodovanie, teda napr. diagnózy, dĺžka bytovej núdze a podobne.
@@ -245,10 +245,10 @@ Potrebná len pri konkrétnych problémoch s formulármi, nie rutinne.
 
 #### Kontrola formulára v Ginise
 
-1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567> - zmeniť ginis ID v URL.
+1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567>– zmeniť ginis ID v URL.
 2. _(podľa potreby)_ Kliknúť na `Prílohy (komponenty)` a skontrolovať počet príloh a ich názvy.
 3. _(podľa potreby)_ Kliknúť na `Doručenie` a skontrolovať `Identifikátor správy`, ktorý má byť totožný s naším `id` pre formulár v DB.
-4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore - je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto ikonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).
+4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore – je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto ikonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).
 
 #### Kontrola vlastnosti `FormId` v Ginise
 

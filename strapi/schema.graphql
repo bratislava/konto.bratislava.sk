@@ -483,7 +483,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksFormLandingPage | ComponentBlocksFormLandingPageFormCta | ComponentBlocksFormLandingPageLinkCta | ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | Form | General | HelpPage | Homepage | HomepageAnnouncement | I18NLocale | MunicipalService | MunicipalServiceCategory | MunicipalServiceTag | MunicipalServicesPage | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -779,13 +779,13 @@ input LongFilterInput {
 
 type MunicipalService {
   buttonText: String!
-  category: MunicipalServiceCategoryEntityResponse
+  categories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryRelationResponseCollection
   color: ENUM_MUNICIPALSERVICE_COLOR!
   createdAt: DateTime
   description: String!
   href: String!
   icon: ENUM_MUNICIPALSERVICE_ICON!
-  tag: String
+  tags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagRelationResponseCollection
   title: String!
   updatedAt: DateTime
 }
@@ -848,7 +848,7 @@ type MunicipalServiceEntityResponseCollection {
 input MunicipalServiceFiltersInput {
   and: [MunicipalServiceFiltersInput]
   buttonText: StringFilterInput
-  category: MunicipalServiceCategoryFiltersInput
+  categories: MunicipalServiceCategoryFiltersInput
   color: StringFilterInput
   createdAt: DateTimeFilterInput
   description: StringFilterInput
@@ -857,24 +857,65 @@ input MunicipalServiceFiltersInput {
   id: IDFilterInput
   not: MunicipalServiceFiltersInput
   or: [MunicipalServiceFiltersInput]
-  tag: StringFilterInput
+  tags: MunicipalServiceTagFiltersInput
   title: StringFilterInput
   updatedAt: DateTimeFilterInput
 }
 
 input MunicipalServiceInput {
   buttonText: String
-  category: ID
+  categories: [ID]
   color: ENUM_MUNICIPALSERVICE_COLOR
   description: String
   href: String
   icon: ENUM_MUNICIPALSERVICE_ICON
-  tag: String
+  tags: [ID]
   title: String
 }
 
 type MunicipalServiceRelationResponseCollection {
   data: [MunicipalServiceEntity!]!
+}
+
+type MunicipalServiceTag {
+  createdAt: DateTime
+  municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceRelationResponseCollection
+  title: String!
+  updatedAt: DateTime
+}
+
+type MunicipalServiceTagEntity {
+  attributes: MunicipalServiceTag
+  id: ID
+}
+
+type MunicipalServiceTagEntityResponse {
+  data: MunicipalServiceTagEntity
+}
+
+type MunicipalServiceTagEntityResponseCollection {
+  data: [MunicipalServiceTagEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MunicipalServiceTagFiltersInput {
+  and: [MunicipalServiceTagFiltersInput]
+  createdAt: DateTimeFilterInput
+  id: IDFilterInput
+  municipalServices: MunicipalServiceFiltersInput
+  not: MunicipalServiceTagFiltersInput
+  or: [MunicipalServiceTagFiltersInput]
+  title: StringFilterInput
+  updatedAt: DateTimeFilterInput
+}
+
+input MunicipalServiceTagInput {
+  municipalServices: [ID]
+  title: String
+}
+
+type MunicipalServiceTagRelationResponseCollection {
+  data: [MunicipalServiceTagEntity!]!
 }
 
 type MunicipalServicesPage {
@@ -926,6 +967,7 @@ type Mutation {
   createHomepageAnnouncement(data: HomepageAnnouncementInput!): HomepageAnnouncementEntityResponse
   createMunicipalService(data: MunicipalServiceInput!): MunicipalServiceEntityResponse
   createMunicipalServiceCategory(data: MunicipalServiceCategoryInput!): MunicipalServiceCategoryEntityResponse
+  createMunicipalServiceTag(data: MunicipalServiceTagInput!): MunicipalServiceTagEntityResponse
   createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
   createUploadFolder(data: UploadFolderInput!): UploadFolderEntityResponse
 
@@ -943,6 +985,7 @@ type Mutation {
   deleteHomepageAnnouncement(id: ID!): HomepageAnnouncementEntityResponse
   deleteMunicipalService(id: ID!): MunicipalServiceEntityResponse
   deleteMunicipalServiceCategory(id: ID!): MunicipalServiceCategoryEntityResponse
+  deleteMunicipalServiceTag(id: ID!): MunicipalServiceTagEntityResponse
   deleteMunicipalServicesPage: MunicipalServicesPageEntityResponse
   deleteTax: TaxEntityResponse
   deleteUploadFile(id: ID!): UploadFileEntityResponse
@@ -980,6 +1023,7 @@ type Mutation {
   updateHomepageAnnouncement(data: HomepageAnnouncementInput!, id: ID!): HomepageAnnouncementEntityResponse
   updateMunicipalService(data: MunicipalServiceInput!, id: ID!): MunicipalServiceEntityResponse
   updateMunicipalServiceCategory(data: MunicipalServiceCategoryInput!, id: ID!): MunicipalServiceCategoryEntityResponse
+  updateMunicipalServiceTag(data: MunicipalServiceTagInput!, id: ID!): MunicipalServiceTagEntityResponse
   updateMunicipalServicesPage(data: MunicipalServicesPageInput!): MunicipalServicesPageEntityResponse
   updateTax(data: TaxInput!): TaxEntityResponse
   updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
@@ -1030,6 +1074,8 @@ type Query {
   municipalService(id: ID): MunicipalServiceEntityResponse
   municipalServiceCategories(filters: MunicipalServiceCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceCategoryEntityResponseCollection
   municipalServiceCategory(id: ID): MunicipalServiceCategoryEntityResponse
+  municipalServiceTag(id: ID): MunicipalServiceTagEntityResponse
+  municipalServiceTags(filters: MunicipalServiceTagFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceTagEntityResponseCollection
   municipalServices(filters: MunicipalServiceFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): MunicipalServiceEntityResponseCollection
   municipalServicesPage: MunicipalServicesPageEntityResponse
   tax: TaxEntityResponse

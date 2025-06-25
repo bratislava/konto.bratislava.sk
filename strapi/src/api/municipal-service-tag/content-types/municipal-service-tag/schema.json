@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "municipal_service_categories",
+  "collectionName": "municipal_service_tags",
   "info": {
-    "singularName": "municipal-service-category",
-    "pluralName": "municipal-service-categories",
-    "displayName": "Municipal service category"
+    "singularName": "municipal-service-tag",
+    "pluralName": "municipal-service-tags",
+    "displayName": "Municipal service tag"
   },
   "options": {
     "draftAndPublish": false
@@ -19,7 +19,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::municipal-service.municipal-service",
-      "mappedBy": "categories"
+      "mappedBy": "tags"
     }
   }
 }

@@ -810,7 +810,11 @@ export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionTy
     description: Attribute.Text & Attribute.Required
     buttonText: Attribute.String & Attribute.Required
     href: Attribute.String & Attribute.Required
-    tag: Attribute.String
+    tags: Attribute.Relation<
+      'api::municipal-service.municipal-service',
+      'manyToMany',
+      'api::municipal-service-tag.municipal-service-tag'
+    >
     icon: Attribute.Enumeration<
       [
         'administration',
@@ -857,9 +861,9 @@ export interface ApiMunicipalServiceMunicipalService extends Schema.CollectionTy
     > &
       Attribute.Required &
       Attribute.DefaultTo<'main'>
-    category: Attribute.Relation<
+    categories: Attribute.Relation<
       'api::municipal-service.municipal-service',
-      'manyToOne',
+      'manyToMany',
       'api::municipal-service-category.municipal-service-category'
     >
     createdAt: Attribute.DateTime
@@ -893,7 +897,7 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory extends Sch
     title: Attribute.String & Attribute.Required
     municipalServices: Attribute.Relation<
       'api::municipal-service-category.municipal-service-category',
-      'oneToMany',
+      'manyToMany',
       'api::municipal-service.municipal-service'
     >
     createdAt: Attribute.DateTime
@@ -906,6 +910,40 @@ export interface ApiMunicipalServiceCategoryMunicipalServiceCategory extends Sch
       Attribute.Private
     updatedBy: Attribute.Relation<
       'api::municipal-service-category.municipal-service-category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+  }
+}
+
+export interface ApiMunicipalServiceTagMunicipalServiceTag extends Schema.CollectionType {
+  collectionName: 'municipal_service_tags'
+  info: {
+    singularName: 'municipal-service-tag'
+    pluralName: 'municipal-service-tags'
+    displayName: 'Municipal service tag'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    title: Attribute.String & Attribute.Required
+    municipalServices: Attribute.Relation<
+      'api::municipal-service-tag.municipal-service-tag',
+      'manyToMany',
+      'api::municipal-service.municipal-service'
+    >
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<
+      'api::municipal-service-tag.municipal-service-tag',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private
+    updatedBy: Attribute.Relation<
+      'api::municipal-service-tag.municipal-service-tag',
       'oneToOne',
       'admin::user'
     > &
@@ -1007,6 +1045,7 @@ declare module '@strapi/types' {
       'api::homepage-announcement.homepage-announcement': ApiHomepageAnnouncementHomepageAnnouncement
       'api::municipal-service.municipal-service': ApiMunicipalServiceMunicipalService
       'api::municipal-service-category.municipal-service-category': ApiMunicipalServiceCategoryMunicipalServiceCategory
+      'api::municipal-service-tag.municipal-service-tag': ApiMunicipalServiceTagMunicipalServiceTag
       'api::municipal-services-page.municipal-services-page': ApiMunicipalServicesPageMunicipalServicesPage
       'api::tax.tax': ApiTaxTax
     }

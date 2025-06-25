@@ -15,12 +15,29 @@ import {
   UserOfficialCorrespondenceChannelEnum,
 } from '../../dtos/gdpr.user.dto'
 import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
+import { ErrorsEnum, ErrorsResponseEnum } from '../../../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import { DeliveryMethodActiveAndLockedDto } from '../../dtos/deliveryMethod.dto'
+import { DeliveryMethodEnum, PhysicalEntity, Prisma, User, UserGdprData } from '@prisma/client'
+import {
+  SubserviceErrorsEnum,
+  SubserviceErrorsResponseEnum,
+} from '../../../utils/subservices/subservice.errors.enum'
+
+type UserWithDeliveryData = User & {
+  physicalEntity: Pick<PhysicalEntity, 'activeEdesk'> | null
+} & {
+  userGdprData: Pick<UserGdprData, 'subType' | 'createdAt'>[] | null
+}
 
 @Injectable()
 export class DatabaseSubserviceUser {
   private readonly logger: LineLoggerSubservice
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private throwerErrorGuard: ThrowerErrorGuard
+  ) {
     this.logger = new LineLoggerSubservice(DatabaseSubserviceUser.name)
   }
 
@@ -330,6 +347,7 @@ export class DatabaseSubserviceUser {
     return data
   }
 
+  // TODO DEPRECATED. Use `getActiveAndLockedDeliveryMethodsWithDates()` instead
   async getOfficialCorrespondenceChannel(
     userId: string
   ): Promise<UserOfficialCorrespondenceChannelEnum> {
@@ -355,6 +373,76 @@ export class DatabaseSubserviceUser {
       return UserOfficialCorrespondenceChannelEnum.EMAIL
     }
     return UserOfficialCorrespondenceChannelEnum.POSTAL
+  }
+
+  private parseActiveDeliveryMethod(user: UserWithDeliveryData) {
+    if (user.physicalEntity?.activeEdesk) {
+      return { deliveryMethod: DeliveryMethodEnum.EDESK }
+    } else if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+      if (user.userGdprData[0].createdAt) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+          undefined,
+          user
+        )
+      }
+      return {
+        deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+        date: user.userGdprData[0].createdAt,
+      }
+    } else {
+      return { deliveryMethod: DeliveryMethodEnum.POSTAL }
+    }
+  }
+
+  async getActiveAndLockedDeliveryMethodsWithDates(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    const user = await this.prisma.user.findUnique({
+      where,
+      include: {
+        userGdprData: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            category: GdprCategory.TAXES,
+            type: GdprType.FORMAL_COMMUNICATION,
+          },
+          take: 1,
+          select: {
+            subType: true,
+            createdAt: true,
+          },
+        },
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
+      },
+    })
+    if (!user) {
+      throw this.throwerErrorGuard.NotFoundException(
+        ErrorsEnum.NOT_FOUND_ERROR,
+        ErrorsResponseEnum.NOT_FOUND_ERROR
+      )
+    }
+
+    if (user.taxDeliveryMethodAtLockDate && !user.taxDeliveryMethodCityAccountDate) {
+    }
+
+    const locked = user.taxDeliveryMethodAtLockDate
+      ? {
+          deliveryMethod: user.taxDeliveryMethodAtLockDate,
+          date: user.taxDeliveryMethodCityAccountDate ?? undefined,
+        }
+      : undefined
+
+    let active = this.parseActiveDeliveryMethod(user)
+
+    return { active, locked }
   }
 
   async getShowEmailCommunicationBanner(userId: string): Promise<boolean> {

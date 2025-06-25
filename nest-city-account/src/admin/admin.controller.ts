@@ -46,6 +46,7 @@ import {
 } from './dtos/responses.admin.dto'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { DeliveryMethodActiveAndLockedDto } from '../user/dtos/deliveryMethod.dto'
 
 @ApiTags('ADMIN')
 @Controller('admin')
@@ -305,5 +306,24 @@ export class AdminController {
   @Post('delete-tax')
   async deleteTax(@Body() data: RequestDeleteTaxDto): Promise<void> {
     await this.adminService.deleteTax(data)
+  }
+
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get delivery method for user',
+    description:
+      'Get delivery method for user, both set at lock date and current. For use by nest-tax-backend',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return delivery methods from db.',
+    type: DeliveryMethodActiveAndLockedDto,
+  })
+  @UseGuards(AdminGuard)
+  @Get('delivery-method/:birthNumber')
+  async getDeliveryMethod(
+    @Param('birthNumber') birthNumber: string
+  ): Promise<DeliveryMethodActiveAndLockedDto> {
+    return this.adminService.getDeliveryMethod(birthNumber)
   }
 }

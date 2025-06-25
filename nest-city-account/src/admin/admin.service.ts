@@ -38,6 +38,7 @@ import {
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
 import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class AdminService {
@@ -48,7 +49,8 @@ export class AdminService {
     private readonly upvsIdentityByUriService: UpvsIdentityByUriService,
     private physicalEntityService: PhysicalEntityService,
     private readonly bloomreachService: BloomreachService,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly userService: UserService
   ) {}
 
   async getUserDataByBirthNumber(birthNumber: string): Promise<ResponseUserByBirthNumberDto> {
@@ -525,5 +527,9 @@ export class AdminService {
     })
     await this.taxSubservice.deleteTax(data)
     return { success: true }
+  }
+
+  async getDeliveryMethod(birthNumber: string) {
+    return this.userService.getDeliveryMethodsWithDateByBirthNumber(birthNumber)
   }
 }

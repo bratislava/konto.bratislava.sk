@@ -152,6 +152,46 @@ export class DeactivateAccountResponseDto {
   taxDeliveryMethodsRemoved!: boolean
 }
 
+export class MarkDeceasedAccountResponseItemDto {
+  @ApiProperty({
+    description: 'Birth number of the deceased person',
+    example: '1234567890',
+  })
+  @IsString()
+  birthNumber!: string
+
+  @ApiProperty({
+    description: 'Whether the user was successfully marked as deceased in the database',
+    example: true,
+  })
+  @IsBoolean()
+  databaseMarked!: boolean
+
+  @ApiProperty({
+    description: 'Whether the user was successfully archived in Cognito / mail was changed.',
+    example: true,
+  })
+  @IsBoolean()
+  cognitoArchived!: boolean
+
+  @ApiProperty({
+    description: 'Status of the anonymization of user in Bloomreach',
+    example: AnonymizeResponse.SUCCESS,
+    enum: AnonymizeResponse,
+  })
+  @IsEnum(AnonymizeResponse)
+  bloomreachRemoved?: AnonymizeResponse
+}
+
+export class MarkDeceasedAccountResponseDto {
+  @ApiProperty({
+    description: 'List of birth numbers with success marked for each data storage.',
+    type: [MarkDeceasedAccountResponseItemDto],
+  })
+  @IsObject({ each: true })
+  results!: MarkDeceasedAccountResponseItemDto[]
+}
+
 export class VerificationDataForUser {
   @ApiProperty({
     description: 'Id of the user in cognito.',

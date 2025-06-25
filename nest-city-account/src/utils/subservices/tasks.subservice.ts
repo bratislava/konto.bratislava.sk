@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../../generated-clients/nest-tax-backend'
-import { PrismaService } from '../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../birthNumbers'
 import { getTaxDeadlineDate } from '../constants/tax-deadline'
@@ -65,6 +65,7 @@ export class TasksSubservice {
           not: null,
         },
         OR: [{ lastTaxYear: null }, { lastTaxYear: { not: year } }],
+        ...ACTIVE_USER_FILTER,
       },
       orderBy: {
         lastTaxBackendUploadTry: 'asc',
@@ -97,6 +98,7 @@ export class TasksSubservice {
         birthNumber: {
           in: addedBirthNumbers,
         },
+        ...ACTIVE_USER_FILTER,
       },
       data: {
         lastTaxYear: year,
@@ -141,6 +143,7 @@ export class TasksSubservice {
           not: null,
           lt: taxDeadlineDate,
         },
+        ...ACTIVE_USER_FILTER,
       },
       include: {
         userGdprData: {

@@ -28,9 +28,11 @@
       "type": "string",
       "required": true
     },
-    "tag": {
-      "type": "string",
-      "required": false
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::municipal-service-tag.municipal-service-tag",
+      "inversedBy": "municipalServices"
     },
     "icon": {
       "type": "enumeration",
@@ -80,9 +82,9 @@
       "default": "main",
       "required": true
     },
-    "category": {
+    "categories": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::municipal-service-category.municipal-service-category",
       "inversedBy": "municipalServices"
     }

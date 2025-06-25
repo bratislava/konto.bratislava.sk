@@ -11,6 +11,8 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
+import { DeliveryMethodEnum } from '@prisma/client'
+import { SubserviceErrorsEnum, SubserviceErrorsResponseEnum } from './subservice.errors.enum'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
@@ -116,6 +118,16 @@ export class TasksSubservice {
     })
   }
 
+  mapToNorisDeliveryMethod(deliveryMethodEnum: DeliveryMethodEnum | null): DeliveryMethod {
+    const deliveryMethodMap: Record<DeliveryMethodEnum, DeliveryMethod> = {
+      [DeliveryMethodEnum.CITY_ACCOUNT]: DeliveryMethod.CITY_ACCOUNT,
+      [DeliveryMethodEnum.EDESK]: DeliveryMethod.EDESK,
+      [DeliveryMethodEnum.POSTAL]: DeliveryMethod.POSTAL,
+    }
+
+    return (deliveryMethodEnum && deliveryMethodMap[deliveryMethodEnum]) || DeliveryMethod.POSTAL
+  }
+
   @Cron('*/5 * 2-30 4 *') // Every 5 minutes in April, starting from 2nd.
   @HandleErrors('Cron Error')
   async updateDeliveryMethodsInNoris() {
@@ -125,6 +137,9 @@ export class TasksSubservice {
     const users = await this.prisma.user.findMany({
       where: {
         birthNumber: {
+          not: null,
+        },
+        taxDeliveryMethodAtLockDate: {
           not: null,
         },
         OR: [
@@ -142,29 +157,11 @@ export class TasksSubservice {
           lt: taxDeadlineDate,
         },
       },
-      include: {
-        userGdprData: {
-          orderBy: {
-            createdAt: 'desc',
-          },
-          where: {
-            category: GdprCategory.TAXES,
-            type: GdprType.FORMAL_COMMUNICATION,
-            createdAt: {
-              lt: taxDeadlineDate,
-            },
-          },
-          take: 1,
-          select: {
-            subType: true,
-            createdAt: true,
-          },
-        },
-        physicalEntity: {
-          select: {
-            activeEdesk: true,
-          },
-        },
+      select: {
+        id: true,
+        birthNumber: true,
+        taxDeliveryMethodAtLockDate: true,
+        taxDeliveryMethodCityAccountDate: true,
       },
       take: UPLOAD_TAX_DELIVERY_METHOD_BATCH,
     })
@@ -178,19 +175,24 @@ export class TasksSubservice {
         // We know that birthNumber is not null from the query.
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const birthNumber: string = user.birthNumber!
-
-        if (user.physicalEntity?.activeEdesk) {
-          acc[birthNumber] = { deliveryMethod: DeliveryMethod.EDESK }
-          return acc
-        }
-        if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
-          acc[birthNumber] = {
-            deliveryMethod: DeliveryMethod.CITY_ACCOUNT,
-            date: user.userGdprData[0].createdAt.toISOString().slice(0, 10),
+        const deliveryMethod = this.mapToNorisDeliveryMethod(user.taxDeliveryMethodAtLockDate)
+        const date: string | undefined = user.taxDeliveryMethodCityAccountDate
+          ? user.taxDeliveryMethodCityAccountDate.toISOString().substring(0, 10)
+          : undefined
+        if (date) {
+          acc[birthNumber] = { deliveryMethod, date }
+        } else {
+          if (deliveryMethod === DeliveryMethod.CITY_ACCOUNT) {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              SubserviceErrorsEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              SubserviceErrorsResponseEnum.CITY_ACCOUNT_DELIVERY_METHOD_WITHOUT_DATE,
+              undefined,
+              user
+            )
           }
-          return acc
+
+          acc[birthNumber] = { deliveryMethod }
         }
-        acc[birthNumber] = { deliveryMethod: DeliveryMethod.POSTAL }
         return acc
       },
       {}
@@ -237,5 +239,68 @@ export class TasksSubservice {
         lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
     })
+  }
+
+  @Cron('0 0 1 4 *')
+  @HandleErrors('Cron')
+  async lockDeliveryMethods(): Promise<void> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        cognitoTier: 'IDENTITY_CARD',
+        birthNumber: { not: null },
+      },
+      include: {
+        userGdprData: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            category: GdprCategory.TAXES,
+            type: GdprType.FORMAL_COMMUNICATION,
+          },
+          take: 1,
+          select: {
+            subType: true,
+            createdAt: true,
+          },
+        },
+        physicalEntity: {
+          select: {
+            activeEdesk: true,
+          },
+        },
+      },
+    })
+
+    const data = users.map((user) => {
+      // We know that birthNumber is not null from the query.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const birthNumber: string = user.birthNumber!
+
+      if (user.physicalEntity?.activeEdesk) {
+        return { birthNumber, deliveryMethod: DeliveryMethodEnum.EDESK, date: undefined }
+      }
+      if (user.userGdprData?.[0]?.subType === GdprSubType.SUB) {
+        return {
+          birthNumber,
+          deliveryMethod: DeliveryMethodEnum.CITY_ACCOUNT,
+          date: user.userGdprData[0].createdAt,
+        }
+      }
+      return { birthNumber, deliveryMethod: DeliveryMethodEnum.POSTAL, date: undefined }
+    }, {})
+    this.logger.log(JSON.stringify(data, null, 2))
+
+    const updatePromises = data.map((entry) => {
+      return this.prisma.user.update({
+        where: { birthNumber: entry.birthNumber },
+        data: {
+          taxDeliveryMethodAtLockDate: entry.deliveryMethod,
+          taxDeliveryMethodCityAccountDate: entry.date,
+        },
+      })
+    })
+
+    await Promise.all(updatePromises)
   }
 }

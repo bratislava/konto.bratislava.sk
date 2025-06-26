@@ -132,7 +132,7 @@ Následne prebehne pokus o odoslanie, ak je všetko v poriadku tak sa dostane do
 
 #### Možnosti postupu pri inom probléme
 
-Niekedy sa môže stať, že Sharepoint timeoutne – v tom prípade treba vykonať [Postup pri zlom roku](#postup-pri-zlom-roku) od kroku 2 (teda netreba upravovať dáta).
+Niekedy sa môže stať, že SharePoint timeoutne – v tom prípade treba vykonať [Postup pri zlom roku](#postup-pri-zlom-roku) od kroku 2 (teda netreba upravovať dáta).
 
 Párkrát sa stalo, že nesedel dátový typ, ktorý bol odoslaný s tým, ktorý bol v SharePointe pre daný stĺpec. Všetky problémy s týmto boli, že bol nastavený príliš malý limit na dĺžku textov. V tom prípade treba zmeniť stĺpec v SharePointe z "jedného riadku textu" na "viac riadkov textu" a znova zopakovať odoslanie.
 

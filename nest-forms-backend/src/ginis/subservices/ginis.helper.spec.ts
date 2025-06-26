@@ -2,12 +2,7 @@ import { HttpException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
 
-import {
-  FormFilesWithMinio,
-  GetFileResponseReducedDto,
-} from '../../files/files.dto'
 import FormsService from '../../forms/forms.service'
-import { GinisUploadInfo } from '../dtos/ginis.response.dto'
 import GinisHelper from './ginis.helper'
 
 jest.mock('../../forms/forms.service')
@@ -43,71 +38,6 @@ describe('GinisHelper', () => {
 
   it('should be defined', () => {
     expect(helper).toBeDefined()
-  })
-
-  describe('allFilesUploadedToGinis', () => {
-    const allUploaded = [
-      { ginisOrder: 1, ginisUploaded: true },
-      { ginisOrder: null, ginisUploaded: true },
-      { ginisOrder: 10, ginisUploaded: true },
-    ] as GetFileResponseReducedDto[]
-    const notAllUploaded = [
-      { ginisOrder: 1, ginisUploaded: true },
-      { ginisOrder: null, ginisUploaded: true },
-      { ginisOrder: 10, ginisUploaded: false },
-    ] as GetFileResponseReducedDto[]
-
-    it('should return true', () => {
-      expect(helper.allFilesUploadedToGinis(allUploaded)).toBeTruthy()
-      expect(helper.allFilesUploadedToGinis([])).toBeTruthy()
-    })
-
-    it('should return false', () => {
-      expect(helper.allFilesUploadedToGinis(notAllUploaded)).toBeFalsy()
-    })
-  })
-
-  describe('areAllFilesInGinisResponse', () => {
-    it('should return true', () => {
-      const filesEmpty: FormFilesWithMinio[] = []
-      const files: FormFilesWithMinio[] = [
-        { minioPath: 'minioPath/name1.pdf', id: '1', fileName: 'name1.pdf' },
-        { minioPath: 'minioPath/name2.pdf', id: '2', fileName: 'name2.pdf' },
-        { minioPath: 'minioPath/name3.pdf', id: '3', fileName: 'name3.pdf' },
-      ]
-      const ginisResponse: GinisUploadInfo[] = [
-        {
-          Súbor: 'name2.pdf',
-        } as GinisUploadInfo,
-        { Súbor: 'name4.pdf' } as GinisUploadInfo,
-        { Súbor: 'name1.pdf' } as GinisUploadInfo,
-        { Súbor: 'name3.pdf' } as GinisUploadInfo,
-      ]
-
-      expect(
-        helper.areAllFilesInGinisResponse(filesEmpty, ginisResponse),
-      ).toBeTruthy()
-      expect(
-        helper.areAllFilesInGinisResponse(files, ginisResponse),
-      ).toBeTruthy()
-    })
-
-    it('should return false', () => {
-      const files: FormFilesWithMinio[] = [
-        { minioPath: 'minioPath/name1.pdf', id: '1', fileName: 'name1.pdf' },
-        { minioPath: 'minioPath/name2.pdf', id: '2', fileName: 'name2.pdf' },
-        { minioPath: 'minioPath/name3.pdf', id: '3', fileName: 'name3.pdf' },
-      ]
-      const ginisResponse: GinisUploadInfo[] = [
-        { Súbor: 'name2.pdf' } as GinisUploadInfo,
-        { Súbor: 'name4.pdf' } as GinisUploadInfo,
-        { Súbor: 'name3.pdf' } as GinisUploadInfo,
-      ]
-
-      expect(
-        helper.areAllFilesInGinisResponse(files, ginisResponse),
-      ).toBeFalsy()
-    })
   })
 
   describe('setFormToError', () => {

@@ -125,7 +125,7 @@ Najčastejšie kvôli dátam, kde je dátum s rokom menej ako 1900. Sharepoint t
 
 1. Otvoriť si daný formulár v databáze, a vo `formDataJson` upraviť rok tak, aby nebol menej ako 1900. Vo väčšine prípadov stačí zmeniť `18xx` -> `19xx` alebo `xx` -> `19xx`.
 2. Nastaviť `ginisState` na `SUBMISSION_ASSIGNED`.
-3. Otvoriť [sharepoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejsť si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do SharePointu dostali. Do SharePointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v SharePointe. Treba v každej tabuľke vyhľadať záznamy podľa Ginis ID a odstrániť ich.
+3. Otvoriť [SharePoint](https://magistratba.sharepoint.com/sites/UsmernovanieInvesticnejCinnosti_prod/_layouts/15/viewlsts.aspx?view=14) a prejsť si všetky tabuľky, z ktorých treba vymazať všetky záznamy pre danú žiadosť, ktoré sa už do SharePointu dostali. Do SharePointu posielame veci postupne, teda sa môže stať, že nejaké záznamy pre túto žiadosť už sú v SharePointe. Treba v každej tabuľke vyhľadať záznamy podľa Ginis ID a odstrániť ich.
 4. Pridať formulár manuálne do rabbita, viď [Pridanie do RabbitMQ](#pridanie-do-rabbitmq).
 
 Následne prebehne pokus o odoslanie, ak je všetko v poriadku tak sa dostane do stavu `PROCESSING`.

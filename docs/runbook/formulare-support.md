@@ -245,7 +245,7 @@ Potrebná len pri konkrétnych problémoch s formulármi, nie rutinne.
 
 #### Kontrola formulára v Ginise
 
-1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567>– zmeniť ginis ID v URL.
+1. Pristúpiť cez URL podľa ginis ID `MAG0X*` - napr. `MAG0X1234567` cez <https://ginis.bratislava.sk/usu/?c=OpenDetail&ixx1=MAG0X1234567> – zmeniť ginis ID v URL.
 2. _(podľa potreby)_ Kliknúť na `Prílohy (komponenty)` a skontrolovať počet príloh a ich názvy.
 3. _(podľa potreby)_ Kliknúť na `Doručenie` a skontrolovať `Identifikátor správy`, ktorý má byť totožný s naším `id` pre formulár v DB.
 4. _(podľa potreby)_ Skontrolovať, či je tlačidlo `Priradiť` dostupné. Nachádza sa vpravo hore – je to ikonka hlavy a ramien človeka so šípkou orientovanou sprava doľava ukazujúcou na krk toho človeka. Keď sa myš presunie na túto ikonku, tak sa objaví nápis "Priradiť". Aby bola akcia priradenia dostupná, musí byť toto tlačidlo čierne (teda nie celé šedivé).

@@ -189,7 +189,7 @@ describe('GinisService', () => {
 
       expect(registerSpy).not.toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // should try to register and requeue if it couldn't find the document
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -203,7 +203,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(registerSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // should only change state if there was error to allow register again
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -255,7 +255,7 @@ describe('GinisService', () => {
       let result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).toHaveBeenCalled()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // When one error - requeue, do not upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -280,7 +280,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // When all errors - requeue, do not upload, report error (TODO update behavior)
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -305,7 +305,7 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
+      jest.clearAllMocks()
 
       // When no more files, change to Attachments uploaded
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -353,7 +353,6 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
-      jest.resetAllMocks()
     })
 
     it('should mark as files uploaded if there are no files', async () => {
@@ -476,7 +475,7 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).not.toHaveBeenCalled()
 
-      jest.resetAllMocks()
+      jest.clearAllMocks()
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -543,7 +542,7 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
       expect(sendToSharepointSpy).toHaveBeenCalled()
 
-      jest.resetAllMocks()
+      jest.clearAllMocks()
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',

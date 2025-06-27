@@ -416,7 +416,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
       expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
 
-      // The same should happen if the state is ERROR_ASSIGN_SUBMISSION
+      // If ERROR_ASSIGN_SUBMISSION, skip upload, manual intervention required
 
       // missing ginisDocumentId
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -437,7 +437,7 @@ describe('GinisService', () => {
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
-      expect(assignSpy).toHaveBeenCalledWith('docId', 'nodeId', 'functionId')
+      expect(assignSpy).not.toHaveBeenCalled()
     })
 
     it('should mark as ready for processing if there is no sharepoint', async () => {

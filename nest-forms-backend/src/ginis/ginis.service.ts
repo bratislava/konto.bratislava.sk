@@ -388,10 +388,7 @@ export default class GinisService {
     }
 
     // Assign submission
-    if (
-      form.ginisState === GinisState.ATTACHMENTS_UPLOADED ||
-      form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION
-    ) {
+    if (form.ginisState === GinisState.ATTACHMENTS_UPLOADED) {
       if (!form.ginisDocumentId) {
         alertError(
           `ERROR assignSubmission - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
@@ -405,6 +402,13 @@ export default class GinisService {
         formDefinition.ginisAssignment.ginisFunctionId,
       )
       return this.nackTrueWithWait(20_000)
+    }
+
+    if (form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION) {
+      this.logger.error(
+        '---- ERROR assigning submission (manual intervention required) ----',
+      )
+      return this.nackTrueWithWait(600_000)
     }
 
     // Send externally

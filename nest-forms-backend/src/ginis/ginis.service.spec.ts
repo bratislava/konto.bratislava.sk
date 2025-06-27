@@ -253,8 +253,8 @@ describe('GinisService', () => {
 
       // When upload for first time - just upload
       let result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 
       // When one error - requeue, do not upload, report error
@@ -278,8 +278,8 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 
       // When all errors - requeue, do not upload, report error (TODO update behavior)
@@ -303,8 +303,8 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 
       // When no more files, change to Attachments uploaded
@@ -319,8 +319,6 @@ describe('GinisService', () => {
         files: [],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
-      expect(uploadSpy).not.toHaveBeenCalled()
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {
@@ -329,6 +327,8 @@ describe('GinisService', () => {
           },
         }),
       )
+      expect(uploadSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
 
       // When missing ginisDocumentId, skip upload
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -351,8 +351,8 @@ describe('GinisService', () => {
       } as FormWithFiles)
 
       result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
+      expect(result.requeue).toBeTruthy()
     })
 
     it('should mark as files uploaded if there are no files', async () => {

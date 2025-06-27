@@ -257,7 +257,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 
-      // When one error - requeue, do not upload, report error
+      // When one error - requeue, upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -278,11 +278,11 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(uploadSpy).not.toHaveBeenCalled()
+      expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 
-      // When all errors - requeue, do not upload, report error (TODO update behavior)
+      // When all errors - requeue, upload, report error
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -303,7 +303,7 @@ describe('GinisService', () => {
         ],
       } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
-      expect(uploadSpy).not.toHaveBeenCalled()
+      expect(uploadSpy).toHaveBeenCalled()
       expect(result.requeue).toBeTruthy()
       jest.clearAllMocks()
 

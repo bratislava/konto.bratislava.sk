@@ -316,7 +316,6 @@ export default class GinisService {
       )
     }
 
-    const filesWithError = form.files.filter((file) => file.ginisUploadedError)
     const filesToUpload = form.files.filter((file) => !file.ginisUploaded)
 
     // Registration
@@ -348,7 +347,11 @@ export default class GinisService {
     }
 
     // Attachments upload
-    if (form.ginisState === GinisState.REGISTERED && filesToUpload.length > 0) {
+    if (
+      (form.ginisState === GinisState.REGISTERED ||
+        form.ginisState === GinisState.RUNNING_UPLOAD_ATTACHMENTS) &&
+      filesToUpload.length > 0
+    ) {
       if (!form.ginisDocumentId) {
         alertError(
           `ERROR uploadAttachments - ginisDocumentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
@@ -356,18 +359,8 @@ export default class GinisService {
         )
         return this.nackTrueWithWait(20_000)
       }
-      this.logger.debug('---- start to upload attachments ----')
+      this.logger.debug('---- uploading attachments ----')
       await this.uploadAttachments(form, formDefinition.pospID)
-      return this.nackTrueWithWait(20_000)
-    }
-
-    if (
-      form.ginisState === GinisState.ERROR_ATTACHMENT_UPLOAD ||
-      filesWithError.length > 0
-    ) {
-      this.logger.error(
-        '---- ERROR uploading attachments (manual intervention required) ----',
-      )
       return this.nackTrueWithWait(20_000)
     }
 

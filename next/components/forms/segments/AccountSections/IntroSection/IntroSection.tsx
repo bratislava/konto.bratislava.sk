@@ -1,5 +1,5 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
-import { MunicipalServiceFragment } from '@clients/graphql-strapi/api'
+import { MunicipalServiceCardEntityFragment } from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
@@ -12,8 +12,8 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
 type IntroSectionProps = {
-  services: MunicipalServiceFragment[]
-  servicesLegalPerson: MunicipalServiceFragment[]
+  services: MunicipalServiceCardEntityFragment[]
+  servicesLegalPerson: MunicipalServiceCardEntityFragment[]
 }
 
 const IntroSection = ({ services, servicesLegalPerson }: IntroSectionProps) => {

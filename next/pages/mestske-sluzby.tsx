@@ -1,5 +1,5 @@
 import { strapiClient } from '@clients/graphql-strapi'
-import { MunicipalServiceFragment } from '@clients/graphql-strapi/api'
+import { MunicipalServiceEntityFragment } from '@clients/graphql-strapi/api'
 import MunicipalServicesSection, {
   MunicipalServicesSectionProps,
 } from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
@@ -13,7 +13,7 @@ import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSide
 
 type AccountMunicipalServicesPageProps = MunicipalServicesSectionProps
 
-const extractAndSortCategories = (services: MunicipalServiceFragment[]) => {
+const extractAndSortCategories = (services: MunicipalServiceEntityFragment[]) => {
   const collator = new Intl.Collator('sk')
   const categoriesWithDuplicates = (
     services.flatMap((service) => service.attributes?.categories?.data) ?? []

@@ -1,5 +1,5 @@
 import { strapiClient } from '@clients/graphql-strapi'
-import { MunicipalServiceFragment } from '@clients/graphql-strapi/api'
+import { MunicipalServiceCardEntityFragment } from '@clients/graphql-strapi/api'
 import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { isDefined } from 'frontend/utils/general'
@@ -24,8 +24,8 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProp
 })
 
 type AccountIntroPageProps = {
-  services: MunicipalServiceFragment[]
-  servicesLegalPerson: MunicipalServiceFragment[]
+  services: MunicipalServiceCardEntityFragment[]
+  servicesLegalPerson: MunicipalServiceCardEntityFragment[]
 }
 
 const AccountIntroPage = ({ services, servicesLegalPerson }: AccountIntroPageProps) => {

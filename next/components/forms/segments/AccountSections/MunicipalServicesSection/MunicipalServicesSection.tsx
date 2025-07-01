@@ -1,6 +1,6 @@
 import {
-  MunicipalServiceCategoryFragment,
-  MunicipalServiceFragment,
+  MunicipalServiceCategoryEntityFragment,
+  MunicipalServiceEntityFragment,
 } from '@clients/graphql-strapi/api'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -14,10 +14,10 @@ import { SelectOption } from '../../../widget-components/SelectField/SelectField
 import MunicipalServiceCard from '../../MunicipalServiceCard/MunicipalServiceCard'
 
 export type MunicipalServicesSectionProps = {
-  services: MunicipalServiceFragment[]
-  categories: MunicipalServiceCategoryFragment[]
-  servicesLegalPerson: MunicipalServiceFragment[]
-  categoriesLegalPerson: MunicipalServiceCategoryFragment[]
+  services: MunicipalServiceEntityFragment[]
+  categories: MunicipalServiceCategoryEntityFragment[]
+  servicesLegalPerson: MunicipalServiceEntityFragment[]
+  categoriesLegalPerson: MunicipalServiceCategoryEntityFragment[]
 }
 
 const MunicipalServicesSection = ({

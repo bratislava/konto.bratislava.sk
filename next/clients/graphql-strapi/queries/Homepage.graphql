@@ -1,32 +1,15 @@
-fragment MunicipalServiceHomepage on MunicipalServiceEntity {
-  id
-  attributes {
-    title
-    description
-    buttonText
-    href
-    color
-    icon
-    tags {
-      data {
-        ...MunicipalServiceTag
-      }
-    }
-  }
-}
-
 query Homepage {
   homepage {
     data {
       attributes {
         services(pagination: { limit: 4 }) {
           data {
-            ...MunicipalServiceHomepage
+            ...MunicipalServiceCardEntity
           }
         }
         servicesLegalPerson(pagination: { limit: 4 }) {
           data {
-            ...MunicipalServiceHomepage
+            ...MunicipalServiceCardEntity
           }
         }
       }

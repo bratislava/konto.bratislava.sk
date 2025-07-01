@@ -1,8 +1,8 @@
 import {
   Enum_Municipalservice_Color,
   Enum_Municipalservice_Icon,
-  MunicipalServiceFragment,
-  MunicipalServiceHomepageFragment,
+  MunicipalServiceCardEntityFragment,
+  MunicipalServiceEntityFragment,
 } from '@clients/graphql-strapi/api'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { ReactNode } from 'react'
@@ -33,6 +33,7 @@ import ExcavationsIcon from '../../../../assets/icons/transport-and-maps/excavat
 import ManagmentCommunicationsIcon from '../../../../assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '../../../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../../../assets/icons/transport-and-maps/towing.svg'
+import { isDefined } from '../../../../frontend/utils/general'
 
 const getIconComponent = (
   iconName: Enum_Municipalservice_Icon,
@@ -109,7 +110,7 @@ const getTagStyle = (color: Enum_Municipalservice_Color) => {
 }
 
 type MunicipalServiceCardProps = {
-  service: MunicipalServiceFragment | MunicipalServiceHomepageFragment
+  service: MunicipalServiceEntityFragment | MunicipalServiceCardEntityFragment
 }
 
 const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
@@ -125,7 +126,9 @@ const MunicipalServiceCard = ({ service }: MunicipalServiceCardProps) => {
       buttonText={service.attributes.buttonText}
       icon={getIconComponent(service.attributes.icon, service.attributes.color)}
       href={service.attributes.href}
-      tags={service.attributes.tags?.data?.map((tag) => tag.attributes?.title ?? '') ?? []}
+      tags={
+        service.attributes.tags?.data?.map((tag) => tag.attributes?.title).filter(isDefined) ?? []
+      }
       tagStyle={getTagStyle(service.attributes.color)}
       plausibleProps={{ id: `Mestské služby: ${service.attributes.title}` }}
     />

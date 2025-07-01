@@ -1,51 +1,15 @@
-fragment MunicipalServiceTag on MunicipalServiceTagEntity {
-  id
-  attributes {
-    title
-  }
-}
-
-fragment MunicipalServiceCategory on MunicipalServiceCategoryEntity {
-  id
-  attributes {
-    title
-  }
-}
-
-fragment MunicipalService on MunicipalServiceEntity {
-  id
-  attributes {
-    title
-    description
-    buttonText
-    href
-    color
-    icon
-    tags {
-      data {
-        ...MunicipalServiceTag
-      }
-    }
-    categories {
-      data {
-        ...MunicipalServiceCategory
-      }
-    }
-  }
-}
-
 query MunicipalServicesPage {
   municipalServicesPage {
     data {
       attributes {
         services {
           data {
-            ...MunicipalService
+            ...MunicipalServiceEntity
           }
         }
         servicesLegalPerson {
           data {
-            ...MunicipalService
+            ...MunicipalServiceEntity
           }
         }
       }

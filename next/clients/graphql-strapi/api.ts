@@ -2046,28 +2046,6 @@ export type HelpPageQuery = {
   } | null
 }
 
-export type MunicipalServiceHomepageFragment = {
-  __typename?: 'MunicipalServiceEntity'
-  id?: string | null
-  attributes?: {
-    __typename?: 'MunicipalService'
-    title: string
-    description: string
-    buttonText: string
-    href: string
-    color: Enum_Municipalservice_Color
-    icon: Enum_Municipalservice_Icon
-    tags?: {
-      __typename?: 'MunicipalServiceTagRelationResponseCollection'
-      data: Array<{
-        __typename?: 'MunicipalServiceTagEntity'
-        id?: string | null
-        attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
-      }>
-    } | null
-  } | null
-}
-
 export type HomepageQueryVariables = Exact<{ [key: string]: never }>
 
 export type HomepageQuery = {
@@ -2131,19 +2109,19 @@ export type HomepageQuery = {
   } | null
 }
 
-export type MunicipalServiceTagFragment = {
+export type MunicipalServiceTagEntityFragment = {
   __typename?: 'MunicipalServiceTagEntity'
   id?: string | null
   attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
 }
 
-export type MunicipalServiceCategoryFragment = {
+export type MunicipalServiceCategoryEntityFragment = {
   __typename?: 'MunicipalServiceCategoryEntity'
   id?: string | null
   attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
 }
 
-export type MunicipalServiceFragment = {
+export type MunicipalServiceCardEntityFragment = {
   __typename?: 'MunicipalServiceEntity'
   id?: string | null
   attributes?: {
@@ -2162,12 +2140,34 @@ export type MunicipalServiceFragment = {
         attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
       }>
     } | null
+  } | null
+}
+
+export type MunicipalServiceEntityFragment = {
+  __typename?: 'MunicipalServiceEntity'
+  id?: string | null
+  attributes?: {
+    __typename?: 'MunicipalService'
+    title: string
+    description: string
+    buttonText: string
+    href: string
+    color: Enum_Municipalservice_Color
+    icon: Enum_Municipalservice_Icon
     categories?: {
       __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
       data: Array<{
         __typename?: 'MunicipalServiceCategoryEntity'
         id?: string | null
         attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+      }>
+    } | null
+    tags?: {
+      __typename?: 'MunicipalServiceTagRelationResponseCollection'
+      data: Array<{
+        __typename?: 'MunicipalServiceTagEntity'
+        id?: string | null
+        attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
       }>
     } | null
   } | null
@@ -2196,20 +2196,20 @@ export type MunicipalServicesPageQuery = {
               href: string
               color: Enum_Municipalservice_Color
               icon: Enum_Municipalservice_Icon
-              tags?: {
-                __typename?: 'MunicipalServiceTagRelationResponseCollection'
-                data: Array<{
-                  __typename?: 'MunicipalServiceTagEntity'
-                  id?: string | null
-                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
-                }>
-              } | null
               categories?: {
                 __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
                 data: Array<{
                   __typename?: 'MunicipalServiceCategoryEntity'
                   id?: string | null
                   attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+                }>
+              } | null
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
                 }>
               } | null
             } | null
@@ -2228,20 +2228,20 @@ export type MunicipalServicesPageQuery = {
               href: string
               color: Enum_Municipalservice_Color
               icon: Enum_Municipalservice_Icon
-              tags?: {
-                __typename?: 'MunicipalServiceTagRelationResponseCollection'
-                data: Array<{
-                  __typename?: 'MunicipalServiceTagEntity'
-                  id?: string | null
-                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
-                }>
-              } | null
               categories?: {
                 __typename?: 'MunicipalServiceCategoryRelationResponseCollection'
                 data: Array<{
                   __typename?: 'MunicipalServiceCategoryEntity'
                   id?: string | null
                   attributes?: { __typename?: 'MunicipalServiceCategory'; title: string } | null
+                }>
+              } | null
+              tags?: {
+                __typename?: 'MunicipalServiceTagRelationResponseCollection'
+                data: Array<{
+                  __typename?: 'MunicipalServiceTagEntity'
+                  id?: string | null
+                  attributes?: { __typename?: 'MunicipalServiceTag'; title: string } | null
                 }>
               } | null
             } | null
@@ -2361,16 +2361,16 @@ export const HelpPageFragmentDoc = gql`
   }
   ${HelpCategoryFragmentDoc}
 `
-export const MunicipalServiceTagFragmentDoc = gql`
-  fragment MunicipalServiceTag on MunicipalServiceTagEntity {
+export const MunicipalServiceTagEntityFragmentDoc = gql`
+  fragment MunicipalServiceTagEntity on MunicipalServiceTagEntity {
     id
     attributes {
       title
     }
   }
 `
-export const MunicipalServiceHomepageFragmentDoc = gql`
-  fragment MunicipalServiceHomepage on MunicipalServiceEntity {
+export const MunicipalServiceCardEntityFragmentDoc = gql`
+  fragment MunicipalServiceCardEntity on MunicipalServiceEntity {
     id
     attributes {
       title
@@ -2381,45 +2381,34 @@ export const MunicipalServiceHomepageFragmentDoc = gql`
       icon
       tags {
         data {
-          ...MunicipalServiceTag
+          ...MunicipalServiceTagEntity
         }
       }
     }
   }
-  ${MunicipalServiceTagFragmentDoc}
+  ${MunicipalServiceTagEntityFragmentDoc}
 `
-export const MunicipalServiceCategoryFragmentDoc = gql`
-  fragment MunicipalServiceCategory on MunicipalServiceCategoryEntity {
+export const MunicipalServiceCategoryEntityFragmentDoc = gql`
+  fragment MunicipalServiceCategoryEntity on MunicipalServiceCategoryEntity {
     id
     attributes {
       title
     }
   }
 `
-export const MunicipalServiceFragmentDoc = gql`
-  fragment MunicipalService on MunicipalServiceEntity {
-    id
+export const MunicipalServiceEntityFragmentDoc = gql`
+  fragment MunicipalServiceEntity on MunicipalServiceEntity {
+    ...MunicipalServiceCardEntity
     attributes {
-      title
-      description
-      buttonText
-      href
-      color
-      icon
-      tags {
-        data {
-          ...MunicipalServiceTag
-        }
-      }
       categories {
         data {
-          ...MunicipalServiceCategory
+          ...MunicipalServiceCategoryEntity
         }
       }
     }
   }
-  ${MunicipalServiceTagFragmentDoc}
-  ${MunicipalServiceCategoryFragmentDoc}
+  ${MunicipalServiceCardEntityFragmentDoc}
+  ${MunicipalServiceCategoryEntityFragmentDoc}
 `
 export const TaxFragmentDoc = gql`
   fragment Tax on Tax {
@@ -2479,19 +2468,19 @@ export const HomepageDocument = gql`
         attributes {
           services(pagination: { limit: 4 }) {
             data {
-              ...MunicipalServiceHomepage
+              ...MunicipalServiceCardEntity
             }
           }
           servicesLegalPerson(pagination: { limit: 4 }) {
             data {
-              ...MunicipalServiceHomepage
+              ...MunicipalServiceCardEntity
             }
           }
         }
       }
     }
   }
-  ${MunicipalServiceHomepageFragmentDoc}
+  ${MunicipalServiceCardEntityFragmentDoc}
 `
 export const MunicipalServicesPageDocument = gql`
   query MunicipalServicesPage {
@@ -2500,19 +2489,19 @@ export const MunicipalServicesPageDocument = gql`
         attributes {
           services {
             data {
-              ...MunicipalService
+              ...MunicipalServiceEntity
             }
           }
           servicesLegalPerson {
             data {
-              ...MunicipalService
+              ...MunicipalServiceEntity
             }
           }
         }
       }
     }
   }
-  ${MunicipalServiceFragmentDoc}
+  ${MunicipalServiceEntityFragmentDoc}
 `
 export const TaxDocument = gql`
   query Tax {

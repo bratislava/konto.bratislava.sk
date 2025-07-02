@@ -23,8 +23,6 @@ const EDESK_UPDATE_LOOK_BACK_HOURS = 96
 export class TasksSubservice {
   private readonly logger: LineLoggerSubservice
 
-  private edeskUpdateConfigDbkey: 'EDESK_UPDATE_CONFIG_DB_KEY'
-
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,

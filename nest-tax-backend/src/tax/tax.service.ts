@@ -127,6 +127,7 @@ export class TaxService {
       paidStatus,
       pdfExport,
       isPayable,
+      taxEmployee: tax.taxPayer.taxEmployee,
     }
   }
 
@@ -171,6 +172,15 @@ export class TaxService {
       },
     })
 
+    const taxPayer = await this.prisma.taxPayer.findUnique({
+      where: {
+        birthNumber,
+      },
+      include: {
+        taxEmployee: true,
+      },
+    })
+
     const items: ResponseGetTaxesBodyDto[] = taxes.map((tax) => {
       const taxPaymentItem = taxPayments.find(
         (taxPayment) => taxPayment.taxId === tax.id,
@@ -192,6 +202,7 @@ export class TaxService {
     return {
       isInNoris: items.length > 0,
       items,
+      taxEmployee: taxPayer ? taxPayer.taxEmployee : null,
     }
   }
 

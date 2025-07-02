@@ -56,50 +56,6 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
-export class ResponseTaxEmployeesDto {
-  @ApiProperty({
-    description: 'Numeric id of Employee from noris',
-    default: 1,
-  })
-  id: number
-
-  @ApiProperty({
-    description: 'Created at timestamp',
-    default: '2023-04-13T14:39:49.004Z',
-  })
-  createdAt: Date
-
-  @ApiProperty({
-    description: 'Updated at timestamp',
-    default: '2023-04-13T14:39:49.004Z',
-  })
-  updatedAt: Date
-
-  @ApiProperty({
-    description: 'External of employee',
-    default: '12562',
-  })
-  externalId: string
-
-  @ApiProperty({
-    description: 'Name of employee',
-    default: 'Zamestnanec Bratislavský',
-  })
-  name: string
-
-  @ApiProperty({
-    description: 'Phone number of employee',
-    default: '+421 000 000 000',
-  })
-  phoneNumber: string
-
-  @ApiProperty({
-    description: 'Email of employee',
-    default: 'zamestnanec.bratislavsky@bratislava.sk',
-  })
-  email: string
-}
-
 export class ResponseTaxPayerDto {
   @ApiProperty({
     description: 'Numeric id of tax payer',
@@ -217,24 +173,6 @@ export class ResponseTaxPayerDto {
   @IsNumber()
   @IsOptional()
   taxEmployeeId: number | null
-
-  @ApiProperty({
-    description: 'Tax into details on area type',
-    default: {
-      id: 1,
-      createdAt: '2023-04-13T14:39:49.004Z',
-      updatedAt: '2023-04-13T14:39:49.004Z',
-      externalId: '1234',
-      name: 'Zamestnanec Bratsilavský',
-      phoneNumber: '+421 000 000 000',
-      email: 'zamestnanec.bratislavsky@bratislava.sk',
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ResponseTaxEmployeesDto)
-  @IsOptional()
-  taxEmployee: ResponseTaxEmployeesDto | null
 }
 
 export class ResponseTaxDetailInstallmentsDto {
@@ -340,6 +278,26 @@ export class ResponseTaxDetailsDto {
     default: 0,
   })
   amount: number
+}
+
+export class ResponseTaxEmployeeDto {
+  @ApiProperty({ description: 'Name of the tax employee', example: 'John Doe' })
+  @IsString()
+  name: string
+
+  @ApiProperty({
+    description: 'Phone number of the tax employee',
+    example: '+421 123 456 789',
+  })
+  @IsString()
+  phoneNumber: string
+
+  @ApiProperty({
+    description: 'Email address of the tax employee',
+    example: 'johndoe@example.com',
+  })
+  @IsEmail()
+  email: string
 }
 
 export class ResponseTaxDto {
@@ -599,6 +557,16 @@ export class ResponseTaxDto {
   })
   @IsBoolean()
   bloomreachUnpaidTaxReminderSent: boolean
+
+  @ApiProperty({
+    description: 'Assigned tax employee',
+    type: ResponseTaxEmployeeDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxEmployeeDto)
+  @IsOptional()
+  taxEmployee: ResponseTaxEmployeeDto | null
 }
 
 export class ResponseGetTaxesBodyDto {
@@ -659,13 +627,27 @@ export class ResponseGetTaxesDto {
     description: 'Birth number of user is in Noris actual or historical Tax',
     example: true,
   })
+  @IsBoolean()
   isInNoris: boolean
 
   @ApiProperty({
     isArray: true,
     type: ResponseGetTaxesBodyDto,
   })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResponseGetTaxesBodyDto)
   items: ResponseGetTaxesBodyDto[]
+
+  @ApiProperty({
+    description: 'Assigned tax employee',
+    type: ResponseTaxEmployeeDto,
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxEmployeeDto)
+  @IsOptional()
+  taxEmployee: ResponseTaxEmployeeDto | null
 }
 
 export class ResponseApartmentTaxDetailDto {
@@ -1000,26 +982,6 @@ export class ResponseInstallmentPaymentDetailDto {
   @ValidateNested()
   @Type(() => ResponseActiveInstallmentDto)
   activeInstallment?: ResponseActiveInstallmentDto
-}
-
-export class ResponseTaxEmployeeDto {
-  @ApiProperty({ description: 'Name of the tax employee', example: 'John Doe' })
-  @IsString()
-  name: string
-
-  @ApiProperty({
-    description: 'Phone number of the tax employee',
-    example: '+421 123 456 789',
-  })
-  @IsString()
-  phoneNumber: string
-
-  @ApiProperty({
-    description: 'Email address of the tax employee',
-    example: 'johndoe@example.com',
-  })
-  @IsEmail()
-  email: string
 }
 
 export class ResponseTaxSummaryDetailDto {

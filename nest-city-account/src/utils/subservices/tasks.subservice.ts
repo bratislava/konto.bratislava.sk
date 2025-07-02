@@ -11,18 +11,31 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
+import * as z from 'zod'
+import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
+import { PhysicalEntity } from '@prisma/client'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
+
+const EDESK_UPDATE_LOOK_BACK_HOURS = 96
+
+const ValidateEdeskConfigValueSchema = z.object({
+  active: z.boolean(),
+  offset: z.number(),
+})
 
 @Injectable()
 export class TasksSubservice {
   private readonly logger: LineLoggerSubservice
 
+  private edeskUpdateConfigDbkey: 'EDESK_UPDATE_CONFIG_DB_KEY'
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly taxSubservice: TaxSubservice
+    private readonly taxSubservice: TaxSubservice,
+    private readonly physicalEntityService: PhysicalEntityService
   ) {
     this.logger = new LineLoggerSubservice(TasksSubservice.name)
   }
@@ -240,5 +253,59 @@ export class TasksSubservice {
         lastTaxDeliveryMethodsUpdateYear: currentYear,
       },
     })
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  @HandleErrors('CronError')
+  async updateEdesk(): Promise<void> {
+    const configDbResult = await this.prismaService.config.findUnique({
+      where: { key: this.edeskUpdateConfigDbkey },
+    })
+    if (!configDbResult) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'UPDATE_EDESK_FROM_RFO_DATA not found in database config.'
+      )
+    }
+
+    const config = ValidateEdeskConfigValueSchema.parse(configDbResult.value)
+    if (!config.active) {
+      return
+    }
+    this.logger.log(
+      `${this.edeskUpdateConfigDbkey} turned ON, starting, current offset: ${config.offset}`
+    )
+
+    const lookBackDate = new Date()
+    lookBackDate.setHours(lookBackDate.getHours() - EDESK_UPDATE_LOOK_BACK_HOURS)
+
+    const entitiesToUpdate = await this.prismaService.$queryRaw<PhysicalEntity[]>`
+      SELECT e.*
+      FROM "PhysicalEntity" e
+      WHERE "userId" IS NOT NULL
+        AND "uri" IS NOT NULL
+        AND ("activeEdeskUpdatedAt" IS NULL OR "activeEdeskUpdatedAt" < ${lookBackDate})
+        AND ("activeEdeskUpdateFailedAt" IS NULL OR
+             "activeEdeskUpdateFailCount" = 0 OR
+             ("activeEdeskUpdateFailedAt" + (POWER(2, least("activeEdeskUpdateFailCount", 7)) * INTERVAL '1 hour') < ${lookBackDate}))
+      
+      ORDER BY "activeEdeskUpdatedAt" NULLS FIRST
+      LIMIT 5;
+    `
+
+    if (entitiesToUpdate.length === 0) {
+      this.logger.log('No physical entities to update edesk.')
+      return
+    }
+
+    await Promise.all(
+      entitiesToUpdate.map(async (entity) => {
+        try {
+          await this.physicalEntityService.updateEdeskFromUpvs({ id: entity.id })
+        } catch (error) {
+          this.logger.error(`Failed to update activeEdesk status for entity with id: ${entity.id}`, error)
+        }
+      })
+    )
   }
 }

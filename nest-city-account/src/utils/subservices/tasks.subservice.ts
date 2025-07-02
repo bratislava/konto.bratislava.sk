@@ -258,24 +258,6 @@ export class TasksSubservice {
   @Cron(CronExpression.EVERY_30_SECONDS)
   @HandleErrors('CronError')
   async updateEdesk(): Promise<void> {
-    const configDbResult = await this.prismaService.config.findUnique({
-      where: { key: this.edeskUpdateConfigDbkey },
-    })
-    if (!configDbResult) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'UPDATE_EDESK_FROM_RFO_DATA not found in database config.'
-      )
-    }
-
-    const config = ValidateEdeskConfigValueSchema.parse(configDbResult.value)
-    if (!config.active) {
-      return
-    }
-    this.logger.log(
-      `${this.edeskUpdateConfigDbkey} turned ON, starting, current offset: ${config.offset}`
-    )
-
     const lookBackDate = new Date()
     lookBackDate.setHours(lookBackDate.getHours() - EDESK_UPDATE_LOOK_BACK_HOURS)
 

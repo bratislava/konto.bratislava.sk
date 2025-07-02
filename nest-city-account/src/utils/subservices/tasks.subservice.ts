@@ -11,7 +11,6 @@ import ThrowerErrorGuard from '../guards/errors.guard'
 import { DeliveryMethod } from '../types/tax.types'
 import { LineLoggerSubservice } from './line-logger.subservice'
 import { TaxSubservice } from './tax.subservice'
-import * as z from 'zod'
 import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
 import { PhysicalEntity } from '@prisma/client'
 
@@ -19,11 +18,6 @@ const UPLOAD_BIRTHNUMBERS_BATCH = 100
 const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
-
-const ValidateEdeskConfigValueSchema = z.object({
-  active: z.boolean(),
-  offset: z.number(),
-})
 
 @Injectable()
 export class TasksSubservice {

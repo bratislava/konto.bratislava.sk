@@ -21,8 +21,8 @@ import {
   ResponseGetTaxesDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
+  ResponseTaxAdministratorDto,
   ResponseTaxDto,
-  ResponseTaxEmployeeDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
@@ -54,7 +54,7 @@ export class TaxService {
         taxInstallments: true,
         taxPayer: {
           include: {
-            taxEmployee: true,
+            taxAdministrator: true,
           },
         },
         taxDetails: true,
@@ -127,7 +127,7 @@ export class TaxService {
       paidStatus,
       pdfExport,
       isPayable,
-      taxEmployee: tax.taxPayer.taxEmployee,
+      taxAdministrator: tax.taxPayer.taxAdministrator,
     }
   }
 
@@ -177,7 +177,7 @@ export class TaxService {
         birthNumber,
       },
       include: {
-        taxEmployee: true,
+        taxAdministrator: true,
       },
     })
 
@@ -202,7 +202,7 @@ export class TaxService {
     return {
       isInNoris: items.length > 0,
       items,
-      taxEmployee: taxPayer ? taxPayer.taxEmployee : null,
+      taxAdministrator: taxPayer ? taxPayer.taxAdministrator : null,
     }
   }
 
@@ -292,11 +292,12 @@ export class TaxService {
         : undefined,
     }
 
-    const taxEmployee: ResponseTaxEmployeeDto | null = tax.taxPayer.taxEmployee
+    const taxAdministrator: ResponseTaxAdministratorDto | null = tax.taxPayer
+      .taxAdministrator
       ? {
-          name: tax.taxPayer.taxEmployee.name,
-          phoneNumber: tax.taxPayer.taxEmployee.phoneNumber,
-          email: tax.taxPayer.taxEmployee.email,
+          name: tax.taxPayer.taxAdministrator.name,
+          phoneNumber: tax.taxPayer.taxAdministrator.phoneNumber,
+          email: tax.taxPayer.taxAdministrator.email,
         }
       : null
 
@@ -304,7 +305,7 @@ export class TaxService {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
-      taxEmployee,
+      taxAdministrator,
     }
   }
 }

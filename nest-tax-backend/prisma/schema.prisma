@@ -18,8 +18,8 @@ model TaxPayer {
   updatedAt                   DateTime    @default(now()) @updatedAt
   active                      Boolean // if it is active tax payer or is only past tax pay
   birthNumber                 String // with slash
-  taxEmployeeId               Int?
-  taxEmployee                 TaxEmployee? @relation(fields: [taxEmployeeId], references: [id])
+  taxAdministratorId          Int?
+  taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
@@ -106,7 +106,7 @@ model TaxDetail {
   amount    Int
 }
 
-model TaxEmployee {
+model TaxAdministrator {
   id          Int        @id @default(autoincrement())
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt

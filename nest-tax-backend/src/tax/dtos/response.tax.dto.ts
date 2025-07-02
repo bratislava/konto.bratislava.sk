@@ -167,12 +167,12 @@ export class ResponseTaxPayerDto {
   birthNumber: string
 
   @ApiProperty({
-    description: 'Id of tax employee - id is from Noris',
+    description: 'Id of tax administrator - id is from Noris',
     default: 5_172_727,
   })
   @IsNumber()
   @IsOptional()
-  taxEmployeeId: number | null
+  taxAdministratorId: number | null
 }
 
 export class ResponseTaxDetailInstallmentsDto {
@@ -280,20 +280,23 @@ export class ResponseTaxDetailsDto {
   amount: number
 }
 
-export class ResponseTaxEmployeeDto {
-  @ApiProperty({ description: 'Name of the tax employee', example: 'John Doe' })
+export class ResponseTaxAdministratorDto {
+  @ApiProperty({
+    description: 'Name of the tax administrator',
+    example: 'John Doe',
+  })
   @IsString()
   name: string
 
   @ApiProperty({
-    description: 'Phone number of the tax employee',
+    description: 'Phone number of the tax administrator',
     example: '+421 123 456 789',
   })
   @IsString()
   phoneNumber: string
 
   @ApiProperty({
-    description: 'Email address of the tax employee',
+    description: 'Email address of the tax administrator',
     example: 'johndoe@example.com',
   })
   @IsEmail()
@@ -502,7 +505,7 @@ export class ResponseTaxDto {
   taxInstallments: ResponseTaxDetailInstallmentsDto[]
 
   @ApiProperty({
-    description: 'Tax employee',
+    description: 'Tax administrator',
     default: [
       {
         id: 20,
@@ -559,14 +562,14 @@ export class ResponseTaxDto {
   bloomreachUnpaidTaxReminderSent: boolean
 
   @ApiProperty({
-    description: 'Assigned tax employee',
-    type: ResponseTaxEmployeeDto,
+    description: 'Assigned tax administrator',
+    type: ResponseTaxAdministratorDto,
   })
   @IsObject()
   @ValidateNested()
-  @Type(() => ResponseTaxEmployeeDto)
+  @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }
 
 export class ResponseGetTaxesBodyDto {
@@ -640,14 +643,14 @@ export class ResponseGetTaxesDto {
   items: ResponseGetTaxesBodyDto[]
 
   @ApiProperty({
-    description: 'Assigned tax employee',
-    type: ResponseTaxEmployeeDto,
+    description: 'Assigned tax administrator',
+    type: ResponseTaxAdministratorDto,
   })
   @IsObject()
   @ValidateNested()
-  @Type(() => ResponseTaxEmployeeDto)
+  @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }
 
 export class ResponseApartmentTaxDetailDto {
@@ -1029,12 +1032,12 @@ export class ResponseTaxSummaryDetailDto {
   installmentPayment: ResponseInstallmentPaymentDetailDto
 
   @ApiProperty({
-    description: 'Assigned tax employee',
-    type: ResponseTaxEmployeeDto,
+    description: 'Assigned tax administrator',
+    type: ResponseTaxAdministratorDto,
   })
   @IsObject()
   @ValidateNested()
-  @Type(() => ResponseTaxEmployeeDto)
+  @Type(() => ResponseTaxAdministratorDto)
   @IsOptional()
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }

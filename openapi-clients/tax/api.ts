@@ -434,11 +434,11 @@ export interface ResponseGetTaxesDto {
    */
   items: Array<ResponseGetTaxesBodyDto>
   /**
-   * Assigned tax employee
-   * @type {ResponseTaxEmployeeDto}
+   * Assigned tax administrator
+   * @type {ResponseTaxAdministratorDto}
    * @memberof ResponseGetTaxesDto
    */
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }
 /**
  *
@@ -569,6 +569,31 @@ export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
 export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =
   (typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum]
 
+/**
+ *
+ * @export
+ * @interface ResponseTaxAdministratorDto
+ */
+export interface ResponseTaxAdministratorDto {
+  /**
+   * Name of the tax administrator
+   * @type {string}
+   * @memberof ResponseTaxAdministratorDto
+   */
+  name: string
+  /**
+   * Phone number of the tax administrator
+   * @type {string}
+   * @memberof ResponseTaxAdministratorDto
+   */
+  phoneNumber: string
+  /**
+   * Email address of the tax administrator
+   * @type {string}
+   * @memberof ResponseTaxAdministratorDto
+   */
+  email: string
+}
 /**
  *
  * @export
@@ -862,7 +887,7 @@ export interface ResponseTaxDto {
    */
   taxInstallments: Array<ResponseTaxDetailInstallmentsDto>
   /**
-   * Tax employee
+   * Tax administrator
    * @type {Array<ResponseTaxDetailsDto>}
    * @memberof ResponseTaxDto
    */
@@ -892,38 +917,13 @@ export interface ResponseTaxDto {
    */
   bloomreachUnpaidTaxReminderSent: boolean
   /**
-   * Assigned tax employee
-   * @type {ResponseTaxEmployeeDto}
+   * Assigned tax administrator
+   * @type {ResponseTaxAdministratorDto}
    * @memberof ResponseTaxDto
    */
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }
 
-/**
- *
- * @export
- * @interface ResponseTaxEmployeeDto
- */
-export interface ResponseTaxEmployeeDto {
-  /**
-   * Name of the tax employee
-   * @type {string}
-   * @memberof ResponseTaxEmployeeDto
-   */
-  name: string
-  /**
-   * Phone number of the tax employee
-   * @type {string}
-   * @memberof ResponseTaxEmployeeDto
-   */
-  phoneNumber: string
-  /**
-   * Email address of the tax employee
-   * @type {string}
-   * @memberof ResponseTaxEmployeeDto
-   */
-  email: string
-}
 /**
  *
  * @export
@@ -1015,11 +1015,11 @@ export interface ResponseTaxPayerDto {
    */
   birthNumber: string
   /**
-   * Id of tax employee - id is from Noris
+   * Id of tax administrator - id is from Noris
    * @type {number}
    * @memberof ResponseTaxPayerDto
    */
-  taxEmployeeId: number | null
+  taxAdministratorId: number | null
 }
 /**
  *
@@ -1064,11 +1064,11 @@ export interface ResponseTaxSummaryDetailDto {
    */
   installmentPayment: ResponseInstallmentPaymentDetailDto
   /**
-   * Assigned tax employee
-   * @type {ResponseTaxEmployeeDto}
+   * Assigned tax administrator
+   * @type {ResponseTaxAdministratorDto}
    * @memberof ResponseTaxSummaryDetailDto
    */
-  taxEmployee: ResponseTaxEmployeeDto | null
+  taxAdministrator: ResponseTaxAdministratorDto | null
 }
 /**
  * Type of tax detail - object of tax

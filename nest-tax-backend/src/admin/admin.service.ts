@@ -66,7 +66,7 @@ export class AdminService {
           id: dataFromNoris.vyb_id,
         },
         create: taxEmployeeData,
-        update: taxEmployeeData,
+        update: {},
       })
 
       const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxEmployee)

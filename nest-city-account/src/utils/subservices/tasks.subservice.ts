@@ -94,10 +94,10 @@ export class TasksSubservice {
     )
 
     this.logger.log(
-      `${addedBirthNumbers.length} birth numbers are succesfully added to tax backend.`
+      `${addedBirthNumbers.length} birth numbers are successfully added to tax backend.`
     )
 
-    // Mark birth numbers which are in tax backend.
+    // Mark birth numbers which are in the tax backend.
     await this.prismaService.user.updateMany({
       where: {
         birthNumber: {
@@ -207,7 +207,7 @@ export class TasksSubservice {
     await this.taxSubservice.updateDeliveryMethodsInNoris({ data })
 
     // Now we should check if some user was not deactivated during his update in Noris.
-    // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However it is an edge case.
+    // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However, it is an edge case.
     const deactivated = await this.prismaService.user.findMany({
       select: {
         id: true,
@@ -219,7 +219,7 @@ export class TasksSubservice {
         birthNumber: null,
       },
     })
-    // If someone was deactivated we should log the error with their birth numbers.
+    // If someone was deactivated, we should log the error with their birth numbers.
     if (deactivated.length > 0) {
       const deactivatedIds = deactivated.map((user) => user.id)
       const birthNumbersOfDeactivateUsers = users
@@ -234,7 +234,7 @@ export class TasksSubservice {
       )
     }
 
-    // If OK we should set the Users to have updated delivery methods in Noris for current year. Otherwise the error will be thrown.
+    // If OK, we should set the Users to have updated delivery methods in Noris for the current year. Otherwise the error will be thrown.
     await this.prismaService.user.updateMany({
       where: {
         id: {

@@ -20,7 +20,7 @@ export class TasksSubservice {
   private readonly logger: LineLoggerSubservice
 
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly taxSubservice: TaxSubservice
   ) {
@@ -33,7 +33,7 @@ export class TasksSubservice {
     const today = new Date()
     const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1))
 
-    await this.prisma.userIdCardVerify.deleteMany({
+    await this.prismaService.userIdCardVerify.deleteMany({
       where: {
         verifyStart: {
           lt: oneMonthAgo,
@@ -41,7 +41,7 @@ export class TasksSubservice {
       },
     })
 
-    await this.prisma.legalPersonIcoIdCardVerify.deleteMany({
+    await this.prismaService.legalPersonIcoIdCardVerify.deleteMany({
       where: {
         verifyStart: {
           lt: oneMonthAgo,
@@ -56,7 +56,7 @@ export class TasksSubservice {
     this.logger.log('Starting loadTaxesForUsers task')
 
     const year = new Date().getFullYear()
-    const birthNumbersFromDb = await this.prisma.user.findMany({
+    const birthNumbersFromDb = await this.prismaService.user.findMany({
       select: {
         birthNumber: true,
       },
@@ -93,7 +93,7 @@ export class TasksSubservice {
     )
 
     // Mark birth numbers which are in tax backend.
-    await this.prisma.user.updateMany({
+    await this.prismaService.user.updateMany({
       where: {
         birthNumber: {
           in: addedBirthNumbers,
@@ -106,7 +106,7 @@ export class TasksSubservice {
     })
 
     // Set current datetime as the last try for the upload of the birth number to tax backend.
-    await this.prisma.user.updateMany({
+    await this.prismaService.user.updateMany({
       where: {
         birthNumber: {
           in: birthNumbers.map((birthNumber) => birthNumber.replaceAll('/', '')),
@@ -124,7 +124,7 @@ export class TasksSubservice {
     const currentYear = new Date().getFullYear()
     const taxDeadlineDate = getTaxDeadlineDate()
 
-    const users = await this.prisma.user.findMany({
+    const users = await this.prismaService.user.findMany({
       where: {
         birthNumber: {
           not: null,
@@ -203,7 +203,7 @@ export class TasksSubservice {
 
     // Now we should check if some user was not deactivated during his update in Noris.
     // This would be a problem, since if we update the delivery method in Noris after removing the delivery method, we should manually remove them. However it is an edge case.
-    const deactivated = await this.prisma.user.findMany({
+    const deactivated = await this.prismaService.user.findMany({
       select: {
         id: true,
       },
@@ -230,7 +230,7 @@ export class TasksSubservice {
     }
 
     // If OK we should set the Users to have updated delivery methods in Noris for current year. Otherwise the error will be thrown.
-    await this.prisma.user.updateMany({
+    await this.prismaService.user.updateMany({
       where: {
         id: {
           in: users.map((user) => user.id),

@@ -26,7 +26,10 @@ const TaxesFeesDeliveryMethodBanner = ({
   return (
     <AnnouncementBlock
       announcementContent={content}
-      imagePath={BannerTax}
+      image={{
+        src: BannerTax,
+        alt: '',
+      }}
       buttons={[
         {
           // TODO: Translations

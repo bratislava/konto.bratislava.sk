@@ -293,6 +293,31 @@ export type RequestUpdateNorisDeliveryMethodsDtoDataValueOneOf1DeliveryMethodEnu
 /**
  *
  * @export
+ * @interface ResponseActiveInstallmentDto
+ */
+export interface ResponseActiveInstallmentDto {
+  /**
+   * Remaining amount to pay in the installment
+   * @type {number}
+   * @memberof ResponseActiveInstallmentDto
+   */
+  remainingAmount: number
+  /**
+   * Variable symbol
+   * @type {string}
+   * @memberof ResponseActiveInstallmentDto
+   */
+  variableSymbol?: string
+  /**
+   * QR code
+   * @type {string}
+   * @memberof ResponseActiveInstallmentDto
+   */
+  qrCode?: string
+}
+/**
+ *
+ * @export
  * @interface ResponseErrorDto
  */
 export interface ResponseErrorDto {
@@ -408,7 +433,53 @@ export interface ResponseGetTaxesDto {
    * @memberof ResponseGetTaxesDto
    */
   items: Array<ResponseGetTaxesBodyDto>
+  /**
+   * Assigned tax employee
+   * @type {ResponseTaxEmployeeDto}
+   * @memberof ResponseGetTaxesDto
+   */
+  taxEmployee: ResponseTaxEmployeeDto | null
 }
+/**
+ *
+ * @export
+ * @interface ResponseInstallmentPaymentDetailDto
+ */
+export interface ResponseInstallmentPaymentDetailDto {
+  /**
+   * Indicates if installment payment is possible
+   * @type {boolean}
+   * @memberof ResponseInstallmentPaymentDetailDto
+   */
+  isPossible: boolean
+  /**
+   * Reason why installment is not possible
+   * @type {string}
+   * @memberof ResponseInstallmentPaymentDetailDto
+   */
+  reasonNotPossible?: ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum
+  /**
+   * List of exactly 3 installments or none at all
+   * @type {Array<Array<string>>}
+   * @memberof ResponseInstallmentPaymentDetailDto
+   */
+  installments?: Array<Array<string>>
+  /**
+   * Details of active installment
+   * @type {ResponseActiveInstallmentDto}
+   * @memberof ResponseInstallmentPaymentDetailDto
+   */
+  activeInstallment?: ResponseActiveInstallmentDto
+}
+
+export const ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum = {
+  BelowThreshold: 'BELOW_THRESHOLD',
+  AfterDate: 'AFTER_DATE',
+} as const
+
+export type ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum =
+  (typeof ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum)[keyof typeof ResponseInstallmentPaymentDetailDtoReasonNotPossibleEnum]
+
 /**
  *
  * @export
@@ -428,6 +499,76 @@ export interface ResponseInternalServerErrorDto {
    */
   message: string
 }
+/**
+ *
+ * @export
+ * @interface ResponseOneTimePaymentDetailsDto
+ */
+export interface ResponseOneTimePaymentDetailsDto {
+  /**
+   * Indicates if one-time payment is possible.
+   * @type {boolean}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  isPossible: boolean
+  /**
+   * Type of payment
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  type?: ResponseOneTimePaymentDetailsDtoTypeEnum
+  /**
+   * Reason why payment is not possible
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  reasonNotPossible?: ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum
+  /**
+   * Payment amount
+   * @type {number}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  amount?: number
+  /**
+   * Due date
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  dueDate?: string
+  /**
+   * QR code for payment
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  qrCode?: string
+  /**
+   * Variable symbol for payment
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  variableSymbol?: string
+  /**
+   * Link to payment gateway (only when type is ONE_TIME_PAYMENT)
+   * @type {string}
+   * @memberof ResponseOneTimePaymentDetailsDto
+   */
+  paymentGatewayLink?: string
+}
+
+export const ResponseOneTimePaymentDetailsDtoTypeEnum = {
+  OneTimePayment: 'ONE_TIME_PAYMENT',
+  RemainingAmountPayment: 'REMAINING_AMOUNT_PAYMENT',
+} as const
+
+export type ResponseOneTimePaymentDetailsDtoTypeEnum =
+  (typeof ResponseOneTimePaymentDetailsDtoTypeEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoTypeEnum]
+export const ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum = {
+  AlreadyPaid: 'ALREADY_PAID',
+} as const
+
+export type ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum =
+  (typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum)[keyof typeof ResponseOneTimePaymentDetailsDtoReasonNotPossibleEnum]
+
 /**
  *
  * @export
@@ -476,6 +617,49 @@ export interface ResponseTaxDetailInstallmentsDto {
    * @memberof ResponseTaxDetailInstallmentsDto
    */
   text: string | null
+}
+/**
+ *
+ * @export
+ * @interface ResponseTaxDetailItemizedDto
+ */
+export interface ResponseTaxDetailItemizedDto {
+  /**
+   * Total amount of tax for apartment
+   * @type {number}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  apartmentTotalAmount: number
+  /**
+   * Total amount of tax for construction
+   * @type {number}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  constructionTotalAmount: number
+  /**
+   * Total amount of tax for ground
+   * @type {number}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  groundTotalAmount: number
+  /**
+   * Apartment tax itemized
+   * @type {Array<Array<string>>}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  apartmentTaxDetail: Array<Array<string>>
+  /**
+   * Ground tax itemized
+   * @type {Array<Array<string>>}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  groundTaxDetail: Array<Array<string>>
+  /**
+   * Construction tax itemized
+   * @type {Array<Array<string>>}
+   * @memberof ResponseTaxDetailItemizedDto
+   */
+  constructionTaxDetail: Array<Array<string>>
 }
 /**
  *
@@ -600,12 +784,6 @@ export interface ResponseTaxDto {
    */
   variableSymbol: string
   /**
-   * Id of tax employee - id is from Noris
-   * @type {number}
-   * @memberof ResponseTaxDto
-   */
-  taxEmployeeId: number
-  /**
    * Tax Id from order of exact year
    * @type {string}
    * @memberof ResponseTaxDto
@@ -690,12 +868,6 @@ export interface ResponseTaxDto {
    */
   taxDetails: Array<ResponseTaxDetailsDto>
   /**
-   * Tax into details on area type
-   * @type {ResponseTaxEmployeesDto}
-   * @memberof ResponseTaxDto
-   */
-  taxEmployees: ResponseTaxEmployeesDto
-  /**
    * When were last checked payments for this tax with automatic task.
    * @type {string}
    * @memberof ResponseTaxDto
@@ -719,54 +891,36 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   bloomreachUnpaidTaxReminderSent: boolean
+  /**
+   * Assigned tax employee
+   * @type {ResponseTaxEmployeeDto}
+   * @memberof ResponseTaxDto
+   */
+  taxEmployee: ResponseTaxEmployeeDto | null
 }
 
 /**
  *
  * @export
- * @interface ResponseTaxEmployeesDto
+ * @interface ResponseTaxEmployeeDto
  */
-export interface ResponseTaxEmployeesDto {
+export interface ResponseTaxEmployeeDto {
   /**
-   * Numeric id of Employee from noris
-   * @type {number}
-   * @memberof ResponseTaxEmployeesDto
-   */
-  id: number
-  /**
-   * Created at timestamp
+   * Name of the tax employee
    * @type {string}
-   * @memberof ResponseTaxEmployeesDto
-   */
-  createdAt: string
-  /**
-   * Updated at timestamp
-   * @type {string}
-   * @memberof ResponseTaxEmployeesDto
-   */
-  updatedAt: string
-  /**
-   * External of employee
-   * @type {string}
-   * @memberof ResponseTaxEmployeesDto
-   */
-  externalId: string
-  /**
-   * Name of employee
-   * @type {string}
-   * @memberof ResponseTaxEmployeesDto
+   * @memberof ResponseTaxEmployeeDto
    */
   name: string
   /**
-   * Phone number of employee
+   * Phone number of the tax employee
    * @type {string}
-   * @memberof ResponseTaxEmployeesDto
+   * @memberof ResponseTaxEmployeeDto
    */
   phoneNumber: string
   /**
-   * Email of employee
+   * Email address of the tax employee
    * @type {string}
-   * @memberof ResponseTaxEmployeesDto
+   * @memberof ResponseTaxEmployeeDto
    */
   email: string
 }
@@ -825,13 +979,13 @@ export interface ResponseTaxPayerDto {
    */
   name: string | null
   /**
-   * Text of descreption of name for pdf
+   * Text of description of name for pdf
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
   nameTxt: string | null
   /**
-   * Text of descreption of street for pdf
+   * Text of description of street for pdf
    * @type {string}
    * @memberof ResponseTaxPayerDto
    */
@@ -860,6 +1014,61 @@ export interface ResponseTaxPayerDto {
    * @memberof ResponseTaxPayerDto
    */
   birthNumber: string
+  /**
+   * Id of tax employee - id is from Noris
+   * @type {number}
+   * @memberof ResponseTaxPayerDto
+   */
+  taxEmployeeId: number | null
+}
+/**
+ *
+ * @export
+ * @interface ResponseTaxSummaryDetailDto
+ */
+export interface ResponseTaxSummaryDetailDto {
+  /**
+   * Total amount paid
+   * @type {number}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  overallPaid: number
+  /**
+   * Total remaining balance
+   * @type {number}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  overallBalance: number
+  /**
+   * Total tax amount
+   * @type {number}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  overallAmount: number
+  /**
+   * Itemized details
+   * @type {Array<ResponseTaxDetailItemizedDto>}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  itemizedDetail: Array<ResponseTaxDetailItemizedDto>
+  /**
+   * One-time payment details
+   * @type {ResponseOneTimePaymentDetailsDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  oneTimePayment: ResponseOneTimePaymentDetailsDto
+  /**
+   * Installment payment details
+   * @type {ResponseInstallmentPaymentDetailDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  installmentPayment: ResponseInstallmentPaymentDetailDto
+  /**
+   * Assigned tax employee
+   * @type {ResponseTaxEmployeeDto}
+   * @memberof ResponseTaxSummaryDetailDto
+   */
+  taxEmployee: ResponseTaxEmployeeDto | null
 }
 /**
  * Type of tax detail - object of tax
@@ -2684,6 +2893,52 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary Get tax detail by year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxDetailByYearV2: async (
+      year: number,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'year' is not null or undefined
+      assertParamExists('taxControllerV2GetTaxDetailByYearV2', 'year', year)
+      const localVarPath = `/v2/tax/get-tax-detail-by-year`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (year !== undefined) {
+        localVarQueryParameter['year'] = year
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -2772,6 +3027,36 @@ export const TaxApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     *
+     * @summary Get tax detail by year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async taxControllerV2GetTaxDetailByYearV2(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTaxSummaryDetailDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerV2GetTaxDetailByYearV2(
+        year,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerV2GetTaxDetailByYearV2']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -2830,6 +3115,21 @@ export const TaxApiFactory = function (
         .taxControllerGetTaxByYearPdf(year, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     *
+     * @summary Get tax detail by year.
+     * @param {number} year
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerV2GetTaxDetailByYearV2(
+      year: number,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseTaxSummaryDetailDto> {
+      return localVarFp
+        .taxControllerV2GetTaxDetailByYearV2(year, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -2879,6 +3179,20 @@ export class TaxApi extends BaseAPI {
   public taxControllerGetTaxByYearPdf(year: number, options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerGetTaxByYearPdf(year, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get tax detail by year.
+   * @param {number} year
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TaxApi
+   */
+  public taxControllerV2GetTaxDetailByYearV2(year: number, options?: RawAxiosRequestConfig) {
+    return TaxApiFp(this.configuration)
+      .taxControllerV2GetTaxDetailByYearV2(year, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

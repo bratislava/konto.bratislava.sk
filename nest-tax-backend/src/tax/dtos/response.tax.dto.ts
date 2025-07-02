@@ -56,18 +56,12 @@ export enum InstallmentPaidStatusEnum {
   AFTER_DUE_DATE = 'AFTER_DUE_DATE',
 }
 
-export class ResponseTaxPayerDto {
+export class ResponseTaxEmployeesDto {
   @ApiProperty({
-    description: 'Numeric id of tax payer',
+    description: 'Numeric id of Employee from noris',
     default: 1,
   })
   id: number
-
-  @ApiProperty({
-    description: 'Uuid of tax payer',
-    default: '15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27',
-  })
-  uuid: string
 
   @ApiProperty({
     description: 'Created at timestamp',
@@ -82,57 +76,130 @@ export class ResponseTaxPayerDto {
   updatedAt: Date
 
   @ApiProperty({
+    description: 'External of employee',
+    default: '12562',
+  })
+  externalId: string
+
+  @ApiProperty({
+    description: 'Name of employee',
+    default: 'Zamestnanec Bratislavský',
+  })
+  name: string
+
+  @ApiProperty({
+    description: 'Phone number of employee',
+    default: '+421 000 000 000',
+  })
+  phoneNumber: string
+
+  @ApiProperty({
+    description: 'Email of employee',
+    default: 'zamestnanec.bratislavsky@bratislava.sk',
+  })
+  email: string
+}
+
+export class ResponseTaxPayerDto {
+  @ApiProperty({
+    description: 'Numeric id of tax payer',
+    default: 1,
+  })
+  @IsNumber()
+  id: number
+
+  @ApiProperty({
+    description: 'Uuid of tax payer',
+    default: '15fc5751-d5e2-4e14-9f8d-dc4b3e1dec27',
+  })
+  @IsUUID()
+  uuid: string
+
+  @ApiProperty({
+    description: 'Created at timestamp',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  createdAt: Date
+
+  @ApiProperty({
+    description: 'Updated at timestamp',
+    default: '2023-04-13T14:39:49.004Z',
+  })
+  @IsDate()
+  @Type(() => Date)
+  updatedAt: Date
+
+  @ApiProperty({
     description: 'Is tax payer active',
     default: true,
   })
+  @IsBoolean()
   active: boolean
 
   @ApiProperty({
     description: 'Permanent address of tax payer',
     default: 'Bratislava, Hlavne námestie 1',
   })
+  @IsString()
+  @IsOptional()
   permanentResidenceAddress: string | null
 
   @ApiProperty({
     description: 'Id of tax payer from Noris',
     default: '12345',
   })
+  @IsString()
+  @IsOptional()
   externalId: string | null
 
   @ApiProperty({
     description: 'Name of taxpayer',
     default: 'Bratislavčan Daňový',
   })
+  @IsString()
+  @IsOptional()
   name: string | null
 
   @ApiProperty({
     description: 'Text of description of name for pdf',
     default: 'Meno daňovníka/ subjektu',
   })
+  @IsString()
+  @IsOptional()
   nameTxt: string | null
 
   @ApiProperty({
     description: 'Text of description of street for pdf',
     default: 'Ulica trvalého pobytu',
   })
+  @IsString()
+  @IsOptional()
   permanentResidenceStreetTxt: string | null
 
   @ApiProperty({
     description: 'Street of permanent residence with number',
     default: 'Uršulínska 6 3/6',
   })
+  @IsString()
+  @IsOptional()
   permanentResidenceStreet: string | null
 
   @ApiProperty({
     description: 'Zip of permanent residence with number',
     default: '811 01',
   })
+  @IsString()
+  @IsOptional()
   permanentResidenceZip: string | null
 
   @ApiProperty({
     description: 'City of permanent residence with number',
     default: 'Bratislava',
   })
+  @IsString()
+  @IsOptional()
   permanentResidenceCity: string | null
 
   // TODO more missing properties which are sent
@@ -140,7 +207,34 @@ export class ResponseTaxPayerDto {
     description: 'Birth number with slash',
     default: '920101/1111',
   })
+  @IsString()
   birthNumber: string
+
+  @ApiProperty({
+    description: 'Id of tax employee - id is from Noris',
+    default: 5_172_727,
+  })
+  @IsNumber()
+  @IsOptional()
+  taxEmployeeId: number | null
+
+  @ApiProperty({
+    description: 'Tax into details on area type',
+    default: {
+      id: 1,
+      createdAt: '2023-04-13T14:39:49.004Z',
+      updatedAt: '2023-04-13T14:39:49.004Z',
+      externalId: '1234',
+      name: 'Zamestnanec Bratsilavský',
+      phoneNumber: '+421 000 000 000',
+      email: 'zamestnanec.bratislavsky@bratislava.sk',
+    },
+  })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ResponseTaxEmployeesDto)
+  @IsOptional()
+  taxEmployee: ResponseTaxEmployeesDto | null
 }
 
 export class ResponseTaxDetailInstallmentsDto {
@@ -248,50 +342,6 @@ export class ResponseTaxDetailsDto {
   amount: number
 }
 
-export class ResponseTaxEmployeesDto {
-  @ApiProperty({
-    description: 'Numeric id of Employee from noris',
-    default: 1,
-  })
-  id: number
-
-  @ApiProperty({
-    description: 'Created at timestamp',
-    default: '2023-04-13T14:39:49.004Z',
-  })
-  createdAt: Date
-
-  @ApiProperty({
-    description: 'Updated at timestamp',
-    default: '2023-04-13T14:39:49.004Z',
-  })
-  updatedAt: Date
-
-  @ApiProperty({
-    description: 'External of employee',
-    default: '12562',
-  })
-  externalId: string
-
-  @ApiProperty({
-    description: 'Name of employee',
-    default: 'Zamestnanec Bratislavský',
-  })
-  name: string
-
-  @ApiProperty({
-    description: 'Phone number of employee',
-    default: '+421 000 000 000',
-  })
-  phoneNumber: string
-
-  @ApiProperty({
-    description: 'Email of employee',
-    default: 'zamestnanec.bratislavsky@bratislava.sk',
-  })
-  email: string
-}
-
 export class ResponseTaxDto {
   @ApiProperty({
     description: 'Numeric id of tax',
@@ -357,13 +407,6 @@ export class ResponseTaxDto {
   })
   @IsString()
   variableSymbol: string
-
-  @ApiProperty({
-    description: 'Id of tax employee - id is from Noris',
-    default: 5_172_727,
-  })
-  @IsNumber()
-  taxEmployeeId: number
 
   @ApiProperty({
     description: 'Tax Id from order of exact year',
@@ -520,23 +563,6 @@ export class ResponseTaxDto {
   @ValidateNested({ each: true })
   @Type(() => ResponseTaxDetailsDto)
   taxDetails: ResponseTaxDetailsDto[]
-
-  @ApiProperty({
-    description: 'Tax into details on area type',
-    default: {
-      id: 1,
-      createdAt: '2023-04-13T14:39:49.004Z',
-      updatedAt: '2023-04-13T14:39:49.004Z',
-      externalId: '1234',
-      name: 'Zamestnanec Bratsilavský',
-      phoneNumber: '+421 000 000 000',
-      email: 'zamestnanec.bratislavsky@bratislava.sk',
-    },
-  })
-  @IsObject()
-  @ValidateNested()
-  @Type(() => ResponseTaxEmployeesDto)
-  taxEmployees: ResponseTaxEmployeesDto
 
   @ApiProperty({
     description:
@@ -1047,5 +1073,6 @@ export class ResponseTaxSummaryDetailDto {
   @IsObject()
   @ValidateNested()
   @Type(() => ResponseTaxEmployeeDto)
-  taxEmployee: ResponseTaxEmployeeDto
+  @IsOptional()
+  taxEmployee: ResponseTaxEmployeeDto | null
 }

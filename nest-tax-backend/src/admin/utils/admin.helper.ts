@@ -1,3 +1,4 @@
+import { TaxEmployee } from '@prisma/client'
 import currency from 'currency.js'
 
 import { NorisTaxPayersDto } from '../../noris/noris.dto'
@@ -7,7 +8,10 @@ export const convertCurrencyToInt = (value: string): number => {
 }
 
 // Helper mapping functions to improve maintainability
-export const mapNorisToTaxPayerData = (data: NorisTaxPayersDto) => {
+export const mapNorisToTaxPayerData = (
+  data: NorisTaxPayersDto,
+  taxEmployee: TaxEmployee,
+) => {
   return {
     active: true,
     birthNumber: data.ICO_RC,
@@ -19,6 +23,7 @@ export const mapNorisToTaxPayerData = (data: NorisTaxPayersDto) => {
     permanentResidenceStreetTxt: data.TXT_UL,
     permanentResidenceCity: data.obec_nazev_tb,
     nameTxt: data.TXT_MENO,
+    taxEmployeeId: taxEmployee.id,
   }
 }
 
@@ -36,14 +41,12 @@ export const mapNorisToTaxData = (
   data: NorisTaxPayersDto,
   year: number,
   taxPayerId: number,
-  taxEmployeeId: number,
   qrCodeEmail: string,
   qrCodeWeb: string,
 ) => {
   return {
     amount: convertCurrencyToInt(data.dan_spolu),
     year,
-    taxEmployeeId,
     taxPayerId,
     variableSymbol: data.variabilny_symbol,
     dateCreateTax: data.akt_datum,

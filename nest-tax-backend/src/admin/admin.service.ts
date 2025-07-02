@@ -60,22 +60,22 @@ export class AdminService {
     year: number,
   ) {
     const userData = await this.prismaService.$transaction(async (tx) => {
-      const taxPayerData = mapNorisToTaxPayerData(dataFromNoris)
-      const taxPayer = await tx.taxPayer.upsert({
-        where: {
-          birthNumber: dataFromNoris.ICO_RC,
-        },
-        create: taxPayerData,
-        update: taxPayerData,
-      })
-
       const taxEmployeeData = mapNorisToTaxEmployeeData(dataFromNoris)
       const taxEmployee = await tx.taxEmployee.upsert({
         where: {
           id: dataFromNoris.vyb_id,
         },
         create: taxEmployeeData,
-        update: {},
+        update: taxEmployeeData,
+      })
+
+      const taxPayerData = mapNorisToTaxPayerData(dataFromNoris, taxEmployee)
+      const taxPayer = await tx.taxPayer.upsert({
+        where: {
+          birthNumber: dataFromNoris.ICO_RC,
+        },
+        create: taxPayerData,
+        update: taxPayerData,
       })
 
       const [qrCodeEmail, qrCodeWeb] = await Promise.all([
@@ -97,7 +97,6 @@ export class AdminService {
         dataFromNoris,
         year,
         taxPayer.id,
-        taxEmployee.id,
         qrCodeEmail,
         qrCodeWeb,
       )

@@ -52,9 +52,12 @@ export class TaxService {
       },
       include: {
         taxInstallments: true,
-        taxPayer: true,
+        taxPayer: {
+          include: {
+            taxEmployee: true,
+          },
+        },
         taxDetails: true,
-        taxEmployees: true,
         taxPayments: true,
       },
     })
@@ -278,11 +281,13 @@ export class TaxService {
         : undefined,
     }
 
-    const taxEmployee: ResponseTaxEmployeeDto = {
-      name: tax.taxEmployees.name,
-      phoneNumber: tax.taxEmployees.phoneNumber,
-      email: tax.taxEmployees.email,
-    }
+    const taxEmployee: ResponseTaxEmployeeDto | null = tax.taxPayer.taxEmployee
+      ? {
+          name: tax.taxPayer.taxEmployee.name,
+          phoneNumber: tax.taxPayer.taxEmployee.phoneNumber,
+          email: tax.taxPayer.taxEmployee.email,
+        }
+      : null
 
     return {
       ...detailWithoutQrCode,

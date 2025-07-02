@@ -263,6 +263,35 @@ export class PhysicalEntityService {
     }
   }
 
+  async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereUniqueInput) {
+    const entity = await this.prismaService.physicalEntity.findUnique({
+      where,
+    })
+
+    if (!entity || !entity.uri || !entity.birthNumber) {
+      this.logger.error(
+        `Could not update PhysicalEntity uri and edesk. Entity searched with where:${JSON.stringify(where)}`
+      )
+      return false
+    }
+
+    const result = await this.checkUriAndUpdateEdeskFromUpvs({
+      physicalEntityId: entity.id,
+      uri: entity.uri,
+    })
+
+    if (result.updatedEntity) {
+      this.logger.error(
+        `Could not update PhysicalEntity uri and edesk. Entity searched with where:${JSON.stringify(where)}`,
+        { upvsResult: result.upvsResult }
+      )
+      await this.updateFailedActiveEdeskUpdateInDatabase({ id: entity.id })
+      return false
+    }
+
+    return true
+  }
+
   async updateFailedActiveEdeskUpdateInDatabase(where: Prisma.PhysicalEntityWhereUniqueInput) {
     await this.prismaService.physicalEntity.update({
       where,
@@ -281,9 +310,21 @@ export class PhysicalEntityService {
         'PhysicalEntity id must be provided to update service'
       )
     }
+
+    // if activeEdesk is being updated, delete metadata about failed updates
+    let dataWithEdeskMetadata: Partial<PhysicalEntity> = data
+    if (data.activeEdesk !== null && data.activeEdesk !== undefined) {
+      dataWithEdeskMetadata = {
+        ...data,
+        activeEdeskUpdateFailedAt: null,
+        activeEdeskUpdateFailCount: 0,
+        activeEdeskUpdatedAt: new Date(),
+      }
+    }
+
     const physicalEntity = await this.prismaService.physicalEntity.update({
       where: { id: data.id },
-      data,
+      data: dataWithEdeskMetadata,
     })
     return physicalEntity
   }

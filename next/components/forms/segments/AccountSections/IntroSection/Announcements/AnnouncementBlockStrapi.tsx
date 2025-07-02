@@ -29,17 +29,10 @@ ${description}`
     },
   ]
 
-  const imageProps = image.data?.attributes
-    ? {
-        src: image.data.attributes.url,
-        alt: image.data.attributes.alternativeText ?? '',
-      }
-    : undefined
-
   return (
     <AnnouncementBlock
       announcementContent={announcementContent}
-      image={imageProps}
+      imageSrc={image?.data?.attributes?.url ?? undefined}
       buttons={buttons}
       reversed={reversed}
     />

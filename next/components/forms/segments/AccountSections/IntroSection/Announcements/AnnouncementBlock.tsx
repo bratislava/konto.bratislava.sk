@@ -7,7 +7,7 @@ import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-componen
 
 type AnnouncementBlockProps = {
   announcementContent?: string
-  image?: Pick<ComponentProps<typeof Image>, 'src' | 'alt'>
+  imageSrc?: ComponentProps<typeof Image>['src']
   buttons?: (ButtonProps | AnchorProps)[]
   onPress?: () => void
   reversed?: boolean
@@ -15,7 +15,7 @@ type AnnouncementBlockProps = {
 
 const AnnouncementBlock = ({
   announcementContent,
-  image,
+  imageSrc,
   reversed,
   buttons = [],
 }: AnnouncementBlockProps) => {
@@ -45,10 +45,10 @@ const AnnouncementBlock = ({
           </div>
         )}
       </div>
-      {image ? (
+      {imageSrc ? (
         <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
           <Image
-            src={image.src}
+            src={imageSrc}
             className={cn('rounded-t-lg', {
               'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
               'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
@@ -57,7 +57,8 @@ const AnnouncementBlock = ({
             priority
             objectFit="cover"
             objectPosition="center"
-            alt={image.alt}
+            // Decorative image
+            alt=""
           />
         </div>
       ) : null}

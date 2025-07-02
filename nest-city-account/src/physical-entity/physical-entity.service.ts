@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, UpvsIdentityByUri } from '@prisma/client'
+import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum } from '../admin/admin.errors.enum'
 
@@ -105,10 +105,12 @@ export class PhysicalEntityService {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
     if (!upvsResult) {
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       return {}
     }
 
     if (upvsResult.success.length > 1) {
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
@@ -123,6 +125,7 @@ export class PhysicalEntityService {
           upvsInput
         )}, requires manual intervention`
       )
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       return {}
     }
 
@@ -258,6 +261,16 @@ export class PhysicalEntityService {
       upvsInput: upvsInputArray,
       upvsResult,
     }
+  }
+
+  async updateFailedActiveEdeskUpdateInDatabase(where: Prisma.PhysicalEntityWhereUniqueInput) {
+    await this.prismaService.physicalEntity.update({
+      where,
+      data: {
+        activeEdeskUpdateFailedAt: new Date(),
+        activeEdeskUpdateFailCount: { increment: 1 },
+      },
+    })
   }
 
   // TODO either change or cleanup and use db directly

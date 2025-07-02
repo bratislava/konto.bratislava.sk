@@ -7,10 +7,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
-import {
-  UpvsIdentityByUriService,
-  UpvsIdentityByUriServiceCreateManyParam,
-} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
@@ -94,13 +91,16 @@ export class PhysicalEntityService {
     return entity
   }
 
-  async updateUriAndEdeskFromUpvs(upvsInput: UpvsIdentityByUriServiceCreateManyParam) {
+  async checkUriAndUpdateEdeskFromUpvs(upvsInput: {
+    physicalEntityId?: string | null | undefined
+    uri: string
+  }) {
     let upvsResult: {
       success: UpvsIdentityByUri[]
       failed: { physicalEntityId?: string; uri: string }[]
     } | null = null
     try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
+      upvsResult = await this.upvsIdentityByUriService.createMany([upvsInput])
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
@@ -152,7 +152,7 @@ export class PhysicalEntityService {
     const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
     const uri = `rc://sk/${processedBirthNumber}_${uriName}`
     this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return [{ uri, physicalEntityId: entity.id }]
+    return { uri, physicalEntityId: entity.id }
   }
 
   async createFromBirthNumber(birthNumber: string) {
@@ -192,7 +192,7 @@ export class PhysicalEntityService {
       return rfoData
     }
 
-    await this.updateUriAndEdeskFromUpvs(upvsInput)
+    await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
     return rfoData
   }
 
@@ -248,12 +248,14 @@ export class PhysicalEntityService {
       }
     }
 
-    const { updatedEntity, upvsResult } = await this.updateUriAndEdeskFromUpvs(upvsInput)
+    const { updatedEntity, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
+
+    const upvsInputArray = [upvsInput]
 
     return {
       physicalEntity: updatedEntity ?? entity,
       rfoData,
-      upvsInput,
+      upvsInput: upvsInputArray,
       upvsResult,
     }
   }

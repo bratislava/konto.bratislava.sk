@@ -13,6 +13,8 @@ export default ({ env }) => ({
             accessKeyId: env('MINIO_ACCESS_KEY'),
             secretAccessKey: env('MINIO_SECRET_KEY'),
           },
+          // https://github.com/strapi/strapi/issues/19299#issuecomment-2885165824
+          region: env('MINIO_AUTO_REGION'),
           endpoint: env('MINIO_PRIVATE_ENDPOINT'),
           params: {
             Bucket: env('MINIO_BUCKET'),

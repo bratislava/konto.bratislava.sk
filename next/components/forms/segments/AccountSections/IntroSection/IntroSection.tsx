@@ -1,5 +1,8 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
-import { MunicipalServiceCardEntityFragment } from '@clients/graphql-strapi/api'
+import {
+  HomepageAnnouncementEntityFragment,
+  MunicipalServiceCardEntityFragment,
+} from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
@@ -14,9 +17,16 @@ import Announcements from './Announcements/Announcements'
 type IntroSectionProps = {
   services: MunicipalServiceCardEntityFragment[]
   servicesLegalPerson: MunicipalServiceCardEntityFragment[]
+  announcements: HomepageAnnouncementEntityFragment[]
+  announcementsLegalPerson: HomepageAnnouncementEntityFragment[]
 }
 
-const IntroSection = ({ services, servicesLegalPerson }: IntroSectionProps) => {
+const IntroSection = ({
+  services,
+  servicesLegalPerson,
+  announcements,
+  announcementsLegalPerson,
+}: IntroSectionProps) => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
@@ -43,7 +53,10 @@ const IntroSection = ({ services, servicesLegalPerson }: IntroSectionProps) => {
           titleAsParagraph
         />
         <div className="m-auto w-full max-w-(--breakpoint-lg)">
-          <Announcements />
+          <Announcements
+            announcements={announcements}
+            announcementsLegalPerson={announcementsLegalPerson}
+          />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full items-center justify-between px-4 lg:px-0">

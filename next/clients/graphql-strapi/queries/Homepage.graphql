@@ -12,6 +12,16 @@ query Homepage {
             ...MunicipalServiceCardEntity
           }
         }
+        announcements {
+          data {
+            ...HomepageAnnouncementEntity
+          }
+        }
+        announcementsLegalPerson {
+          data {
+            ...HomepageAnnouncementEntity
+          }
+        }
       }
     }
   }

@@ -1,13 +1,13 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { ImageProps } from 'next/image'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
+import { ComponentProps } from 'react'
 
 import cn from '../../../../../../frontend/cn'
 import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/ButtonNew'
 
 type AnnouncementBlockProps = {
   announcementContent?: string
-  imagePath?: ImageProps['src']
+  imageSrc?: ComponentProps<typeof Image>['src']
   buttons?: (ButtonProps | AnchorProps)[]
   onPress?: () => void
   reversed?: boolean
@@ -15,7 +15,7 @@ type AnnouncementBlockProps = {
 
 const AnnouncementBlock = ({
   announcementContent,
-  imagePath = '',
+  imageSrc,
   reversed,
   buttons = [],
 }: AnnouncementBlockProps) => {
@@ -45,20 +45,23 @@ const AnnouncementBlock = ({
           </div>
         )}
       </div>
-      <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
-        <Image
-          src={imagePath}
-          className={cn('rounded-t-lg', {
-            'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
-            'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
-          })}
-          layout="fill"
-          priority
-          objectFit="cover"
-          objectPosition="center"
-          alt=""
-        />
-      </div>
+      {imageSrc ? (
+        <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
+          <Image
+            src={imageSrc}
+            className={cn('rounded-t-lg', {
+              'lg:rounded-l-3xl lg:rounded-tr-none': reversed,
+              'lg:rounded-tl-none lg:rounded-r-3xl': !reversed,
+            })}
+            layout="fill"
+            priority
+            objectFit="cover"
+            objectPosition="center"
+            // Decorative image
+            alt=""
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

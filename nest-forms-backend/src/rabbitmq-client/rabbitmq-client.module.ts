@@ -4,7 +4,7 @@ import { AmqpConnection, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
-import { RABBIT_GINIS_AUTOMATION, RABBIT_MQ } from '../utils/constants'
+import { RABBIT_MQ } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import RabbitmqClientService from './rabbitmq-client.service'
 
@@ -17,13 +17,6 @@ import RabbitmqClientService from './rabbitmq-client.service'
         exchanges: [
           {
             name: RABBIT_MQ.EXCHANGE,
-            type: 'x-delayed-message',
-            options: {
-              arguments: { 'x-delayed-type': 'direct' },
-            },
-          },
-          {
-            name: RABBIT_GINIS_AUTOMATION.EXCHANGE,
             type: 'x-delayed-message',
             options: {
               arguments: { 'x-delayed-type': 'direct' },

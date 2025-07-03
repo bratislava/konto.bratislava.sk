@@ -4,11 +4,7 @@ import { Replies } from 'amqplib'
 
 import { GinisCheckNasesPayloadDto } from '../ginis/dtos/ginis.response.dto'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
-import {
-  RABBIT_GINIS_AUTOMATION,
-  RABBIT_MQ,
-  RABBIT_NASES,
-} from '../utils/constants'
+import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 
 @Injectable()
@@ -70,25 +66,6 @@ export default class RabbitmqClientService {
           // 'x-delay': 60_000,
           // TODO change back when NASES getting messages will be fixed
         },
-        contentType: 'application/json',
-      },
-    )
-  }
-
-  public async publishMessageToGinisAutomation(
-    routingKey: string,
-    message: object,
-    replyTo: string,
-  ): Promise<boolean> {
-    this.logger.log(
-      `Publishing message to ginis automation, Exchange: ${RABBIT_GINIS_AUTOMATION.EXCHANGE}, Routing key: ${routingKey}, message: ${JSON.stringify(message)}`,
-    )
-    return this.amqpConnection.publish(
-      RABBIT_GINIS_AUTOMATION.EXCHANGE,
-      routingKey,
-      message,
-      {
-        replyTo,
         contentType: 'application/json',
       },
     )

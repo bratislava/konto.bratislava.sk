@@ -21,7 +21,6 @@ import {
   ResponseGetTaxesDto,
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
-  ResponseTaxAdministratorDto,
   ResponseTaxDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
@@ -292,14 +291,7 @@ export class TaxService {
         : undefined,
     }
 
-    const taxAdministrator: ResponseTaxAdministratorDto | null = tax.taxPayer
-      .taxAdministrator
-      ? {
-          name: tax.taxPayer.taxAdministrator.name,
-          phoneNumber: tax.taxPayer.taxAdministrator.phoneNumber,
-          email: tax.taxPayer.taxAdministrator.email,
-        }
-      : null
+    const { taxAdministrator } = tax.taxPayer
 
     return {
       ...detailWithoutQrCode,

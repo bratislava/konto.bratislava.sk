@@ -12,10 +12,10 @@ datasource db {
 }
 
 model TaxPayer {
-  id                          Int         @id @default(autoincrement())
-  uuid                        String      @default(uuid()) @db.Uuid
-  createdAt                   DateTime    @default(now())
-  updatedAt                   DateTime    @default(now()) @updatedAt
+  id                          Int               @id @default(autoincrement())
+  uuid                        String            @default(uuid()) @db.Uuid
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime          @default(now()) @updatedAt
   active                      Boolean // if it is active tax payer or is only past tax pay
   birthNumber                 String // with slash
   taxAdministratorId          Int?

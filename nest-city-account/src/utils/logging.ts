@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpException } from '@nestjs/common'
 
-import { RequiredError } from '../generated-clients/new-magproxy/base'
+import { RequiredError } from 'openapi-clients/magproxy/base'
 import { errorTypeKeys, errorTypeStrings } from './guards/dtos/error.dto'
 
 /**

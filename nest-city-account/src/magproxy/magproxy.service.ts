@@ -2,9 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
 import https from 'https'
 
-import {
-  ResponseRfoPersonDto,
-} from 'openapi-clients/magproxy'
+import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 import {
   RfoIdentityList,
   RfoIdentityListElement,

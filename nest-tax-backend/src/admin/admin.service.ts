@@ -32,8 +32,8 @@ import {
 import { CreateBirthNumbersResponseDto } from './dtos/responses.dto'
 import {
   convertCurrencyToInt,
+  mapNorisToTaxAdministratorData,
   mapNorisToTaxData,
-  mapNorisToTaxEmployeeData,
   mapNorisToTaxInstallmentsData,
   mapNorisToTaxPayerData,
 } from './utils/admin.helper'
@@ -60,22 +60,25 @@ export class AdminService {
     year: number,
   ) {
     const userData = await this.prismaService.$transaction(async (tx) => {
-      const taxPayerData = mapNorisToTaxPayerData(dataFromNoris)
+      const taxAdministratorData = mapNorisToTaxAdministratorData(dataFromNoris)
+      const taxAdministrator = await tx.taxAdministrator.upsert({
+        where: {
+          id: dataFromNoris.vyb_id,
+        },
+        create: taxAdministratorData,
+        update: {},
+      })
+
+      const taxPayerData = mapNorisToTaxPayerData(
+        dataFromNoris,
+        taxAdministrator,
+      )
       const taxPayer = await tx.taxPayer.upsert({
         where: {
           birthNumber: dataFromNoris.ICO_RC,
         },
         create: taxPayerData,
         update: taxPayerData,
-      })
-
-      const taxEmployeeData = mapNorisToTaxEmployeeData(dataFromNoris)
-      const taxEmployee = await tx.taxEmployee.upsert({
-        where: {
-          id: dataFromNoris.vyb_id,
-        },
-        create: taxEmployeeData,
-        update: {},
       })
 
       const [qrCodeEmail, qrCodeWeb] = await Promise.all([
@@ -97,7 +100,6 @@ export class AdminService {
         dataFromNoris,
         year,
         taxPayer.id,
-        taxEmployee.id,
         qrCodeEmail,
         qrCodeWeb,
       )
@@ -680,16 +682,21 @@ export class AdminService {
     year,
     norisData,
   }: RequestAdminCreateTestingTaxDto): Promise<void> {
-    const taxEmployee = await this.prismaService.taxEmployee.findFirst({})
-    if (!taxEmployee) {
+    const taxAdministrator =
+      await this.prismaService.taxAdministrator.findFirst({})
+    if (!taxAdministrator) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'No tax employee found in the database',
+        'No tax administrator found in the database',
       )
     }
 
     // Generate the mock tax record
-    const mockTaxRecord = createTestingTaxMock(norisData, taxEmployee, year)
+    const mockTaxRecord = createTestingTaxMock(
+      norisData,
+      taxAdministrator,
+      year,
+    )
 
     // Process the mock data to create the testing tax
     await this.processNorisTaxData([mockTaxRecord], year)

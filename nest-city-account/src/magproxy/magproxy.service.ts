@@ -3,11 +3,8 @@ import axios, { AxiosError } from 'axios'
 import https from 'https'
 
 import {
-  Configuration,
   ResponseRfoPersonDto,
-  RFORegisterFyzickchOsbApi,
-  RPORegisterPrvnickchOsbApi,
-} from '../generated-clients/new-magproxy'
+} from 'openapi-clients/magproxy'
 import {
   RfoIdentityList,
   RfoIdentityListElement,
@@ -18,6 +15,7 @@ import { RpoDataMagproxyDto } from './dtos/magproxy.dto'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import ClientsService from '../clients/clients.service'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -29,11 +27,6 @@ let magproxyAzureAdToken = ''
 
 @Injectable()
 export class MagproxyService {
-  /** generated api */
-  private readonly rfoApi: RFORegisterFyzickchOsbApi
-
-  private readonly rpoApi: RPORegisterPrvnickchOsbApi
-
   private readonly logger: LineLoggerSubservice
 
   private readonly config: {
@@ -46,7 +39,8 @@ export class MagproxyService {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly errorMessengerGuard: ErrorMessengerGuard
+    private readonly errorMessengerGuard: ErrorMessengerGuard,
+    private readonly clientsService: ClientsService
   ) {
     if (
       !process.env.MAGPROXY_AZURE_AD_URL ||
@@ -69,11 +63,6 @@ export class MagproxyService {
       magproxyAzureScope: process.env.MAGPROXY_AZURE_SCOPE,
       magproxyUrl: process.env.MAGPROXY_URL,
     }
-
-    /** Generated APIS */
-    this.rfoApi = new RFORegisterFyzickchOsbApi(new Configuration({}), this.config.magproxyUrl)
-
-    this.rpoApi = new RPORegisterPrvnickchOsbApi(new Configuration({}), this.config.magproxyUrl)
 
     this.logger = new LineLoggerSubservice(MagproxyService.name)
   }
@@ -144,7 +133,7 @@ export class MagproxyService {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const processedBirthNumber = birthNumber.replaceAll('/', '')
     try {
-      const result = await this.rfoApi.rfoControllerGetList(processedBirthNumber, {
+      const result = await this.clientsService.magproxyApi.rfoControllerGetList(processedBirthNumber, {
         headers: {
           Authorization: `Bearer ${magproxyAzureAdToken}`,
         },
@@ -189,7 +178,7 @@ export class MagproxyService {
 
   async rfoBirthNumberDcom(birthNumber: string) {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-    const result = await this.rfoApi
+    const result = await this.clientsService.magproxyApi
       .rfoControllerGetOneDcom(birthNumber, {
         httpsAgent: httpsAgent,
         headers: {
@@ -235,7 +224,7 @@ export class MagproxyService {
   async rpoIco(ico: string): Promise<RpoDataMagproxyDto> {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
 
-    const result = await this.rpoApi
+    const result = await this.clientsService.magproxyApi
       .rpoControllerGetLegalPerson(ico, {
         httpsAgent: httpsAgent,
         headers: {

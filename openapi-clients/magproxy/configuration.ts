@@ -104,7 +104,12 @@ export class Configuration {
     this.accessToken = param.accessToken
     this.basePath = param.basePath
     this.serverIndex = param.serverIndex
-    this.baseOptions = param.baseOptions
+    this.baseOptions = {
+      ...param.baseOptions,
+      headers: {
+        ...param.baseOptions?.headers,
+      },
+    }
     this.formDataCtor = param.formDataCtor
   }
 
@@ -121,7 +126,7 @@ export class Configuration {
   public isJsonMime(mime: string): boolean {
     const jsonMime: RegExp = new RegExp(
       '^(application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(;.*)?$',
-      'i'
+      'i',
     )
     return (
       mime !== null && (jsonMime.test(mime) || mime.toLowerCase() === 'application/json-patch+json')

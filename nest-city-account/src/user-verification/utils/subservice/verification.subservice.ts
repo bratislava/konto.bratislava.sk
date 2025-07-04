@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { ResponseRpoLegalPersonDto } from '../../../generated-clients/new-magproxy'
+import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'

@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Nest tax backend
- * Backend for payment taxes and connection to Noris
+ * Bratislava magproxy
+ * Bratislava
  *
  * The version of the OpenAPI document: 1.0
  * Contact: inovacie@bratislava.sk
@@ -52,7 +52,7 @@ export class BaseAPI {
   constructor(
     configuration?: Configuration,
     protected basePath: string = BASE_PATH,
-    protected axios: AxiosInstance = globalAxios
+    protected axios: AxiosInstance = globalAxios,
   ) {
     if (configuration) {
       this.configuration = configuration
@@ -70,7 +70,7 @@ export class BaseAPI {
 export class RequiredError extends Error {
   constructor(
     public field: string,
-    msg?: string
+    msg?: string,
   ) {
     super(msg)
     this.name = 'RequiredError'

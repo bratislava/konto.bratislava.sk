@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Nest tax backend
- * Backend for payment taxes and connection to Noris
+ * Bratislava magproxy
+ * Bratislava
  *
  * The version of the OpenAPI document: 1.0
  * Contact: inovacie@bratislava.sk
@@ -31,12 +31,12 @@ export const DUMMY_BASE_URL = 'https://example.com'
 export const assertParamExists = function (
   functionName: string,
   paramName: string,
-  paramValue: unknown
+  paramValue: unknown,
 ) {
   if (paramValue === null || paramValue === undefined) {
     throw new RequiredError(
       paramName,
-      `Required parameter ${paramName} was null or undefined when calling ${functionName}.`
+      `Required parameter ${paramName} was null or undefined when calling ${functionName}.`,
     )
   }
 }
@@ -48,7 +48,7 @@ export const assertParamExists = function (
 export const setApiKeyToObject = async function (
   object: any,
   keyParamName: string,
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   if (configuration && configuration.apiKey) {
     const localVarApiKeyValue =
@@ -91,7 +91,7 @@ export const setOAuthToObject = async function (
   object: any,
   name: string,
   scopes: string[],
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   if (configuration && configuration.accessToken) {
     const localVarAccessTokenValue =
@@ -105,7 +105,7 @@ export const setOAuthToObject = async function (
 function setFlattenedQueryParams(
   urlSearchParams: URLSearchParams,
   parameter: any,
-  key: string = ''
+  key: string = '',
 ): void {
   if (parameter == null) return
   if (typeof parameter === 'object') {
@@ -116,8 +116,8 @@ function setFlattenedQueryParams(
         setFlattenedQueryParams(
           urlSearchParams,
           parameter[currentKey],
-          `${key}${key !== '' ? '.' : ''}${currentKey}`
-        )
+          `${key}${key !== '' ? '.' : ''}${currentKey}`,
+        ),
       )
     }
   } else {
@@ -146,55 +146,14 @@ export const setSearchParams = function (url: URL, ...objects: any[]) {
 export const serializeDataIfNeeded = function (
   value: any,
   requestOptions: any,
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   const nonString = typeof value !== 'string'
   const needsSerialization =
     nonString && configuration && configuration.isJsonMime
       ? configuration.isJsonMime(requestOptions.headers['Content-Type'])
       : nonString
-  return needsSerialization
-    ? JSON.stringify(value !== undefined ? convertMapsAndSetsToPlain(value) : {})
-    : value || ''
-}
-
-function convertMapsAndSetsToPlain(value: any): any {
-  if (typeof Set === 'undefined') return value
-  if (typeof Map === 'undefined') return value
-  if (typeof value !== 'object' || !value) {
-    return value
-  }
-  if (value instanceof Set) {
-    return Array.from(value).map((item) => convertMapsAndSetsToPlain(item))
-  }
-  if (value instanceof Map) {
-    const entries: Array<[string, any]> = []
-    value.forEach((value: any, key: any) => {
-      entries.push([key, convertMapsAndSetsToPlain(value)])
-    })
-    return objectFromEntries(entries)
-  }
-  if (Array.isArray(value)) {
-    return value.map((it) => convertMapsAndSetsToPlain(it))
-  }
-  return objectFromEntries(objectEntries(value).map(([k, v]) => [k, convertMapsAndSetsToPlain(v)]))
-}
-
-/**
- * Ponyfill for Object.entries
- */
-function objectEntries(object: Record<string, any>): Array<[string, any]> {
-  return Object.keys(object).map((key) => [key, object[key]])
-}
-
-/**
- * Ponyfill for Object.fromEntries
- */
-function objectFromEntries(entries: any): Record<string, any> {
-  return [...entries].reduce((object, [key, val]) => {
-    object[key] = val
-    return object
-  }, {})
+  return needsSerialization ? JSON.stringify(value !== undefined ? value : {}) : value || ''
 }
 
 /**
@@ -213,11 +172,11 @@ export const createRequestFunction = function (
   axiosArgs: RequestArgs,
   globalAxios: AxiosInstance,
   BASE_PATH: string,
-  configuration?: Configuration
+  configuration?: Configuration,
 ) {
   return <T = unknown, R = AxiosResponse<T>>(
     axios: AxiosInstance = globalAxios,
-    basePath: string = BASE_PATH
+    basePath: string = BASE_PATH,
   ) => {
     const axiosRequestArgs = {
       ...axiosArgs.options,

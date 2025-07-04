@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../../generated-clients/nest-tax-backend'
+import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from 'openapi-clients/tax'
 import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
 import { addSlashToBirthNumber } from '../birthNumbers'

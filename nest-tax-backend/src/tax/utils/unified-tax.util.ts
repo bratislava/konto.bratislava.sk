@@ -227,6 +227,7 @@ const calculateInstallmentPaymentDetails = (options: {
   installments: { order: string | null; amount: number }[]
   variableSymbol: string
   specificSymbol: any
+  taxId: number
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
   activeInstallment?: ReplaceWithGenerators<ResponseActiveInstallmentDto>
 } => {
@@ -240,6 +241,7 @@ const calculateInstallmentPaymentDetails = (options: {
     installments,
     variableSymbol,
     specificSymbol,
+    taxId,
   } = options
   if (overallAmount - overallPaid <= 0) {
     return {
@@ -350,6 +352,7 @@ const calculateInstallmentPaymentDetails = (options: {
       },
       paymentGatewayLink: {
         amount: active.remainingAmount,
+        taxId,
         description: `Platba splátky dane pre BA s id dane ${taxId}`,
       },
     }
@@ -367,7 +370,7 @@ const calculateOneTimePaymentDetails = (options: {
   dueDate?: Date
   variableSymbol: string
   specificSymbol: string
-}): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
+  taxId: number
 }): ReplaceWithGenerators<ResponseOneTimePaymentDetailsDto> => {
   const {
     overallPaid,
@@ -375,6 +378,7 @@ const calculateOneTimePaymentDetails = (options: {
     dueDate,
     variableSymbol,
     specificSymbol,
+    taxId,
   } = options
   if (overallBalance <= 0) {
     return {
@@ -401,6 +405,7 @@ const calculateOneTimePaymentDetails = (options: {
     },
     paymentGatewayLink: {
       amount: overallBalance,
+      taxId,
       description:
         overallPaid > 0
           ? `Platba zvyšnej sumy za dane pre BA s id dane ${taxId}`
@@ -427,6 +432,7 @@ export const getTaxDetailPure = (options: {
     amount: number
     status: PaymentStatus
   }[]
+  taxId: number
 }) => {
   const {
     taxYear,
@@ -442,6 +448,7 @@ export const getTaxDetailPure = (options: {
     taxLand,
     specificSymbol,
     taxPayments,
+    taxId,
   } = options
 
   let overallPaid = 0
@@ -462,6 +469,7 @@ export const getTaxDetailPure = (options: {
     dueDate: dueDate?.toDate(),
     variableSymbol,
     specificSymbol,
+    taxId,
   })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
@@ -474,6 +482,7 @@ export const getTaxDetailPure = (options: {
     installments,
     variableSymbol,
     specificSymbol,
+    taxId,
   })
 
   const itemizedDetail: ResponseTaxDetailItemizedDto = {

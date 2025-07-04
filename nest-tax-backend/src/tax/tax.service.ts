@@ -249,6 +249,7 @@ export class TaxService {
       taxLand: tax.taxLand ?? 0,
       specificSymbol,
       taxPayments: tax.taxPayments,
+      taxId: tax.id,
     })
 
     const paymentGatewayLink =

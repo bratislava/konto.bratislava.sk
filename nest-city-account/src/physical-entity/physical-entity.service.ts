@@ -4,13 +4,14 @@ import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum } from '../admin/admin.errors.enum'
 
 import { PrismaService } from '../prisma/prisma.service'
-import { RfoIdentityList } from '../rfo-by-birthnumber/dtos/rfoSchema'
+import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
-import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import {
+  UpvsIdentityByUriService,
+  UpvsIdentityByUriServiceCreateManyParam,
+} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { PhysicalEntityUpdatedAtByRelation } from './dtos/physical-entity.dto'
-import { MagproxyErrorsEnum } from '../magproxy/magproxy.errors.enum'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
 
@@ -60,10 +61,12 @@ export class PhysicalEntityService {
    * Retrieves or creates a single empty physical entity without a user and without filling any other data
    *
    * @param {string} birthNumber - The birth number used to retrieve or create the physical entity.
-   * @returns {Promise<PhysicalEntity>} - The retrieved or created physical entity.
+   * @returns {Promise<PhysicalEntity | null>} - The retrieved or created physical entity.
    *                                    Returns null if multiple entities with the same birth number exist, or if entity creation fails.
    */
-  private async getOrCreateEmptyFromBirthNumber(birthNumber: string) {
+  private async getOrCreateEmptyFromBirthNumber(
+    birthNumber: string
+  ): Promise<PhysicalEntity | null> {
     const entities = await this.prismaService.physicalEntity.findMany({
       where: { birthNumber },
     })
@@ -84,16 +87,72 @@ export class PhysicalEntityService {
     }
 
     // Could not create entity
-    if (!entity) {
+    if (!entity || !entity.birthNumber) {
       this.logger.error(`PhysicalEntity was not created in database ${birthNumber}.`)
       return null
     }
-    if (!entity.birthNumber) {
-      this.logger.error(`PhysicalEntity was not created in database ${birthNumber}.`)
+    return entity
+  }
+
+  async updateUriAndEdeskFromUpvs(upvsInput: UpvsIdentityByUriServiceCreateManyParam) {
+    let upvsResult: {
+      success: UpvsIdentityByUri[]
+      failed: { physicalEntityId?: string; uri: string }[]
+    } | null = null
+    try {
+      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
+    } catch (error) {
+      this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
+    }
+    if (!upvsResult) {
+      return {}
+    }
+
+    if (upvsResult.success.length > 1) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
+        `Multiple successful UPVS results for uri input ${JSON.stringify(
+          upvsInput
+        )}, this shouldn't be possible`
+      )
+    }
+    if (upvsResult.success.length === 0) {
+      this.logger.error(
+        `No successful UPVS results for uri input ${JSON.stringify(
+          upvsInput
+        )}, requires manual intervention`
+      )
+      return {}
+    }
+
+    const upvsSuccessValue = upvsResult.success[0]
+
+    const updatedEntity = await this.update({
+      id: upvsSuccessValue.physicalEntityId ?? undefined,
+      uri: upvsSuccessValue.uri,
+      activeEdesk: (upvsSuccessValue.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
+    })
+
+    this.logger.log(`Successfully verified uri input ${JSON.stringify(upvsInput)}`)
+    return { updatedEntity, upvsResult: upvsSuccessValue }
+  }
+
+  private parseRfoDataToUpvsInput(singleRfoRecord: RfoIdentityListElement, entity: PhysicalEntity) {
+    if (!singleRfoRecord.priezviskaOsoby) {
       return null
     }
 
-    return entity
+    // Fill additional info
+    const uriName = parseUriNameFromRfo(singleRfoRecord)
+    if (!uriName || !entity.birthNumber) {
+      return null
+    }
+
+    const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
+    const uri = `rc://sk/${processedBirthNumber}_${uriName}`
+    this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
+    return [{ uri, physicalEntityId: entity.id }]
   }
 
   async createFromBirthNumber(birthNumber: string) {
@@ -116,6 +175,8 @@ export class PhysicalEntityService {
       this.logger.error(`PhysicalEntity ${birthNumber} not created. No entries from magproxy.`)
       return rfoData
     }
+
+    // Multiple data present
     if (rfoData.length > 1) {
       this.logger.error(
         `PhysicalEntity ${birthNumber} not created. Multiple entries from magproxy.`
@@ -123,67 +184,15 @@ export class PhysicalEntityService {
       return rfoData
     }
 
-    if (!rfoData[0].priezviskaOsoby) {
+    const singleRfoRecord = rfoData[0]
+
+    const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
+
+    if (!upvsInput) {
       return rfoData
     }
 
-    const priezviska = rfoData[0].priezviskaOsoby.map((item) => ({
-      meno: item.meno,
-      poradiePriezviska: item.poradiePriezviska,
-    }))
-
-    // Fill additional info
-    const uriName = parseUriNameFromRfo({
-      menaOsoby: rfoData[0].menaOsoby,
-      priezviskaOsoby: priezviska,
-    })
-    if (!uriName || !entity.birthNumber) {
-      return rfoData
-    }
-    const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
-    const uri = `rc://sk/${processedBirthNumber}_${uriName}`
-    this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    const upvsInput = [{ uri, physicalEntityId: entity.id }]
-
-    // TODO: We may not want to kill verification just because of UPVS not responding. This is a temporary fix I need to look at later
-    let upvsResult: {
-      success: UpvsIdentityByUri[]
-      failed: { physicalEntityId?: string; uri: string }[]
-    } | null = null
-    try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
-    } catch (error) {
-      this.logger.error(`An error occurred while requesting data from UPVS`, error)
-    }
-    if (!upvsResult) {
-      return rfoData
-    }
-
-    if (upvsResult.success.length > 1) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-        `Multiple successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, this shouldn't be possible`
-      )
-    }
-    if (upvsResult.success.length === 0) {
-      this.logger.error(
-        `No successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, requires manual intervention`
-      )
-      return rfoData
-    }
-
-    this.logger.log(`Successfully verified uri input ${JSON.stringify(upvsInput)}`)
-    const upvsSuccessValue = upvsResult.success[0]
-    await this.update({
-      id: upvsSuccessValue.physicalEntityId ?? undefined,
-      uri: upvsSuccessValue.uri,
-      activeEdesk: (upvsSuccessValue.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
-    })
+    await this.updateUriAndEdeskFromUpvs(upvsInput)
     return rfoData
   }
 
@@ -228,117 +237,25 @@ export class PhysicalEntityService {
 
     // TODO if we're storing other data about entity from RFO, do it here
 
-    // try to construct uri from first & last name in rfo result
-    // TODO multiple ways to construct the uri
-    const uriName = parseUriNameFromRfo(rfoData[0])
-    if (uriName) {
-      let maybeUpdatedEntity = entity
-      const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
-      const uri = `rc://sk/${processedBirthNumber}_${uriName}`
-      this.logger.log(`Trying to verify the following uri for entityId ${physicalEntityId}: ${uri}`)
-      const upvsInput = [{ uri, physicalEntityId: entity.id }]
-      const upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
-      if (upvsResult.success.length > 1) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
-          `Multiple successful UPVS results for uri input ${JSON.stringify(
-            upvsInput
-          )}, this shouldn't be possible`
-        )
-      } else if (upvsResult.success.length === 0) {
-        this.logger.error(
-          `No successful UPVS results for uri input ${JSON.stringify(
-            upvsInput
-          )}, requires manual intervention`
-        )
-        return {
-          physicalEntity: entity,
-          rfoData,
-        }
-      } else {
-        this.logger.log(`Successfully verified uri input ${JSON.stringify(upvsInput)}`)
-        const upvsSuccessValue = upvsResult.success[0]
-        maybeUpdatedEntity = await this.update({
-          id: upvsSuccessValue.physicalEntityId ?? undefined,
-          uri: upvsSuccessValue.uri,
-          activeEdesk:
-            (upvsSuccessValue.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
-        })
-        return {
-          physicalEntity: maybeUpdatedEntity,
-          rfoData,
-          upvsInput,
-          upvsResult: upvsSuccessValue,
-        }
+    const singleRfoRecord = rfoData[0]
+
+    const upvsInput = this.parseRfoDataToUpvsInput(singleRfoRecord, entity)
+
+    if (!upvsInput) {
+      return {
+        physicalEntity: entity,
+        rfoData,
       }
     }
+
+    const { updatedEntity, upvsResult } = await this.updateUriAndEdeskFromUpvs(upvsInput)
+
     return {
-      physicalEntity: entity,
+      physicalEntity: updatedEntity ?? entity,
       rfoData,
+      upvsInput,
+      upvsResult,
     }
-  }
-
-  async updateRfoAndUri(entity: PhysicalEntityUpdatedAtByRelation): Promise<boolean> {
-    const rfoData = await this.magproxyService.rfoBirthNumberList(entity.birthNumber)
-
-    if (!Array.isArray(rfoData) || rfoData.length === 0) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        MagproxyErrorsEnum.RFO_DATA_ARRAY_EXPECTED,
-        `Incorrect or no data returned from RFO for birthnumber ${entity.birthNumber} entityId: ${entity.physicalEntityId}, data: ${rfoData}`
-      )
-    }
-
-    if (rfoData.length > 1) {
-      this.logger.error(
-        `Found multiple RFO records for birthnumber ${entity.birthNumber} entityId: ${entity.physicalEntityId}`
-      )
-      return false
-    }
-
-    // try to construct uri from first & last name in rfo result
-    const uriName = parseUriNameFromRfo(rfoData[0])
-    if (!uriName) {
-      return false
-    }
-    const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
-    const uri = `rc://sk/${processedBirthNumber}_${uriName}`
-    this.logger.log(
-      `Trying to verify the following uri for entityId ${entity.physicalEntityId}: ${uri}`
-    )
-    const upvsInput = [{ uri, physicalEntityId: entity.physicalEntityId }]
-    const upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
-    if (upvsResult.success.length > 1) {
-      this.logger.error(
-        `Multiple successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, this shouldn't be possible`
-      )
-      return false
-    } else if (upvsResult.success.length === 0) {
-      this.logger.error(
-        `No successful UPVS results for uri input ${JSON.stringify(
-          upvsInput
-        )}, requires manual intervention`
-      )
-      return false
-    } else {
-      this.logger.log(`Successfully verified uri input ${JSON.stringify(upvsInput)}`)
-      const upvsSuccessValue = upvsResult.success[0]
-      if (upvsSuccessValue.physicalEntityId) {
-        await this.prismaService.physicalEntity.update({
-          where: { id: upvsSuccessValue.physicalEntityId },
-          data: {
-            uri: upvsSuccessValue.uri,
-            activeEdesk:
-              (upvsSuccessValue.data as UpvsIdentity)?.upvs?.edesk_status === 'deliverable',
-          },
-        })
-      } else {
-        return false
-      }
-    }
-    return true
   }
 
   // TODO either change or cleanup and use db directly

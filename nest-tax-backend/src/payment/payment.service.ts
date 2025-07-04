@@ -29,6 +29,12 @@ import {
 } from './dtos/error.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
+export interface PaymentGateURLGeneratorDto {
+  amount: number
+  taxId: number
+  description: string
+}
+
 @Injectable()
 export class PaymentService {
   constructor(

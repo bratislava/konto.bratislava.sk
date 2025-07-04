@@ -58,7 +58,7 @@
     "request": "^2.88.2",
     "rodnecislo": "^1.6.0",
     "uuid": "^11.1.0",
-    "zod": "^3.22.4"
+    "zod": "^3.25.73"
   },
   "devDependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^5.2.1",

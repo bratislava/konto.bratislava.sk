@@ -1,7 +1,9 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
+import { NorisTaxPayersDto } from '../../noris/noris.dto'
 import { NorisService } from '../../noris/noris.service'
 import { DeliveryMethod, IsInCityAccount } from '../../noris/noris.types'
 import { PrismaService } from '../../prisma/prisma.service'
@@ -14,6 +16,8 @@ import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
 
 describe('TasksService', () => {
   let service: AdminService
+
+  let prismaMock: PrismaService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +39,7 @@ describe('TasksService', () => {
     }).compile()
 
     service = module.get<AdminService>(AdminService)
+    prismaMock = module.get<PrismaService>(PrismaService)
   })
 
   it('should be defined', () => {
@@ -329,6 +334,53 @@ describe('TasksService', () => {
       await expect(service.updateTaxesFromNoris(mockTaxes)).rejects.toThrow(
         mockError,
       )
+    })
+  })
+
+  describe('processNorisTaxData', () => {
+    it('should process tax data correctly', async () => {
+      const norisData: NorisTaxPayersDto[] = [
+        {
+          ICO_RC: '123456/789',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+        {
+          ICO_RC: '123456/9999',
+          dan_spolu: '1000',
+          delivery_method: DeliveryMethod.EDESK,
+        },
+      ] as NorisTaxPayersDto[]
+
+      jest
+        .spyOn(service['cityAccountSubservice'], 'getUserDataAdminBatch')
+        .mockResolvedValue({
+          '123456/9999': {
+            externalId: '123456',
+          } as ResponseUserByBirthNumberDto,
+        })
+      jest
+        .spyOn(service['prismaService']['tax'], 'findMany')
+        .mockResolvedValueOnce([])
+      jest
+        .spyOn(service['prismaService'], '$transaction')
+        .mockImplementation((callback) => callback(prismaMock))
+
+      const insertSpy = jest
+        .spyOn(service as any, 'insertTaxPayerDataToDatabase')
+        .mockImplementation((data) =>
+          Promise.resolve({ birthNumber: (data as NorisTaxPayersDto).ICO_RC }),
+        )
+      const bloomreachSpy = jest.spyOn(
+        service['bloomreachService'],
+        'trackEventTax',
+      )
+
+      const result = await service.processNorisTaxData(norisData, 2025)
+
+      expect(result).toEqual(['123456/789', '123456/9999'])
+      expect(insertSpy).toHaveBeenCalledTimes(2)
+      expect(bloomreachSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

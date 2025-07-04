@@ -288,6 +288,10 @@ export class TaxService {
             qrCode: await this.qrCodeSubservice.createQrCode(
               detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
             ),
+            paymentGatewayLink: await this.paymentService.getPaymentUrlInternal(
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .paymentGatewayLink,
+            ),
           }
         : undefined,
     }

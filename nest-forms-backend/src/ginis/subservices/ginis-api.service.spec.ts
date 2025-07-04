@@ -16,6 +16,7 @@ jest.mock('@bratislava/ginis-sdk', () => ({
       detailDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
       pridatSouborMtom: jest.fn(async (bodyObj: object) => bodyObj),
       prehledDokumentu: jest.fn(async (bodyObj: object) => bodyObj),
+      prideleni: jest.fn(async (bodyObj: object) => bodyObj),
     }
 
     gin = {
@@ -237,6 +238,70 @@ describe('GinisAPIService', () => {
 
       const documentId = await service.findDocumentId('formId')
       expect(documentId).toBe('docId1')
+    })
+  })
+
+  describe('assignDocument', () => {
+    beforeEach(() => {
+      jest.spyOn(service['ginis'].ssl, 'prideleni').mockResolvedValue({
+        Prideleni: {
+          'Datum-zmeny': '2025-06-02T19:06:00',
+        },
+      })
+    })
+
+    it('should use functionId if present', async () => {
+      const assignSpy = jest
+        .spyOn(service['ginis'].ssl, 'prideleni')
+        .mockResolvedValue({
+          Prideleni: {
+            'Datum-zmeny': '2025-06-02T19:06:00',
+          },
+        })
+
+      await service.assignDocument('docId', 'nodeId', 'functionId')
+      expect(assignSpy).toHaveBeenCalledWith({
+        'Id-dokumentu': 'docId',
+        'Id-uzlu': 'nodeId',
+        'Id-funkce': 'functionId',
+        'Ucel-distribuce': 'Automatizovane pridelenie',
+        'Prime-prideleni': 'prime-prideleni',
+      })
+    })
+
+    it('should ommit functionId if not present', async () => {
+      const assignSpy = jest
+        .spyOn(service['ginis'].ssl, 'prideleni')
+        .mockResolvedValue({
+          Prideleni: {
+            'Datum-zmeny': '2025-06-02T19:06:00',
+          },
+        })
+
+      await service.assignDocument('docId', 'nodeId')
+      expect(assignSpy).toHaveBeenCalledWith({
+        'Id-dokumentu': 'docId',
+        'Id-uzlu': 'nodeId',
+        'Ucel-distribuce': 'Automatizovane pridelenie',
+        'Prime-prideleni': 'prime-prideleni',
+      })
+    })
+
+    it('should throw error if Ginis throws error', async () => {
+      jest
+        .spyOn(service['ginis'].ssl, 'prideleni')
+        .mockRejectedValueOnce(new Error('Ginis find failed'))
+
+      await expect(service.assignDocument('docId', 'nodeId')).rejects.toThrow(
+        'Ginis find failed',
+      )
+    })
+
+    it('should extract the assignment data to be returned', async () => {
+      const data = await service.assignDocument('docId', 'nodeId')
+      expect(data).toEqual({
+        'Datum-zmeny': '2025-06-02T19:06:00',
+      })
     })
   })
 })

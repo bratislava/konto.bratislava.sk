@@ -85,7 +85,8 @@ export const useGetContext = () => {
   })
 
   const { mutate: migrateFormMutate, isPending: migrateFormIsPending } = useMutation({
-    mutationFn: () => formsClient.nasesControllerMigrateForm(formId, { authStrategy: 'authOnly' }),
+    mutationFn: () =>
+      formsClient.formMigrationsControllerClaimMigration(formId, { authStrategy: 'authOnly' }),
     networkMode: 'always',
     onSuccess: () => {
       turnOffLeaveProtection()

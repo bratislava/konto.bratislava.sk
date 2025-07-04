@@ -57,8 +57,14 @@ export class VerificationSubservice {
             message: { message: 'ok' },
           }
         }
-        const identityCardMagproxy = document.jednoznacnyIdentifikator.split(' ') //Identity card numbers are in registry in format "0000 xx" and users from identity card enters "xx0000"
-        if (identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard) {
+
+        // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
+        const identityCardMagproxy = document.jednoznacnyIdentifikator.trim().split(' ')
+
+        if (
+          identityCardMagproxy.length === 2 &&
+          identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
+        ) {
           return {
             statusCode: 200,
             status: 'OK',

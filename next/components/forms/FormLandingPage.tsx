@@ -35,7 +35,7 @@ const FormLandingPage = ({ formDefinition, strapiForm }: FormLandingPageProps) =
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
-      formsClient.nasesControllerCreateForm(
+      formsClient.formsV2ControllerCreateForm(
         {
           formDefinitionSlug: formDefinition.slug,
         },

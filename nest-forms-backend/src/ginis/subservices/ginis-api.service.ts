@@ -7,6 +7,7 @@ import {
   Ginis,
   SslDetailDokumentuResponse,
   SslPridatSouborPridatSoubor,
+  SslPrideleniPrideleni,
 } from '@bratislava/ginis-sdk'
 import { Injectable } from '@nestjs/common'
 
@@ -112,5 +113,20 @@ export default class GinisAPIService {
     }
 
     return documentList['Prehled-dokumentu'][0]['Id-dokumentu']
+  }
+
+  async assignDocument(
+    documentId: string,
+    nodeId: string,
+    functionId?: string,
+  ): Promise<SslPrideleniPrideleni> {
+    const data = await this.ginis.ssl.prideleni({
+      'Id-dokumentu': documentId,
+      'Id-uzlu': nodeId,
+      ...(functionId && { 'Id-funkce': functionId }),
+      'Ucel-distribuce': 'Automatizovane pridelenie',
+      'Prime-prideleni': 'prime-prideleni',
+    })
+    return data.Prideleni
   }
 }

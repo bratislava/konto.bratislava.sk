@@ -21,8 +21,7 @@ export class RequestQueryUserByBirthNumberDto {
 
 export class RequestBatchQueryUsersByBirthNumbersDto {
   @ApiProperty({
-    description:
-      'Birth numbers without slash which should be retrieved from user database.',
+    description: 'Birth numbers without slash which should be retrieved from user database.',
     default: ['0000000000', '0000001010'],
     type: String,
     isArray: true,
@@ -119,4 +118,16 @@ export class RequestDeleteTaxDto {
   })
   @IsString()
   birthNumber: string
+}
+
+export class MarkDeceasedAccountRequestDto {
+  @ApiProperty({
+    description: 'List of birthnumbers/external IDs to mark as deceased',
+    example: ['1234567890', '2345678901', '3456789012'],
+    type: [String],
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  birthNumbers: string[]
 }

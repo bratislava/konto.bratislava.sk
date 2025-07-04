@@ -6,10 +6,7 @@ import { PassportStrategy } from '@nestjs/passport'
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey'
 
 @Injectable()
-export class AdminStrategy extends PassportStrategy(
-  HeaderAPIKeyStrategy,
-  'admin-strategy',
-) {
+export class AdminStrategy extends PassportStrategy(HeaderAPIKeyStrategy, 'admin-strategy') {
   constructor(private readonly configService: ConfigService) {
     super({ header: 'apiKey', prefix: '' }, false)
   }

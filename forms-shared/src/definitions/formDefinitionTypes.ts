@@ -42,8 +42,8 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkGeneric
   ginisAssignment: {
-    ginisOrganizationName: string
-    ginisPersonName?: string
+    ginisNodeId: string
+    ginisFunctionId?: string
   }
   sharepointData?: SharepointData
 }

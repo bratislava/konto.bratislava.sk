@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-secrets/no-secrets */
+import type { WithImplicitCoercion } from 'node:buffer'
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 

@@ -78,9 +78,9 @@ export default class NasesController {
     type: GetFormResponseDto,
   })
   @UseGuards(new CognitoGuard(true))
-  @Get('form/:id')
+  @Get('form/:formId')
   async getForm(
-    @Param('id') id: string,
+    @Param('formId') id: string,
     @User() user: CognitoGetUserData | undefined,
     @UserInfo() userInfo: UserInfoResponse,
   ): Promise<GetFormResponseDto> {

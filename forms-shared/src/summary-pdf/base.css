@@ -1,6 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @source "./SummaryPdf.tsx";
 
 @theme {
-    --font-sans: "Inter", "sans-serif";
+  --font-sans: 'Inter', 'sans-serif';
 }

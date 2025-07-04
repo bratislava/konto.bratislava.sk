@@ -57,6 +57,9 @@ module.exports = {
         '@darraghor/nestjs-typed/api-method-should-specify-api-response': 'off',
         '@darraghor/nestjs-typed/injectable-should-be-provided': 'off',
         'pii/no-email': 'off',
+        'pii/no-dob': 'off',
+        'pii/no-ip': 'off',
+        'pii/no-phone-number': 'off',
       },
     },
     {

@@ -1,9 +1,9 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
-describe('LineLoggerService', () => {
+describe('LineLoggerSubservice', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let service: any // Changed from LineLoggerService
-   let consoleSpy: jest.SpyInstance
+  let service: any
+  let consoleSpy: jest.SpyInstance
 
   beforeEach(() => {
     service = new LineLoggerSubservice('LineLogger TEST')
@@ -26,7 +26,7 @@ describe('LineLoggerService', () => {
     service[method]('test message')
 
     const regex = new RegExp(
-      `process="\\[Nest\\]" processPID="\\d+" datetime="\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2}:\\d{2} (AM|PM)" severity="${severity}" context="LineLogger TEST" message="test message"`
+      `process="\\[Nest\\]" processPID="\\d+" datetime="\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z" severity="${severity}" context="LineLogger TEST" message="test message"`
     )
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(regex))
@@ -37,9 +37,8 @@ describe('LineLoggerService', () => {
     // const objMessage = {foo: "string", goo: 'string\n"abc" def', sub: {foo: "data"}};
     service.log({ foo: 'string' })
 
-    const regex = new RegExp(
-      `process="\\[Nest\\]" processPID="\\d+" datetime="\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2}:\\d{2} (AM|PM)" severity="LOG" context="LineLogger TEST" foo="string"`
-    )
+    const regex =
+      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="LOG" context="LineLogger TEST" foo="string"/
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(regex))
     expect(consoleSpy).toHaveBeenCalledTimes(1)

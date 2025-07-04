@@ -131,6 +131,21 @@ describe('Testing logging:', () => {
 
       expect(logfmt).toContain(expected)
     })
+
+    it('should strigify HttpException without alert', () => {
+      const thrower = new ThrowerErrorGuard()
+      const error = thrower.ForbiddenException(
+        ErrorsEnum.FORBIDDEN_ERROR,
+        'Test message',
+        'Custom status',
+        'console input',
+        new Error('Test error message'),
+      )
+      const logfmt = errorToLogfmt(error, 'testMethod')
+
+      const expected = String.raw`errorType="HttpException" statusCode="403" status="Custom status" errorName="FORBIDDEN_ERROR" message="Test message" alert="0" errorCause="Error" causedByMessage="Test error message" console="console input" method="testMethod" stack="HttpException: Test message`
+      expect(logfmt).toContain(expected)
+    })
   })
 
   describe('ToLogfmt function', () => {

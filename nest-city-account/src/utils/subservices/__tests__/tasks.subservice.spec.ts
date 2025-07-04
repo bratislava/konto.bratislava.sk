@@ -10,8 +10,8 @@ import { DeliveryMethod } from '../../types/tax.types'
 import { TasksSubservice } from '../tasks.subservice'
 import { TaxSubservice } from '../tax.subservice'
 
-jest.mock('../../decorators/errorHandler.decorators', () => ({
-  HandleErrors: () => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
+jest.mock('../../decorators/errorHandler.decorators', () => {
+  return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: undefined[]) {
@@ -22,8 +22,8 @@ jest.mock('../../decorators/errorHandler.decorators', () => ({
       return null
     }
     return descriptor
-  },
-}))
+  })
+})
 
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {

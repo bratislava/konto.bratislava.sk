@@ -1,0 +1,41 @@
+fragment MunicipalServiceTagEntity on MunicipalServiceTagEntity {
+  id
+  attributes {
+    title
+  }
+}
+
+fragment MunicipalServiceCategoryEntity on MunicipalServiceCategoryEntity {
+  id
+  attributes {
+    title
+  }
+}
+
+fragment MunicipalServiceCardEntity on MunicipalServiceEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    color
+    icon
+    tags {
+      data {
+        ...MunicipalServiceTagEntity
+      }
+    }
+  }
+}
+
+fragment MunicipalServiceEntity on MunicipalServiceEntity {
+  ...MunicipalServiceCardEntity
+  attributes {
+    categories {
+      data {
+        ...MunicipalServiceCategoryEntity
+      }
+    }
+  }
+}

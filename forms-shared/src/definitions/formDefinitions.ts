@@ -1,12 +1,14 @@
 import stanoviskoKInvesticnemuZameru, {
-  stanoviskoKInvesticnemuZameruExtractGinisSubject,
-  stanoviskoKInvesticnemuZameruExtractSubject,
+  stanoviskoKInvesticnemuZameruExtractPlainSubject,
+  stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
 } from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky, {
-  predzahradkyExtractGinisSubject,
-  predzahradkyExtractSubject,
+  predzahradkyExtractPlainSubject,
+  predzahradkyExtractTechnicalSubject,
 } from '../schemas/predzahradky'
-import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
+import priznanieKDaniZNehnutelnosti, {
+  priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+} from '../schemas/priznanieKDaniZNehnutelnosti'
 import {
   generalTermsAndConditions,
   oloKoloTaxiTermsAndConditions,
@@ -15,12 +17,12 @@ import {
   ziadostONajomBytuTermsAndConditions,
 } from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti, {
-  zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
-  zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
+  zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
 } from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady, {
-  komunitneZahradyExtractGinisSubject,
-  komunitneZahradyExtractSubject,
+  komunitneZahradyExtractPlainSubject,
+  komunitneZahradyExtractTechnicalSubject,
 } from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { ziadostONajomBytuSharepointData } from '../sharepoint/mappings/ziadostONajomBytu'
@@ -93,11 +95,13 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: stanoviskoKInvesticnemuZameruExtractSubject,
+    subject: {
+      extractPlain: stanoviskoKInvesticnemuZameruExtractPlainSubject,
+      extractTechnical: stanoviskoKInvesticnemuZameruExtractTechnicalSubject,
+    },
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
-      extractGinisSubject: stanoviskoKInvesticnemuZameruExtractGinisSubject,
+      ginisNodeId: 'MAG0SS00A0ZV',
+      ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
@@ -113,11 +117,13 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: zavazneStanoviskoKInvesticnejCinnostiExtractSubject,
+    subject: {
+      extractPlain: zavazneStanoviskoKInvesticnejCinnostiExtractPlainSubject,
+      extractTechnical: zavazneStanoviskoKInvesticnejCinnostiExtractTechnicalSubject,
+    },
     ginisAssignment: {
-      ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Simeunovičová Ľudmila',
-      extractGinisSubject: zavazneStanoviskoKInvesticnejCinnostiExtractGinisSubject,
+      ginisNodeId: 'MAG0SS00A0ZV',
+      ginisFunctionId: 'MAG0SF00ASI3',
     },
     isSigned: false,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
@@ -133,12 +139,14 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: predzahradkyExtractSubject,
+    subject: {
+      extractPlain: predzahradkyExtractPlainSubject,
+      extractTechnical: predzahradkyExtractTechnicalSubject,
+    },
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'OTMZ',
-      ginisPersonName: 'Vacek Dušan',
-      extractGinisSubject: predzahradkyExtractGinisSubject,
+      ginisNodeId: 'MAG0SS00A381',
+      ginisFunctionId: 'MAG0SF00AG9O',
     },
   },
   {
@@ -152,12 +160,14 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
-    extractSubject: komunitneZahradyExtractSubject,
+    subject: {
+      extractPlain: komunitneZahradyExtractPlainSubject,
+      extractTechnical: komunitneZahradyExtractTechnicalSubject,
+    },
     isSigned: false,
     ginisAssignment: {
-      ginisOrganizationName: 'SSN',
-      ginisPersonName: 'Viziová Alexandra',
-      extractGinisSubject: komunitneZahradyExtractGinisSubject,
+      ginisNodeId: 'MAG0SS00A0Q4',
+      ginisFunctionId: 'MAG0SF00A93V',
     },
   },
   {
@@ -171,6 +181,9 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.2',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
+    subject: {
+      extractTechnical: priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+    },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFtP1By',
   },
@@ -186,6 +199,9 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '201501.3',
     publisher: 'ico://sk/00603481',
     termsAndConditions: taxTermsAndConditions,
+    subject: {
+      extractTechnical: priznanieKDaniZNehnutelnostiExtractTechnicalSubject,
+    },
     isSigned: true,
     exampleFormNotRequired: true,
   },
@@ -205,7 +221,7 @@ export const formDefinitions: FormDefinition[] = [
     sharepointData: ziadostONajomBytuSharepointData,
     skipGinisStateUpdate: true,
     ginisAssignment: {
-      ginisOrganizationName: 'SNB',
+      ginisNodeId: 'MAG0SS00A3NY',
     },
     isSigned: false,
     additionalInfoTemplate: ziadostONajomBytuAdditionalInfoTemplate,
@@ -423,7 +439,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'tsb-objednavka-informativneho-zakresu-sieti',
     title: 'Objednávka informatívneho zákresu sietí',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: objednavkaInformativnehoZakresuSieti,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     termsAndConditions: generalTermsAndConditions,
@@ -473,7 +489,7 @@ export const formDefinitions: FormDefinition[] = [
     type: FormDefinitionType.Email,
     slug: 'tsb-ziadost-o-stanovisko-k-projektovej-dokumentacii',
     title: 'Žiadosť o stanovisko k projektovej dokumentácii',
-    jsonVersion: '1.0.0',
+    jsonVersion: '1.0.1',
     schema: ziadostOStanoviskoKProjektovejDokumentacii,
     sendPolicy: FormSendPolicy.AuthenticatedNotVerified,
     termsAndConditions: generalTermsAndConditions,
@@ -532,7 +548,7 @@ export const formDefinitions: FormDefinition[] = [
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
     ginisAssignment: {
-      ginisOrganizationName: 'OMDP',
+      ginisNodeId: 'MAG0SS00A129',
     },
     isSigned: true,
     feedbackLink: 'https://bravo.staffino.com/bratislava/id=WWFOtcNg',
@@ -549,7 +565,7 @@ export const formDefinitions: FormDefinition[] = [
     publisher: 'ico://sk/00603481',
     termsAndConditions: generalTermsAndConditions,
     ginisAssignment: {
-      ginisOrganizationName: 'OVPP',
+      ginisNodeId: 'MAG0SS00A3M3',
     },
     isSigned: false,
   },

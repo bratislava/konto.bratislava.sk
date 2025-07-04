@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   AdminApi,
   Configuration,
+  RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
 } from '../../generated-clients/nest-tax-backend'
@@ -66,6 +67,14 @@ export class TaxSubservice {
 
   async updateDeliveryMethodsInNoris(data: RequestUpdateNorisDeliveryMethodsDto) {
     return this.taxBackendAdminApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
+      headers: {
+        apiKey: this.config.taxBackendApiKey,
+      },
+    })
+  }
+
+  async deleteTax(data: RequestAdminDeleteTaxDto) {
+    return this.taxBackendAdminApi.adminControllerDeleteTax(data, {
       headers: {
         apiKey: this.config.taxBackendApiKey,
       },

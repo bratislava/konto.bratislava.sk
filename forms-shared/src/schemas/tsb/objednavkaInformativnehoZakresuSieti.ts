@@ -55,15 +55,15 @@ export default schema(
       fileUpload(
         'snimkaMapy',
         {
-          title: 'Snímka z mapy s vyznačeným záujmovým územím',
+          title: 'Snímka z katastrálnej mapy s vyznačeným záujmovým územím',
           required: true,
         },
         {
           type: 'dragAndDrop',
-          helptext: `Využiť môžete napríklad [Google mapy](https://www.google.com/maps/@48.1461708,17.1057168,13z), kde nájdete požadované záujmové územie.
+          helptext: `Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11), kde nájdete požadované záujmové územie.
 
 **Ako vytvoriť snímku?**
-Prejdite do [webovej verzie Google Máp](https://www.google.com/maps/@48.1461708,17.1057168,13z). Kliknutím pravým tlačidlom myši na požadované územie otvorite ponuku, v ktorej nájdete možnosť „Merať vzdialenosť“. Vyznačte požadované územie vytvorením uceleného tvaru (polygónu) a následne s vyznačenou plochou vytvorte snímku obrazovky. Na snímke ponechajte aj pole s odmeranou plochou, ktoré sa zobrazí v spodnej časti obrazovky. Snímku uložte a nahrajte do poľa nižšie.`,
+Prejdite do [katastrálnej mapy ZBGIS](https://zbgis.skgeodesy.sk/mapka/sk/kataster?pos=48.143926,17.125711,11). Otvorením menu v ľavom hornom rohu nájdete funkciu „Meranie“. Tá vám umožní zaznačiť vaše záujmové územie na katastrálnej mape, pričom systém vám následne vypočíta výmeru označenej plochy. Pri položke „Meranie 1“ kliknite na ikonu troch bodiek v pravom hornom rohu a zvoľte možnosť „Tlačiť do PDF“. Dbajte na to, aby bolo celé vaše záujmové územie na snímke zreteľne viditeľné. Dokument uložte a následne ho nahrajte do poľa nižšie.`,
           helptextMarkdown: true,
         },
       ),

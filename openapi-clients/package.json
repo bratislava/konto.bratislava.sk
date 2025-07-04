@@ -30,22 +30,22 @@
     "generate-and-build": "npm run generate && npm run build"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.20.0",
+    "@openapitools/openapi-generator-cli": "^2.20.2",
     "@types/app-root-dir": "^0.1.4",
-    "@types/diff": "^7.0.2",
+    "@types/diff": "^8.0.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.15.17",
+    "@types/node": "^24.0.7",
     "app-root-dir": "^1.0.2",
     "axios": "^1.9.0",
     "camelcase": "^8.0.0",
     "chalk": "^5.4.1",
-    "commander": "^13.1.0",
-    "diff": "^7.0.0",
+    "commander": "^14.0.0",
+    "diff": "^8.0.2",
     "fs-extra": "^11.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "typescript": "5.8.3"
   },
   "peerDependencies": {

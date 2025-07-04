@@ -14,9 +14,7 @@ export function IsBirthNumber(validationOptions?: ValidationOptions) {
       validator: {
         validate(value: any, args: ValidationArguments): boolean {
           return <boolean>(
-            typeof value === 'string' &&
-            value.match('^[0-9]*$') &&
-            isValidBirthNumber(value)
+            (typeof value === 'string' && value.match('^[0-9]*$') && isValidBirthNumber(value))
           )
         },
       },
@@ -57,10 +55,10 @@ export function IsIco(validationOptions?: ValidationOptions) {
       validator: {
         validate(value: any, args: ValidationArguments): boolean {
           return <boolean>(
-            typeof value === 'string' &&
-            value.match('^[0-9]*$') &&
-            value.length >= 6 &&
-            value.length <= 8
+            (typeof value === 'string' &&
+              value.match('^[0-9]*$') &&
+              value.length >= 6 &&
+              value.length <= 8)
           )
         },
       },

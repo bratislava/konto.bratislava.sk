@@ -12,7 +12,7 @@ type ServiceCardBase = {
   className?: string
   icon: ReactNode
   href: string
-  tag?: string
+  tags?: string[]
   tagStyle?: string
   plausibleProps?: LinkPlausibleProps
 }
@@ -22,7 +22,7 @@ const ServiceCard = ({
   description,
   buttonText,
   className,
-  tag,
+  tags,
   tagStyle,
   icon,
   href,
@@ -39,7 +39,15 @@ const ServiceCard = ({
     <div className={style}>
       <div className="flex w-full justify-between">
         <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
-        <span className={cn('h-min rounded-[4px] px-2 text-p3-medium', tagStyle)}>{tag}</span>
+        {tags && tags.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tagItem, index) => (
+              <span key={index} className={cn('h-min rounded-[4px] px-2 text-p3-medium', tagStyle)}>
+                {tagItem}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
         <h3

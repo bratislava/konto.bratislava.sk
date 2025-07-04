@@ -116,8 +116,8 @@ export class UpvsIdentityByUriService {
             })
           )
         }
-      } catch (e) {
-        this.logger.error('Failed to save data. Will continue to next result. Error: ', e)
+      } catch (error) {
+        this.logger.error('Failed to save data. Will continue to next result. Error: ', error)
       }
     }
 

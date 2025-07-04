@@ -10,12 +10,18 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
-    # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
-    # These packages must be updated synchronously across all packages
     ignore:
+      # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
+      # These packages must be updated synchronously across all packages
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
+      # `npm run generate-assets` must be executed after Tailwind update
+      - dependency-name: '@tailwindcss/postcss'
+      - dependency-name: 'tailwindcss'
+      - dependency-name: 'postcss'
+      # Playwright must be updated in nest-forms-backend at the same time
+      - dependency-name: 'playwright'
     groups:
       react-email-dependencies:
         patterns:
@@ -38,12 +44,23 @@ updates:
     schedule:
       interval: 'weekly'
       day: 'sunday'
-    # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
-    # These packages must be updated synchronously across all packages
     ignore:
+      # RJSF and Ajv packages must be updated manually and thoroughly checked if they work
+      # These packages must be updated synchronously across all packages
       - dependency-name: '@rjsf/*'
       - dependency-name: 'ajv'
       - dependency-name: 'ajv-*'
+      # Playwright must be updated in forms-shared at the same time
+      - dependency-name: 'playwright'
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:
@@ -53,6 +70,19 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      aws-dependencies:
+        patterns:
+          - '@aws-sdk/*'
+          - 'aws-jwt-verify'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-clamav-scanner'
     schedule:
@@ -67,11 +97,30 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-tax-backend'
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:
@@ -82,11 +131,30 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
   - package-ecosystem: 'npm'
     directory: '/nest-city-account'
     schedule:
       interval: 'weekly'
       day: 'sunday'
+    ignore:
+      # ESLint and related tooling are pinned and must be upgraded manually to version 9 and reconfigured.
+      # Once ready for an upgrade, remove these ignores to allow grouped updates via the eslint-dependencies group.
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-*'
+      - dependency-name: '@eslint/*'
+      - dependency-name: '@types/eslint-*'
+      - dependency-name: '@darraghor/eslint-plugin-nestjs-typed'
+      - dependency-name: 'typescript-eslint'
+      - dependency-name: '@typescript-eslint/*'
     groups:
       nestjs-dependencies:
         patterns:
@@ -96,3 +164,12 @@ updates:
           - 'prisma'
           - 'prisma-*'
           - '@prisma/*'
+      eslint-dependencies:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@eslint/*'
+          - '@types/eslint-*'
+          - '@darraghor/eslint-plugin-nestjs-typed'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'

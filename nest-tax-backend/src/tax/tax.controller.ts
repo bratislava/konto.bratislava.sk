@@ -27,7 +27,7 @@ import { BratislavaUser } from '../auth/decorators/user-info.decorator'
 import { BratislavaUserDto } from '../utils/global-dtos/city-account.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { CustomErrorPdfCreateTypesEnum } from './dtos/error.dto'
-import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/requests.tax.dto'
+import { ResponseGetTaxesDto, ResponseTaxDto } from './dtos/response.tax.dto'
 import { TaxService } from './tax.service'
 
 @ApiTags('tax')
@@ -129,8 +129,8 @@ export class TaxController {
         CustomErrorPdfCreateTypesEnum.PDF_CREATE_ERROR,
         'Error to create pdf',
         'Error to create pdf',
-        error instanceof Error ? undefined : <string>error,
-        error instanceof Error ? error : undefined,
+        undefined,
+        error,
       )
     }
   }

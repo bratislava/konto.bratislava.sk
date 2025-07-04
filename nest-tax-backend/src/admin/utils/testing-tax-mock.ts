@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 
-import { TaxEmployee } from '@prisma/client'
+import { TaxAdministrator } from '@prisma/client'
 
 import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
 
@@ -9,7 +9,7 @@ import { RequestAdminCreateTestingTaxNorisData } from '../dtos/requests.dto'
  */
 export const createTestingTaxMock = (
   norisData: RequestAdminCreateTestingTaxNorisData,
-  taxEmployee: TaxEmployee,
+  taxAdministrator: TaxAdministrator,
   year: number,
 ) => {
   return {
@@ -28,12 +28,12 @@ export const createTestingTaxMock = (
       parseFloat(norisData.alreadyPaid.replace(',', '.'))
     ).toString(),
 
-    // existing tax employee data to not overwrite
-    vyb_email: taxEmployee.email,
-    cislo_poradace: +taxEmployee.externalId,
-    vyb_id: taxEmployee.id,
-    vyb_nazov: taxEmployee.name,
-    vyb_telefon_prace: taxEmployee.phoneNumber,
+    // existing tax administrator data to not overwrite
+    vyb_email: taxAdministrator.email,
+    cislo_poradace: +taxAdministrator.externalId,
+    vyb_id: taxAdministrator.id,
+    vyb_nazov: taxAdministrator.name,
+    vyb_telefon_prace: taxAdministrator.phoneNumber,
     cislo_konania: randomBytes(4).toString('hex'),
 
     // mock values for testing

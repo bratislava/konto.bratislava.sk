@@ -6,8 +6,10 @@ import { AdminService } from 'src/admin/admin.service'
 import { PhysicalEntityService } from 'src/physical-entity/physical-entity.service'
 import * as z from 'zod'
 import { PrismaService } from '../../prisma/prisma.service'
-import { HandleErrors } from '../../utils/decorators/errorHandler.decorators'
+import HandleErrors from '../../utils/decorators/errorHandler.decorators'
 import { LineLoggerSubservice } from '../../utils/subservices/line-logger.subservice'
+import ThrowerErrorGuard from '../../utils/guards/errors.guard'
+import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 
 const ValidateEdeskConfigValueSchema = z.object({
   active: z.boolean(),
@@ -25,7 +27,8 @@ export class AdminCronSubservice {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly adminService: AdminService,
-    private readonly physicalEntityService: PhysicalEntityService
+    private readonly physicalEntityService: PhysicalEntityService,
+    private readonly throwerErrorGuard: ThrowerErrorGuard
   ) {}
 
   @Cron(CronExpression.EVERY_30_SECONDS)
@@ -35,7 +38,10 @@ export class AdminCronSubservice {
       where: { key: this.edeskCognitoConfigDbkey },
     })
     if (!configDbResult) {
-      throw new Error('VALIDATE_EDESK_FROM_COGNITO_DATA not found in database config.')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'VALIDATE_EDESK_FROM_COGNITO_DATA not found in database config.'
+      )
     }
 
     const config = ValidateEdeskConfigValueSchema.parse(configDbResult.value)
@@ -70,9 +76,9 @@ export class AdminCronSubservice {
         `Attempt to set new offset: ${newOffset}, previous offset: ${currentOffset}, untestedEntitiesCount: ${physicalEntitiesWithoutUriVerificationAttemptsCount}`
       )
       await this.prismaService.$transaction(async (tx) => {
-        const { value } = await tx.config.findUnique({
+        const { value } = (await tx.config.findUnique({
           where: { key: this.edeskCognitoConfigDbkey },
-        }) as Config // Existence in db is checked at the start of the function
+        })) as Config // Existence in db is checked at the start of the function
         const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
         await tx.config.update({
           where: { key: this.edeskCognitoConfigDbkey },
@@ -90,7 +96,10 @@ export class AdminCronSubservice {
       where: { key: this.edeskRfoConfigDbkey },
     })
     if (!configDbResult) {
-      throw new Error('VALIDATE_EDESK_FROM_RFO_DATA not found in database config.')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'VALIDATE_EDESK_FROM_RFO_DATA not found in database config.'
+      )
     }
 
     const config = ValidateEdeskConfigValueSchema.parse(configDbResult.value)
@@ -126,16 +135,18 @@ export class AdminCronSubservice {
         return
       }
     } catch (error) {
-      this.logger.error(error)
-      this.logger.error(`Failed to validate entity with id: ${entityToValidate.id}, skipping`)
+      this.logger.error(
+        `Failed to validate entity with id: ${entityToValidate.id}, skipping`,
+        error
+      )
     }
 
     const newOffset = config.offset + 1
     this.logger.log(`Attempt to set new offset: ${newOffset}`)
     await this.prismaService.$transaction(async (tx) => {
-      const { value } = await tx.config.findUnique({
+      const { value } = (await tx.config.findUnique({
         where: { key: this.edeskRfoConfigDbkey },
-      }) as Config // Existence in db is checked at the start of the function
+      })) as Config // Existence in db is checked at the start of the function
       const validatedValue = ValidateEdeskConfigValueSchema.parse(value)
       // if offset was moved in between abort
       if (validatedValue.offset !== config.offset) {

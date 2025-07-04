@@ -36,10 +36,12 @@ export default class BaConfig {
   get cognito() {
     return {
       clientId: this.validatedConfig.AWS_COGNITO_CLIENT_ID,
-      userpoolId: this.validatedConfig.AWS_COGNITO_USERPOOL_ID,
+      userPoolId: this.validatedConfig.AWS_COGNITO_USERPOOL_ID,
       region: this.validatedConfig.AWS_COGNITO_REGION,
-      access: this.validatedConfig.AWS_COGNITO_ACCESS,
-      secret: this.validatedConfig.AWS_COGNITO_SECRET,
+      accessKeyId: this.validatedConfig.AWS_COGNITO_ACCESS,
+      secretAccessKey: this.validatedConfig.AWS_COGNITO_SECRET,
+      accountId: this.validatedConfig.AWS_ACCOUNT_ID,
+      unauthRoleName: this.validatedConfig.AWS_UNAUTH_ROLE_NAME,
     }
   }
 

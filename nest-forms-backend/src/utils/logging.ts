@@ -133,8 +133,8 @@ export function errorToLogfmt(
     return objToLogfmt(genericErrorToObj(error, methodName))
   }
   return objToLogfmt({
-    errorType: 'UnknownError',
-    message: 'Unknown error was thrown. This should not happen',
+    errorType: `UnexpectedErrorType: ${typeof error}`,
+    message: 'Unexpected type was thrown as error. This should not happen',
     method: methodName,
     alert: 1,
   })

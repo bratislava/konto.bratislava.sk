@@ -44,6 +44,8 @@ export class CognitoSubservice {
         ErrorsEnum.BAD_REQUEST_ERROR,
         cognitoData.$response.error.code,
         cognitoData.$response.error.statusCode?.toString(),
+        undefined,
+        cognitoData.$response.error,
       )
     } else {
       let result: CognitoTiersEnum = CognitoTiersEnum.NEW

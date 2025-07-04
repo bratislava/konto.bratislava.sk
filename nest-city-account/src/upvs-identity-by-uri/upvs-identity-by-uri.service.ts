@@ -18,7 +18,7 @@ export type UpvsIdentityByUriServiceCreateManyParam = {
   uri: string
 }[]
 
-type CreateManyResult = {
+export type UpvsCreateManyResult = {
   success: UpvsIdentityByUri[]
   failed: { physicalEntityId?: string; uri: string }[]
 }
@@ -39,7 +39,7 @@ export class UpvsIdentityByUriService {
   // multiple uris with same birthnumber can be passed in, but these should always be assigned to the same physicalEntityId
   // for successful requests, the uri that was returned by UPVS is saved - this might be different from the one that was requested (i.e. when the surname changes)
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async createMany(inputs: UpvsIdentityByUriServiceCreateManyParam): Promise<CreateManyResult> {
+  async createMany(inputs: UpvsIdentityByUriServiceCreateManyParam): Promise<UpvsCreateManyResult> {
     if (inputs.length === 0 || inputs.length > 100) {
       throw this.throwerErrorGuard.BadRequestException(
         ErrorsEnum.BAD_REQUEST_ERROR,

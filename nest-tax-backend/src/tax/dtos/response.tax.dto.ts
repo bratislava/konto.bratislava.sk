@@ -926,6 +926,14 @@ export class ResponseActiveInstallmentDto {
   @ApiProperty({ description: 'QR code', required: false })
   @IsString()
   qrCode: string
+
+  @ApiPropertyOptional({
+    description: 'Link to payment gateway (only when type is ONE_TIME_PAYMENT)',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  paymentGatewayLink: string
 }
 
 export class ResponseInstallmentPaymentDetailDto {

@@ -29,6 +29,12 @@ import {
 } from './dtos/error.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
+export interface PaymentGateURLGeneratorDto {
+  amount: number
+  taxId: number
+  description: string
+}
+
 @Injectable()
 export class PaymentService {
   constructor(
@@ -62,6 +68,61 @@ export class PaymentService {
         CustomErrorPaymentTypesEnum.DATABASE_ERROR,
         'Can not load data from taxPayment',
         'Database error',
+        undefined,
+        error,
+      )
+    }
+  }
+
+  /**
+   * @internal
+   * DO NOT EXPOSE THIS METHOD DIRECTLY IN CONTROLLERS!
+   * This method is meant for internal module use only and contains no checks.
+   */
+  async getPaymentUrlInternal(options: PaymentGateURLGeneratorDto) {
+    let orderId: string
+    let payment: TaxPayment
+    try {
+      orderId = Date.now().toString()
+      payment = await this.prisma.taxPayment.create({
+        data: { orderId, amount: options.amount, taxId: options.taxId },
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Can not create order',
+        'Database error',
+        undefined,
+        error,
+      )
+    }
+
+    try {
+      const requestData = {
+        MERCHANTNUMBER: this.configService.getOrThrow<string>(
+          'PAYGATE_MERCHANT_NUMBER',
+        ),
+        OPERATION: 'CREATE_ORDER',
+        ORDERNUMBER: orderId,
+        AMOUNT: payment.amount.toString(),
+        CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
+        DEPOSITFLAG: '1',
+        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
+        DESCRIPTION: options.description,
+        PAYMETHODS: `APAY,GPAY,CRD`,
+      }
+      const signedData = this.gpWebpaySubservice.getSignedData(requestData)
+      return `${process.env.PAYGATE_PAYMENT_REDIRECT_URL}?${formurlencoded(
+        signedData,
+        {
+          ignorenull: true,
+        },
+      )}`
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
+        'Can not create url',
+        'Create url error',
         undefined,
         error,
       )

@@ -249,6 +249,7 @@ export class TaxService {
       taxLand: tax.taxLand ?? 0,
       specificSymbol,
       taxPayments: tax.taxPayments,
+      taxId: tax.id,
     })
 
     const paymentGatewayLink =
@@ -286,6 +287,10 @@ export class TaxService {
                 .variableSymbol,
             qrCode: await this.qrCodeSubservice.createQrCode(
               detailWithoutQrCode.installmentPayment.activeInstallment.qrCode,
+            ),
+            paymentGatewayLink: await this.paymentService.getPaymentUrlInternal(
+              detailWithoutQrCode.installmentPayment.activeInstallment
+                .paymentGatewayLink,
             ),
           }
         : undefined,

@@ -24,12 +24,17 @@ import {
   ResponseTaxDetailItemizedDto,
 } from '../dtos/response.tax.dto'
 import { generateItemizedTaxDetail } from './helpers/tax.helper'
+import { PaymentGateURLGeneratorDto } from '../../payment/payment.service'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-type ReplaceQrCodeWithGeneratorDto<T extends object> = {
-  [K in keyof T]: K extends 'qrCode' ? QrCodeGeneratorDto : T[K]
+type ReplaceWithGenerators<T extends object> = {
+  [K in keyof T]: K extends 'qrCode'
+    ? QrCodeGeneratorDto
+    : K extends 'paymentGatewayLink'
+      ? PaymentGateURLGeneratorDto
+      : T[K]
 }
 
 const bratislavaTimeZone = 'Europe/Bratislava'
@@ -222,8 +227,9 @@ const calculateInstallmentPaymentDetails = (options: {
   installments: { order: string | null; amount: number }[]
   variableSymbol: string
   specificSymbol: any
+  taxId: number
 }): Omit<ResponseInstallmentPaymentDetailDto, 'activeInstallment'> & {
-  activeInstallment?: ReplaceQrCodeWithGeneratorDto<ResponseActiveInstallmentDto>
+  activeInstallment?: ReplaceWithGenerators<ResponseActiveInstallmentDto>
 } => {
   const {
     overallAmount,
@@ -235,6 +241,7 @@ const calculateInstallmentPaymentDetails = (options: {
     installments,
     variableSymbol,
     specificSymbol,
+    taxId,
   } = options
   if (overallAmount - overallPaid <= 0) {
     return {
@@ -333,16 +340,22 @@ const calculateInstallmentPaymentDetails = (options: {
     paymentNote = QrPaymentNoteEnum.QR_thirdInstallment
   }
 
-  const activeInstallment = {
-    remainingAmount: active.remainingAmount,
-    variableSymbol,
-    qrCode: {
-      amount: active.remainingAmount,
+  const activeInstallment: ReplaceWithGenerators<ResponseActiveInstallmentDto> =
+    {
+      remainingAmount: active.remainingAmount,
       variableSymbol,
-      specificSymbol,
-      paymentNote,
-    },
-  }
+      qrCode: {
+        amount: active.remainingAmount,
+        variableSymbol,
+        specificSymbol,
+        paymentNote,
+      },
+      paymentGatewayLink: {
+        amount: active.remainingAmount,
+        taxId,
+        description: `Platba splátky dane pre BA s id dane ${taxId}`,
+      },
+    }
 
   return {
     isPossible: true,
@@ -357,13 +370,15 @@ const calculateOneTimePaymentDetails = (options: {
   dueDate?: Date
   variableSymbol: string
   specificSymbol: string
-}): ReplaceQrCodeWithGeneratorDto<ResponseOneTimePaymentDetailsDto> => {
+  taxId: number
+}): ReplaceWithGenerators<ResponseOneTimePaymentDetailsDto> => {
   const {
     overallPaid,
     overallBalance,
     dueDate,
     variableSymbol,
     specificSymbol,
+    taxId,
   } = options
   if (overallBalance <= 0) {
     return {
@@ -388,6 +403,14 @@ const calculateOneTimePaymentDetails = (options: {
           ? QrPaymentNoteEnum.QR_remainingAmount
           : QrPaymentNoteEnum.QR_oneTimePay,
     },
+    paymentGatewayLink: {
+      amount: overallBalance,
+      taxId,
+      description:
+        overallPaid > 0
+          ? `Platba zvyšnej sumy za dane pre BA s id dane ${taxId}`
+          : `Platba za dane pre BA s id dane ${taxId}`,
+    },
     variableSymbol,
   }
 }
@@ -409,6 +432,7 @@ export const getTaxDetailPure = (options: {
     amount: number
     status: PaymentStatus
   }[]
+  taxId: number
 }) => {
   const {
     taxYear,
@@ -424,6 +448,7 @@ export const getTaxDetailPure = (options: {
     taxLand,
     specificSymbol,
     taxPayments,
+    taxId,
   } = options
 
   let overallPaid = 0
@@ -444,6 +469,7 @@ export const getTaxDetailPure = (options: {
     dueDate: dueDate?.toDate(),
     variableSymbol,
     specificSymbol,
+    taxId,
   })
 
   const installmentPayment = calculateInstallmentPaymentDetails({
@@ -456,6 +482,7 @@ export const getTaxDetailPure = (options: {
     installments,
     variableSymbol,
     specificSymbol,
+    taxId,
   })
 
   const itemizedDetail: ResponseTaxDetailItemizedDto = {

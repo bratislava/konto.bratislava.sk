@@ -41,7 +41,6 @@ export class TaxService {
     private readonly prisma: PrismaService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly qrCodeSubservice: QrCodeSubservice,
-    private readonly paymentService: PaymentService,
   ) {}
 
   async fetchTaxData<T extends Prisma.TaxInclude>(

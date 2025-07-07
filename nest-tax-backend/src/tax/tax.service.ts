@@ -9,14 +9,13 @@ import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
 import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
 import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
-import { PaymentService } from '../payment/payment.service'
+import { PaymentGateURLGeneratorDto } from '../payment/dtos/generator.dto'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from './dtos/error.dto'
 import {
-  OneTimePaymentTypeEnum,
   ResponseGetTaxesBodyDto,
   ResponseGetTaxesDto,
   ResponseInstallmentPaymentDetailDto,
@@ -26,7 +25,11 @@ import {
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
-import { getTaxDetailPure } from './utils/unified-tax.util'
+import {
+  getTaxDetailPure,
+  getTaxDetailPureForInstallmentGenerator,
+  getTaxDetailPureForOneTimeGenerator,
+} from './utils/unified-tax.util'
 
 const paymentCalendarThreshold = 6600
 
@@ -325,5 +328,48 @@ export class TaxService {
       installmentPayment,
       taxAdministrator,
     }
+  }
+
+  async getOneTimePaymentGenerator(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+  ): Promise<PaymentGateURLGeneratorDto> {
+    const currentYear = dayjs().year()
+    const tax = await this.fetchTaxData(
+      taxPayerWhereUniqueInput,
+      { taxPayments: true },
+      currentYear,
+    )
+
+    return getTaxDetailPureForOneTimeGenerator({
+      taxId: tax.id,
+      overallAmount: tax.amount,
+      taxPayments: tax.taxPayments,
+    })
+  }
+
+  async getInstallmentPaymentGenerator(
+    taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+  ): Promise<PaymentGateURLGeneratorDto> {
+    const currentYear = dayjs().year()
+    const today = dayjs().tz('Europe/Bratislava').toDate()
+
+    const tax = await this.fetchTaxData(
+      taxPayerWhereUniqueInput,
+      { taxInstallments: true, taxPayments: true },
+      currentYear,
+    )
+
+    return getTaxDetailPureForInstallmentGenerator({
+      taxId: tax.id,
+      taxYear: currentYear,
+      today,
+      overallAmount: tax.amount,
+      paymentCalendarThreshold,
+      variableSymbol: tax.variableSymbol,
+      dateOfValidity: tax.dateTaxRuling,
+      installments: tax.taxInstallments,
+      specificSymbol,
+      taxPayments: tax.taxPayments,
+    })
   }
 }

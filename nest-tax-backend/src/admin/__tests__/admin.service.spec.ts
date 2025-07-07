@@ -549,7 +549,7 @@ describe('TasksService', () => {
       const result = await service.processNorisTaxData(norisData, 2025)
 
       expect(result).toEqual([])
-      expect(insertSpy).toHaveBeenCalledTimes(2) // Called for both, but only one succeeded
+      expect(insertSpy).toHaveBeenCalledTimes(2) // Called for both, but none succeeded
 
       expect(service['logger'].error).toHaveBeenCalledTimes(2) // Both errors should be logged
     })

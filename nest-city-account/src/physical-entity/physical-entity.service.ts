@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, UpvsIdentityByUri } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { AdminErrorsEnum } from '../admin/admin.errors.enum'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
 import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
@@ -88,7 +88,9 @@ export class PhysicalEntityService {
 
     // Could not create entity
     if (!entity || !entity.birthNumber) {
-      this.logger.error(`PhysicalEntity was not created in database for birth number: ${birthNumber}.`)
+      this.logger.error(
+        `PhysicalEntity was not created in database for birth number: ${birthNumber}.`
+      )
       return null
     }
     return entity
@@ -211,7 +213,7 @@ export class PhysicalEntityService {
     if (!entity.birthNumber) {
       throw this.throwerErrorGuard.NotFoundException(
         AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND
+        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
       )
     }
 

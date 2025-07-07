@@ -251,16 +251,6 @@ export class TaxService {
       taxPayments: tax.taxPayments,
     })
 
-    const paymentGatewayLink =
-      detailWithoutQrCode.oneTimePayment.isPossible &&
-      detailWithoutQrCode.oneTimePayment.type ===
-        OneTimePaymentTypeEnum.ONE_TIME_PAYMENT
-        ? await this.paymentService.getPayGateUrlByUserAndYear(
-            year.toString(),
-            birthNumber,
-          )
-        : undefined
-
     let oneTimePaymentQrCode: string | undefined
     if (detailWithoutQrCode.oneTimePayment.qrCode) {
       oneTimePaymentQrCode = await this.qrCodeSubservice.createQrCode(
@@ -270,7 +260,6 @@ export class TaxService {
     const oneTimePayment: ResponseOneTimePaymentDetailsDto = {
       ...detailWithoutQrCode.oneTimePayment,
       qrCode: oneTimePaymentQrCode,
-      paymentGatewayLink,
     }
 
     const installmentPayment: ResponseInstallmentPaymentDetailDto = {

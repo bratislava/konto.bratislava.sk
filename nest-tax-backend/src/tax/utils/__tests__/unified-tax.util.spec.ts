@@ -2,7 +2,12 @@
 
 import { PaymentStatus, TaxDetailareaType, TaxDetailType } from '@prisma/client'
 
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 import { QrPaymentNoteEnum } from '../../../utils/subservices/dtos/qrcode.dto'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../../dtos/error.dto'
 import {
   InstallmentPaidStatusEnum,
   InstallmentPaymentReasonNotPossibleEnum,
@@ -14,8 +19,6 @@ import {
   getTaxDetailPureForInstallmentGenerator,
   getTaxDetailPureForOneTimeGenerator,
 } from '../unified-tax.util'
-import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
-import { CustomErrorTaxTypesEnum, CustomErrorTaxTypesResponseEnum } from '../../dtos/error.dto'
 
 const defaultInput = {
   taxYear: 2025,
@@ -747,7 +750,7 @@ describe('getTaxDetailPureForOneTimeGenerator', () => {
         ...options,
         taxPayments: [
           {
-            amount: 999999,
+            amount: 999_999,
             status: PaymentStatus.SUCCESS,
           },
         ],

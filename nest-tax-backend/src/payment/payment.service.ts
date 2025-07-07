@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
   PaymentStatus,
+  Prisma,
   Tax,
   TaxPayer,
   TaxPayment,
@@ -20,6 +21,7 @@ import {
   CustomErrorTaxTypesEnum,
   CustomErrorTaxTypesResponseEnum,
 } from '../tax/dtos/error.dto'
+import { TaxService } from '../tax/tax.service'
 import { ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { PaymentResponseQueryDto } from '../utils/subservices/dtos/gpwebpay.dto'
 import {
@@ -27,6 +29,7 @@ import {
   CustomErrorPaymentTypesEnum,
   CustomErrorPaymentTypesResponseEnum,
 } from './dtos/error.dto'
+import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
 
 @Injectable()
@@ -38,6 +41,7 @@ export class PaymentService {
     private readonly bloomreachService: BloomreachService,
     private readonly configService: ConfigService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly taxService: TaxService,
   ) {}
 
   private async getTaxPaymentByTaxId(
@@ -66,6 +70,74 @@ export class PaymentService {
         error,
       )
     }
+  }
+
+  /**
+   * @internal
+   * DO NOT EXPOSE THIS METHOD DIRECTLY IN CONTROLLERS!
+   * This method is meant for internal module use only and contains no checks.
+   */
+  private async getPaymentUrlInternal(options: PaymentGateURLGeneratorDto) {
+    let orderId: string
+    let payment: TaxPayment
+    try {
+      orderId = Date.now().toString()
+      payment = await this.prisma.taxPayment.create({
+        data: { orderId, amount: options.amount, taxId: options.taxId },
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.DATABASE_ERROR,
+        'Can not create order',
+        'Database error',
+        undefined,
+        error,
+      )
+    }
+
+    try {
+      const requestData = {
+        MERCHANTNUMBER: this.configService.getOrThrow<string>(
+          'PAYGATE_MERCHANT_NUMBER',
+        ),
+        OPERATION: 'CREATE_ORDER',
+        ORDERNUMBER: orderId,
+        AMOUNT: payment.amount.toString(),
+        CURRENCY: this.configService.getOrThrow<string>('PAYGATE_CURRENCY'),
+        DEPOSITFLAG: '1',
+        URL: this.configService.getOrThrow<string>('PAYGATE_REDIRECT_URL'),
+        DESCRIPTION: options.description,
+        PAYMETHODS: `APAY,GPAY,CRD`,
+      }
+      const signedData = this.gpWebpaySubservice.getSignedData(requestData)
+      return `${process.env.PAYGATE_PAYMENT_REDIRECT_URL}?${formurlencoded(
+        signedData,
+        {
+          ignorenull: true,
+        },
+      )}`
+    } catch (error) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        CustomErrorPaymentTypesEnum.CREATE_PAYMENT_URL,
+        'Can not create url',
+        'Create url error',
+        undefined,
+        error,
+      )
+    }
+  }
+
+  async generateFullPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
+    const generator = await this.taxService.getOneTimePaymentGenerator(where)
+
+    return this.getPaymentUrlInternal(generator)
+  }
+
+  async generateInstallmentPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
+    const generator =
+      await this.taxService.getInstallmentPaymentGenerator(where)
+
+    return this.getPaymentUrlInternal(generator)
   }
 
   private async getPaymentUrl(tax: Tax): Promise<string> {

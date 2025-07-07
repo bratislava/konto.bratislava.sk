@@ -131,11 +131,14 @@ export class MagproxyService {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const processedBirthNumber = birthNumber.replaceAll('/', '')
     try {
-      const result = await this.clientsService.magproxyApi.rfoControllerGetList(processedBirthNumber, {
-        headers: {
-          Authorization: `Bearer ${magproxyAzureAdToken}`,
-        },
-      })
+      const result = await this.clientsService.magproxyApi.rfoControllerGetList(
+        processedBirthNumber,
+        {
+          headers: {
+            Authorization: `Bearer ${magproxyAzureAdToken}`,
+          },
+        }
+      )
       // TODO this validation belongs to magproxy, TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
       return this.validateRfoDataFormat(result?.data?.items)
     } catch (error) {

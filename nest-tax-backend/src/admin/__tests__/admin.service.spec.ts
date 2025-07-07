@@ -1,5 +1,6 @@
 import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Prisma, TaxPayer } from '@prisma/client'
 import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../../bloomreach/bloomreach.service'
@@ -13,6 +14,9 @@ import { QrCodeSubservice } from '../../utils/subservices/qrcode.subservice'
 import { TaxIdVariableSymbolYear } from '../../utils/types/types.prisma'
 import { AdminService } from '../admin.service'
 import { RequestUpdateNorisDeliveryMethodsData } from '../dtos/requests.dto'
+import * as taxDetailHelper from '../utils/tax-detail.helper'
+
+jest.mock('../utils/tax-detail.helper')
 
 describe('TasksService', () => {
   let service: AdminService
@@ -381,6 +385,115 @@ describe('TasksService', () => {
       expect(result).toEqual(['123456/789', '123456/9999'])
       expect(insertSpy).toHaveBeenCalledTimes(2)
       expect(bloomreachSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('insertTaxPayerDataToDatabase', () => {
+    let mockTransaction: Prisma.TransactionClient
+
+    beforeEach(() => {
+      mockTransaction = createMock<Prisma.TransactionClient>()
+    })
+
+    it('should propagate errors', async () => {
+      const mockData: NorisTaxPayersDto = {
+        ICO_RC: '123456/789',
+        dan_spolu: '1000',
+        delivery_method: DeliveryMethod.EDESK,
+        cislo_poradace: '123456',
+        variabilny_symbol: 'VS123',
+        dan_pozemky: '200',
+        dan_stavby_SPOLU: '300',
+        dan_byty: '400',
+        SPL4_2: '',
+        SPL1: '100',
+      } as unknown as NorisTaxPayersDto
+
+      jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
+
+      const mockError = new Error('Insert failed')
+      jest
+        .spyOn(mockTransaction['tax'], 'upsert')
+        .mockRejectedValueOnce(mockError)
+
+      await expect(
+        service['insertTaxPayerDataToDatabase'](
+          mockData,
+          2025,
+          mockTransaction,
+        ),
+      ).rejects.toThrow(mockError)
+    })
+
+    it('should insert tax payer data correctly', async () => {
+      const mockData: NorisTaxPayersDto = {
+        ICO_RC: '123456/789',
+        dan_spolu: '1000',
+        delivery_method: DeliveryMethod.EDESK,
+        cislo_poradace: '123456',
+        variabilny_symbol: 'VS123',
+        dan_pozemky: '200',
+        dan_stavby_SPOLU: '300',
+        dan_byty: '400',
+        SPL4_2: '',
+        SPL1: '100',
+      } as unknown as NorisTaxPayersDto
+
+      jest.spyOn(mockTransaction['tax'], 'findMany').mockResolvedValueOnce([])
+
+      const mockTaxPayer: TaxPayer = {
+        id: 1,
+        birthNumber: '123456/789',
+        taxAdministratorId: 1,
+        name: 'Test Name',
+      } as TaxPayer
+
+      jest
+        .spyOn(mockTransaction['taxPayer'], 'upsert')
+        .mockResolvedValueOnce(mockTaxPayer)
+
+      jest
+        .spyOn(taxDetailHelper, 'mapNorisToTaxDetailData')
+        .mockReturnValueOnce([
+          {
+            taxId: 1,
+            areaType: 'A',
+            type: taxDetailHelper.AreaTypesEnum.APARTMENT,
+            base: 100,
+            amount: 400,
+            area: null,
+          },
+          {
+            taxId: 1,
+            areaType: 'B',
+            type: taxDetailHelper.AreaTypesEnum.CONSTRUCTION,
+            base: 200,
+            amount: 300,
+            area: null,
+          },
+          {
+            taxId: 1,
+            areaType: 'C',
+            type: taxDetailHelper.AreaTypesEnum.GROUND,
+            base: 0,
+            amount: 200,
+            area: null,
+          },
+        ])
+
+      const result = await service['insertTaxPayerDataToDatabase'](
+        mockData,
+        2025,
+        mockTransaction,
+      )
+      expect(result).toEqual(mockTaxPayer)
+
+      // Check that all has been created (all creates had been called)
+      expect(mockTransaction['taxPayer'].upsert).toHaveBeenCalled()
+      expect(mockTransaction['tax'].upsert).toHaveBeenCalled()
+      expect(mockTransaction['taxDetail'].createMany).toHaveBeenCalled()
+      expect(mockTransaction['taxInstallment'].createMany).toHaveBeenCalled()
+      expect(mockTransaction['taxAdministrator'].upsert).toHaveBeenCalled()
     })
   })
 })

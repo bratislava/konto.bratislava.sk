@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { connect, Request } from 'mssql'
+import { connect, ConnectionPool, Request } from 'mssql'
 import {
   RequestPostNorisLoadDataDto,
   RequestPostNorisPaymentDataLoadByVariableSymbolsDto,
@@ -248,6 +248,9 @@ export class NorisService {
     })
 
     try {
+      // Wait for connection to be fully established
+      await this.waitForConnection(connection)
+
       const request = new Request(connection)
 
       const variableSymbolsPlaceholders = variableSymbols
@@ -282,5 +285,29 @@ export class NorisService {
       // Always close the connection
       await connection.close()
     }
+  }
+
+  private async waitForConnection(
+    connection: ConnectionPool,
+    maxWaitTime: number = 10_000,
+  ): Promise<void> {
+    const startTime = Date.now()
+
+    return new Promise((resolve, reject) => {
+      const checkConnection = () => {
+        if (connection.connected) {
+          resolve()
+        } else if (Date.now() - startTime >= maxWaitTime) {
+          reject(
+            new Error(
+              'Connection timeout: Database connection not established within timeout period',
+            ),
+          )
+        } else {
+          setTimeout(checkConnection, 100)
+        }
+      }
+      checkConnection()
+    })
   }
 }

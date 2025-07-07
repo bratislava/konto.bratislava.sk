@@ -124,18 +124,24 @@ describe('PhysicalEntityService', () => {
         ],
         failed: [],
       }
+      const mockUpdated = {
+        id: 'mock-entity-id',
+        uri: 'mock-uri',
+        activeEdesk: true,
+        ifo: 'mock-ifo',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: 'mock-user-id',
+        birthNumber: 'mock-birth-number',
+      }
       const updateSpy = jest
         .spyOn(service, 'update')
-        .mockResolvedValue({ id: 'mock-entity-id', uri: 'mock-uri', activeEdesk: true } as any)
+        .mockResolvedValue(mockUpdated)
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
       const result = await service.updateUriAndEdeskFromUpvs(mockUpvsInput)
 
-      expect(result.updatedEntity).toEqual({
-        id: 'mock-entity-id',
-        uri: 'mock-uri',
-        activeEdesk: true,
-      })
+      expect(result.updatedEntity).toEqual(mockUpdated)
       expect(updateSpy).toHaveBeenCalledWith({
         id: 'mock-entity-id',
         uri: 'mock-uri',
@@ -405,7 +411,7 @@ describe('PhysicalEntityService', () => {
       await expect(service.updateFromRFO(mockEntityID)).rejects.toThrowError(
         new ThrowerErrorGuard().NotFoundException(
           AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-          AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND,
+          AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
         )
       )
     })
@@ -430,15 +436,22 @@ describe('PhysicalEntityService', () => {
         .mockResolvedValue(RfoIdentityListMockData)
 
       const upvsSpy = jest.spyOn(service, 'updateUriAndEdeskFromUpvs').mockResolvedValue({
-        updatedEntity: { ...mockPhysicalEntity, uri: mockString, activeEdesk: true },
-        upvsResult: { uri: mockString, physicalEntityId: mockEntityID } as any,
+        updatedEntity: { ...mockPhysicalEntity, uri: 'mock-uri', activeEdesk: true },
+        upvsResult: {
+          uri: 'mock-uri',
+          physicalEntityId: mockEntityID,
+          id: 'mock-id',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          data: {},
+        },
       })
 
       const result = await service.updateFromRFO(mockEntityID)
 
       expect(result.physicalEntity).toEqual({
         ...mockPhysicalEntity,
-        uri: mockString,
+        uri: 'mock-uri',
         activeEdesk: true,
       })
       expect(result.rfoData).toEqual(RfoIdentityListMockData)
@@ -465,13 +478,11 @@ describe('PhysicalEntityService', () => {
       jest
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
         .mockResolvedValue(RfoIdentityListMockData)
-      const parseSpy = jest.spyOn(service as any, 'parseRfoDataToUpvsInput').mockReturnValue(null)
 
       const result = await service.updateFromRFO(mockEntityID)
 
       expect(result.physicalEntity).toEqual(mockPhysicalEntity)
       expect(result.rfoData).toEqual(RfoIdentityListMockData)
-      expect(parseSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

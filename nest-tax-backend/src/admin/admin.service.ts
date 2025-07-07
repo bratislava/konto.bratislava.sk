@@ -458,21 +458,23 @@ export class AdminService {
         return 'ALREADY_CREATED'
       }
 
-      const createdTaxPayment = await this.prismaService.taxPayment.create({
-        data: {
-          amount: paidFromNoris - (payerData.sum ?? 0),
-          source: 'BANK_ACCOUNT',
-          specificSymbol: norisPayment.specificky_symbol,
-          taxId: taxData.id,
-          status: PaymentStatus.SUCCESS,
-        },
-      })
+      await this.prismaService.$transaction(async (tx) => {
+        const createdTaxPayment = await tx.taxPayment.create({
+          data: {
+            amount: paidFromNoris - (payerData.sum ?? 0),
+            source: 'BANK_ACCOUNT',
+            specificSymbol: norisPayment.specificky_symbol,
+            taxId: taxData.id,
+            status: PaymentStatus.SUCCESS,
+          },
+        })
 
-      await this.trackPaymentIfNeeded(
-        taxData,
-        createdTaxPayment,
-        userDataFromCityAccount,
-      )
+        await this.trackPaymentIfNeeded(
+          taxData,
+          createdTaxPayment,
+          userDataFromCityAccount,
+        )
+      })
 
       this.handlePaymentsErrors(
         paidFromNoris,

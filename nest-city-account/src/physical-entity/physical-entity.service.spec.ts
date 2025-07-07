@@ -109,8 +109,9 @@ describe('PhysicalEntityService', () => {
     consoleSpy.mockImplementation(() => {})
   })
   describe('updateUriAndEdeskFromUpvs', () => {
+    const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
+
     it('should successfully update a PhysicalEntity with UPVS success result', async () => {
-      const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
       const mockUpvsResult = {
         success: [
           {
@@ -150,7 +151,6 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should throw an error when multiple UPVS success results are returned', async () => {
-      const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
       const mockUpvsResult = {
         success: [
           {
@@ -186,7 +186,6 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should log an error when no UPVS success results are returned', async () => {
-      const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
       const mockUpvsResult = { success: [], failed: [] }
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
@@ -201,7 +200,6 @@ describe('PhysicalEntityService', () => {
     })
 
     it('should log an error if an exception is thrown during createMany', async () => {
-      const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
       jest
         .spyOn(upvsIdentityByUriService, 'createMany')
         .mockRejectedValue(new Error('Test Exception'))

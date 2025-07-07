@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { PaymentStatus, Prisma, Tax } from '@prisma/client'
+import { PaymentStatus, Prisma, Tax, TaxPayment } from '@prisma/client'
 import currency from 'currency.js'
+import { ResponseUserByBirthNumberDto } from 'openapi-clients/city-account'
 
 import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { NorisPaymentsDto, NorisTaxPayersDto } from '../noris/noris.dto'
@@ -20,6 +21,7 @@ import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservic
 import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   TaxIdVariableSymbolYear,
+  TaxWithTaxPayer,
   transformDeliveryMethodToDatabaseType,
 } from '../utils/types/types.prisma'
 import {
@@ -408,9 +410,9 @@ export class AdminService {
 
   private async processNorisPaymentData(
     norisPaymentData: Partial<NorisPaymentsDto>[],
-    taxesDataByVsMap: Map<string, any>,
+    taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     taxPaymentDataMap: Map<number, { sum: number; count: number }>,
-    userDataFromCityAccount: Record<string, any> = {},
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     const validPayments = norisPaymentData.filter(
       (norisPayment) =>
@@ -435,9 +437,9 @@ export class AdminService {
 
   private async processIndividualPayment(
     norisPayment: Partial<NorisPaymentsDto>,
-    taxesDataByVsMap: Map<string, any>,
+    taxesDataByVsMap: Map<string, TaxWithTaxPayer>,
     taxPaymentDataMap: Map<number, { sum: number; count: number }>,
-    userDataFromCityAccount: Record<string, any> = {},
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto> = {},
   ) {
     try {
       const taxData = taxesDataByVsMap.get(norisPayment.variabilny_symbol!)
@@ -495,9 +497,9 @@ export class AdminService {
   }
 
   private async trackPaymentIfNeeded(
-    taxData: any,
-    createdTaxPayment: any,
-    userDataFromCityAccount: Record<string, any>,
+    taxData: TaxWithTaxPayer,
+    createdTaxPayment: TaxPayment,
+    userDataFromCityAccount: Record<string, ResponseUserByBirthNumberDto>,
   ) {
     const userFromCityAccount =
       userDataFromCityAccount[taxData.taxPayer.birthNumber] || null

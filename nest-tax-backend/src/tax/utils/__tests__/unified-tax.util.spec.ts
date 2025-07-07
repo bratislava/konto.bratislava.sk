@@ -9,7 +9,15 @@ import {
   OneTimePaymentReasonNotPossibleEnum,
   OneTimePaymentTypeEnum,
 } from '../../dtos/response.tax.dto'
-import { getTaxDetailPure } from '../unified-tax.util'
+import {
+  getTaxDetailPure,
+  getTaxDetailPureForOneTimeGenerator,
+} from '../unified-tax.util'
+import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../../dtos/error.dto'
 
 const defaultInput = {
   taxYear: 2025,
@@ -568,5 +576,87 @@ describe('UnifiedTaxUtil', () => {
 
       expectEqualAsJsonStringsWithDates(output, expected)
     })
+  })
+})
+
+describe('getTaxDetailPureForOneTimeGenerator', () => {
+  const options: {
+    taxId: number
+    overallAmount: number // suma na zaplatenie
+    taxPayments: {
+      amount: number
+      status: PaymentStatus
+    }[]
+  } = {
+    taxId: 123,
+    overallAmount: 6600,
+    taxPayments: [],
+  }
+  it('should generate full payment', () => {
+    const output = getTaxDetailPureForOneTimeGenerator(options)
+
+    expect(output).toEqual({
+      amount: 6600,
+      taxId: 123,
+      description: 'Platba za dane pre BA s id dane 123',
+    })
+  })
+
+  it('should generate partial payment', () => {
+    const output = getTaxDetailPureForOneTimeGenerator({
+      ...options,
+      taxPayments: [
+        { amount: 1, status: PaymentStatus.NEW },
+        { amount: 1, status: PaymentStatus.FAIL },
+        {
+          amount: 1,
+          status: PaymentStatus.SUCCESS,
+        },
+      ],
+    })
+
+    expect(output).toEqual({
+      amount: 6599,
+      taxId: 123,
+      description: 'Platba za zvyšok dane pre BA s id dane 123',
+    })
+  })
+
+  it('should handle already paid tax', () => {
+    expect(() => {
+      getTaxDetailPureForOneTimeGenerator({
+        ...options,
+        taxPayments: [
+          {
+            amount: 6600,
+            status: PaymentStatus.SUCCESS,
+          },
+        ],
+      })
+    }).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.ALREADY_PAID,
+        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      ),
+    )
+  })
+
+  it('should handle overpaid tax', () => {
+    expect(() => {
+      getTaxDetailPureForOneTimeGenerator({
+        ...options,
+        taxPayments: [
+          {
+            amount: 999999,
+            status: PaymentStatus.SUCCESS,
+          },
+        ],
+      })
+    }).toThrow(
+      new ThrowerErrorGuard().UnprocessableEntityException(
+        CustomErrorTaxTypesEnum.ALREADY_PAID,
+        CustomErrorTaxTypesResponseEnum.ALREADY_PAID,
+      ),
+    )
   })
 })

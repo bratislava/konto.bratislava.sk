@@ -42,7 +42,7 @@ export class PhysicalEntityService {
       where: { birthNumber },
     })
     if (entities.length > 1) {
-      this.logger.error(`Multiple physical entities in database with birthnumber ${birthNumber}.`)
+      this.logger.error(`Multiple physical entities in database with birthnumber: ${birthNumber}.`)
       return
     }
     if (entities.length === 0) {
@@ -88,7 +88,7 @@ export class PhysicalEntityService {
 
     // Could not create entity
     if (!entity || !entity.birthNumber) {
-      this.logger.error(`PhysicalEntity was not created in database ${birthNumber}.`)
+      this.logger.error(`PhysicalEntity was not created in database for birth number: ${birthNumber}.`)
       return null
     }
     return entity

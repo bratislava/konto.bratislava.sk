@@ -1,0 +1,18 @@
+query MunicipalServicesPage {
+  municipalServicesPage {
+    data {
+      attributes {
+        services {
+          data {
+            ...MunicipalServiceEntity
+          }
+        }
+        servicesLegalPerson {
+          data {
+            ...MunicipalServiceEntity
+          }
+        }
+      }
+    }
+  }
+}

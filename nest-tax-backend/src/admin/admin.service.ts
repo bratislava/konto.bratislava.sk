@@ -213,7 +213,7 @@ export class AdminService {
               'Failed to insert tax to database.',
               undefined,
               undefined,
-              error as Error,
+              error,
             ),
           )
 
@@ -316,7 +316,7 @@ export class AdminService {
                 'Failed to update tax in database.',
                 undefined,
                 undefined,
-                error as Error,
+                error,
               ),
             )
           }
@@ -491,7 +491,7 @@ export class AdminService {
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         undefined,
         undefined,
-        error as Error,
+        error,
       )
     }
   }

@@ -31,6 +31,7 @@ import {
 } from './dtos/error.dto'
 import { PaymentGateURLGeneratorDto } from './dtos/generator.dto'
 import { PaymentRedirectStateEnum } from './dtos/redirect.payent.dto'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class PaymentService {
@@ -128,14 +129,16 @@ export class PaymentService {
   }
 
   async generateFullPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
-    const generator = await this.taxService.getOneTimePaymentGenerator(where)
+    const currentYear = dayjs().year()
+    const generator = await this.taxService.getOneTimePaymentGenerator(where,currentYear)
 
     return this.getPaymentUrlInternal(generator)
   }
 
   async generateInstallmentPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
+    const currentYear = dayjs().year()
     const generator =
-      await this.taxService.getInstallmentPaymentGenerator(where)
+      await this.taxService.getInstallmentPaymentGenerator(where, currentYear)
 
     return this.getPaymentUrlInternal(generator)
   }

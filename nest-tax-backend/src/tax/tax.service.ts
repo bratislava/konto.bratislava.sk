@@ -331,12 +331,12 @@ export class TaxService {
 
   async getOneTimePaymentGenerator(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    year: number
   ): Promise<PaymentGateURLGeneratorDto> {
-    const currentYear = dayjs().year()
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxPayments: true },
-      currentYear,
+      year,
     )
 
     return getTaxDetailPureForOneTimeGenerator({
@@ -348,19 +348,19 @@ export class TaxService {
 
   async getInstallmentPaymentGenerator(
     taxPayerWhereUniqueInput: Prisma.TaxPayerWhereUniqueInput,
+    year: number
   ): Promise<PaymentGateURLGeneratorDto> {
-    const currentYear = dayjs().year()
     const today = dayjs().tz('Europe/Bratislava').toDate()
 
     const tax = await this.fetchTaxData(
       taxPayerWhereUniqueInput,
       { taxInstallments: true, taxPayments: true },
-      currentYear,
+      year,
     )
 
     return getTaxDetailPureForInstallmentGenerator({
       taxId: tax.id,
-      taxYear: currentYear,
+      taxYear: year,
       today,
       overallAmount: tax.amount,
       paymentCalendarThreshold,

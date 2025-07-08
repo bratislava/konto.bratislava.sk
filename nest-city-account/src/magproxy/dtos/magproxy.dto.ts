@@ -1,4 +1,4 @@
-import { ResponseRpoLegalPersonDto } from '../../generated-clients/new-magproxy'
+import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { ResponseErrorInternalDto } from '../../utils/guards/dtos/error.dto'
 
 export interface RfoDataMagproxyDto {

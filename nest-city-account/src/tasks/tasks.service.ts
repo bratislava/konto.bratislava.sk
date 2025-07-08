@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../../generated-clients/nest-tax-backend'
-import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
-import { GdprCategory, GdprSubType, GdprType } from '../../user/dtos/gdpr.user.dto'
-import { addSlashToBirthNumber } from '../birthNumbers'
-import { getTaxDeadlineDate } from '../constants/tax-deadline'
-import HandleErrors from '../decorators/errorHandler.decorators'
-import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
-import ThrowerErrorGuard from '../guards/errors.guard'
-import { DeliveryMethod } from '../types/tax.types'
-import { LineLoggerSubservice } from './line-logger.subservice'
-import { TaxSubservice } from './tax.subservice'
-import { PhysicalEntityService } from '../../physical-entity/physical-entity.service'
+import { RequestUpdateNorisDeliveryMethodsDtoDataValue } from '../generated-clients/nest-tax-backend'
+import { ACTIVE_USER_FILTER, PrismaService } from '../prisma/prisma.service'
+import { GdprCategory, GdprSubType, GdprType } from '../user/dtos/gdpr.user.dto'
+import { addSlashToBirthNumber } from '../utils/birthNumbers'
+import { getTaxDeadlineDate } from '../utils/constants/tax-deadline'
+import HandleErrors from '../utils/decorators/errorHandler.decorators'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { DeliveryMethod } from '../utils/types/tax.types'
+import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import { TaxSubservice } from '../utils/subservices/tax.subservice'
+import { PhysicalEntityService } from '../physical-entity/physical-entity.service'
 import { PhysicalEntity } from '@prisma/client'
 
 const UPLOAD_BIRTHNUMBERS_BATCH = 100
@@ -20,7 +20,7 @@ const UPLOAD_TAX_DELIVERY_METHOD_BATCH = 100
 const EDESK_UPDATE_LOOK_BACK_HOURS = 96
 
 @Injectable()
-export class TasksSubservice {
+export class TasksService {
   private readonly logger: LineLoggerSubservice
 
   constructor(
@@ -29,7 +29,7 @@ export class TasksSubservice {
     private readonly taxSubservice: TaxSubservice,
     private readonly physicalEntityService: PhysicalEntityService
   ) {
-    this.logger = new LineLoggerSubservice(TasksSubservice.name)
+    this.logger = new LineLoggerSubservice(TasksService.name)
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM)

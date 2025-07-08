@@ -110,7 +110,7 @@ export class PaymentService {
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
       const signedData = this.gpWebpaySubservice.getSignedData(requestData)
-      return `${process.env.PAYGATE_PAYMENT_REDIRECT_URL}?${formurlencoded(
+      return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
         signedData,
         {
           ignorenull: true,
@@ -193,7 +193,7 @@ export class PaymentService {
         PAYMETHODS: `APAY,GPAY,CRD`,
       }
       const signedData = this.gpWebpaySubservice.getSignedData(requestData)
-      return `${process.env.PAYGATE_PAYMENT_REDIRECT_URL}?${formurlencoded(
+      return `${this.configService.getOrThrow<string>('PAYGATE_PAYMENT_REDIRECT_URL')}?${formurlencoded(
         signedData,
         {
           ignorenull: true,

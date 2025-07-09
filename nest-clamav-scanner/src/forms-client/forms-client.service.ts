@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AxiosError } from 'axios'
-import { UpdateFileStatusRequestDtoStatusEnum } from 'openapi-clients/forms'
+import { AxiosError, AxiosPromise } from 'axios'
+import { UpdateFileStatusRequestDtoStatusEnum, UpdateFileStatusResponseDto } from 'openapi-clients/forms'
 
 import ClientsService from '../clients/clients.service'
 
@@ -41,7 +41,7 @@ export class FormsClientService {
   async updateFileStatus(
     id: string,
     status: UpdateFileStatusRequestDtoStatusEnum,
-  ) {
+  ): AxiosPromise<UpdateFileStatusResponseDto> {
     try {
       return await this.clientsService.formsApi.filesControllerUpdateFileStatusScannerId(
         id,

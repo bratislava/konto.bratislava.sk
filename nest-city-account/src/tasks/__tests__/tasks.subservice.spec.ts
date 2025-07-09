@@ -44,7 +44,7 @@ describe('TasksSubservice', () => {
         TasksService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: TaxSubservice, useValue: createMock<TaxSubservice>() },
-        { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>()},
+        { provide: PhysicalEntityService, useValue: createMock<PhysicalEntityService>() },
         ThrowerErrorGuard,
       ],
     }).compile()

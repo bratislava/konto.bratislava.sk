@@ -277,7 +277,10 @@ export class TasksService {
         try {
           await this.physicalEntityService.updateEdeskFromUpvs({ id: entity.id })
         } catch (error) {
-          this.logger.error(`Failed to update activeEdesk status for entity with id: ${entity.id}`, error)
+          this.logger.error(
+            `Failed to update activeEdesk status for entity with id: ${entity.id}`,
+            error
+          )
         }
       })
     )

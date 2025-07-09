@@ -501,6 +501,8 @@ export const setDeliveryMethodsForUser = `
         dkba_stav = @dkba_stav,
         dkba_datum_suhlasu = @dkba_datum_suhlasu,
         dkba_sposob_dorucovania = @dkba_sposob_dorucovania
+    OUTPUT
+        inserted.cislo_subjektu
     WHERE
         cislo_subjektu IN (
             SELECT DISTINCT subjekt
@@ -508,6 +510,13 @@ export const setDeliveryMethodsForUser = `
             WHERE podnikatel = 'N' 
             AND rodne_cislo IN (@birth_numbers)
         )
+`
+
+export const getBirthNumbersForSubjects = `
+    SELECT DISTINCT rodne_cislo
+    FROM lcs.dane21_priznanie
+    WHERE podnikatel = 'N' 
+    AND subjekt IN (@subjects)
 `
 
 export const getNorisDataForUpdate = `

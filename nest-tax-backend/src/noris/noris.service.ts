@@ -9,8 +9,12 @@ import {
 
 import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
-import { NorisUpdateDto } from './noris.dto'
 import {
+  NorisDeliveryMethodsUpdateResultDto,
+  NorisUpdateDto,
+} from './noris.dto'
+import {
+  getBirthNumbersForSubjects,
   getNorisDataForUpdate,
   queryPayersFromNoris,
   queryPaymentsFromNoris,
@@ -172,7 +176,7 @@ export class NorisService {
 
   async updateDeliveryMethods(
     data: UpdateNorisDeliveryMethods[],
-  ): Promise<void> {
+  ): Promise<string[]> {
     const connection = await connect({
       server: this.configService.getOrThrow<string>('MSSQL_HOST'),
       port: 1433,
@@ -188,7 +192,7 @@ export class NorisService {
     })
 
     try {
-      await Promise.all(
+      const result = await Promise.all(
         data.map(async (dataItem) => {
           const request = new Request(connection)
 
@@ -212,9 +216,15 @@ export class NorisService {
           )
 
           // Execute the query
-          return request.query(queryWithPlaceholders)
+          return request.query(
+            queryWithPlaceholders,
+          ) as Promise<NorisDeliveryMethodsUpdateResultDto>
         }),
       )
+
+      const birthNumbersUpdated =
+        await this.getBirthNumbersWithUpdatedDeliveryMethods(result)
+      return birthNumbersUpdated
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -227,6 +237,50 @@ export class NorisService {
       // Always close the connection
       await connection.close()
     }
+  }
+
+  private async getBirthNumbersWithUpdatedDeliveryMethods(
+    data: any[],
+  ): Promise<string[]> {
+    const updatedSubjects = data.flatMap((item) =>
+      item.recordset.map(
+        (record: { cislo_subjektu: number }) => record.cislo_subjektu,
+      ),
+    )
+
+    const connection = await connect({
+      server: this.configService.getOrThrow<string>('MSSQL_HOST'),
+      port: 1433,
+      database: this.configService.getOrThrow<string>('MSSQL_DB'),
+      user: this.configService.getOrThrow<string>('MSSQL_USERNAME'),
+      connectionTimeout: 120_000,
+      requestTimeout: 120_000,
+      password: this.configService.getOrThrow<string>('MSSQL_PASSWORD'),
+      options: {
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+    })
+
+    const request = new Request(connection)
+
+    // Set parameters for the query
+    const subjectPlaceholders = updatedSubjects
+      .map((_, index) => `@subject${index}`)
+      .join(',')
+    updatedSubjects.forEach((subject, index) => {
+      request.input(`subject${index}`, subject)
+    })
+    const queryWithPlaceholders = getBirthNumbersForSubjects.replaceAll(
+      '@subjects',
+      subjectPlaceholders,
+    )
+
+    // Execute the query
+    const result = await request.query(queryWithPlaceholders)
+    return result.recordset.map(
+      (record: { rodne_cislo: string }) => record.rodne_cislo,
+    )
   }
 
   async getDataForUpdate(

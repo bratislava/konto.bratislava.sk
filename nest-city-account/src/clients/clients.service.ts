@@ -8,7 +8,7 @@ export default class ClientsService {
   constructor(private configService: ConfigService) {}
 
   public readonly taxBackendApi: ReturnType<typeof createTaxClient> = createTaxClient({
-    basePath: this.configService.getOrThrow('TAX_BACKEND_API_URL'),
+    basePath: this.configService.getOrThrow('TAX_BACKEND_URL'),
   })
 
   public readonly magproxyApi: ReturnType<typeof createMagproxyClient> = createMagproxyClient({

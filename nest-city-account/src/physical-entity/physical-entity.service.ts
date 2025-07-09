@@ -9,7 +9,6 @@ import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsIdentityByUriService,
-  UpvsIdentityByUriServiceCreateManyParam,
 } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -105,7 +104,7 @@ export class PhysicalEntityService {
       failed: { physicalEntityId?: string; uri: string }[]
     } | null = null
     try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
+      upvsResult = await this.upvsIdentityByUriService.createMany([upvsInput])
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
@@ -160,7 +159,7 @@ export class PhysicalEntityService {
     const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
     const uri = `rc://sk/${processedBirthNumber}_${uriName}`
     this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return [{ uri, physicalEntityId: entity.id }]
+    return { uri, physicalEntityId: entity.id }
   }
 
   async createFromBirthNumber(birthNumber: string) {

@@ -112,7 +112,7 @@ describe('PhysicalEntityService', () => {
     consoleSpy.mockImplementation(() => {})
   })
   describe('updateUriAndEdeskFromUpvs', () => {
-    const mockUpvsInput = [{ uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }]
+    const mockUpvsInput = { uri: 'mock-uri', physicalEntityId: 'mock-entity-id' }
 
     it('should successfully update a PhysicalEntity with UPVS success result', async () => {
       const mockUpvsResult = {
@@ -137,13 +137,16 @@ describe('PhysicalEntityService', () => {
         updatedAt: new Date(),
         userId: 'mock-user-id',
         birthNumber: 'mock-birth-number',
+        activeEdeskUpdatedAt: null,
+        activeEdeskUpdateFailedAt: null,
+        activeEdeskUpdateFailCount: 0,
       }
       const updateSpy = jest
         .spyOn(service, 'update')
         .mockResolvedValue(mockUpdated)
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
-      const result = await service.updateUriAndEdeskFromUpvs(mockUpvsInput)
+      const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
       expect(result.updatedEntity).toEqual(mockUpdated)
       expect(updateSpy).toHaveBeenCalledWith({
@@ -177,7 +180,7 @@ describe('PhysicalEntityService', () => {
       }
       jest.spyOn(upvsIdentityByUriService, 'createMany').mockResolvedValue(mockUpvsResult)
 
-      await expect(service.updateUriAndEdeskFromUpvs(mockUpvsInput)).rejects.toThrowError(
+      await expect(service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)).rejects.toThrowError(
         new ThrowerErrorGuard().InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
           ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
@@ -194,7 +197,7 @@ describe('PhysicalEntityService', () => {
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
-      const result = await service.updateUriAndEdeskFromUpvs(mockUpvsInput)
+      const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
       expect(result).toEqual({})
       expect(loggerSpy).toHaveBeenCalledWith(
@@ -209,7 +212,7 @@ describe('PhysicalEntityService', () => {
 
       const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 
-      const result = await service.updateUriAndEdeskFromUpvs(mockUpvsInput)
+      const result = await service.checkUriAndUpdateEdeskFromUpvs(mockUpvsInput)
 
       expect(result).toEqual({})
       expect(loggerSpy).toHaveBeenCalledWith(
@@ -446,7 +449,7 @@ describe('PhysicalEntityService', () => {
         .spyOn(MagproxyServiceMock, 'rfoBirthNumberList')
         .mockResolvedValue(RfoIdentityListMockData)
 
-      const upvsSpy = jest.spyOn(service, 'updateUriAndEdeskFromUpvs').mockResolvedValue({
+      const upvsSpy = jest.spyOn(service, 'checkUriAndUpdateEdeskFromUpvs').mockResolvedValue({
         updatedEntity: { ...mockPhysicalEntity, uri: 'mock-uri', activeEdesk: true },
         upvsResult: {
           uri: 'mock-uri',

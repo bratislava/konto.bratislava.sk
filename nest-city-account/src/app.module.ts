@@ -11,6 +11,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
 import ThrowerErrorGuard from './utils/guards/errors.guard'
 import { TaxSubservice } from './utils/subservices/tax.subservice'
 import { ConfigModule } from '@nestjs/config'
+import ClientsModule from './clients/clients.module'
 import { TasksModule } from './tasks/tasks.module'
 
 @Module({
@@ -22,6 +23,7 @@ import { TasksModule } from './tasks/tasks.module'
     AdminModule,
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
+    ClientsModule,
     TasksModule,
   ],
   controllers: [AppController],

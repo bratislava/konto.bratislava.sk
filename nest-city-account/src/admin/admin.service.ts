@@ -38,7 +38,7 @@ import {
   removeLegalPersonDataFromDatabase,
   removeUserDataFromDatabase,
 } from './utils/account-deactivate.utils'
-import { RequestAdminDeleteTaxDto } from '../generated-clients/nest-tax-backend'
+import { RequestAdminDeleteTaxDto } from 'openapi-clients/tax'
 import { AnonymizeResponse } from '../bloomreach/bloomreach.dto'
 
 @Injectable()

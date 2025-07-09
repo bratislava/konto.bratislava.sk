@@ -12,12 +12,14 @@ datasource db {
 }
 
 model TaxPayer {
-  id                          Int      @id @default(autoincrement())
-  uuid                        String   @default(uuid()) @db.Uuid
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @default(now()) @updatedAt
+  id                          Int               @id @default(autoincrement())
+  uuid                        String            @default(uuid()) @db.Uuid
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime          @default(now()) @updatedAt
   active                      Boolean // if it is active tax payer or is only past tax pay
   birthNumber                 String // with slash
+  taxAdministratorId          Int?
+  taxAdministrator            TaxAdministrator? @relation(fields: [taxAdministratorId], references: [id])
   permanentResidenceAddress   String?
   externalId                  String?
   name                        String?
@@ -43,7 +45,6 @@ model Tax {
   taxPayer                        TaxPayer             @relation(fields: [taxPayerId], references: [id])
   amount                          Int
   variableSymbol                  String
-  taxEmployeeId                   Int
   qrCodeWeb                       String?
   qrCodeEmail                     String?
   taxId                           String?
@@ -55,7 +56,6 @@ model Tax {
   taxPayments                     TaxPayment[]
   taxInstallments                 TaxInstallment[]
   taxDetails                      TaxDetail[]
-  taxEmployees                    TaxEmployee          @relation(fields: [taxEmployeeId], references: [id])
   lastCheckedPayments             DateTime             @default(now())
   lastCheckedUpdates              DateTime             @default(now())
   deliveryMethod                  DeliveryMethodNamed?
@@ -106,15 +106,15 @@ model TaxDetail {
   amount    Int
 }
 
-model TaxEmployee {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
-  tax         Tax[]
+model TaxAdministrator {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
   externalId  String
   name        String
   phoneNumber String
   email       String
+  TaxPayer    TaxPayer[]
 }
 
 model CsvFile {

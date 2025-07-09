@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
-import { AdminErrorsEnum } from '../admin/admin.errors.enum'
+import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
 import { PrismaService } from '../prisma/prisma.service'
 import { RfoIdentityList, RfoIdentityListElement } from '../rfo-by-birthnumber/dtos/rfoSchema'
 import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
-import { UpvsIdentityByUriService } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
+import {
+  UpvsIdentityByUriService,
+  UpvsIdentityByUriServiceCreateManyParam,
+} from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
 import { MagproxyService } from '../magproxy/magproxy.service'
@@ -39,7 +42,7 @@ export class PhysicalEntityService {
       where: { birthNumber },
     })
     if (entities.length > 1) {
-      this.logger.error(`Multiple physical entities in database with birthnumber ${birthNumber}.`)
+      this.logger.error(`Multiple physical entities in database with birthnumber: ${birthNumber}.`)
       return
     }
     if (entities.length === 0) {
@@ -85,7 +88,9 @@ export class PhysicalEntityService {
 
     // Could not create entity
     if (!entity || !entity.birthNumber) {
-      this.logger.error(`PhysicalEntity was not created in database ${birthNumber}.`)
+      this.logger.error(
+        `PhysicalEntity was not created in database for birth number: ${birthNumber}.`
+      )
       return null
     }
     return entity
@@ -100,7 +105,7 @@ export class PhysicalEntityService {
       failed: { physicalEntityId?: string; uri: string }[]
     } | null = null
     try {
-      upvsResult = await this.upvsIdentityByUriService.createMany([upvsInput])
+      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
@@ -155,7 +160,7 @@ export class PhysicalEntityService {
     const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
     const uri = `rc://sk/${processedBirthNumber}_${uriName}`
     this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return { uri, physicalEntityId: entity.id }
+    return [{ uri, physicalEntityId: entity.id }]
   }
 
   async createFromBirthNumber(birthNumber: string) {
@@ -214,7 +219,7 @@ export class PhysicalEntityService {
     if (!entity.birthNumber) {
       throw this.throwerErrorGuard.NotFoundException(
         AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND,
-        AdminErrorsEnum.BIRTH_NUMBER_NOT_FOUND
+        AdminErrorsResponseEnum.BIRTH_NUMBER_NOT_FOUND
       )
     }
 

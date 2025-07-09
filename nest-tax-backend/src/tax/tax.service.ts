@@ -22,7 +22,6 @@ import {
   ResponseInstallmentPaymentDetailDto,
   ResponseOneTimePaymentDetailsDto,
   ResponseTaxDto,
-  ResponseTaxEmployeeDto,
   ResponseTaxSummaryDetailDto,
 } from './dtos/response.tax.dto'
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
@@ -52,9 +51,12 @@ export class TaxService {
       },
       include: {
         taxInstallments: true,
-        taxPayer: true,
+        taxPayer: {
+          include: {
+            taxAdministrator: true,
+          },
+        },
         taxDetails: true,
-        taxEmployees: true,
         taxPayments: true,
       },
     })
@@ -124,6 +126,7 @@ export class TaxService {
       paidStatus,
       pdfExport,
       isPayable,
+      taxAdministrator: tax.taxPayer.taxAdministrator,
     }
   }
 
@@ -168,6 +171,15 @@ export class TaxService {
       },
     })
 
+    const taxPayer = await this.prisma.taxPayer.findUnique({
+      where: {
+        birthNumber,
+      },
+      include: {
+        taxAdministrator: true,
+      },
+    })
+
     const items: ResponseGetTaxesBodyDto[] = taxes.map((tax) => {
       const taxPaymentItem = taxPayments.find(
         (taxPayment) => taxPayment.taxId === tax.id,
@@ -189,6 +201,7 @@ export class TaxService {
     return {
       isInNoris: items.length > 0,
       items,
+      taxAdministrator: taxPayer ? taxPayer.taxAdministrator : null,
     }
   }
 
@@ -278,17 +291,13 @@ export class TaxService {
         : undefined,
     }
 
-    const taxEmployee: ResponseTaxEmployeeDto = {
-      name: tax.taxEmployees.name,
-      phoneNumber: tax.taxEmployees.phoneNumber,
-      email: tax.taxEmployees.email,
-    }
+    const { taxAdministrator } = tax.taxPayer
 
     return {
       ...detailWithoutQrCode,
       oneTimePayment,
       installmentPayment,
-      taxEmployee,
+      taxAdministrator,
     }
   }
 }

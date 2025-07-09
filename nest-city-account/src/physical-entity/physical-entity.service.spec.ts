@@ -23,6 +23,9 @@ const mockPhysicalEntity: PhysicalEntity = {
   ifo: null,
   birthNumber: mockBirthNumber,
   activeEdesk: null,
+  activeEdeskUpdatedAt: null,
+  activeEdeskUpdateFailedAt: null,
+  activeEdeskUpdateFailCount: 0,
 }
 
 const RfoIdentityListMockData: RfoIdentityList = [
@@ -162,6 +165,9 @@ describe('PhysicalEntityService', () => {
         id: mockEntityID,
         uri: 'forcefullyTypedResult.uri',
         activeEdesk: false,
+        activeEdeskUpdateFailCount: 0,
+        activeEdeskUpdateFailedAt: null,
+        activeEdeskUpdatedAt: expect.any(Date),
       },
       where: {
         id: mockEntityID,
@@ -181,6 +187,9 @@ describe('PhysicalEntityService', () => {
       ifo: null,
       birthNumber: mockBirthNumber,
       activeEdesk: null,
+      activeEdeskUpdatedAt: null,
+      activeEdeskUpdateFailedAt: null,
+      activeEdeskUpdateFailCount: 0,
     })
     jest.spyOn(prismaMock.physicalEntity, 'findMany').mockResolvedValue([])
 
@@ -214,6 +223,9 @@ describe('PhysicalEntityService', () => {
       ifo: null,
       birthNumber: mockBirthNumber,
       activeEdesk: null,
+      activeEdeskUpdatedAt: null,
+      activeEdeskUpdateFailedAt: null,
+      activeEdeskUpdateFailCount: 0,
     })
     const loggerSpy = jest.spyOn(LineLoggerSubservice.prototype, 'error')
 

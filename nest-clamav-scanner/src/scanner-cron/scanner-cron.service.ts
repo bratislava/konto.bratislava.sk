@@ -349,9 +349,7 @@ export class ScannerCronService {
           file.id,
           status,
         )
-        this.logger.debug(
-          `Forms response for file id: ${file.id} is: ${JSON.stringify(response.data)}`,
-        )
+        this.logger.debug(`Forms response for file id: ${file.id}`, response.data)
         responseStatus = response.status
       } catch {
         notifiedStatus = false

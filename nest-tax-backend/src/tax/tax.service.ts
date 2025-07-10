@@ -3,13 +3,15 @@ import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import { PaymentStatus } from '@prisma/client'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import ejs from 'ejs'
-import { PrismaService } from 'src/prisma/prisma.service'
-import ThrowerErrorGuard from 'src/utils/guards/errors.guard'
-import { computeIsPayableYear } from 'src/utils/helpers/payment.helper'
-import { QrCodeSubservice } from 'src/utils/subservices/qrcode.subservice'
 
 import { PaymentService } from '../payment/payment.service'
+import { PrismaService } from '../prisma/prisma.service'
+import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { computeIsPayableYear } from '../utils/helpers/payment.helper'
+import { QrCodeSubservice } from '../utils/subservices/qrcode.subservice'
 import {
   CustomErrorPdfCreateTypesEnum,
   CustomErrorTaxTypesEnum,
@@ -27,6 +29,9 @@ import {
 import { taxDetailsToPdf, taxTotalsToPdf } from './utils/helpers/pdf.helper'
 import { fixInstallmentTexts, getTaxStatus } from './utils/helpers/tax.helper'
 import { getTaxDetailPure } from './utils/unified-tax.util'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const paymentCalendarThreshold = 6600
 

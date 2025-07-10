@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { TIERS_KEY } from 'src/utils/decorators/tier.decorator'
-import { CognitoTiersEnum } from 'src/utils/global-dtos/cognito.dto'
 
+import { TIERS_KEY } from '../../utils/decorators/tier.decorator'
+import { CognitoTiersEnum } from '../../utils/global-dtos/cognito.dto'
 import { ErrorsEnum } from '../../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../../utils/guards/errors.guard'
 import { CognitoSubservice } from '../../utils/subservices/cognito.subservice'

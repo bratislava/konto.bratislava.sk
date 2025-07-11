@@ -8,11 +8,18 @@ import { GpWebpaySubservice } from 'src/utils/subservices/gpwebpay.subservice'
 
 import UserInfoPipeModule from '../auth/decorators/user-info-pipe.module'
 import ClientsModule from '../clients/clients.module'
+import { TaxModule } from '../tax/tax.module'
 import { PaymentController } from './payment.controller'
 import { PaymentService } from './payment.service'
 
 @Module({
-  imports: [PrismaModule, BloomreachModule, ClientsModule, UserInfoPipeModule],
+  imports: [
+    PrismaModule,
+    BloomreachModule,
+    ClientsModule,
+    UserInfoPipeModule,
+    TaxModule,
+  ],
   providers: [
     PaymentService,
     CognitoSubservice,

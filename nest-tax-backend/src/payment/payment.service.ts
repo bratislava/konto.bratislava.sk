@@ -128,17 +128,26 @@ export class PaymentService {
     }
   }
 
-  async generateFullPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
-    const currentYear = dayjs().year()
-    const generator = await this.taxService.getOneTimePaymentGenerator(where,currentYear)
+  async generateFullPaymentLink(
+    where: Prisma.TaxPayerWhereUniqueInput,
+    year: number,
+  ) {
+    const generator = await this.taxService.getOneTimePaymentGenerator(
+      where,
+      year,
+    )
 
     return this.getPaymentUrlInternal(generator)
   }
 
-  async generateInstallmentPaymentLink(where: Prisma.TaxPayerWhereUniqueInput) {
-    const currentYear = dayjs().year()
-    const generator =
-      await this.taxService.getInstallmentPaymentGenerator(where, currentYear)
+  async generateInstallmentPaymentLink(
+    where: Prisma.TaxPayerWhereUniqueInput,
+    year: number,
+  ) {
+    const generator = await this.taxService.getInstallmentPaymentGenerator(
+      where,
+      year,
+    )
 
     return this.getPaymentUrlInternal(generator)
   }

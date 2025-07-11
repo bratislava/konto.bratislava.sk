@@ -105,11 +105,17 @@ export class PaymentController {
   @Tiers(CognitoTiersEnum.IDENTITY_CARD)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/full-payment')
-  async generateFullPaymentLink(@BratislavaUser() baUser: BratislavaUserDto) {
-    const urlToRedirect = await this.paymentService.generateFullPaymentLink({
-      birthNumber: baUser.birthNumber,
-    })
+  @Post('cardpay/full-payment/:year')
+  async generateFullPaymentLink(
+    @BratislavaUser() baUser: BratislavaUserDto,
+    @Param('year') year: number,
+  ) {
+    const urlToRedirect = await this.paymentService.generateFullPaymentLink(
+      {
+        birthNumber: baUser.birthNumber,
+      },
+      year,
+    )
 
     return { url: urlToRedirect }
   }
@@ -139,14 +145,18 @@ export class PaymentController {
   @Tiers(CognitoTiersEnum.IDENTITY_CARD)
   @UseGuards(TiersGuard)
   @UseGuards(AuthenticationGuard)
-  @Post('cardpay/installment-payment')
+  @Post('cardpay/installment-payment/:year')
   async generateInstallmentPaymentLink(
     @BratislavaUser() baUser: BratislavaUserDto,
+    @Param('year') year: number,
   ) {
     const urlToRedirect =
-      await this.paymentService.generateInstallmentPaymentLink({
-        birthNumber: baUser.birthNumber,
-      })
+      await this.paymentService.generateInstallmentPaymentLink(
+        {
+          birthNumber: baUser.birthNumber,
+        },
+        year,
+      )
 
     return { url: urlToRedirect }
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PhysicalEntity, UpvsIdentityByUri } from '@prisma/client'
+import { PhysicalEntity, Prisma, UpvsIdentityByUri } from '@prisma/client'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { AdminErrorsEnum, AdminErrorsResponseEnum } from '../admin/admin.errors.enum'
 
@@ -9,7 +9,6 @@ import { parseUriNameFromRfo } from '../magproxy/dtos/uri'
 import { UpvsIdentity } from '../upvs-identity-by-uri/dtos/upvsSchema'
 import {
   UpvsIdentityByUriService,
-  UpvsIdentityByUriServiceCreateManyParam,
 } from '../upvs-identity-by-uri/upvs-identity-by-uri.service'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
@@ -96,21 +95,26 @@ export class PhysicalEntityService {
     return entity
   }
 
-  async updateUriAndEdeskFromUpvs(upvsInput: UpvsIdentityByUriServiceCreateManyParam) {
+  async checkUriAndUpdateEdeskFromUpvs(upvsInput: {
+    physicalEntityId?: string | null | undefined
+    uri: string
+  }) {
     let upvsResult: {
       success: UpvsIdentityByUri[]
       failed: { physicalEntityId?: string; uri: string }[]
     } | null = null
     try {
-      upvsResult = await this.upvsIdentityByUriService.createMany(upvsInput)
+      upvsResult = await this.upvsIdentityByUriService.createMany([upvsInput])
     } catch (error) {
       this.logger.error(`An error occurred while requesting data from UPVS`, { upvsInput }, error)
     }
     if (!upvsResult) {
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       return {}
     }
 
     if (upvsResult.success.length > 1) {
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
         ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
@@ -125,6 +129,7 @@ export class PhysicalEntityService {
           upvsInput
         )}, requires manual intervention`
       )
+      await this.updateFailedActiveEdeskUpdateInDatabase({ uri: upvsInput.uri })
       return {}
     }
 
@@ -154,7 +159,7 @@ export class PhysicalEntityService {
     const processedBirthNumber = entity.birthNumber.replaceAll('/', '')
     const uri = `rc://sk/${processedBirthNumber}_${uriName}`
     this.logger.log(`Trying to verify the following uri for entityId ${entity.id}: ${uri}`)
-    return [{ uri, physicalEntityId: entity.id }]
+    return { uri, physicalEntityId: entity.id }
   }
 
   async createFromBirthNumber(birthNumber: string) {
@@ -194,7 +199,7 @@ export class PhysicalEntityService {
       return rfoData
     }
 
-    await this.updateUriAndEdeskFromUpvs(upvsInput)
+    await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
     return rfoData
   }
 
@@ -250,14 +255,55 @@ export class PhysicalEntityService {
       }
     }
 
-    const { updatedEntity, upvsResult } = await this.updateUriAndEdeskFromUpvs(upvsInput)
+    const { updatedEntity, upvsResult } = await this.checkUriAndUpdateEdeskFromUpvs(upvsInput)
+
+    const upvsInputArray = [upvsInput]
 
     return {
       physicalEntity: updatedEntity ?? entity,
       rfoData,
-      upvsInput,
+      upvsInput: upvsInputArray,
       upvsResult,
     }
+  }
+
+  async updateEdeskFromUpvs(where: Prisma.PhysicalEntityWhereUniqueInput) {
+    const entity = await this.prismaService.physicalEntity.findUnique({
+      where,
+    })
+
+    if (!entity || !entity.uri || !entity.birthNumber) {
+      this.logger.error(
+        `Could not update PhysicalEntity uri and edesk. Entity searched with where:${JSON.stringify(where)}`
+      )
+      return false
+    }
+
+    const result = await this.checkUriAndUpdateEdeskFromUpvs({
+      physicalEntityId: entity.id,
+      uri: entity.uri,
+    })
+
+    if (result.updatedEntity) {
+      this.logger.error(
+        `Could not update PhysicalEntity uri and edesk. Entity searched with where:${JSON.stringify(where)}`,
+        { upvsResult: result.upvsResult }
+      )
+      await this.updateFailedActiveEdeskUpdateInDatabase({ id: entity.id })
+      return false
+    }
+
+    return true
+  }
+
+  async updateFailedActiveEdeskUpdateInDatabase(where: Prisma.PhysicalEntityWhereUniqueInput) {
+    await this.prismaService.physicalEntity.update({
+      where,
+      data: {
+        activeEdeskUpdateFailedAt: new Date(),
+        activeEdeskUpdateFailCount: { increment: 1 },
+      },
+    })
   }
 
   // TODO either change or cleanup and use db directly
@@ -268,9 +314,21 @@ export class PhysicalEntityService {
         'PhysicalEntity id must be provided to update service'
       )
     }
+
+    // if activeEdesk is being updated, delete metadata about failed updates
+    let dataWithEdeskMetadata: Partial<PhysicalEntity> = data
+    if (data.activeEdesk !== null && data.activeEdesk !== undefined) {
+      dataWithEdeskMetadata = {
+        ...data,
+        activeEdeskUpdateFailedAt: null,
+        activeEdeskUpdateFailCount: 0,
+        activeEdeskUpdatedAt: new Date(),
+      }
+    }
+
     const physicalEntity = await this.prismaService.physicalEntity.update({
       where: { id: data.id },
-      data,
+      data: dataWithEdeskMetadata,
     })
     return physicalEntity
   }

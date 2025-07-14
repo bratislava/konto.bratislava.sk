@@ -78,6 +78,34 @@ Run the following and let the script guide you. If you need modifications, or yo
   npm run update
 ```
 
+### Generate snapshots
+
+Powershell:
+
+```pwsh
+docker image rm my-test-image -f; if ($?) { } else { }; docker build -t my-test-image --target test-update .; docker run --rm -v ${PWD}:/app -v /app/node_modules my-test-image
+```
+
+Bash:
+
+```bash
+docker image rm my-test-image -f || true && docker build -t my-test-image --target test-update . && docker run --rm -v "${PWD}:/app" -v "/app/node_modules" my-test-image
+```
+
+## Testing
+
+Due to inconsistencies in snapshot generation across different local machine environments, all tests must be run within a Docker container. This ensures a consistent environment for reliable test outcomes and snapshot comparisons.
+
+You can run the tests using the following npm scripts:
+
+```bash
+# Run tests in Docker
+npm run docker:test
+
+# Run tests in Docker and update snapshots on your local filesystem
+npm run docker:test:update
+```
+
 ## Notes
 
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json

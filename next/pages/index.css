@@ -1,4 +1,5 @@
 @import 'tailwindcss' source(none);
+@import 'tailwind-scrollbar-hide/v4';
 
 @source "./";
 @source "../components/";
@@ -124,6 +125,13 @@
   --color-category-300: var(--color-main-300);
   --color-category-200: var(--color-main-200);
   --color-category-100: var(--color-main-100);
+
+  --color-municipal-services-tsb: rgb(117, 75, 255); /*#754BFF*/
+  --color-municipal-services-tsb-bg: rgb(240, 235, 255); /*#F0EBFF*/
+  --color-municipal-services-olo: rgb(249, 178, 51); /*#F9B233*/
+  --color-municipal-services-olo-bg: rgb(252, 240, 214); /*#FCF0D6*/
+  --color-municipal-services-marianum: rgb(68, 102, 80); /*#446650*/
+  --color-municipal-services-marianum-bg: rgb(180, 194, 185); /*#B4C2B9*/
 
   --color-error: #d00000;
   --color-font: #333;
@@ -565,25 +573,6 @@
 @utility scroll-fade-right-opaque {
   &::after {
     @apply opacity-100;
-  }
-}
-
-/* https://github.com/reslear/tailwind-scrollbar-hide/blob/main/src/index.ts */
-@utility scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    @apply block;
-  }
-}
-
-@utility scrollbar-default {
-  -ms-overflow-style: auto;
-  scrollbar-width: auto;
-
-  &::-webkit-scrollbar {
-    @apply block;
   }
 }
 

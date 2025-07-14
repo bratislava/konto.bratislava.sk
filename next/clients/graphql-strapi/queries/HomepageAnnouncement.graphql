@@ -1,0 +1,19 @@
+fragment HomepageAnnouncementEntity on HomepageAnnouncementEntity {
+  id
+  attributes {
+    title
+    description
+    buttonText
+    href
+    dateFrom
+    dateTo
+    image {
+      data {
+        attributes {
+          url
+          alternativeText
+        }
+      }
+    }
+  }
+}

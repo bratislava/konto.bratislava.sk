@@ -1,46 +1,39 @@
 import { Injectable } from '@nestjs/common'
 import {
-  AdminApi,
-  Configuration,
+  CreateBirthNumbersResponseDto,
+  RequestAdminDeleteTaxDto,
   RequestPostNorisLoadDataDto,
   RequestUpdateNorisDeliveryMethodsDto,
-} from '../../generated-clients/nest-tax-backend'
+} from 'openapi-clients/tax'
+
+import ClientsService from '../../clients/clients.service'
 import { ErrorsEnum, ErrorsResponseEnum } from '../guards/dtos/error.dto'
 import ThrowerErrorGuard from '../guards/errors.guard'
 import { LineLoggerSubservice } from './line-logger.subservice'
+import { AxiosPromise } from 'axios'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class TaxSubservice {
-  private readonly taxBackendAdminApi: AdminApi
-
-  private readonly config: {
-    taxBackendUrl: string
-    taxBackendApiKey: string
-  }
-
   private readonly logger: LineLoggerSubservice
 
-  constructor(private readonly throwerErrorGuard: ThrowerErrorGuard) {
-    if (!process.env.TAX_BACKEND_URL || !process.env.TAX_BACKEND_API_KEY) {
-      throw new Error('Tax backend ENV vars are not set ')
+  constructor(
+    private readonly throwerErrorGuard: ThrowerErrorGuard,
+    private readonly clientsService: ClientsService,
+    private readonly configService: ConfigService
+  ) {
+    if (!this.configService.get('TAX_BACKEND_API_KEY')) {
+      throw new Error('Tax backend ENV vars are not set.')
     }
-
-    /** Config */
-    this.config = {
-      taxBackendUrl: process.env.TAX_BACKEND_URL,
-      taxBackendApiKey: process.env.TAX_BACKEND_API_KEY,
-    }
-
-    this.taxBackendAdminApi = new AdminApi(new Configuration({}), this.config.taxBackendUrl)
 
     this.logger = new LineLoggerSubservice(TaxSubservice.name)
   }
 
   async removeDeliveryMethodFromNoris(birthNumber: string): Promise<boolean> {
     try {
-      this.taxBackendAdminApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, {
+      this.clientsService.taxBackendApi.adminControllerRemoveDeliveryMethodsFromNoris(birthNumber, {
         headers: {
-          apiKey: this.config.taxBackendApiKey,
+          apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
         },
       })
       return true
@@ -56,18 +49,30 @@ export class TaxSubservice {
     }
   }
 
-  async loadDataFromNoris(data: RequestPostNorisLoadDataDto) {
-    return this.taxBackendAdminApi.adminControllerLoadDataFromNorris(data, {
+  async loadDataFromNoris(
+    data: RequestPostNorisLoadDataDto
+  ): AxiosPromise<CreateBirthNumbersResponseDto> {
+    return this.clientsService.taxBackendApi.adminControllerLoadDataFromNorris(data, {
       headers: {
-        apiKey: this.config.taxBackendApiKey,
+        apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
       },
     })
   }
 
-  async updateDeliveryMethodsInNoris(data: RequestUpdateNorisDeliveryMethodsDto) {
-    return this.taxBackendAdminApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
+  async updateDeliveryMethodsInNoris(
+    data: RequestUpdateNorisDeliveryMethodsDto
+  ): AxiosPromise<void> {
+    return this.clientsService.taxBackendApi.adminControllerUpdateDeliveryMethodsInNoris(data, {
       headers: {
-        apiKey: this.config.taxBackendApiKey,
+        apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
+      },
+    })
+  }
+
+  async deleteTax(data: RequestAdminDeleteTaxDto): AxiosPromise<void> {
+    return this.clientsService.taxBackendApi.adminControllerDeleteTax(data, {
+      headers: {
+        apiKey: this.configService.getOrThrow('TAX_BACKEND_API_KEY'),
       },
     })
   }

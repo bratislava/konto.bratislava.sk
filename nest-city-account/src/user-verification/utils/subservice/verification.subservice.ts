@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { ResponseRpoLegalPersonDto } from '../../../generated-clients/new-magproxy'
+import { ResponseRpoLegalPersonDto } from 'openapi-clients/magproxy'
 import { MagproxyService } from '../../../magproxy/magproxy.service'
 import { isValidBirthNumber } from '../../../utils/birthNumbers'
 import { CognitoGetUserData } from '../../../utils/global-dtos/cognito.dto'
@@ -11,21 +11,26 @@ import {
 } from '../../dtos/requests.verification.dto'
 import { DatabaseSubserviceUser } from './database.subservice'
 import { PhysicalEntityService } from '../../../physical-entity/physical-entity.service'
-import { ResponseErrorDto } from '../../../utils/guards/dtos/error.dto'
+import { ResponseErrorInternalDto } from '../../../utils/guards/dtos/error.dto'
 import { UserErrorsEnum } from '../../../user/user.error.enum'
 import { RfoIdentityList, RfoIdentityListElement } from '../../../rfo-by-birthnumber/dtos/rfoSchema'
 import { RfoDataDto } from './types/verification-types.dto'
-import { VerificationErrorsEnum } from "../../verification.errors.enum";
+import { VerificationErrorsEnum } from '../../verification.errors.enum'
+import { LineLoggerSubservice } from '../../../utils/subservices/line-logger.subservice'
 
 @Injectable()
 export class VerificationSubservice {
+  private logger: LineLoggerSubservice
+
   constructor(
     private errorMessengerGuard: ErrorMessengerGuard,
     private throwerErrorGuard: ThrowerErrorGuard,
     private magproxyService: MagproxyService,
     private databaseSubservice: DatabaseSubserviceUser,
     private physicalEntityService: PhysicalEntityService
-  ) {}
+  ) {
+    this.logger = new LineLoggerSubservice(VerificationSubservice.name)
+  }
 
   private checkIdentityCard(
     rfoData: RfoIdentityListElement,
@@ -52,8 +57,14 @@ export class VerificationSubservice {
             message: { message: 'ok' },
           }
         }
-        const identityCardMagproxy = document.jednoznacnyIdentifikator.split(' ') //Identity card numbers are in registry in format "0000 xx" and users from identity card enters "xx0000"
-        if (identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard) {
+
+        // Some identity card numbers are in format "000000 XX" in registry, but users enter identity card as "XX000000"
+        const identityCardMagproxy = document.jednoznacnyIdentifikator.trim().split(' ')
+
+        if (
+          identityCardMagproxy.length === 2 &&
+          identityCardMagproxy[1] + identityCardMagproxy[0] === identityCard
+        ) {
           return {
             statusCode: 200,
             status: 'OK',
@@ -65,7 +76,7 @@ export class VerificationSubservice {
     return this.errorMessengerGuard.birthNumberICInconsistency()
   }
 
-  private verifyRpoStatutary(
+  private verifyRpoStatutory(
     legalEntity: ResponseRpoLegalPersonDto,
     birthNumber: string
   ): ResponseVerificationIdentityCardDto {
@@ -88,6 +99,11 @@ export class VerificationSubservice {
         }
       }
     }
+    this.logger.warn({
+      message: 'Could not match birthnumber with statutory organ from RPO',
+      ico: legalEntity.ico,
+      birthNumber: birthNumber,
+    })
     return this.errorMessengerGuard.birthNumberNotExists()
   }
 
@@ -133,7 +149,7 @@ export class VerificationSubservice {
           rfoData = {
             statusCode: error.getStatus(),
             data: null,
-            errorData: error.getResponse() as ResponseErrorDto,
+            errorData: error.getResponse() as ResponseErrorInternalDto,
           }
         } else {
           throw error
@@ -280,7 +296,7 @@ export class VerificationSubservice {
     if (!rpoData || !rpoData.data) {
       return this.errorMessengerGuard.rpoFieldNotExists('ico')
     }
-    const verifyStatutory = this.verifyRpoStatutary(rpoData.data, data.birthNumber)
+    const verifyStatutory = this.verifyRpoStatutory(rpoData.data, data.birthNumber)
     if (verifyStatutory.statusCode !== 200) {
       return verifyStatutory
     }

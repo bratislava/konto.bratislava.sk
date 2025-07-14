@@ -13,6 +13,7 @@ import {
 export enum NodeEnv {
   Development = 'development',
   Production = 'production',
+  Test = 'test',
 }
 
 export enum ClusterEnv {
@@ -93,6 +94,16 @@ export default class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   AWS_COGNITO_SECRET: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  AWS_ACCOUNT_ID: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  AWS_UNAUTH_ROLE_NAME: string
 
   @Expose()
   @IsString()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import ThrowerErrorGuard from '../../../utils/guards/errors.guard'
 
-import { PrismaService } from '../../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../../prisma/prisma.service'
 import { prismaExclude } from '../../../utils/handlers/prisma.handlers'
 import {
   ResponseGdprLegalPersonDataDto,
@@ -38,6 +38,7 @@ export class DatabaseSubserviceUser {
       user = await this.prisma.user.update({
         where: {
           email: email,
+          ...ACTIVE_USER_FILTER,
         },
         data: {
           externalId: externalId,
@@ -177,17 +178,24 @@ export class DatabaseSubserviceUser {
   }
 
   async getUserById(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: id } })
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+        ...ACTIVE_USER_FILTER,
+      },
+    })
     return user
   }
 
   async getUserByExternalId(externalId: string) {
-    const user = await this.prisma.user.findUnique({ where: { externalId } })
+    const user = await this.prisma.user.findUnique({
+      where: { externalId, ...ACTIVE_USER_FILTER },
+    })
     return user
   }
 
   async getLegalPersonById(id: string) {
-    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id: id } })
+    const legalPerson = await this.prisma.legalPerson.findUnique({ where: { id } })
     return legalPerson
   }
 

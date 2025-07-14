@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Prisma, User } from '@prisma/client'
 import prismaMock from '../../../../test/singleton'
-import { AdminApi } from '../../../generated-clients/nest-tax-backend'
+import { AdminApi } from 'openapi-clients/tax'
 import { PrismaService } from '../../../prisma/prisma.service'
 import { GdprSubType } from '../../../user/dtos/gdpr.user.dto'
 import ThrowerErrorGuard from '../../guards/errors.guard'
@@ -10,8 +10,8 @@ import { DeliveryMethod } from '../../types/tax.types'
 import { TasksSubservice } from '../tasks.subservice'
 import { TaxSubservice } from '../tax.subservice'
 
-jest.mock('../../decorators/errorHandler.decorators', () => ({
-  HandleErrors: () => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
+jest.mock('../../decorators/errorHandler.decorators', () => {
+  return jest.fn(() => (target: object, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: undefined[]) {
@@ -22,8 +22,8 @@ jest.mock('../../decorators/errorHandler.decorators', () => ({
       return null
     }
     return descriptor
-  },
-}))
+  })
+})
 
 type UserWithRelations = Prisma.UserGetPayload<{
   include: {

@@ -2,12 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import axios, { AxiosError } from 'axios'
 import https from 'https'
 
-import {
-  Configuration,
-  ResponseRfoPersonDto,
-  RFORegisterFyzickchOsbApi,
-  RPORegisterPrvnickchOsbApi,
-} from '../generated-clients/new-magproxy'
+import { ResponseRfoPersonDto } from 'openapi-clients/magproxy'
 import {
   RfoIdentityList,
   RfoIdentityListElement,
@@ -18,6 +13,7 @@ import { RpoDataMagproxyDto } from './dtos/magproxy.dto'
 import { MagproxyErrorsEnum, MagproxyErrorsResponseEnum } from './magproxy.errors.enum'
 import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import { LineLoggerSubservice } from '../utils/subservices/line-logger.subservice'
+import ClientsService from '../clients/clients.service'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -29,11 +25,6 @@ let magproxyAzureAdToken = ''
 
 @Injectable()
 export class MagproxyService {
-  /** generated api */
-  private readonly rfoApi: RFORegisterFyzickchOsbApi
-
-  private readonly rpoApi: RPORegisterPrvnickchOsbApi
-
   private readonly logger: LineLoggerSubservice
 
   private readonly config: {
@@ -46,7 +37,8 @@ export class MagproxyService {
 
   constructor(
     private readonly throwerErrorGuard: ThrowerErrorGuard,
-    private readonly errorMessengerGuard: ErrorMessengerGuard
+    private readonly errorMessengerGuard: ErrorMessengerGuard,
+    private readonly clientsService: ClientsService
   ) {
     if (
       !process.env.MAGPROXY_AZURE_AD_URL ||
@@ -55,7 +47,10 @@ export class MagproxyService {
       !process.env.MAGPROXY_AZURE_SCOPE ||
       !process.env.MAGPROXY_URL
     ) {
-      throw new Error('MagproxyService ENV vars are not set ')
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        ErrorsEnum.INTERNAL_SERVER_ERROR,
+        'MagproxyService ENV vars are not set '
+      )
     }
 
     /** Config */
@@ -66,11 +61,6 @@ export class MagproxyService {
       magproxyAzureScope: process.env.MAGPROXY_AZURE_SCOPE,
       magproxyUrl: process.env.MAGPROXY_URL,
     }
-
-    /** Generated APIS */
-    this.rfoApi = new RFORegisterFyzickchOsbApi(new Configuration({}), this.config.magproxyUrl)
-
-    this.rpoApi = new RPORegisterPrvnickchOsbApi(new Configuration({}), this.config.magproxyUrl)
 
     this.logger = new LineLoggerSubservice(MagproxyService.name)
   }
@@ -104,7 +94,8 @@ export class MagproxyService {
           throw this.throwerErrorGuard.UnprocessableEntityException(
             MagproxyErrorsEnum.RFO_ACCESS_ERROR,
             MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
-            JSON.stringify(error.response.data)
+            JSON.stringify(error.response.data),
+            error
           )
         })
       return result.access_token
@@ -140,11 +131,14 @@ export class MagproxyService {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
     const processedBirthNumber = birthNumber.replaceAll('/', '')
     try {
-      const result = await this.rfoApi.rfoControllerGetList(processedBirthNumber, {
-        headers: {
-          Authorization: `Bearer ${magproxyAzureAdToken}`,
-        },
-      })
+      const result = await this.clientsService.magproxyApi.rfoControllerGetList(
+        processedBirthNumber,
+        {
+          headers: {
+            Authorization: `Bearer ${magproxyAzureAdToken}`,
+          },
+        }
+      )
       // TODO this validation belongs to magproxy, TODO can be nicer, i.e. don't assume the items are present - leaving like this until OpenAPI rewrite
       return this.validateRfoDataFormat(result?.data?.items)
     } catch (error) {
@@ -160,26 +154,32 @@ export class MagproxyService {
         magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
         throw this.throwerErrorGuard.UnauthorizedException(
           MagproxyErrorsEnum.RFO_ACCESS_ERROR,
-          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR
+          MagproxyErrorsResponseEnum.RFO_ACCESS_ERROR,
+          undefined,
+          error
         )
       }
       if (error.response?.status === HttpStatus.NOT_FOUND) {
         throw this.throwerErrorGuard.NotFoundException(
           MagproxyErrorsEnum.BIRTH_NUMBER_NOT_EXISTS,
-          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS
+          MagproxyErrorsResponseEnum.BIRTHNUMBER_NOT_EXISTS,
+          undefined,
+          error
         )
       }
       // RFO responded but with unexpected data
       throw this.throwerErrorGuard.UnprocessableEntityException(
         MagproxyErrorsEnum.RFO_UNEXPECTED_RESPONSE,
-        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE
+        MagproxyErrorsResponseEnum.RFO_UNEXPECTED_RESPONSE,
+        undefined,
+        error
       )
     }
   }
 
   async rfoBirthNumberDcom(birthNumber: string) {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
-    const result = await this.rfoApi
+    const result = await this.clientsService.magproxyApi
       .rfoControllerGetOneDcom(birthNumber, {
         httpsAgent: httpsAgent,
         headers: {
@@ -225,7 +225,7 @@ export class MagproxyService {
   async rpoIco(ico: string): Promise<RpoDataMagproxyDto> {
     magproxyAzureAdToken = await this.auth(magproxyAzureAdToken)
 
-    const result = await this.rpoApi
+    const result = await this.clientsService.magproxyApi
       .rpoControllerGetLegalPerson(ico, {
         httpsAgent: httpsAgent,
         headers: {

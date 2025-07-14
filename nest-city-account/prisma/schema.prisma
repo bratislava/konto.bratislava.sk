@@ -40,6 +40,8 @@ model User {
   lastTaxDeliveryMethodsUpdateYear Int?
   cognitoTier                      CognitoUserAttributesTierEnum?
   userIdCardVerify                 UserIdCardVerify[]
+  isDeceased                       Boolean                        @default(false)
+  markedDeceasedAt                 DateTime?
 }
 
 // In this table we store for one month the data used by a user to verify their account by ID card.

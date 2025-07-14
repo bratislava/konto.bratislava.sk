@@ -1,11 +1,11 @@
 import { LineLoggerSubservice } from '../line-logger.subservice'
 
 describe('LineLoggerService', () => {
-  let service: any // Changed from LineLoggerService
+  let service: any
   let consoleSpy: jest.SpyInstance
 
   beforeEach(() => {
-    service = new LineLoggerSubservice('LineLogger TEST', false)
+    service = new LineLoggerSubservice('LineLogger TEST')
     consoleSpy = jest.spyOn(console, 'log')
     consoleSpy.mockImplementation(() => {})
   })
@@ -25,7 +25,7 @@ describe('LineLoggerService', () => {
     service[method]('test message')
 
     const regex = new RegExp(
-      `process="\\[Nest]" processPID="\\d+" datetime="\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2}:\\d{2}" severity="${severity}" context="LineLogger TEST" message="test message"`,
+      `process="\\[Nest]" processPID="\\d+" datetime="\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z" severity="${severity}" context="LineLogger TEST" message="test message"`,
     )
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(regex))
@@ -37,7 +37,7 @@ describe('LineLoggerService', () => {
     service.log({ foo: 'string' })
 
     const regex =
-      /process="\[Nest]" processPID="\d+" datetime="\d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}:\d{2}" severity="LOG" context="LineLogger TEST" foo="string"/
+      /process="\[Nest]" processPID="\d+" datetime="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z" severity="LOG" context="LineLogger TEST" foo="string"/
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(regex))
     expect(consoleSpy).toHaveBeenCalledTimes(1)

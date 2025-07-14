@@ -3,7 +3,7 @@ import AWS from 'aws-sdk'
 
 import { CognitoUserAttributesTierEnum } from '@prisma/client'
 import { fromPairs } from 'lodash'
-import { PrismaService } from '../../prisma/prisma.service'
+import { ACTIVE_USER_FILTER, PrismaService } from '../../prisma/prisma.service'
 import {
   CognitoGetUserAttributesData,
   CognitoGetUserData,
@@ -138,6 +138,7 @@ export class CognitoSubservice {
       const user = await this.prisma.user.findUnique({
         where: {
           externalId: userId,
+          ...ACTIVE_USER_FILTER,
         },
       })
       if (!user) {
@@ -188,7 +189,8 @@ export class CognitoSubservice {
         throw this.throwerErrorGuard.UnprocessableEntityException(
           SendToQueueErrorsEnum.COGNITO_CHANGE_TIER_ERROR,
           SendToQueueErrorsResponseEnum.COGNITO_CHANGE_TIER_ERROR,
-          JSON.stringify(error)
+          undefined,
+          error
         )
       })
   }

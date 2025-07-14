@@ -1,17 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Prisma } from '@prisma/client'
+import { DeliveryMethodNamed, PaymentStatus, Prisma } from '@prisma/client'
+import dayjs from 'dayjs'
 
 import { AdminService } from '../admin/admin.service'
+import { BloomreachService } from '../bloomreach/bloomreach.service'
 import { CardPaymentReportingService } from '../card-payment-reporting/card-payment-reporting.service'
+import { CustomErrorNorisTypesEnum } from '../noris/noris.errors'
 import { PrismaService } from '../prisma/prisma.service'
+import {
+  CustomErrorTaxTypesEnum,
+  CustomErrorTaxTypesResponseEnum,
+} from '../tax/dtos/error.dto'
+import { stateHolidays } from '../tax/utils/unified-tax.util'
 import {
   MAX_NORIS_PAYMENTS_BATCH_SELECT,
   MAX_NORIS_TAXES_TO_UPDATE,
 } from '../utils/constants'
-import { HandleErrors } from '../utils/decorators/errorHandler.decorator'
-import { ErrorsEnum } from '../utils/guards/dtos/error.dto'
+import HandleErrors from '../utils/decorators/errorHandler.decorator'
+import { ErrorsEnum, ErrorsResponseEnum } from '../utils/guards/dtos/error.dto'
 import ThrowerErrorGuard from '../utils/guards/errors.guard'
+import { CityAccountSubservice } from '../utils/subservices/cityaccount.subservice'
 import DatabaseSubservice from '../utils/subservices/database.subservice'
 
 @Injectable()
@@ -23,6 +32,8 @@ export class TasksService {
     private readonly adminService: AdminService,
     private readonly throwerErrorGuard: ThrowerErrorGuard,
     private readonly cardPaymentReportingService: CardPaymentReportingService,
+    private readonly bloomreachService: BloomreachService,
+    private readonly cityAccountSubservice: CityAccountSubservice,
     private readonly databaseSubservice: DatabaseSubservice,
   ) {
     this.logger = new Logger('TasksService')
@@ -67,20 +78,12 @@ export class TasksService {
           error,
         )
       }
-      if (error instanceof Error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          error.message,
-          undefined,
-          undefined,
-          error,
-        )
-      }
       throw this.throwerErrorGuard.InternalServerErrorException(
         ErrorsEnum.INTERNAL_SERVER_ERROR,
-        'Unknown error',
+        ErrorsResponseEnum.INTERNAL_SERVER_ERROR,
         undefined,
-        <string>error,
+        undefined,
+        error,
       )
     }
 
@@ -101,10 +104,24 @@ export class TasksService {
       `TasksService: Updating payments from Noris with data: ${JSON.stringify(data)}`,
     )
 
-    const result = await this.adminService.updatePaymentsFromNoris({
-      type: 'variableSymbols',
-      data,
-    })
+    let result: {
+      created: number
+      alreadyCreated: number
+    }
+    try {
+      result = await this.adminService.updatePaymentsFromNoris({
+        type: 'variableSymbols',
+        data,
+      })
+    } catch (error) {
+      throw this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorNorisTypesEnum.UPDATE_PAYMENTS_FROM_NORIS_ERROR,
+        'Failed to update payments from Noris',
+        undefined,
+        undefined,
+        error,
+      )
+    }
 
     await this.prismaService.tax.updateMany({
       where: {
@@ -175,5 +192,115 @@ export class TasksService {
     await this.cardPaymentReportingService.generateAndSendPaymentReport(
       config.REPORTING_RECIPIENT_EMAIL,
     )
+  }
+
+  // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  @HandleErrors('Cron Error')
+  async sendUnpaidTaxReminders() {
+    const TWENTY_DAYS_AGO = dayjs().subtract(20, 'day').toDate()
+    const taxes = await this.prismaService.tax.findMany({
+      select: {
+        id: true,
+        year: true,
+        taxPayer: {
+          select: {
+            birthNumber: true,
+          },
+        },
+      },
+      where: {
+        bloomreachUnpaidTaxReminderSent: false,
+        taxPayments: {
+          none: {
+            status: PaymentStatus.SUCCESS,
+          },
+        },
+        OR: [
+          {
+            deliveryMethod: DeliveryMethodNamed.CITY_ACCOUNT,
+            createdAt: {
+              lte: TWENTY_DAYS_AGO,
+            },
+          },
+          {
+            deliveryMethod: {
+              not: DeliveryMethodNamed.CITY_ACCOUNT,
+            },
+            dateTaxRuling: {
+              lte: TWENTY_DAYS_AGO,
+            },
+          },
+          {
+            deliveryMethod: null,
+            dateTaxRuling: {
+              lte: TWENTY_DAYS_AGO,
+            },
+          },
+        ],
+      },
+      // need to spread this because of getUserDataAdminBatch will timeout if used on 700 records
+      // 50 * 6 * 24 h = 7200 is max number of konto visitors in dayhours
+      take: 50,
+    })
+
+    if (taxes.length === 0) {
+      return
+    }
+    this.logger.log(
+      `TasksService: Sending unpaid tax reminder events for taxes: ${JSON.stringify(
+        taxes.map((tax) => ({
+          id: tax.id,
+        })),
+      )}`,
+    )
+
+    const userDataFromCityAccount =
+      await this.cityAccountSubservice.getUserDataAdminBatch(
+        taxes.map((taxData) => taxData.taxPayer.birthNumber),
+      )
+
+    await Promise.all(
+      taxes.map(async (tax) => {
+        const userFromCityAccount =
+          userDataFromCityAccount[tax.taxPayer.birthNumber] || null
+        if (userFromCityAccount && userFromCityAccount.externalId) {
+          await this.bloomreachService.trackEventUnpaidTaxReminder(
+            { year: tax.year },
+            userFromCityAccount.externalId,
+          )
+        }
+      }),
+    )
+
+    await this.prismaService.tax.updateMany({
+      where: {
+        id: {
+          in: taxes.map((tax) => tax.id),
+        },
+      },
+      data: {
+        bloomreachUnpaidTaxReminderSent: true,
+      },
+    })
+  }
+
+  @Cron('0 9-17 1-23 12 1-5')
+  @HandleErrors('Cron Error')
+  async sendAlertsIfHolidaysAreNotSet() {
+    const nextYear = dayjs().year() + 1
+
+    const stateHolidaysForNextYear = stateHolidays.some(
+      (entry) => entry.year === nextYear,
+    )
+
+    if (!stateHolidaysForNextYear) {
+      this.throwerErrorGuard.InternalServerErrorException(
+        CustomErrorTaxTypesEnum.STATE_HOLIDAY_NOT_EXISTS,
+        CustomErrorTaxTypesResponseEnum.STATE_HOLIDAY_NOT_EXISTS,
+        undefined,
+        'Please fill in the state holidays for the next year in the `src/tax/utils/unified-tax.utils.ts`. The holidays are used to calculate taxes.',
+      )
+    }
   }
 }

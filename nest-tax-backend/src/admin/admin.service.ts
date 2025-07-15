@@ -587,6 +587,35 @@ export class AdminService {
     )
   }
 
+  private async updateDeliveryMethodsInDatabase(
+    deliveryGroups: Record<
+      DeliveryMethod,
+      { birthNumber: string; date: string | null }[]
+    >,
+  ): Promise<void> {
+    // Update delivery methods in the database
+    await Promise.all(
+      Object.entries(deliveryGroups).map(
+        async ([deliveryMethod, birthNumbers]) => {
+          if (birthNumbers.length > 0) {
+            await this.prismaService.taxPayer.updateMany({
+              where: {
+                birthNumber: {
+                  in: birthNumbers.map((item) => item.birthNumber),
+                },
+              },
+              data: {
+                deliveryMethod: transformDeliveryMethodToDatabaseType(
+                  deliveryMethod as DeliveryMethod,
+                ),
+              },
+            })
+          }
+        },
+      ),
+    )
+  }
+
   async updateDeliveryMethodsInNoris({
     data,
   }: RequestUpdateNorisDeliveryMethodsDto) {
@@ -655,27 +684,7 @@ export class AdminService {
       await this.norisService.updateDeliveryMethods(updates)
     }
 
-    // Update delivery methods in the database
-    await Promise.all(
-      Object.entries(deliveryGroups).map(
-        async ([deliveryMethod, birthNumbers]) => {
-          if (birthNumbers.length > 0) {
-            await this.prismaService.taxPayer.updateMany({
-              where: {
-                birthNumber: {
-                  in: birthNumbers.map((item) => item.birthNumber),
-                },
-              },
-              data: {
-                deliveryMethod: transformDeliveryMethodToDatabaseType(
-                  deliveryMethod as DeliveryMethod,
-                ),
-              },
-            })
-          }
-        },
-      ),
-    )
+    await this.updateDeliveryMethodsInDatabase(deliveryGroups)
   }
 
   async removeDeliveryMethodsFromNoris(birthNumber: string): Promise<void> {

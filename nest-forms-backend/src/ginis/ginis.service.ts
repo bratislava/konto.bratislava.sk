@@ -17,7 +17,6 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
-import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
@@ -43,7 +42,6 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private readonly minioClientSubservice: MinioClientSubservice,
     private prismaService: PrismaService,
-    private readonly rabbitMqClientService: RabbitmqClientService,
     @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new LineLoggerSubservice('GinisService')

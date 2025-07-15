@@ -13,7 +13,6 @@ import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinit
 import prismaMock from '../../test/singleton'
 import BaConfigService from '../config/ba-config.service'
 import PrismaService from '../prisma/prisma.service'
-import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailer/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
@@ -73,7 +72,6 @@ describe('GinisService', () => {
           },
         },
         ThrowerErrorGuard,
-        RabbitmqClientService,
         { provide: PrismaService, useValue: prismaMock },
         { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
         {

@@ -47,7 +47,7 @@
     "form-data": "^4.0.0",
     "jwks-rsa": "^3.2.0",
     "lodash": "^4.17.21",
-    "luxon": "^3.5.0",
+    "luxon": "^3.7.1",
     "mailgun.js": "^8.2.1",
     "openapi-clients": "file:../openapi-clients",
     "passport-headerapikey": "^1.2.2",

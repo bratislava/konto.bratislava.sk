@@ -171,7 +171,6 @@ export class NorisService {
     return norisData.recordset
   }
 
-  // TODO - test that in input it does not call with POSTAL but mapped to EDESK
   async updateDeliveryMethods(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {

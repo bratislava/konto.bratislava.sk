@@ -17,6 +17,7 @@ import {
   setDeliveryMethodsForUser,
 } from './noris.queries'
 import { UpdateNorisDeliveryMethods } from './noris.types'
+import { mapDeliveryMethodToNoris } from './utils/noris.helper'
 
 @Injectable()
 export class NorisService {
@@ -170,6 +171,7 @@ export class NorisService {
     return norisData.recordset
   }
 
+  // TODO - test that in input it does not call with POSTAL but mapped to EDESK
   async updateDeliveryMethods(
     data: UpdateNorisDeliveryMethods[],
   ): Promise<void> {
@@ -198,7 +200,10 @@ export class NorisService {
             'dkba_datum_suhlasu',
             dataItem.date ? new Date(dataItem.date) : null,
           )
-          request.input('dkba_sposob_dorucovania', dataItem.deliveryMethod)
+          request.input(
+            'dkba_sposob_dorucovania',
+            mapDeliveryMethodToNoris(dataItem.deliveryMethod),
+          )
 
           const birthNumberPlaceholders = dataItem.birthNumbers
             .map((_, index) => `@birthnumber${index}`)

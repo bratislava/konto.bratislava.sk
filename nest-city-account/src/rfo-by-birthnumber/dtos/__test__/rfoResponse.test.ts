@@ -1,3 +1,6 @@
+/**
+ * Anonymized response from RFO
+ */
 export const mockRfoResponseListOneItems = [
     {
       "ifo": "26111333",
